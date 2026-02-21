@@ -105,7 +105,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                                         href={register()}
                                         className="rounded-full bg-yellow-400 px-5 py-2.5 text-sm font-bold text-black shadow-lg shadow-yellow-400/20 transition-all hover:bg-yellow-300"
                                     >
-                                        Join For Free
+                                        Register
                                     </Link>
                                 </>
                             )}
