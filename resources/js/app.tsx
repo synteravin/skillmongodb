@@ -2,8 +2,17 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import '../css/app.css';
+import "../css/app.css";
 import { initializeTheme } from './hooks/use-appearance';
+import '@fontsource/oxanium/400.css'
+import '@fontsource/oxanium/600.css'
+import '@fontsource/oxanium/700.css'
+
+import '@fontsource/orbitron/400.css'
+import '@fontsource/orbitron/600.css'
+import '@fontsource/orbitron/700.css'
+
+import '@fontsource/lalezar/400.css'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
