@@ -22,30 +22,34 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
         <>
             <Head title="SkillVentura — Reset Password" />
 
-            {/* BACKGROUND */}
-            <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900">
-                {/* GLOW */}
-                <div className="pointer-events-none absolute inset-0 opacity-40">
-                    <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-600 blur-3xl" />
-                    <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-purple-600 blur-3xl" />
-                </div>
+            {/* ================= FULL BACKGROUND ================= */}
+            <div className="relative min-h-screen overflow-hidden">
 
-                {/* CENTER */}
+                {/* Background Image */}
+                <img
+                    src="/images/background-login.png"
+                    className="absolute inset-0 h-full w-full object-cover"
+                />
+
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-[1px]" />
+
+                {/* ================= CENTER CONTENT ================= */}
                 <div className="relative z-10 flex min-h-screen items-center justify-center px-6">
-                    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
-                        {/* LOGO */}
-                        <div className="mb-6 flex items-center justify-center gap-2 text-white">
-                            <img src="/images/logo.png" className="h-8 w-8" />
-                            <span className="font-semibold">SkillVentura</span>
-                        </div>
+
+                    {/* CARD */}
+                    <div className="relative w-full max-w-md rounded-[30px] bg-[#0f0f1a] p-10">
+
+                        {/* Neon Border */}
+                        <div className="pointer-events-none absolute inset-0 rounded-[30px] border-2 border-yellow-400/70 dark:border-yellow-400" />
 
                         {/* HEADER */}
                         <div className="mb-6 text-center">
                             <h2 className="text-2xl font-semibold text-white">
-                                Reset Your Password
+                                Reset Password
                             </h2>
-                            <p className="mt-1 text-sm text-slate-400">
-                                Create a new key to continue your adventure
+                            <p className="mt-2 text-sm text-slate-400">
+                                Create a new password for your account
                             </p>
                         </div>
 
@@ -65,41 +69,39 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             {({ processing, errors }) => (
                                 <>
                                     {/* EMAIL */}
-                                    <div className="space-y-1">
+                                    <div className="space-y-2">
                                         <Label className="text-slate-300">
                                             Email
                                         </Label>
+
                                         <Input
                                             type="email"
                                             value={email}
                                             readOnly
-                                            className="border-white/10 bg-white/5 text-white opacity-70"
+                                            className="border-none bg-[#1c1c2b] text-white opacity-70"
                                         />
+
                                         <InputError message={errors.email} />
                                     </div>
 
                                     {/* PASSWORD */}
-                                    <div className="relative space-y-1">
+                                    <div className="relative space-y-2">
                                         <Label className="text-slate-300">
                                             New Password
                                         </Label>
+
                                         <Input
                                             name="password"
-                                            type={
-                                                showPassword
-                                                    ? 'text'
-                                                    : 'password'
-                                            }
+                                            type={showPassword ? 'text' : 'password'}
                                             placeholder="New password"
                                             required
-                                            className="border-white/10 bg-white/5 pr-10 text-white"
+                                            className="border-none bg-[#1c1c2b] pr-10 text-white placeholder:text-slate-400"
                                         />
+
                                         <button
                                             type="button"
-                                            onClick={() =>
-                                                setShowPassword(!showPassword)
-                                            }
-                                            className="absolute top-[38px] right-3 text-slate-400 hover:text-white"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-[38px] text-slate-400 hover:text-white"
                                         >
                                             {showPassword ? (
                                                 <EyeOff size={18} />
@@ -107,31 +109,28 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                                                 <Eye size={18} />
                                             )}
                                         </button>
+
                                         <InputError message={errors.password} />
                                     </div>
 
-                                    {/* CONFIRM */}
-                                    <div className="relative space-y-1">
+                                    {/* CONFIRM PASSWORD */}
+                                    <div className="relative space-y-2">
                                         <Label className="text-slate-300">
                                             Confirm Password
                                         </Label>
+
                                         <Input
                                             name="password_confirmation"
-                                            type={
-                                                showConfirm
-                                                    ? 'text'
-                                                    : 'password'
-                                            }
+                                            type={showConfirm ? 'text' : 'password'}
                                             placeholder="Confirm password"
                                             required
-                                            className="border-white/10 bg-white/5 pr-10 text-white"
+                                            className="border-none bg-[#1c1c2b] pr-10 text-white placeholder:text-slate-400"
                                         />
+
                                         <button
                                             type="button"
-                                            onClick={() =>
-                                                setShowConfirm(!showConfirm)
-                                            }
-                                            className="absolute top-[38px] right-3 text-slate-400 hover:text-white"
+                                            onClick={() => setShowConfirm(!showConfirm)}
+                                            className="absolute right-3 top-[38px] text-slate-400 hover:text-white"
                                         >
                                             {showConfirm ? (
                                                 <EyeOff size={18} />
@@ -139,18 +138,15 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                                                 <Eye size={18} />
                                             )}
                                         </button>
-                                        <InputError
-                                            message={
-                                                errors.password_confirmation
-                                            }
-                                        />
+
+                                        <InputError message={errors.password_confirmation} />
                                     </div>
 
                                     {/* SUBMIT */}
                                     <Button
                                         type="submit"
                                         disabled={processing}
-                                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold text-white shadow-lg hover:opacity-90"
+                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                                     >
                                         {processing && <Spinner />}
                                         Reset Password

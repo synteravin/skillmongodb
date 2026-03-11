@@ -6,12 +6,12 @@ import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
 export default function Register() {
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
@@ -19,203 +19,161 @@ export default function Register() {
         <>
             <Head title="Register" />
 
-            {/* ================= BACKGROUND ================= */}
-            <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900">
-                {/* Glow Effects */}
-                <div className="pointer-events-none absolute inset-0 opacity-40">
-                    <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-indigo-600 blur-3xl" />
-                    <div className="absolute right-0 bottom-0 h-96 w-96 rounded-full bg-purple-600 blur-3xl" />
-                </div>
+            <div className="flex min-h-screen bg-gray-100 dark:bg-[#0a0a12] transition-colors">
 
-                {/* ================= GRID ================= */}
-                <div className="relative z-10 grid min-h-screen items-center px-6 lg:grid-cols-2 lg:px-20">
-                    {/* ================= LEFT HERO ================= */}
-                    <div className="hidden text-white lg:block">
-                        <h1 className="text-5xl leading-tight font-bold">
-                            Join <br />
-                            <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                                SkillVentura
-                            </span>
-                        </h1>
+                {/* ================= LEFT SIDE (CARD) ================= */}
+                <div className="flex w-full items-center justify-center bg-gradient-to-b from-gray-100 via-white to-gray-200 dark:from-[#0f0f1a] dark:via-[#14002c] dark:to-black px-4 py-10 sm:px-6 lg:w-1/2">
 
-                        <p className="mt-6 max-w-lg text-lg text-slate-300">
-                            Mulai perjalanan belajar RPG-mu. Bangun skill,
-                            kumpulkan XP, dan capai level tertinggi.
+                    <div className="relative w-full max-w-sm sm:max-w-sm lg:max-w-sm rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0f0f1a] p-6 sm:p-8 lg:p-10 shadow-lg">
+
+                        {/* Neon Border */}
+                        <div className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl border-2 border-yellow-400/70 dark:border-yellow-400" />
+
+                        <h2 className="mb-2 text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-white">
+                            Create an Account
+                        </h2>
+
+                        <p className="mb-6 sm:mb-8 text-xs sm:text-sm text-gray-500 dark:text-slate-400">
+                            Enter your details below to create your account.
                         </p>
 
-                        <p className="mt-16 text-sm text-slate-500">
-                            © 2026 SkillVentura. All rights reserved.
-                        </p>
-                    </div>
+                        <Form
+                            {...store.form()}
+                            resetOnSuccess={[
+                                'password',
+                                'password_confirmation',
+                            ]}
+                            className="space-y-4 sm:space-y-5"
+                        >
+                            {({ processing, errors }) => (
+                                <>
+                                    {/* NAME */}
+                                    <div>
+                                        <Input
+                                            name="name"
+                                            placeholder="Name"
+                                            className="border border-gray-200 bg-gray-50 text-gray-900 
+                                            dark:border-none dark:bg-[#1c1c2b] dark:text-white
+                                            placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                                        />
+                                        <InputError message={errors.name} />
+                                    </div>
 
-                    {/* ================= RIGHT FORM ================= */}
-                    <div className="flex items-center justify-center">
-                        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-xl">
-                            {/* TITLE */}
-                            <div className="mb-3 text-center">
-                                <h2 className="text-2xl font-semibold text-white">
-                                    Create Account
-                                </h2>
-                                <p className="mt-1 text-sm text-slate-400">
-                                    Start your adventure today 🚀
-                                </p>
-                            </div>
+                                    {/* USERNAME */}
+                                    <div>
+                                        <Input
+                                            name="username"
+                                            placeholder="Username"
+                                            className="border border-gray-200 bg-gray-50 text-gray-900 
+                                            dark:border-none dark:bg-[#1c1c2b] dark:text-white
+                                            placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                                        />
+                                        <InputError message={errors.username} />
+                                    </div>
 
-                            <Form
-                                {...store.form()}
-                                resetOnSuccess={[
-                                    'password',
-                                    'password_confirmation',
-                                ]}
-                                className="space-y-3"
-                            >
-                                {({ processing, errors }) => (
-                                    <>
-                                        {/* NAME */}
-                                        <div className="space-y-1">
-                                            <Label className="text-slate-300">
-                                                Name
-                                            </Label>
-                                            <Input
-                                                name="name"
-                                                required
-                                                placeholder="Full name"
-                                                className="border-white/10 bg-white/5 text-white"
-                                            />
-                                            <InputError message={errors.name} />
-                                        </div>
+                                    {/* EMAIL */}
+                                    <div>
+                                        <Input
+                                            name="email"
+                                            type="email"
+                                            placeholder="Email"
+                                            className="border border-gray-200 bg-gray-50 text-gray-900 
+                                            dark:border-none dark:bg-[#1c1c2b] dark:text-white
+                                            placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                                        />
+                                        <InputError message={errors.email} />
+                                    </div>
 
-                                        {/* USERNAME */}
-                                        <div className="space-y-1">
-                                            <Label className="text-slate-300">
-                                                Username
-                                            </Label>
-                                            <Input
-                                                name="username"
-                                                required
-                                                placeholder="username"
-                                                className="border-white/10 bg-white/5 text-white"
-                                            />
-                                            <InputError
-                                                message={errors.username}
-                                            />
-                                        </div>
+                                    {/* PASSWORD */}
+                                    <div className="relative">
+                                        <Input
+                                            name="password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="Password"
+                                            className="border border-gray-200 bg-gray-50 text-gray-900 pr-10
+                                            dark:border-none dark:bg-[#1c1c2b] dark:text-white
+                                            placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                                        />
 
-                                        {/* EMAIL */}
-                                        <div className="space-y-1">
-                                            <Label className="text-slate-300">
-                                                Email
-                                            </Label>
-                                            <Input
-                                                name="email"
-                                                type="email"
-                                                required
-                                                placeholder="email@example.com"
-                                                className="border-white/10 bg-white/5 text-white"
-                                            />
-                                            <InputError
-                                                message={errors.email}
-                                            />
-                                        </div>
-
-                                        {/* PASSWORD */}
-                                        <div className="relative space-y-1">
-                                            <Label className="text-slate-300">
-                                                Password
-                                            </Label>
-                                            <Input
-                                                name="password"
-                                                type={
-                                                    showPassword
-                                                        ? 'text'
-                                                        : 'password'
-                                                }
-                                                required
-                                                placeholder="Password"
-                                                className="border-white/10 bg-white/5 pr-10 text-white"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setShowPassword(
-                                                        !showPassword,
-                                                    )
-                                                }
-                                                className="absolute top-[38px] right-3 text-slate-400 hover:text-white"
-                                            >
-                                                {showPassword ? (
-                                                    <EyeOff size={18} />
-                                                ) : (
-                                                    <Eye size={18} />
-                                                )}
-                                            </button>
-                                            <InputError
-                                                message={errors.password}
-                                            />
-                                        </div>
-
-                                        {/* CONFIRM PASSWORD */}
-                                        <div className="relative space-y-1">
-                                            <Label className="text-slate-300">
-                                                Confirm Password
-                                            </Label>
-                                            <Input
-                                                name="password_confirmation"
-                                                type={
-                                                    showConfirm
-                                                        ? 'text'
-                                                        : 'password'
-                                                }
-                                                required
-                                                placeholder="Confirm password"
-                                                className="border-white/10 bg-white/5 pr-10 text-white"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setShowConfirm(!showConfirm)
-                                                }
-                                                className="absolute top-[38px] right-3 text-slate-400 hover:text-white"
-                                            >
-                                                {showConfirm ? (
-                                                    <EyeOff size={18} />
-                                                ) : (
-                                                    <Eye size={18} />
-                                                )}
-                                            </button>
-                                            <InputError
-                                                message={
-                                                    errors.password_confirmation
-                                                }
-                                            />
-                                        </div>
-
-                                        {/* SUBMIT */}
-                                        <Button
-                                            type="submit"
-                                            disabled={processing}
-                                            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold text-white shadow-lg hover:opacity-90"
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-black dark:hover:text-white"
                                         >
-                                            {processing && <Spinner />}
-                                            Create Account
-                                        </Button>
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
 
-                                        {/* LOGIN LINK */}
-                                        <p className="text-center text-sm text-slate-400">
-                                            Already have an account?{' '}
-                                            <TextLink
-                                                href={login()}
-                                                className="text-indigo-400"
-                                            >
-                                                Log in
-                                            </TextLink>
-                                        </p>
-                                    </>
-                                )}
-                            </Form>
-                        </div>
+                                        <InputError message={errors.password} />
+                                    </div>
+
+                                    {/* CONFIRM PASSWORD */}
+                                    <div className="relative">
+                                        <Input
+                                            name="password_confirmation"
+                                            type={showConfirm ? 'text' : 'password'}
+                                            placeholder="Confirm Password"
+                                            className="border border-gray-200 bg-gray-50 text-gray-900 pr-10
+                                            dark:border-none dark:bg-[#1c1c2b] dark:text-white
+                                            placeholder:text-gray-400 dark:placeholder:text-slate-400"
+                                        />
+
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirm(!showConfirm)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-black dark:hover:text-white"
+                                        >
+                                            {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+
+                                        <InputError message={errors.password_confirmation} />
+                                    </div>
+
+                                    {/* CREATE BUTTON */}
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    >
+                                        {processing && <Spinner />}
+                                        Create account
+                                    </Button>
+
+                                    {/* LOGIN LINK */}
+                                    <TextLink
+                                        href={login()}
+                                        className="block w-full rounded-lg border-2 border-indigo-500 py-2 text-center
+                                        text-indigo-600 dark:text-white
+                                        transition hover:bg-indigo-500/10"
+                                    >
+                                        Already a User? Log in
+                                    </TextLink>
+                                </>
+                            )}
+                        </Form>
                     </div>
                 </div>
+
+                {/* ================= RIGHT SIDE ================= */}
+                <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex">
+
+                    <img
+                        src="/images/background-login.png"
+                        className="absolute inset-0 h-full w-full object-cover"
+                        alt="Background"
+                    />
+
+                    <div className="relative z-10 rounded-3xl bg-white/40 dark:bg-white/10 px-44 py-55 backdrop-blur-lg shadow-2xl">
+
+                        <div className="text-center text-gray-900 dark:text-white">
+                            <h1 className="text-3xl xl:text-4xl font-semibold">
+                                Let's Get <br /> Started
+                            </h1>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
         </>
     );

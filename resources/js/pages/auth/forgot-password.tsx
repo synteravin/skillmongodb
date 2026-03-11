@@ -1,4 +1,3 @@
-// Components
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
@@ -6,7 +5,6 @@ import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { login } from '@/routes';
 import { email } from '@/routes/password';
 
@@ -16,89 +14,91 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Head title="SkillVentura — Forgot Password" />
 
             {/* ================= FULL BACKGROUND ================= */}
-            <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900">
-                {/* GLOW EFFECT */}
-                <div className="pointer-events-none absolute inset-0 opacity-40">
-                    <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-600 blur-3xl" />
-                    <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-purple-600 blur-3xl" />
-                </div>
+            <div className="relative flex min-h-screen items-center justify-center 
+                            bg-gray-100 dark:bg-[#0b0b14] 
+                            px-4 sm:px-6 lg:px-8 py-8 transition-colors">
 
-                {/* ================= CENTER CONTENT ================= */}
-                <div className="relative z-10 flex min-h-screen items-center justify-center px-6">
-                    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
-                        {/* LOGO */}
-                        <div className="mb-6 flex items-center justify-center gap-2 text-white">
-                            <img
-                                src="/images/logo.png"
-                                className="h-8 w-8"
-                                alt="SkillVentura Logo"
-                            />
-                            <span className="font-semibold">SkillVentura</span>
-                        </div>
+                {/* Background Image */}
+                <img
+                    src="/images/background-login.png"
+                    alt="Background"
+                    className="absolute inset-0 h-full w-full object-cover"
+                />
 
-                        {/* HEADER */}
-                        <div className="mb-6 text-center">
-                            <h2 className="text-2xl font-semibold text-white">
-                                Reset Your Password
-                            </h2>
-                            <p className="mt-1 text-sm text-slate-400">
-                                Enter your email to receive a reset link
-                            </p>
-                        </div>
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-[1px]" />
 
-                        {/* STATUS */}
-                        {status && (
-                            <div className="mb-4 rounded-lg bg-emerald-500/10 px-4 py-2 text-center text-sm font-medium text-emerald-400 ring-1 ring-emerald-500/20">
-                                {status}
-                            </div>
-                        )}
+                {/* ================= CARD ================= */}
+                <div className="relative w-full max-w-sm sm:max-w-sm lg:max-w-lg 
+                                rounded-[30px] 
+                                bg-white dark:bg-[#0f0f1a]
+                                p-6 sm:p-8 lg:p-10 shadow-xl">
 
-                        {/* FORM */}
-                        <Form {...email.form()} className="space-y-5">
-                            {({ processing, errors }) => (
-                                <>
-                                    {/* EMAIL */}
-                                    <div className="space-y-1">
-                                        <Label className="text-slate-300">
-                                            Email Address
-                                        </Label>
+                    {/* Neon Border */}
+                    <div className="pointer-events-none absolute inset-0 rounded-[30px] border-2 border-yellow-400/70 dark:border-yellow-400" />
 
-                                        <Input
-                                            name="email"
-                                            type="email"
-                                            placeholder="email@example.com"
-                                            autoFocus
-                                            className="border-white/10 bg-white/5 text-white placeholder:text-slate-500"
-                                        />
+                    {/* HEADER */}
+                    <div className="mb-6 text-center text-gray-900 dark:text-white">
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                            Forgot Password
+                        </h2>
 
-                                        <InputError message={errors.email} />
-                                    </div>
-
-                                    {/* SUBMIT */}
-                                    <Button
-                                        disabled={processing}
-                                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold text-white shadow-lg hover:opacity-90"
-                                    >
-                                        {processing && (
-                                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                                        )}
-                                        Send Reset Link
-                                    </Button>
-                                </>
-                            )}
-                        </Form>
-
-                        {/* BACK TO LOGIN */}
-                        <p className="mt-6 text-center text-sm text-slate-400">
-                            Remember your password?{' '}
-                            <TextLink
-                                href={login()}
-                                className="text-indigo-400 hover:underline"
-                            >
-                                Back to Login
-                            </TextLink>
+                        <p className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-slate-400">
+                            Enter your email to receive a password reset link.
                         </p>
                     </div>
+
+                    {/* STATUS */}
+                    {status && (
+                        <div className="mb-4 rounded-lg bg-emerald-500/10 px-4 py-2 text-center text-sm text-emerald-500 ring-1 ring-emerald-500/20">
+                            {status}
+                        </div>
+                    )}
+
+                    {/* FORM */}
+                    <Form {...email.form()} className="space-y-4 sm:space-y-5">
+                        {({ processing, errors }) => (
+                            <>
+                                {/* EMAIL */}
+                                <div>
+                                    <Input
+                                        name="email"
+                                        type="email"
+                                        placeholder="Email"
+                                        autoFocus
+                                        className="border border-gray-200 bg-gray-50 text-gray-900
+                                        dark:border-none dark:bg-[#1c1c2b] dark:text-white
+                                        placeholder:text-gray-400 dark:placeholder:text-slate-400
+                                        focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+                                    />
+                                    <InputError message={errors.email} />
+                                </div>
+
+                                {/* SUBMIT BUTTON */}
+                                <Button
+                                    disabled={processing}
+                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                                >
+                                    {processing && (
+                                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                                    )}
+                                    Email password reset link
+                                </Button>
+
+                                {/* LOGIN LINK */}
+                                <TextLink
+                                    href={login()}
+                                    className="block w-full rounded-lg border-2 border-indigo-500 
+                                    py-2 text-center 
+                                    text-indigo-600 dark:text-white
+                                    transition-all duration-300
+                                    hover:bg-indigo-500/10"
+                                >
+                                    Or, return to Log in
+                                </TextLink>
+                            </>
+                        )}
+                    </Form>
                 </div>
             </div>
         </>
