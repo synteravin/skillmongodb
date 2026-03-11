@@ -25,16 +25,36 @@ class CharacterController extends Controller
     public function store(Request $request, UploadCharacterAvatar $uploader)
     {
         $data = $request->validate([
-            'name'      => 'required|string|max:100',
+            'name' => 'required|string|max:100',
+            'tagline' => 'nullable|string|max:255',
             'backstory' => 'required|string',
-            'avatar'    => 'required|image|max:2048',
+            'quote' => 'nullable|string|max:255',
+
+            'character_type' => 'nullable|array',
+            'abilities' => 'nullable|array',
+            'personality' => 'nullable|array',
+
+            'guide_power_title' => 'nullable|string|max:255',
+            'guide_power_description' => 'nullable|string',
+
+            'system_bonus' => 'nullable|array',
+            'cosmetic_bonus' => 'nullable|array',
+
+            'avatar' => 'required|image|max:2048',
         ]);
 
-        Character::create([
-            'name'      => $data['name'],
-            'backstory' => $data['backstory'],
-            'avatar'    => $uploader->upload($data['avatar']),
-        ]);
+        $data['avatar'] = $uploader->upload($data['avatar']);
+
+        // Gabungkan guide power
+        $data['guide_power'] = [
+            'title' => $data['guide_power_title'] ?? null,
+            'description' => $data['guide_power_description'] ?? null,
+        ];
+
+        // hapus field sementara
+        unset($data['guide_power_title'], $data['guide_power_description']);
+
+        Character::create($data);
 
         return redirect()
             ->route('admin.characters.index')
@@ -51,10 +71,28 @@ class CharacterController extends Controller
     public function update(Request $request, Character $character)
     {
         $data = $request->validate([
-            'name'      => 'required|string|max:100',
+            'name' => 'required|string|max:100',
+            'tagline' => 'nullable|string|max:255',
             'backstory' => 'required|string',
+            'quote' => 'nullable|string|max:255',
+
+            'character_type' => 'nullable|array',
+            'abilities' => 'nullable|array',
+            'personality' => 'nullable|array',
+
+            'guide_power_title' => 'nullable|string|max:255',
+            'guide_power_description' => 'nullable|string',
+
+            'system_bonus' => 'nullable|array',
+            'cosmetic_bonus' => 'nullable|array',
         ]);
 
+        $data['guide_power'] = [
+            'title' => $data['guide_power_title'] ?? null,
+            'description' => $data['guide_power_description'] ?? null,
+        ];
+
+        unset($data['guide_power_title'], $data['guide_power_description']);
         $character->update($data);
 
         return redirect()

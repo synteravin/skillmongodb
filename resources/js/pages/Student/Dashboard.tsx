@@ -74,23 +74,6 @@ export default function Dashboard({ user }: { user: User }) {
                     {/* Glow */}
                     <div className="absolute inset-0 -z-10 rounded-full bg-indigo-600/20 blur-3xl" />
                 </div>
-
-                {/* Character Name */}
-                {/* <h1 className="mt-6 text-3xl font-bold tracking-wide">
-                    {user.character.name}
-                </h1>
-
-                <p className="mt-2 max-w-xl text-center text-sm text-slate-400">
-                    {user.character.backstory}
-                </p> */}
-
-                {/* NPC Dialog */}
-                {/* <div className="mt-8 max-w-md rounded-2xl border border-white/10 bg-black/40 p-5 text-sm text-slate-300 backdrop-blur">
-                    <p>
-                        “You’re ready for battle. Check out these upgrades —
-                        they’ll help you survive and dominate the game.”
-                    </p>
-                </div> */}
             </main>
 
             {/* ================= BOTTOM NAV ================= */}

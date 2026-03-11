@@ -17,41 +17,8 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const toggleFaq = (index: number) => {
-        setOpenFaq(openFaq === index ? null : index)
-    }
-
-    // ✅ FIXED SCROLL SPY (HANYA BAGIAN INI YANG DIPERBAIKI)
-   useEffect(() => {
-    const sections = document.querySelectorAll("section[id], footer[id]")
-
-    const observer = new IntersectionObserver(
-        (entries) => {
-            let visibleSection = ""
-
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    visibleSection = entry.target.id
-                }
-            })
-
-            if (visibleSection) {
-                setActiveSection(visibleSection)
-            }
-        },
-        {
-            rootMargin: "-40% 0px -40% 0px",
-            threshold: 0,
-        }
-    )
-
-    sections.forEach((section) => observer.observe(section))
-
-    return () => {
-        sections.forEach((section) => observer.unobserve(section))
-    }
-}, [])
-    
-   
+        setOpenFaq(openFaq === index ? null : index);
+    };
 
     return (
         <>
@@ -59,9 +26,9 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
             <div className="relative min-h-screen w-full overflow-x-hidden bg-white text-[#1e293b] dark:bg-[#020202] dark:text-slate-100 font-sans antialiased transition-colors duration-300 2xl:max-w-[1780px] 2xl:mx-auto">
                
                 {/* Navbar */}
-                <header className="fixed top-0 right-0 left-0 z-50 px-0 py-0 lg:px-0 lg:py-0 sm:px-3 sm:py-2">
-                    <nav className="mx-auto flex w-full items-center justify-between border border-white/50 bg-white px-6 py-3 dark:bg-slate-900 dark:border-slate-800 drop-shadow-2xl shadow-blue-400 backdrop-blur-md">
-                        <div className="flex items-center ">
+                <header className="fixed top-0 right-0 left-0 z-50 px-4 py-4 md:px-8 md:py-6">
+                    <motion.nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/50 bg-white/80 px-6 py-3 shadow-sm backdrop-blur-md">
+                        <div className="flex items-center gap-2">
                             {/* Use existing logo logic or fallback to icon */}
                             <div className="flex items-center justify-center rounded-lg text-white">
                                 {/* <Gem size={24} /> */}
@@ -167,7 +134,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                         >
                             {mobileMenuOpen ? <X /> : <Menu />}
                         </button>
-                    </nav>
+                    </motion.nav>
 
                     {/* Mobile Menu */}
                     <AnimatePresence>

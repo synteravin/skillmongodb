@@ -85,6 +85,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function hasCharacter(): bool
     {
-        return ! is_null($this->character_id);
+        return !is_null($this->character_id);
+    }
+
+    public function userStats()
+    {
+        return $this->hasMany(UserStat::class, 'character_id', '_id');
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(
+            Course::class,
+            'course_students',
+            'user_id',
+            'course_id'
+        );
     }
 }

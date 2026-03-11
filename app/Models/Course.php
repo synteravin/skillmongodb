@@ -17,29 +17,38 @@ class Course extends Model
         'slug',
         'description',
         'thumbnail',
-        'mentor_id',     // user _id mentor
-        'level',         // beginner | intermediate | advanced
+        'mentor_id',
+        'level',
+        'status',
         'is_active',
+        'published_at',
+        'published_by'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'published_at' => 'datetime'
     ];
 
     /* ================= RELATIONS ================= */
 
-    /**
-     * Mentor yang mengajar course ini
-     */
+    public function careerGroups()
+    {
+        return $this->hasMany(CareerGroup::class, 'course_id', '_id')
+            ->orderBy('order');
+    }
+
+    public function paths()
+    {
+        return $this->hasMany(Path::class, 'course_id', '_id')
+            ->orderBy('order');
+    }
+
     public function mentor()
     {
         return $this->belongsTo(User::class, 'mentor_id', '_id');
     }
 
-    /**
-     * Student yang ikut course
-     * (pivot collection: course_students)
-     */
     public function students()
     {
         return $this->belongsToMany(
@@ -50,15 +59,8 @@ class Course extends Model
         );
     }
 
-    /* ================= HELPERS ================= */
-
-    public function studentCount(): int
+    public function getRouteKeyName()
     {
-        return $this->students()->count();
-    }
-
-    public function isActive(): bool
-    {
-        return (bool) $this->is_active;
+        return 'slug';
     }
 }
