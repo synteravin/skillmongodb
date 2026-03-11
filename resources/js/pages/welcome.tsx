@@ -51,8 +51,8 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
             <div className="relative min-h-screen w-full overflow-x-hidden bg-white text-[#1e293b] dark:bg-[#020202] dark:text-slate-100 font-sans antialiased transition-colors duration-300 2xl:max-w-[1780px] 2xl:mx-auto">
 
                 {/* Navbar */}
-                <header className="fixed top-0 right-0 left-0 z-50 px-4 py-4 md:px-8 md:py-6">
-                    <motion.nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/50 bg-white/80 px-6 py-3 shadow-sm backdrop-blur-md">
+               <header className="fixed top-0 left-0 right-0 z-50">
+                     <motion.nav className="flex w-full items-center justify-between border-b dark:bg-[#04062d] bg-white px-8 py-4  shadow-sm">
                         <div className="flex items-center gap-2">
                             {/* Use existing logo logic or fallback to icon */}
                             <div className="flex items-center justify-center rounded-lg text-white">
