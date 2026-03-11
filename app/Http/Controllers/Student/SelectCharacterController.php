@@ -26,6 +26,15 @@ class SelectCharacterController extends Controller
             'name' => $character->name,
             'avatar' => asset($character->avatar),
             'backstory' => $character->backstory,
+            'abilities' => $character->abilities,
+            'quote' => $character->quote,
+            'tagline' => $character->tagline,
+            'character_type' => $character->character_type,
+            'guide_power' => $character->guide_power,
+            'personality' => $character->personality,
+            'system_bonus' => $character->system_bonus,
+            'cosmetic_bonus' => $character->cosmetic_bonus,
+            'is_used' => $character->isUsed(),
         ];
     });
 

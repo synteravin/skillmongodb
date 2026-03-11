@@ -8,9 +8,13 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-      public function index(Request $request)
+    public function index(Request $request)
     {
         $user = $request->user()->load('character');
+
+        if (!$user->hasCharacter()) {
+            return redirect()->route('student.SelectCharacter');
+        }
 
         return Inertia::render('Student/Dashboard', [
             'user' => [
@@ -19,12 +23,12 @@ class DashboardController extends Controller
                 'role' => $user->role,
                 'level' => $user->level ?? 1,
                 'xp' => $user->xp ?? 0,
-                'hasCharacter' => $user->hasCharacter(),
-                'character' => $user->character ? [
+                'hasCharacter' => true,
+                'character' => [
                     'name' => $user->character->name,
                     'avatar' => asset($user->character->avatar),
                     'backstory' => $user->character->backstory,
-                ] : null,
+                ],
             ],
         ]);
     }

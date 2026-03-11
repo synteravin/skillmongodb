@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use MongoDB\Laravel\Eloquent\Model;
+
+class CareerGroup extends Model
+{
+    protected $connection = 'mongodb';
+    protected $collection = 'career_groups';
+
+    protected $fillable = [
+        'course_id',
+        'name',
+        'slug',
+        'order'
+    ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', '_id');
+    }
+
+    public function paths()
+    {
+        return $this->hasMany(Path::class, 'career_group_id', '_id')
+            ->orderBy('order');
+    }
+}

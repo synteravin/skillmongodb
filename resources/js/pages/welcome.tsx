@@ -36,6 +36,26 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
         setOpenFaq(openFaq === index ? null : index);
     };
 
+    const navBg = useTransform(
+        scrollY,
+        [0, 80],
+        ['rgba(255,255,255,0)', 'rgba(255,255,255,0.8)'],
+    );
+
+    const navBorder = useTransform(
+        scrollY,
+        [0, 80],
+        ['rgba(255,255,255,0)', 'rgba(255,255,255,0.5)'],
+    );
+
+    const navRadius = useTransform(scrollY, [0, 80], ['0px', '9999px']);
+
+    const navShadow = useTransform(
+        scrollY,
+        [0, 80],
+        ['0px 0px 0px rgba(0,0,0,0)', '0px 4px 20px rgba(0,0,0,0.08)'],
+    );
+
     return (
         <>
             <Head title="SkillVentura - Level Up Your Life" />
@@ -43,7 +63,16 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
             <div className="relative min-h-screen w-full overflow-x-hidden bg-[#f3f4f6] font-sans text-[#1e293b] antialiased selection:bg-yellow-400 selection:text-black">
                 {/* Navbar */}
                 <header className="fixed top-0 right-0 left-0 z-50 px-4 py-4 md:px-8 md:py-6">
-                    <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/50 bg-white/80 px-6 py-3 shadow-sm backdrop-blur-md">
+                    <motion.nav
+                        style={{
+                            backgroundColor: navBg,
+                            borderRadius: navRadius,
+                            boxShadow: navShadow,
+                            border: navBorder,
+                            backdropFilter: 'blur(12px)',
+                        }}
+                        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 transition-all"
+                    >
                         <div className="flex items-center gap-2">
                             {/* Use existing logo logic or fallback to icon */}
                             <div className="flex h-14 w-14 items-center justify-center rounded-lg text-white">
@@ -118,7 +147,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                         >
                             {mobileMenuOpen ? <X /> : <Menu />}
                         </button>
-                    </nav>
+                    </motion.nav>
 
                     {/* Mobile Menu */}
                     <AnimatePresence>
