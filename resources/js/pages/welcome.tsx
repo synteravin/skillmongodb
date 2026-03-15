@@ -1,7 +1,7 @@
 import { login, register } from "@/routes";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { ChevronRight, ArrowRight, Gem, Headset, LayoutGrid, Menu, MessageCircle, Music, Slack, Users, X, Zap, Sparkles, Sun, Moon } from "lucide-react";
+import { ChevronRight, ArrowRight, LayoutGrid, Menu, Music, Slack, Users, X, Zap, Sparkles, Sun, Moon, MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 
@@ -264,16 +264,16 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                                 </motion.div>
                             </div>
 
-                            {/* HERO IMAGE - Hidden Only On Mobile */}
+                           {/* HERO IMAGE - Hidden Only On Mobile */}
                             <div className="relative flex-1 items-center justify-center hidden sm:flex">
 
                                 {/* INNER GLOW */}
-                                <div className="absolute w-[700px] h-[700px] md:w-[1000px] md:h-[1000px] 2xl:w-[1300px] 2xl:h-[1300px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 dark:bg-[#3B28F6]  dark:opacity-60 blur-[200px] dark:blur-[280px] rounded-full -z-10 transition-all duration-500" />
-                                <div className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] 2xl:w-[1300px] 2xl:h-[1300px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-700/40 dark:bg-blue-700 dark:opacity-40 blur-[160px] dark:blur-[220px] rounded-full -z-10 transition-all duration-500" />
+                                <div className="absolute w-[700px] h-[700px] md:w-[700px] md:h-[700px] lg:w-[600px] lg:h-[600px] xl:w-[7300px] xl:h-[700px] 2xl:w-[700px] 2xl:h-[700px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#3B28F6] dark:bg-[#4c3be1] dark:opacity-60 blur-[500px] dark:blur-[280px] rounded-full -z-10 transition-all duration-500" />
+                                <div className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] lg:w-[600px] lg:h-[600px] xl:w-[700px] xl:h-[700px] 2xl:w-[700px] 2xl:h-[700px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#3B28F6] dark:bg-[#3B28F6] dark:opacity-60 blur-[500px] dark:blur-[220px] rounded-full -z-10 transition-all duration-500" />
 
-                                <img src="/images/play.png" alt="controller" className="relative z-10 w-[260px] md:w-[480px]  2xl:w-[600px]  drop-shadow-none dark:drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-500" />
+                                <img src="/images/play.png" alt="controller" className="relative z-10 w-[260px] md:w-[420px] lg:w-[480px] xl:w-[540px] 2xl:w-[600px] drop-shadow-none dark:drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-500" />
+
                             </div>
-
                         </div>
                     </div>
 
@@ -443,196 +443,201 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                             {/* ================= LEFT : CIRCLE AREA ================= */}
                             <div className="relative hidden md:flex items-center justify-center lg:-translate-x-16">
 
-                                {/* ================= ARROWS (hide on md) ================= */}
+                                {/* ================= ARROWS ================= */}
                                 <div className="absolute inset-0 z-50 hidden lg:block pointer-events-none">
 
-                                    {/* ARROW 1 */}
+                                    {/* ---------- ARROW 1 ---------- */}
+                                    {/* curve */}
                                     <img
                                         src="/images/arrow/curve1-black.png"
                                         className="absolute dark:hidden
-rotate-[0deg] lg:rotate-[-2deg] xl:rotate-[-2deg] 2xl:rotate-[0deg]
-w-[26px] lg:w-[30px] xl:w-[33px] 2xl:w-[38px]
-top-[26px] lg:top-[28px] xl:top-[37px] 2xl:top-[38px]
-right-[135px] lg:right-[110px] xl:right-[160px] 2xl:right-[200px]"
+                                        rotate-[0deg] lg:rotate-[-2deg] xl:rotate-[-2deg] 2xl:rotate-[0deg]
+                                        w-[26px] lg:w-[30px] xl:w-[33px] 2xl:w-[38px]
+                                        top-[26px] lg:top-[28px] xl:top-[37px] 2xl:top-[38px]
+                                        right-[135px] lg:right-[110px] xl:right-[160px] 2xl:right-[200px]"
                                     />
 
                                     <img
                                         src="/images/arrow/curve1.png"
                                         className="absolute hidden dark:block
-rotate-[0deg] lg:rotate-[-2deg] xl:rotate-[-2deg] 2xl:rotate-[0deg]
-w-[26px] lg:w-[30px] xl:w-[33px] 2xl:w-[38px]
-top-[26px] lg:top-[28px] xl:top-[37px] 2xl:top-[38px]
-right-[135px] lg:right-[110px] xl:right-[160px] 2xl:right-[200px]"
+                                        rotate-[0deg] lg:rotate-[-2deg] xl:rotate-[-2deg] 2xl:rotate-[0deg]
+                                        w-[26px] lg:w-[30px] xl:w-[33px] 2xl:w-[38px]
+                                        top-[26px] lg:top-[28px] xl:top-[37px] 2xl:top-[38px]
+                                        right-[135px] lg:right-[110px] xl:right-[160px] 2xl:right-[200px]"
                                     />
 
+                                    {/* arrow */}
                                     <img
                                         src="/images/arrow/arrow1-black.png"
                                         className="absolute dark:hidden
-rotate-[13deg] lg:rotate-[7deg] xl:rotate-[13deg] 2xl:rotate-[13deg]
-w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
--top-[30px] lg:-top-[44px] xl:-top-[39px] 2xl:-top-[48px]
-right-[35px] lg:right-[11px] xl:right-[37px] 2xl:right-[63px]"
+                                        rotate-[13deg] lg:rotate-[7deg] xl:rotate-[13deg] 2xl:rotate-[13deg]
+                                        w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
+                                        -top-[30px] lg:-top-[44px] xl:-top-[39px] 2xl:-top-[48px]
+                                        right-[35px] lg:right-[11px] xl:right-[37px] 2xl:right-[63px]"
                                     />
 
                                     <img
                                         src="/images/arrow/arrow1.png"
                                         className="absolute hidden dark:block
-rotate-[13deg] lg:rotate-[7deg] xl:rotate-[13deg] 2xl:rotate-[13deg]
-w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
--top-[30px] lg:-top-[44px] xl:-top-[39px] 2xl:-top-[48px]
-right-[35px] lg:right-[11px] xl:right-[37px] 2xl:right-[63px]"
+                                        rotate-[13deg] lg:rotate-[7deg] xl:rotate-[13deg] 2xl:rotate-[13deg]
+                                        w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
+                                        -top-[30px] lg:-top-[44px] xl:-top-[39px] 2xl:-top-[48px]
+                                        right-[35px] lg:right-[11px] xl:right-[37px] 2xl:right-[63px]"
                                     />
 
-
-                                    {/* ARROW 2 */}
+                                    {/* ---------- ARROW 2 ---------- */}
+                                    {/* curve */}
                                     <img
                                         src="/images/arrow/curve1-black.png"
                                         className="absolute dark:hidden
-rotate-[20deg]
-w-[26px] lg:w-[29px] xl:w-[33px] 2xl:w-[38px]
-bottom-[115px] lg:bottom-[127px] xl:bottom-[145px] 2xl:bottom-[163px]
-right-[120px] lg:right-[89px] xl:right-[138px] 2xl:right-[175px]"
+                                        rotate-[20deg]
+                                        w-[26px] lg:w-[29px] xl:w-[33px] 2xl:w-[38px]
+                                        bottom-[115px] lg:bottom-[127px] xl:bottom-[145px] 2xl:bottom-[163px]
+                                        right-[120px] lg:right-[89px] xl:right-[138px] 2xl:right-[175px]"
                                     />
 
                                     <img
                                         src="/images/arrow/curve1.png"
                                         className="absolute hidden dark:block
-rotate-[20deg]
-w-[26px] lg:w-[29px] xl:w-[33px] 2xl:w-[38px]
-bottom-[115px] lg:bottom-[127px] xl:bottom-[145px] 2xl:bottom-[163px]
-right-[120px] lg:right-[89px] xl:right-[138px] 2xl:right-[175px]"
+                                        rotate-[20deg]
+                                        w-[26px] lg:w-[29px] xl:w-[33px] 2xl:w-[38px]
+                                        bottom-[115px] lg:bottom-[127px] xl:bottom-[145px] 2xl:bottom-[163px]
+                                        right-[120px] lg:right-[89px] xl:right-[138px] 2xl:right-[175px]"
                                     />
 
+                                    {/* arrow */}
                                     <img
                                         src="/images/arrow/arrow1-black.png"
                                         className="absolute dark:hidden
-rotate-[27deg]
-w-[108px] lg:w-[120px] xl:w-[140px] 2xl:w-[160px]
-top-[22px] lg:top-[27px] xl:top-[32px] 2xl:top-[33px]
-right-[14px] lg:right-[-20px] xl:right-[9px] 2xl:right-[28px]"
+                                        rotate-[27deg]
+                                        w-[108px] lg:w-[120px] xl:w-[140px] 2xl:w-[160px]
+                                        top-[22px] lg:top-[27px] xl:top-[32px] 2xl:top-[33px]
+                                        right-[14px] lg:right-[-20px] xl:right-[9px] 2xl:right-[28px]"
                                     />
 
                                     <img
                                         src="/images/arrow/arrow1.png"
                                         className="absolute hidden dark:block
-rotate-[27deg]
-w-[108px] lg:w-[120px] xl:w-[140px] 2xl:w-[160px]
-top-[22px] lg:top-[27px] xl:top-[32px] 2xl:top-[33px]
-right-[14px] lg:right-[-20px] xl:right-[9px] 2xl:right-[28px]"
+                                        rotate-[27deg]
+                                        w-[108px] lg:w-[120px] xl:w-[140px] 2xl:w-[160px]
+                                        top-[22px] lg:top-[27px] xl:top-[32px] 2xl:top-[33px]
+                                        right-[14px] lg:right-[-20px] xl:right-[9px] 2xl:right-[28px]"
                                     />
 
-
-                                    {/* ARROW 3 */}
+                                    {/* ---------- ARROW 3 ---------- */}
+                                    {/* curve */}
                                     <img
                                         src="/images/arrow/curve1-black.png"
                                         className="absolute dark:hidden
-rotate-[44deg]
-w-[26px] lg:w-[30px] xl:w-[32px] 2xl:w-[38px]
-bottom-[70px] lg:bottom-[74px] xl:bottom-[89px] 2xl:bottom-[98px]
-right-[120px] lg:right-[88px] xl:right-[138px] 2xl:right-[175px]"
+                                        rotate-[44deg]
+                                        w-[26px] lg:w-[30px] xl:w-[32px] 2xl:w-[38px]
+                                        bottom-[70px] lg:bottom-[74px] xl:bottom-[89px] 2xl:bottom-[98px]
+                                        right-[120px] lg:right-[88px] xl:right-[138px] 2xl:right-[175px]"
                                     />
 
                                     <img
                                         src="/images/arrow/curve1.png"
                                         className="absolute hidden dark:block
-rotate-[44deg]
-w-[26px] lg:w-[30px] xl:w-[32px] 2xl:w-[38px]
-bottom-[70px] lg:bottom-[74px] xl:bottom-[89px] 2xl:bottom-[98px]
-right-[120px] lg:right-[88px] xl:right-[138px] 2xl:right-[175px]"
+                                        rotate-[44deg]
+                                        w-[26px] lg:w-[30px] xl:w-[32px] 2xl:w-[38px]
+                                        bottom-[70px] lg:bottom-[74px] xl:bottom-[89px] 2xl:bottom-[98px]
+                                        right-[120px] lg:right-[88px] xl:right-[138px] 2xl:right-[175px]"
                                     />
 
+                                    {/* arrow */}
                                     <img
                                         src="/images/arrow/arrow1-black.png"
                                         className="absolute dark:hidden
-rotate-[40deg] lg:rotate-[43deg] xl:rotate-[43deg] 2xl:rotate-[40deg]
-w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[162px]
-bottom-[64px] lg:bottom-[66px] xl:bottom-[75px] 2xl:bottom-[90px]
-right-[2px] lg:right-[-37px] xl:right-[-7px] 2xl:right-[11px]"
+                                        rotate-[40deg] lg:rotate-[43deg] xl:rotate-[43deg] 2xl:rotate-[40deg]
+                                        w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[162px]
+                                        bottom-[64px] lg:bottom-[66px] xl:bottom-[75px] 2xl:bottom-[90px]
+                                        right-[2px] lg:right-[-37px] xl:right-[-7px] 2xl:right-[11px]"
                                     />
 
                                     <img
                                         src="/images/arrow/arrow1.png"
                                         className="absolute hidden dark:block
-rotate-[40deg] lg:rotate-[43deg] xl:rotate-[43deg] 2xl:rotate-[40deg]
-w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[162px]
-bottom-[64px] lg:bottom-[66px] xl:bottom-[75px] 2xl:bottom-[90px]
-right-[2px] lg:right-[-37px] xl:right-[-7px] 2xl:right-[11px]"
+                                        rotate-[40deg] lg:rotate-[43deg] xl:rotate-[43deg] 2xl:rotate-[40deg]
+                                        w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[162px]
+                                        bottom-[64px] lg:bottom-[66px] xl:bottom-[75px] 2xl:bottom-[90px]
+                                        right-[2px] lg:right-[-37px] xl:right-[-7px] 2xl:right-[11px]"
                                     />
 
-
-                                    {/* ARROW 4 */}
+                                    {/* ---------- ARROW 4 ---------- */}
+                                    {/* curve */}
                                     <img
                                         src="/images/arrow/curve1-black.png"
                                         className="absolute dark:hidden
-rotate-[65deg]
-w-[26px] lg:w-[30px] xl:w-[34px] 2xl:w-[38px]
-bottom-[20px] lg:bottom-[26px] xl:bottom-[32px] 2xl:bottom-[38px]
-right-[140px] lg:right-[108px] xl:right-[160px] 2xl:right-[200px]"
+                                        rotate-[65deg]
+                                        w-[26px] lg:w-[30px] xl:w-[34px] 2xl:w-[38px]
+                                        bottom-[20px] lg:bottom-[26px] xl:bottom-[32px] 2xl:bottom-[38px]
+                                        right-[140px] lg:right-[108px] xl:right-[160px] 2xl:right-[200px]"
                                     />
 
                                     <img
                                         src="/images/arrow/curve1.png"
                                         className="absolute hidden dark:block
-rotate-[65deg]
-w-[26px] lg:w-[30px] xl:w-[34px] 2xl:w-[38px]
-bottom-[20px] lg:bottom-[26px] xl:bottom-[32px] 2xl:bottom-[38px]
-right-[140px] lg:right-[108px] xl:right-[160px] 2xl:right-[200px]"
+                                        rotate-[65deg]
+                                        w-[26px] lg:w-[30px] xl:w-[34px] 2xl:w-[38px]
+                                        bottom-[20px] lg:bottom-[26px] xl:bottom-[32px] 2xl:bottom-[38px]
+                                        right-[140px] lg:right-[108px] xl:right-[160px] 2xl:right-[200px]"
                                     />
 
+                                    {/* arrow */}
                                     <img
                                         src="/images/arrow/arrow1-black.png"
                                         className="absolute dark:hidden
-rotate-[54deg] lg:rotate-[64deg] xl:rotate-[64deg] 2xl:rotate-[57deg]
-w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
-bottom-[14px] lg:bottom-[-10px] xl:bottom-[-11px] 2xl:bottom-[-4px]
-right-[14px] lg:right-[-16px] xl:right-[17px] 2xl:right-[29px]"
+                                        rotate-[54deg] lg:rotate-[64deg] xl:rotate-[64deg] 2xl:rotate-[57deg]
+                                        w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
+                                        bottom-[14px] lg:bottom-[-10px] xl:bottom-[-11px] 2xl:bottom-[-4px]
+                                        right-[14px] lg:right-[-16px] xl:right-[17px] 2xl:right-[29px]"
                                     />
 
                                     <img
                                         src="/images/arrow/arrow1.png"
                                         className="absolute hidden dark:block
-rotate-[54deg] lg:rotate-[64deg] xl:rotate-[64deg] 2xl:rotate-[57deg]
-w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
-bottom-[14px] lg:bottom-[-10px] xl:bottom-[-11px] 2xl:bottom-[-4px]
-right-[14px] lg:right-[-16px] xl:right-[17px] 2xl:right-[29px]"
+                                        rotate-[54deg] lg:rotate-[64deg] xl:rotate-[64deg] 2xl:rotate-[57deg]
+                                        w-[110px] lg:w-[125px] xl:w-[145px] 2xl:w-[165px]
+                                        bottom-[14px] lg:bottom-[-10px] xl:bottom-[-11px] 2xl:bottom-[-4px]
+                                        right-[14px] lg:right-[-16px] xl:right-[17px] 2xl:right-[29px]"
                                     />
 
                                 </div>
+
 
                                 {/* ================= CENTER LOGO ================= */}
                                 <img
                                     src="/images/Ventura.png"
                                     alt="Ventura Logo"
                                     className="absolute object-contain
-                    w-[260px] lg:w-[295px] xl:w-[337px] 2xl:w-[385px]
-                    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                    w-[260px] lg:w-[295px] xl:w-[337px] 2xl:w-[385px]
+                                    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                                 />
 
-                                {/* ================= COLOR SEGMENT (hide md) ================= */}
+
+                                {/* ================= COLOR SEGMENT ================= */}
                                 <svg
                                     viewBox="0 0 320 320"
                                     className="absolute hidden lg:block z-20 -ml-4
-                    w-[210px] lg:w-[250px] xl:w-[285px] 2xl:w-[320px]
-                    h-[210px] lg:h-[250px] xl:h-[285px] 2xl:h-[320px]"
+                                    w-[210px] lg:w-[250px] xl:w-[285px] 2xl:w-[320px]
+                                    h-[210px] lg:h-[250px] xl:h-[285px] 2xl:h-[320px]"
                                 >
-
                                     <circle cx="160" cy="160" r="153" stroke="#EE0202" strokeWidth="14" fill="none" strokeDasharray="60 901" strokeDashoffset="-60" />
                                     <circle cx="160" cy="160" r="153" stroke="#3B28F6" strokeWidth="14" fill="none" strokeDasharray="60 901" strokeDashoffset="0" />
                                     <circle cx="160" cy="160" r="153" stroke="#68FF57" strokeWidth="14" fill="none" strokeDasharray="60 901" strokeDashoffset="60" />
                                     <circle cx="160" cy="160" r="153" stroke="#F0E427" strokeWidth="14" fill="none" strokeDasharray="60 901" strokeDashoffset="120" />
-
                                 </svg>
+
 
                                 {/* ================= OUTER CIRCLE ================= */}
                                 <div
                                     className="relative rounded-full border-cyan-400 z-10 -ml-4
-                    w-[220px] lg:w-[248px] xl:w-[280px] 2xl:w-[320px]
-                    h-[220px] lg:h-[248px] xl:h-[285px] 2xl:h-[320px]
-                    border-[8px] lg:border-[10px] xl:border-[12px] 2xl:border-[14px]"
+                                    w-[220px] lg:w-[248px] xl:w-[280px] 2xl:w-[320px]
+                                    h-[220px] lg:h-[248px] xl:h-[285px] 2xl:h-[320px]
+                                    border-[8px] lg:border-[10px] xl:border-[12px] 2xl:border-[14px]"
                                 />
 
                             </div>
-
                             {/* ================= RIGHT : CARD LIST ================= */}
                             <div className="space-y-6 lg:space-y-8">
 
@@ -887,152 +892,186 @@ right-[14px] lg:right-[-16px] xl:right-[17px] 2xl:right-[29px]"
                 </section>
 
                 {/* CONTACT SECTION */}
-                <section id="contact" className="bg-[#050505] pt-32 pb-24 text-white">
-                    <div className="container mx-auto px-6">
+                <section id="contact" className="pt-20 sm:pt-24 md:pt-32 pb-16 sm:pb-20 md:pb-24">
+                <div className="container mx-auto px-6">
 
-                        {/* Title */}
-                        <h2 className="mb-16 text-center text-3xl font-bold text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text">
-                            Contact Us
-                        </h2>
+                    {/* Title */}
+                    <h2
+                    className="mb-10 sm:mb-12 md:mb-16 text-center text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-[#3B28F6] bg-clip-text"
+                    style={{ fontFamily: "lalezar" }}
+                    >
+                    Contact <span className="text-[#FACC15]"> Us </span>
+                    </h2>
 
-                        <div className="grid items-center gap-12 md:grid-cols-2">
+                    <div className="grid items-center gap-10 md:gap-12 md:grid-cols-2">
 
-                            {/* LEFT TEXT */}
-                            <div>
-                                <h3 className="mb-6 text-2xl font-bold">
-                                    Kontak Kami
-                                </h3>
+                    {/* LEFT TEXT */}
+                    <div className="text-center md:text-left">
+                        <h3 className="mb-4 sm:mb-6 text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                        Kontak Kami
+                        </h3>
 
-                                <p className="mb-6 leading-relaxed text-gray-300">
-                                    SKILL VENTURA contact support is available Monday to Friday,
-                                    from 8 AM to 4 PM. During these hours, our team is ready to
-                                    assist with questions, guidance, or any support you need while
-                                    using the platform. Messages sent outside these hours will be
-                                    answered on the next working day.
-                                </p>
+                        <p className="mb-4 sm:mb-6 leading-relaxed text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+                        SKILL VENTURA contact support is available Monday to Friday,
+                        from 8 AM to 4 PM. During these hours, our team is ready to
+                        assist with questions, guidance, or any support you need while
+                        using the platform. Messages sent outside these hours will be
+                        answered on the next working day.
+                        </p>
 
-                                <p className="leading-relaxed text-gray-300">
-                                    We remain committed to providing helpful and timely support
-                                    to ensure your learning experience on SKILL VENTURA stays
-                                    smooth and enjoyable.
-                                </p>
-                            </div>
-
-                            {/* RIGHT IMAGE */}
-                            <div className="flex justify-center">
-                                <img
-                                    src="/images/servis.webp"
-                                    alt="Customer Service"
-                                    className="max-w-md w-full"
-                                />
-                            </div>
-
-                        </div>
+                        <p className="leading-relaxed text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+                        We remain committed to providing helpful and timely support
+                        to ensure your learning experience on SKILL VENTURA stays
+                        smooth and enjoyable.
+                        </p>
                     </div>
+
+                    {/* RIGHT IMAGE */}
+                    <div className="flex justify-center">
+                        <img
+                        src="/images/servis.webp"
+                        alt="Customer Service"
+                        className="w-full max-w-xs sm:max-w-sm md:max-w-md"
+                        />
+                    </div>
+
+                    </div>
+                </div>
                 </section>
 
 
-
                 {/* FOOTER */}
-                <footer className="bg-[#050505] border-t border-white/10 pt-16 pb-10 text-white">
-                    <div className="container mx-auto px-6 grid gap-10 md:grid-cols-4">
+                <footer className="border-t border-gray-200 dark:border-white/10 pt-12 sm:pt-14 md:pt-16 pb-10">
 
-                        {/* BRAND */}
+                <div className="container mx-auto px-6 grid gap-12 md:grid-cols-4">
+
+                    {/* BRAND */}
+                    <div className="text-center md:text-left max-w-sm mx-auto md:mx-0">
+
+                    <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
+                        <img src="/images/logo.png" className="w-10" />
+
                         <div>
-                            <div className="flex items-center gap-3 mb-4">
-                                <img src="/images/logo.png" className="w-10" />
-                                <div>
-                                    <h3 className="font-bold text-lg">SKILL VENTURA</h3>
-                                    <p className="text-xs text-gray-400">
-                                        Learn Like a Hero, Grow Like a Pro
-                                    </p>
-                                </div>
-                            </div>
+                        <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                            SKILL VENTURA
+                        </h3>
 
-                            <h4 className="font-semibold mb-2">
-                                Learn in SKILL VENTURA
-                            </h4>
-
-                            <p className="text-sm text-gray-400 mb-4">
-                                A gamified learning platform where you level up through real
-                                projects, missions, and a guided skill-building roadmap.
-                            </p>
-
-                            <p className="text-sm text-gray-400">
-                                📍 Bogor, Indonesia
-                            </p>
-                            <p className="text-sm text-gray-400">
-                                📞 +62 223 4432 5968
-                            </p>
-                        </div>
-
-
-                        {/* SOCIAL MEDIA */}
-                        <div className="flex gap-4 items-start md:justify-center">
-
-                            <div className="flex flex-col gap-4">
-                                <img src="/icons/instagram.png" className="w-7 cursor-pointer" />
-                                <img src="/icons/whatsapp.png" className="w-7 cursor-pointer" />
-                                <img src="/icons/facebook.png" className="w-7 cursor-pointer" />
-                            </div>
-
-                            <div className="flex flex-col gap-4">
-                                <img src="/icons/github.png" className="w-7 cursor-pointer" />
-                                <img src="/icons/twitter.png" className="w-7 cursor-pointer" />
-                                <img src="/icons/linkedin.png" className="w-7 cursor-pointer" />
-                            </div>
-
-                        </div>
-
-
-                        {/* PROGRAM */}
-                        <div>
-                            <h4 className="mb-4 text-lg font-semibold">Program</h4>
-                            <ul className="space-y-2 text-gray-400 text-sm">
-                                <li>Online course</li>
-                                <li>Bootcamp</li>
-                                <li>Learn gaming</li>
-                                <li>Corporate training</li>
-                                <li>Partnership</li>
-                            </ul>
-                        </div>
-
-
-                        {/* COMPANY + SUPPORT */}
-                        <div className="grid grid-cols-2 gap-6">
-
-                            <div>
-                                <h4 className="mb-4 text-lg font-semibold">Company</h4>
-                                <ul className="space-y-2 text-gray-400 text-sm">
-                                    <li>About us</li>
-                                    <li>Blog</li>
-                                    <li>Learn</li>
-                                    <li>Komunitas</li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h4 className="mb-4 text-lg font-semibold">Support</h4>
-                                <ul className="space-y-2 text-gray-400 text-sm">
-                                    <li>Hubungi Kami</li>
-                                    <li>Syarat dan Ketentuan</li>
-                                    <li>Kebijakan dan Privasi</li>
-                                </ul>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    {/* COPYRIGHT */}
-                    <div className="container mx-auto px-6 mt-12 border-t border-white/10 pt-6">
-                        <p className="text-xs text-gray-500">
-                            © BANKAI Learn. All Rights Reserved
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Learn Like a Hero, Grow Like a Pro
                         </p>
+                        </div>
                     </div>
-                </footer>
+
+                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
+                        Learn in SKILL VENTURA
+                    </h4>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                        A gamified learning platform where you level up through real
+                        projects, missions, and a guided skill-building roadmap.
+                    </p>
+
+                    <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                        <p>📍 Bogor, Indonesia</p>
+                        <p>📞 +62 223 4432 5968</p>
+                    </div>
+
+                    </div>
+
+
+                    {/* SOCIAL MEDIA */}
+                    <div className="flex flex-col items-center gap-6">
+
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        Social Media
+                    </h4>
+
+                    <div className="flex gap-6 text-xl">
+
+                        <i className="fa-brands fa-instagram text-pink-500 hover:scale-110 transition cursor-pointer"></i>
+
+                        <i className="fa-brands fa-whatsapp text-green-500 hover:scale-110 transition cursor-pointer"></i>
+
+                        <i className="fa-brands fa-facebook text-blue-600 hover:scale-110 transition cursor-pointer"></i>
+
+                        <i className="fa-brands fa-github text-gray-900 dark:text-white hover:scale-110 transition cursor-pointer"></i>
+
+                        <i className="fa-brands fa-x-twitter text-gray-900 dark:text-white hover:scale-110 transition cursor-pointer"></i>
+
+                        <i className="fa-brands fa-linkedin text-blue-700 hover:scale-110 transition cursor-pointer"></i>
+
+                    </div>
+
+                    </div>
+
+
+                 {/* PROGRAM */}
+                    <div className="text-center md:text-left">
+
+                    <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                        Program
+                    </h4>
+
+                    <ul className="space-y-2 sm:space-y-0 sm:flex sm:flex-wrap sm:justify-center md:justify-start sm:gap-x-6 sm:gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+
+                        <li>Online course</li>
+                        <li>Bootcamp</li>
+                        <li>Learn gaming</li>
+                        <li>Corporate training</li>
+                        <li>Partnership</li>
+
+                    </ul>
+
+                    </div>
+
+
+            {/* COMPANY & SUPPORT */}
+            <div className="grid grid-cols-2 gap-8 text-center md:text-left">
+
+            {/* COMPANY */}
+            <div>
+                <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Company
+                </h4>
+
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li>About us</li>
+                <li>Blog</li>
+                <li>Learn</li>
+                <li>Komunitas</li>
+                </ul>
             </div>
+
+
+            {/* SUPPORT */}
+            <div>
+                <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Support
+                </h4>
+
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li>Hubungi Kami</li>
+                <li>Syarat dan Ketentuan</li>
+                <li>Kebijakan dan Privasi</li>
+                </ul>
+            </div>
+
+            </div>
+
+                            </div>
+
+
+                            {/* COPYRIGHT */}
+             <div className="container mx-auto px-6 mt-12 border-t border-gray-200 dark:border-white/10 pt-6">
+
+                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center md:text-left">
+                                © SKILL VENTURA Learn. All Rights Reserved
+                                </p>
+
+                            </div>
+
+                            </footer>
+                        </div>
 
             <style>{`
                 .animate-infinite-scroll {

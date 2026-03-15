@@ -11,8 +11,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Sword,
-    ScrollText,
-    Star,
+   TriangleAlert,
     Layers,
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -118,73 +117,124 @@ export default function SelectCharacter({ characters }: Props) {
             <Head title="Select Character - SkillVentura" />
 
             {/* Main Background */}
-            <div className="relative min-h-screen bg-[#020617] text-white selection:bg-indigo-500/30 font-primary overflow-hidden">
+            <div className="relative min-h-screen bg-[#020202] text-white selection:bg-indigo-500/30 font-primary overflow-hidden">
                 {/* Dynamic Blurred Background Effects */}
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/40 rounded-full blur-[120px] animate-pulse" />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/40 rounded-full blur-[120px] transition-all duration-1000" />
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03]" />
-                </div>
+                <div className="relative min-h-screen bg-[#020202] text-white selection:bg-indigo-500/30 font-primary overflow-hidden">
 
+                {/* Stars Background */}
+              <div
+                className="absolute inset-0 z-0 opacity-70"
+                style={{
+                backgroundImage: `
+                radial-gradient(1px 1px at 20px 30px, #6042FF, transparent),
+                radial-gradient(2px 2px at 40px 70px, #93c5fd, transparent),
+                radial-gradient(1.5px 1.5px at 130px 80px, #fde68a, transparent),
+                radial-gradient(3px 3px at 160px 30px, #c084fc, transparent),
+                radial-gradient(2px 2px at 200px 150px, #ffffff, transparent),
+                radial-gradient(1px 1px at 300px 200px, #93c5fd, transparent),
+                radial-gradient(2.5px 2.5px at 350px 100px, #facc15, transparent),
+                radial-gradient(10px 10px at 420px 220px, #6042FF, transparent),
+                radial-gradient(2px 2px at 500px 50px, #ffffff, transparent),
+                radial-gradient(3px 3px at 600px 180px, #93c5fd, transparent)
+                `,
+                backgroundSize: "600px 400px"
+                }}
+                />
+
+                {/* Blue Glow */}
+                <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/30 rounded-full blur-[160px] mb-7" />
+
+                {/* Yellow Glow */}
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-yellow-400/40 rounded-full blur-[180px]" />
+
+                {/* Content */}
                 <div className="relative z-10 container mx-auto px-4 py-8 lg:py-12 flex flex-col min-h-screen justify-center">
-                    <div className="flex flex-col lg:flex-row gap-12 items-center lg:items-start max-w-7xl mx-auto w-full">
+                <div className="flex flex-col lg:flex-row gap-12 items-center lg:items-start max-w-7xl mx-auto w-full">
 
                         {/* LEFT: Character Card Display */}
                         <div className="w-full lg:w-[450px] flex flex-col items-center">
                             <div className="relative group perspective-1000">
                                 {/* Navigation Arrows for Character */}
-                                <button
-                                    onClick={() => paginate(-1)}
-                                    className="absolute -left-12 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors z-20 hidden lg:block"
-                                >
-                                    <ChevronLeft className="w-5 h-5 text-indigo-400" />
-                                </button>
-                                <button
-                                    onClick={() => paginate(1)}
-                                    className="absolute -right-12 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors z-20 hidden lg:block"
-                                >
-                                    <ChevronRight className="w-5 h-5 text-indigo-400" />
-                                </button>
-
-                                {/* Character Frame */}
-                                <AnimatePresence initial={false} custom={direction} mode="wait">
-                                    <motion.div
-                                        key={currentIndex}
-                                        custom={direction}
-                                        variants={slideVariants}
-                                        initial="enter"
-                                        animate="center"
-                                        exit="exit"
-                                        transition={{
-                                            x: { type: "spring", stiffness: 300, damping: 30 },
-                                            opacity: { duration: 0.2 },
-                                            scale: { duration: 0.4 }
-                                        }}
-                                        className="relative w-[170px] h-[240px] lg:w-[300px] lg:h-[400px] rounded-[25px] p-1 overflow-hidden"
+                                    <button
+                                        onClick={() => paginate(-1)}
+                                        className="absolute -left-14 top-1/2 -translate-y-1/2 z-20 hidden lg:flex items-center justify-center
+                                        w-12 h-12 rounded-full
+                                        bg-white/5 backdrop-blur-md
+                                        border border-white/10
+                                        hover:border-indigo-500/50
+                                        hover:bg-indigo-500/10
+                                        transition-all duration-300
+                                        hover:scale-110
+                                        hover:shadow-[0_0_20px_rgba(99,102,241,0.6)]"
                                     >
-                                        {/* Glowing Border Interface */}
-                                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/50 via-purple-500/50 to-indigo-500/50 animate-gradient-xy p-[2px] rounded-[25px]">
-                                            <div className="absolute inset-0 bg-[#0a0a0f] rounded-[23px] m-[1px]" />
-                                        </div>
+                                        <ChevronLeft className="w-5 h-5 text-indigo-400 group-hover:text-white" />
+                                    </button>
 
-                                        {/* Character Image Content */}
-                                        <div className="relative h-full w-full rounded-[23px] overflow-hidden flex items-center justify-center p-2">
-                                            {/* Sub-glow behind character */}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent" />
+                                    <button
+                                        onClick={() => paginate(1)}
+                                        className="absolute -right-14 top-1/2 -translate-y-1/2 z-20 hidden lg:flex items-center justify-center
+                                        w-12 h-12 rounded-full
+                                        bg-white/5 backdrop-blur-md
+                                        border border-white/10
+                                        hover:border-indigo-500/50
+                                        hover:bg-indigo-500/10
+                                        transition-all duration-300
+                                        hover:scale-110
+                                        hover:shadow-[0_0_20px_rgba(99,102,241,0.6)]"
+                                    >
+                                        <ChevronRight className="w-5 h-5 text-indigo-400" />
+                                    </button>
 
-                                            <motion.img
-                                                initial={{ y: 20, opacity: 0 }}
-                                                animate={{ y: 0, opacity: 1 }}
-                                                src={selected.avatar}
-                                                alt={selected.name}
-                                                className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]"
-                                            />
+                            <AnimatePresence initial={false} custom={direction} mode="wait">
+                            <motion.div
+                                key={currentIndex}
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{
+                                    x: { type: "spring", stiffness: 300, damping: 30 },
+                                    opacity: { duration: 0.2 },
+                                    scale: { duration: 0.4 }
+                                }}
+                                className="relative w-[170px] h-[240px] lg:w-[300px] lg:h-[400px]
+                                rounded-[25px] p-[2px] overflow-hidden
+                                bg-[linear-gradient(45deg,#1e3a8a_0%,#1e3a8a_25%,transparent_60%,#facc15_100%)]"
+                            >
 
-                                            {/* Decorative Grid overlays */}
-                                            <div className="absolute bottom-4 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a0f] to-transparent z-15" />
-                                        </div>
-                                    </motion.div>
-                                </AnimatePresence>
+                                {/* Inner Card */}
+                                <div className="absolute inset-[2px] rounded-[23px] bg-[#0a0a0f] overflow-hidden">
+
+                                    {/* Stars Background */}
+                                    <div
+                                        className="absolute inset-0 opacity-40"
+                                        style={{
+                                            backgroundImage: `
+                                            radial-gradient(2px 2px at 20px 30px, #60a5fa, transparent),
+                                            radial-gradient(1px 1px at 90px 80px, white, transparent),
+                                            radial-gradient(2px 2px at 150px 120px, #fde68a, transparent)
+                                            `,
+                                            backgroundSize: "200px 200px"
+                                        }}
+                                    />
+
+                                    {/* Cloud Effect */}
+                                    <div className="absolute z-[1] top-[15%] left-[10%] w-[220px] h-[140px] bg-gradient-to-t from-blue-800 to-transparent blur-[50px] -rotate-45 scale-x-[1.6]" />
+
+                                    {/* Character Image */}
+                                    <motion.img
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        src={selected.avatar}
+                                        alt={selected.name}
+                                        className="relative z-10 w-full h-full object-cover object-top scale-[1.4] translate-y-[26%]"
+                                    />
+
+                                </div>
+
+                            </motion.div>
+                            </AnimatePresence>
                             </div>
 
                             {/* Pagination Dots */}
@@ -197,8 +247,8 @@ export default function SelectCharacter({ characters }: Props) {
                                             setCurrentIndex(idx);
                                         }}
                                         className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex
-                                            ? 'w-10 bg-indigo-500'
-                                            : 'w-2.5 bg-white/20 hover:bg-white/40'
+                                            ? 'w-10 bg-[#FACC15]'
+                                            : 'w-2.5 bg-white/40 hover:bg-white/40'
                                             }`}
                                     />
                                 ))}
@@ -206,7 +256,7 @@ export default function SelectCharacter({ characters }: Props) {
                         </div>
 
                         {/* RIGHT: Detailed Information Panel */}
-                        <div className="flex-1 w-full flex flex-col gap-3">
+                      <div className="relative flex-1 max-w-[700px] flex flex-col gap-2 pl-12 left-24">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={selected._id}
@@ -214,7 +264,7 @@ export default function SelectCharacter({ characters }: Props) {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.3 }}
-                                    className="rounded-[40px] border border-white/5 bg-[#0a0b14]/80 backdrop-blur-3xl shadow-2xl relative overflow-hidden flex flex-col max-h-screen lg:h-[530px]"
+                                    className="rounded-[10px] border border-l-3 border-b-2 border-b-[#3B28F6] border-l-[#3B28F6] bg-[#070927] backdrop-blur-3xl shadow-2xl relative overflow-hidden flex flex-col max-h-screen lg:h-[530px]"
                                 >
                                     {/* Glass Morph Decoration */}
                                     <div className="absolute -top-20 -right-20 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl p-4 pointer-events-none" />
@@ -222,26 +272,31 @@ export default function SelectCharacter({ characters }: Props) {
                                     {/* Scrollable Content Area */}
                                     <div className="flex-1 overflow-y-auto p-8 lg:p-8 custom-scrollbar relative z-10">
                                         {/* Header Section */}
+
                                         <div className="flex flex-col gap-6 mb-8">
                                             <div className="flex flex-wrap gap-3">
                                                 {(selected.character_type || []).map((type, i) => (
-                                                    <span key={i} className="px-4 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-bold tracking-[0.2em] uppercase">
-                                                        {type}
+                                                    <span
+                                                    key={i}
+                                                    style={{ fontFamily: "Oxanium" }}
+                                                    className="px-6 py-2 rounded-sm bg-[#3B28F6]/20 border border-[#4F46E5] text-[#A096FF] text-[13px]  tracking-[0.2em] uppercase backdrop-blur-sm shadow-[0_0_15px_rgba(79,70,229,0.7)]"
+                                                    >
+                                                    {type}
                                                     </span>
                                                 ))}
                                             </div>
 
                                             <div>
-                                                <h1 className="text-6xl font-black tracking-tighter text-white mb-2 uppercase font-mono">
+                                                <h1 style={{fontFamily: "Orbitron"}} className="text-6xl font-black tracking-tighter text-blue-50 mb-2 uppercase tracking-widest ">
                                                     {selected.name}
                                                 </h1>
-                                                <p className="text-indigo-300/60 font-medium italic">
+                                                <p style={{fontFamily: "Oxanium"}} className="text-[#B3B3B3] font-medium ">
                                                     "{selected.tagline}"
                                                 </p>
                                             </div>
 
                                             {/* Trait Icons */}
-                                            <div className="flex flex-wrap gap-8 items-center border-b border-white/5 pb-8">
+                                            <div className="flex flex-wrap gap-8 items-center border-b border-white/60 pb-8">
                                                 {(selected.abilities || ['Visual Learn', 'Fast', 'Strategic', 'Practical']).slice(0, 4).map((ability, i) => (
                                                     <div key={i} className="flex flex-col items-center gap-2 group">
                                                         <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 border border-white/10 group-hover:border-indigo-500/50 group-hover:bg-indigo-500/10 transition-all text-white/70 group-hover:text-indigo-400 shadow-inner">
@@ -255,191 +310,253 @@ export default function SelectCharacter({ characters }: Props) {
 
                                         {/* Guide Power Card */}
                                         <div className="mb-8 group">
-                                            <div className="p-5 rounded-2xl border border-white/5 bg-white/5 group-hover:bg-indigo-500/5 transition-all flex gap-4 items-center">
-                                                <div className="w-14 h-14 shrink-0 rounded-xl bg-gradient-to-br from-indigo-700 to-purple-800 flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform">
+                                            <div className="p-5 rounded-xl border border-[#3B28F6] bg-[#020101]/60  flex gap-4 items-center shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                                <div className="w-14 h-14 shrink-0 rounded-full bg-[#6042FF]/40 border border-[#810AC6]/70 flex items-center justify-center shadow-lg ">
                                                     <Layers className="w-7 h-7 text-white" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="text-indigo-400 text-xs font-black uppercase tracking-widest mb-1">
+                                                   <h3
+                                                        style={{ fontFamily: "Orbitron" }}
+                                                        className="bg-gradient-to-r from-[#3B28F6] to-purple-500 bg-clip-text text-transparent text-xs font-black uppercase tracking-widest mb-1"
+                                                        >
                                                         Guide Power: {selected.guide_power?.title || 'Unknown'}
                                                     </h3>
-                                                    <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
+                                                    <p style={{fontFamily: "Oxanium"}} className="text-[#B3B3B3]/80 text-sm leading-relaxed max-w-sm">
                                                         {selected.guide_power?.description || 'No power description available.'}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Origin Story Section */}
-                                        <div className="mb-10">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                                                <h2 className="text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Origin Story</h2>
-                                            </div>
-                                            <div className="text-slate-400 text-sm leading-relaxed space-y-4 max-w-2xl">
-                                                {selected.backstory ? (
-                                                    <p className="whitespace-pre-line">
-                                                        {selected.backstory}
-                                                    </p>
-                                                ) : (
-                                                    <p>History lost in the records of time.</p>
-                                                )}
-                                            </div>
+                                    {/* Origin Story Section */}
+                                    <div className="mb-10 rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+
+                                        {/* Title */}
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-2 h-2 rounded-full bg-sky-400" />
+                                            <h2 className="text-lg font-semibold text-slate-200 tracking-wide">
+                                                Origin Story
+                                            </h2>
                                         </div>
+
+                                        {/* Story Text */}
+                                        <div className="text-slate-400 text-sm leading-relaxed space-y-4">
+                                            {selected.backstory ? (
+                                                <p className="whitespace-pre-line">
+                                                    {selected.backstory}
+                                                </p>
+                                            ) : (
+                                                <p>History lost in the records of time.</p>
+                                            )}
+                                        </div>
+
+                                        {/* Quote */}
+                                        <div className="mt-6 pl-4 border-l border-white/20 italic text-slate-400 text-sm">
+                                            "Learning is not about speed, but about consistency."
+                                        </div>
+
+                                    </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
                                             {/* Personality */}
-                                            <div>
-                                                <h3 className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Personality</h3>
-                                                <div className="flex flex-wrap gap-2">
+                                            <div className="rounded-2xl border border-[#3B28F6]  bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+
+                                                <h3
+                                                    style={{ fontFamily: "Orbitron" }}
+                                                    className="text-[#B3B3B3]/80 text-sm font-bold tracking-widest uppercase mb-6 "
+                                                >
+                                                    Personality
+                                                </h3>
+
+                                                <div className="flex flex-wrap gap-4">
                                                     {(selected.personality || []).map((trait, i) => (
-                                                        <span key={i} className="px-4 py-1.5 rounded-full bg-indigo-900/40 text-indigo-300 border border-indigo-500/20 text-xs font-bold transition-all hover:bg-indigo-500 hover:text-white cursor-default">
+                                                        <span
+                                                            key={i}
+                                                            style={{fontFamily: "Oxanium"}}
+                                                            className="px-5 py-2 rounded-full bg-[#1D215D] text-[#6041FF] border border-[#6041FF] text-sm font-semibold"
+                                                        >
                                                             {trait}
                                                         </span>
                                                     ))}
                                                 </div>
-                                            </div>
 
+                                            </div>
                                             {/* Starter Bonuses */}
-                                            <div>
-                                                <h3 className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Starter Bonus</h3>
+                                            <div className="rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                                <h3
+                                                    style={{ fontFamily: "Orbitron" }}
+                                                    className="text-[#FACC15] text-lg  tracking-widest uppercase mb-6"
+                                                >
+                                                    Starter Bonus
+                                                </h3>
+
                                                 <div className="space-y-4">
+
                                                     <div className="flex items-center gap-3 group/item pointer-events-none">
                                                         <Checkbox checked className="border-yellow-500/50 data-[state=checked]:bg-yellow-500 data-[state=checked]:text-black" />
-                                                        <span className="text-xs font-bold text-yellow-500/90 tracking-wide">+{selected.system_bonus?.exp_boost || 15}% Learning EXP</span>
+                                                        <span
+                                                        style={{fontFamily: "Oxanium"}} className="text-sm font-semibold text-yellow-400 tracking-wide">
+                                                            +{selected.system_bonus?.exp_boost || 15}% Learning EXP
+                                                        </span>
                                                     </div>
+
                                                     <div className="flex items-center gap-3 group/item pointer-events-none">
                                                         <Checkbox checked className="border-amber-500/50 data-[state=checked]:bg-amber-500 data-[state=checked]:text-black" />
-                                                        <span className="text-xs font-bold text-amber-500/90 tracking-wide">+{selected.system_bonus?.gold_boost || 20}% Gold Reward</span>
+                                                        <span 
+                                                        style={{fontFamily: "Oxanium"}} className="text-sm font-semibold text-amber-400 tracking-wide">
+                                                            +{selected.system_bonus?.gold_boost || 20}% Gold Reward
+                                                        </span>
                                                     </div>
+
                                                     <div className="flex items-center gap-3 group/item opacity-50 cursor-not-allowed">
-                                                        <Checkbox disabled className="border-white/20" />
-                                                        <span className="text-xs font-semibold text-white/40">Focus Boost Session</span>
+                                                        <Checkbox disabled className="bg-[#A34B1D] border-[#FACC15]" />
+                                                        <span style={{fontFamily: "Oxanium"}} className="text-sm font-medium text-[#FACC15]">
+                                                             Focus Boost 
+                                                             <span style={{fontFamily: "Oxanium"}} className='text-[#F0F0F0]'>Session</span>
+                                                        </span>
                                                     </div>
+
                                                     <div className="flex items-center gap-3 group/item opacity-50 cursor-not-allowed">
-                                                        <Checkbox disabled className="border-white/20" />
-                                                        <span className="text-xs font-semibold text-white/40">Mind Sync</span>
+                                                        <Checkbox disabled className="bg-[#A34B1D] border-[#FACC15]" />
+                                                        <span 
+                                                        style={{fontFamily: "Oxanium"}} className="text-sm font-medium text-[#F0F0F0]">
+                                                            Mind <span style={{fontFamily: "Oxanium"}} className='text-[#FACC15]'>Sync</span>
+                                                        </span>
                                                     </div>
+
                                                 </div>
+
                                             </div>
                                         </div>
 
                                         {/* Quote Box */}
-                                        <div className="bg-gradient-to-r from-white/[0.03] to-transparent p-6 rounded-3xl border-l-2 border-indigo-500/50">
-                                            <p className="text-lg font-medium text-white leading-snug tracking-tight mb-2">
-                                                "{selected.quote || 'Ready for adventure.'}"
-                                            </p>
-                                            <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">— {selected.name}</span>
-                                        </div>
+                                       <div className="rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-8 text-center shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                                <p
+                                                    style={{ fontFamily: "Orbitron" }}
+                                                    className="text-xl font-semibold text-slate-200 leading-relaxed tracking-wide"
+                                                >
+                                                    "{selected.quote || 'Ready for adventure.'}"
+                                                </p>
+
+                                                <div className="mt-4 relative flex items-center justify-center">
+                                                    <span className="text-slate-500 text-xs italic">
+                                                        — {selected.name}
+                                                    </span>
+
+                                                    <div className="absolute bottom-[-6px] w-24 h-[3px] bg-purple-500/50 blur-md rounded-full"></div>
+                                                </div>
+
+                                            </div>
                                     </div>
 
-                                    {/* Footer: Action Buttons (Fixed at Bottom) */}
-                                    <div className="p-6 lg:p-8 border-t border-white/5 bg-[#0a0b14]/90 backdrop-blur-xl relative z-20">
-                                        <div className="flex flex-col sm:flex-row gap-4">
-                                            <button className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95 flex-1">
-                                                Customize
-                                            </button>
-                                            <button
-                                                onClick={confirmSelection}
-                                                className="px-8 py-4 rounded-2xl bg-indigo-600 shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-500 transition-all active:scale-95 flex-1"
-                                            >
-                                                Confirm Selection
-                                            </button>
+                                        {/* Footer: Action Buttons (Fixed at Bottom) */}
+                                        <div className="p-6 lg:p-8 border-t border-white/10 relative ">
+                                            <div className="flex flex-col sm:flex-row gap-4">
+
+                                                {/* Confirm Button */}
+                                                <button
+                                                    onClick={confirmSelection}
+                                                    style={{fontFamily: "Oxanium"}}
+                                                    className="px-8 py-4 rounded-sm font-black text-sm uppercase tracking-widest text-white
+                                                    bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                                                    shadow-[0_0_12px_rgba(139,92,246,0.6)]
+                                                    hover:shadow-[0_0_20px_rgba(139,92,246,0.8)]
+                                                    transition-all duration-300 active:scale-95 flex-1"
+                                                >
+                                                    Confirm Selection
+                                                </button>
+
+                                            </div>
                                         </div>
-                                    </div>
                                 </motion.div>
                             </AnimatePresence>
                         </div>
-                    </div>
+                </div>
                 </div>
 
+                </div>
                 {/* Confirm Modal */}
                 <AnimatePresence>
-                    {showModal && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-xl p-4"
-                        >
-                            <motion.div
-                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                                className="bg-[#0f111a] border border-white/10 rounded-[40px] p-8 lg:p-12 max-w-xl w-full text-center relative overflow-hidden"
+                {showModal && (
+                    <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-[black/30] backdrop-blur-xs p-4"
+                    >
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        className="bg-[#020202] border border-[#3B28F6]/80 rounded-xs p-8 lg:p-12 max-w-xl w-full text-center relative overflow-hidden  shadow-[0_0_11px_rgba(59,130,246,0.35)]"
+                    >
+                        {/* Warning Icon */}
+                        <div className="w-18 h-18 mx-auto mb-6 rounded-full border border-2 border-yellow-400 bg-[#F0E427]/30 flex items-center justify-center">
+                             <TriangleAlert className="w-12 h-12 text-yellow-400" />
+                        </div>
+
+                        {/* Title */}
+                        <h1
+                            style={{ fontFamily: "Oxanium" }}
+                            className="text-4xl text-white tracking-widest uppercase"
                             >
-                                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            Confirm Selection
+                        </h1>
 
-                                <ScrollText className="w-16 h-16 text-indigo-500 mx-auto mb-6 opacity-30" />
+                        {/* Subtitle */}
+                        <p className="text-[#3B28F6] text-xs tracking-[0.2em] uppercase mt-1 mb-6 ">
+                            System Alert: Action Final
+                        </p>
 
-                                <h1 className="text-4xl font-black text-white mb-4 uppercase tracking-tighter">Confirm Character</h1>
-                                <p className="text-slate-400 mb-10 leading-relaxed">
-                                    Are you ready to begin your journey as <span className="text-indigo-400 font-bold uppercase tracking-wider">{selected.name}</span>? This decision will shape your learning experience at SkillVentura.
-                                </p>
+                        {/* Divider */}
+                        <div className="flex items-center justify-center gap-4 mb-8">
+                            <div className="h-[1px] w-42 bg-[#3B28F6]"></div>
+                                <div className="w-4 h-4 rotate-45 border border-blue-500 border-2"></div>
+                            <div className="h-[1px] w-42 bg-[#3B28F6]"></div>
+                        </div>
 
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    <button
-                                        onClick={() => setShowModal(false)}
-                                        className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm uppercase flex-1 hover:bg-white/10"
-                                    >
-                                        I need a moment
-                                    </button>
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={processing}
-                                        className="px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase flex-1 shadow-lg hover:bg-indigo-500 flex items-center justify-center gap-2"
-                                    >
-                                        {processing ? 'Forging Character...' : 'Let\'s Begin'}
-                                        <ChevronRight className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    )}
+                        {/* Warning Box */}
+                        <div className="rounded-xl border border-blue-500/30 bg-blue-900/10 p-4 mb-8 text-left">
+                            <p style={{fontFamily: "Oxanium"}} className="text-yellow-400 font-semibold text-lg mb-1 text-center mb-2">
+                                Warning: Irreversible Action
+                            </p>
+
+                            <p className="text-slate-100 text-lg leading-relaxed">
+                                You are about to lock in your character choice. Once confirmed,
+                                this <span className="font-extrabold text-white">cannot be changed</span> or reset.
+                            </p>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-4">
+                        <button
+                            onClick={() => setShowModal(false)}
+                            style={{fontFamily:"Oxanium"}}
+                            className="px-8 py-3 rounded-sm bg-white/5 border border-white/10 text-white/80 text-lguppercase tracking-widest flex-1 hover:bg-white/10 transition-all"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            onClick={handleSubmit}
+                            disabled={processing}
+                            className="px-8 py-3 rounded-sm text-[#6252FF] text-lg uppercase tracking-widest flex-1 bg-[#3B28F6]/20 border border-[#4F46E5] shadow-[0_0_12px_rgba(139,92,246,0.6)] hover:shadow-[0_0_20px_rgba(139,92,246,0.8)] transition-all"
+                        >
+                            {processing ? "Deploying..." : "Deploy"}
+                        </button>
+                        </div>
+
+                        {/* Footer Label */}
+                        <p className="text-[10px] text-slate-500 mt-10 tracking-wide">
+                        SYSTEM ID: SKILLVENTURA CHARACTER
+                        </p>
+                    </motion.div>
+                    </motion.div>
+                )}
                 </AnimatePresence>
             </div>
 
-            <style>{`
-                @font-face {
-                    font-family: 'Mono';
-                    src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-                }
-                
-                .perspective-1000 {
-                    perspective: 1000px;
-                }
-
-                @keyframes gradient-xy {
-                    0%, 100% {
-                        background-position: 0% 0%;
-                    }
-                    50% {
-                        background-position: 100% 100%;
-                    }
-                }
-
-                .animate-gradient-xy {
-                    background-size: 200% 200%;
-                    animation: gradient-xy 5s ease infinite;
-                }
-
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 5px;
-                }
-
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgba(99, 102, 241, 0.1);
-                    border-radius: 20px;
-                }
-
-                .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-                    background: rgba(99, 102, 241, 0.4);
-                }
-            `}</style>
+         
         </>
     );
 }
