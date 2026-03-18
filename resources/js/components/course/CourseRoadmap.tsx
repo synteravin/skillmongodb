@@ -28,41 +28,59 @@ export default function CourseRoadmap({ course }: { course: Course }) {
 
     return (
 
-        <div className="flex flex-col items-center space-y-12">
+        <section className="w-full py-16 sm:py-20">
 
-            {/* BASIC FUNDAMENTAL */}
+            <div className="mx-auto max-w-5xl px-4 sm:px-6">
 
-            <div className="flex flex-col items-center space-y-6">
+                {/* HEADER */}
 
-                {course.basic_paths.map((path, index) => (
+                <div className="text-center mb-16">
 
-                    <FundamentalNode
-                        key={path._id}
-                        title={path.name}
-                        index={index}
-                    />
+                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                        {course.title} Roadmap
+                    </h2>
 
-                ))}
+                    <p className="mt-3 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                        Ikuti jalur pembelajaran dari fundamental hingga spesialisasi karier.
+                    </p>
+
+                </div>
+
+
+                <div className="flex flex-col items-center gap-16">
+
+                    {/* FUNDAMENTAL SECTION */}
+
+                    <div className="flex flex-col items-center gap-6">
+
+                        {course.basic_paths.map((path, index) => (
+
+                            <FundamentalNode
+                                key={String(path._id)}
+                                title={path.name}
+                                index={index}
+                            />
+
+                        ))}
+
+                    </div>
+
+
+                    {/* CAREER BRANCH SECTION */}
+                    <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-start justify-items-center">
+                        {course.career_groups.map(group => (
+                            <CareerBranch
+                                key={String(group._id)}
+                                group={group}
+                            />
+                        ))}
+                    </div>
+
+                </div>
 
             </div>
 
-
-            {/* CAREER BRANCH */}
-
-            <div className="flex gap-20">
-
-                {course.career_groups.map(group => (
-
-                    <CareerBranch
-                        key={group._id}
-                        group={group}
-                    />
-
-                ))}
-
-            </div>
-
-        </div>
+        </section>
 
     )
 

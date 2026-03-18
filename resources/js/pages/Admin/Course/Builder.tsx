@@ -31,62 +31,126 @@ type Course = {
 
 export default function Builder({ course }: { course: Course }) {
 
-    /* ---------------- MODAL STATE ---------------- */
+    /* ================= MODAL STATE ================= */
 
     const [openCareerGroup, setOpenCareerGroup] = useState(false)
     const [openBasicPath, setOpenBasicPath] = useState(false)
+    const [openCareerPath, setOpenCareerPath] = useState(false)
 
-    /* ---------------- FORM STATE ---------------- */
+    /* ================= FORM STATE ================= */
 
     const [careerGroupName, setCareerGroupName] = useState("")
-    const [pathName, setPathName] = useState("")
+    const [basicPathName, setBasicPathName] = useState("")
+    const [careerPathName, setCareerPathName] = useState("")
 
-    /* ---------------- ACTIONS ---------------- */
+    const [careerGroupId, setCareerGroupId] = useState<string | null>(null)
+
+    /* ================= OPEN MODAL ================= */
+
+    function openCareerPathModal(groupId: string) {
+
+        if (!groupId) {
+            console.error("Invalid group id")
+            return
+        }
+
+        setCareerGroupId(groupId)
+        setCareerPathName("")
+        setOpenCareerPath(true)
+
+    }
+
+    /* ================= CREATE CAREER GROUP ================= */
 
     function createCareerGroup() {
 
+        if (!careerGroupName.trim()) return
+
         router.post("/admin/career-groups", {
 
-            course_id: course._id,
+            course_id: String(course._id),
             name: careerGroupName
 
         }, {
-
-            preserveScroll: true
-
+            preserveScroll: true,
+            onSuccess: () => {
+                setCareerGroupName("")
+                setOpenCareerGroup(false)
+            }
         })
 
-        setCareerGroupName("")
-        setOpenCareerGroup(false)
-
     }
+
+    /* ================= CREATE BASIC PATH ================= */
 
     function createBasicPath() {
 
+        if (!basicPathName.trim()) return
+
         router.post("/admin/paths", {
 
-            course_id: course._id,
+            course_id: String(course._id),
             phase: "basic_fundamental",
-            name: pathName
+            name: basicPathName
 
         }, {
-
-            preserveScroll: true
-
+            preserveScroll: true,
+            onSuccess: () => {
+                setBasicPathName("")
+                setOpenBasicPath(false)
+            }
         })
-
-        setPathName("")
-        setOpenBasicPath(false)
 
     }
 
-    /* ---------------- UI ---------------- */
+    /* ================= CREATE CAREER PATH ================= */
+
+    function createCareerPath() {
+
+        if (!careerGroupId) {
+            console.error("Career group ID missing")
+            return
+        }
+
+        if (!careerPathName.trim()) {
+            console.error("Path name empty")
+            return
+        }
+
+        router.post("/admin/paths", {
+
+            course_id: String(course._id),
+            career_group_id: String(careerGroupId),
+            phase: "career_path",
+            name: careerPathName.trim()
+
+        }, {
+
+            preserveScroll: true,
+
+            onSuccess: () => {
+
+                setCareerPathName("")
+                setCareerGroupId(null)
+                setOpenCareerPath(false)
+
+            },
+
+            onError: (errors) => {
+
+                console.error("Create path failed:", errors)
+
+            }
+
+        })
+
+    }
 
     return (
 
         <AppLayout>
 
-            <div className="p-8 max-w-6xl mx-auto space-y-10">
+            <div className="p-10 max-w-6xl mx-auto space-y-12">
 
                 {/* HEADER */}
 
@@ -95,7 +159,8 @@ export default function Builder({ course }: { course: Course }) {
                     <h1 className="text-3xl font-bold">
                         {course.title}
                     </h1>
-                    <p className="text-sm text-gray-500">
+
+                    <p className="text-sm text-gray-500 mt-1">
                         Course Builder
                     </p>
 
@@ -104,9 +169,9 @@ export default function Builder({ course }: { course: Course }) {
 
                 {/* ================= BASIC FUNDAMENTAL ================= */}
 
-                <div className="border rounded-xl p-6">
+                <div className="border rounded-xl p-6 bg-white/50 backdrop-blur-sm">
 
-                    <div className="flex justify-between mb-6">
+                    <div className="flex justify-between items-center mb-6">
 
                         <h2 className="text-lg font-semibold">
                             Basic Fundamental
@@ -114,21 +179,20 @@ export default function Builder({ course }: { course: Course }) {
 
                         <button
                             onClick={() => setOpenBasicPath(true)}
-                            className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                         >
                             + Path
                         </button>
 
                     </div>
 
-
                     <div className="space-y-3">
 
                         {course.basic_paths?.map(path => (
 
                             <div
-                                key={path._id}
-                                className="border rounded-lg p-4"
+                                key={String(path._id)}
+                                className="border rounded-lg p-4 bg-gray-50"
                             >
 
                                 <p className="font-medium">
@@ -139,7 +203,7 @@ export default function Builder({ course }: { course: Course }) {
 
                                     {path.modules?.map(module => (
 
-                                        <div key={module._id}>
+                                        <div key={String(module._id)}>
                                             {module.title}
                                         </div>
 
@@ -158,9 +222,9 @@ export default function Builder({ course }: { course: Course }) {
 
                 {/* ================= CAREER PATH ================= */}
 
-                <div className="border rounded-xl p-6">
+                <div className="border rounded-xl p-6 bg-white/50 backdrop-blur-sm">
 
-                    <div className="flex justify-between mb-6">
+                    <div className="flex justify-between items-center mb-6">
 
                         <h2 className="text-lg font-semibold">
                             Career Path
@@ -168,31 +232,41 @@ export default function Builder({ course }: { course: Course }) {
 
                         <button
                             onClick={() => setOpenCareerGroup(true)}
-                            className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                         >
                             + Career Group
                         </button>
 
                     </div>
 
-
                     <div className="space-y-6">
 
                         {course.career_groups?.map(group => (
 
-                            <div key={group._id}>
+                            <div key={String(group._id)}>
 
-                                <h3 className="font-semibold mb-3">
-                                    {group.name}
-                                </h3>
+                                <div className="flex items-center justify-between mb-2">
+
+                                    <h3 className="font-semibold">
+                                        {group.name}
+                                    </h3>
+
+                                    <button
+                                        onClick={() => openCareerPathModal(group._id)}
+                                        className="text-sm px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+                                    >
+                                        + Path
+                                    </button>
+
+                                </div>
 
                                 <div className="space-y-3 ml-4">
 
                                     {group.paths?.map(path => (
 
                                         <div
-                                            key={path._id}
-                                            className="border rounded-lg p-4"
+                                            key={String(path._id)}
+                                            className="border rounded-lg p-4 bg-gray-50"
                                         >
 
                                             <p className="font-medium">
@@ -203,7 +277,7 @@ export default function Builder({ course }: { course: Course }) {
 
                                                 {path.modules?.map(module => (
 
-                                                    <div key={module._id}>
+                                                    <div key={String(module._id)}>
                                                         {module.title}
                                                     </div>
 
@@ -226,12 +300,12 @@ export default function Builder({ course }: { course: Course }) {
                 </div>
 
 
-                {/* ================= ROADMAP VISUAL ================= */}
+                {/* ================= ROADMAP ================= */}
 
                 <CourseRoadmap course={course} />
 
 
-                {/* ================= MODAL CREATE CAREER GROUP ================= */}
+                {/* ================= MODALS ================= */}
 
                 <Modal
                     open={openCareerGroup}
@@ -239,39 +313,34 @@ export default function Builder({ course }: { course: Course }) {
                     onClose={() => setOpenCareerGroup(false)}
                 >
 
-                    <div className="space-y-4">
+                    <input
+                        value={careerGroupName}
+                        onChange={(e) => setCareerGroupName(e.target.value)}
+                        placeholder="Frontend Developer"
+                        className="w-full border rounded-lg p-3 mb-4"
+                    />
 
-                        <input
-                            value={careerGroupName}
-                            onChange={(e) => setCareerGroupName(e.target.value)}
-                            placeholder="Frontend Developer"
-                            className="w-full border rounded-lg p-2"
-                        />
+                    <div className="flex justify-end gap-2">
 
-                        <div className="flex justify-end gap-2">
+                        <button
+                            onClick={() => setOpenCareerGroup(false)}
+                            className="px-4 py-2 bg-gray-200 rounded"
+                        >
+                            Cancel
+                        </button>
 
-                            <button
-                                onClick={() => setOpenCareerGroup(false)}
-                                className="px-4 py-2 bg-gray-200 rounded"
-                            >
-                                Cancel
-                            </button>
-
-                            <button
-                                onClick={createCareerGroup}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded"
-                            >
-                                Create
-                            </button>
-
-                        </div>
+                        <button
+                            disabled={!careerGroupName.trim()}
+                            onClick={createCareerGroup}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-40"
+                        >
+                            Create
+                        </button>
 
                     </div>
 
                 </Modal>
 
-
-                {/* ================= MODAL CREATE BASIC PATH ================= */}
 
                 <Modal
                     open={openBasicPath}
@@ -279,32 +348,63 @@ export default function Builder({ course }: { course: Course }) {
                     onClose={() => setOpenBasicPath(false)}
                 >
 
-                    <div className="space-y-4">
+                    <input
+                        value={basicPathName}
+                        onChange={(e) => setBasicPathName(e.target.value)}
+                        placeholder="HTML Fundamentals"
+                        className="w-full border rounded-lg p-3 mb-4"
+                    />
 
-                        <input
-                            value={pathName}
-                            onChange={(e) => setPathName(e.target.value)}
-                            placeholder="HTML Fundamental"
-                            className="w-full border rounded-lg p-2"
-                        />
+                    <div className="flex justify-end gap-2">
 
-                        <div className="flex justify-end gap-2">
+                        <button
+                            onClick={() => setOpenBasicPath(false)}
+                            className="px-4 py-2 bg-gray-200 rounded"
+                        >
+                            Cancel
+                        </button>
 
-                            <button
-                                onClick={() => setOpenBasicPath(false)}
-                                className="px-4 py-2 bg-gray-200 rounded"
-                            >
-                                Cancel
-                            </button>
+                        <button
+                            disabled={!basicPathName.trim()}
+                            onClick={createBasicPath}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-40"
+                        >
+                            Create
+                        </button>
 
-                            <button
-                                onClick={createBasicPath}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded"
-                            >
-                                Create
-                            </button>
+                    </div>
 
-                        </div>
+                </Modal>
+
+                <Modal
+                    open={openCareerPath}
+                    title="Create Career Path"
+                    onClose={() => setOpenCareerPath(false)}
+                >
+
+                    <input
+                        value={careerPathName}
+                        onChange={(e) => setCareerPathName(e.target.value)}
+                        placeholder="React Developer"
+                        className="w-full border rounded-lg p-3 mb-4"
+                    />
+
+                    <div className="flex justify-end gap-2">
+
+                        <button
+                            onClick={() => setOpenCareerPath(false)}
+                            className="px-4 py-2 bg-gray-200 rounded"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            disabled={!careerPathName.trim()}
+                            onClick={createCareerPath}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-40"
+                        >
+                            Create
+                        </button>
 
                     </div>
 

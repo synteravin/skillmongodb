@@ -20,19 +20,33 @@ export default function CareerBranch({ group }: { group: CareerGroup }) {
 
     return (
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full max-w-xs">
 
-            <div className="w-80 p-6 rounded-xl border border-indigo-500 bg-indigo-900/20 backdrop-blur text-center shadow-xl">
+            {/* HEADER */}
 
-                <h2 className="text-lg font-bold text-indigo-200">
+            <div className="
+                w-full
+                rounded-xl
+                border border-indigo-500/40
+                bg-indigo-50 dark:bg-indigo-950/40
+                px-6 py-4
+                text-center
+                shadow-sm
+            ">
+
+                <h2 className="text-base font-semibold text-indigo-700 dark:text-indigo-300">
                     {group.name}
                 </h2>
 
             </div>
 
-            <div className="w-px h-10 bg-gray-500 mt-2"></div>
+            {/* CONNECTOR */}
 
-            <div className="flex flex-col space-y-4">
+            <div className="w-px h-10 bg-gray-300 dark:bg-gray-700"></div>
+
+            {/* MODULE LIST */}
+
+            <div className="flex flex-col gap-4 w-full">
 
                 {group.paths.map(path => (
 

@@ -34,13 +34,13 @@ class Course extends Model
 
     public function careerGroups()
     {
-        return $this->hasMany(CareerGroup::class, 'course_id', '_id')
+        return $this->hasMany(CareerGroup::class, 'course_id')
             ->orderBy('order');
     }
 
     public function paths()
     {
-        return $this->hasMany(Path::class, 'course_id', '_id')
+        return $this->hasMany(Path::class, 'course_id')
             ->orderBy('order');
     }
 
