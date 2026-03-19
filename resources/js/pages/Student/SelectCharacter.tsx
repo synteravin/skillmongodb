@@ -1,19 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    Eye,
-    Zap,
-    Brain,
-    Wrench,
-    Sparkles,
-    CheckCircle2,
-    ChevronLeft,
-    ChevronRight,
-    Sword,
-   TriangleAlert,
-    Layers,
-} from 'lucide-react';
+import {Eye,Zap,Brain,Wrench,Sparkles,CheckCircle2,ChevronLeft,ChevronRight,Sword,TriangleAlert,Layers,} from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface Character {
@@ -149,15 +137,15 @@ export default function SelectCharacter({ characters }: Props) {
 
                 {/* Content */}
                 <div className="relative z-10 container mx-auto px-4 py-8 lg:py-12 flex flex-col min-h-screen justify-center">
-                <div className="flex flex-col lg:flex-row gap-12 items-center lg:items-start max-w-7xl mx-auto w-full">
+                <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-center md:items-start max-w-7xl mx-auto w-full">
 
                         {/* LEFT: Character Card Display */}
-                        <div className="w-full lg:w-[450px] flex flex-col items-center">
+                        <div className="w-full md:w-[260px] lg:w-[450px] flex flex-col items-center">
                             <div className="relative group perspective-1000">
                                 {/* Navigation Arrows for Character */}
                                     <button
                                         onClick={() => paginate(-1)}
-                                        className="absolute -left-14 top-1/2 -translate-y-1/2 z-20 hidden lg:flex items-center justify-center
+                                        className="absolute -left-14 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center
                                         w-12 h-12 rounded-full
                                         bg-white/5 backdrop-blur-md
                                         border border-white/10
@@ -172,7 +160,7 @@ export default function SelectCharacter({ characters }: Props) {
 
                                     <button
                                         onClick={() => paginate(1)}
-                                        className="absolute -right-14 top-1/2 -translate-y-1/2 z-20 hidden lg:flex items-center justify-center
+                                        className="absolute -right-14 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center
                                         w-12 h-12 rounded-full
                                         bg-white/5 backdrop-blur-md
                                         border border-white/10
@@ -198,7 +186,7 @@ export default function SelectCharacter({ characters }: Props) {
                                     opacity: { duration: 0.2 },
                                     scale: { duration: 0.4 }
                                 }}
-                                className="relative w-[170px] h-[240px] lg:w-[300px] lg:h-[400px]
+                                className="relative w-[160px] h-[220px] md:w-[200px] md:h-[270px] lg:w-[300px] lg:h-[400px]
                                 rounded-[25px] p-[2px] overflow-hidden
                                 bg-[linear-gradient(45deg,#1e3a8a_0%,#1e3a8a_25%,transparent_60%,#facc15_100%)]"
                             >
@@ -256,7 +244,8 @@ export default function SelectCharacter({ characters }: Props) {
                         </div>
 
                         {/* RIGHT: Detailed Information Panel */}
-                      <div className="relative flex-1 max-w-[700px] flex flex-col gap-2 pl-12 left-24">
+                       <div className="relative flex-1 w-full max-w-[500px] lg:max-w-[700px] flex flex-col gap-2 
+                       pl-4 md:pl-4 lg:pl-0 xl:pl-12 lg:left-0 xl:left-16 2xl:left-24">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={selected._id}
@@ -287,7 +276,7 @@ export default function SelectCharacter({ characters }: Props) {
                                             </div>
 
                                             <div>
-                                                <h1 style={{fontFamily: "Orbitron"}} className="text-6xl font-black tracking-tighter text-blue-50 mb-2 uppercase tracking-widest ">
+                                                <h1 style={{fontFamily: "Orbitron"}} className="text-6xl md:text-4xl sm:text-2xl font-black tracking-tighter text-blue-50 mb-2 uppercase tracking-widest ">
                                                     {selected.name}
                                                 </h1>
                                                 <p style={{fontFamily: "Oxanium"}} className="text-[#B3B3B3] font-medium ">
@@ -357,13 +346,13 @@ export default function SelectCharacter({ characters }: Props) {
 
                                     </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
                                             {/* Personality */}
                                             <div className="rounded-2xl border border-[#3B28F6]  bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
 
                                                 <h3
                                                     style={{ fontFamily: "Orbitron" }}
-                                                    className="text-[#B3B3B3]/80 text-sm font-bold tracking-widest uppercase mb-6 "
+                                                    className="text-[#B3B3B3]/80 text-sm font-bold tracking-widest uppercase mb-6 lg:text-base "
                                                 >
                                                     Personality
                                                 </h3>
@@ -385,7 +374,7 @@ export default function SelectCharacter({ characters }: Props) {
                                             <div className="rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
                                                 <h3
                                                     style={{ fontFamily: "Orbitron" }}
-                                                    className="text-[#FACC15] text-lg  tracking-widest uppercase mb-6"
+                                                    className="text-[#FACC15] text-lg  tracking-widest uppercase mb-6 lg:text-base"
                                                 >
                                                     Starter Bonus
                                                 </h3>
@@ -475,85 +464,171 @@ export default function SelectCharacter({ characters }: Props) {
                 </div>
 
                 </div>
-                {/* Confirm Modal */}
-                <AnimatePresence>
+            {/* Confirm Modal */}
+            <AnimatePresence>
                 {showModal && (
                     <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-[black/30] backdrop-blur-xs p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-[black/30] backdrop-blur-xs p-4"
                     >
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        className="bg-[#020202] border border-[#3B28F6]/80 rounded-xs p-8 lg:p-12 max-w-xl w-full text-center relative overflow-hidden  shadow-[0_0_11px_rgba(59,130,246,0.35)]"
-                    >
-                        {/* Warning Icon */}
-                        <div className="w-18 h-18 mx-auto mb-6 rounded-full border border-2 border-yellow-400 bg-[#F0E427]/30 flex items-center justify-center">
-                             <TriangleAlert className="w-12 h-12 text-yellow-400" />
-                        </div>
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="
+                                bg-[#020202] border border-[#3B28F6]/80 rounded-xs
+                                p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-14
+                                max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl
+                                w-full text-center relative overflow-hidden
+                                shadow-[0_0_11px_rgba(59,130,246,0.35)]
+                            "
+                        >
 
-                        {/* Title */}
-                        <h1
-                            style={{ fontFamily: "Oxanium" }}
-                            className="text-4xl text-white tracking-widest uppercase"
+                            {/* Warning Icon */}
+                            <div
+                                className="
+                                    w-14 h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 xl:w-20 xl:h-20
+                                    mx-auto mb-4 md:mb-6
+                                    rounded-full border-2 border-yellow-400
+                                    bg-[#F0E427]/30
+                                    flex items-center justify-center
+                                "
                             >
-                            Confirm Selection
-                        </h1>
+                                <TriangleAlert
+                                    className="
+                                        w-7 h-7
+                                        md:w-9 md:h-9
+                                        lg:w-10 lg:h-10
+                                        xl:w-12 xl:h-12
+                                        text-yellow-400
+                                    "
+                                />
+                            </div>
 
-                        {/* Subtitle */}
-                        <p className="text-[#3B28F6] text-xs tracking-[0.2em] uppercase mt-1 mb-6 ">
-                            System Alert: Action Final
-                        </p>
+                            {/* Title */}
+                            <h1
+                                style={{ fontFamily: "Oxanium" }}
+                                className="
+                                    text-2xl md:text-3xl lg:text-4xl xl:text-4xl 2xl:text-5xl
+                                    text-white tracking-widest uppercase
+                                "
+                            >
+                                Confirm Selection
+                            </h1>
 
-                        {/* Divider */}
-                        <div className="flex items-center justify-center gap-4 mb-8">
-                            <div className="h-[1px] w-42 bg-[#3B28F6]"></div>
-                                <div className="w-4 h-4 rotate-45 border border-blue-500 border-2"></div>
-                            <div className="h-[1px] w-42 bg-[#3B28F6]"></div>
-                        </div>
-
-                        {/* Warning Box */}
-                        <div className="rounded-xl border border-blue-500/30 bg-blue-900/10 p-4 mb-8 text-left">
-                            <p style={{fontFamily: "Oxanium"}} className="text-yellow-400 font-semibold text-lg mb-1 text-center mb-2">
-                                Warning: Irreversible Action
+                            {/* Subtitle */}
+                            <p
+                                className="
+                                    text-[#3B28F6]
+                                    text-[10px] md:text-xs
+                                    tracking-[0.2em] uppercase
+                                    mt-1 mb-5 md:mb-6
+                                "
+                            >
+                                System Alert: Action Final
                             </p>
 
-                            <p className="text-slate-100 text-lg leading-relaxed">
-                                You are about to lock in your character choice. Once confirmed,
-                                this <span className="font-extrabold text-white">cannot be changed</span> or reset.
+                            {/* Divider */}
+                            <div className="flex items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8">
+                                <div className="h-[1px] w-24 md:w-32 lg:w-36 xl:w-42 bg-[#3B28F6]" />
+                                <div className="w-3 h-3 md:w-4 md:h-4 rotate-45 border-2 border-blue-500"></div>
+                                <div className="h-[1px] w-24 md:w-32 lg:w-36 xl:w-42 bg-[#3B28F6]" />
+                            </div>
+
+                            {/* Warning Box */}
+                            <div
+                                className="
+                                    rounded-xl border border-blue-500/30
+                                    bg-blue-900/10
+                                    p-4 md:p-5 lg:p-6
+                                    mb-6 md:mb-8
+                                    text-left
+                                "
+                            >
+                                <p
+                                    style={{ fontFamily: "Oxanium" }}
+                                    className="
+                                        text-yellow-400 font-semibold
+                                        text-base md:text-lg
+                                        mb-2 text-center
+                                    "
+                                >
+                                    Warning: Irreversible Action
+                                </p>
+
+                                <p
+                                    className="
+                                        text-slate-100
+                                        text-sm md:text-base lg:text-lg
+                                        leading-relaxed
+                                    "
+                                >
+                                    You are about to lock in your character choice.
+                                    Once confirmed, this
+                                    <span className="font-extrabold text-white">
+                                        {" "}cannot be changed
+                                    </span>
+                                    {" "}or reset.
+                                </p>
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+
+                                <button
+                                    onClick={() => setShowModal(false)}
+                                    style={{ fontFamily: "Oxanium" }}
+                                    className="
+                                        px-6 md:px-8
+                                        py-2 md:py-3
+                                        rounded-sm
+                                        bg-white/5 border border-white/10
+                                        text-white/80
+                                        text-sm md:text-base lg:text-lg
+                                        uppercase tracking-widest
+                                        flex-1
+                                        hover:bg-white/10
+                                        transition-all
+                                    "
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={processing}
+                                    className="
+                                        px-6 md:px-8
+                                        py-2 md:py-3
+                                        rounded-sm
+                                        text-[#6252FF]
+                                        text-sm md:text-base lg:text-lg
+                                        uppercase tracking-widest
+                                        flex-1
+                                        bg-[#3B28F6]/20 border border-[#4F46E5]
+                                        shadow-[0_0_12px_rgba(139,92,246,0.6)]
+                                        hover:shadow-[0_0_20px_rgba(139,92,246,0.8)]
+                                        transition-all
+                                    "
+                                >
+                                    {processing ? "Deploying..." : "Deploy"}
+                                </button>
+
+                            </div>
+
+                            {/* Footer Label */}
+                            <p className="text-[8px] md:text-[10px] text-slate-500 mt-8 md:mt-10 tracking-wide">
+                                SYSTEM ID: SKILLVENTURA CHARACTER
                             </p>
-                        </div>
 
-                        {/* Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-4">
-                        <button
-                            onClick={() => setShowModal(false)}
-                            style={{fontFamily:"Oxanium"}}
-                            className="px-8 py-3 rounded-sm bg-white/5 border border-white/10 text-white/80 text-lguppercase tracking-widest flex-1 hover:bg-white/10 transition-all"
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            onClick={handleSubmit}
-                            disabled={processing}
-                            className="px-8 py-3 rounded-sm text-[#6252FF] text-lg uppercase tracking-widest flex-1 bg-[#3B28F6]/20 border border-[#4F46E5] shadow-[0_0_12px_rgba(139,92,246,0.6)] hover:shadow-[0_0_20px_rgba(139,92,246,0.8)] transition-all"
-                        >
-                            {processing ? "Deploying..." : "Deploy"}
-                        </button>
-                        </div>
-
-                        {/* Footer Label */}
-                        <p className="text-[10px] text-slate-500 mt-10 tracking-wide">
-                        SYSTEM ID: SKILLVENTURA CHARACTER
-                        </p>
-                    </motion.div>
+                        </motion.div>
                     </motion.div>
                 )}
-                </AnimatePresence>
+            </AnimatePresence>
+
+
             </div>
 
          

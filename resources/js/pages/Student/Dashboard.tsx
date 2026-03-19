@@ -2,6 +2,7 @@ import { MessageSquareMore, MoonStar, SunMedium, Store } from "lucide-react"
 import { useState, useEffect } from "react"
 import SpeechBubble from "@/components/SpeechBubble"
 
+
 interface Character {
   name: string
   avatar: string
@@ -204,25 +205,83 @@ function StoreButton() {
 ========================================================= */
 
 function CharacterSection({ avatar }: { avatar: string }) {
+  const [showBubble, setShowBubble] = useState(false);
+  const [displayText, setDisplayText] = useState("");
+
+  const fullText = `You're ready for battle!
+Check out these upgrades —
+they'll help you survive
+and dominate the game`;
+
+  // ⏱️ AUTO muncul tiap 1 menit
+  useEffect(() => {
+    const interval = setInterval(() => {
+      triggerBubble();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🎯 trigger bubble (klik / auto)
+  const triggerBubble = () => {
+    setShowBubble(true);
+
+    // auto hide setelah beberapa detik
+    setTimeout(() => {
+      setShowBubble(false);
+    }, 8000);
+  };
+
+  // ✍️ TYPING EFFECT
+  useEffect(() => {
+    if (!showBubble) return;
+
+    let i = 0;
+    setDisplayText("");
+
+    const interval = setInterval(() => {
+      setDisplayText((prev) => prev + fullText.charAt(i));
+      i++;
+
+      if (i >= fullText.length) {
+        clearInterval(interval);
+      }
+    }, 25); // speed typing
+
+    return () => clearInterval(interval);
+  }, [showBubble]);
+
   return (
     <div className="pointer-events-none absolute inset-0 z-10">
+      
+      <div className="absolute bottom-[-120px] right-[276px] translate-x-32">
 
-      <div className="absolute bottom-[-120px] right-69 translate-x-32">
+        {/* 💬 Speech Bubble */}
+        {showBubble && (
+          <SpeechBubble className="absolute top-14 -right-80 ml-6 animate-fadeIn">
+            
+            <p className="whitespace-pre-line text-sm leading-relaxed">
+              {displayText}
+              <span className="animate-pulse">|</span>
+            </p>
 
-        <SpeechBubble className="absolute top-14 -right-95 ml-6">
-          You're ready for battle! <br/>
-          Check out these upgrades — <br/>
-          they'll help you survive <br/>
-          and dominate the game
-        </SpeechBubble>
+          </SpeechBubble>
+        )}
 
-        <img src={avatar} className="h-[720px] w-auto select-none" />
-
+        {/* 🧍 Character */}
+        <img
+          src={avatar}
+          onClick={triggerBubble}
+          className="pointer-events-auto h-[720px] w-auto select-none cursor-pointer animate-breathe hover:scale-[1.02] transition"
+          style={{ animation: "breathe 3s ease-in-out infinite" }}
+        />
       </div>
 
     </div>
-  )
+  );
 }
+
+
 
 /* =========================================================
    BOTTOM NAV

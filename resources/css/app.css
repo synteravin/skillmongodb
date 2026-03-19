@@ -152,6 +152,7 @@ html {
   100% {
     transform: translateX(-50%);
   }
+  
 }
 
 .animate-marquee {
@@ -173,9 +174,24 @@ html {
   border-radius: 10px;
 }
 
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #3B28F6;
 }
+
+@keyframes breathe {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.015);
+  }
+}
+
+.breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
 
 
 

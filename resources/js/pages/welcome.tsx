@@ -45,6 +45,28 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
 
         setDarkMode(!darkMode)
     }
+    useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    setActiveSection(entry.target.id);
+                }
+            });
+        },
+        {
+            threshold: 0.6, // makin besar = harus lebih masuk dulu
+        }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+        sections.forEach((section) => observer.unobserve(section));
+    };
+}, []);
     return (
         <>
             <Head title="SkillVentura - Level Up Your Life" />
@@ -1071,7 +1093,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                             </div>
 
                             </footer>
-                        </div>
+            </div>
 
             <style>{`
                 .animate-infinite-scroll {
