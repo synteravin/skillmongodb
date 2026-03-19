@@ -42,7 +42,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('characters', CharacterController::class)
             ->except(['show']);
 
-
         /* ---------------- COURSE CRUD ---------------- */
 
         Route::get('/courses', [CourseController::class, 'index'])

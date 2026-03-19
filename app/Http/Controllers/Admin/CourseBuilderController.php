@@ -13,17 +13,20 @@ use App\Http\Requests\Course\StoreCourseRequest;
 use App\Http\Requests\CareerGroup\StoreCareerGroupRequest;
 use App\Http\Requests\Path\StorePathRequest;
 use App\Http\Requests\Module\StoreModuleRequest;
+
 use App\Models\Course;
+
 use Inertia\Inertia;
 
 class CourseBuilderController extends Controller
 {
+
     public function index()
     {
 
         $courses = Course::latest()->get();
 
-        return inertia('Admin/Course/Index', [
+        return Inertia::render('Admin/Course/Index', [
             'courses' => $courses
         ]);
 
@@ -39,14 +42,51 @@ class CourseBuilderController extends Controller
 
         $basicPaths = $course->paths
             ->where('phase', 'basic_fundamental')
-            ->values();
+            ->values()
+            ->map(function ($path) {
 
-        $careerGroups = $course->careerGroups->values();
+                return [
+                    '_id' => (string) $path->_id,
+                    'name' => $path->name,
+                    'modules' => $path->modules->map(function ($module) {
+                        return [
+                            '_id' => (string) $module->_id,
+                            'title' => $module->title
+                        ];
+                    })
+                ];
+
+            });
+
+        $careerGroups = $course->careerGroups
+            ->values()
+            ->map(function ($group) {
+
+                return [
+                    '_id' => (string) $group->_id,
+                    'name' => $group->name,
+                    'paths' => $group->paths->map(function ($path) {
+
+                        return [
+                            '_id' => (string) $path->_id,
+                            'name' => $path->name,
+                            'modules' => $path->modules->map(function ($module) {
+                                return [
+                                    '_id' => (string) $module->_id,
+                                    'title' => $module->title
+                                ];
+                            })
+                        ];
+
+                    })
+                ];
+
+            });
 
         return Inertia::render('Admin/Course/Builder', [
 
             'course' => [
-                '_id' => $course->_id,
+                '_id' => (string) $course->_id,
                 'title' => $course->title,
                 'slug' => $course->slug,
                 'basic_paths' => $basicPaths,
@@ -54,7 +94,9 @@ class CourseBuilderController extends Controller
             ]
 
         ]);
+
     }
+
     public function storeCourse(
         StoreCourseRequest $request,
         CreateCourseAction $action
@@ -62,10 +104,8 @@ class CourseBuilderController extends Controller
 
         $course = $action->execute($request->validated());
 
-        return response()->json([
-            'message' => 'Course created',
-            'data' => $course
-        ]);
+        return redirect()->route('admin.courses.builder', $course->slug);
+
     }
 
 
@@ -74,12 +114,12 @@ class CourseBuilderController extends Controller
         CreateCareerGroupAction $action
     ) {
 
-        $group = $action->execute($request->validated());
+        $action->execute($request->validated());
 
-        return response()->json([
-            'message' => 'Career Group created',
-            'data' => $group
-        ]);
+        $course = Course::find($request->course_id);
+
+        return redirect()->route('admin.courses.builder', $course->slug);
+
     }
 
 
@@ -88,12 +128,12 @@ class CourseBuilderController extends Controller
         CreatePathAction $action
     ) {
 
-        $path = $action->execute($request->validated());
+        $action->execute($request->validated());
 
-        return response()->json([
-            'message' => 'Path created',
-            'data' => $path
-        ]);
+        $course = Course::find($request->course_id);
+
+        return redirect()->route('admin.courses.builder', $course->slug);
+
     }
 
 
@@ -102,12 +142,10 @@ class CourseBuilderController extends Controller
         CreateModuleAction $action
     ) {
 
-        $module = $action->execute($request->validated());
+        $action->execute($request->validated());
 
-        return response()->json([
-            'message' => 'Module created',
-            'data' => $module
-        ]);
+        return redirect()->back();
+
     }
 
 }

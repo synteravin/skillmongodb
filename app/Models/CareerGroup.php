@@ -23,7 +23,7 @@ class CareerGroup extends Model
 
     public function paths()
     {
-        return $this->hasMany(Path::class, 'career_group_id', '_id')
+        return $this->hasMany(Path::class, 'career_group_id')
             ->orderBy('order');
     }
 }

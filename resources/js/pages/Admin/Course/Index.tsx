@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from "lucide-react"
 type Course = {
     _id: string
     title: string
+    description: string
     thumbnail: string | null
     slug: string
 }
@@ -101,7 +102,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                 </Link>
 
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Draft Course
+                                    {course.description}
                                 </p>
 
 

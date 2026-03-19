@@ -33,7 +33,7 @@ class Path extends Model
 
     public function careerGroup()
     {
-        return $this->belongsTo(CareerGroup::class, 'career_group_id', '_id');
+        return $this->belongsTo(CareerGroup::class, 'career_group_id');
     }
 
     public function getRouteKeyName()
