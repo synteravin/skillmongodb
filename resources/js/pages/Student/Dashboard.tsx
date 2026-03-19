@@ -272,7 +272,7 @@ and dominate the game`;
         <img
           src={avatar}
           onClick={triggerBubble}
-          className="pointer-events-auto h-[720px] w-auto select-none cursor-pointer animate-breathe hover:scale-[1.02] transition"
+          className="pointer-events-auto h-[720px] w-auto select-none cursor-pointer animate-breathe hover:scale-[1.02] transition lg:h-[620px]"
           style={{ animation: "breathe 3s ease-in-out infinite" }}
         />
       </div>
@@ -343,7 +343,7 @@ function NavItem({
       style={{ fontFamily: "Orbitron" }}
     >
 
-      <span className="-translate-x-5 text-2xl">
+      <span className="-translate-x-5 text-2xl lg:text-lg">
         {label}
       </span>
 
