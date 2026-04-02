@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CharacterController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Student\StudentCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +122,9 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 
         Route::get('/dashboard', [StudentDashboard::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/course', [StudentCourseController::class, 'index'])
+            ->name('course');
     });
 
 /*

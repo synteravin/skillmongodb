@@ -301,8 +301,8 @@ export default function CreateCharacter() {
                                 onDrop={handleDrop}
                                 onClick={() => fileInputRef.current?.click()}
                                 className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 transition ${dragActive
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-gray-800'
-                                        : 'border-gray-300'
+                                    ? 'border-blue-500 bg-blue-50 dark:bg-gray-800'
+                                    : 'border-gray-300'
                                     }`}
                             >
                                 {preview ? (

@@ -1,6 +1,7 @@
 import { MessageSquareMore, MoonStar, SunMedium, Store } from "lucide-react"
 import { useState, useEffect } from "react"
 import SpeechBubble from "@/components/SpeechBubble"
+import BottomNav from "@/components/Student/BottomNav"
 
 
 interface Character {
@@ -85,7 +86,7 @@ function StarBackground() {
 
       <div className="absolute top-[50px] left-1/2 h-[100px] w-[1600px] -translate-x-1/2 rounded-full bg-blue-500 opacity-70 blur-[180px]" />
       <div className="absolute top-[450px] left-1/2 h-[100px] w-[1600px] -translate-x-1/2 rounded-full bg-blue-500 opacity-70 blur-[180px]" />
-      
+
 
     </div>
   )
@@ -120,11 +121,11 @@ function TopBar({
         </div>
 
         <div className="leading-tight">
-          <p style={{fontFamily:"Orbitron"}} className="text-2xl font-semibold tracking-wide">
+          <p style={{ fontFamily: "Orbitron" }} className="text-2xl font-semibold tracking-wide">
             {user.name}
           </p>
 
-          <p style={{fontFamily:"Orbitron"}} className="text-xl font-semibold">
+          <p style={{ fontFamily: "Orbitron" }} className="text-xl font-semibold">
             lvl {user.level}
           </p>
         </div>
@@ -145,7 +146,7 @@ function TopBar({
 
         {/* MESSAGE */}
         <button
-        className="
+          className="
         opacity-90 transition-all duration-200
         text-blue-700 dark:text-[#8EC5FF]
         hover:text-blue-500 dark:hover:text-white
@@ -153,14 +154,14 @@ function TopBar({
         dark:drop-shadow-[0_0_6px_rgba(96,165,250,0.8)]
         "
         >
-        <MessageSquareMore size={34} />
+          <MessageSquareMore size={34} />
         </button>
 
 
         {/* DARK / LIGHT MODE */}
         <button
-        onClick={toggleTheme}
-        className="
+          onClick={toggleTheme}
+          className="
         opacity-90 transition-all duration-200
         text-blue-700 dark:text-[#8EC5FF]
         hover:text-blue-500 dark:hover:text-white
@@ -168,7 +169,7 @@ function TopBar({
         dark:drop-shadow-[0_0_6px_rgba(96,165,250,0.8)]
         "
         >
-        {dark ? <MoonStar size={38} /> : <SunMedium size={38} />}
+          {dark ? <MoonStar size={38} /> : <SunMedium size={38} />}
         </button>
 
       </div>
@@ -252,14 +253,14 @@ and dominate the game`;
   }, [showBubble]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-10">
-      
+    <div className="pointer-events-none absolute inset-0 z-0">
+
       <div className="absolute bottom-[-120px] right-[276px] translate-x-32">
 
         {/* 💬 Speech Bubble */}
         {showBubble && (
           <SpeechBubble className="absolute top-14 -right-80 ml-6 animate-fadeIn">
-            
+
             <p className="whitespace-pre-line text-sm leading-relaxed">
               {displayText}
               <span className="animate-pulse">|</span>
@@ -283,74 +284,3 @@ and dominate the game`;
 
 
 
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
-function BottomNav() {
-
-  const menus = [
-    "MY COURSE",
-    "MINI BATTLE",
-    "TIER LIST",
-    "CERTIFICATE",
-    "FORUM",
-  ]
-
-  return (
-    <nav className="absolute bottom-0 left-0 right-0 z-20">
-
-      <div
-        className="relative border-[4px]"
-        style={{
-          borderImage:
-            "linear-gradient(to bottom,#1e3a8a 0%,#1e3a8a 40%,transparent 60%,#facc15 100%) 1",
-        }}
-      >
-
-        <div className="flex bg-[#1D215D]/40">
-
-          {menus.map((menu, index) => (
-            <NavItem
-              key={menu}
-              label={menu}
-              showDivider={index !== menus.length - 1}
-            />
-          ))}
-
-        </div>
-
-      </div>
-
-    </nav>
-  )
-}
-
-function NavItem({
-  label,
-  showDivider,
-}: {
-  label: string
-  showDivider: boolean
-}) {
-  return (
-    <button
-      className="
-      relative flex h-20 flex-1 items-center justify-center
-      font-semibold tracking-widest
-      uppercase transition hover:text-blue-200
-      "
-      style={{ fontFamily: "Orbitron" }}
-    >
-
-      <span className="-translate-x-5 text-2xl lg:text-lg">
-        {label}
-      </span>
-
-      {showDivider && (
-        <div className="pointer-events-none absolute right-0 top-0 h-[220%] w-[2px] rotate-[32deg] bg-yellow-400 origin-top"></div>
-      )}
-
-    </button>
-  )
-}

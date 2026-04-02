@@ -11,6 +11,7 @@ import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { FcGoogle } from "react-icons/fc";
 
 interface LoginProps {
     status?: string;
@@ -80,14 +81,14 @@ export default function Login({
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-slate-400 hover:text-white"
                                         >
-                                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
 
                                     {/* OPTIONS */}
                                     <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 dark:text-slate-400">
                                         <label className="flex items-center gap-2">
-                                            <Checkbox name="remember"/>
+                                            <Checkbox name="remember" />
                                             Remember me
                                         </label>
 
@@ -107,7 +108,7 @@ export default function Login({
                                         disabled={processing}
                                         className="w-full bg-[#3B28F6] hover:opacity-90"
                                     >
-                                        {processing && <Spinner/>}
+                                        {processing && <Spinner />}
                                         Login
                                     </Button>
 
@@ -122,9 +123,20 @@ export default function Login({
 
                                         <button
                                             type="button"
-                                            className="flex w-full items-center justify-center gap-3 rounded-xl border-2 border-indigo-500 bg-transparent py-3 text-gray-800 dark:text-white transition-all duration-300 hover:bg-indigo-500/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.7)]"
+                                            onClick={() => window.location.href = '/auth/google'}
+                                            className="
+        flex w-full items-center justify-center gap-3 
+        rounded-xl border-2 border-indigo-500 
+        py-3 
+        text-gray-800 dark:text-white 
+        transition-all duration-300 
+        hover:bg-indigo-500/10 
+        hover:shadow-[0_0_20px_rgba(99,102,241,0.7)]
+        hover:scale-[1.02] active:scale-[0.98]
+    "
                                         >
-                                            Google
+                                            <FcGoogle size={20} />
+                                            Login with Google
                                         </button>
 
                                     </div>
