@@ -157,8 +157,6 @@ function TopBar({
           <MessageSquareMore size={34} />
         </button>
 
-
-        {/* DARK / LIGHT MODE */}
         <button
           onClick={toggleTheme}
           className="
@@ -214,7 +212,6 @@ Check out these upgrades —
 they'll help you survive
 and dominate the game`;
 
-  // ⏱️ AUTO muncul tiap 1 menit
   useEffect(() => {
     const interval = setInterval(() => {
       triggerBubble();
@@ -223,17 +220,14 @@ and dominate the game`;
     return () => clearInterval(interval);
   }, []);
 
-  // 🎯 trigger bubble (klik / auto)
   const triggerBubble = () => {
     setShowBubble(true);
 
-    // auto hide setelah beberapa detik
     setTimeout(() => {
       setShowBubble(false);
     }, 8000);
   };
 
-  // ✍️ TYPING EFFECT
   useEffect(() => {
     if (!showBubble) return;
 
@@ -247,7 +241,7 @@ and dominate the game`;
       if (i >= fullText.length) {
         clearInterval(interval);
       }
-    }, 25); // speed typing
+    }, 25);
 
     return () => clearInterval(interval);
   }, [showBubble]);
@@ -257,7 +251,6 @@ and dominate the game`;
 
       <div className="absolute bottom-[-120px] right-[276px] translate-x-32">
 
-        {/* 💬 Speech Bubble */}
         {showBubble && (
           <SpeechBubble className="absolute top-14 -right-80 ml-6 animate-fadeIn">
 
@@ -269,7 +262,6 @@ and dominate the game`;
           </SpeechBubble>
         )}
 
-        {/* 🧍 Character */}
         <img
           src={avatar}
           onClick={triggerBubble}
@@ -281,6 +273,3 @@ and dominate the game`;
     </div>
   );
 }
-
-
-

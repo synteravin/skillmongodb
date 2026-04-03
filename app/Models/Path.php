@@ -17,7 +17,8 @@ class Path extends Model
         'slug',
         'description',
         'thumbnail',
-        'order'
+        'order',
+        // 'level_badge_id',
     ];
 
     public function course()
@@ -40,4 +41,14 @@ class Path extends Model
     {
         return 'slug';
     }
+
+    public function getBadgeAttribute()
+    {
+        return LevelBadge::where('order', $this->order)->first();
+    }
+
+    // public function badge()
+    // {
+    //     return $this->belongsTo(LevelBadge::class, 'level_badge_id');
+    // }
 }

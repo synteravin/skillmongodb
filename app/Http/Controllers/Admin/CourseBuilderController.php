@@ -15,6 +15,7 @@ use App\Http\Requests\Path\StorePathRequest;
 use App\Http\Requests\Module\StoreModuleRequest;
 
 use App\Models\Course;
+use App\Models\LevelBadge;
 
 use Inertia\Inertia;
 
@@ -90,8 +91,14 @@ class CourseBuilderController extends Controller
                 'title' => $course->title,
                 'slug' => $course->slug,
                 'basic_paths' => $basicPaths,
-                'career_groups' => $careerGroups
-            ]
+                'career_groups' => $careerGroups,
+            ],
+            'badges' => LevelBadge::orderBy('order')->get()->map(function ($b) {
+                return [
+                    'order' => (int) $b->order,
+                    'icon' => $b->icon,
+                ];
+            })
 
         ]);
 

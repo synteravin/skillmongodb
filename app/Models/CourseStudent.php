@@ -13,7 +13,7 @@ class CourseStudent extends Model
     protected $fillable = [
         'course_id',
         'user_id',
-        'status',
+        'status', // Not_started, In_progress, Completed
         'enrolled_at',
         'completed_at'
     ];

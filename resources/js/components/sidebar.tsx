@@ -109,7 +109,7 @@ export default function Sidebar({
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 flex flex-col ${isOpen ? 'w-64' : 'w-16'} border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} md:relative`}
+                className={`fixed inset-y-0 left-0 z-40 flex flex-col ${isOpen ? 'w-64' : 'w-16'} border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} `}
             >
                 {/* Desktop Toggle */}
                 <button
@@ -156,8 +156,8 @@ export default function Sidebar({
                                     key={item.name}
                                     href={href}
                                     className={`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${active
-                                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                                        ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
+                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
                                         } `}
                                     onClick={() =>
                                         window.innerWidth < 768 &&

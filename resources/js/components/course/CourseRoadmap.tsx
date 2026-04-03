@@ -1,5 +1,6 @@
 import FundamentalNode from "./FundamentalNode"
 import CareerBranch from "./CareerBranch"
+import { usePage } from "@inertiajs/react"
 
 type Module = {
     _id: string
@@ -25,63 +26,55 @@ type Course = {
 }
 
 export default function CourseRoadmap({ course }: { course: Course }) {
-
+    if (!course) return null;
+    const { badges } = usePage().props as any;
     return (
+        <section className="w-full py-16 sm:py-20 bg-[#040812] relative overflow-hidden font-sans border-t-2 border-[#1e2759] mt-20 text-white rounded-xl shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
+            <div className="mx-auto max-w-[1200px] px-2 sm:px-4 relative z-10">
 
-        <section className="w-full py-16 sm:py-20">
-
-            <div className="mx-auto max-w-5xl px-4 sm:px-6">
-
-                {/* HEADER */}
-
-                <div className="text-center mb-16">
-
-                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                        {course.title} Roadmap
-                    </h2>
-
-                    <p className="mt-3 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                        Ikuti jalur pembelajaran dari fundamental hingga spesialisasi karier.
-                    </p>
-
-                </div>
-
-
-                <div className="flex flex-col items-center gap-16">
-
+                <div className="flex flex-col items-center">
                     {/* FUNDAMENTAL SECTION */}
-
-                    <div className="flex flex-col items-center gap-6">
-
-                        {course.basic_paths.map((path, index) => (
-
+                    <div className="flex flex-col flex-nowrap items-center w-full">
+                        {course.basic_paths?.map((path, index) => (
                             <FundamentalNode
                                 key={String(path._id)}
                                 title={path.name}
                                 index={index}
-                            />
-
-                        ))}
-
-                    </div>
-
-
-                    {/* CAREER BRANCH SECTION */}
-                    <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-start justify-items-center">
-                        {course.career_groups.map(group => (
-                            <CareerBranch
-                                key={String(group._id)}
-                                group={group}
+                                isLast={index === (course.basic_paths.length - 1)}
                             />
                         ))}
                     </div>
 
+                    {/* CONNECTING PIPES TO BRANCHES */}
+                    {course.career_groups?.length > 0 && (
+                        <div className="w-full flex justify-center mt-0">
+                            {course.career_groups.map((group, idx) => {
+                                const isFirst = idx === 0;
+                                const isLast = idx === course.career_groups.length - 1;
+                                const hasMultiple = course.career_groups.length > 1;
+
+                                return (
+                                    <div key={`pipe-${group._id}`} className="relative flex flex-col items-center flex-1 max-w-[340px]">
+                                        {/* Horizontal line piece linking the centers */}
+                                        {hasMultiple && (
+                                            <>
+                                                {!isFirst && <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-gray-300"></div>}
+                                                {!isLast && <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-gray-300"></div>}
+                                            </>
+                                        )}
+                                        {/* Vertical line dropping to the CareerHeader */}
+                                        <div className="w-[2px] h-10 bg-gray-300"></div>
+
+                                        {/* Placed CareerBranch inside the column so it centers perfectly under the vertical drop */}
+                                        <CareerBranch group={group} index={idx} total={course.career_groups.length} badges={badges} />
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
                 </div>
 
             </div>
-
         </section>
-
     )
-
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Student\StudentCourseController;
+use App\Http\Controllers\Admin\LevelBadgeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,6 +93,10 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::post('/quiz-answer', [CourseBuilderController::class, 'storeAnswer'])
             ->name('quiz-answer.store');
+
+        /* ---------------- LEVEL BADGES ---------------- */
+
+        Route::resource('/levelbadge', LevelBadgeController::class);
 
     });
 /*

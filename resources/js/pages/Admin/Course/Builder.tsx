@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { router } from "@inertiajs/react"
+import { router, Link } from "@inertiajs/react"
 
 import AppLayout from "@/layouts/app-layout"
 import Modal from "@/components/ui/Modal"
@@ -161,7 +161,7 @@ export default function Builder({ course }: { course: Course }) {
                     </h1>
 
                     <p className="text-sm text-gray-500 mt-1">
-                        Course Builder
+                        Course Builderrrr
                     </p>
 
                 </div>
@@ -170,6 +170,13 @@ export default function Builder({ course }: { course: Course }) {
                 {/* ================= BASIC FUNDAMENTAL ================= */}
 
                 <div className="border rounded-xl p-6 bg-white/50 backdrop-blur-sm">
+
+                    <Link
+                        href="/admin/levelbadge"
+                        className="bg-gray-200 px-3 py-1 rounded"
+                    >
+                        Manage Badges
+                    </Link>
 
                     <div className="flex justify-between items-center mb-6">
 
