@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Module extends Model
 {
@@ -14,7 +15,8 @@ class Module extends Model
         'type',
         'title',
         'slug',
-        'order'
+        'order',
+        'created_by'
     ];
 
     public function path()

@@ -13,6 +13,7 @@ class Course extends Model
     protected $collection = 'courses';
 
     protected $fillable = [
+
         'title',
         'slug',
         'description',

@@ -39,7 +39,7 @@ class Path extends Model
 
     public function getRouteKeyName()
     {
-        return 'slug';
+        return '_id';
     }
 
     public function getBadgeAttribute()
@@ -47,8 +47,4 @@ class Path extends Model
         return LevelBadge::where('order', $this->order)->first();
     }
 
-    // public function badge()
-    // {
-    //     return $this->belongsTo(LevelBadge::class, 'level_badge_id');
-    // }
 }

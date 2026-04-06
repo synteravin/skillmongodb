@@ -41,9 +41,9 @@ const menu: MenuItem[] = [
         roles: ['admin', 'mentor'],
     },
     {
-        name: 'Mentors',
+        name: 'Users',
         icon: Users,
-        href: '/admin/mentors',
+        href: '/admin/users',
         roles: ['admin'],
     },
     {

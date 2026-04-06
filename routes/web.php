@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Student\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,6 +14,10 @@ use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Admin\LevelBadgeController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CareerGroupController;
+use App\Http\Controllers\Admin\ModuleManagementController;
+use App\Http\Controllers\ModuleContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +100,34 @@ Route::middleware(['auth', 'role:admin'])
         /* ---------------- LEVEL BADGES ---------------- */
 
         Route::resource('/levelbadge', LevelBadgeController::class);
+
+        /* ---------------- USER ---------------- */
+
+        Route::resource('users', UserController::class);
+        // Route::post('/admin/users/{user}', [UserController::class, 'update']);
+    
+        /* ---------------- ASSIGN MENTOR ---------------- */
+        Route::post('/career-groups/{group}/assign-mentor', [CareerGroupController::class, 'assignMentor']);
+
+        /* ---------------- MODULE MANAGEMENT ---------------- */
+        Route::get('/paths/{path}/modules', [ModuleManagementController::class, 'index'])
+            ->name('paths.modules');
+
+        Route::get('/modules/create', [ModuleManagementController::class, 'create']);
+        Route::get('/modules/{module:slug}', [ModuleManagementController::class, 'show'])
+            ->name('modules.show');
+        Route::post('/modules/{module}/contents', [ModuleContentController::class, 'store'])
+            ->name('module-contents.store');
+        Route::delete('/module-contents/{content}', [ModuleContentController::class, 'destroy'])
+            ->name('module-contents.destroy');
+        Route::put('/module-contents/reorder', [ModuleContentController::class, 'reorder']);
+        Route::post('/modules/{module}/contents', [ModuleContentController::class, 'store'])
+            ->name('module-contents.store');
+
+        Route::delete('/module-contents/{content}', [ModuleContentController::class, 'destroy'])
+            ->name('module-contents.destroy');
+        Route::put('/module-contents/{content}', [ModuleContentController::class, 'update'])
+            ->name('module-contents.update');
 
     });
 /*

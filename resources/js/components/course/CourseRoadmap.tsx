@@ -5,6 +5,7 @@ import { usePage } from "@inertiajs/react"
 type Module = {
     _id: string
     title: string
+    slug: string
 }
 
 type Path = {
@@ -20,12 +21,19 @@ type CareerGroup = {
 }
 
 type Course = {
+    _id: string
     title: string
     basic_paths: Path[]
     career_groups: CareerGroup[]
 }
 
-export default function CourseRoadmap({ course }: { course: Course }) {
+type Mentor = {
+    _id: string
+    name: string
+    avatar?: string | null
+}
+
+export default function CourseRoadmap({ course, mentors }: { course: Course, mentors: Mentor[] }) {
     if (!course) return null;
     const { badges } = usePage().props as any;
     return (
@@ -66,7 +74,7 @@ export default function CourseRoadmap({ course }: { course: Course }) {
                                         <div className="w-[2px] h-10 bg-gray-300"></div>
 
                                         {/* Placed CareerBranch inside the column so it centers perfectly under the vertical drop */}
-                                        <CareerBranch group={group} index={idx} total={course.career_groups.length} badges={badges} />
+                                        <CareerBranch group={group} index={idx} total={course.career_groups.length} badges={badges} mentors={mentors} courseId={course._id} />
                                     </div>
                                 )
                             })}

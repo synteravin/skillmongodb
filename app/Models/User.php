@@ -12,13 +12,13 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use App\Models\UserCharacter;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Auth\Passwords\CanResetPassword;
-
+use Illuminate\Foundation\Auth\Access\Authorizable;
 
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use Authenticatable, HasFactory, Notifiable, TwoFactorAuthenticatable, CanResetPassword;
+    use Authenticatable, HasFactory, Notifiable, TwoFactorAuthenticatable, CanResetPassword, Authorizable;
 
     protected $connection = 'mongodb';
     protected $collection = 'users';
@@ -35,6 +35,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'password',
         'role',
         'character_id',
+        'avatar',
     ];
 
     /**
@@ -57,6 +58,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected function casts(): array
     {
         return [
+            '_id' => 'string',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
@@ -101,5 +103,23 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             'user_id',
             'course_id'
         );
+    }
+
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MENTOR = 'mentor';
+    const ROLE_STUDENT = 'student';
+
+    public static function roles(): array
+    {
+        return [
+            self::ROLE_ADMIN,
+            self::ROLE_MENTOR,
+            self::ROLE_STUDENT,
+        ];
+    }
+
+    public function getRouteKeyName()
+    {
+        return '_id';
     }
 }

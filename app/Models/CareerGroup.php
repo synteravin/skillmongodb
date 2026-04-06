@@ -12,6 +12,7 @@ class CareerGroup extends Model
     protected $fillable = [
         'course_id',
         'name',
+        'mentor_id',
         'slug',
         'order'
     ];
@@ -25,5 +26,10 @@ class CareerGroup extends Model
     {
         return $this->hasMany(Path::class, 'career_group_id')
             ->orderBy('order');
+    }
+
+    public function mentor()
+    {
+        return $this->belongsTo(User::class, 'mentor_id', '_id');
     }
 }

@@ -16,7 +16,7 @@ use App\Http\Requests\Module\StoreModuleRequest;
 
 use App\Models\Course;
 use App\Models\LevelBadge;
-
+use App\Models\User;
 use Inertia\Inertia;
 
 class CourseBuilderController extends Controller
@@ -28,7 +28,11 @@ class CourseBuilderController extends Controller
         $courses = Course::latest()->get();
 
         return Inertia::render('Admin/Course/Index', [
-            'courses' => $courses
+            'courses' => $courses,
+            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+                '_id' => (string) $m->_id,
+                'name' => $m->name,
+            ])
         ]);
 
     }
@@ -38,7 +42,8 @@ class CourseBuilderController extends Controller
 
         $course->load([
             'paths.modules',
-            'careerGroups.paths.modules'
+            'careerGroups.paths.modules',
+            'careerGroups.mentor'
         ]);
 
         $basicPaths = $course->paths
@@ -54,7 +59,8 @@ class CourseBuilderController extends Controller
                             '_id' => (string) $module->_id,
                             'title' => $module->title
                         ];
-                    })
+                    }),
+
                 ];
 
             });
@@ -66,8 +72,14 @@ class CourseBuilderController extends Controller
                 return [
                     '_id' => (string) $group->_id,
                     'name' => $group->name,
-                    'paths' => $group->paths->map(function ($path) {
 
+                    'mentor' => $group->mentor ? [
+                        '_id' => (string) $group->mentor->_id,
+                        'name' => $group->mentor->name,
+                        'avatar' => $group->mentor->avatar,
+                    ] : null,
+
+                    'paths' => $group->paths->map(function ($path) {
                         return [
                             '_id' => (string) $path->_id,
                             'name' => $path->name,
@@ -76,9 +88,8 @@ class CourseBuilderController extends Controller
                                     '_id' => (string) $module->_id,
                                     'title' => $module->title
                                 ];
-                            })
+                            }),
                         ];
-
                     })
                 ];
 
@@ -92,13 +103,19 @@ class CourseBuilderController extends Controller
                 'slug' => $course->slug,
                 'basic_paths' => $basicPaths,
                 'career_groups' => $careerGroups,
+
             ],
             'badges' => LevelBadge::orderBy('order')->get()->map(function ($b) {
                 return [
                     'order' => (int) $b->order,
                     'icon' => $b->icon,
                 ];
-            })
+            }),
+
+            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+                '_id' => (string) $m->_id,
+                'name' => $m->name,
+            ]),
 
         ]);
 

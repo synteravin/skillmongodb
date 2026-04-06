@@ -29,7 +29,13 @@ type Course = {
     career_groups: CareerGroup[]
 }
 
-export default function Builder({ course }: { course: Course }) {
+type Mentor = {
+    _id: string
+    name: string
+    avatar?: string | null
+}
+
+export default function Builder({ course, mentors }: { course: Course, mentors: Mentor[] }) {
 
     /* ================= MODAL STATE ================= */
 
@@ -309,7 +315,7 @@ export default function Builder({ course }: { course: Course }) {
 
                 {/* ================= ROADMAP ================= */}
 
-                <CourseRoadmap course={course} />
+                <CourseRoadmap course={course} mentors={mentors} />
 
 
                 {/* ================= MODALS ================= */}
