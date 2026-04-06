@@ -139,7 +139,7 @@ function TopBar({
           <img src="/images/gold.png" className="h-13 w-13 object-contain" />
 
           <span className="text-lg font-semibold">
-            20897
+            100.000
           </span>
 
         </div>
