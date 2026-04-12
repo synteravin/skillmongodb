@@ -42,7 +42,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                         {courses.map((course, index) => (
                             <Link
                                 key={course._id}
-                                href={`/student/course/${course.slug}`}
+                                href={`/student/courses/${course.slug}`}
                                 className="group flex flex-col bg-[#0b1021] border border-[#1e2759] hover:border-blue-500/60 rounded-xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_25px_rgba(30,58,138,0.3)] relative"
                             >
                                 {/* Thumbnail */}

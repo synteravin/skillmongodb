@@ -13,6 +13,7 @@ class QuizQuestion extends Model
         'quiz_id',
         'question_text',
         'media_url',
+        'media_file',
         'order'
     ];
 

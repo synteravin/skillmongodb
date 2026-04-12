@@ -18,6 +18,13 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CareerGroupController;
 use App\Http\Controllers\Admin\ModuleManagementController;
 use App\Http\Controllers\ModuleContentController;
+use App\Http\Controllers\Student\CompleteModuleController;
+use App\Http\Controllers\Student\SelectPathController;
+use App\Http\Controllers\Student\CompletePathController;
+use App\Http\Controllers\Student\CourseRoadmapController;
+use App\Http\Controllers\Student\LearnController;
+use App\Http\Controllers\Admin\QuizController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -88,9 +95,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/module-content', [CourseBuilderController::class, 'storeContent'])
             ->name('module-content.store');
 
-        Route::post('/quiz', [CourseBuilderController::class, 'storeQuiz'])
-            ->name('quiz.store');
-
         Route::post('/quiz-question', [CourseBuilderController::class, 'storeQuestion'])
             ->name('quiz-question.store');
 
@@ -121,13 +125,21 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/module-contents/{content}', [ModuleContentController::class, 'destroy'])
             ->name('module-contents.destroy');
         Route::put('/module-contents/reorder', [ModuleContentController::class, 'reorder']);
-        Route::post('/modules/{module}/contents', [ModuleContentController::class, 'store'])
-            ->name('module-contents.store');
 
-        Route::delete('/module-contents/{content}', [ModuleContentController::class, 'destroy'])
-            ->name('module-contents.destroy');
+
         Route::put('/module-contents/{content}', [ModuleContentController::class, 'update'])
             ->name('module-contents.update');
+
+        Route::post('/quiz', [QuizController::class, 'store'])->name('quiz.store');
+        Route::get('/quiz/{quiz}', [QuizController::class, 'show'])->name('quiz.show');
+        Route::put('/quiz/{quiz}', [QuizController::class, 'update'])->name('quiz.update');
+        Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
+        Route::get('/modules/{module}/quiz/create', [QuizController::class, 'create'])
+            ->name('quiz.create');
+
+        Route::get('/quiz/{quiz}/edit', [QuizController::class, 'edit'])
+            ->name('quiz.edit');
+        Route::get('/quiz', [QuizController::class, 'index'])->name('quiz.index');
 
     });
 /*
@@ -161,6 +173,26 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 
         Route::get('/course', [StudentCourseController::class, 'index'])
             ->name('course');
+
+        Route::post('/modules/{module}/complete', CompleteModuleController::class)
+            ->name('student.modules.complete');
+
+        Route::post('/paths/{path}/select', SelectPathController::class)
+            ->name('student.paths.select');
+
+        Route::post('/paths/{path}/complete', CompletePathController::class)
+            ->name('student.paths.complete');
+
+        Route::get('/courses/{course}', CourseRoadmapController::class)
+            ->name('student.courses.roadmap');
+
+        Route::get('/learn/{course}/{path}/{module}', [LearnController::class, 'show'])
+            ->name('course.path.module.show');
+
+        Route::get('/quiz/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
+        Route::post('/quiz/{quiz}/submit', [\App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
+        Route::get('/quiz/{quiz}/result', [\App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
+
     });
 
 /*

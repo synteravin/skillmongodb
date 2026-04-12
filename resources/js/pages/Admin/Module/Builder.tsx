@@ -56,7 +56,19 @@ const getId = (data: any): string => {
     if (typeof data._id === "object" && data._id?.$oid) return data._id.$oid;
     return String(data._id || data.id);
 };
+const getYoutubeEmbed = (url: string) => {
+    try {
+        const parsed = new URL(url);
 
+        if (parsed.hostname.includes("youtu.be")) {
+            return `https://www.youtube.com/embed/${parsed.pathname.slice(1)}`;
+        }
+
+        return `https://www.youtube.com/embed/${parsed.searchParams.get("v")}`;
+    } catch {
+        return "";
+    }
+};
 /* ================= ITEM ================= */
 const SortableContent = ({
     content,
@@ -177,18 +189,68 @@ const SortableContent = ({
                                 {content.content.description}
                             </p>
                         )}
-                        
+
                         {content.type === "youtube" && content.content?.url && (
                             <p className="text-sm text-blue-400 break-all mt-1">
                                 {content.content.url}
                             </p>
                         )}
 
-                        {(content.type === "image" || content.type === "video" || content.type === "file") && content.content?.url && (
-                            <a href={content.content.url} target="_blank" rel="noreferrer" className="text-sm text-blue-400 break-all hover:underline mt-1 block" onClick={e => e.stopPropagation()}>
-                                {content.content?.name || "View File"}
-                            </a>
-                        )}
+                        <div className="mt-2 rounded-xl overflow-hidden border border-slate-700 bg-black/40">
+
+                            {/* IMAGE */}
+                            {content.type === "image" && content.content?.url && (
+                                <div className="relative group">
+                                    <img
+                                        src={content.content.url}
+                                        className="w-full max-h-72 object-cover transition duration-300 group-hover:scale-105"
+                                    />
+                                </div>
+                            )}
+
+                            {/* VIDEO */}
+                            {content.type === "video" && content.content?.url && (
+                                <video
+                                    src={content.content.url}
+                                    controls
+                                    className="w-full max-h-72 bg-black"
+                                />
+                            )}
+
+                            {/* YOUTUBE */}
+                            {content.type === "youtube" && content.content?.url && (
+                                <div className="aspect-video">
+                                    <iframe
+                                        src={getYoutubeEmbed(content.content.url)}
+                                        className="w-full h-full"
+                                        allowFullScreen
+                                    />
+                                </div>
+                            )}
+
+                            {/* PDF */}
+                            {content.type === "file" && content.content?.url?.endsWith(".pdf") && (
+                                <div className="h-[400px]">
+                                    <iframe
+                                        src={content.content.url}
+                                        className="w-full h-full"
+                                    />
+                                </div>
+                            )}
+
+                            {/* FILE LAIN */}
+                            {content.type === "file" && content.content?.url && !content.content.url.endsWith(".pdf") && (
+                                <a
+                                    href={content.content.url}
+                                    target="_blank"
+                                    className="block p-3 text-blue-400 hover:underline"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    📎 Download File
+                                </a>
+                            )}
+
+                        </div>
 
                         <button
                             onClick={(e) => {
@@ -214,7 +276,18 @@ export default function ModuleBuilder({ path }: { path: Path }) {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [openModule, setOpenModule] = useState<string | null>(null);
     const [newTitle, setNewTitle] = useState("");
+    const rollback = (module: Module, tempId: string) => {
+        setModules(prev =>
+            prev.map(m => {
+                if (getId(m) !== getId(module)) return m;
 
+                return {
+                    ...m,
+                    contents: m.contents.filter(c => getId(c) !== tempId)
+                };
+            })
+        );
+    };
     // Sync local state when `path` prop updates from backend (e.g. after adding content)
     useEffect(() => {
         setModules(path.modules);
@@ -244,49 +317,121 @@ export default function ModuleBuilder({ path }: { path: Path }) {
 
         const tempId = "temp-" + Date.now();
 
-        // 🔥 1. UPDATE UI DULU (INSTANT)
-        setModules(prev =>
-            prev.map(m => {
-                if (getId(m) !== getId(module)) return m;
+        // ================= TEXT =================
+        if (type === "text") {
 
-                return {
-                    ...m,
-                    contents: [
-                        ...m.contents,
-                        {
-                            _id: tempId,
-                            type,
-                            order: m.contents.length + 1,
-                            content: {}
-                        }
-                    ]
-                };
-            })
-        );
+            setModules(prev =>
+                prev.map(m => {
+                    if (getId(m) !== getId(module)) return m;
 
-        // 🔥 2. HIT BACKEND
-        router.post(`/admin/modules/${module.slug}/contents`, { type }, {
-            preserveScroll: true,
+                    return {
+                        ...m,
+                        contents: [
+                            ...m.contents,
+                            {
+                                _id: tempId,
+                                type,
+                                order: m.contents.length + 1,
+                                content: {}
+                            }
+                        ]
+                    };
+                })
+            );
 
-            onSuccess: () => {
-                // 🔥 SYNC DATA REAL (GANTI TEMP)
-                router.reload({ only: ["path"] });
-            },
+            router.post(`/admin/modules/${getId(module)}/contents`, { type }, {
+                preserveScroll: true,
+                onSuccess: () => router.reload({ only: ["path"] }),
+                onError: () => rollback(module, tempId)
+            });
 
-            onError: () => {
-                // rollback kalau gagal
-                setModules(prev =>
-                    prev.map(m => {
-                        if (getId(m) !== getId(module)) return m;
+            return;
+        }
 
-                        return {
-                            ...m,
-                            contents: m.contents.filter(c => getId(c) !== tempId)
-                        };
-                    })
-                );
-            }
-        });
+        // ================= YOUTUBE =================
+        if (type === "youtube") {
+
+            const url = prompt("Masukkan URL YouTube");
+            if (!url) return;
+
+            setModules(prev =>
+                prev.map(m => {
+                    if (getId(m) !== getId(module)) return m;
+
+                    return {
+                        ...m,
+                        contents: [
+                            ...m.contents,
+                            {
+                                _id: tempId,
+                                type,
+                                order: m.contents.length + 1,
+                                content: { url }
+                            }
+                        ]
+                    };
+                })
+            );
+
+            router.post(`/admin/modules/${getId(module)}/contents`, {
+                type,
+                url
+            }, {
+                preserveScroll: true,
+                onSuccess: () => router.reload({ only: ["path"] }),
+                onError: () => rollback(module, tempId)
+            });
+
+            return;
+        }
+
+        // ================= FILE BASED =================
+        const input = document.createElement("input");
+        input.type = "file";
+
+        if (type === "image") input.accept = "image/*";
+        if (type === "video") input.accept = "video/*";
+
+        input.onchange = () => {
+
+            const file = input.files?.[0];
+            if (!file) return;
+
+            // optimistic UI
+            setModules(prev =>
+                prev.map(m => {
+                    if (getId(m) !== getId(module)) return m;
+
+                    return {
+                        ...m,
+                        contents: [
+                            ...m.contents,
+                            {
+                                _id: tempId,
+                                type,
+                                order: m.contents.length + 1,
+                                content: {
+                                    url: URL.createObjectURL(file)
+                                }
+                            }
+                        ]
+                    };
+                })
+            );
+
+            const formData = new FormData();
+            formData.append("type", type);
+            formData.append("file", file);
+
+            router.post(`/admin/modules/${getId(module)}/contents`, formData, {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: () => router.reload({ only: ["path"] }),
+                onError: () => rollback(module, tempId)
+            });
+        };
+
+        input.click();
     };
 
     const deleteContent = (id: string, moduleId: string) => {
@@ -359,7 +504,16 @@ export default function ModuleBuilder({ path }: { path: Path }) {
             }))
         });
     };
+    const getYoutubeEmbed = (url: string) => {
+        if (!url) return "";
 
+        const id =
+            url.includes("youtu.be")
+                ? url.split("/").pop()
+                : url.split("v=")[1]?.split("&")[0];
+
+        return `https://www.youtube.com/embed/${id}`;
+    };
     return (
         <AppLayout>
             <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#020617] to-black text-white px-6 py-8">
@@ -369,6 +523,19 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                     <h1 className="text-3xl font-bold tracking-tight">
                         Module Builder — {path.name}
                     </h1>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => router.get(`/admin/quiz`)}
+                            className="bg-purple-600 hover:bg-purple-500 transition px-4 py-2 rounded-lg text-sm font-medium"
+                        >
+                            🎯 Manage Quiz
+                        </button>
+
+                        <span className="text-gray-400 text-sm">
+                            Create or edit quiz for this module
+                        </span>
+                    </div>
+
 
                     {/* CREATE */}
                     <div className="flex gap-3 bg-slate-900/70 border border-slate-800 rounded-xl px-4 py-3 shadow-sm">
@@ -410,7 +577,15 @@ export default function ModuleBuilder({ path }: { path: Path }) {
 
                                 {isOpen && (
                                     <div className="p-4 flex flex-col gap-3 border-t border-slate-800">
-
+                                        <button
+                                            onClick={() =>
+                                                router.get(`/admin/modules/${moduleId}/quiz/create`)
+                                            }
+                                            className="bg-purple-600 hover:bg-purple-500 transition px-3 py-1.5 rounded-lg text-sm flex items-center gap-2"
+                                        >
+                                            <Plus size={14} />
+                                            Create Quiz
+                                        </button>
                                         <DndContext
                                             sensors={sensors}
                                             collisionDetection={closestCenter}

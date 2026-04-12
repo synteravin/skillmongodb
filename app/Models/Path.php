@@ -18,7 +18,6 @@ class Path extends Model
         'description',
         'thumbnail',
         'order',
-        // 'level_badge_id',
     ];
 
     public function course()

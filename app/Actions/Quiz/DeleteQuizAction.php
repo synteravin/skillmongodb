@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Actions\Quiz;
+
+use App\Models\Quiz;
+use App\Models\QuizQuestion;
+use App\Models\QuizAnswer;
+
+class DeleteQuizAction
+{
+    public function execute(Quiz $quiz)
+    {
+        $questions = QuizQuestion::where('quiz_id', $quiz->_id)->pluck('_id');
+
+        QuizAnswer::whereIn('question_id', $questions)->delete();
+        QuizQuestion::where('quiz_id', $quiz->_id)->delete();
+
+        $quiz->delete();
+    }
+}

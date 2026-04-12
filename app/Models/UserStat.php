@@ -11,11 +11,14 @@ class UserStat extends Model
 
     protected $fillable = [
         'user_id',
+        'course_id',
+        'completed_modules',
+        'completed_paths',
+        'selected_path_id',
+        'stage',
         'xp',
         'level',
-        'streak',
-        'completed_modules',
-        'completed_paths'
+        'streak'
     ];
 
     protected $casts = [

@@ -141,16 +141,11 @@ export default function ModuleShow({ module }: any) {
                                             <Trash2 size={14} />
                                             Delete
                                         </button>
-
                                     </div>
-
                                 </div>
-
                             </div>
                         ))}
-
                     </div>
-
                 </div>
             </div>
         </AppLayout>

@@ -64,6 +64,9 @@ export default function CareerBranch({ group, index, badges, mentors, courseId }
     const [showModal, setShowModal] = useState(false)
     const [selectedMentor, setSelectedMentor] = useState("")
 
+    // Total modules across all paths in this group
+    const totalModules = (group.paths || []).reduce((sum: number, p: any) => sum + (p.modules?.length || 0), 0);
+
     return (
         <>
             <div className="flex flex-col items-center w-full max-w-[320px] px-2 relative z-10">
@@ -90,7 +93,7 @@ export default function CareerBranch({ group, index, badges, mentors, courseId }
                         <div className="flex justify-between gap-2 mb-3">
                             <div className="flex-1 bg-black/60 border border-[#1e2759] rounded p-1.5 text-center flex flex-col items-center justify-center">
                                 <span className="block text-[9px] text-[#eab308]">Modules</span>
-                                <span className="block text-[11px] font-bold text-white">10 Units</span>
+                                <span className="block text-[11px] font-bold text-white">{totalModules} Units</span>
                             </div>
                             <div className="flex-1 bg-black/60 border border-[#1e2759] rounded p-1.5 text-center flex flex-col items-center justify-center">
                                 <span className="block text-[9px] text-[#eab308]">Formats</span>

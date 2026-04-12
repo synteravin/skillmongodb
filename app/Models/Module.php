@@ -35,8 +35,13 @@ class Module extends Model
         return $this->hasOne(Quiz::class, 'module_id', '_id');
     }
 
+    public function badge()
+    {
+        return $this->belongsTo(LevelBadge::class, 'badge_id', '_id');
+    }
+
     public function getRouteKeyName()
     {
-        return 'slug';
+        return '_id';
     }
 }

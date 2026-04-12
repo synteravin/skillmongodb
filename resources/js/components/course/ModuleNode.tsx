@@ -24,6 +24,12 @@ export default function ModuleNode({
     const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
     const roman = romanNumerals[index] || (index + 1);
 
+    const hasValidIcon =
+        badge &&
+        badge.icon &&
+        badge.icon !== "null" &&
+        badge.icon !== "";
+
     return (
         <div className="flex flex-col items-center w-full relative z-10">
 
@@ -31,9 +37,9 @@ export default function ModuleNode({
 
                 {/* LEFT BADGE */}
                 <div className="relative z-10 flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 bg-black flex items-center justify-center font-['Orbitron'] font-bold border-[#d97706] text-[#d97706]">
-                    {badge?.icon ? (
+                    {hasValidIcon ? (
                         <img
-                            src={`/storage/${badge.icon}`}
+                            src={`/storage/${badge?.icon}`}
                             className="w-full h-full object-cover rounded-full"
                         />
                     ) : (
