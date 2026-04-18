@@ -6,22 +6,24 @@ type Props = {
     progress: any;
     badges?: any[];
     courseId?: string;
+    basicCompleted: boolean;
 };
 
-export default function StudentCareerBranch({ group, progress, badges = [], courseId }: Props) {
-    const isChosen = progress.selected_path_id === group._id;
-    const isOtherChosen = progress.selected_path_id && progress.selected_path_id !== group._id;
+export default function StudentCareerBranch({ group, progress, badges = [], courseId, basicCompleted }: Props) {
+
+    const isChosen = group.paths.some((p: any) => p._id === progress.selected_path_id);
+    const isOtherChosen = progress.selected_path_id && !isChosen;
     const totalModules = group.paths.reduce((sum: number, p: any) => sum + (p.modules?.length || 0), 0);
 
     return (
-        <div className="flex flex-col items-center w-full max-w-[340px] px-2 sm:px-4 relative z-10 text-sans">
+        <div className="flex flex-col items-center w-full  px-8 sm:px-4 relative  text-sans">
             <div className={`relative w-full rounded-xl flex flex-col p-[2px] shadow-lg mb-0 bg-gradient-to-b from-[#1e2759] to-[#040812] border-2 transition-all 
                  ${isChosen ? 'border-blue-400 shadow-[0_0_30px_rgba(96,165,250,0.4)]' : 'border-[#1e2759] shadow-[0_0_20px_rgba(0,0,0,0.5)]'}
-                 ${isOtherChosen ? 'grayscale opacity-50' : ''}
+                 ${(!basicCompleted || isOtherChosen) ? 'grayscale opacity-50' : ''}
             `}>
                 <div className="w-full h-full rounded-lg bg-[#0a0f1d] flex flex-col p-4 relative">
 
-                    {isOtherChosen && (
+                    {(!basicCompleted || isOtherChosen) && (
                         <div className="absolute inset-0 z-30 flex items-center justify-center">
                             <svg width="80" height="80" viewBox="0 0 24 24" fill="#050505" stroke="#1f2937" strokeWidth="1" className="opacity-90 drop-shadow-xl">
                                 <path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="#050505" strokeWidth="4" />
@@ -76,7 +78,7 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                             </div>
                         </div>
                         <button
-                            disabled={isOtherChosen}
+                            disabled={!basicCompleted || isOtherChosen}
                             className={`px-4 py-1 rounded text-[10px] font-bold border transition-colors flex-shrink-0 ${isOtherChosen ? 'bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed' : 'bg-black border-[#d97706] text-[#d97706] hover:bg-[#d97706] hover:text-black'}`}
                         >
                             Start
@@ -87,12 +89,22 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
 
             <div className={`w-[2px] h-8 bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}></div>
 
-            <div className={`flex flex-col w-full items-center ${isOtherChosen ? 'opacity-60 grayscale' : ''}`}>
+            <div className={`flex flex-col w-full items-center ${(!basicCompleted || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
                 {group.paths.map((p: any, idx: number) => {
                     const done = progress.completed_paths?.includes(String(p._id));
                     const badge = badges?.find((b: any) => parseInt(b.order?.toString().trim()) === (idx + 1));
 
-                    let locked = isOtherChosen;
+                    let locked = false;
+
+                    // ❌ kalau basic belum selesai → semua lock
+                    if (!basicCompleted) {
+                        locked = true;
+                    }
+
+                    // 🔒 kalau branch lain dipilih
+                    if (isOtherChosen) {
+                        locked = true;
+                    }
                     if (!locked && idx > 0) {
                         const prevPath = group.paths[idx - 1];
                         locked = !progress.completed_paths?.includes(String(prevPath._id));
@@ -119,7 +131,13 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                         title="Submission"
                         index={group.paths.length}
                         isSubmission={true}
-                        locked={isOtherChosen || !progress.completed_paths?.includes(String(group.paths[group.paths.length - 1]._id))}
+                        locked={
+                            !basicCompleted ||
+                            isOtherChosen ||
+                            !progress.completed_paths?.includes(
+                                String(group.paths[group.paths.length - 1]._id)
+                            )
+                        }
                     />
                 )}
             </div>

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
-use App\Models\Module;
-use Illuminate\Http\Request;
+use App\Models\Path;
 use Inertia\Inertia;
 
 use App\Http\Requests\Quiz\StoreQuizRequest;
@@ -16,51 +15,58 @@ use App\Responses\Quiz\QuizResponse;
 
 class QuizController extends Controller
 {
+    /* ===============================
+     * INDEX
+     * =============================== */
     public function index()
     {
         $this->authorize('viewAny', Quiz::class);
 
-        $quizzes = Quiz::with(['module', 'questions'])->latest()->get();
+        $quizzes = Quiz::with(['path', 'questions'])->latest()->get();
 
         return Inertia::render('Admin/Quiz/Index', [
             'quizzes' => $quizzes->map(function ($quiz) {
                 return [
                     'id' => (string) $quiz->_id,
-                    'module_name' => $quiz->module->title ?? 'Unknown Module',
+                    'path_name' => $quiz->path->name ?? 'Unknown Path',
                     'difficulty' => $quiz->difficulty,
                     'questions_count' => $quiz->questions->count(),
                 ];
             })
         ]);
     }
+
     /* ===============================
-     * SHOW CREATE PAGE
+     * CREATE PAGE
      * =============================== */
-    public function create(Module $module)
+    public function create(Path $path)
     {
         $this->authorize('create', Quiz::class);
 
         return Inertia::render('Admin/Quiz/Create', [
-            'moduleId' => (string) $module->_id
+            'pathId' => (string) $path->_id
         ]);
     }
 
     /* ===============================
-     * STORE QUIZ
+     * STORE QUIZ (🔥 FIX UTAMA)
      * =============================== */
-    public function store(StoreQuizRequest $request)
+    public function store(StoreQuizRequest $request, Path $path)
     {
-        // dd($request->all(), $request->file());
         $this->authorize('create', Quiz::class);
 
-        $quiz = app(CreateQuizAction::class)
-            ->execute($request->all()); // 🔥 FIX DI SINI
+        $data = $request->validated();
+
+        // 🔥 INJECT DARI ROUTE (BYPASS FRONTEND)
+        $data['path_id'] = (string) $path->_id;
+
+        app(CreateQuizAction::class)->execute($data);
 
         return redirect()->back()->with('success', 'Quiz created successfully');
     }
 
     /* ===============================
-     * SHOW EDIT PAGE
+     * EDIT PAGE
      * =============================== */
     public function edit(Quiz $quiz)
     {
@@ -71,7 +77,7 @@ class QuizController extends Controller
         return Inertia::render('Admin/Quiz/Edit', [
             'quiz' => [
                 'id' => (string) $quiz->_id,
-                'module_id' => (string) $quiz->module_id,
+                'path_id' => (string) $quiz->path_id,
                 'difficulty' => $quiz->difficulty,
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
@@ -93,8 +99,9 @@ class QuizController extends Controller
     {
         $this->authorize('update', $quiz);
 
-        app(UpdateQuizAction::class)
-            ->execute($quiz, $request->validated());
+        $data = $request->validated();
+
+        app(UpdateQuizAction::class)->execute($quiz, $data);
 
         return redirect()->back()->with('success', 'Quiz updated successfully');
     }
@@ -112,14 +119,16 @@ class QuizController extends Controller
     }
 
     /* ===============================
-     * SHOW DETAIL (OPTIONAL API)
+     * SHOW DETAIL (API)
      * =============================== */
     public function show(Quiz $quiz)
     {
         $this->authorize('view', $quiz);
 
         return response()->json([
-            'data' => QuizResponse::make($quiz->load('questions.answers'))
+            'data' => QuizResponse::make(
+                $quiz->load('questions.answers')
+            )
         ]);
     }
 }

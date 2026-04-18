@@ -10,13 +10,13 @@ class Quiz extends Model
     protected $collection = 'quizzes';
 
     protected $fillable = [
-        'module_id',
+        'path_id',
         'difficulty'
     ];
 
-    public function module()
+    public function path()
     {
-        return $this->belongsTo(Module::class, 'module_id', '_id');
+        return $this->belongsTo(Path::class, 'path_id', '_id');
     }
 
     public function questions()

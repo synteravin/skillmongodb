@@ -6,23 +6,27 @@ use Laravel\Fortify\Features;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
-use App\Http\Controllers\Student\DashboardController as StudentDashboard;
-use App\Http\Controllers\Student\SelectCharacterController;
+
 use App\Http\Controllers\Admin\CharacterController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
-use App\Http\Controllers\Student\StudentCourseController;
+
 use App\Http\Controllers\Admin\LevelBadgeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CareerGroupController;
 use App\Http\Controllers\Admin\ModuleManagementController;
 use App\Http\Controllers\ModuleContentController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\Student\SelectCharacterController;
+use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Student\CompleteModuleController;
 use App\Http\Controllers\Student\SelectPathController;
 use App\Http\Controllers\Student\CompletePathController;
 use App\Http\Controllers\Student\CourseRoadmapController;
 use App\Http\Controllers\Student\LearnController;
+use App\Http\Controllers\Student\CourseController as StudentCourseActionController;
+
 use App\Http\Controllers\Admin\QuizController;
 
 
@@ -130,17 +134,21 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/module-contents/{content}', [ModuleContentController::class, 'update'])
             ->name('module-contents.update');
 
-        Route::post('/quiz', [QuizController::class, 'store'])->name('quiz.store');
-        Route::get('/quiz/{quiz}', [QuizController::class, 'show'])->name('quiz.show');
-        Route::put('/quiz/{quiz}', [QuizController::class, 'update'])->name('quiz.update');
-        Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
-        Route::get('/modules/{module}/quiz/create', [QuizController::class, 'create'])
-            ->name('quiz.create');
-
-        Route::get('/quiz/{quiz}/edit', [QuizController::class, 'edit'])
-            ->name('quiz.edit');
         Route::get('/quiz', [QuizController::class, 'index'])->name('quiz.index');
 
+        Route::get('/paths/{path}/quiz/create', [QuizController::class, 'create'])
+            ->name('quiz.create');
+
+        Route::post('/paths/{path}/quiz', [QuizController::class, 'store'])
+            ->name('paths.quiz.store');
+
+        Route::get('/quiz/{quiz}', [QuizController::class, 'show'])->name('quiz.show');
+
+        Route::get('/quiz/{quiz}/edit', [QuizController::class, 'edit'])->name('quiz.edit');
+
+        Route::put('/quiz/{quiz}', [QuizController::class, 'update'])->name('quiz.update');
+
+        Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
     });
 /*
 |--------------------------------------------------------------------------
@@ -174,8 +182,14 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/course', [StudentCourseController::class, 'index'])
             ->name('course');
 
+        Route::post('/courses/select', [StudentCourseActionController::class, 'select'])
+            ->name('courses.select');
+
+        Route::get('/courses/{course}', CourseRoadmapController::class)
+            ->name('courses.roadmap');
+
         Route::post('/modules/{module}/complete', CompleteModuleController::class)
-            ->name('student.modules.complete');
+            ->name('modules.complete');
 
         Route::post('/paths/{path}/select', SelectPathController::class)
             ->name('student.paths.select');
@@ -183,8 +197,7 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::post('/paths/{path}/complete', CompletePathController::class)
             ->name('student.paths.complete');
 
-        Route::get('/courses/{course}', CourseRoadmapController::class)
-            ->name('student.courses.roadmap');
+
 
         Route::get('/learn/{course}/{path}/{module}', [LearnController::class, 'show'])
             ->name('course.path.module.show');

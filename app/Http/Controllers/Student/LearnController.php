@@ -3,74 +3,65 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-
-use App\Models\Course;
-use App\Models\Path;
-use App\Models\Module;
 use Inertia\Inertia;
+use App\Services\Learns\LearnService;
 
 class LearnController extends Controller
 {
-    public function show($courseId, $pathId, $moduleId)
+    public function show($courseId, $pathId, $moduleId, LearnService $service)
     {
-        // ================= COURSE =================
-        $course = Course::select('_id', 'title')
-            ->findOrFail($courseId);
-
-        // ================= PATH =================
-        $path = Path::where('_id', $pathId)
-            ->where('course_id', $courseId)
-            ->with([
-                'modules' => function ($q) {
-                    $q->select('_id', 'path_id', 'title', 'order')
-                        ->orderBy('order');
-                }
-            ])
-            ->firstOrFail();
-
-        // ================= MODULE =================
-        $module = Module::where('_id', $moduleId)
-            ->where('path_id', $pathId)
-            ->with([
-                'contents' => function ($q) {
-                    $q->select('_id', 'module_id', 'type', 'content', 'order')
-                        ->orderBy('order');
-                },
-                'quiz'
-            ])
-            ->firstOrFail();
+        $data = $service->getData(
+            auth()->user(),
+            $courseId,
+            $pathId,
+            $moduleId
+        );
 
         return Inertia::render('Student/Learn/Show', [
+
+            /* ================= COURSE ================= */
             'course' => [
-                '_id' => (string) $course->_id,
-                'title' => $course->title,
+                '_id' => (string) $data['course']->_id,
+                'title' => $data['course']->title,
+                'slug' => $data['course']->slug,
             ],
+
+            /* ================= PATH ================= */
             'path' => [
-                '_id' => (string) $path->_id,
-                'name' => $path->name,
-                'modules' => $path->modules->map(function ($m) {
-                    return [
-                        '_id' => (string) $m->_id,
-                        'title' => $m->title,
-                        'order' => $m->order,
-                    ];
-                }),
-            ],
-            'module' => [
-                '_id' => (string) $module->_id,
-                'title' => $module->title,
-                'contents' => $module->contents->map(function ($c) {
-                    return [
-                        '_id' => (string) $c->_id,
-                        'type' => $c->type,
-                        'content' => $c->content,
-                        'order' => $c->order,
-                    ];
-                }),
-                'quiz' => $module->quiz ? [
-                    'id' => (string) $module->quiz->_id,
+                '_id' => (string) $data['path']->_id,
+                'name' => $data['path']->name,
+
+                'final_quiz' => $data['path']->quiz ? [
+                    'id' => (string) $data['path']->quiz->_id,
                 ] : null,
+
+                'modules' => $data['modules']->map(fn($m) => [
+                    '_id' => (string) $m->_id,
+                    'title' => $m->title,
+                    'order' => $m->order,
+                ]),
             ],
+
+            /* ================= MODULE ================= */
+            'module' => [
+                '_id' => (string) $data['module']->_id,
+                'title' => $data['module']->title,
+
+                'contents' => $data['module']->contents->map(fn($c) => [
+                    '_id' => (string) $c->_id,
+                    'type' => $c->type,
+                    'content' => $c->content,
+                    'order' => $c->order,
+                ]),
+            ],
+
+            /* ================= PROGRESS ================= */
+            'progress' => [
+                'completed_modules' => $data['progress']
+            ],
+
+            /* ================= META ================= */
+            'meta' => $data['meta']
         ]);
     }
 }

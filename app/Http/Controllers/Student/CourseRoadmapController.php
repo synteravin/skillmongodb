@@ -13,9 +13,12 @@ class CourseRoadmapController extends Controller
 {
     public function __invoke(Course $course)
     {
+        $this->authorize('access', $course);
+
         $user = auth()->user();
 
-        // 🔥 progress user
+        /* ================= PROGRESS ================= */
+
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
             'course_id' => $course->_id
@@ -32,58 +35,121 @@ class CourseRoadmapController extends Controller
             'careerGroups.mentor'
         ]);
 
-        $basicPaths = $course->paths
+        /* ================= BASIC FUNDAMENTAL ================= */
+
+        $basicCollection = $course->paths
             ->where('phase', 'basic_fundamental')
-            ->values()
-            ->map(function ($path) {
-                return [
-                    '_id' => (string) $path->_id,
-                    'name' => $path->name,
-                    'thumbnail' => $path->thumbnail,
-                    'modules' => $path->modules->map(function ($module) {
-                        return [
-                            '_id' => (string) $module->_id,
-                            'title' => $module->title,
-                            'badge' => $module->badge ? [
-                                'icon' => $module->badge->icon,
-                            ] : null,
-                        ];
-                    }),
-                ];
-            });
+            ->sortBy('order')
+            ->values();
+
+        $basicPaths = $basicCollection->map(function ($path, $index) use ($progress, $basicCollection) {
+
+            $pathId = (string) $path->_id;
+
+            $isCompleted = in_array($pathId, $progress->completed_paths);
+
+            if ($index === 0) {
+                $isUnlocked = true;
+            } else {
+                $prev = $basicCollection[$index - 1];
+                $isUnlocked = in_array((string) $prev->_id, $progress->completed_paths);
+            }
+
+            $modules = $path->modules
+                ->sortBy('order')
+                ->values();
+
+            $firstModule = $modules->first();
+
+            return [
+                '_id' => $pathId,
+                'name' => $path->name,
+                'thumbnail' => $path->thumbnail,
+                'is_unlocked' => $isUnlocked,
+                'is_completed' => $isCompleted,
+
+                // 🔥 INI YANG PALING PENTING
+                'first_module_id' => $firstModule
+                    ? (string) $firstModule->_id
+                    : null,
+
+                'modules' => $modules->map(fn($m) => [
+                    '_id' => (string) $m->_id,
+                    'title' => $m->title,
+                    'badge' => $m->badge ? [
+                        'icon' => $m->badge->icon
+                    ] : null
+                ])
+            ];
+        });
+
+        /* ================= CHECK BASIC DONE ================= */
+
+        $basicIds = $basicCollection
+            ->pluck('_id')
+            ->map(fn($id) => (string) $id)
+            ->toArray();
+
+        $isBasicCompleted = count(array_diff($basicIds, $progress->completed_paths)) === 0;
+
+        /* ================= CAREER ================= */
 
         $careerGroups = $course->careerGroups
             ->values()
-            ->map(function ($group) {
+            ->map(function ($group) use ($progress, $isBasicCompleted) {
+
                 return [
                     '_id' => (string) $group->_id,
                     'name' => $group->name,
-
                     'mentor' => $group->mentor ? [
                         '_id' => (string) $group->mentor->_id,
                         'name' => $group->mentor->name,
                         'avatar' => $group->mentor->avatar,
                     ] : null,
 
-                    'paths' => $group->paths->map(function ($path) {
-                        return [
-                            '_id' => (string) $path->_id,
-                            'name' => $path->name,
-                            'thumbnail' => $path->thumbnail,
-                            'modules' => $path->modules->map(function ($module) {
-                                return [
-                                    '_id' => (string) $module->_id,
-                                    'title' => $module->title,
-                                    'badge' => $module->badge ? [
-                                        'icon' => $module->badge->icon,
-                                    ] : null,
-                                ];
-                            }),
+                    'paths' => $group->paths
+                        ->sortBy('order')
+                        ->values()
+                        ->map(function ($path, $index) use ($progress, $isBasicCompleted) {
 
-                        ];
-                    })
+                            $pathId = (string) $path->_id;
+
+                            $isSelected = $progress->selected_path_id === $pathId;
+                            $isCompleted = in_array($pathId, $progress->completed_paths);
+
+                            /* ❌ LOCK TOTAL JIKA BASIC BELUM SELESAI */
+                            if (!$isBasicCompleted) {
+                                return [
+                                    '_id' => $pathId,
+                                    'name' => $path->name,
+                                    'thumbnail' => $path->thumbnail,
+                                    'is_unlocked' => false,
+                                    'is_selected' => false,
+                                    'is_completed' => false,
+                                ];
+                            }
+
+                            /* 🔒 JIKA SUDAH PILIH BRANCH */
+                            if ($progress->selected_path_id) {
+                                $isUnlocked = $isSelected;
+                            } else {
+                                /* ✅ SEMUA TERBUKA UNTUK DIPILIH */
+                                $isUnlocked = true;
+                            }
+
+                            return [
+                                '_id' => $pathId,
+                                'name' => $path->name,
+                                'thumbnail' => $path->thumbnail,
+                                'is_unlocked' => $isUnlocked,
+                                'is_selected' => $isSelected,
+                                'is_completed' => $isCompleted,
+                            ];
+                        })
                 ];
             });
+
+        /* ================= RESPONSE ================= */
 
         return Inertia::render('Student/Roadmap', [
             'course' => [
@@ -93,17 +159,17 @@ class CourseRoadmapController extends Controller
                 'basic_paths' => $basicPaths,
                 'career_groups' => $careerGroups,
             ],
-            'badges' => LevelBadge::orderBy('order')->get()->map(function ($b) {
-                return [
-                    'order' => (int) $b->order,
-                    'icon' => $b->icon,
-                ];
-            }),
+            'progress' => $progress,
+
+            'badges' => LevelBadge::orderBy('order')->get()->map(fn($b) => [
+                'order' => (int) $b->order,
+                'icon' => $b->icon,
+            ]),
+
             'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
-            ]),
-            'progress' => $progress
+            ])
         ]);
     }
 }

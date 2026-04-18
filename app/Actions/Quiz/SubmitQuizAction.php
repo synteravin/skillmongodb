@@ -17,7 +17,6 @@ class SubmitQuizAction
             ->where('user_id', $userId)
             ->first();
 
-        // 🚫 SUDAH PERNAH SUBMIT
         if ($existing) {
             return (object) [
                 'score' => (int) $existing->score,
@@ -27,6 +26,7 @@ class SubmitQuizAction
         }
 
         $service = app(QuizService::class);
+
         $result = $service->submit($user, $quiz, $data['answers']);
 
         QuizResult::create([
@@ -34,14 +34,14 @@ class SubmitQuizAction
             'quiz_id' => $quiz->_id,
             'score' => (int) $result['score'],
             'answers' => $data['answers'],
-            'passed' => (bool) $result['passed'],
+            'passed' => true,
             'completed_at' => now()
         ]);
 
         return (object) [
             'score' => (int) $result['score'],
-            'passed' => (bool) $result['passed'],
-            'message' => 'Quiz berhasil disubmit'
+            'passed' => true,
+            'message' => 'Quiz berhasil'
         ];
     }
 }

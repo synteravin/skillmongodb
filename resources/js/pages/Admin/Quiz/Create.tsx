@@ -18,7 +18,7 @@ type Question = {
 
 /* ================= COMPONENT ================= */
 
-export default function Create({ moduleId }: { moduleId: string }) {
+export default function Create({ pathId }: { pathId: string }) {
     const [questions, setQuestions] = useState<Question[]>([])
     const [loading, setLoading] = useState(false)
 
@@ -84,7 +84,7 @@ export default function Create({ moduleId }: { moduleId: string }) {
 
         const formData = new FormData()
 
-        formData.append("module_id", moduleId)
+        formData.append("path_id", pathId)
         formData.append("difficulty", "medium")
 
         questions.forEach((q, i) => {
@@ -101,7 +101,7 @@ export default function Create({ moduleId }: { moduleId: string }) {
             })
         })
 
-        router.post("/admin/quiz", formData, {
+        router.post(`/admin/paths/${pathId}/quiz`, formData, {
             forceFormData: true
         })
     }
@@ -111,7 +111,7 @@ export default function Create({ moduleId }: { moduleId: string }) {
     return (
         <AppLayout>
             <div className="max-w-3xl mx-auto p-6">
-                <h1 className="text-2xl font-bold mb-6">Create Quiz</h1>
+                <h1 className="text-2xl font-bold mb-6">Create Quizzzz</h1>
 
                 {questions.map((q, i) => (
                     <QuestionCard

@@ -17,38 +17,34 @@ class QuizService
         if ($total === 0) {
             return [
                 'score' => 0,
-                'passed' => false
+                'passed' => true
             ];
         }
 
         foreach ($questions as $question) {
-            $userAnswer = collect($answers)
-                ->firstWhere('question_id', (string) $question->_id);
 
-            if (!$userAnswer)
+            $questionId = (string) $question->_id;
+
+            $userAnswerId = $answers[$questionId] ?? null;
+
+            if (!$userAnswerId)
                 continue;
 
-            $isCorrect = $question->answers
-                ->filter(function ($answer) use ($userAnswer) {
-                    return (string) $answer->_id === (string) $userAnswer['answer_id']
-                        && (bool) $answer->is_correct;
-                })
-                ->isNotEmpty();
+            $isCorrect = $question->answers->contains(function ($answer) use ($userAnswerId) {
+                return (string) $answer->_id === (string) $userAnswerId
+                    && (bool) $answer->is_correct;
+            });
 
             if ($isCorrect) {
                 $correct++;
             }
         }
 
-        // 🔥 SCORE DINAMIS
-        $scorePerQuestion = 100 / $total;
-        $score = round($correct * $scorePerQuestion);
-
-        $passed = $score >= 70;
+        $score = round(($correct / $total) * 100);
 
         return [
             'score' => $score,
-            'passed' => $passed
+            'passed' => true // 🔥 no fail system
         ];
     }
 }

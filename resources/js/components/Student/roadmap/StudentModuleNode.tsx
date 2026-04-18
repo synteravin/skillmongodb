@@ -38,9 +38,8 @@ export default function StudentModuleNode({
     const Wrapper = href && !locked && !isSubmission ? Link : "div";
 
     return (
-        <div className="flex flex-col items-center w-full relative z-10 px-1 sm:px-0">
+        <div className="flex flex-col items-center w-full relative px-1 sm:px-0">
 
-            {/* CARD */}
             <Wrapper
                 {...(href && !locked && !isSubmission ? { href } : {})}
                 className={`
@@ -52,7 +51,6 @@ export default function StudentModuleNode({
         `}
             >
 
-                {/* ICON / LEVEL */}
                 <div
                     className={`
             relative flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 
@@ -77,12 +75,11 @@ export default function StudentModuleNode({
                         </span>
                     )}
 
-                    {/* STATUS */}
                     <div
                         className={`
-              absolute -bottom-1 -right-1 bg-black rounded-full p-[2px] border z-20
-              ${done ? "border-green-500" : "border-[#3a50d2]"}
-            `}
+                        absolute -bottom-1 -right-1 bg-black rounded-full p-[2px] border z-20
+                        ${done ? "border-green-500" : "border-[#3a50d2]"}
+                        `}
                     >
                         {locked ? (
                             <span className="text-[8px] text-gray-500">🔒</span>

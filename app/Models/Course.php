@@ -50,16 +50,20 @@ class Course extends Model
         return $this->belongsTo(User::class, 'mentor_id', '_id');
     }
 
-    public function students()
-    {
-        return $this->belongsToMany(
-            User::class,
-            'course_students',
-            'course_id',
-            'user_id'
-        );
-    }
+    // public function students()
+    // {
+    //     return $this->belongsToMany(
+    //         User::class,
+    //         'course_students',
+    //         'course_id',
+    //         'user_id'
+    //     );
+    // }
 
+    public function courseStudents()
+    {
+        return $this->hasMany(CourseStudent::class, 'course_id', '_id');
+    }
     public function getRouteKeyName()
     {
         return 'slug';

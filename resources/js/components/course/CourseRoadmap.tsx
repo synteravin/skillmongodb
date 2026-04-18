@@ -49,6 +49,7 @@ export default function CourseRoadmap({ course, mentors }: { course: Course, men
                                 title={path.name}
                                 index={index}
                                 isLast={index === (course.basic_paths.length - 1)}
+                                href={`/admin/paths/${path._id}/modules`}
                             />
                         ))}
                     </div>

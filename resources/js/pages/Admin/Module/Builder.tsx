@@ -525,14 +525,14 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                     </h1>
                     <div className="flex items-center gap-4">
                         <button
-                            onClick={() => router.get(`/admin/quiz`)}
+                            onClick={() => router.get(`/admin/paths/${getId(path)}/quiz/create`)}
                             className="bg-purple-600 hover:bg-purple-500 transition px-4 py-2 rounded-lg text-sm font-medium"
                         >
-                            🎯 Manage Quiz
+                            🎯 Manage Final Quiz
                         </button>
 
                         <span className="text-gray-400 text-sm">
-                            Create or edit quiz for this module
+                            Create or edit FINAL quiz for this path
                         </span>
                     </div>
 
@@ -577,7 +577,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
 
                                 {isOpen && (
                                     <div className="p-4 flex flex-col gap-3 border-t border-slate-800">
-                                        <button
+                                        {/* <button
                                             onClick={() =>
                                                 router.get(`/admin/modules/${moduleId}/quiz/create`)
                                             }
@@ -585,7 +585,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                         >
                                             <Plus size={14} />
                                             Create Quiz
-                                        </button>
+                                        </button> */}
                                         <DndContext
                                             sensors={sensors}
                                             collisionDetection={closestCenter}

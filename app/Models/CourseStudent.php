@@ -1,19 +1,17 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class CourseStudent extends Model
 {
     protected $connection = 'mongodb';
-
     protected $collection = 'course_students';
 
     protected $fillable = [
         'course_id',
         'user_id',
-        'status', // Not_started, In_progress, Completed
+        'status',
         'enrolled_at',
         'completed_at'
     ];
@@ -22,8 +20,6 @@ class CourseStudent extends Model
         'enrolled_at' => 'datetime',
         'completed_at' => 'datetime'
     ];
-
-    /* RELATIONS */
 
     public function user()
     {
