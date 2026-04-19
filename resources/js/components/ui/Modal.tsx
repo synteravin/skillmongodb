@@ -16,32 +16,35 @@ export default function Modal({ open, title, onClose, children }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
 
             {/* BACKDROP */}
-
             <div
                 onClick={onClose}
-                className="absolute inset-0 bg-black/40 backdrop-blur-md"
+                className="absolute inset-0 bg-black/40"
             />
 
             {/* MODAL */}
+            <div className="relative w-full max-w-lg mx-4 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#0b0f2a] shadow-xl p-6">
 
-            <div className="relative w-full max-w-lg mx-4 rounded-2xl border border-white/30 bg-white/90 backdrop-blur-xl shadow-2xl p-6 animate-in fade-in zoom-in-95">
-
+                {/* Header */}
                 <div className="flex justify-between items-center mb-4">
 
-                    <h2 className="text-lg font-semibold">
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                         {title}
                     </h2>
 
                     <button
                         onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 dark:text-slate-400"
                     >
                         ✕
                     </button>
 
                 </div>
 
-                {children}
+                {/* Divider */}
+                <div className="border-b border-gray-200 dark:border-slate-700 mb-4"></div>
+
+                    {children}
+               
 
             </div>
 

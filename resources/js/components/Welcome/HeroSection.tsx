@@ -63,7 +63,7 @@ export default function HeroSection() {
                     {/* HERO IMAGE - Hidden Only On Mobile */}
                     <div className="relative hidden flex-1 items-center justify-center sm:flex">
                         {/* INNER GLOW */}
-                        <div className="absolute top-1/2 left-1/2 -z-10 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3B28F6] blur-[500px] transition-all duration-500 md:h-[700px] md:w-[700px] lg:h-[600px] lg:w-[600px] xl:h-[700px] xl:w-[7300px] 2xl:h-[700px] 2xl:w-[700px] dark:bg-[#4c3be1] dark:opacity-60 dark:blur-[280px]" />
+                        <div className="absolute top-1/2 left-1/2 -z-10 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3B28F6] blur-[500px] transition-all duration-500 md:h-[700px] md:w-[700px] lg:h-[600px] lg:w-[600px] xl:h-[700px] xl:w-[300px] 2xl:h-[700px] 2xl:w-[700px] dark:bg-[#4c3be1] dark:opacity-60 dark:blur-[280px]" />
                         <div className="absolute top-1/2 left-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3B28F6] blur-[500px] transition-all duration-500 md:h-[700px] md:w-[700px] lg:h-[600px] lg:w-[600px] xl:h-[700px] xl:w-[700px] 2xl:h-[700px] 2xl:w-[700px] dark:bg-[#3B28F6] dark:opacity-60 dark:blur-[220px]" />
 
                         <img

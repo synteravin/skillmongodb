@@ -175,142 +175,176 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
 
                 {/* ================= BASIC FUNDAMENTAL ================= */}
 
-                <div className="border rounded-xl p-6 bg-white/50 backdrop-blur-sm">
+            <div className="border border-gray-200 dark:border-slate-800 rounded-2xl p-6 
+                bg-white dark:bg-gradient-to-br dark:from-[#0b0f2a] dark:to-[#050619] shadow-lg transition">
 
+                {/* Top Action */}
+                <div className="flex justify-between items-center mb-6">
                     <Link
                         href="/admin/levelbadge"
-                        className="bg-gray-200 px-3 py-1 rounded"
+                        className="text-sm font-medium px-4 py-2 rounded-lg 
+                        bg-emerald-100 text-emerald-600 
+                        dark:bg-emerald-500/10 dark:text-emerald-400 
+                        hover:bg-emerald-500 hover:text-white 
+                        transition duration-300"
                     >
                         Manage Badges
                     </Link>
 
-                    <div className="flex justify-between items-center mb-6">
+                    <button
+                        onClick={() => setOpenBasicPath(true)}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow 
+                        hover:bg-indigo-700 hover:scale-105 
+                        transition duration-300"
+                    >
+                        + Path
+                    </button>
+                </div>
 
-                        <h2 className="text-lg font-semibold">
-                            Basic Fundamental
-                        </h2>
+                {/* Title */}
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 tracking-wide">
+                    Basic Fundamental
+                </h2>
 
-                        <button
-                            onClick={() => setOpenBasicPath(true)}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                {/* Content */}
+                <div className="space-y-4">
+
+                    {course.basic_paths?.map(path => (
+
+                        <div
+                            key={String(path._id)}
+                            className="border border-gray-200 dark:border-slate-700 rounded-xl p-4 
+                            bg-gray-50 dark:bg-slate-800/60 
+                            hover:bg-gray-100 dark:hover:bg-slate-800 
+                            transition duration-300 shadow-sm"
                         >
-                            + Path
-                        </button>
 
-                    </div>
+                            <p className="font-semibold text-emerald-600 dark:text-emerald-400 text-base">
+                                {path.name}
+                            </p>
 
-                    <div className="space-y-3">
+                            <div className="ml-4 mt-3 space-y-2 text-sm 
+                                text-gray-600 dark:text-slate-300">
 
-                        {course.basic_paths?.map(path => (
+                                {path.modules?.map(module => (
 
-                            <div
-                                key={String(path._id)}
-                                className="border rounded-lg p-4 bg-gray-50"
-                            >
+                                    <div 
+                                        key={String(module._id)}
+                                        className="hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
+                                    >
+                                        • {module.title}
+                                    </div>
 
-                                <p className="font-medium">
-                                    {path.name}
-                                </p>
-
-                                <div className="ml-4 mt-2 space-y-1 text-sm text-gray-500">
-
-                                    {path.modules?.map(module => (
-
-                                        <div key={String(module._id)}>
-                                            {module.title}
-                                        </div>
-
-                                    ))}
-
-                                </div>
+                                ))}
 
                             </div>
 
-                        ))}
+                        </div>
 
-                    </div>
+                    ))}
 
                 </div>
+
+            </div>
 
 
                 {/* ================= CAREER PATH ================= */}
 
-                <div className="border rounded-xl p-6 bg-white/50 backdrop-blur-sm">
+            <div className="border border-gray-200 dark:border-slate-800 rounded-2xl p-6 
+                bg-white dark:bg-gradient-to-br dark:from-[#0b0f2a] dark:to-[#050619] 
+                shadow-lg transition">
 
-                    <div className="flex justify-between items-center mb-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6 p-4 rounded-xl  bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700">
+                    {/* Title */}
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-white tracking-wide">
+                        Career Path
+                    </h2>
 
-                        <h2 className="text-lg font-semibold">
-                            Career Path
-                        </h2>
+                    {/* Button */}
+                    <button
+                        onClick={() => setOpenCareerGroup(true)}
+                        className="px-5 py-2.5  bg-indigo-600 text-white text-sm font-medium rounded-xl shadow-md hover:bg-indigo-700 hover:scale-[1.03] transition duration-300"
+                    >
+                        + Career Group
+                    </button>
 
-                        <button
-                            onClick={() => setOpenCareerGroup(true)}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                        >
-                            + Career Group
-                        </button>
+                </div>
 
-                    </div>
+                {/* Content */}
+                <div className="space-y-6">
 
-                    <div className="space-y-6">
+                    {course.career_groups?.map(group => (
 
-                        {course.career_groups?.map(group => (
+                        <div key={String(group._id)} 
+                            className="p-4 rounded-xl border border-gray-200 dark:border-slate-700 
+                            bg-gray-50 dark:bg-slate-800/50 shadow-sm">
 
-                            <div key={String(group._id)}>
+                            {/* Group Header */}
+                            <div className="flex items-center justify-between mb-3">
 
-                                <div className="flex items-center justify-between mb-2">
+                                <h3 className="font-semibold text-emerald-600 dark:text-emerald-400">
+                                    {group.name}
+                                </h3>
 
-                                    <h3 className="font-semibold">
-                                        {group.name}
-                                    </h3>
-
-                                    <button
-                                        onClick={() => openCareerPathModal(group._id)}
-                                        className="text-sm px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600"
-                                    >
-                                        + Path
-                                    </button>
-
-                                </div>
-
-                                <div className="space-y-3 ml-4">
-
-                                    {group.paths?.map(path => (
-
-                                        <div
-                                            key={String(path._id)}
-                                            className="border rounded-lg p-4 bg-gray-50"
-                                        >
-
-                                            <p className="font-medium">
-                                                {path.name}
-                                            </p>
-
-                                            <div className="ml-4 mt-2 space-y-1 text-sm text-gray-500">
-
-                                                {path.modules?.map(module => (
-
-                                                    <div key={String(module._id)}>
-                                                        {module.title}
-                                                    </div>
-
-                                                ))}
-
-                                            </div>
-
-                                        </div>
-
-                                    ))}
-
-                                </div>
+                                <button
+                                    onClick={() => openCareerPathModal(group._id)}
+                                    className="text-sm px-3 py-1 rounded-lg 
+                                    bg-indigo-500 text-white 
+                                    hover:bg-indigo-600 hover:scale-105 
+                                    transition duration-300"
+                                >
+                                    + Path
+                                </button>
 
                             </div>
 
-                        ))}
+                            {/* Paths */}
+                            <div className="space-y-3 ml-2">
 
-                    </div>
+                                {group.paths?.map(path => (
+
+                                    <div
+                                        key={String(path._id)}
+                                        className="border border-gray-200 dark:border-slate-700 rounded-xl p-4 
+                                        bg-white dark:bg-slate-800/60 
+                                        hover:bg-gray-100 dark:hover:bg-slate-800 
+                                        transition duration-300"
+                                    >
+
+                                        <p className="font-semibold text-gray-800 dark:text-white">
+                                            {path.name}
+                                        </p>
+
+                                        <div className="ml-4 mt-3 space-y-2 text-sm 
+                                            text-gray-600 dark:text-slate-300">
+
+                                            {path.modules?.map(module => (
+
+                                                <div 
+                                                    key={String(module._id)}
+                                                    className="hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
+                                                >
+                                                    • {module.title}
+                                                </div>
+
+                                            ))}
+
+                                        </div>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
+
+                        </div>
+
+                    ))}
 
                 </div>
+
+            </div>
 
 
                 {/* ================= ROADMAP ================= */}
@@ -333,24 +367,32 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
                         className="w-full border rounded-lg p-3 mb-4"
                     />
 
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
 
-                        <button
-                            onClick={() => setOpenCareerGroup(false)}
-                            className="px-4 py-2 bg-gray-200 rounded"
-                        >
-                            Cancel
-                        </button>
+                    <button
+                        onClick={() => setOpenCareerGroup(false)}
+                        className="px-4 py-2 
+                        rounded-lg 
+                        bg-gray-100 dark:bg-slate-800 
+                        text-gray-700 dark:text-slate-300 
+                        border border-gray-200 dark:border-slate-700"
+                    >
+                        Cancel
+                    </button>
 
-                        <button
-                            disabled={!careerGroupName.trim()}
-                            onClick={createCareerGroup}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-40"
-                        >
-                            Create
-                        </button>
+                    <button
+                        disabled={!careerGroupName.trim()}
+                        onClick={createCareerGroup}
+                        className="px-5 py-2 
+                        rounded-lg 
+                        bg-indigo-600 dark:bg-[#3B28F6] 
+                        text-white 
+                        disabled:opacity-40"
+                    >
+                        Create
+                    </button>
 
-                    </div>
+                </div>
 
                 </Modal>
 
@@ -368,11 +410,14 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
                         className="w-full border rounded-lg p-3 mb-4"
                     />
 
-                    <div className="flex justify-end gap-2">
-
+                   <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
                         <button
                             onClick={() => setOpenBasicPath(false)}
-                            className="px-4 py-2 bg-gray-200 rounded"
+                            className="px-4 py-2 
+                            rounded-lg 
+                            bg-gray-100 dark:bg-slate-800 
+                            text-gray-700 dark:text-slate-300 
+                            border border-gray-200 dark:border-slate-700"
                         >
                             Cancel
                         </button>
@@ -380,12 +425,14 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
                         <button
                             disabled={!basicPathName.trim()}
                             onClick={createBasicPath}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-40"
+                            className="px-5 py-2 
+                            rounded-lg  bg-indigo-600
+                            dark:bg-[#3B28F6] text-white 
+                            disabled:opacity-40"
                         >
                             Create
                         </button>
-
-                    </div>
+                </div>
 
                 </Modal>
 
@@ -402,24 +449,33 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
                         className="w-full border rounded-lg p-3 mb-4"
                     />
 
-                    <div className="flex justify-end gap-2">
+                   <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
 
-                        <button
-                            onClick={() => setOpenCareerPath(false)}
-                            className="px-4 py-2 bg-gray-200 rounded"
-                        >
-                            Cancel
-                        </button>
+                    <button
+                        onClick={() => setOpenCareerPath(false)}
+                        className="px-4 py-2 
+                        rounded-lg 
+                        bg-gray-100 dark:bg-slate-800 
+                        text-gray-700 dark:text-slate-300 
+                        border border-gray-200 dark:border-slate-700"
+                    >
+                        Cancel
+                    </button>
 
-                        <button
-                            disabled={!careerPathName.trim()}
-                            onClick={createCareerPath}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-40"
-                        >
-                            Create
-                        </button>
+                    <button
+                        disabled={!careerPathName.trim()}
+                        onClick={createCareerPath}
+                        className="px-5 py-2 
+                        rounded-lg 
+                        bg-indigo-600 dark:bg-indigo-500 
+                        text-white 
+                        border border-indigo-600 dark:border-indigo-500
+                        disabled:opacity-40"
+                    >
+                        Create
+                    </button>
 
-                    </div>
+                </div>
 
                 </Modal>
 
