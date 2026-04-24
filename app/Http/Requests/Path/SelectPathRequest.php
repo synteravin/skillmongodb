@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Student;
+namespace App\Http\Requests\Path;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Path;

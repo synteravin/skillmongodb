@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import ResultModal from "@/components/QuestionForm/ResultModal"
 import { router } from "@inertiajs/react"
 
-export default function Play({ quiz }: any) {
+export default function Play({ quiz, has_submitted }: any) {
     const [current, setCurrent] = useState(0)
     const [answers, setAnswers] = useState<any[]>([])
     const [selected, setSelected] = useState<string | null>(null)
@@ -65,6 +65,11 @@ export default function Play({ quiz }: any) {
 
             const data = await res.json()
 
+            if (!res.ok) {
+                alert(data.message || "Submit gagal")
+                return
+            }
+
             setFinalResult(data.result)
             setShowResult(true)
 
@@ -76,7 +81,25 @@ export default function Play({ quiz }: any) {
     }
 
     const progress = ((current + 1) / quiz.questions.length) * 100
+    if (has_submitted) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-white">
+                <div className="bg-[#111827] p-10 rounded-2xl text-center">
+                    <h1 className="text-2xl font-bold mb-4">🎯 Mission Completed</h1>
+                    <p className="text-gray-400 mb-6">
+                        Kamu sudah menyelesaikan quiz ini.
+                    </p>
 
+                    <button
+                        onClick={() => router.visit(`/student/courses/${quiz.course_slug}`)}
+                        className="bg-blue-500 px-6 py-2 rounded-lg"
+                    >
+                        Kembali ke Course
+                    </button>
+                </div>
+            </div>
+        )
+    }
     return (
         <>
             <div className="min-h-screen bg-[#0b0f1a] flex items-center justify-center p-6 text-white">

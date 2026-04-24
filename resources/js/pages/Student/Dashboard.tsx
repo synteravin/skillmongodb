@@ -2,6 +2,7 @@ import { MessageSquareMore, MoonStar, SunMedium, Store } from "lucide-react"
 import { useState, useEffect } from "react"
 import SpeechBubble from "@/components/SpeechBubble"
 import BottomNav from "@/components/Student/BottomNav"
+import { Link } from "@inertiajs/react";
 
 interface Character {
   name: string
@@ -12,7 +13,12 @@ interface User {
   name: string
   level: number
   xp: number
-  character: Character
+  gold: number
+  avatar: string
+  character: {
+    name: string
+    avatar: string
+  }
 }
 
 export default function Dashboard({ user }: { user: User }) {
@@ -109,13 +115,20 @@ function TopBar({
       {/* LEFT */}
       <div className="absolute top-2 left-2 flex items-center gap-2 md:gap-4 lg:gap-5">
 
-        <div className="relative h-[40px] w-[40px] md:h-[60px] md:w-[60px] lg:h-[70px] lg:w-[70px] xl:h-[80px] xl:w-[80px] 2xl:h-[90px] 2xl:w-[90px]">
-          <div className="absolute inset-[6px] md:inset-[8px] lg:inset-[10px] overflow-hidden rounded-md">
-            <img src="/images/aizen.jpeg" className="h-full w-full object-cover" />
+
+        <Link href="/student/profile" className="relative h-[70px] w-[70px] flex-shrink-0">
+          <div className="absolute inset-[10px] overflow-hidden rounded-md">
+            <img
+              src={user.avatar ?? "/images/aizen.jpeg"}
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          <img src="/images/border.png" className="absolute inset-0 w-full h-full object-contain" />
-        </div>
+          <img
+            src="/images/border.png"
+            className="absolute inset-0 h-full w-full object-contain pointer-events-none"
+          />
+        </Link>
 
         <div className="leading-tight">
           <p className="text-sm md:text-lg lg:text-2xl font-semibold" style={{ fontFamily: "Orbitron" }}>
@@ -137,9 +150,8 @@ function TopBar({
           <img src="/images/gold.png"
             className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 2xl:h-14 2xl:w-14 object-contain"
           />
-
-          <span className="text-xs md:text-sm lg:text-lg font-semibold">
-            100.000
+          <span className="text-lg font-semibold">
+            {user.gold.toLocaleString()}
           </span>
 
         </div>

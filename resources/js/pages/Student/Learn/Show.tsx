@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { router, Link } from "@inertiajs/react";
 import { Lock, Check, Play, FileText } from 'lucide-react';
 import { show as learnShow } from "@/actions/App/Http/Controllers/Student/LearnController";
+import { ArrowLeft } from "lucide-react";
+
 
 /* ================= TYPES ================= */
 type Content = {
@@ -98,7 +100,7 @@ export default function LearnShow({
         // ROOT: h-screen + overflow-hidden = tidak ada scroll di luar
         <div className="h-screen bg-[#040812] text-white flex flex-col overflow-hidden">
 
-            {/* ================= HEADER (DIAM) ================= */}
+
             <div className="flex-shrink-0 w-full pt-0.5 px-1">
                 <div
                     className="relative border-[2px] md:border-[3px]"
@@ -128,7 +130,9 @@ export default function LearnShow({
                         </h1>
                     </div>
                 </div>
-            </div>
+
+            {/* ================= HEADER ================= */}
+          
 
             {/* ================= MAIN (flex-1 + overflow-hidden) ================= */}
             {/* flex-1 mengisi sisa tinggi, overflow-hidden mencegah main ikut scroll */}
@@ -286,7 +290,9 @@ export default function LearnShow({
                                         {item.content?.title && (
                                             <h3 className="text-lg font-bold text-blue-400">{item.content.title}</h3>
                                         )}
+
                                         <p className="text-gray-200 whitespace-pre-wrap text-[15px] leading-relaxed">
+
                                             {item.content?.description || item.content?.text}
                                         </p>
                                     </div>
@@ -386,6 +392,7 @@ export default function LearnShow({
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

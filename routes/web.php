@@ -18,15 +18,17 @@ use App\Http\Controllers\Admin\CareerGroupController;
 use App\Http\Controllers\Admin\ModuleManagementController;
 use App\Http\Controllers\ModuleContentController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\SelectCharacterController;
 use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Student\CompleteModuleController;
 use App\Http\Controllers\Student\SelectPathController;
+use App\Http\Controllers\Student\LeaderboardController;
 use App\Http\Controllers\Student\CompletePathController;
 use App\Http\Controllers\Student\CourseRoadmapController;
 use App\Http\Controllers\Student\LearnController;
 use App\Http\Controllers\Student\CourseController as StudentCourseActionController;
-
+use App\Http\Controllers\Student\CareerController;
 use App\Http\Controllers\Admin\QuizController;
 
 
@@ -149,6 +151,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/quiz/{quiz}', [QuizController::class, 'update'])->name('quiz.update');
 
         Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
+        Route::post('/select-career', [CareerController::class, 'select']);
     });
 /*
 |--------------------------------------------------------------------------
@@ -179,6 +182,8 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/dashboard', [StudentDashboard::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
         Route::get('/course', [StudentCourseController::class, 'index'])
             ->name('course');
 
@@ -205,7 +210,10 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/quiz/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
         Route::post('/quiz/{quiz}/submit', [\App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
         Route::get('/quiz/{quiz}/result', [\App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
-
+        Route::post('/select-career/{path}', SelectPathController::class)
+            ->name('select-career');
+        Route::get('/leaderboard', [LeaderboardController::class, 'index'])
+            ->name('leaderboard');
     });
 
 /*

@@ -4,7 +4,7 @@ export default function BottomNav() {
   const menus = [
     { label: "MY COURSE", href: "/student/course" },
     { label: "MINI BATTLE", href: "#" },
-    { label: "TIER LIST", href: "#" },
+    { label: "TIER LIST", href: "/student/leaderboard" },
     { label: "CERTIFICATE", href: "#" },
     { label: "FORUM", href: "#" },
   ];

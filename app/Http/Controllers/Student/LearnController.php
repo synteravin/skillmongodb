@@ -5,17 +5,75 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Services\Learns\LearnService;
+use App\Models\UserStat;
+use App\Models\Path;
 
 class LearnController extends Controller
 {
     public function show($courseId, $pathId, $moduleId, LearnService $service)
     {
+        $user = auth()->user();
+
+        /* ================= GET DATA ================= */
         $data = $service->getData(
-            auth()->user(),
+            $user,
             $courseId,
             $pathId,
             $moduleId
         );
+
+        $path = $data['path'];
+
+        /* ================= GET PROGRESS ================= */
+        $progress = UserStat::firstOrCreate([
+            'user_id' => $user->_id,
+            'course_id' => $courseId
+        ], [
+            'completed_modules' => [],
+            'completed_paths' => [],
+            'stage' => 'fundamental',
+            'selected_path_id' => null
+        ]);
+
+        /* ================= CHECK BASIC DONE ================= */
+        $basicPaths = Path::where('course_id', $courseId)
+            ->where('phase', 'basic_fundamental')
+            ->pluck('_id')
+            ->map(fn($id) => (string) $id);
+
+        $completedPaths = collect($progress->completed_paths ?? []);
+
+        $allBasicCompleted = $basicPaths
+            ->every(fn($id) => $completedPaths->contains($id));
+
+        /* ================= CAREER LOGIC ================= */
+
+        if ($path->phase === 'career_branch') {
+
+            /* ❌ BLOCK JIKA BASIC BELUM SELESAI */
+            if (!$allBasicCompleted) {
+                abort(403, 'Selesaikan basic fundamental terlebih dahulu');
+            }
+
+            $pathIdString = (string) $path->_id;
+
+            /* 🔥 AUTO SELECT (FIRST CLICK) */
+            if (!$progress->selected_path_id) {
+                $progress->update([
+                    'selected_path_id' => $pathIdString
+                ]);
+            }
+
+            /* 🔒 BLOCK JIKA AKSES PATH LAIN */
+            if (
+                $progress->selected_path_id &&
+                $progress->selected_path_id !== $pathIdString
+            ) {
+                abort(403, 'Kamu sudah memilih jalur career lain');
+            }
+        }
+
+        /* ================= RESPONSE ================= */
 
         return Inertia::render('Student/Learn/Show', [
 
@@ -57,7 +115,8 @@ class LearnController extends Controller
 
             /* ================= PROGRESS ================= */
             'progress' => [
-                'completed_modules' => $data['progress']
+                'completed_modules' => $data['progress'],
+                'selected_path_id' => $progress->selected_path_id,
             ],
 
             /* ================= META ================= */

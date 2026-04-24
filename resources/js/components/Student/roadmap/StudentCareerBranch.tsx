@@ -1,6 +1,9 @@
-import React from "react";
+import { useState } from "react";
 import StudentModuleNode from "./StudentModuleNode";
+
 import { User } from "lucide-react";
+
+import { router } from "@inertiajs/react";
 
 type Props = {
     group: any;
@@ -11,13 +14,48 @@ type Props = {
 };
 
 export default function StudentCareerBranch({ group, progress, badges = [], courseId, basicCompleted }: Props) {
-
+    const hasChosenPath = !!progress.selected_path_id;
     const isChosen = group.paths.some((p: any) => p._id === progress.selected_path_id);
     const isOtherChosen = progress.selected_path_id && !isChosen;
+
     const totalModules = group.paths.reduce((sum: number, p: any) => sum + (p.modules?.length || 0), 0);
+
+    const [loading, setLoading] = useState(false);
+
+    // ✅ ambil first path dengan aman
+    const firstPath = group.paths?.[0];
+
+    // ✅ validasi bisa start atau tidak
+    const canStart = firstPath?.modules?.length > 0;
+
+    const handleStart = (firstPath: any) => {
+        if (!firstPath) {
+            console.error("Path tidak ditemukan");
+            return;
+        }
+
+        if (!firstPath?.modules?.[0]?._id) {
+            console.error("Path tidak punya module");
+            return;
+        }
+
+        if (loading) return;
+
+        setLoading(true);
+
+        router.post(`/student/select-career/${firstPath._id}`, {}, {
+            onSuccess: () => {
+                router.visit(
+                    `/student/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`
+                );
+            },
+            onFinish: () => setLoading(false)
+        });
+    };
 
     return (
         <div className="flex flex-col items-center w-full px-8 sm:px-4 relative text-sans">
+
             <div className={`relative w-full rounded-xl flex flex-col shadow-lg mb-0 transition-all overflow-hidden
                 border-2
                 ${isChosen 
@@ -38,9 +76,11 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                                 <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round"/>
                                 <circle cx="12" cy="16" r="2" fill="#1e3a8a"/>
                                 <path d="M12 16v2.5" stroke="#1e3a8a" strokeWidth="1.5" strokeLinecap="round"/>
+
                             </svg>
                         </div>
                     )}
+
 
                     {/* THUMBNAIL — bulat di tengah atas */}
                     <div className="flex justify-center mb-4">
@@ -80,17 +120,17 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                         <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
                             <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Modules</span>
                             <span className="block text-sm font-bold text-[#B3B3B3]">{totalModules} Units</span>
-                        </div>
-                        <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
-                            <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Formats</span>
-                            <span className="block text-sm font-bold text-[#B3B3B3]">Video & project</span>
-                        </div>
-                    </div>
+                            </div>
+                            </div>
+                                
+                    {/* HEADER */}
+
 
                     {/* FOOTER — mentor + button */}
                     <div className="pt-3 border-t border-[#1A2E99]/80 flex justify-between items-center relative z-40">
                         {/* MENTOR */}
                         <div className="flex items-center gap-2 max-w-[60%]">
+
                             {group.mentor && group.mentor.avatar && group.mentor.avatar !== "null" ? (
                                 <img
                                     src={group.mentor.avatar.startsWith('http') ? group.mentor.avatar : `/storage/${group.mentor.avatar}`}
@@ -118,6 +158,7 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                             </div>
                         </div>
 
+
                        {/* START BUTTON */}
                             <button
                                 disabled={!basicCompleted || isOtherChosen}
@@ -135,22 +176,46 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                             >
                                 Start
                             </button>
+
+                    
                     </div>
                 </div>
             </div>
+
 
             {/* connector line */}
             <div className={`w-[2px] h-8 bg-[#F0F0F0] ${isOtherChosen ? 'opacity-30' : ''}`}></div>
 
             {/* paths list — sama seperti sebelumnya */}
             <div className={`flex flex-col w-full items-center ${(!basicCompleted || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
+
+            {/* LINE */}
+            <div className={`w-[2px] h-8 bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}></div>
+
+            {/* PATHS */}
+            <div className={`flex flex-col w-full items-center ${(!basicCompleted || !hasChosenPath || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
+
                 {group.paths.map((p: any, idx: number) => {
                     const done = progress.completed_paths?.includes(String(p._id));
                     const badge = badges?.find((b: any) => parseInt(b.order?.toString().trim()) === (idx + 1));
 
                     let locked = false;
+
                     if (!basicCompleted) locked = true;
                     if (isOtherChosen) locked = true;
+
+
+                    // ❌ basic belum selesai
+                    if (!basicCompleted) locked = true;
+
+                    // ❌ belum pilih branch → semua path dikunci
+                    if (!hasChosenPath) locked = true;
+
+                    // ❌ branch lain setelah pilih
+                    if (hasChosenPath && isOtherChosen) locked = true;
+
+                    // 🔓 unlock berdasarkan urutan (hanya kalau branch dipilih)
+
                     if (!locked && idx > 0) {
                         const prevPath = group.paths[idx - 1];
                         locked = !progress.completed_paths?.includes(String(prevPath._id));
@@ -164,12 +229,18 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                                 locked={locked}
                                 index={idx}
                                 badge={badge}
-                                href={p.modules?.[0]?._id ? `/student/learn/${courseId}/${p._id}/${p.modules[0]._id}` : undefined}
+                                href={p.modules?.[0]?._id
+                                    ? `/student/learn/${courseId}/${p._id}/${p.modules[0]._id}`
+                                    : undefined
+                                }
                             />
                             <div className="w-[2px] h-6 bg-gray-500"></div>
                         </div>
                     )
                 })}
+
+
+                {/* SUBMISSION */}
 
                 {group.paths.length > 0 && (
                     <StudentModuleNode
@@ -186,6 +257,7 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                     />
                 )}
             </div>
+        </div>
         </div>
     );
 }

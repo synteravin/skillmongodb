@@ -55,9 +55,10 @@ export default function Roadmap({
                             {/* INNER CONTENT */}
                             <div className="rounded-lg py-5 px-4 md:px-6 flex items-center relative bg-white dark:bg-[#040812]">
 
+
                                 {/* Back Button */}
                                 <Link
-                                    href="/student/dashboard"
+                                    href="/student/course"
                                      className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 absolute left-4 md:left-6 z-10"
                                 >
                                     <svg

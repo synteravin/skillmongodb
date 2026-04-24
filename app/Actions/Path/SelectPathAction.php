@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Actions\Student;
+namespace App\Actions\Path;
 
 use App\Models\User;
 use App\Models\Path;
-use App\Services\Student\PathProgressService;
+use App\Services\Path\PathProgressService;
 
 class SelectPathAction
 {
