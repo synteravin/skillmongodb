@@ -65,7 +65,7 @@ export default function ProfilePage({ user }: Props) {
                         {/* username */}
                         <h2 className="text-lg font-bold">{user.name}</h2>
                         <p className="text-blue-400 text-sm mb-4">
-                            Level {user.level}
+                            Level nya{user.level}
                         </p>
                         <div className="w-full border-t border-blue-800 pt-4 flex justify-between text-sm">
                             <div>
