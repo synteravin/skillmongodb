@@ -1,5 +1,6 @@
 import React from "react";
 import StudentModuleNode from "./StudentModuleNode";
+import { User } from "lucide-react";
 
 type Props = {
     group: any;
@@ -16,95 +17,140 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
     const totalModules = group.paths.reduce((sum: number, p: any) => sum + (p.modules?.length || 0), 0);
 
     return (
-        <div className="flex flex-col items-center w-full  px-8 sm:px-4 relative  text-sans">
-            <div className={`relative w-full rounded-xl flex flex-col p-[2px] shadow-lg mb-0 bg-gradient-to-b from-[#1e2759] to-[#040812] border-2 transition-all 
-                 ${isChosen ? 'border-blue-400 shadow-[0_0_30px_rgba(96,165,250,0.4)]' : 'border-[#1e2759] shadow-[0_0_20px_rgba(0,0,0,0.5)]'}
-                 ${(!basicCompleted || isOtherChosen) ? 'grayscale opacity-50' : ''}
+        <div className="flex flex-col items-center w-full px-8 sm:px-4 relative text-sans">
+            <div className={`relative w-full rounded-xl flex flex-col shadow-lg mb-0 transition-all overflow-hidden
+                border-2
+                ${isChosen 
+                    ? 'border-blue-400 shadow-[0_0_40px_rgba(96,165,250,0.35)]' 
+                    : 'border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]'}
+                ${(!basicCompleted || isOtherChosen) ? 'grayscale opacity-50' : ''}
             `}>
-                <div className="w-full h-full rounded-lg bg-[#0a0f1d] flex flex-col p-4 relative">
+                {/* GRADIENT BORDER TOP ACCENT */}
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent z-10" />
 
+                <div className="w-full h-full rounded-xl bg-[#050619] flex flex-col p-5 relative">
+
+                    {/* LOCK OVERLAY */}
                     {(!basicCompleted || isOtherChosen) && (
-                        <div className="absolute inset-0 z-30 flex items-center justify-center">
-                            <svg width="80" height="80" viewBox="0 0 24 24" fill="#050505" stroke="#1f2937" strokeWidth="1" className="opacity-90 drop-shadow-xl">
-                                <path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="#050505" strokeWidth="4" />
-                                <rect x="4" y="10" width="16" height="12" rx="2" ry="2" />
-                                <circle cx="12" cy="16" r="2" fill="#1f2937" />
-                                <path d="M12 16v3" stroke="#1f2937" strokeWidth="1" />
+                        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-xl backdrop-blur-[1px]">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" className="opacity-80 drop-shadow-xl">
+                                <rect x="4" y="10" width="16" height="12" rx="3" fill="#050d1f" stroke="#1e3a8a" strokeWidth="1.5"/>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round"/>
+                                <circle cx="12" cy="16" r="2" fill="#1e3a8a"/>
+                                <path d="M12 16v2.5" stroke="#1e3a8a" strokeWidth="1.5" strokeLinecap="round"/>
                             </svg>
                         </div>
                     )}
 
-                    <div className="flex justify-center mb-2">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-blue-500 bg-[#3a50d2]">
-                            <span className="text-xl text-white">⬢</span>
+                    {/* THUMBNAIL — bulat di tengah atas */}
+                    <div className="flex justify-center mb-4">
+                        <div className="relative">
+                            {/* glow ring */}
+                            <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-md scale-110" />
+                            <div className="relative w-20 h-20 rounded-full border-2 border-blue-500 overflow-hidden bg-[#0b1333] flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                                {group.thumbnail ? (
+                                    <img
+                                        src={`/storage/${group.thumbnail}`}
+                                        className="w-full h-full object-cover"
+                                        alt={group.name}
+                                    />
+                                ) : (
+                                    <svg viewBox="0 0 24 24" fill="none" className="w-9 h-9 text-blue-400">
+                                        <path d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                                        <path d="M9 15l-2 4 3-1M15 15l2 4-3-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <circle cx="12" cy="13" r="1.5" fill="currentColor"/>
+                                    </svg>
+                                )}
+                            </div>
                         </div>
                     </div>
-                    <h2 className="text-sm sm:text-base font-['Orbitron'] font-bold text-center text-white mb-2 uppercase tracking-widest break-words leading-tight">
+
+                    {/* TITLE */}
+                    <h2 className="text-base sm:text-lg font-['Orbitron'] font-bold text-center text-white mb-2 uppercase tracking-widest leading-tight">
                         {group.name}
                     </h2>
-                    <p className="text-[10px] text-gray-400 text-center mb-3 leading-relaxed px-1">
-                        A special package to become a professional {group.name} Developer, starting with modern web fundamentals.
+
+                    {/* DESCRIPTION */}
+                    <p className="text-[10px] text-gray-400 font-semibold text-center mb-4 leading-relaxed px-1 line-clamp-4">
+                        A special package to become a professional {group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects
                     </p>
 
-                    <div className="flex justify-between gap-2 mb-3">
-                        <div className="flex-1 bg-black/60 border border-[#1e2759] rounded p-1.5 text-center flex flex-col items-center justify-center">
-                            <span className="block text-[9px] text-[#eab308]">Modules</span>
-                            <span className="block text-[11px] font-bold text-white">{totalModules} Units</span>
+                    {/* STATS */}
+                    <div className="flex justify-between gap-2 mb-4">
+                        <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
+                            <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Modules</span>
+                            <span className="block text-sm font-bold text-[#B3B3B3]">{totalModules} Units</span>
                         </div>
-                        <div className="flex-1 bg-black/60 border border-[#1e2759] rounded p-1.5 text-center flex flex-col items-center justify-center">
-                            <span className="block text-[9px] text-[#eab308]">Formats</span>
-                            <span className="block text-[11px] font-bold text-white">Video & project</span>
+                        <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
+                            <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Formats</span>
+                            <span className="block text-sm font-bold text-[#B3B3B3]">Video & project</span>
                         </div>
                     </div>
 
-                    <div className="mt-auto pt-3 border-t border-gray-800 flex justify-between items-center bg-[#0a0f1d] relative z-40">
-                        <div className="flex items-center gap-1.5 max-w-[65%]">
+                    {/* FOOTER — mentor + button */}
+                    <div className="pt-3 border-t border-[#1A2E99]/80 flex justify-between items-center relative z-40">
+                        {/* MENTOR */}
+                        <div className="flex items-center gap-2 max-w-[60%]">
                             {group.mentor && group.mentor.avatar && group.mentor.avatar !== "null" ? (
                                 <img
                                     src={group.mentor.avatar.startsWith('http') ? group.mentor.avatar : `/storage/${group.mentor.avatar}`}
-                                    className="w-6 h-6 rounded-full border border-blue-500 object-cover flex-shrink-0"
+                                    className="w-10 h-10 rounded-full border border-gray-400 object-cover flex-shrink-0"
                                     alt="mentor"
                                 />
-                            ) : (
-                                <div className="relative w-[24px] h-[24px] rounded-full overflow-hidden border border-blue-500 bg-gray-700 flex-shrink-0">
-                                    <div className="w-full h-full flex items-center justify-center text-[10px] text-white bg-gradient-to-br from-blue-500 to-indigo-600">
-                                        M
-                                    </div>
-                                </div>
-                            )}
-                            <div className="flex flex-col text-left truncate">
-                                <span className="text-[9px] font-bold text-white leading-none truncate">{group.mentor?.name ?? 'No Mentor'}</span>
-                                <span className="text-[7px] text-gray-400 mt-0.5 truncate">{group.mentor ? 'Mentor' : 'Unassigned'}</span>
+                          ) : (
+                            <div className="w-12 h-12 rounded-full border border-blue-500 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                                {group.mentor?.name ? (
+                                    <span className="text-[11px] font-bold text-white">
+                                        {group.mentor.name.charAt(0).toUpperCase()}
+                                    </span>
+                                ) : (
+                                    <User className="w-5 h-5 text-white" />
+                                )}
+                            </div>
+                        )}
+                            <div className="flex flex-col truncate">
+                                <span className="text-[10px] font-bold text-[#F0F0F0] leading-none truncate">
+                                    {group.mentor?.name ?? 'No Mentor'}
+                                </span>
+                                <span className="text-[8px] text-gray-400 mt-0.5 truncate">
+                                    {group.mentor ? `${group.name} Professional` : 'Unassigned'}
+                                </span>
                             </div>
                         </div>
-                        <button
-                            disabled={!basicCompleted || isOtherChosen}
-                            className={`px-4 py-1 rounded text-[10px] font-bold border transition-colors flex-shrink-0 ${isOtherChosen ? 'bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed' : 'bg-black border-[#d97706] text-[#d97706] hover:bg-[#d97706] hover:text-black'}`}
-                        >
-                            Start
-                        </button>
+
+                       {/* START BUTTON */}
+                            <button
+                                disabled={!basicCompleted || isOtherChosen}
+                                className={`
+                                    px-6 py-2 rounded-xl text-[12px] font-bold border-2 transition-all duration-300 flex-shrink-0
+                                    font-['Orbitron'] tracking-widest uppercase
+                                    ${isOtherChosen || !basicCompleted
+                                        ? 'bg-gray-900 border-gray-700 text-gray-500 cursor-not-allowed'
+                                        : `bg-[#05080f] border-[#3B28F6] text-white
+                                            shadow-[0_0_8px_1px_rgba(59,40,246,0.3),inset_0_0_8px_rgba(59,40,246,0.05)]
+                                            hover:shadow-[0_0_14px_3px_rgba(59,40,246,0.45),inset_0_0_10px_rgba(59,40,246,0.1)]
+                                            hover:border-[#5a47ff] hover:bg-[#080d1a]`
+                                    }
+                                `}
+                            >
+                                Start
+                            </button>
                     </div>
                 </div>
             </div>
 
-            <div className={`w-[2px] h-8 bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}></div>
+            {/* connector line */}
+            <div className={`w-[2px] h-8 bg-[#F0F0F0] ${isOtherChosen ? 'opacity-30' : ''}`}></div>
 
+            {/* paths list — sama seperti sebelumnya */}
             <div className={`flex flex-col w-full items-center ${(!basicCompleted || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
                 {group.paths.map((p: any, idx: number) => {
                     const done = progress.completed_paths?.includes(String(p._id));
                     const badge = badges?.find((b: any) => parseInt(b.order?.toString().trim()) === (idx + 1));
 
                     let locked = false;
-
-                    // ❌ kalau basic belum selesai → semua lock
-                    if (!basicCompleted) {
-                        locked = true;
-                    }
-
-                    // 🔒 kalau branch lain dipilih
-                    if (isOtherChosen) {
-                        locked = true;
-                    }
+                    if (!basicCompleted) locked = true;
+                    if (isOtherChosen) locked = true;
                     if (!locked && idx > 0) {
                         const prevPath = group.paths[idx - 1];
                         locked = !progress.completed_paths?.includes(String(prevPath._id));
@@ -125,7 +171,6 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                     )
                 })}
 
-                {/* Submission at the end */}
                 {group.paths.length > 0 && (
                     <StudentModuleNode
                         title="Submission"

@@ -145,7 +145,7 @@ function ActionCard({
                 {title}
             </h2>
             <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-                {description}
+                {description} 
             </p>
 
             {disabled ? (

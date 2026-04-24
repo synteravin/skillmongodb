@@ -39,37 +39,55 @@ export default function Roadmap({
     const { badges } = usePage().props as any;
 
     return (
-        <div className="min-h-screen bg-[#040812] text-white py-8 sm:py-16 overflow-hidden">
-            <div className="max-w-[1200px] mx-auto px-4 flex flex-col items-center relative font-sans">
+            <div className="min-h-screen bg-[#e6ebf2] dark:bg-[#040812] text-gray-800 dark:text-slate-200 font-sans">
+                <div className="w-full pb-0 pt-0.5 m-0 ">
 
                 {/* ================= HEADER ================= */}
-                <div className="w-full relative mb-16 px-2">
-                    <div
-                        className="w-full bg-[#030616] flex items-center justify-center py-4 rounded relative overflow-hidden"
-                        style={{
-                            borderTop: "2px solid transparent",
-                            borderBottom: "2px solid #eab308",
-                            borderImage: "linear-gradient(to right, #3b82f6, #8b5cf6) 1 0 0 0",
-                            borderImageSlice: "1 0 0 0"
-                        }}
-                    >
-                        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600"></div>
+                    <div className="relative  w-full sticky top-0 z-50">
+                        {/* GRADIENT BORDER (SAMA KAYAK NAV) */}
+                       <div
+                            className="relative border-[2px] md:border-[3px]"
+                            style={{
+                            borderImage:
+                                "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
+                            }}
+                          >
+                            {/* INNER CONTENT */}
+                            <div className="rounded-lg py-5 px-4 md:px-6 flex items-center relative bg-white dark:bg-[#040812]">
 
-                        <Link
-                            href="/student/dashboard"
-                            className="absolute left-4 w-8 h-8 flex items-center justify-center border border-[#1e2759] rounded hover:border-blue-500 transition-colors text-blue-500"
-                        >
-                            <ArrowLeft size={16} />
-                        </Link>
+                                {/* Back Button */}
+                                <Link
+                                    href="/student/dashboard"
+                                     className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 absolute left-4 md:left-6 z-10"
+                                >
+                                    <svg
+                                        viewBox="0 0 48 48"
+                                        className="w-7 h-7 md:w-9 md:h-9 9 text-indigo-500 scale-125 hover:scale-150 transition-transform duration-200"
+                                    >
+                                        <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                        <rect x="8" y="20" width="4" height="4" fill="currentColor" />
+                                        <rect x="5" y="20" width="5" height="4" fill="currentColor" />
+                                        <rect x="8" y="16" width="4" height="4" fill="currentColor" />
+                                        <rect x="8" y="24" width="4" height="4" fill="currentColor" />
+                                        <rect x="12" y="12" width="4" height="4" fill="currentColor" />
+                                        <rect x="12" y="28" width="4" height="4" fill="currentColor" />
+                                        <rect x="16" y="8" width="4" height="4" fill="currentColor" />
+                                        <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                                        <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                                    </svg>
+                                </Link>
 
-                        <h1 className="text-lg sm:text-xl md:text-2xl font-['Orbitron'] font-bold text-white uppercase tracking-widest px-14 text-center">
-                            {course.title}
-                        </h1>
+                                {/* Title */}
+                                <h1 className="w-full text-center text-xl md:text-2xl lg:text-3xl font-['Orbitron'] font-bold text-gray-900 dark:text-white tracking-[0.1em] md:tracking-[0.15em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase">
+                                    {course.title}
+                                </h1>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
 
                 {/* ================= FUNDAMENTAL ================= */}
-                <div className="flex flex-col flex-nowrap items-center w-full">
+                <div className="flex flex-col flex-nowrap items-center w-full mt-2">
                     {course.basic_paths?.map((path: any) => {
 
                         const done = path.is_completed;
@@ -90,7 +108,7 @@ export default function Roadmap({
                                     thumbnail={path.thumbnail}
                                     href={href}
                                 />
-                                <div className="w-[2px] h-12 bg-gray-500"></div>
+                                <div className="w-[2px] h-12 bg-[#F0F0F0]"></div>
                             </React.Fragment>
                         );
                     })}
@@ -115,15 +133,15 @@ export default function Roadmap({
                                     {hasMultiple && (
                                         <>
                                             {!isFirst && (
-                                                <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-gray-500 z-0"></div>
+                                                <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-[#F0F0F0] z-0"></div>
                                             )}
                                             {!isLast && (
-                                                <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-gray-500 z-0"></div>
+                                                <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-[#F0F0F0] z-0"></div>
                                             )}
                                         </>
                                     )}
 
-                                    <div className="w-[2px] h-10 bg-gray-500 z-10 hidden sm:block"></div>
+                                    <div className="w-[2px] h-10 bg-[#F0F0F0] z-10 hidden sm:block"></div>
 
                                     <StudentCareerBranch
                                         group={group}

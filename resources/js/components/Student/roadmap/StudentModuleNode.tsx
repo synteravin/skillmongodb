@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
+import { Check, Lock, Shield } from "lucide-react";
 
 type Props = {
     title: string;
@@ -38,75 +39,117 @@ export default function StudentModuleNode({
     const Wrapper = href && !locked && !isSubmission ? Link : "div";
 
     return (
-        <div className="flex flex-col items-center w-full relative px-1 sm:px-0">
-
-            <Wrapper
-                {...(href && !locked && !isSubmission ? { href } : {})}
-                className={`
-          block relative w-full rounded-md flex items-center p-1 sm:p-1.5 overflow-hidden border-2 shadow-lg transition-all ${href && !locked && !isSubmission ? "hover:scale-105" : ""}
-          ${done
-                        ? "border-green-500 bg-[#061810] text-white shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-                        : "border-[#3a50d2] bg-[#11172a] text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]"}
-          ${locked ? "opacity-40 grayscale" : ""}
+<div className="flex flex-col items-center w-full relative px-1 sm:px-0">
+    <Wrapper
+        {...(href && !locked && !isSubmission ? { href } : {})}
+        className={`
+            block relative w-full flex items-center gap-3 overflow-hidden
+            transition-all duration-300
+            ${href && !locked && !isSubmission ? "hover:scale-[1.02] hover:brightness-110" : ""}
+            ${locked ? "opacity-40 grayscale" : ""}
         `}
+        style={{
+            borderRadius: "14px",
+            padding: "2px",
+            background: done
+                ? "linear-gradient(to right, #99E4FD, #9681FF)"
+                : "linear-gradient(to right, #99E4FD, #9681FF)",
+            boxShadow: done
+                ? "0 4px 24px rgba(150,200,255,0.2)"
+                : "0 4px 24px rgba(150,129,255,0.2)",
+        }}
+    >
+        {/* Inner container */}
+        <div
+            className="flex items-center gap-3 w-full overflow-hidden"
+            style={{
+                borderRadius: "12px",
+                background: done
+                    ? "linear-gradient(135deg, #0a2a1a 0%, #0d1f2d 100%)"
+                    : "linear-gradient(135deg, #1a2060 0%, #0e1540 100%)",
+                minHeight: "64px",
+            }}
+        >
+            {/* Badge / Icon — full height, flush left */}
+            <div
+                className="relative flex-shrink-0 self-stretch"
+                style={{
+                    width: "64px",
+                    borderRadius: "10px 0 0 10px",
+                    background: "#000",
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
             >
-
-                <div
-                    className={`
-            relative flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 
-            rounded-full border-2 bg-black flex items-center justify-center 
-            font-['Orbitron'] font-bold
-            ${done
-                            ? "border-green-500 text-green-500"
-                            : "border-[#d97706] text-[#d97706]"}
-          `}
-                >
-
-                    {/* 🛡️ BADGE (DI DALAM) */}
-                    {hasValidIcon ? (
-                        <img
-                            src={`/storage/${badge?.icon}`}
-                            className="w-full h-full object-cover rounded-full"
-                            alt="badge"
-                        />
-                    ) : (
-                        <span className="text-xs sm:text-sm">
-                            {isSubmission ? "★" : roman}
-                        </span>
-                    )}
-
-                    <div
-                        className={`
-                        absolute -bottom-1 -right-1 bg-black rounded-full p-[2px] border z-20
-                        ${done ? "border-green-500" : "border-[#3a50d2]"}
-                        `}
+                {hasValidIcon ? (
+                    <img
+                        src={`/storage/${badge?.icon}`}
+                        className="w-full h-full object-cover bg-black"
+                        alt="badge"
+                    />
+                ) : (
+                    <span
+                        className="font-bold text-lg"
+                        style={{
+                            fontFamily: "Orbitron, sans-serif",
+                            color: done ? "#4ade80" : "#d97706",
+                        }}
                     >
-                        {locked ? (
-                            <span className="text-[8px] text-gray-500">🔒</span>
-                        ) : (
-                            <svg
-                                className={`w-3 h-3 ${done ? "text-green-500" : "text-[#3a50d2]"}`}
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    d={
-                                        done
-                                            ? "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
-                                            : "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
-                                    }
-                                />
-                            </svg>
-                        )}
-                    </div>
-                </div>
+                        {isSubmission ? "★" : roman}
+                    </span>
+                )}
 
-                {/* TITLE */}
-                <div className="flex-1 px-3 text-[11px] sm:text-xs font-semibold truncate leading-tight font-sans">
-                    {title}
+                {/* Status badge pojok kanan bawah */}
+                <div
+                    className="absolute bottom-1 right-1 flex items-center justify-center z-20"
+                    style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        background: "#000",
+                        border: done
+                            ? "1.5px solid #4ade80"
+                            : locked
+                            ? "1.5px solid #555"
+                            : "1.5px solid #99E4FD",
+                        boxShadow: done
+                            ? "0 0 6px rgba(74,222,128,0.6)"
+                            : locked
+                            ? "none"
+                            : "0 0 6px rgba(153,228,253,0.5)",
+                    }}
+                >
+                    {locked ? (
+                        <Lock className="w-2 h-2 text-gray-500" />
+                    ) : done ? (
+                        <Check className="w-2 h-2 text-green-400" />
+                    ) : (
+                        <Shield className="w-2 h-2 text-[#99E4FD]" />
+                    )}
                 </div>
+            </div>
 
-            </Wrapper>
+            {/* Title */}
+            <div
+                className="flex-1 pr-3 py-2 leading-snug font-semibold text-white text-xs"
+                style={{ fontFamily: "Orbitron, sans-serif" }}
+            >
+                {title}
+            </div>
+
+            {/* Right glow accent */}
+            <div 
+                className="absolute right-0 top-0 h-full w-16 pointer-events-none"
+                style={{
+                    background: "linear-gradient(to left, rgba(150,129,255,0.1), transparent)",
+                    borderRadius: "0 12px 12px 0",
+                }}
+                
+            />
         </div>
+    </Wrapper>
+</div>
     );
 }
