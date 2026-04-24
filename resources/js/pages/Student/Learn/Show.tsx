@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { router, Link } from "@inertiajs/react";
 import { Lock, Check, Play, FileText } from 'lucide-react';
 import { show as learnShow } from "@/actions/App/Http/Controllers/Student/LearnController";
-import { ArrowLeft } from "lucide-react";
-
 
 /* ================= TYPES ================= */
 type Content = {
@@ -29,7 +27,6 @@ type Path = {
 type Course = {
     _id: string;
     title: string;
-    slug: string;
 };
 
 type Progress = {
@@ -100,7 +97,7 @@ export default function LearnShow({
         // ROOT: h-screen + overflow-hidden = tidak ada scroll di luar
         <div className="h-screen bg-[#040812] text-white flex flex-col overflow-hidden">
 
-
+            {/* ================= HEADER (DIAM) ================= */}
             <div className="flex-shrink-0 w-full pt-0.5 px-1">
                 <div
                     className="relative border-[2px] md:border-[3px]"
@@ -110,7 +107,7 @@ export default function LearnShow({
                 >
                     <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-[#040812]">
                         <Link
-                            href={`/student/courses/${course.slug}`}
+                            href="/student/Course/Quiz/Roadmap.tsx"
                             className="border-2 border-blue-800 rounded bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0"
                         >
                             <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500">
@@ -130,9 +127,7 @@ export default function LearnShow({
                         </h1>
                     </div>
                 </div>
-
-            {/* ================= HEADER ================= */}
-          
+            </div>
 
             {/* ================= MAIN (flex-1 + overflow-hidden) ================= */}
             {/* flex-1 mengisi sisa tinggi, overflow-hidden mencegah main ikut scroll */}
@@ -290,9 +285,7 @@ export default function LearnShow({
                                         {item.content?.title && (
                                             <h3 className="text-lg font-bold text-blue-400">{item.content.title}</h3>
                                         )}
-
                                         <p className="text-gray-200 whitespace-pre-wrap text-[15px] leading-relaxed">
-
                                             {item.content?.description || item.content?.text}
                                         </p>
                                     </div>
@@ -392,7 +385,6 @@ export default function LearnShow({
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 }
