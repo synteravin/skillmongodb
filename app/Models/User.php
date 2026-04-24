@@ -92,7 +92,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function userStats()
     {
-        return $this->hasMany(UserStat::class, 'character_id', '_id');
+        return $this->hasMany(UserStat::class, 'user_id', '_id');
     }
 
     // public function courses()
@@ -113,7 +113,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function activeCourse()
     {
         return $this->hasOne(CourseStudent::class, 'user_id', '_id')
-            ->where('status', 'In_progress');
+            ->whereIn('status', ['in_progress', 'In_progress', 'active'])
+            ->latest('updated_at');
     }
     const ROLE_ADMIN = 'admin';
     const ROLE_MENTOR = 'mentor';

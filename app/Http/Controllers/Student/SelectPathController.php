@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Path;
-use App\Actions\Student\SelectPathAction;
-use App\Http\Requests\Student\SelectPathRequest;
+use App\Actions\Path\SelectPathAction;
+use App\Http\Requests\Path\SelectPathRequest;
 
 class SelectPathController extends Controller
 {

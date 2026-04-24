@@ -56,7 +56,7 @@ export default function Roadmap({
                         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600"></div>
 
                         <Link
-                            href="/student/dashboard"
+                            href="/student/course"
                             className="absolute left-4 w-8 h-8 flex items-center justify-center border border-[#1e2759] rounded hover:border-blue-500 transition-colors text-blue-500"
                         >
                             <ArrowLeft size={16} />

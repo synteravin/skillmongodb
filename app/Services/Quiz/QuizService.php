@@ -4,38 +4,39 @@ namespace App\Services\Quiz;
 
 use App\Models\Quiz;
 use App\Models\User;
+use App\Models\QuizAnswer;
 
 class QuizService
 {
     public function submit(User $user, Quiz $quiz, array $answers): array
     {
-        $questions = $quiz->questions()->with('answers')->get();
-
-        $correct = 0;
-        $total = $questions->count();
-
-        if ($total === 0) {
+        if (empty($answers)) {
             return [
                 'score' => 0,
                 'passed' => true
             ];
         }
 
-        foreach ($questions as $question) {
+        $correct = 0;
+        $total = count($answers);
 
-            $questionId = (string) $question->_id;
+        foreach ($answers as $questionId => $answerId) {
 
-            $userAnswerId = $answers[$questionId] ?? null;
+            $answer = QuizAnswer::find($answerId);
 
-            if (!$userAnswerId)
+            if (!$answer) {
                 continue;
+            }
 
-            $isCorrect = $question->answers->contains(function ($answer) use ($userAnswerId) {
-                return (string) $answer->_id === (string) $userAnswerId
-                    && (bool) $answer->is_correct;
-            });
+            // 🔥 VALIDASI: pastikan answer milik question itu
+            if ((string) $answer->question_id !== (string) $questionId) {
+                continue;
+            }
 
-            if ($isCorrect) {
+            // 🔥 HANDLE SEMUA FORMAT DATA
+            $val = strtolower(trim((string) $answer->is_correct));
+
+            if (in_array($val, ['1', 'true'], true)) {
                 $correct++;
             }
         }
@@ -44,7 +45,7 @@ class QuizService
 
         return [
             'score' => $score,
-            'passed' => true // 🔥 no fail system
+            'passed' => true
         ];
     }
 }

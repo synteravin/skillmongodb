@@ -116,6 +116,9 @@ class CourseRoadmapController extends Controller
 
                             $isSelected = $progress->selected_path_id === $pathId;
                             $isCompleted = in_array($pathId, $progress->completed_paths);
+                            $modules = $path->modules
+                                ->sortBy('order')
+                                ->values();
 
                             /* ❌ LOCK TOTAL JIKA BASIC BELUM SELESAI */
                             if (!$isBasicCompleted) {
@@ -144,6 +147,13 @@ class CourseRoadmapController extends Controller
                                 'is_unlocked' => $isUnlocked,
                                 'is_selected' => $isSelected,
                                 'is_completed' => $isCompleted,
+                                'modules' => $modules->map(fn($m) => [
+                                    '_id' => (string) $m->_id,
+                                    'title' => $m->title,
+                                    'badge' => $m->badge ? [
+                                        'icon' => $m->badge->icon
+                                    ] : null
+                                ])
                             ];
                         })
                 ];

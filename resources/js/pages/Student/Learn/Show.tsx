@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { router } from "@inertiajs/react";
 import { show as learnShow } from "@/actions/App/Http/Controllers/Student/LearnController";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "@inertiajs/react";
+
 
 /* ================= TYPES ================= */
 type Content = {
@@ -28,6 +31,7 @@ type Path = {
 type Course = {
     _id: string;
     title: string;
+    slug: string;
 };
 
 type Progress = {
@@ -133,7 +137,13 @@ export default function LearnShow({
             {/* ================= HEADER ================= */}
             <div className="relative w-full px-4 py-4 mb-2">
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600"></div>
-
+                <Link
+                    href={`/student/courses/${course.slug}`}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm hover:opacity-80 transition"
+                >
+                    <ArrowLeft size={18} />
+                    Back
+                </Link>
                 <h1 className="text-center font-['Orbitron'] text-lg sm:text-xl tracking-widest uppercase">
                     {course.title}
                 </h1>
@@ -206,7 +216,7 @@ export default function LearnShow({
                                                 {item.content.title}
                                             </h3>
                                         )}
-                                        <p className="text-gray-200 whitespace-pre-wrap text-[15px]">
+                                        <p className="text-gray-200 whitespace-pre-wrap text-[15px] break-all">
                                             {item.content?.description || item.content?.text}
                                         </p>
                                     </div>

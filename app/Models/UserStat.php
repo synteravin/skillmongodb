@@ -16,9 +16,11 @@ class UserStat extends Model
         'completed_paths',
         'selected_path_id',
         'stage',
-        'xp',
+        'exp',
+        'gold',
         'level',
-        'streak'
+        'erp',
+        'path_stats' => 'array',
     ];
 
     protected $casts = [

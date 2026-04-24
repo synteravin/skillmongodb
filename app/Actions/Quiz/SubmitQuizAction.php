@@ -5,43 +5,59 @@ namespace App\Actions\Quiz;
 use App\Models\Quiz;
 use App\Models\User;
 use App\Models\QuizResult;
+use App\Models\UserStat;
 use App\Services\Quiz\QuizService;
+use App\Services\Reward\RewardService;
 
 class SubmitQuizAction
 {
     public function execute(User $user, Quiz $quiz, array $data): object
     {
-        $userId = $user->id ?? $user->_id;
+        $userId = (string) $user->_id;
+        // 🔒 DOUBLE CHECK (ANTI BYPASS)
+        $exists = QuizResult::where('user_id', $userId)
+            ->where('quiz_id', (string) $quiz->_id)
+            ->exists();
 
-        $existing = QuizResult::where('quiz_id', $quiz->_id)
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($existing) {
-            return (object) [
-                'score' => (int) $existing->score,
-                'passed' => (bool) $existing->passed,
-                'message' => 'Quiz sudah dikerjakan'
-            ];
+        if ($exists) {
+            throw new \Exception('Quiz sudah pernah dikerjakan');
         }
+        $pathId = (string) $quiz->path_id;
 
         $service = app(QuizService::class);
-
         $result = $service->submit($user, $quiz, $data['answers']);
 
+        $score = (int) $result['score'];
+
+        // 🔥 SIMPAN HASIL
         QuizResult::create([
             'user_id' => $userId,
-            'quiz_id' => $quiz->_id,
-            'score' => (int) $result['score'],
+            'quiz_id' => (string) $quiz->_id,
+            'score' => $score,
             'answers' => $data['answers'],
             'passed' => true,
             'completed_at' => now()
         ]);
 
+        // 🔥 AMBIL / BUAT PROGRESS
+        $progress = UserStat::firstOrCreate([
+            'user_id' => $userId,
+            'course_id' => (string) $quiz->path->course_id
+        ]);
+
+        // 🔥 REWARD (HANYA SEKALI)
+        $reward = new RewardService();
+
+        $reward->setQuizScore($progress, $pathId, $score);
+        $reward->addExp($progress, $pathId, $score);
+        $reward->addGold($progress, $pathId, floor($score / 2));
+
         return (object) [
-            'score' => (int) $result['score'],
+            'score' => $score,
             'passed' => true,
-            'message' => 'Quiz berhasil'
+            'message' => 'Quiz selesai',
+            'exp' => $score,
+            'gold' => floor($score / 2),
         ];
     }
 }

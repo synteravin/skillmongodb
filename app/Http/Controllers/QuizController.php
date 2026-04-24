@@ -7,6 +7,7 @@ use App\Models\UserStat;
 use App\Http\Requests\Quiz\SubmitQuizRequest;
 use App\Actions\Quiz\SubmitQuizAction;
 use Inertia\Inertia;
+use App\Models\QuizResult;
 
 class QuizController extends Controller
 {
@@ -29,6 +30,9 @@ class QuizController extends Controller
             abort(403);
         }
 
+        $hasSubmitted = QuizResult::where('user_id', $user->_id)
+            ->where('quiz_id', $quiz->_id)
+            ->exists();
         return Inertia::render('Student/Quiz/Play', [
             'quiz' => [
                 'id' => (string) $quiz->_id,
@@ -51,36 +55,62 @@ class QuizController extends Controller
 
     public function submit(SubmitQuizRequest $request, $id)
     {
-        $quiz = Quiz::with(['questions.answers', 'path'])
-            ->findOrFail($id);
+        try {
+            $quiz = Quiz::with(['questions.answers', 'path'])
+                ->findOrFail($id);
 
-        $user = auth()->user();
+            $user = auth()->user();
 
-        $result = app(SubmitQuizAction::class)
-            ->execute($user, $quiz, $request->validated());
+            // 🔒 CEK SUDAH PERNAH SUBMIT
+            $alreadySubmitted = QuizResult::where('user_id', (string) $user->_id)
+                ->where('quiz_id', (string) $quiz->_id)
+                ->exists();
 
-        if ($result->passed) {
-            $progress = UserStat::firstOrCreate([
-                'user_id' => $user->_id,
-                'course_id' => $quiz->path->course_id
+            if ($alreadySubmitted) {
+                return response()->json([
+                    'message' => 'Quiz hanya bisa dikerjakan sekali'
+                ], 403);
+            }
+
+            // lanjut eksekusi
+            $result = app(SubmitQuizAction::class)
+                ->execute($user, $quiz, $request->validated());
+            if ($result->passed) {
+                $progress = UserStat::firstOrCreate([
+                    'user_id' => $user->_id,
+                    'course_id' => $quiz->path->course_id
+                ]);
+
+                $completedPaths = $progress->completed_paths ?? [];
+
+                if (is_string($completedPaths)) {
+                    $completedPaths = json_decode($completedPaths, true) ?? [];
+                }
+
+                if (!in_array((string) $quiz->path->_id, $completedPaths)) {
+                    $completedPaths[] = (string) $quiz->path->_id;
+
+                    $progress->update([
+                        'completed_paths' => $completedPaths
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'result' => [
+                    'score' => (int) $result->score,
+                    'passed' => true,
+                    'exp' => (int) $result->exp,
+                    'gold' => (int) $result->gold,
+                ]
             ]);
 
-            $completedPaths = $progress->completed_paths ?? [];
-
-            if (!in_array((string) $quiz->path->_id, $completedPaths)) {
-                $completedPaths[] = (string) $quiz->path->_id;
-
-                $progress->update([
-                    'completed_paths' => $completedPaths
-                ]);
-            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ], 500);
         }
-
-        return response()->json([
-            'result' => [
-                'score' => (int) $result->score,
-                'passed' => true
-            ]
-        ]);
     }
 }
