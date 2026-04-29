@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { router, Link } from "@inertiajs/react";
-import { Lock, Check, Play, FileText } from 'lucide-react';
+import { Lock, Check, Play, FileText,X,ZoomIn } from 'lucide-react';
 import { show as learnShow } from "@/actions/App/Http/Controllers/Student/LearnController";
+import { index } from "@/actions/Laravel/Fortify/Http/Controllers/RecoveryCodeController";
 
 /* ================= TYPES ================= */
 type Content = {
@@ -27,6 +28,7 @@ type Path = {
 type Course = {
     _id: string;
     title: string;
+    slug: string;
 };
 
 type Progress = {
@@ -107,10 +109,10 @@ export default function LearnShow({
                 >
                     <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-[#040812]">
                         <Link
-                            href="/student/Course/Quiz/Roadmap.tsx"
+                           href={`/student/courses/${course.slug}`}
                             className="border-2 border-blue-800 rounded bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0"
                         >
-                            <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500">
+                            <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500 scale-125 hover:scale-150 transition-transform duration-200">
                                 <rect x="12" y="20" width="29" height="4" fill="currentColor" />
                                 <rect x="8" y="20" width="4" height="4" fill="currentColor" />
                                 <rect x="5" y="20" width="5" height="4" fill="currentColor" />
@@ -233,7 +235,7 @@ export default function LearnShow({
                                                 color: isActive ? "#ffffff" : done ? "#a7f3d0" : unlocked ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.3)",
                                             }}
                                         >
-                                            {mod.title}
+                                            {mod.title} 
                                         </span>
                                     </div>
 
@@ -253,73 +255,248 @@ export default function LearnShow({
                 {/* flex-1 + min-h-0 + overflow-hidden = kanan mengisi sisa, tidak bocor */}
                 <div className="flex-1 flex flex-col gap-2 overflow-hidden min-h-0">
 
-                    {/* KONTEN — HANYA INI YANG SCROLL */}
-                    <div
-                        className="flex-1 min-h-0 rounded-xl overflow-y-auto p-5"
-                        style={{
-                            background: "linear-gradient(180deg, #0d1229 0%, #080d1e 100%)",
-                            border: "1px solid rgba(99,130,255,0.3)",
-                            scrollbarWidth: "thin",
-                            scrollbarColor: "rgba(99,130,255,0.3) transparent",
-                        }}
-                    >
-                        <h2 className="text-xl font-bold mb-4 text-white" style={{ fontFamily: "Orbitron, sans-serif" }}>
+                <div
+                    className="flex-1 min-h-0 rounded-xl overflow-y-auto p-5"
+                    style={{
+                        background: "linear-gradient(180deg, #0d1229 0%, #080d1e 100%)",
+                        border: "1px solid rgba(99,130,255,0.3)",
+                        scrollbarWidth: "thin",
+                        scrollbarColor: "rgba(99,130,255,0.3) transparent",
+                    }}
+                >
+                    {/* Module Title */}
+                    <div className="flex items-center gap-3 mb-6">
+                        <div style={{ width: 3, height: 24, background: "linear-gradient(180deg, #6382ff, #a78bfa)", borderRadius: 9999 }} />
+                        <h2 className="text-xl font-bold text-white" style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.05em" }}>
                             {module.title}
                         </h2>
+                    </div>
 
-                        {module.contents.length === 0 && (
-                            <p className="text-gray-400">Belum ada materi.</p>
-                        )}
+                    {module.contents.length === 0 && (
+                        <p className="text-gray-500 text-sm italic">Belum ada materi.</p>
+                    )}
 
-                        {module.contents.map((item, index) => (
-                            <div
-                                key={`content_${index}`}
-                                className="mb-6 rounded-xl overflow-hidden"
-                                style={{
-                                    border: "1px solid rgba(99,130,255,0.2)",
-                                    background: "rgba(255,255,255,0.02)",
-                                }}
-                            >
-                                {item.type === "text" && (
-                                    <div className="flex flex-col gap-3 p-5">
-                                        {item.content?.title && (
-                                            <h3 className="text-lg font-bold text-blue-400">{item.content.title}</h3>
-                                        )}
-                                        <p className="text-gray-200 whitespace-pre-wrap text-[15px] leading-relaxed">
-                                            {item.content?.description || item.content?.text}
-                                        </p>
+                    {module.contents.map((item, index) => (
+                        <div key={`content_${index}`} className="mb-1">
+
+                            {/* ── TEXT ── */}
+                            {item.type === "text" && (
+                                <div className="mb-5">
+                                    {item.content?.title && (
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span
+                                                className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded"
+                                                style={{ background: "rgba(99,130,255,0.15)", color: "#6382ff", border: "1px solid rgba(99,130,255,0.3)" }}
+                                            >
+                                                {String(index + 1).padStart(2, "0")}
+                                            </span>
+                                            <h3 className="text-base font-bold text-blue-300" style={{ fontFamily: "Orbitron, sans-serif" }}>
+                                                {item.content.title}
+                                            </h3>
+                                        </div>
+                                    )}
+                                    <p
+                                        className="text-gray-300 whitespace-pre-wrap leading-relaxed text-[14px]"
+                                        style={{ paddingLeft: "1.75rem", borderLeft: "2px solid rgba(99,130,255,0.15)" }}
+                                    >
+                                        {item.content?.description || item.content?.text}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* ── YOUTUBE ── */}
+                            {item.type === "youtube" && (
+                                <div className="mb-5 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(99,130,255,0.25)" }}>
+                                    <div
+                                        className="flex items-center gap-2 px-4 py-2"
+                                        style={{ background: "rgba(99,130,255,0.08)", borderBottom: "1px solid rgba(99,130,255,0.15)" }}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-red-500" />
+                                        <span className="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Video</span>
                                     </div>
-                                )}
-                                {item.type === "youtube" && (
-                                    <iframe src={getYoutubeEmbedUrl(item.content.url)} className="w-full h-[400px]" allowFullScreen />
-                                )}
-                                {item.type === "image" && (
-                                    <img src={item.content.url} className="w-full rounded" />
-                                )}
-                                {item.type === "video" && (
-                                    <video controls className="w-full">
+                                    <iframe
+                                        src={getYoutubeEmbedUrl(item.content.url)}
+                                        className="w-full h-[360px]"
+                                        allowFullScreen
+                                        style={{ display: "block" }}
+                                    />
+                                </div>
+                            )}
+                            {/* ── IMAGE ── */}
+                            {item.type === "image" && (() => {
+                                const [isOpen, setIsOpen] = React.useState(false);
+                                return (
+                                    <>
+                                        {/* Lightbox Modal */}
+                                        {isOpen && (
+                                            <div
+                                                className="fixed inset-0 z-50 flex items-center justify-center"
+                                                style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(6px)" }}
+                                                onClick={() => setIsOpen(false)}
+                                            >
+                                                <div
+                                                    className="relative max-w-4xl w-full mx-6"
+                                                    onClick={e => e.stopPropagation()}
+                                                >
+                                                    {/* Close button */}
+                                                    <button
+                                                        onClick={() => setIsOpen(false)}
+                                                        className="absolute -top-10 right-0 flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                        <span className="text-xs tracking-wider uppercase">Tutup</span>
+                                                    </button>
+
+                                                    {/* Image */}
+                                                    <div
+                                                        className="rounded-xl overflow-hidden"
+                                                        style={{ border: "1px solid rgba(99,130,255,0.35)", boxShadow: "0 0 60px rgba(99,130,255,0.15)" }}
+                                                    >
+                                                        <div
+                                                            className="flex items-center gap-2 px-4 py-2"
+                                                            style={{ background: "rgba(99,130,255,0.1)", borderBottom: "1px solid rgba(99,130,255,0.2)" }}
+                                                        >
+                                                            <span className="w-2 h-2 rounded-full" style={{ background: "#6382ff" }} />
+                                                            <span className="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Image Preview</span>
+                                                        </div>
+                                                        <img
+                                                            src={item.content.url}
+                                                            alt=""
+                                                            style={{ width: "100%", display: "block", maxHeight: "75vh", objectFit: "contain", background: "#000" }}
+                                                        />
+                                                    </div>
+
+                                                    {/* Caption di bawah modal */}
+                                                    <p className="text-center text-gray-500 text-xs mt-3 italic">
+                                                        Klik di luar gambar untuk menutup
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Layout normal: gambar kiri + caption kanan */}
+                                        <div className="mb-5 flex gap-4 items-start">
+                                            {/* Gambar - kiri */}
+                                            <div className="flex-shrink-0" style={{ width: "55%" }}>
+                                                <div
+                                                    className="flex items-center gap-2 px-3 py-1.5 rounded-t-xl"
+                                                    style={{ background: "rgba(99,130,255,0.08)", border: "1px solid rgba(99,130,255,0.25)", borderBottom: "none" }}
+                                                >
+                                                    <span className="w-2 h-2 rounded-full" style={{ background: "#6382ff" }} />
+                                                    <span className="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Image</span>
+                                                </div>
+                                                <div
+                                                    className="rounded-b-xl overflow-hidden relative group"
+                                                    style={{ border: "1px solid rgba(99,130,255,0.25)", cursor: "pointer" }}
+                                                    onClick={() => setIsOpen(true)}
+                                                >
+                                                    <img
+                                                        src={item.content.url}
+                                                        alt=""
+                                                        style={{ width: "100%", display: "block", transition: "filter 0.2s ease" }}
+                                                        className="group-hover:brightness-75"
+                                                    />
+                                                    {/* Hover overlay */}
+                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div
+                                                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
+                                                            style={{ background: "rgba(99,130,255,0.25)", border: "1px solid rgba(99,130,255,0.5)", backdropFilter: "blur(4px)" }}
+                                                        >
+                                                            <ZoomIn className="w-4 h-4 text-white" />
+                                                            <span className="text-white text-xs font-semibold">Perbesar</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Caption - kanan */}
+                                            <div
+                                                className="flex-1 rounded-xl p-4 flex flex-col gap-3"
+                                                style={{ background: "rgba(99,130,255,0.05)", border: "1px solid rgba(99,130,255,0.15)" }}
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <span
+                                                        className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded"
+                                                        style={{ background: "rgba(99,130,255,0.15)", color: "#6382ff", border: "1px solid rgba(99,130,255,0.3)" }}
+                                                    >
+                                                        Catatan
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-300 text-[13px] leading-relaxed">
+                                                    {/* Ganti dengan item.content.caption nanti */}
+                                                    Gambar ini menjelaskan struktur dasar dari materi yang sedang dipelajari. Perhatikan setiap bagian dengan
+                                                    seksama untuk memahami konsepnya secara menyeluruh dan hubungannya dengan materi lainnya. pada gambar ini terdapat beberapa bagian penting yang akan membantu kamu memahami topik ini dengan lebih baik.
+                                                    lalu jika kamu ingin melihat detailnya, klik saja gambarnya untuk memperbesar.dan html ini adalah contoh caption yang cukup panjang untuk menguji bagaimana tampilan
+                                                    teks dalam kotak caption ketika melebihi batas tertentu. Dengan adanya caption ini, diharapkan kamu bisa mendapatkan insight tambahan tentang gambar yang sedang kamu lihat, sehingga proses belajar menjadi lebih efektif dan menyenangkan.   
+                                                </p>
+                                                <div
+                                                    className="mt-auto pt-3 flex items-center gap-2"
+                                                    style={{ borderTop: "1px dashed rgba(99,130,255,0.15)" }}
+                                                >
+                                                    <span className="text-[10px] text-gray-600 italic">
+                                                        💡 Klik gambar untuk memperbesar
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                            })()}
+
+                            {/* ── VIDEO ── */}
+                            {item.type === "video" && (
+                                <div className="mb-5 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(99,130,255,0.25)" }}>
+                                    <div
+                                        className="flex items-center gap-2 px-4 py-2"
+                                        style={{ background: "rgba(99,130,255,0.08)", borderBottom: "1px solid rgba(99,130,255,0.15)" }}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-green-400" />
+                                        <span className="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Video</span>
+                                    </div>
+                                    <video controls className="w-full" style={{ display: "block", background: "#000" }}>
                                         <source src={item.content.url} />
                                     </video>
-                                )}
-                                {item.type === "file" && (
-                                    <div className="p-5 flex items-center gap-3">
-                                        <div
-                                            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                                            style={{ background: "rgba(99,130,255,0.15)", border: "1px solid rgba(99,130,255,0.4)" }}
-                                        >
-                                            <FileText className="w-5 h-5 text-indigo-400" />
-                                        </div>
-                                        <div>
-                                            <p className="text-white text-sm font-semibold">Download File</p>
-                                            <a href={item.content.url} target="_blank" className="text-blue-400 text-xs underline">
-                                                {item.content.url}
-                                            </a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
+                                </div>
+                            )}
+
+                           {/* ── FILE ── */}
+{item.type === "file" && (
+    <div className="mb-4 flex items-center gap-3 rounded-xl border border-gray-700 bg-[#0f1226] px-4 py-3">
+
+        {/* icon */}
+        <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500/10">
+            <FileText className="w-5 h-5 text-indigo-400" />
+        </div>
+
+        {/* content */}
+        <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-white">
+                Materi File
+            </p>
+
+            <p className="text-xs text-gray-400 truncate">
+                {item.content.url.split('/').pop()}
+            </p>
+        </div>
+
+        {/* action */}
+        <a
+            href={item.content.url}
+            target="_blank"
+            className="text-xs px-3 py-1.5 rounded-md bg-indigo-500/20 text-indigo-300"
+        >
+            Download
+        </a>
+    </div>
+)}
+
+                            {/* Divider antar konten */}
+                            {index < (module.contents?.length ?? 0) - 1 && (
+                                <div className="mb-5" style={{ borderBottom: "1px dashed rgba(99,130,255,0.1)" }} />
+                            )}
+                        </div>
+                    ))}
+                </div>
 
                     {/* ================= FOOTER (DIAM) ================= */}
                     <div className="flex-shrink-0 flex items-center justify-between">

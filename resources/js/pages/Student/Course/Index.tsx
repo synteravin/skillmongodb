@@ -54,44 +54,46 @@ export default function Index({ courses }: { courses: Course[] }) {
         <>
             <Head title="My Courses" />
 
-            <div className="min-h-screen bg-[#e6ebf2] dark:bg-[#040812] text-gray-800 dark:text-slate-200 font-sans">
-                <div className="w-full pb-0 pt-0.5 m-0">
+           <div className="h-screen overflow-hidden flex flex-col bg-[#e6ebf2] dark:bg-[#040812] text-gray-800 dark:text-slate-200 font-sans">
+               
 
-                    {/* HEADER */}
-                    <div className="relative w-full">
-                        <div
-                            className="relative border-[2px] md:border-[3px]"
-                            style={{
-                                borderImage:
-                                    "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
-                            }}
+            {/* ================= HEADER (DIAM) ================= */}
+            <div className="flex-shrink-0 w-full pt-0.5 px-1">
+                <div
+                    className="relative border-[2px] md:border-[3px]"
+                    style={{
+                        borderImage: "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
+                    }}
+                >
+                    <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-[#040812]">
+
+                        {/* Back Button */}
+                        <Link
+                            href="/student/dashboard"
+                            className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0"
                         >
-                            <div className="rounded-lg py-5 px-4 md:px-6 flex items-center relative bg-white dark:bg-[#040812]">
-                                <Link
-                                    href="/student/dashboard"
-                                    className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 absolute left-4 md:left-6 z-10"
-                                >
-                                    <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500 scale-125 hover:scale-150 transition-transform duration-200">
-                                        <rect x="12" y="20" width="29" height="4" fill="currentColor" />
-                                        <rect x="8" y="20" width="4" height="4" fill="currentColor" />
-                                        <rect x="5" y="20" width="5" height="4" fill="currentColor" />
-                                        <rect x="8" y="16" width="4" height="4" fill="currentColor" />
-                                        <rect x="8" y="24" width="4" height="4" fill="currentColor" />
-                                        <rect x="12" y="12" width="4" height="4" fill="currentColor" />
-                                        <rect x="12" y="28" width="4" height="4" fill="currentColor" />
-                                        <rect x="16" y="8" width="4" height="4" fill="currentColor" />
-                                        <rect x="16" y="32" width="4" height="4" fill="currentColor" />
-                                    </svg>
-                                </Link>
-                                <h1 className="w-full text-center text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-[0.1em] md:tracking-[0.15em] uppercase">
-                                    SELECT YOUR COURSE
-                                </h1>
-                            </div>
-                        </div>
-                    </div>
+                            <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500 scale-125 hover:scale-150 transition-transform duration-200">
+                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                <rect x="8"  y="20" width="4"  height="4" fill="currentColor" />
+                                <rect x="5"  y="20" width="5"  height="4" fill="currentColor" />
+                                <rect x="8"  y="16" width="4"  height="4" fill="currentColor" />
+                                <rect x="8"  y="24" width="4"  height="4" fill="currentColor" />
+                                <rect x="12" y="12" width="4"  height="4" fill="currentColor" />
+                                <rect x="12" y="28" width="4"  height="4" fill="currentColor" />
+                                <rect x="16" y="8"  width="4"  height="4" fill="currentColor" />
+                                <rect x="16" y="32" width="4"  height="4" fill="currentColor" />
+                            </svg>
+                        </Link>
 
-                    {/* GRID */}
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-14 p-4 md:p-6">
+                        {/* Title */}
+                        <h1 className="absolute left-0 right-0 text-center text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold text-gray-900 dark:text-white tracking-[0.1em] md:tracking-[0.15em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase px-16 pointer-events-none">
+                           SELECT YOUR COURSE
+                        </h1>
+                    </div>
+                </div>
+            </div>
+             <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(99,130,255,0.3) transparent" }}>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-14 p-4 md:p-6">
                         {courses.map((course) => {
                             const isLocked = course.status === 'locked'
                             const isActive = course.status === 'active'
@@ -213,6 +215,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                             )
                         })}
                     </div>
+            </div>
 
                     {/* EMPTY */}
                     {courses.length === 0 && (
@@ -221,7 +224,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                         </div>
                     )}
                 </div>
-            </div>
+            
 
             {/* ===================== MODAL 1: DESKRIPSI COURSE ===================== */}
             <AnimatePresence>

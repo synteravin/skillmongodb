@@ -112,16 +112,20 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
 
                     {/* DESCRIPTION */}
                     <p className="text-[10px] text-gray-400 font-semibold text-center mb-4 leading-relaxed px-1 line-clamp-4">
-                        A special package to become a professional {group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects
+                        A special package to become a professional {group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects the next 
                     </p>
 
-                    {/* STATS */}
-                    <div className="flex justify-between gap-2 mb-4">
-                        <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
-                            <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Modules</span>
-                            <span className="block text-sm font-bold text-[#B3B3B3]">{totalModules} Units</span>
-                            </div>
-                            </div>
+                   {/* STATS */}
+                <div className="flex justify-between gap-2 mb-4">
+                    <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
+                        <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Modules</span>
+                        <span className="block text-sm font-bold text-[#B3B3B3]">{totalModules} Units</span>
+                    </div>
+                    <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
+                        <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Formats</span>
+                        <span className="block text-sm font-bold text-[#B3B3B3]">Video & Projects</span>
+                    </div>
+                </div>
                                 
                     {/* HEADER */}
 
@@ -184,7 +188,7 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
 
 
             {/* connector line */}
-            <div className={`w-[2px] h-8 bg-[#F0F0F0] ${isOtherChosen ? 'opacity-30' : ''}`}></div>
+            <div className={`w-[2px] h-8 bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}></div>
 
             {/* paths list — sama seperti sebelumnya */}
             <div className={`flex flex-col w-full items-center ${(!basicCompleted || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
