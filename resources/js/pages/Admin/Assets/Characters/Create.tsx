@@ -106,7 +106,7 @@ export default function CreateCharacter() {
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/admin/characters', {
+        post('/admin/assets/characters', {
             forceFormData: true,
         });
     };

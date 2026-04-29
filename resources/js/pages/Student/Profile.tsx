@@ -6,12 +6,23 @@ type Props = {
         name: string;
         level: number;
         avatar: string;
+
         exp_min: number;
         exp: number;
         exp_max: number;
+
         gold: number;
         courses: number;
         avg_score: number;
+
+        total_score: number; // 🔥 untuk star progress
+
+        rank?: {
+            name: string;
+            image: string;
+            star: number;
+        };
+
         last_course?: {
             course_name: string;
             path_name: string;
@@ -24,6 +35,20 @@ type Props = {
 export default function ProfilePage({ user }: Props) {
     const progress =
         ((user.exp - user.exp_min) / (user.exp_max - user.exp_min)) * 100;
+    const glowMap: Record<string, string> = {
+        Hatching: "rgba(59,130,246,0.7)",
+        Wyvern: "rgba(34,197,94,0.7)",
+        Drake: "rgba(168,85,247,0.7)",
+        Hydra: "rgba(239,68,68,0.7)",
+        Monarch: "rgba(250,204,21,0.7)",
+        Infernal: "rgba(249,115,22,0.7)",
+        Zenith: "rgba(34,211,238,0.7)",
+    };
+
+    const glow = glowMap[user.rank?.name ?? ""] || "rgba(59,130,246,0.7)";
+
+    // ⚠️ pastikan ini dari backend
+    const starProgress = ((user.total_score % 500) / 500) * 100;
     return (
         <div className="min-h-screen bg-[#050816] text-white p-6">
 
@@ -65,7 +90,7 @@ export default function ProfilePage({ user }: Props) {
                         {/* username */}
                         <h2 className="text-lg font-bold">{user.name}</h2>
                         <p className="text-blue-400 text-sm mb-4">
-                            Level nya{user.level}
+                            Level {user.level}
                         </p>
                         <div className="w-full border-t border-blue-800 pt-4 flex justify-between text-sm">
                             <div>
@@ -103,7 +128,7 @@ export default function ProfilePage({ user }: Props) {
                 </div>
 
                 {/* RIGHT CONTENT */}
-                <div className="col-span-12 lg:col-span-8 space-y-6">
+                <div className="col-span-12 lg:col-span-8 space-y-4">
 
                     {/* MASTERY LEVEL */}
                     <div className="border border-blue-700 p-2 bg-[#070c20]">
@@ -112,15 +137,6 @@ export default function ProfilePage({ user }: Props) {
                             <div className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-blue-500 text-xl font-bold flex-shrink-0">
                                 {user.level}
                             </div>
-
-                            {/* <div className="w-full h-3 bg-[#1a1f3a] mt-2 rounded">
-                                <div
-                                    className="h-full bg-gradient-to-r from-blue-500 to-yellow-400 transition-all duration-500"
-                                    style={{
-                                        width: `${Math.min((user.exp / 1500) * 100, 100)}%`
-                                    }}
-                                />
-                            </div> */}
 
                             <div className="flex-1">
 
@@ -145,22 +161,70 @@ export default function ProfilePage({ user }: Props) {
                     </div>
 
                     {/* OPERATOR DATA */}
-                    <div className="border border-blue-700 p-6 bg-[#070c20]">
+                    <div className="border border-blue-700 p-3 bg-[#070c20]">
 
                         <h3 className="text-blue-400 mb-4 font-semibold">
                             OPERATOR DATA
                         </h3>
 
                         {/* RANK */}
-                        <div className="flex items-center gap-4 mb-6 border border-blue-800 p-4">
-                            <img src="/images/rank.png" className="w-12 h-12" />
-                            <div className="w-full">
-                                <p className="text-xs text-gray-400">CURRENT RANK</p>
-                                <p className="font-bold">NEXUS II</p>
+                        <div className="flex items-center gap-4 mb-6 border border-blue-800 p-4 bg-gradient-to-br from-[#0b1025] to-[#0a0f2c] rounded-xl shadow-lg">
 
-                                <div className="w-full h-2 bg-[#1a1f3a] mt-2 rounded">
-                                    <div className="h-full bg-blue-400 w-[80%]" />
+                            {/* IMAGE */}
+                            <div className="relative">
+                                <img
+                                    src={user.rank?.image ?? "/images/default-rank.png"}
+                                    className="w-28 h-28 object-contain"
+                                    style={{ filter: `drop-shadow(0 0 12px ${glow})` }}
+                                />
+
+                                <div
+                                    className="absolute inset-0 blur-xl rounded-full"
+                                    style={{ background: glow, opacity: 0.2 }}
+                                />
+                            </div>
+
+                            {/* INFO */}
+                            <div className="w-full">
+
+                                <p className="text-xs text-gray-400">CURRENT RANK</p>
+
+                                <p className="font-bold text-lg"
+                                    style={{ color: glow }}>
+                                    {user.rank?.name ?? "Unranked"}
+                                </p>
+
+                                {/* ⭐ STAR */}
+                                <div className="flex gap-1 mt-1">
+                                    {Array.from({ length: user.rank?.star ?? 1 }).map((_, i) => (
+                                        <img
+                                            key={i}
+                                            src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                                            className="w-4 h-4 animate-pulse"
+                                        />
+                                    ))}
                                 </div>
+
+                                {/* ⭐ PROGRESS (QUIZ SCORE) */}
+                                <div className="mt-2">
+
+                                    <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+                                        <span>Progress to next star</span>
+                                        <span>{Math.floor(starProgress)}%</span>
+                                    </div>
+
+                                    <div className="w-full h-2 bg-[#1a1f3a] rounded overflow-hidden">
+                                        <div
+                                            className="h-full transition-all duration-500"
+                                            style={{
+                                                width: `${starProgress}%`,
+                                                background: `linear-gradient(to right, ${glow}, gold)`
+                                            }}
+                                        />
+                                    </div>
+
+                                </div>
+
                             </div>
                         </div>
 

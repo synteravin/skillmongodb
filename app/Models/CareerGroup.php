@@ -32,4 +32,19 @@ class CareerGroup extends Model
     {
         return $this->belongsTo(User::class, 'mentor_id', '_id');
     }
+
+    public function mentorAssignments()
+    {
+        return $this->hasMany(MentorCareerGroup::class, 'career_group_id', '_id');
+    }
+
+    public function mentors()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'mentor_career_groups',
+            'career_group_id',
+            'mentor_id'
+        );
+    }
 }

@@ -9,6 +9,7 @@ import {
     Users,
     LogOut,
     Settings,
+    Box
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -47,11 +48,11 @@ const menu: MenuItem[] = [
         roles: ['admin'],
     },
     {
-        name: 'Character',
-        icon: Sparkles,
-        href: '/admin/characters',
+        name: 'Assets',
+        icon: Box,
+        href: '/admin/assets',
         roles: ['admin'],
-    },
+    }
 ];
 
 /* -------------------------------------------------------------------------- */

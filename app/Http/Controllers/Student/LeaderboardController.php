@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Rank;
 use Inertia\Inertia;
 
 class LeaderboardController extends Controller
@@ -12,7 +13,10 @@ class LeaderboardController extends Controller
     {
         $users = User::with('userStats')->get();
 
-        $leaderboard = $users->map(function ($user) {
+        // 🔥 ambil semua rank dari DB (urutan penting)
+        $ranks = Rank::orderBy('order')->get();
+
+        $leaderboard = $users->map(function ($user) use ($ranks) {
 
             $totalScore = 0;
 
@@ -38,19 +42,39 @@ class LeaderboardController extends Controller
                 }
             }
 
+            // =========================
+            // 🔥 RANK LOGIC
+            // =========================
+
+            $scorePerStar = 500;
+
+            $level = floor($totalScore / $scorePerStar); // total tier
+            $star = ($level % 3) + 1; // 1 - 3
+            $rankIndex = floor($level / 3);
+
+            $rank = $ranks[$rankIndex] ?? $ranks->last();
+
             return [
                 'name' => $user->name,
+
                 'avatar' => $user->avatar
                     ? asset('storage/' . $user->avatar)
-                    : null,
+                    : asset('images/aizen.jpeg'),
                 'total_score' => $totalScore,
+
+                'rank' => [
+                    'name' => $rank->name ?? 'Unknown',
+                    'image' => isset($rank->image)
+                        ? asset('storage/' . $rank->image)
+                        : null,
+                    'star' => $star,
+                ],
             ];
         })
             ->filter(fn($u) => $u['total_score'] > 0)
             ->sortByDesc('total_score')
             ->values()
             ->take(10);
-
         return Inertia::render('Student/Leaderboard', [
             'leaderboard' => $leaderboard,
         ]);

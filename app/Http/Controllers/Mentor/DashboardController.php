@@ -6,34 +6,71 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Course;
+use App\Models\MentorCareerGroup;
+use App\Models\CourseStudent;
 
 class DashboardController extends Controller
 {
-public function index(Request $request)
-{
-    $mentor = $request->user();
+    public function index(Request $request)
+    {
+        $mentor = $request->user();
 
-    $courses = Course::where('mentor_id', $mentor->_id)->get();
+        $groups = MentorCareerGroup::with('careerGroup')
+            ->where('mentor_id', (string) $mentor->_id)
+            ->get()
+            ->pluck('careerGroup');
 
-    return Inertia::render('Mentor/Dashboard', [
-        'mentor' => [
-            'name' => $mentor->name,
-            'stats' => [
-                'courses' => $courses->count(),
-                'students' => 0,
-                'active' => 0,
-                'progress' => 0,
+        // 🔥 HITUNG TOTAL STUDENT
+        $totalStudents = $groups->sum(function ($group) {
+            return CourseStudent::where(
+                'career_group_id',
+                (string) $group->_id
+            )->count();
+        });
+
+        // 🔥 HITUNG ACTIVE STUDENT
+        $activeStudents = $groups->sum(function ($group) {
+            return CourseStudent::where(
+                'career_group_id',
+                (string) $group->_id
+            )
+                ->where('status', 'active')
+                ->count();
+        });
+
+        return Inertia::render('Mentor/Dashboard', [
+            'mentor' => [
+                'name' => $mentor->name,
+
+                'stats' => [
+                    'career_groups' => $groups->count(),
+                    'students' => $totalStudents,   // ✅ FIX
+                    'active' => $activeStudents,    // ✅ FIX
+                    'progress' => 0,
+                ],
+
+                'careerGroups' => $groups->map(function ($group) {
+                    $students = CourseStudent::where(
+                        'career_group_id',
+                        (string) $group->_id
+                    )->count();
+
+                    $active = CourseStudent::where(
+                        'career_group_id',
+                        (string) $group->_id
+                    )
+                        ->where('status', 'active')
+                        ->count();
+
+                    return [
+                        'id' => (string) $group->_id,
+                        'name' => $group->name,
+                        'paths_count' => $group->paths()->count(),
+                        'students' => $students,   // ✅ TAMBAH
+                        'active' => $active,       // ✅ TAMBAH
+                    ];
+                })->values()->all(),
             ],
-            // ⬇️ PASTIKAN INI SELALU ARRAY
-            'courses' => $courses->map(fn ($course) => [
-                'id' => (string) $course->_id,
-                'title' => $course->title,
-                'students' => 0,
-                'progress' => 0,
-            ])->values()->all(),
-        ],
-    ]);
-}
-
-
+        ]);
+    }
 }

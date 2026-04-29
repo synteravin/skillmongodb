@@ -13,6 +13,7 @@ use App\Http\Requests\Course\StoreCourseRequest;
 use App\Http\Requests\CareerGroup\StoreCareerGroupRequest;
 use App\Http\Requests\Path\StorePathRequest;
 use App\Http\Requests\Module\StoreModuleRequest;
+use App\Models\CareerGroup;
 
 use App\Models\Course;
 use App\Models\LevelBadge;
@@ -151,15 +152,18 @@ class CourseBuilderController extends Controller
         StorePathRequest $request,
         CreatePathAction $action
     ) {
+        $data = $request->validated();
 
-        $action->execute($request->validated());
+        $group = CareerGroup::findOrFail($data['career_group_id']);
 
-        $course = Course::find($request->course_id);
+        $this->authorize('update', $group);
+
+        $action->execute($group, $data);
+
+        $course = Course::findOrFail($data['course_id']);
 
         return redirect()->route('admin.courses.builder', $course->slug);
-
     }
-
 
     public function storeModule(
         StoreModuleRequest $request,

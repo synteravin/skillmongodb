@@ -3,42 +3,31 @@
 namespace App\Actions\Path;
 
 use App\Models\Path;
+use App\Models\CareerGroup;
 use Illuminate\Support\Str;
+
 
 class CreatePathAction
 {
-
-    public function execute(array $data): Path
+    public function execute(CareerGroup $group, array $data): Path
     {
-
         $slug = Str::slug($data['name']);
 
         if (Path::where('slug', $slug)->exists()) {
             $slug .= '-' . Str::random(5);
         }
 
-        $order = Path::where('course_id', $data['course_id'])->max('order');
+        $order = Path::where('career_group_id', $group->_id)->max('order');
 
         return Path::create([
-
-            'course_id' => $data['course_id'],
-
-            'career_group_id' => $data['career_group_id'] ?? null,
-
-            'phase' => $data['phase'],
-
+            'course_id' => (string) $group->course_id, // 🔥 ambil dari group
+            'career_group_id' => (string) $group->_id,
+            'phase' => 'career_branch', // 🔥 FIX HARD
             'name' => $data['name'],
-
             'slug' => $slug,
-
             'description' => $data['description'] ?? null,
-
-            'thumbnail' => $data['thumbnail'] ?? null,
-
-            'order' => ($order ?? 0) + 1
-
+            'order' => ($order ?? 0) + 1,
+            'is_active' => true,
         ]);
-
     }
-
 }

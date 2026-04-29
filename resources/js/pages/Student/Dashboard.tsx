@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import SpeechBubble from "@/components/SpeechBubble"
 import BottomNav from "@/components/Student/BottomNav"
 import { Link } from "@inertiajs/react";
+import { useAppearance } from "@/hooks/use-appearance"
 
 interface Character {
   name: string
@@ -23,29 +24,11 @@ interface User {
 
 export default function Dashboard({ user }: { user: User }) {
 
-  const [dark, setDark] = useState(false)
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme")
-
-    if (savedTheme === "dark") {
-      document.documentElement.classList.add("dark")
-      setDark(true)
-    }
-  }, [])
+  const { resolvedAppearance, updateAppearance } = useAppearance()
+  const dark = resolvedAppearance === "dark"
 
   const toggleTheme = () => {
-    const html = document.documentElement
-
-    if (dark) {
-      html.classList.remove("dark")
-      localStorage.setItem("theme", "light")
-    } else {
-      html.classList.add("dark")
-      localStorage.setItem("theme", "dark")
-    }
-
-    setDark(!dark)
+    updateAppearance(dark ? "light" : "dark")
   }
 
   return (
@@ -145,13 +128,13 @@ function TopBar({
       {/* RIGHT */}
       <div className="absolute top-2 right-2 flex items-center gap-2 md:gap-4 lg:gap-6">
 
-        <div className="flex items-center gap-1 md:gap-2 lg:gap-3 border-2 border-yellow-500 px-2 md:px-3 h-8 md:h-10 lg:h-12">
+        <div className="flex items-center gap-1 md:gap-2 lg:gap-3 px-2 md:px-3 h-8 md:h-10 lg:h-12">
 
           <img src="/images/gold.png"
             className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 2xl:h-14 2xl:w-14 object-contain"
           />
           <span className="text-lg font-semibold">
-            {user.gold.toLocaleString()}
+            {user.gold.toLocaleString()}0.000
           </span>
 
         </div>
@@ -254,30 +237,30 @@ and dominate the game`
   }, [showBubble])
 
   return (
-  <div className="hidden md:block absolute inset-0 z-10">
+    <div className="hidden md:block absolute inset-0 z-10">
 
-    <div className="absolute bottom-[-60px] md:bottom-[-90px] lg:bottom-[-120px]
+      <div className="absolute bottom-[-60px] md:bottom-[-90px] lg:bottom-[-120px]
     right-[20px] md:right-[180px] lg:right-[220px] xl:right-[260px] 2xl:right-[370px]
     translate-x-16 md:translate-x-24 lg:translate-x-32">
 
-      {showBubble && (
-        <SpeechBubble className="absolute top-8 md:top-12 lg:top-14 -right-32 md:-right-56 lg:-right-75 animate-fadeIn">
-          <p className="text-xs md:text-sm lg:text-base whitespace-pre-line leading-relaxed">
-            {displayText}
-            <span className="animate-pulse">|</span>
-          </p>
-        </SpeechBubble>
-      )}
+        {showBubble && (
+          <SpeechBubble className="absolute top-8 md:top-12 lg:top-14 -right-32 md:-right-56 lg:-right-75 animate-fadeIn">
+            <p className="text-xs md:text-sm lg:text-base whitespace-pre-line leading-relaxed">
+              {displayText}
+              <span className="animate-pulse">|</span>
+            </p>
+          </SpeechBubble>
+        )}
 
-      <img
-        src={avatar}
-        onClick={triggerBubble}
-        className="relative z-50 cursor-pointer transition hover:scale-[1.02]
+        <img
+          src={avatar}
+          onClick={triggerBubble}
+          className="relative z-50 cursor-pointer transition hover:scale-[1.02]
         h-[320px] md:h-[420px] lg:h-[540px] xl:h-[600px] 2xl:h-[620px]"
-        style={{ animation: "breathe 3s ease-in-out infinite" }}
-      />
+          style={{ animation: "breathe 3s ease-in-out infinite" }}
+        />
 
+      </div>
     </div>
-  </div>
-)
+  )
 }

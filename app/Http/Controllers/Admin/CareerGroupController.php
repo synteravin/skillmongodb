@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use MongoDB\BSON\ObjectId;
 use App\Models\CareerGroup;
 use App\Models\User;
+use App\Models\MentorCareerGroup;
 
 class CareerGroupController extends Controller
 {
@@ -24,10 +25,19 @@ class CareerGroupController extends Controller
             ->where('role', 'mentor')
             ->firstOrFail();
 
-        $group->update([
-            'mentor_id' => $mentor->_id
-        ]);
+        // 🔥 CEK DUPLICATE
+        $exists = MentorCareerGroup::where('mentor_id', (string) $mentor->_id)
+            ->where('career_group_id', (string) $group->_id)
+            ->exists();
 
-        return back();
+        if (!$exists) {
+            MentorCareerGroup::create([
+                'mentor_id' => (string) $mentor->_id,
+                'career_group_id' => (string) $group->_id,
+                'assigned_by' => (string) auth()->id()
+            ]);
+        }
+
+        return back()->with('success', 'Mentor assigned');
     }
 }

@@ -17,27 +17,29 @@ export default function CharacterIndex({
     const destroy = (id: string) => {
         if (!confirm('Delete this character?')) return;
 
-        router.delete(`/admin/characters/${id}`);
+        // ✅ FIX
+        router.delete(`/admin/assets/characters/${id}`);
     };
 
     return (
         <AppLayout>
             <div className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-10 dark:bg-slate-950">
                 <div className="mx-auto max-w-7xl space-y-8">
-                    {/* ================= HEADER ================= */}
+
+                    {/* HEADER */}
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                                 Characters
                             </h1>
                             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                                Manage playable characters available for
-                                students.
+                                Manage playable characters available for students.
                             </p>
                         </div>
 
+                        {/* ✅ FIX */}
                         <a
-                            href="/admin/characters/create"
+                            href="/admin/assets/characters/create"
                             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:opacity-90"
                         >
                             <Plus size={16} />
@@ -45,7 +47,7 @@ export default function CharacterIndex({
                         </a>
                     </div>
 
-                    {/* ================= CONTENT ================= */}
+                    {/* CONTENT */}
                     {characters.length === 0 ? (
                         <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900">
                             <p className="text-slate-500 dark:text-slate-400">
@@ -83,8 +85,10 @@ export default function CharacterIndex({
 
                                     {/* Actions */}
                                     <div className="relative z-10 mt-6 flex items-center justify-between">
+
+                                        {/* ✅ FIX */}
                                         <a
-                                            href={`/admin/characters/${char.id}/edit`}
+                                            href={`/admin/assets/characters/${char.id}/edit`}
                                             className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
                                         >
                                             <Pencil size={14} />

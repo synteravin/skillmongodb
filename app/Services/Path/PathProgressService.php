@@ -5,6 +5,7 @@ namespace App\Services\Path;
 use App\Models\User;
 use App\Models\Path;
 use App\Models\UserStat;
+use App\Models\CourseStudent; // ✅ FIXED
 use MongoDB\BSON\ObjectId;
 use App\Services\Reward\RewardService;
 
@@ -72,13 +73,27 @@ class PathProgressService
             return $progress;
         }
 
-        $progress->selected_path_id = $path->_id instanceof ObjectId
-            ? $path->_id->__toString()
-            : (string) $path->_id;
+        // 🔥 VALIDASI CAREER GROUP
+        if (!$path->career_group_id) {
+            throw new \Exception('Path tidak memiliki career group');
+        }
 
-        $progress->stage = 'career'; // indikator saja
-
+        $progress->selected_path_id = (string) $path->_id;
+        $progress->stage = 'career';
         $progress->save();
+
+        /* ================= 🔥 SYNC KE COURSE STUDENT ================= */
+
+        $courseStudent = CourseStudent::where('user_id', (string) $user->_id)
+            ->where('course_id', (string) $path->course_id)
+            ->first();
+
+        if ($courseStudent) {
+            $courseStudent->update([
+                'career_group_id' => (string) $path->career_group_id,
+                'status' => 'active'
+            ]);
+        }
 
         return $progress;
     }

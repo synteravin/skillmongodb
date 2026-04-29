@@ -95,15 +95,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasMany(UserStat::class, 'user_id', '_id');
     }
 
-    // public function courses()
-    // {
-    //     return $this->belongsToMany(
-    //         Course::class,
-    //         'course_students',
-    //         'user_id',
-    //         'course_id'
-    //     );
-    // }
+    public function mentorCareerGroups()
+    {
+        return $this->hasMany(MentorCareerGroup::class, 'mentor_id', '_id');
+    }
 
     public function courseStudents()
     {

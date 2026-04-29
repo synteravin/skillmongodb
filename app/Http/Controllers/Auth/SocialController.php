@@ -36,7 +36,7 @@ class SocialController extends Controller
                 'username' => Str::slug($googleUser->getName()) . rand(100, 999),
                 'email' => $googleUser->getEmail(),
                 'password' => bcrypt(Str::random(24)),
-                'role' => 'student', // 🔥 default student
+                'role' => 'student',
             ]);
         }
 

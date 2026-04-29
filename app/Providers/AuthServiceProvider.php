@@ -8,6 +8,8 @@ use App\Policies\UserPolicy;
 use App\Policies\QuizPolicy;
 use App\Policies\CoursePolicy;
 use App\Models\Quiz;
+use App\Models\CareerGroup;
+use App\Policies\CareerGroupPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Quiz::class => QuizPolicy::class,
         Course::class => CoursePolicy::class,
+        CareerGroup::class => CareerGroupPolicy::class,
     ];
 
     public function boot(): void

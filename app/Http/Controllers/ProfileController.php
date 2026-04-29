@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Models\Module;
+use App\Models\Rank;
 
 class ProfileController extends Controller
 {
@@ -109,10 +110,53 @@ class ProfileController extends Controller
                 ]),
             ];
         }
+        // ambil rank
+        $ranks = Rank::orderBy('order')->get();
 
+        // pakai QUIZ SCORE (bukan exp)
+        $step = floor($totalScore / 500);
+
+        $tierIndex = floor($step / 3);
+        $star = ($step % 3) + 1;
+
+        $tier = $ranks[$tierIndex] ?? $ranks->last();
+
+        $rankData = [
+            'name' => $tier->name,
+            'image' => asset('storage/' . $tier->image),
+            'star' => $star,
+        ];
         // ========================
         // 🔥 RESPONSE
         // ========================
+        // return Inertia::render('Student/Profile', [
+        //     'user' => [
+        //         'name' => $user->name,
+
+        //         'level' => $currentLevel,
+        //         'exp' => $totalExp,
+        //         'exp_min' => $currentLevelMinExp,
+        //         'exp_max' => $currentLevelMaxExp,
+        //         'gold' => $totalGold,
+        //         'avg_score' => $avgScore,
+        //         'courses' => $user->courseStudents->count(),
+
+        //         'avatar' => $user->avatar
+        //             ? asset('storage/' . $user->avatar)
+        //             : null,
+
+        //         // ✅ REAL LAST PROGRESS
+        //         'last_course' => $lastCourseData,
+
+        //         // 🔥 ROADMAP ENGINE
+        //         'progress' => [
+        //             'completed_modules' => $completedModules ?? [],
+        //             'completed_paths' => $completedPaths ?? [],
+        //             'selected_path_id' => $selectedPathId,
+        //         ],
+        //     ]
+        // ]);
+        // 🔥 RESPONSE
         return Inertia::render('Student/Profile', [
             'user' => [
                 'name' => $user->name,
@@ -129,10 +173,14 @@ class ProfileController extends Controller
                     ? asset('storage/' . $user->avatar)
                     : null,
 
-                // ✅ REAL LAST PROGRESS
+                // 🔥 TAMBAHKAN INI
+                'rank' => $rankData,
+
+                // 🔥 TAMBAHKAN INI (untuk progress star)
+                'total_score' => $totalScore,
+
                 'last_course' => $lastCourseData,
 
-                // 🔥 ROADMAP ENGINE
                 'progress' => [
                     'completed_modules' => $completedModules ?? [],
                     'completed_paths' => $completedPaths ?? [],

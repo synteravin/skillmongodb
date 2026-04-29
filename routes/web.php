@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\CharacterController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
-
+use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\LevelBadgeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CareerGroupController;
@@ -30,13 +30,8 @@ use App\Http\Controllers\Student\LearnController;
 use App\Http\Controllers\Student\CourseController as StudentCourseActionController;
 use App\Http\Controllers\Student\CareerController;
 use App\Http\Controllers\Admin\QuizController;
-
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\Admin\AssetsController;
+use App\Http\Controllers\Mentor\PathController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +43,27 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+        Route::prefix('assets')
+            ->name('assets.')
+            ->group(function () {
 
+                // DASHBOARD
+                Route::get('/', [AssetsController::class, 'index'])
+                    ->name('index');
+
+                // RANK
+                Route::resource('ranks', RankController::class);
+                Route::post('ranks/reorder', [RankController::class, 'reorder'])
+                    ->name('ranks.reorder');
+
+                // CHARACTER
+                Route::resource('characters', CharacterController::class)
+                    ->except(['show']);
+
+                // BADGE
+                Route::resource('badges', LevelBadgeController::class);
+
+            });
         /* ---------------- DASHBOARD ---------------- */
 
         Route::get('/dashboard', [AdminDashboard::class, 'index'])
@@ -57,9 +72,9 @@ Route::middleware(['auth', 'role:admin'])
 
         /* ---------------- CHARACTERS ---------------- */
 
-        Route::resource('characters', CharacterController::class)
-            ->except(['show']);
-
+        // Route::resource('characters', CharacterController::class)
+        //     ->except(['show']);
+    
         /* ---------------- COURSE CRUD ---------------- */
 
         Route::get('/courses', [CourseController::class, 'index'])
@@ -109,8 +124,8 @@ Route::middleware(['auth', 'role:admin'])
 
         /* ---------------- LEVEL BADGES ---------------- */
 
-        Route::resource('/levelbadge', LevelBadgeController::class);
-
+        // Route::resource('/levelbadge', LevelBadgeController::class);
+    
         /* ---------------- USER ---------------- */
 
         Route::resource('users', UserController::class);
@@ -152,6 +167,14 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
         Route::post('/select-career', [CareerController::class, 'select']);
+        // Route::resource('ranks', RankController::class);
+    
+        // Route::post('ranks/reorder', [RankController::class, 'reorder'])
+        //     ->name('ranks.reorder');
+    
+        // Route::get('assets', function () {
+        //     return Inertia::render('Admin/Assets/Index');
+        // })->name('assets');
     });
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +189,12 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::get('/dashboard', [MentorDashboard::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/career-groups/{group}/paths', [PathController::class, 'index'])
+            ->name('paths.index');
+
+        Route::post('/career-groups/{group}/paths', [PathController::class, 'store'])
+            ->name('paths.store');
     });
 
 /*

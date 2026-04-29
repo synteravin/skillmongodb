@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { router, Link } from "@inertiajs/react";
 import { Lock, Check, Play, FileText } from 'lucide-react';
 import { show as learnShow } from "@/actions/App/Http/Controllers/Student/LearnController";
+import courses from "@/routes/student/courses";
 
 /* ================= TYPES ================= */
 type Content = {
@@ -27,6 +28,7 @@ type Path = {
 type Course = {
     _id: string;
     title: string;
+    slug: string;
 };
 
 type Progress = {
@@ -107,7 +109,7 @@ export default function LearnShow({
                 >
                     <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-[#040812]">
                         <Link
-                            href="/student/Course/Quiz/Roadmap.tsx"
+                            href={`/student/courses/${course.slug}`}
                             className="border-2 border-blue-800 rounded bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0"
                         >
                             <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500">
@@ -172,18 +174,18 @@ export default function LearnShow({
                                         background: isActive
                                             ? "linear-gradient(135deg, #1a2060 0%, #0e1540 100%)"
                                             : done
-                                            ? "linear-gradient(135deg, #0a2a1a 0%, #0d1f2d 100%)"
-                                            : "rgba(255,255,255,0.03)",
+                                                ? "linear-gradient(135deg, #0a2a1a 0%, #0d1f2d 100%)"
+                                                : "rgba(255,255,255,0.03)",
                                         border: isActive
                                             ? "1px solid rgba(99,130,255,0.8)"
                                             : done
-                                            ? "1px solid rgba(74,222,128,0.5)"
-                                            : "1px solid rgba(255,255,255,0.06)",
+                                                ? "1px solid rgba(74,222,128,0.5)"
+                                                : "1px solid rgba(255,255,255,0.06)",
                                         boxShadow: isActive
                                             ? "0 0 16px rgba(99,130,255,0.2)"
                                             : done
-                                            ? "0 0 10px rgba(74,222,128,0.1)"
-                                            : "none",
+                                                ? "0 0 10px rgba(74,222,128,0.1)"
+                                                : "none",
                                         opacity: !unlocked ? 0.4 : 1,
                                     }}
                                 >
@@ -194,13 +196,13 @@ export default function LearnShow({
                                             background: isActive
                                                 ? "rgba(99,130,255,0.2)"
                                                 : done
-                                                ? "rgba(74,222,128,0.15)"
-                                                : "rgba(255,255,255,0.05)",
+                                                    ? "rgba(74,222,128,0.15)"
+                                                    : "rgba(255,255,255,0.05)",
                                             border: isActive
                                                 ? "1px solid rgba(99,130,255,0.6)"
                                                 : done
-                                                ? "1px solid rgba(74,222,128,0.4)"
-                                                : "1px solid rgba(255,255,255,0.08)",
+                                                    ? "1px solid rgba(74,222,128,0.4)"
+                                                    : "1px solid rgba(255,255,255,0.08)",
                                         }}
                                     >
                                         {!unlocked ? (

@@ -3,35 +3,35 @@
 namespace App\Http\Requests\Path;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MentorCareerGroup;
+use App\Models\CareerGroup;
 
 class StorePathRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return auth()->user()?->isAdmin();
+        return true; // 🔥 jangan handle auth di sini
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
+            'course_id' => ['nullable', 'string'],
 
-            'course_id' => ['required', 'string'],
+            'career_group_id' => [
+                'nullable',
+                'string',
+                'required_if:phase,career_branch'
+            ],
 
-            'career_group_id' => ['nullable', 'string'],
-
-            'phase' => ['required', 'in:basic_fundamental,career_path'],
+            'phase' => [
+                'nullable',
+                'in:basic_fundamental,career_branch'
+            ],
 
             'name' => ['required', 'string', 'max:255'],
 
-            'description' => ['nullable', 'string']
+            'description' => ['nullable', 'string'],
         ];
     }
 }
