@@ -1,9 +1,9 @@
-import { useState } from "react";
-import StudentModuleNode from "./StudentModuleNode";
+import { useState } from 'react';
+import StudentModuleNode from './StudentModuleNode';
 
-import { User } from "lucide-react";
+import { User } from 'lucide-react';
 
-import { router } from "@inertiajs/react";
+import { router } from '@inertiajs/react';
 
 type Props = {
     group: any;
@@ -13,12 +13,23 @@ type Props = {
     basicCompleted: boolean;
 };
 
-export default function StudentCareerBranch({ group, progress, badges = [], courseId, basicCompleted }: Props) {
+export default function StudentCareerBranch({
+    group,
+    progress,
+    badges = [],
+    courseId,
+    basicCompleted,
+}: Props) {
     const hasChosenPath = !!progress.selected_path_id;
-    const isChosen = group.paths.some((p: any) => p._id === progress.selected_path_id);
+    const isChosen = group.paths.some(
+        (p: any) => p._id === progress.selected_path_id,
+    );
     const isOtherChosen = progress.selected_path_id && !isChosen;
 
-    const totalModules = group.paths.reduce((sum: number, p: any) => sum + (p.modules?.length || 0), 0);
+    const totalModules = group.paths.reduce(
+        (sum: number, p: any) => sum + (p.modules?.length || 0),
+        0,
+    );
 
     const [loading, setLoading] = useState(false);
 
@@ -30,12 +41,12 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
 
     const handleStart = (firstPath: any) => {
         if (!firstPath) {
-            console.error("Path tidak ditemukan");
+            console.error('Path tidak ditemukan');
             return;
         }
 
         if (!firstPath?.modules?.[0]?._id) {
-            console.error("Path tidak punya module");
+            console.error('Path tidak punya module');
             return;
         }
 
@@ -43,62 +54,107 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
 
         setLoading(true);
 
-        router.post(`/student/select-career/${firstPath._id}`, {}, {
-            onSuccess: () => {
-                router.visit(
-                    `/student/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`
-                );
+        router.post(
+            `/student/select-career/${firstPath._id}`,
+            {},
+            {
+                onSuccess: () => {
+                    router.visit(
+                        `/student/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`,
+                    );
+                },
+                onFinish: () => setLoading(false),
             },
-            onFinish: () => setLoading(false)
-        });
+        );
     };
 
     return (
-        <div className="flex flex-col items-center w-full px-8 sm:px-4 relative text-sans">
-
-            <div className={`relative w-full rounded-xl flex flex-col shadow-lg mb-0 transition-all overflow-hidden
-                border-2
-                ${isChosen
-                    ? 'border-blue-400 shadow-[0_0_40px_rgba(96,165,250,0.35)]'
-                    : 'border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]'}
-                ${(!basicCompleted || isOtherChosen) ? 'grayscale opacity-50' : ''}
-            `}>
+        <div className="text-sans relative flex w-full flex-col items-center px-8 sm:px-4">
+            <div
+                className={`relative mb-0 flex w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${
+                    isChosen
+                        ? 'border-blue-400 shadow-[0_0_40px_rgba(96,165,250,0.35)]'
+                        : 'border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]'
+                } ${!basicCompleted || isOtherChosen ? 'opacity-50 grayscale' : ''} `}
+            >
                 {/* GRADIENT BORDER TOP ACCENT */}
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent z-10" />
+                <div className="absolute top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
 
-                <div className="w-full h-full rounded-xl bg-[#050619] flex flex-col p-5 relative">
-
+                <div className="relative flex h-full w-full flex-col rounded-xl bg-[#050619] p-5">
                     {/* LOCK OVERLAY */}
                     {(!basicCompleted || isOtherChosen) && (
                         <div className="absolute inset-0 z-30 flex items-center justify-center rounded-xl backdrop-blur-[1px]">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" className="opacity-80 drop-shadow-xl">
-                                <rect x="4" y="10" width="16" height="12" rx="3" fill="#050d1f" stroke="#1e3a8a" strokeWidth="1.5" />
-                                <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" />
+                            <svg
+                                width="64"
+                                height="64"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                className="opacity-80 drop-shadow-xl"
+                            >
+                                <rect
+                                    x="4"
+                                    y="10"
+                                    width="16"
+                                    height="12"
+                                    rx="3"
+                                    fill="#050d1f"
+                                    stroke="#1e3a8a"
+                                    strokeWidth="1.5"
+                                />
+                                <path
+                                    d="M8 10V7a4 4 0 0 1 8 0v3"
+                                    stroke="#1e3a8a"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
                                 <circle cx="12" cy="16" r="2" fill="#1e3a8a" />
-                                <path d="M12 16v2.5" stroke="#1e3a8a" strokeWidth="1.5" strokeLinecap="round" />
-
+                                <path
+                                    d="M12 16v2.5"
+                                    stroke="#1e3a8a"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                />
                             </svg>
                         </div>
                     )}
 
-
                     {/* THUMBNAIL — bulat di tengah atas */}
-                    <div className="flex justify-center mb-4">
+                    <div className="mb-4 flex justify-center">
                         <div className="relative">
                             {/* glow ring */}
-                            <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-md scale-110" />
-                            <div className="relative w-20 h-20 rounded-full border-2 border-blue-500 overflow-hidden bg-[#0b1333] flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                            <div className="absolute inset-0 scale-110 rounded-full bg-blue-500/20 blur-md" />
+                            <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 bg-[#0b1333] shadow-[0_0_20px_rgba(59,130,246,0.4)]">
                                 {group.thumbnail ? (
                                     <img
                                         src={`/storage/${group.thumbnail}`}
-                                        className="w-full h-full object-cover"
+                                        className="h-full w-full object-cover"
                                         alt={group.name}
                                     />
                                 ) : (
-                                    <svg viewBox="0 0 24 24" fill="none" className="w-9 h-9 text-blue-400">
-                                        <path d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                                        <path d="M9 15l-2 4 3-1M15 15l2 4-3-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        <circle cx="12" cy="13" r="1.5" fill="currentColor" />
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        className="h-9 w-9 text-blue-400"
+                                    >
+                                        <path
+                                            d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                            strokeLinejoin="round"
+                                        />
+                                        <path
+                                            d="M9 15l-2 4 3-1M15 15l2 4-3-1"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                        <circle
+                                            cx="12"
+                                            cy="13"
+                                            r="1.5"
+                                            fill="currentColor"
+                                        />
                                     </svg>
                                 )}
                             </div>
@@ -106,105 +162,121 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                     </div>
 
                     {/* TITLE */}
-                    <h2 className="text-base sm:text-lg font-['Orbitron'] font-bold text-center text-white mb-2 uppercase tracking-widest leading-tight">
+                    <h2 className="mb-2 text-center font-['Orbitron'] text-base leading-tight font-bold tracking-widest text-white uppercase sm:text-lg">
                         {group.name}
                     </h2>
 
                     {/* DESCRIPTION */}
-                    <p className="text-[10px] text-gray-400 font-semibold text-center mb-4 leading-relaxed px-1 line-clamp-4">
-                        A special package to become a professional {group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects
+                    <p className="mb-4 line-clamp-4 px-1 text-center text-[10px] leading-relaxed font-semibold text-gray-400">
+                        A special package to become a professional {group.name}{' '}
+                        Developer, starting with modern web development
+                        fundamentals and progressing to advanced topics and
+                        real-world projects the next
                     </p>
 
                     {/* STATS */}
-                    <div className="flex justify-between gap-2 mb-4">
-                        <div className="flex-1 bg-[#020101] border border-[#1A2E99] rounded-lg p-2 text-center flex flex-col items-center justify-center gap-0.5">
-                            <span className="block text-[9px] text-[#F0E427] font-semibold tracking-wider uppercase">Learning Path</span>
-                            <span className="block text-sm font-bold text-[#B3B3B3]">{totalModules} Units</span>
+                    <div className="mb-4 flex justify-between gap-2">
+                        <div className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border border-[#1A2E99] bg-[#020101] p-2 text-center">
+                            <span className="block text-[9px] font-semibold tracking-wider text-[#F0E427] uppercase">
+                                Learning Path
+                            </span>
+                            <span className="block text-sm font-bold text-[#B3B3B3]">
+                                {totalModules} Units
+                            </span>
                         </div>
                     </div>
 
                     {/* HEADER */}
 
-
                     {/* FOOTER — mentor + button */}
-                    <div className="pt-3 border-t border-[#1A2E99]/80 flex justify-between items-center relative z-40">
+                    <div className="relative z-40 flex items-center justify-between border-t border-[#1A2E99]/80 pt-3">
                         {/* MENTOR */}
-                        <div className="flex items-center gap-2 max-w-[60%]">
-
-                            {group.mentor && group.mentor.avatar && group.mentor.avatar !== "null" ? (
+                        <div className="flex max-w-[60%] items-center gap-2">
+                            {group.mentor &&
+                            group.mentor.avatar &&
+                            group.mentor.avatar !== 'null' ? (
                                 <img
-                                    src={group.mentor.avatar.startsWith('http') ? group.mentor.avatar : `/storage/${group.mentor.avatar}`}
-                                    className="w-10 h-10 rounded-full border border-gray-400 object-cover flex-shrink-0"
+                                    src={
+                                        group.mentor.avatar.startsWith('http')
+                                            ? group.mentor.avatar
+                                            : `/storage/${group.mentor.avatar}`
+                                    }
+                                    className="h-10 w-10 flex-shrink-0 rounded-full border border-gray-400 object-cover"
                                     alt="mentor"
                                 />
                             ) : (
-                                <div className="w-12 h-12 rounded-full border border-blue-500 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-blue-500 bg-gradient-to-br from-blue-500 to-indigo-600">
                                     {group.mentor?.name ? (
                                         <span className="text-[11px] font-bold text-white">
-                                            {group.mentor.name.charAt(0).toUpperCase()}
+                                            {group.mentor.name
+                                                .charAt(0)
+                                                .toUpperCase()}
                                         </span>
                                     ) : (
-                                        <User className="w-5 h-5 text-white" />
+                                        <User className="h-5 w-5 text-white" />
                                     )}
                                 </div>
                             )}
                             <div className="flex flex-col truncate">
-                                <span className="text-[10px] font-bold text-[#F0F0F0] leading-none truncate">
+                                <span className="truncate text-[10px] leading-none font-bold text-[#F0F0F0]">
                                     {group.mentor?.name ?? 'No Mentor'}
                                 </span>
-                                <span className="text-[8px] text-gray-400 mt-0.5 truncate">
-                                    {group.mentor ? `${group.name} Professional` : 'Unassigned'}
+                                <span className="mt-0.5 truncate text-[8px] text-gray-400">
+                                    {group.mentor
+                                        ? `${group.name} Professional`
+                                        : 'Unassigned'}
                                 </span>
                             </div>
                         </div>
-
 
                         {/* START BUTTON */}
                         <button
                             onClick={() => handleStart(firstPath)}
                             disabled={!basicCompleted || isOtherChosen}
-                            className={`
-                                    px-4 py-1 rounded-xl text-[12px] font-bold border-2 transition-all duration-300 flex-shrink-0
-                                    font-['Orbitron'] tracking-widest uppercase
-                                    ${isOtherChosen || !basicCompleted
-                                    ? 'bg-gray-900 border-gray-700 text-gray-500 cursor-not-allowed'
-                                    : `bg-[#05080f] border-[#3B28F6] text-white
-                                            shadow-[0_0_8px_1px_rgba(59,40,246,0.3),inset_0_0_8px_rgba(59,40,246,0.05)]
-                                            hover:shadow-[0_0_14px_3px_rgba(59,40,246,0.45),inset_0_0_10px_rgba(59,40,246,0.1)]
-                                            hover:border-[#5a47ff] hover:bg-[#080d1a]`
-                                }
-                                `}
+                            className={`flex-shrink-0 rounded-xl border-2 px-4 py-1 font-['Orbitron'] text-[12px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                                isOtherChosen || !basicCompleted
+                                    ? 'cursor-not-allowed border-gray-700 bg-gray-900 text-gray-500'
+                                    : `border-[#3B28F6] bg-[#05080f] text-white shadow-[0_0_8px_1px_rgba(59,40,246,0.3),inset_0_0_8px_rgba(59,40,246,0.05)] hover:border-[#5a47ff] hover:bg-[#080d1a] hover:shadow-[0_0_14px_3px_rgba(59,40,246,0.45),inset_0_0_10px_rgba(59,40,246,0.1)]`
+                            } `}
                         >
                             Start
                         </button>
-
-
                     </div>
                 </div>
             </div>
 
-
             {/* connector line */}
-            <div className={`w-[2px] h-8 bg-[#F0F0F0] ${isOtherChosen ? 'opacity-30' : ''}`}></div>
+            <div
+                className={`h-8 w-[2px] bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}
+            ></div>
 
             {/* paths list — sama seperti sebelumnya */}
-            <div className={`flex flex-col w-full items-center ${(!basicCompleted || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
-
+            <div
+                className={`flex w-full flex-col items-center ${!basicCompleted || isOtherChosen ? 'opacity-60 grayscale' : ''}`}
+            >
                 {/* LINE */}
-                <div className={`w-[2px] h-8 bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}></div>
+                <div
+                    className={`h-8 w-[2px] bg-gray-500 ${isOtherChosen ? 'opacity-30' : ''}`}
+                ></div>
 
                 {/* PATHS */}
-                <div className={`flex flex-col w-full items-center ${(!basicCompleted || !hasChosenPath || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}>
-
+                <div
+                    className={`flex w-full flex-col items-center ${!basicCompleted || !hasChosenPath || isOtherChosen ? 'opacity-60 grayscale' : ''}`}
+                >
                     {group.paths.map((p: any, idx: number) => {
-                        const done = progress.completed_paths?.includes(String(p._id));
-                        const badge = badges?.find((b: any) => parseInt(b.order?.toString().trim()) === (idx + 1));
+                        const done = progress.completed_paths?.includes(
+                            String(p._id),
+                        );
+                        const badge = badges?.find(
+                            (b: any) =>
+                                parseInt(b.order?.toString().trim()) ===
+                                idx + 1,
+                        );
 
                         let locked = false;
 
                         if (!basicCompleted) locked = true;
                         if (isOtherChosen) locked = true;
-
 
                         // ❌ basic belum selesai
                         if (!basicCompleted) locked = true;
@@ -219,27 +291,32 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
 
                         if (!locked && idx > 0) {
                             const prevPath = group.paths[idx - 1];
-                            locked = !progress.completed_paths?.includes(String(prevPath._id));
+                            locked = !progress.completed_paths?.includes(
+                                String(prevPath._id),
+                            );
                         }
 
                         return (
-                            <div className="flex flex-col items-center w-full" key={String(p._id)}>
+                            <div
+                                className="flex w-full flex-col items-center"
+                                key={String(p._id)}
+                            >
                                 <StudentModuleNode
                                     title={p.name}
                                     done={done}
                                     locked={locked}
                                     index={idx}
                                     badge={badge}
-                                    href={p.modules?.[0]?._id
-                                        ? `/student/learn/${courseId}/${p._id}/${p.modules[0]._id}`
-                                        : undefined
+                                    href={
+                                        p.modules?.[0]?._id
+                                            ? `/student/learn/${courseId}/${p._id}/${p.modules[0]._id}`
+                                            : undefined
                                     }
                                 />
-                                <div className="w-[2px] h-6 bg-gray-500"></div>
+                                <div className="h-6 w-[2px] bg-gray-500"></div>
                             </div>
-                        )
+                        );
                     })}
-
 
                     {/* SUBMISSION */}
 
@@ -252,7 +329,9 @@ export default function StudentCareerBranch({ group, progress, badges = [], cour
                                 !basicCompleted ||
                                 isOtherChosen ||
                                 !progress.completed_paths?.includes(
-                                    String(group.paths[group.paths.length - 1]._id)
+                                    String(
+                                        group.paths[group.paths.length - 1]._id,
+                                    ),
                                 )
                             }
                         />
