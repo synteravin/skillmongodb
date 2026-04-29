@@ -55,337 +55,147 @@ export default function ProfilePage({ user }: Props) {
     const starProgress = ((user.total_score % 500) / 500) * 100;
 
     return (
-        <div className="relative flex h-screen w-screen flex-col overflow-hidden bg-[#020202] text-white">
+        <div className="relative flex min-h-screen w-screen flex-col overflow-x-hidden overflow-y-auto bg-[#050508] text-white font-['Oxanium']">
             {/* ── BACKGROUND GLOW ── */}
             <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-                <div className="h-[300px] w-[600px] bg-blue-500 opacity-20 blur-[180px]" />
+                <div className="h-[300px] w-[600px] bg-blue-600 opacity-[0.03] blur-[150px]" />
             </div>
 
             {/* ── TOP BAR ── */}
-            <div className="relative z-10 flex flex-shrink-0 items-center justify-between px-4 pt-3 pb-2 md:px-6">
+            <div className="relative z-10 flex flex-shrink-0 items-center justify-between px-8 pt-8 pb-4">
                 {/* BACK */}
                 <Link
                     href="/student/dashboard"
-                    className="group flex items-center gap-2"
+                    className="group flex items-center gap-3 text-blue-700 hover:text-blue-500 transition-colors"
                 >
-                    <div className="flex h-8 w-8 items-center justify-center rounded border border-[#1e2759] text-blue-500 transition-all duration-300 group-hover:border-blue-500 group-hover:shadow-[0_0_10px_rgba(59,130,246,0.6)]">
-                        <ArrowLeft size={16} />
+                    <div className="flex h-8 w-8 items-center justify-center border border-blue-900/50 transition-all duration-300">
+                        <ArrowLeft size={18} />
                     </div>
-                    <span className="text-sm font-medium tracking-wide text-blue-400 transition-all duration-300 group-hover:text-blue-300">
-                        Back
+                    <span className="text-sm font-bold tracking-widest">
+                        BACK
                     </span>
                 </Link>
 
-                {/* SWITCH / TUKAR ICON — pojok kanan atas */}
+                {/* SWITCH ICON */}
                 <Link
                     href="/student/profile/switch"
-                    className="flex h-9 w-9 items-center justify-center rounded border border-[#3B28F6] text-[#3B28F6] transition-all duration-300 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_12px_rgba(0,212,255,0.5)]"
+                    className="flex h-8 w-8 items-center justify-center text-blue-700 hover:text-blue-500 transition-all duration-300"
                     title="Switch Account"
                 >
-                    <RefreshCw size={17} strokeWidth={2} />
+                    <RefreshCw size={22} strokeWidth={2.5} />
                 </Link>
             </div>
 
             {/* ── MAIN CONTENT ── */}
-            <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 px-4 pb-3 md:flex-row md:gap-4 md:px-6">
-                {/* ══════════ LEFT PANEL WRAPPER ══════════ */}
-                <div className="right-2.5 flex w-full flex-shrink-0 flex-col gap-3 md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px]">
+            <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-6 px-8 pb-8 md:flex-row">
+                {/* ══════════ LEFT PANEL ══════════ */}
+                <div className="flex w-full flex-shrink-0 flex-col justify-between md:w-[320px] lg:w-[340px]">
                     {/* PROFILE CARD */}
-                    <div className="flex h-[320px] flex-col items-center border-2 border-[#3B28F6] bg-[#050619] p-4 text-center md:p-5">
-                        {/* AVATAR */}
-
-                        <div className="relative mb-4 h-[120px] w-[120px]">
-                            {/* AVATAR */}
-                            <div className="absolute inset-[10px] overflow-hidden rounded-md">
-                                <img
-                                    src={user.avatar ?? '/images/aizen.jpeg'}
-                                    className="h-full w-full object-cover"
+                    <div className="relative flex flex-col items-center border border-[#1a1c33] bg-[#020205] p-8 shadow-2xl">
+                        {/* Top-right corner accent */}
+                        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-yellow-500" />
+                        
+                        {/* HEX AVATAR */}
+                        <div className="relative mb-6 h-[140px] w-[140px]">
+                            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-xl">
+                                <defs>
+                                    <clipPath id="avatarHexClip">
+                                        <polygon points="50,2 95,25 95,75 50,98 5,75 5,25" />
+                                    </clipPath>
+                                </defs>
+                                <image
+                                    href={user.avatar ?? '/images/aizen.jpeg'}
+                                    x="0"
+                                    y="0"
+                                    width="100"
+                                    height="100"
+                                    preserveAspectRatio="xMidYMid slice"
+                                    clipPath="url(#avatarHexClip)"
                                 />
+                                <polygon
+                                    points="50,2 95,25 95,75 50,98 5,75 5,25"
+                                    fill="none"
+                                    stroke="#fff"
+                                    strokeWidth="1.5"
+                                />
+                            </svg>
+                            {/* Camera Icon Overlay */}
+                            <div className="absolute bottom-1 right-2 flex h-6 w-6 items-center justify-center rounded bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)] cursor-pointer hover:bg-yellow-400 transition-colors">
+                                <Camera size={14} strokeWidth={3} />
                             </div>
-
-                            {/* BORDER */}
-                            <img
-                                src="/images/border.png"
-                                className="pointer-events-none absolute inset-0 h-full w-full object-contain"
-                            />
                         </div>
+
                         {/* username */}
-                        <h2 className="text-lg font-bold">{user.name}</h2>
-                        <p className="mb-4 text-sm text-blue-400">
-                            Level {user.level}
+                        <h2 className="font-['Orbitron'] text-xl font-bold tracking-wider text-white">{user.name}</h2>
+                        <p className="mt-1.5 text-sm text-[#1e2a6e] font-bold">
+                            Level <span className="text-blue-600">{user.level}</span>
                         </p>
-                        <div className="flex w-full justify-between border-t border-blue-800 pt-4 text-sm">
-                            <div>
-                                <p className="font-bold text-yellow-400">
-                                    {user.courses}
-                                </p>
-                                <p className="text-xs text-gray-400">COURSES</p>
-                            </div>
-                            <div>
-                                <p
-                                    className={`font-bold ${
-                                        user.avg_score >= 90
-                                            ? 'text-green-400'
-                                            : user.avg_score >= 75
-                                              ? 'text-blue-400'
-                                              : 'text-red-400'
-                                    }`}
-                                >
-                                    {user.avg_score}%
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                    AVG SCORE
-                                </p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-white">420</p>
-                                <p className="text-xs text-gray-400">HOURS</p>
-                            </div>
-                        </div>
 
-                        <button
-                            onClick={() => router.post('/logout')}
-                            className="mt-6 w-full border border-red-500 py-2 text-red-500 transition hover:bg-red-500 hover:text-white"
-                        >
-                            ⏻ SYSTEM LOG OUT
-                        </button>
-                    </div>
-                </div>
-
-                {/* RIGHT CONTENT */}
-                <div className="col-span-12 space-y-4 lg:col-span-8">
-                    {/* MASTERY LEVEL */}
-                    <div className="border border-blue-700 bg-[#070c20] p-2">
-                        <div className="flex items-center gap-4">
-                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-blue-500 text-xl font-bold">
-                                {user.level}
-                            </div>
-
-                            <div className="flex-1">
-                                <div className="h-3 w-full rounded bg-[#1a1f3a]">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-blue-500 to-yellow-400 shadow-[0_0_8px_#3b82f6] transition-all duration-500"
-                                        style={{
-                                            width: `${Math.min(progress, 100)}%`,
-                                        }}
-                                    />
-                                    <div className="mt-1 text-right text-xs text-yellow-400">
-                                        {user.exp} / {user.exp_max}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <span className="text-xs text-green-400">
-                                ● ONLINE
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* OPERATOR DATA */}
-                    <div className="border border-blue-700 bg-[#070c20] p-3">
-                        <h3 className="mb-4 font-semibold text-blue-400">
-                            OPERATOR DATA
-                        </h3>
-
-                        {/* RANK */}
-                        <div className="mb-6 flex items-center gap-4 rounded-xl border border-blue-800 bg-gradient-to-br from-[#0b1025] to-[#0a0f2c] p-4 shadow-lg">
-                            {/* IMAGE */}
-                            <div className="relative">
-                                <img
-                                    src={
-                                        user.rank?.image ??
-                                        '/images/default-rank.png'
-                                    }
-                                    className="h-28 w-28 object-contain"
-                                    style={{
-                                        filter: `drop-shadow(0 0 12px ${glow})`,
-                                    }}
-                                />
-
-                                <div
-                                    className="absolute inset-0 rounded-full blur-xl"
-                                    style={{ background: glow, opacity: 0.2 }}
-                                />
-                            </div>
-
-                            {/* INFO */}
-                            <div className="w-full">
-                                <p className="text-xs text-gray-400">
-                                    CURRENT RANK
-                                </p>
-
-                                <p
-                                    className="text-lg font-bold"
-                                    style={{ color: glow }}
-                                >
-                                    {user.rank?.name ?? 'Unranked'}
-                                </p>
-
-                                {/* ⭐ STAR */}
-                                <div className="mt-1 flex gap-1">
-                                    {Array.from({
-                                        length: user.rank?.star ?? 1,
-                                    }).map((_, i) => (
-                                        <img
-                                            key={i}
-                                            src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
-                                            className="h-4 w-4 animate-pulse"
-                                        />
-                                    ))}
-                                </div>
-
-                                {/* ⭐ PROGRESS (QUIZ SCORE) */}
-                                <div className="mt-2">
-                                    <div className="mb-1 flex justify-between text-[10px] text-gray-400">
-                                        <span>Progress to next star</span>
-                                        <span>{Math.floor(starProgress)}%</span>
-                                    </div>
-
-                                    <div className="h-2 w-full overflow-hidden rounded bg-[#1a1f3a]">
-                                        <div
-                                            className="h-full transition-all duration-500"
-                                            style={{
-                                                width: `${starProgress}%`,
-                                                background: `linear-gradient(to right, ${glow}, gold)`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* FORM */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <input
-                                placeholder="USERNAME"
-                                className="border border-blue-800 bg-transparent p-2"
-                            />
-                            <input
-                                placeholder="EMAIL"
-                                className="border border-blue-800 bg-transparent p-2"
-                            />
-                            <input
-                                placeholder="SOCIAL UPLINK"
-                                className="border border-blue-800 bg-transparent p-2"
-                            />
-                            <input
-                                placeholder="FAV COURSE"
-                                className="border border-blue-800 bg-transparent p-2"
-                            />
-                        </div>
-
-                        {/* LAST COURSE */}
-                        {user.last_course ? (
-                            <div className="mt-6 flex items-center justify-between border border-blue-800 p-4">
-                                <p className="text-sm font-semibold">
-                                    {user.last_course.course_name}
-                                </p>
-
-                                <p className="text-xs text-gray-400">
-                                    {user.last_course.path_name} •{' '}
-                                    {user.last_course.module_name}
-                                </p>
-
-                                <Link
-                                    href={user.last_course.url}
-                                    className="bg-yellow-400 px-4 py-1 font-bold text-black transition hover:bg-yellow-300"
-                                >
-                                    RESUME
-                                </Link>
-                            </div>
-                        ) : (
-                            <div className="mt-6 border border-blue-800 p-4 text-center text-sm text-gray-400">
-                                No active course
-                            </div>
-                        )}
-
-                        <div className="mt-6 flex justify-end">
-                            <button className="bg-blue-600 px-6 py-2 font-semibold hover:bg-blue-500">
-                                SAVE CHANGES
-                            </button>
-                        </div>
-
-                        {/* NAME */}
-                        <h2 className="mb-1 font-['Orbitron'] text-base leading-tight font-extrabold tracking-wide break-words">
-                            {user.name}
-                        </h2>
-
-                        {/* LEVEL */}
-                        <p className="mb-3 text-sm font-extrabold text-[#3B28F6]">
-                            Level {user.level}
-                        </p>
+                        {/* LINE SEPARATOR */}
+                        <div className="mt-8 mb-5 h-px w-full bg-[#1a1c33]" />
 
                         {/* STATS */}
-                        <div className="flex w-full items-center border-t border-gray-700 pt-3 text-sm">
-                            <div className="flex-1 text-center">
-                                <p className="font-bold text-yellow-400">
-                                    {user.courses}
-                                </p>
-                                <p className="mt-0.5 text-[10px] tracking-widest text-gray-400">
-                                    COURSES
-                                </p>
+                        <div className="flex w-full items-center justify-center gap-5 text-center">
+                            <div className="flex flex-col items-center">
+                                <p className="font-bold text-yellow-500 text-sm">{user.courses}</p>
+                                <p className="text-[10px] text-gray-500 tracking-wider mt-1">COURSES</p>
                             </div>
-                            <div className="h-8 w-px bg-gray-700" />
-                            <div className="flex-1 text-center">
-                                <p
-                                    className={`font-bold ${user.avg_score >= 90 ? 'text-green-400' : user.avg_score >= 75 ? 'text-[#3B28F6]' : 'text-red-500'}`}
-                                >
-                                    {user.avg_score}%
-                                </p>
-                                <p className="mt-0.5 text-[10px] tracking-widest text-gray-400">
-                                    AVG SCORE
-                                </p>
+                            <div className="h-8 w-px bg-[#1a1c33]" />
+                            <div className="flex flex-col items-center">
+                                <p className="font-bold text-blue-600 text-sm">{user.avg_score}%</p>
+                                <p className="text-[10px] text-gray-500 tracking-wider mt-1">AVG SCORE</p>
                             </div>
-                            <div className="h-8 w-px bg-gray-700" />
-                            <div className="flex-1 text-center">
-                                <p className="font-bold text-white">420</p>
-                                <p className="mt-0.5 text-[10px] tracking-widest text-gray-400">
-                                    HOURS
-                                </p>
+                            <div className="h-8 w-px bg-[#1a1c33]" />
+                            <div className="flex flex-col items-center">
+                                <p className="font-bold text-white text-sm">420</p>
+                                <p className="text-[10px] text-gray-500 tracking-wider mt-1">HOURS</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* LOGOUT — di luar profile card, otomatis di bawah */}
+                    {/* SYSTEM LOG OUT BUTTON */}
                     <button
                         onClick={() => router.post('/logout')}
-                        className="mt-auto flex w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-[#050619] py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                        className="mt-6 flex w-full items-center justify-center gap-3 border border-red-900/30 bg-transparent py-4 font-['Orbitron'] text-xs font-bold text-red-600 transition hover:bg-red-950/20 hover:border-red-900/60"
                     >
-                        <Power size={16} strokeWidth={3} />
+                        <Power size={18} strokeWidth={2.5} />
                         SYSTEM LOG OUT
                     </button>
                 </div>
+
                 {/* ══════════ RIGHT PANEL ══════════ */}
-                <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+                <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-6">
                     {/* MASTERY LEVEL */}
-                    <div className="flex-shrink-0 border-2 border-[#3B28F6] bg-[#050619] p-4">
-                        <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0 border border-[#1a1c33] bg-[#020205] p-6 shadow-xl">
+                        <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 text-center sm:text-left">
                             {/* LEVEL CIRCLE */}
-                            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border-[4px] border-blue-500 font-['Orbitron'] text-2xl font-bold shadow-[0_0_12px_rgba(59,130,246,0.4)]">
+                            <div className="relative flex h-[72px] w-[72px] flex-shrink-0 items-center justify-center rounded-full border-[5px] border-blue-600 font-['Orbitron'] text-2xl font-bold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] mx-auto sm:mx-0">
+                                <span className="absolute -inset-1.5 rounded-full border border-[#1a1c33]" />
                                 {user.level}
                             </div>
-                            <div className="min-w-0 flex-1">
-                                <p className="mb-1 font-['Oxanium'] text-xl leading-none font-semibold tracking-widest text-gray-200 md:text-2xl">
-                                    MASTERY LEVEL
-                                </p>
-                                <div className="mb-1 flex justify-end font-['Orbitron']">
-                                    <span className="text-xs text-yellow-400">
-                                        {user.exp}
-                                    </span>
-                                    <span className="mt-0.5 ml-1 text-[10px] text-gray-500">
-                                        /{user.exp_max}
-                                    </span>
+
+                            <div className="min-w-0 flex-1 pt-1 w-full">
+                                <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-2 gap-2 sm:gap-0">
+                                    <p className="font-['Oxanium'] text-xl font-bold tracking-widest text-white">
+                                        MASTERY LEVEL
+                                    </p>
+                                    <div className="font-['Orbitron'] text-right sm:text-left">
+                                        <span className="text-sm font-bold text-yellow-500">
+                                            {user.exp}
+                                        </span>
+                                        <span className="ml-1 text-[11px] text-gray-500">
+                                            /{user.exp_max}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="h-2.5 w-full overflow-hidden bg-[#1a1f3a]">
+                                <div className="h-3 w-full bg-[#1a1f3a] rounded-sm overflow-hidden">
                                     <div
-                                        className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-yellow-400 transition-all duration-500"
-                                        style={{
-                                            width: `${Math.min(progress, 100)}%`,
-                                        }}
+                                        className="h-full bg-gradient-to-r from-[#4B30A5] to-yellow-500 transition-all duration-500"
+                                        style={{ width: `${Math.min(progress, 100)}%` }}
                                     />
                                 </div>
-                                <div className="mt-1.5 flex items-center justify-end gap-1 text-[10px] text-green-400">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+                                <div className="mt-2.5 flex items-center justify-end gap-2 text-[9px] font-bold tracking-widest text-green-500 uppercase">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
                                     ONLINE
                                 </div>
                             </div>
@@ -393,92 +203,95 @@ export default function ProfilePage({ user }: Props) {
                     </div>
 
                     {/* OPERATOR DATA */}
-                    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden border-2 border-[#3B28F6] bg-[#050619] p-4 md:p-5">
-                        {/* TOP GLOW LINE */}
-                        <div
-                            className="absolute top-0 right-0 left-0 h-px"
-                            style={{
-                                background:
-                                    'linear-gradient(90deg, transparent, #3B28F6, #00e5ff, #3B28F6, transparent)',
-                            }}
-                        />
-
+                    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden border border-[#1a1c33] bg-[#020205] p-7 shadow-xl">
+                        
                         {/* TITLE */}
-                        <h3 className="mb-3 flex flex-shrink-0 items-center gap-2 font-['Orbitron'] text-base font-bold tracking-widest text-[#3B28F6] md:text-lg">
-                            <UserCog size={22} strokeWidth={2} />
+                        <h3 className="mb-6 flex flex-shrink-0 items-center gap-3 font-['Orbitron'] text-base font-bold tracking-widest text-blue-700">
+                            <UserCog size={24} strokeWidth={2} />
                             OPERATOR DATA
                         </h3>
 
                         {/* RANK CARD */}
-                        <div className="mb-3 flex flex-shrink-0 items-center gap-4 rounded-lg border border-[#3B28F6]/70 bg-[#3B28F6]/5 p-3">
-                            {/* HEX AVATAR */}
-                            <div className="h-[64px] w-[64px] flex-shrink-0">
-                                <svg
-                                    viewBox="0 0 80 80"
-                                    className="h-full w-full"
-                                >
+                        <div className="mb-8 flex flex-shrink-0 items-center gap-5 rounded-lg border border-[#1a1c33] bg-[#020205] p-4 relative overflow-hidden">
+                            {/* Blue glow accent */}
+                            <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-blue-600/50 to-transparent" />
+                            <div className="absolute top-0 right-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-blue-600/20 to-transparent" />
+                            <div className="absolute bottom-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-blue-600/50 to-transparent" />
+                            <div className="absolute top-0 left-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-blue-600/20 to-transparent" />
+                            
+                            {/* RANK IMAGE */}
+                            <div className="relative h-[72px] w-[72px] flex-shrink-0">
+                                <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-[0_0_10px_rgba(250,204,21,0.3)]">
                                     <defs>
-                                        <clipPath id="hexClip">
-                                            <polygon points="40,4 74,22 74,58 40,76 6,58 6,22" />
+                                        <clipPath id="rankHexClip">
+                                            <polygon points="50,2 95,25 95,75 50,98 5,75 5,25" />
                                         </clipPath>
                                     </defs>
                                     <image
-                                        href="/images/romawi.png"
-                                        x="16"
-                                        y="14"
-                                        width="48"
-                                        height="52"
+                                        href={user.rank?.image ?? '/images/romawi.png'}
+                                        x="15"
+                                        y="15"
+                                        width="70"
+                                        height="70"
                                         preserveAspectRatio="xMidYMid slice"
-                                        clipPath="url(#hexClip)"
+                                        clipPath="url(#rankHexClip)"
                                     />
                                     <polygon
-                                        points="40,4 74,22 74,58 40,76 6,58 6,22"
+                                        points="50,2 95,25 95,75 50,98 5,75 5,25"
                                         fill="none"
-                                        stroke="#FACC15"
+                                        stroke="#eab308"
                                         strokeWidth="1.5"
                                     />
                                 </svg>
                             </div>
 
                             {/* RANK INFO */}
-                            <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                                {/* LABEL + RANK NAME  |  XP NUMBER */}
-                                <div className="-mt-5 flex items-end justify-between">
-                                    {/* KIRI — label & rank */}
+                            <div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
+                                <div className="flex items-end justify-between">
                                     <div>
-                                        <p className="mb-0.5 text-[9px] font-bold tracking-[2px] text-gray-500">
+                                        <p className="text-[9px] font-bold tracking-[2px] text-blue-600 uppercase mb-0.5">
                                             CURRENT RANK
                                         </p>
-                                        <p
-                                            className="font-['Orbitron'] text-lg leading-none font-bold tracking-wider text-[#3B28F6]"
-                                            style={{
-                                                textShadow:
-                                                    '0 0 12px rgba(59,40,246,0.6)',
-                                            }}
-                                        >
-                                            NEXUS II
+                                        <p className="font-['Orbitron'] text-xl font-bold tracking-wider text-blue-500 shadow-blue-500/20 drop-shadow-md">
+                                            {user.rank?.name ?? 'NEXUS II'}
                                         </p>
+                                        {/* ⭐ STAR */}
+                                        <div className="mt-1 flex gap-1">
+                                            {Array.from({
+                                                length: user.rank?.star ?? 1,
+                                            }).map((_, i) => (
+                                                <img
+                                                    key={i}
+                                                    src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                                                    className="h-3 w-3 animate-pulse opacity-80"
+                                                    alt="star"
+                                                />
+                                            ))}
+                                        </div>
                                     </div>
 
-                                    {/* KANAN — xp number */}
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="font-['Orbitron'] text-base leading-none font-bold text-yellow-400">
-                                            230
-                                        </span>
-                                        <span className="font-['Orbitron'] text-xs leading-none text-gray-500">
-                                            / 500
+                                    <div className="flex flex-col items-end">
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="font-['Orbitron'] text-xs font-bold text-yellow-500">
+                                                {Math.floor(user.total_score % 500)}
+                                            </span>
+                                            <span className="font-['Orbitron'] text-[10px] text-gray-500">
+                                                /500
+                                            </span>
+                                        </div>
+                                        <span className="text-[9px] text-gray-500 font-bold mt-0.5">
+                                            {Math.floor(starProgress)}%
                                         </span>
                                     </div>
                                 </div>
                                 {/* PROGRESS BAR */}
-                                <div className="h-3 w-full overflow-hidden rounded-none border border-[#1a1f3a] bg-[#0f1235]">
+                                <div className="h-[6px] w-full bg-[#1a1f3a] rounded-full overflow-hidden mt-1">
                                     <div
-                                        className="h-full rounded-r-full transition-all duration-700"
+                                        className="h-full transition-all duration-700 rounded-full"
                                         style={{
-                                            width: '46%',
-                                            background:
-                                                'linear-gradient(90deg, #00bfff, #00e5ff)',
-                                            boxShadow: '0 0 8px #00d4ff',
+                                            width: `${Math.min(starProgress, 100)}%`,
+                                            background: '#7dd3fc', // Light blue cyan
+                                            boxShadow: '0 0 10px #38bdf8',
                                         }}
                                     />
                                 </div>
@@ -486,151 +299,113 @@ export default function ProfilePage({ user }: Props) {
                         </div>
 
                         {/* FIELDS */}
-                        <div className="mb-3 flex flex-shrink-0 flex-wrap gap-4">
-                            <div className="w-[48%]">
-                                <label className="mb-1 block font-['Oxanium'] text-[10px] tracking-[2px] text-yellow-400">
+                        <div className="mb-8 flex flex-shrink-0 flex-wrap gap-x-8 gap-y-5">
+                            <div className="w-full sm:w-[calc(50%-16px)]">
+                                <label className="mb-2 block font-['Oxanium'] text-[11px] font-bold tracking-[2px] text-yellow-500">
                                     USERNAME
                                 </label>
-                                <input
-                                    placeholder="ENTER USERNAME"
-                                    className="w-full border border-[#1e2a6e] bg-[rgba(0,0,20,0.6)] px-3 py-2 font-['Orbitron'] text-sm tracking-wide text-[#c0d0ff] transition-all outline-none placeholder:text-[#2a3060] focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.3)]"
-                                />
+                                <div className="border border-[#1a1c33] bg-[#000000] px-4 py-2.5 rounded-sm">
+                                    <input
+                                        placeholder=""
+                                        defaultValue={user.name}
+                                        className="w-full bg-transparent font-['Oxanium'] text-sm text-gray-300 outline-none"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="w-[48%]">
-                                <label className="mb-1 block font-['Oxanium'] text-[10px] tracking-[2px] text-yellow-400">
+                            <div className="w-full sm:w-[calc(50%-16px)]">
+                                <label className="mb-2 block font-['Oxanium'] text-[11px] font-bold tracking-[2px] text-yellow-500">
                                     EMAIL
                                 </label>
-                                <input
-                                    placeholder="ENTER EMAIL"
-                                    className="w-full border border-[#1e2a6e] bg-[rgba(0,0,20,0.6)] px-3 py-2 font-['Orbitron'] text-sm tracking-wide text-[#c0d0ff] transition-all outline-none placeholder:text-[#2a3060] focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.3)]"
-                                />
+                                <div className="border border-[#1a1c33] bg-[#000000] px-4 py-2.5 rounded-sm">
+                                    <input
+                                        placeholder=""
+                                        className="w-full bg-transparent font-['Oxanium'] text-sm text-gray-300 outline-none"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="w-[48%]">
-                                <label className="mb-1 block text-[10px] tracking-[2px] text-yellow-400">
+                            <div className="w-full sm:w-[calc(50%-16px)]">
+                                <label className="mb-2 block font-['Oxanium'] text-[11px] font-bold tracking-[2px] text-yellow-500">
                                     SOCIAL UPLINK
                                 </label>
-                                <input
-                                    placeholder="SOCIAL HANDLE"
-                                    className="w-full border border-[#1e2a6e] bg-[rgba(0,0,20,0.6)] px-3 py-2 font-['Orbitron'] text-sm tracking-wide text-[#c0d0ff] transition-all outline-none placeholder:text-[#2a3060] focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.3)]"
-                                />
+                                <div className="border border-[#1a1c33] bg-[#000000] px-4 py-2.5 rounded-sm">
+                                    <input
+                                        placeholder=""
+                                        className="w-full bg-transparent font-['Oxanium'] text-sm text-gray-300 outline-none"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="w-[48%]">
-                                <label className="mb-1 block font-['Oxanium'] text-[10px] tracking-[2px] text-yellow-400">
+                            <div className="w-full sm:w-[calc(50%-16px)]">
+                                <label className="mb-2 block font-['Oxanium'] text-[11px] font-bold tracking-[2px] text-yellow-500">
                                     FAV COURSE
                                 </label>
-                                <input
-                                    placeholder="COURSE NAME"
-                                    className="w-full border border-[#1e2a6e] bg-[rgba(0,0,20,0.6)] px-3 py-2 font-['Orbitron'] text-sm tracking-wide text-[#c0d0ff] transition-all outline-none placeholder:text-[#2a3060] focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.3)]"
-                                />
+                                <div className="border border-[#1a1c33] bg-[#000000] px-4 py-2.5 rounded-sm">
+                                    <input
+                                        placeholder=""
+                                        className="w-full bg-transparent font-['Oxanium'] text-sm text-gray-300 outline-none"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         {/* LAST MISSION */}
-                        <p className="mb-2 flex-shrink-0 text-[10px] tracking-[3px] text-yellow-400">
+                        <p className="mb-3 flex-shrink-0 text-[11px] font-bold tracking-[3px] text-yellow-500">
                             LAST MISSION / COURSE
                         </p>
-                        <div className="mb-3 flex-shrink-0">
+                        <div className="mb-4 flex-shrink-0">
                             {user.last_course ? (
-                                <div className="relative flex h-[72px] items-center gap-3 overflow-hidden border border-[#3B28F6]/60 p-3">
-                                    <div
-                                        className="absolute inset-0 bg-center"
-                                        style={{
-                                            backgroundImage:
-                                                "url('/images/fullstack.png')",
-                                            backgroundSize: '30%',
-                                            // backgroundRepeat: "no-repeat"
-                                        }}
+                                <div className="relative flex flex-col sm:flex-row min-h-[76px] items-start sm:items-center gap-4 border border-[#1a1c33] bg-black p-4 sm:p-2.5 overflow-hidden rounded-sm">
+                                    {/* background banner if any */}
+                                    <div 
+                                        className="absolute inset-0 right-1/4 bg-right bg-no-repeat opacity-50 mix-blend-screen pointer-events-none" 
+                                        style={{ backgroundImage: "url('/images/fullstack.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
                                     />
-                                    {/* fade overlay */}
-                                    <div
-                                        className="absolute inset-0"
-                                        style={{
-                                            background:
-                                                'linear-gradient(90deg, #050619 30%, transparent 60%, #050619 100%)',
-                                        }}
-                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent pointer-events-none" />
 
                                     {/* BADGE IV */}
-                                    <div
-                                        className="relative z-10 flex h-11 w-11 flex-shrink-0 items-center justify-center border border-[#FACC15]/60 font-['Orbitron'] text-sm font-black text-[#e0d0ff]"
-                                        style={{
-                                            background:
-                                                'linear-gradient(135deg,#0a0a2a,#1a1040)',
-                                            textShadow: '0 0 8px #3B28F6',
-                                            boxShadow:
-                                                '0 0 10px rgba(59,40,246,0.4)',
-                                        }}
-                                    >
-                                        ⚔️
+                                    <div className="hidden sm:flex relative z-10 h-14 w-14 flex-shrink-0 items-center justify-center bg-black/50 border border-blue-900/50 rounded-full shadow-[0_0_10px_rgba(30,58,138,0.5)]">
+                                        <img src="/images/romawi.png" className="h-10 w-10 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]" alt="Badge" />
                                     </div>
 
                                     {/* TEXT */}
-                                    <div className="relative z-10 min-w-0 flex-1">
-                                        <p className="truncate text-sm font-bold tracking-wide text-white">
-                                            {user.last_course.course_name}
+                                    <div className="relative z-10 min-w-0 flex-1 pl-0 sm:pl-2 w-full">
+                                        <p className="truncate text-[15px] font-bold tracking-wide text-white drop-shadow-md">
+                                            {user.last_course.course_name || 'Data Science Mastery'}
                                         </p>
-                                        <p className="mt-0.5 truncate text-[11px] text-gray-400">
-                                            {user.last_course.path_name} •{' '}
-                                            {user.last_course.module_name}
+                                        <p className="mt-1 truncate text-xs text-gray-400">
+                                            {user.last_course.path_name || 'Level 4'} : {user.last_course.module_name || 'Encryption Protocols'}
                                         </p>
                                     </div>
 
                                     {/* RESUME BUTTON */}
                                     <Link
-                                        href={user.last_course.url}
-                                        className="relative z-10 flex-shrink-0 bg-yellow-400 px-5 py-2 font-['Orbitron'] text-xs font-black tracking-wide text-black transition-colors hover:bg-yellow-300"
+                                        href={user.last_course?.url || '#'}
+                                        className="relative z-10 sm:mr-2 flex-shrink-0 bg-yellow-400 w-full sm:w-auto text-center px-6 py-2.5 sm:py-2 font-['Orbitron'] text-xs font-bold tracking-widest text-black transition-colors hover:bg-yellow-300 rounded-sm mt-2 sm:mt-0"
                                     >
                                         RESUME
                                     </Link>
-
-                                    {/* GARIS BAWAH PROGRESS */}
-                                    <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-[#0f1235]">
-                                        <div
-                                            className="h-full transition-all duration-700"
-                                            style={{
-                                                width: '26%',
-                                                background:
-                                                    'linear-gradient(90deg, #3B28F6, #00e5ff)',
-                                                boxShadow: '0 0 6px #00d4ff',
-                                            }}
-                                        />
-                                    </div>
+                                    
+                                    <div className="absolute bottom-0 right-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-[#4B30A5] to-blue-500 shadow-[0_-2px_10px_#2563eb]" />
                                 </div>
                             ) : (
-                                <div className="border border-[#3B28F6]/40 p-3 text-center font-['Orbitron'] text-xs tracking-widest text-gray-500">
+                                <div className="border border-[#1a1c33] p-4 text-center font-['Orbitron'] text-xs tracking-widest text-gray-500 bg-black">
                                     NO ACTIVE COURSE
                                 </div>
                             )}
                         </div>
 
-                        <div className="mt-auto flex flex-shrink-0 justify-end">
-                            <div
-                                className="p-[2px]"
+                        {/* SAVE CHANGES */}
+                        <div className="mt-auto flex justify-end pt-4">
+                            <button
+                                className="bg-[#4a2ee6] px-8 py-3 font-['Oxanium'] text-[13px] font-bold tracking-widest text-white transition hover:bg-[#5b3df6] rounded-sm"
                                 style={{
-                                    background:
-                                        'linear-gradient(90deg,#3B28F6,#6D5BFF)',
-                                    clipPath:
-                                        'polygon(0% 0%, 92% 0%, 100% 50%, 100% 100%, 0% 100%)',
-                                    boxShadow: '0 0 20px rgba(59,40,246,0.6)',
+                                    boxShadow: '0 4px 15px rgba(74, 46, 230, 0.4)',
                                 }}
                             >
-                                <button
-                                    className="w-full px-10 py-3 font-['Orbitron'] text-sm font-bold tracking-widest text-white transition hover:shadow-[0_0_20px_rgba(59,40,246,1)] hover:brightness-125"
-                                    style={{
-                                        background:
-                                            'linear-gradient(90deg,#3B28F6,#2a1fd6)',
-                                        clipPath:
-                                            'polygon(0% 0%, 92% 0%, 100% 50%, 100% 100%, 0% 100%)',
-                                        textShadow:
-                                            '0 0 6px rgba(255,255,255,0.6)',
-                                    }}
-                                >
-                                    SAVE CHANGES
-                                </button>
-                            </div>
+                                SAVE CHANGES
+                            </button>
                         </div>
                     </div>
                 </div>
