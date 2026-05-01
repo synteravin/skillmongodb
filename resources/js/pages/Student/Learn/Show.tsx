@@ -69,7 +69,7 @@ export default function LearnShow({
     const finalQuizId = path.final_quiz?.id;
 
     const goToModule = (mod: Module) => {
-        router.visit(`/student/learn/${course.slug || course._id}/${path._id}/${mod._id}`);
+        router.visit(`/student/learn/${course._id}/${path._id}/${mod._id}`);
     };
 
     const completeModule = () => {
@@ -521,8 +521,17 @@ export default function LearnShow({
                             )}
                             {nextModule && (
                                 <button
-                                    onClick={() => goToModule(nextModule)}
-                                    className="rounded-lg px-4 py-2.5 sm:py-2 text-sm font-bold text-white transition-all hover:brightness-110 bg-blue-500/10 border border-blue-500/40 font-['Orbitron'] flex-1 sm:flex-none text-center"
+                                    onClick={() => {
+                                        if (isUnlocked(currentIndex + 1)) {
+                                            goToModule(nextModule);
+                                        }
+                                    }}
+                                    disabled={!isUnlocked(currentIndex + 1)}
+                                    className={`rounded-lg px-4 py-2.5 sm:py-2 text-sm font-bold transition-all font-['Orbitron'] flex-1 sm:flex-none text-center ${
+                                        isUnlocked(currentIndex + 1)
+                                            ? 'text-white hover:brightness-110 bg-blue-500/10 border border-blue-500/40'
+                                            : 'text-gray-500 bg-gray-800/50 border border-gray-700 cursor-not-allowed opacity-50'
+                                    }`}
                                 >
                                     Next Module
                                 </button>
