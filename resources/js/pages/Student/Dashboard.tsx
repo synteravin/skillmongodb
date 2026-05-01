@@ -134,7 +134,7 @@ function TopBar({
             className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 2xl:h-14 2xl:w-14 object-contain"
           />
           <span className="text-lg font-semibold">
-            {user.gold.toLocaleString()}0.000
+            {user.gold.toLocaleString()}
           </span>
 
         </div>

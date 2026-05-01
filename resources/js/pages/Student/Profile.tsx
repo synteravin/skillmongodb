@@ -94,7 +94,7 @@ export default function ProfilePage({ user }: Props) {
                     <div className="relative flex flex-col items-center border border-[#1a1c33] bg-[#020205] p-8 shadow-2xl">
                         {/* Top-right corner accent */}
                         <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-yellow-500" />
-                        
+
                         {/* HEX AVATAR */}
                         <div className="relative mb-6 h-[140px] w-[140px]">
                             <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-xl">
@@ -204,7 +204,7 @@ export default function ProfilePage({ user }: Props) {
 
                     {/* OPERATOR DATA */}
                     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden border border-[#1a1c33] bg-[#020205] p-7 shadow-xl">
-                        
+
                         {/* TITLE */}
                         <h3 className="mb-6 flex flex-shrink-0 items-center gap-3 font-['Orbitron'] text-base font-bold tracking-widest text-blue-700">
                             <UserCog size={24} strokeWidth={2} />
@@ -218,7 +218,7 @@ export default function ProfilePage({ user }: Props) {
                             <div className="absolute top-0 right-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-blue-600/20 to-transparent" />
                             <div className="absolute bottom-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-blue-600/50 to-transparent" />
                             <div className="absolute top-0 left-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-blue-600/20 to-transparent" />
-                            
+
                             {/* RANK IMAGE */}
                             <div className="relative h-[72px] w-[72px] flex-shrink-0">
                                 <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-[0_0_10px_rgba(250,204,21,0.3)]">
@@ -358,8 +358,8 @@ export default function ProfilePage({ user }: Props) {
                             {user.last_course ? (
                                 <div className="relative flex flex-col sm:flex-row min-h-[76px] items-start sm:items-center gap-4 border border-[#1a1c33] bg-black p-4 sm:p-2.5 overflow-hidden rounded-sm">
                                     {/* background banner if any */}
-                                    <div 
-                                        className="absolute inset-0 right-1/4 bg-right bg-no-repeat opacity-50 mix-blend-screen pointer-events-none" 
+                                    <div
+                                        className="absolute inset-0 right-1/4 bg-right bg-no-repeat opacity-50 mix-blend-screen pointer-events-none"
                                         style={{ backgroundImage: "url('/images/fullstack.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent pointer-events-none" />
@@ -386,7 +386,7 @@ export default function ProfilePage({ user }: Props) {
                                     >
                                         RESUME
                                     </Link>
-                                    
+
                                     <div className="absolute bottom-0 right-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-[#4B30A5] to-blue-500 shadow-[0_-2px_10px_#2563eb]" />
                                 </div>
                             ) : (
