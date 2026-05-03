@@ -25,6 +25,7 @@ export default function StudentCareerBranch({
         (p: any) => p._id === progress.selected_path_id,
     );
     const isOtherChosen = progress.selected_path_id && !isChosen;
+    const isCompleted = group.is_completed;
 
     const totalModules = group.paths.reduce(
         (sum: number, p: any) => sum + (p.modules?.length || 0),
@@ -71,14 +72,15 @@ export default function StudentCareerBranch({
     return (
         <div className="text-sans relative flex w-full flex-col items-center px-8 sm:px-4">
             <div
-                className={`relative mb-0 flex w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${
-                    isChosen
+                className={`relative mb-0 flex w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${isCompleted
+                        ? 'border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.35)]'
+                        : isChosen
                         ? 'border-blue-400 shadow-[0_0_40px_rgba(96,165,250,0.35)]'
                         : 'border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]'
-                } ${!basicCompleted || isOtherChosen ? 'opacity-50 grayscale' : ''} `}
+                    } ${!basicCompleted || isOtherChosen ? 'opacity-50 grayscale' : ''} `}
             >
                 {/* GRADIENT BORDER TOP ACCENT */}
-                <div className="absolute top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                <div className={`absolute top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent ${isCompleted ? 'via-emerald-500' : 'via-blue-500'} to-transparent`} />
 
                 <div className="relative flex h-full w-full flex-col rounded-xl bg-[#050619] p-5">
                     {/* LOCK OVERLAY */}
@@ -122,8 +124,8 @@ export default function StudentCareerBranch({
                     <div className="mb-4 flex justify-center">
                         <div className="relative">
                             {/* glow ring */}
-                            <div className="absolute inset-0 scale-110 rounded-full bg-blue-500/20 blur-md" />
-                            <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 bg-[#0b1333] shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                            <div className={`absolute inset-0 scale-110 rounded-full ${isCompleted ? 'bg-emerald-500/20' : 'bg-blue-500/20'} blur-md`} />
+                            <div className={`relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 ${isCompleted ? 'border-emerald-500 shadow-[0_0_20px_rgba(52,211,153,0.4)]' : 'border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)]'} bg-[#0b1333]`}>
                                 {group.thumbnail ? (
                                     <img
                                         src={`/storage/${group.thumbnail}`}
@@ -193,8 +195,8 @@ export default function StudentCareerBranch({
                         {/* MENTOR */}
                         <div className="flex max-w-[60%] items-center gap-2">
                             {group.mentor &&
-                            group.mentor.avatar &&
-                            group.mentor.avatar !== 'null' ? (
+                                group.mentor.avatar &&
+                                group.mentor.avatar !== 'null' ? (
                                 <img
                                     src={
                                         group.mentor.avatar.startsWith('http')
@@ -230,17 +232,25 @@ export default function StudentCareerBranch({
                         </div>
 
                         {/* START BUTTON */}
-                        <button
-                            onClick={() => handleStart(firstPath)}
-                            disabled={!basicCompleted || isOtherChosen}
-                            className={`flex-shrink-0 rounded-xl border-2 px-4 py-1 font-['Orbitron'] text-[12px] font-bold tracking-widest uppercase transition-all duration-300 ${
-                                isOtherChosen || !basicCompleted
-                                    ? 'cursor-not-allowed border-gray-700 bg-gray-900 text-gray-500'
-                                    : `border-[#3B28F6] bg-[#05080f] text-white shadow-[0_0_8px_1px_rgba(59,40,246,0.3),inset_0_0_8px_rgba(59,40,246,0.05)] hover:border-[#5a47ff] hover:bg-[#080d1a] hover:shadow-[0_0_14px_3px_rgba(59,40,246,0.45),inset_0_0_10px_rgba(59,40,246,0.1)]`
-                            } `}
-                        >
-                            Start
-                        </button>
+                        {isCompleted ? (
+                            <button
+                                disabled
+                                className="flex-shrink-0 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 px-4 py-1 font-['Orbitron'] text-[12px] font-bold tracking-widest uppercase text-emerald-400 shadow-[0_0_8px_1px_rgba(52,211,153,0.3)]"
+                            >
+                                Completed
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => handleStart(firstPath)}
+                                disabled={!basicCompleted || isOtherChosen}
+                                className={`flex-shrink-0 rounded-xl border-2 px-4 py-1 font-['Orbitron'] text-[12px] font-bold tracking-widest uppercase transition-all duration-300 ${isOtherChosen || !basicCompleted
+                                        ? 'cursor-not-allowed border-gray-700 bg-gray-900 text-gray-500'
+                                        : `border-[#3B28F6] bg-[#05080f] text-white shadow-[0_0_8px_1px_rgba(59,40,246,0.3),inset_0_0_8px_rgba(59,40,246,0.05)] hover:border-[#5a47ff] hover:bg-[#080d1a] hover:shadow-[0_0_14px_3px_rgba(59,40,246,0.45),inset_0_0_10px_rgba(59,40,246,0.1)]`
+                                    } `}
+                            >
+                                Start
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -261,7 +271,7 @@ export default function StudentCareerBranch({
 
                 {/* PATHS */}
                 <div
-                    className={`flex w-full flex-col items-center ${!basicCompleted || !hasChosenPath || isOtherChosen ? 'opacity-60 grayscale' : ''}`}
+                    className={`flex w-full flex-col items-center ${(!basicCompleted || (!hasChosenPath && !isCompleted) || isOtherChosen) ? 'opacity-60 grayscale' : ''}`}
                 >
                     {group.paths.map((p: any, idx: number) => {
                         const done = progress.completed_paths?.includes(
@@ -281,8 +291,8 @@ export default function StudentCareerBranch({
                         // ❌ basic belum selesai
                         if (!basicCompleted) locked = true;
 
-                        // ❌ belum pilih branch → semua path dikunci
-                        if (!hasChosenPath) locked = true;
+                        // ❌ belum pilih branch -> semua path dikunci, KECUALI group ini completed
+                        if (!hasChosenPath && !isCompleted) locked = true;
 
                         // ❌ branch lain setelah pilih
                         if (hasChosenPath && isOtherChosen) locked = true;
@@ -325,13 +335,15 @@ export default function StudentCareerBranch({
                             title="Submission"
                             index={group.paths.length}
                             isSubmission={true}
+                            href={`/student/career-groups/${group._id}/submissions`}
+                            done={isCompleted}
                             locked={
-                                !basicCompleted ||
-                                isOtherChosen ||
-                                !progress.completed_paths?.includes(
-                                    String(
-                                        group.paths[group.paths.length - 1]._id,
-                                    ),
+                                !isCompleted && (
+                                    !basicCompleted ||
+                                    isOtherChosen ||
+                                    !progress.completed_paths?.includes(
+                                        String(group.paths[group.paths.length - 1]._id)
+                                    )
                                 )
                             }
                         />

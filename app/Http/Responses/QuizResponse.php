@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Responses\Quiz;
+namespace App\Http\Responses;
 
 use App\Models\Quiz;
 
@@ -21,15 +21,15 @@ class QuizResponse
 
                     // 🔥 TAMBAHKAN INI (WAJIB)
                     'media_url' => $q->media_url
-                        ? url('storage/' . $q->media_url)
+                        ? url('storage/'.$q->media_url)
                         : null,
 
-                    'answers' => $q->answers->map(fn($a) => [
+                    'answers' => $q->answers->map(fn ($a) => [
                         'id' => (string) $a->_id,
-                        'answer_text' => $a->answer_text
-                    ])
+                        'answer_text' => $a->answer_text,
+                    ]),
                 ];
-            })
+            }),
         ];
     }
 }

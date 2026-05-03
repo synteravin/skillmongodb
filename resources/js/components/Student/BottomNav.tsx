@@ -5,7 +5,7 @@ export default function BottomNav() {
     { label: "MY COURSE", href: "/student/course" },
     { label: "MINI BATTLE", href: "#" },
     { label: "TIER LIST", href: "/student/leaderboard" },
-    { label: "CERTIFICATE", href: "#" },
+    { label: "CERTIFICATE", href: "/student/certificates" },
     { label: "FORUM", href: "#" },
   ];
 

@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 
 class CreateModuleAction
 {
-
     public function execute(array $data): Module
     {
         $baseSlug = Str::slug($data['title']);
@@ -15,7 +14,7 @@ class CreateModuleAction
         $count = 1;
 
         while (Module::where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $count++;
+            $slug = $baseSlug.'-'.$count++;
         }
 
         $order = Module::where('path_id', $data['path_id'])->max('order');
@@ -28,5 +27,4 @@ class CreateModuleAction
             'order' => ($order ?? 0) + 1,
         ]);
     }
-
 }

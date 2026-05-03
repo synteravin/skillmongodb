@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\UserStat;
+use Illuminate\Http\Request;
 
 class CompleteModuleController extends Controller
 {
@@ -17,10 +17,10 @@ class CompleteModuleController extends Controller
 
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
-            'course_id' => $courseId
+            'course_id' => $courseId,
         ], [
             'completed_modules' => [],
-            'completed_paths' => []
+            'completed_paths' => [],
         ]);
 
         /* ================= MODULE ================= */
@@ -32,10 +32,10 @@ class CompleteModuleController extends Controller
         }
 
         $completedModules = collect($completedModules)
-            ->map(fn($id) => (string) $id)
+            ->map(fn ($id) => (string) $id)
             ->toArray();
 
-        if (!in_array($moduleId, $completedModules)) {
+        if (! in_array($moduleId, $completedModules)) {
             $completedModules[] = $moduleId;
         }
 

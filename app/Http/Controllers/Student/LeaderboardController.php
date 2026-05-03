@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Rank;
+use App\Models\User;
 use Inertia\Inertia;
 
 class LeaderboardController extends Controller
@@ -22,8 +22,9 @@ class LeaderboardController extends Controller
 
             foreach ($user->userStats as $stat) {
 
-                if (!$stat->path_stats)
+                if (! $stat->path_stats) {
                     continue;
+                }
 
                 $pathStats = $stat->path_stats;
 
@@ -58,23 +59,24 @@ class LeaderboardController extends Controller
                 'name' => $user->name,
 
                 'avatar' => $user->avatar
-                    ? asset('storage/' . $user->avatar)
+                    ? asset('storage/'.$user->avatar)
                     : asset('images/aizen.jpeg'),
                 'total_score' => $totalScore,
 
                 'rank' => [
                     'name' => $rank->name ?? 'Unknown',
                     'image' => isset($rank->image)
-                        ? asset('storage/' . $rank->image)
+                        ? asset('storage/'.$rank->image)
                         : null,
                     'star' => $star,
                 ],
             ];
         })
-            ->filter(fn($u) => $u['total_score'] > 0)
+            ->filter(fn ($u) => $u['total_score'] > 0)
             ->sortByDesc('total_score')
             ->values()
             ->take(10);
+
         return Inertia::render('Student/Leaderboard', [
             'leaderboard' => $leaderboard,
         ]);

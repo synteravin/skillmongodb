@@ -201,8 +201,15 @@ export default function CareerBranch({ group, index, badges, mentors, courseId }
 
                             <button
                                 onClick={() => {
+                                    if (!selectedMentor) return;
                                     router.post(`/admin/career-groups/${group._id}/assign-mentor`, {
                                         mentor_id: selectedMentor
+                                    }, {
+                                        preserveScroll: true,
+                                        onSuccess: () => {
+                                            setShowModal(false);
+                                            setSelectedMentor("");
+                                        }
                                     })
                                 }}
                                 className="px-3 py-1 bg-blue-600 rounded text-xs"

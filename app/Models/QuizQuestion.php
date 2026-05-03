@@ -7,6 +7,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class QuizQuestion extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'quiz_questions';
 
     protected $fillable = [
@@ -14,7 +15,7 @@ class QuizQuestion extends Model
         'question_text',
         'media_url',
         'media_file',
-        'order'
+        'order',
     ];
 
     public function quiz()

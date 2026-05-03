@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Module;
-use App\Models\ModuleContent;
-
 use App\Actions\ModuleContent\CreateModuleContentAction;
 use App\Actions\ModuleContent\DeleteModuleContentAction;
-
 use App\Http\Requests\ModuleContent\StoreContentRequest;
+use App\Models\Module;
+use App\Models\ModuleContent;
 use Illuminate\Http\Request;
 
 class ModuleContentController extends Controller
@@ -25,7 +23,7 @@ class ModuleContentController extends Controller
 
         // 🔥 WAJIB: redirect (bukan back biasa)
         return redirect()->back()->with([
-            'success' => 'Content added'
+            'success' => 'Content added',
         ]);
     }
 
@@ -34,19 +32,19 @@ class ModuleContentController extends Controller
     {
         // For MongoDB, we should merge to avoid losing file URLs, names, sizes etc.
         $existingContent = $content->content ?? [];
-        
+
         $updatedData = array_merge($existingContent, array_filter([
             'title' => $request->title,
             'description' => $request->description,
             'url' => $request->url, // Will overwrite only if sent
-        ], fn($val) => !is_null($val)));
+        ], fn ($val) => ! is_null($val)));
 
         $content->update([
-            'content' => $updatedData
+            'content' => $updatedData,
         ]);
 
         return redirect()->back()->with([
-            'success' => 'Content updated'
+            'success' => 'Content updated',
         ]);
     }
 
@@ -60,7 +58,7 @@ class ModuleContentController extends Controller
 
         // 🔥 JANGAN redirect (biar gak reload)
         return response()->json([
-            'success' => true
+            'success' => true,
         ]);
     }
 
@@ -74,7 +72,7 @@ class ModuleContentController extends Controller
         $action->execute($content);
 
         return redirect()->back()->with([
-            'success' => 'Content deleted'
+            'success' => 'Content deleted',
         ]);
     }
 }

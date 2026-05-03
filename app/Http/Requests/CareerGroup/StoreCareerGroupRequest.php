@@ -24,7 +24,7 @@ class StoreCareerGroupRequest extends FormRequest
         return [
             'course_id' => ['required', 'string'],
 
-            'name' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 }

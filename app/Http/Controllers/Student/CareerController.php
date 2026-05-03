@@ -15,9 +15,9 @@ class CareerController extends Controller
             ->where('course_id', request('course_id')) // optional kalau perlu
             ->firstOrFail();
 
-        if (!$progress->selected_path_id) {
+        if (! $progress->selected_path_id) {
             $progress->update([
-                'selected_path_id' => $request->path_id
+                'selected_path_id' => $request->path_id,
             ]);
         }
 

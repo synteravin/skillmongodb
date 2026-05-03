@@ -7,17 +7,18 @@ use MongoDB\Laravel\Eloquent\Model;
 class ModuleContent extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'module_contents';
 
     protected $fillable = [
         'module_id',
         'type',
         'content',
-        'order'
+        'order',
     ];
 
     protected $casts = [
-        'content' => 'array'
+        'content' => 'array',
     ];
 
     public function module()

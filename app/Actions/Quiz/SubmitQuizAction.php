@@ -3,8 +3,8 @@
 namespace App\Actions\Quiz;
 
 use App\Models\Quiz;
-use App\Models\User;
 use App\Models\QuizResult;
+use App\Models\User;
 use App\Models\UserStat;
 use App\Services\Quiz\QuizService;
 use App\Services\Reward\RewardService;
@@ -36,17 +36,17 @@ class SubmitQuizAction
             'score' => $score,
             'answers' => $data['answers'],
             'passed' => true,
-            'completed_at' => now()
+            'completed_at' => now(),
         ]);
 
         // 🔥 AMBIL / BUAT PROGRESS
         $progress = UserStat::firstOrCreate([
             'user_id' => $userId,
-            'course_id' => (string) $quiz->path->course_id
+            'course_id' => (string) $quiz->path->course_id,
         ]);
 
         // 🔥 REWARD (HANYA SEKALI)
-        $reward = new RewardService();
+        $reward = new RewardService;
 
         $reward->setQuizScore($progress, $pathId, $score);
         $reward->addExp($progress, $pathId, $score);

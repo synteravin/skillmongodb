@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -28,7 +28,7 @@ class UserController extends Controller
         });
 
         return Inertia::render('Admin/Users/Index', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 
@@ -75,8 +75,8 @@ class UserController extends Controller
 
         $data = $request->validate([
             'name' => ['sometimes', 'string'],
-            'username' => ['sometimes', 'string', 'unique:users,username,' . $user->_id . ',_id'],
-            'email' => ['sometimes', 'email', 'unique:users,email,' . $user->_id . ',_id'],
+            'username' => ['sometimes', 'string', 'unique:users,username,'.$user->_id.',_id'],
+            'email' => ['sometimes', 'email', 'unique:users,email,'.$user->_id.',_id'],
             'role' => ['sometimes', 'in:admin,mentor,student'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);

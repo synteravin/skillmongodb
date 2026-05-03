@@ -114,10 +114,10 @@ return [
         ],
 
         //         'mongodb' => [
-//     'driver' => 'mongodb',
-//     'dsn' => env('DB_URI'),
-//     'database' => 'lms_gam_rpg',
-// ],
+        //     'driver' => 'mongodb',
+        //     'dsn' => env('DB_URI'),
+        //     'database' => 'lms_gam_rpg',
+        // ],
 
         'mongodb' => [
             'driver' => 'mongodb',
@@ -160,7 +160,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use App\Models\Course;
-use Inertia\Inertia;
-use App\Models\CourseStudent;
-use App\Enums\CourseStatus;
 use App\Services\Course\CourseService;
+use Inertia\Inertia;
 
 class StudentCourseController extends Controller
 {
@@ -16,8 +13,7 @@ class StudentCourseController extends Controller
         $courses = $service->getCoursesForUser(auth()->user());
 
         return Inertia::render('Student/Course/Index', [
-            'courses' => $courses
+            'courses' => $courses,
         ]);
     }
-
 }

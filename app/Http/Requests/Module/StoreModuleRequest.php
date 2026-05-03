@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Module;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Module;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreModuleRequest extends FormRequest
 {

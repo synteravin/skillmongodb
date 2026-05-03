@@ -3,8 +3,8 @@
 namespace App\Actions\Quiz;
 
 use App\Models\Quiz;
-use App\Models\QuizQuestion;
 use App\Models\QuizAnswer;
+use App\Models\QuizQuestion;
 
 class DeleteQuizAction
 {

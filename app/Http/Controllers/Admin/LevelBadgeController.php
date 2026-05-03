@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\LevelBadge;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -13,7 +13,7 @@ class LevelBadgeController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Assets/Badge/Index', [
-            'badges' => LevelBadge::orderBy('order')->get()
+            'badges' => LevelBadge::orderBy('order')->get(),
         ]);
     }
 
@@ -47,7 +47,7 @@ class LevelBadgeController extends Controller
         $badge = LevelBadge::findOrFail($id);
 
         return Inertia::render('Admin/Assets/Badge/Edit', [
-            'badge' => $badge
+            'badge' => $badge,
         ]);
     }
 

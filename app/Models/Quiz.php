@@ -7,11 +7,12 @@ use MongoDB\Laravel\Eloquent\Model;
 class Quiz extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'quizzes';
 
     protected $fillable = [
         'path_id',
-        'difficulty'
+        'difficulty',
     ];
 
     public function path()

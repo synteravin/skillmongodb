@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Module;
-use Illuminate\Http\JsonResponse;
-
 use App\Actions\Module\CreateModuleAction;
-use App\Actions\Module\UpdateModuleAction;
 use App\Actions\Module\DeleteModuleAction;
-use App\Services\Module\ModuleContentService;
-
+use App\Actions\Module\UpdateModuleAction;
 use App\Http\Requests\Module\StoreModuleRequest;
 use App\Http\Requests\Module\UpdateModuleRequest;
+use App\Models\Module;
+use App\Services\Module\ModuleContentService;
+use Illuminate\Http\JsonResponse;
 
 class ModuleController extends Controller
 {
@@ -24,7 +22,7 @@ class ModuleController extends Controller
 
         $action->execute([
             ...$request->validated(),
-            'created_by' => auth()->id()
+            'created_by' => auth()->id(),
         ]);
 
         return redirect()->back()->with('success', 'Module created');
@@ -60,7 +58,7 @@ class ModuleController extends Controller
         $action->execute($module);
 
         return response()->json([
-            'message' => 'Module deleted'
+            'message' => 'Module deleted',
         ]);
     }
 }

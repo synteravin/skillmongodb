@@ -17,11 +17,11 @@ class RewardService
 
     private function initPath(&$stats, $pathId)
     {
-        if (!is_array($stats)) {
+        if (! is_array($stats)) {
             $stats = [];
         }
 
-        if (!isset($stats[$pathId])) {
+        if (! isset($stats[$pathId])) {
             $stats[$pathId] = [
                 'exp' => 0,
                 'gold' => 0,

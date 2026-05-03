@@ -2,8 +2,8 @@
 
 namespace App\Services\Course;
 
-use App\Models\User;
 use App\Models\Course;
+use App\Models\User;
 use App\Models\UserStat;
 
 class RoadmapService
@@ -12,23 +12,23 @@ class RoadmapService
     {
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
-            'course_id' => $course->_id
+            'course_id' => $course->_id,
         ], [
             'completed_paths' => [],
             'stage' => 'fundamental',
-            'selected_path_id' => null
+            'selected_path_id' => null,
         ]);
 
         $course->load([
             'paths.modules.badge',
             'careerGroups.paths.modules.badge',
-            'careerGroups.mentor'
+            'careerGroups.mentor',
         ]);
 
         return [
             'basic_paths' => $this->handleBasic($course, $progress),
             'career_groups' => $this->handleCareer($course, $progress),
-            'progress' => $progress
+            'progress' => $progress,
         ];
     }
 
@@ -76,10 +76,10 @@ class RoadmapService
 
                     $selected = $progress->selected_path_id === (string) $path->_id;
 
-                    if (!$isBasicDone) {
+                    if (! $isBasicDone) {
                         return [
                             '_id' => (string) $path->_id,
-                            'is_unlocked' => false
+                            'is_unlocked' => false,
                         ];
                     }
 
@@ -97,7 +97,7 @@ class RoadmapService
                         'is_unlocked' => $isUnlocked,
                         'is_selected' => $selected,
                     ];
-                })
+                }),
             ];
         });
     }
@@ -107,7 +107,7 @@ class RoadmapService
         $basicIds = $course->paths
             ->where('phase', 'basic_fundamental')
             ->pluck('_id')
-            ->map(fn($id) => (string) $id)
+            ->map(fn ($id) => (string) $id)
             ->toArray();
 
         return count(array_diff($basicIds, $progress->completed_paths)) === 0;

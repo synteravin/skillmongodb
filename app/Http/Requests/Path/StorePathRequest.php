@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Path;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\MentorCareerGroup;
-use App\Models\CareerGroup;
 
 class StorePathRequest extends FormRequest
 {
@@ -21,12 +19,12 @@ class StorePathRequest extends FormRequest
             'career_group_id' => [
                 'nullable',
                 'string',
-                'required_if:phase,career_branch'
+                'required_if:phase,career_branch',
             ],
 
             'phase' => [
                 'nullable',
-                'in:basic_fundamental,career_branch'
+                'in:basic_fundamental,career_branch',
             ],
 
             'name' => ['required', 'string', 'max:255'],

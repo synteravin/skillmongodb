@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-
 
 class UserRoleSeeder extends Seeder
 {
@@ -15,7 +13,7 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-         User::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'admin@skillmongo.com'],
             [
                 'name' => 'Admin Root',

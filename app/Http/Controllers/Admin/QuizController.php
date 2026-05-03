@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Quiz;
-use App\Models\Path;
-use Inertia\Inertia;
-
-use App\Http\Requests\Quiz\StoreQuizRequest;
 use App\Actions\Quiz\CreateQuizAction;
-use App\Actions\Quiz\UpdateQuizAction;
 use App\Actions\Quiz\DeleteQuizAction;
+use App\Actions\Quiz\UpdateQuizAction;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Quiz\StoreQuizRequest;
+use App\Models\Path;
+use App\Models\Quiz;
 use App\Responses\Quiz\QuizResponse;
+use Inertia\Inertia;
 
 class QuizController extends Controller
 {
@@ -32,7 +31,7 @@ class QuizController extends Controller
                     'difficulty' => $quiz->difficulty,
                     'questions_count' => $quiz->questions->count(),
                 ];
-            })
+            }),
         ]);
     }
 
@@ -44,7 +43,7 @@ class QuizController extends Controller
         $this->authorize('create', Quiz::class);
 
         return Inertia::render('Admin/Quiz/Create', [
-            'pathId' => (string) $path->_id
+            'pathId' => (string) $path->_id,
         ]);
     }
 
@@ -82,13 +81,13 @@ class QuizController extends Controller
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
                         'question_text' => $q->question_text,
-                        'answers' => $q->answers->map(fn($a) => [
+                        'answers' => $q->answers->map(fn ($a) => [
                             'answer_text' => $a->answer_text,
                             'is_correct' => $a->is_correct,
-                        ])
+                        ]),
                     ];
-                })
-            ]
+                }),
+            ],
         ]);
     }
 
@@ -128,7 +127,7 @@ class QuizController extends Controller
         return response()->json([
             'data' => QuizResponse::make(
                 $quiz->load('questions.answers')
-            )
+            ),
         ]);
     }
 }

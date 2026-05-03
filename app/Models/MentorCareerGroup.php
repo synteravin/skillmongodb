@@ -7,6 +7,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class MentorCareerGroup extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'mentor_career_groups';
 
     protected $fillable = [

@@ -7,6 +7,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class UserStat extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'user_stats';
 
     protected $fillable = [
@@ -21,11 +22,13 @@ class UserStat extends Model
         'level',
         'erp',
         'path_stats' => 'array',
+        'completed_career_groups',
     ];
 
     protected $casts = [
         'completed_modules' => 'array',
-        'completed_paths' => 'array'
+        'completed_paths' => 'array',
+        'completed_career_groups' => 'array',
     ];
 
     public function user()

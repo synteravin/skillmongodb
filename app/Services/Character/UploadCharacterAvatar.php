@@ -15,10 +15,10 @@ class UploadCharacterAvatar
             mkdir($destination, 0755, true);
         }
 
-        $filename = 'char_' . Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $filename = 'char_'.Str::uuid().'.'.$file->getClientOriginalExtension();
 
         $file->move($destination, $filename);
 
-        return 'images/characters/' . $filename;
+        return 'images/characters/'.$filename;
     }
 }

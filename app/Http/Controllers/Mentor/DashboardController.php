@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Mentor;
 
 use App\Http\Controllers\Controller;
+use App\Models\CourseStudent;
+use App\Models\MentorCareerGroup;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Course;
-use App\Models\MentorCareerGroup;
-use App\Models\CourseStudent;
 
 class DashboardController extends Controller
 {

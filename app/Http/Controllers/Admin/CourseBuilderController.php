@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-
-use App\Actions\Course\CreateCourseAction;
 use App\Actions\CareerGroup\CreateCareerGroupAction;
-use App\Actions\Path\CreatePathAction;
+use App\Actions\Course\CreateCourseAction;
 use App\Actions\Module\CreateModuleAction;
-
-use App\Http\Requests\Course\StoreCourseRequest;
+use App\Actions\Path\AdminCreatePathAction;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CareerGroup\StoreCareerGroupRequest;
-use App\Http\Requests\Path\StorePathRequest;
+use App\Http\Requests\Course\StoreCourseRequest;
 use App\Http\Requests\Module\StoreModuleRequest;
+use App\Http\Requests\Path\StorePathRequest;
 use App\Models\CareerGroup;
-
 use App\Models\Course;
 use App\Models\LevelBadge;
 use App\Models\User;
@@ -22,7 +19,6 @@ use Inertia\Inertia;
 
 class CourseBuilderController extends Controller
 {
-
     public function index()
     {
 
@@ -30,10 +26,10 @@ class CourseBuilderController extends Controller
 
         return Inertia::render('Admin/Course/Index', [
             'courses' => $courses,
-            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
-            ])
+            ]),
         ]);
 
     }
@@ -44,7 +40,7 @@ class CourseBuilderController extends Controller
         $course->load([
             'paths.modules',
             'careerGroups.paths.modules',
-            'careerGroups.mentor'
+            'careerGroups.mentor',
         ]);
 
         $basicPaths = $course->paths
@@ -58,7 +54,7 @@ class CourseBuilderController extends Controller
                     'modules' => $path->modules->map(function ($module) {
                         return [
                             '_id' => (string) $module->_id,
-                            'title' => $module->title
+                            'title' => $module->title,
                         ];
                     }),
 
@@ -87,11 +83,11 @@ class CourseBuilderController extends Controller
                             'modules' => $path->modules->map(function ($module) {
                                 return [
                                     '_id' => (string) $module->_id,
-                                    'title' => $module->title
+                                    'title' => $module->title,
                                 ];
                             }),
                         ];
-                    })
+                    }),
                 ];
 
             });
@@ -113,7 +109,7 @@ class CourseBuilderController extends Controller
                 ];
             }),
 
-            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
             ]),
@@ -133,7 +129,6 @@ class CourseBuilderController extends Controller
 
     }
 
-
     public function storeCareerGroup(
         StoreCareerGroupRequest $request,
         CreateCareerGroupAction $action
@@ -147,18 +142,18 @@ class CourseBuilderController extends Controller
 
     }
 
-
     public function storePath(
         StorePathRequest $request,
-        CreatePathAction $action
+        AdminCreatePathAction $action
     ) {
         $data = $request->validated();
 
-        $group = CareerGroup::findOrFail($data['career_group_id']);
+        if (! empty($data['career_group_id'])) {
+            $group = CareerGroup::findOrFail($data['career_group_id']);
+            $this->authorize('update', $group);
+        }
 
-        $this->authorize('update', $group);
-
-        $action->execute($group, $data);
+        $action->execute($data);
 
         $course = Course::findOrFail($data['course_id']);
 
@@ -175,5 +170,4 @@ class CourseBuilderController extends Controller
         return redirect()->back();
 
     }
-
 }

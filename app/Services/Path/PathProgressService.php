@@ -2,12 +2,12 @@
 
 namespace App\Services\Path;
 
-use App\Models\User;
+use App\Models\CourseStudent;
 use App\Models\Path;
-use App\Models\UserStat;
-use App\Models\CourseStudent; // ✅ FIXED
-use MongoDB\BSON\ObjectId;
+use App\Models\User;
+use App\Models\UserStat; // ✅ FIXED
 use App\Services\Reward\RewardService;
+use MongoDB\BSON\ObjectId;
 
 class PathProgressService
 {
@@ -23,6 +23,7 @@ class PathProgressService
             if ($id instanceof ObjectId) {
                 return $id->__toString();
             }
+
             return (string) $id;
         });
     }
@@ -33,6 +34,7 @@ class PathProgressService
             if ($item->_id instanceof ObjectId) {
                 return $item->_id->__toString();
             }
+
             return (string) $item->_id;
         });
     }
@@ -43,7 +45,7 @@ class PathProgressService
     {
         $progress = UserStat::where([
             'user_id' => $user->_id,
-            'course_id' => $path->course_id
+            'course_id' => $path->course_id,
         ])->firstOrFail();
 
         /* ================= NORMALIZE ================= */
@@ -61,9 +63,9 @@ class PathProgressService
         /* ================= VALIDASI ================= */
 
         $allBasicCompleted = $basicPaths
-            ->every(fn($id) => $completedPaths->contains($id));
+            ->every(fn ($id) => $completedPaths->contains($id));
 
-        if (!$allBasicCompleted) {
+        if (! $allBasicCompleted) {
             throw new \Exception('Fundamental not completed');
         }
 
@@ -74,7 +76,7 @@ class PathProgressService
         }
 
         // 🔥 VALIDASI CAREER GROUP
-        if (!$path->career_group_id) {
+        if (! $path->career_group_id) {
             throw new \Exception('Path tidak memiliki career group');
         }
 
@@ -91,7 +93,7 @@ class PathProgressService
         if ($courseStudent) {
             $courseStudent->update([
                 'career_group_id' => (string) $path->career_group_id,
-                'status' => 'active'
+                'status' => 'active',
             ]);
         }
 
@@ -104,7 +106,7 @@ class PathProgressService
     {
         $progress = UserStat::where([
             'user_id' => $user->_id,
-            'course_id' => $path->course_id
+            'course_id' => $path->course_id,
         ])->firstOrFail();
 
         /* ================= NORMALIZE ================= */
@@ -122,7 +124,7 @@ class PathProgressService
             ? $path->_id->__toString()
             : (string) $path->_id;
 
-        if (!$selectedPathId) {
+        if (! $selectedPathId) {
             throw new \Exception('No path selected');
         }
 
@@ -139,15 +141,15 @@ class PathProgressService
             $completedModules->toArray()
         );
 
-        if (!empty($notDone)) {
+        if (! empty($notDone)) {
             throw new \Exception('Path not completed yet');
         }
 
         /* ================= COMPLETE PATH ================= */
 
-        $reward = new RewardService();
+        $reward = new RewardService;
 
-        if (!$completedPaths->contains($currentPathId)) {
+        if (! $completedPaths->contains($currentPathId)) {
             $completedPaths->push($currentPathId);
 
             // 🔥 REWARD PATH (HANYA SEKALI)
@@ -166,7 +168,7 @@ class PathProgressService
         );
 
         $allCareerCompleted = $careerPaths
-            ->every(fn($id) => $completedPaths->contains($id));
+            ->every(fn ($id) => $completedPaths->contains($id));
 
         if ($allCareerCompleted) {
             $progress->stage = 'done';

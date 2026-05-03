@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Module extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'modules';
 
     protected $fillable = [
@@ -16,7 +16,7 @@ class Module extends Model
         'title',
         'slug',
         'order',
-        'created_by'
+        'created_by',
     ];
 
     public function path()

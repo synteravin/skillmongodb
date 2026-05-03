@@ -16,7 +16,7 @@ class UpdateModuleAction
             $count = 1;
 
             while (Module::where('slug', $slug)->where('_id', '!=', $module->_id)->exists()) {
-                $slug = $baseSlug . '-' . $count++;
+                $slug = $baseSlug.'-'.$count++;
             }
 
             $data['slug'] = $slug;

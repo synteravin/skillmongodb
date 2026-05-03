@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
-use App\Models\UserStat;
 use App\Models\LevelBadge;
 use App\Models\User;
+use App\Models\UserStat;
 use Inertia\Inertia;
 
 class CourseRoadmapController extends Controller
@@ -21,18 +21,18 @@ class CourseRoadmapController extends Controller
 
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
-            'course_id' => $course->_id
+            'course_id' => $course->_id,
         ], [
             'completed_modules' => [],
             'completed_paths' => [],
             'stage' => 'fundamental',
-            'selected_path_id' => null
+            'selected_path_id' => null,
         ]);
 
         $course->load([
             'paths.modules.badge',
             'careerGroups.paths.modules.badge',
-            'careerGroups.mentor'
+            'careerGroups.mentor',
         ]);
 
         /* ================= BASIC FUNDAMENTAL ================= */
@@ -73,13 +73,13 @@ class CourseRoadmapController extends Controller
                     ? (string) $firstModule->_id
                     : null,
 
-                'modules' => $modules->map(fn($m) => [
+                'modules' => $modules->map(fn ($m) => [
                     '_id' => (string) $m->_id,
                     'title' => $m->title,
                     'badge' => $m->badge ? [
-                        'icon' => $m->badge->icon
-                    ] : null
-                ])
+                        'icon' => $m->badge->icon,
+                    ] : null,
+                ]),
             ];
         });
 
@@ -87,7 +87,7 @@ class CourseRoadmapController extends Controller
 
         $basicIds = $basicCollection
             ->pluck('_id')
-            ->map(fn($id) => (string) $id)
+            ->map(fn ($id) => (string) $id)
             ->toArray();
 
         $isBasicCompleted = count(array_diff($basicIds, $progress->completed_paths)) === 0;
@@ -98,9 +98,13 @@ class CourseRoadmapController extends Controller
             ->values()
             ->map(function ($group) use ($progress, $isBasicCompleted) {
 
+                $groupId = (string) $group->_id;
+                $isGroupCompleted = in_array($groupId, $progress->completed_career_groups ?? []);
+
                 return [
-                    '_id' => (string) $group->_id,
+                    '_id' => $groupId,
                     'name' => $group->name,
+                    'is_completed' => $isGroupCompleted,
                     'mentor' => $group->mentor ? [
                         '_id' => (string) $group->mentor->_id,
                         'name' => $group->mentor->name,
@@ -121,7 +125,7 @@ class CourseRoadmapController extends Controller
                                 ->values();
 
                             /* ❌ LOCK TOTAL JIKA BASIC BELUM SELESAI */
-                            if (!$isBasicCompleted) {
+                            if (! $isBasicCompleted) {
                                 return [
                                     '_id' => $pathId,
                                     'name' => $path->name,
@@ -147,15 +151,15 @@ class CourseRoadmapController extends Controller
                                 'is_unlocked' => $isUnlocked,
                                 'is_selected' => $isSelected,
                                 'is_completed' => $isCompleted,
-                                'modules' => $modules->map(fn($m) => [
+                                'modules' => $modules->map(fn ($m) => [
                                     '_id' => (string) $m->_id,
                                     'title' => $m->title,
                                     'badge' => $m->badge ? [
-                                        'icon' => $m->badge->icon
-                                    ] : null
-                                ])
+                                        'icon' => $m->badge->icon,
+                                    ] : null,
+                                ]),
                             ];
-                        })
+                        }),
                 ];
             });
 
@@ -171,15 +175,15 @@ class CourseRoadmapController extends Controller
             ],
             'progress' => $progress,
 
-            'badges' => LevelBadge::orderBy('order')->get()->map(fn($b) => [
+            'badges' => LevelBadge::orderBy('order')->get()->map(fn ($b) => [
                 'order' => (int) $b->order,
                 'icon' => $b->icon,
             ]),
 
-            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
-            ])
+            ]),
         ]);
     }
 }

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Inertia\Inertia;
 use App\Models\Module;
 use App\Models\Rank;
+use Inertia\Inertia;
 
 class ProfileController extends Controller
 {
@@ -40,8 +38,9 @@ class ProfileController extends Controller
 
             $selectedPathId = $stat->selected_path_id;
 
-            if (!$stat->path_stats)
+            if (! $stat->path_stats) {
                 continue;
+            }
 
             // ✅ NORMALIZE MONGO
             $pathStats = $stat->path_stats;
@@ -82,7 +81,7 @@ class ProfileController extends Controller
         // ========================
         // 🔥 LAST MODULE (REAL PROGRESS)
         // ========================
-        $lastModuleId = !empty($completedModules)
+        $lastModuleId = ! empty($completedModules)
             ? end($completedModules)
             : null;
 
@@ -101,7 +100,7 @@ class ProfileController extends Controller
                 'path_name' => $lastModule->path->name ?? 'Unknown Path',
                 'module_name' => $lastModule->title ?? 'Unknown Module',
 
-                'level' => 'Level ' . $currentLevel,
+                'level' => 'Level '.$currentLevel,
 
                 'url' => route('student.course.path.module.show', [
                     $lastModule->path->course->_id,
@@ -123,7 +122,7 @@ class ProfileController extends Controller
 
         $rankData = [
             'name' => $tier->name,
-            'image' => asset('storage/' . $tier->image),
+            'image' => asset('storage/'.$tier->image),
             'star' => $star,
         ];
         // ========================
@@ -170,10 +169,9 @@ class ProfileController extends Controller
                 'courses' => $user->courseStudents->count(),
 
                 'avatar' => $user->avatar
-                    ? asset('storage/' . $user->avatar)
+                    ? asset('storage/'.$user->avatar)
                     : null,
 
-                // 🔥 TAMBAHKAN INI
                 'rank' => $rankData,
 
                 // 🔥 TAMBAHKAN INI (untuk progress star)
@@ -186,7 +184,7 @@ class ProfileController extends Controller
                     'completed_paths' => $completedPaths ?? [],
                     'selected_path_id' => $selectedPathId,
                 ],
-            ]
+            ],
         ]);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
@@ -6,6 +7,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class CourseStudent extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'course_students';
 
     protected $fillable = [
@@ -14,7 +16,7 @@ class CourseStudent extends Model
         'status',
         'career_group_id',
         'enrolled_at',
-        'completed_at'
+        'completed_at',
     ];
 
     protected $casts = [
@@ -23,7 +25,7 @@ class CourseStudent extends Model
         'user_id' => 'string',
         'career_group_id' => 'string', // 🔥 WAJIB
         'enrolled_at' => 'datetime',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
     ];
 
     public function user()
@@ -35,6 +37,7 @@ class CourseStudent extends Model
     {
         return $this->belongsTo(Course::class, 'course_id', '_id');
     }
+
     public function careerGroup()
     {
         return $this->belongsTo(CareerGroup::class, 'career_group_id', '_id');

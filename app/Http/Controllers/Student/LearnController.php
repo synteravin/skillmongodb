@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use Inertia\Inertia;
-use App\Services\Learns\LearnService;
-use App\Models\UserStat;
 use App\Models\Path;
+use App\Models\UserStat;
+use App\Services\Learns\LearnService;
+use Inertia\Inertia;
 
 class LearnController extends Controller
 {
@@ -27,40 +27,40 @@ class LearnController extends Controller
         /* ================= GET PROGRESS ================= */
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
-            'course_id' => $courseId
+            'course_id' => $courseId,
         ], [
             'completed_modules' => [],
             'completed_paths' => [],
             'stage' => 'fundamental',
-            'selected_path_id' => null
+            'selected_path_id' => null,
         ]);
 
         /* ================= CHECK BASIC DONE ================= */
         $basicPaths = Path::where('course_id', $courseId)
             ->where('phase', 'basic_fundamental')
             ->pluck('_id')
-            ->map(fn($id) => (string) $id);
+            ->map(fn ($id) => (string) $id);
 
         $completedPaths = collect($progress->completed_paths ?? []);
 
         $allBasicCompleted = $basicPaths
-            ->every(fn($id) => $completedPaths->contains($id));
+            ->every(fn ($id) => $completedPaths->contains($id));
 
         /* ================= CAREER LOGIC ================= */
 
         if ($path->phase === 'career_branch') {
 
             /* ❌ BLOCK JIKA BASIC BELUM SELESAI */
-            if (!$allBasicCompleted) {
+            if (! $allBasicCompleted) {
                 abort(403, 'Selesaikan basic fundamental terlebih dahulu');
             }
 
             $pathIdString = (string) $path->_id;
 
             /* 🔥 AUTO SELECT (FIRST CLICK) */
-            if (!$progress->selected_path_id) {
+            if (! $progress->selected_path_id) {
                 $progress->update([
-                    'selected_path_id' => $pathIdString
+                    'selected_path_id' => $pathIdString,
                 ]);
             }
 
@@ -93,7 +93,7 @@ class LearnController extends Controller
                     'id' => (string) $data['path']->quiz->_id,
                 ] : null,
 
-                'modules' => $data['modules']->map(fn($m) => [
+                'modules' => $data['modules']->map(fn ($m) => [
                     '_id' => (string) $m->_id,
                     'title' => $m->title,
                     'order' => $m->order,
@@ -105,7 +105,7 @@ class LearnController extends Controller
                 '_id' => (string) $data['module']->_id,
                 'title' => $data['module']->title,
 
-                'contents' => $data['module']->contents->map(fn($c) => [
+                'contents' => $data['module']->contents->map(fn ($c) => [
                     '_id' => (string) $c->_id,
                     'type' => $c->type,
                     'content' => $c->content,
@@ -120,7 +120,7 @@ class LearnController extends Controller
             ],
 
             /* ================= META ================= */
-            'meta' => $data['meta']
+            'meta' => $data['meta'],
         ]);
     }
 }

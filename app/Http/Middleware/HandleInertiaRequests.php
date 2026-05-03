@@ -23,10 +23,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user()
                     ? [
-                        'id'    => (string) $request->user()->_id,
-                        'name'  => $request->user()->name,
+                        'id' => (string) $request->user()->_id,
+                        'name' => $request->user()->name,
                         'email' => $request->user()->email,
-                        'role'  => $request->user()->role,
+                        'role' => $request->user()->role,
                     ]
                     : null,
             ],
@@ -41,8 +41,7 @@ class HandleInertiaRequests extends Middleware
                 );
             },
 
-            'sidebarOpen' =>
-                ! $request->hasCookie('sidebar_state')
+            'sidebarOpen' => ! $request->hasCookie('sidebar_state')
                 || $request->cookie('sidebar_state') === 'true',
 
         ]);

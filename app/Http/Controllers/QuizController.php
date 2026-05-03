@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Quiz;
-use App\Models\UserStat;
-use App\Http\Requests\Quiz\SubmitQuizRequest;
 use App\Actions\Quiz\SubmitQuizAction;
-use Inertia\Inertia;
+use App\Http\Requests\Quiz\SubmitQuizRequest;
+use App\Models\Quiz;
 use App\Models\QuizResult;
+use App\Models\UserStat;
+use Inertia\Inertia;
 
 class QuizController extends Controller
 {
@@ -24,32 +24,33 @@ class QuizController extends Controller
         $completed = $progress?->completed_modules ?? [];
 
         $allCompleted = collect($quiz->path->modules)
-            ->every(fn($m) => in_array((string) $m->_id, $completed));
+            ->every(fn ($m) => in_array((string) $m->_id, $completed));
 
-        if (!$allCompleted) {
+        if (! $allCompleted) {
             abort(403);
         }
 
         $hasSubmitted = QuizResult::where('user_id', $user->_id)
             ->where('quiz_id', $quiz->_id)
             ->exists();
+
         return Inertia::render('Student/Quiz/Play', [
             'quiz' => [
                 'id' => (string) $quiz->_id,
                 'difficulty' => $quiz->difficulty,
                 'course_slug' => $quiz->path->course->slug,
-                'questions' => $quiz->questions->map(fn($q) => [
+                'questions' => $quiz->questions->map(fn ($q) => [
                     'id' => (string) $q->_id,
                     'question_text' => $q->question_text,
                     'media_url' => $q->media_url
-                        ? url('storage/' . $q->media_url)
+                        ? url('storage/'.$q->media_url)
                         : null,
-                    'answers' => $q->answers->map(fn($a) => [
+                    'answers' => $q->answers->map(fn ($a) => [
                         'id' => (string) $a->_id,
-                        'answer_text' => $a->answer_text
-                    ])
-                ])
-            ]
+                        'answer_text' => $a->answer_text,
+                    ]),
+                ]),
+            ],
         ]);
     }
 
@@ -68,7 +69,7 @@ class QuizController extends Controller
 
             if ($alreadySubmitted) {
                 return response()->json([
-                    'message' => 'Quiz hanya bisa dikerjakan sekali'
+                    'message' => 'Quiz hanya bisa dikerjakan sekali',
                 ], 403);
             }
 
@@ -78,7 +79,7 @@ class QuizController extends Controller
             if ($result->passed) {
                 $progress = UserStat::firstOrCreate([
                     'user_id' => $user->_id,
-                    'course_id' => $quiz->path->course_id
+                    'course_id' => $quiz->path->course_id,
                 ]);
 
                 $completedPaths = $progress->completed_paths ?? [];
@@ -87,11 +88,11 @@ class QuizController extends Controller
                     $completedPaths = json_decode($completedPaths, true) ?? [];
                 }
 
-                if (!in_array((string) $quiz->path->_id, $completedPaths)) {
+                if (! in_array((string) $quiz->path->_id, $completedPaths)) {
                     $completedPaths[] = (string) $quiz->path->_id;
 
                     $progress->update([
-                        'completed_paths' => $completedPaths
+                        'completed_paths' => $completedPaths,
                     ]);
                 }
             }
@@ -102,7 +103,7 @@ class QuizController extends Controller
                     'passed' => true,
                     'exp' => (int) $result->exp,
                     'gold' => (int) $result->gold,
-                ]
+                ],
             ]);
 
         } catch (\Throwable $e) {

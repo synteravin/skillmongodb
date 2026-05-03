@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin'])
     ->prefix('admin')
@@ -50,6 +50,5 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/courses/{course}', [CourseBuilderController::class, 'show'])
             ->name('courses.builder');
-
 
     });

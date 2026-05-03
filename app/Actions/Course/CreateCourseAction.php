@@ -7,14 +7,13 @@ use Illuminate\Support\Str;
 
 class CreateCourseAction
 {
-
     public function execute(array $data): Course
     {
 
         $slug = Str::slug($data['title']);
 
         if (Course::where('slug', $slug)->exists()) {
-            $slug .= '-' . Str::random(5);
+            $slug .= '-'.Str::random(5);
         }
 
         return Course::create([

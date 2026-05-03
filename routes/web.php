@@ -1,37 +1,39 @@
 <?php
 
+use App\Http\Controllers\Admin\AssetsController;
+use App\Http\Controllers\Admin\CareerGroupController;
+use App\Http\Controllers\Admin\CharacterController;
+use App\Http\Controllers\Admin\CourseBuilderController;
+use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Admin\LevelBadgeController;
+use App\Http\Controllers\Admin\ModuleManagementController;
+use App\Http\Controllers\Admin\QuizController;
+use App\Http\Controllers\Admin\RankController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
+use App\Http\Controllers\Mentor\PathController;
+use App\Http\Controllers\Mentor\StudentSubmissionController as MentorStudentSubmission;
+use App\Http\Controllers\Mentor\SubmissionController;
+use App\Http\Controllers\ModuleContentController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student\CareerController;
+use App\Http\Controllers\Student\CertificateController;
+use App\Http\Controllers\Student\CompleteModuleController;
+use App\Http\Controllers\Student\CompletePathController;
+use App\Http\Controllers\Student\CourseController as StudentCourseActionController;
+use App\Http\Controllers\Student\CourseRoadmapController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\Student\LeaderboardController;
+use App\Http\Controllers\Student\LearnController;
+use App\Http\Controllers\Student\SelectCharacterController;
+use App\Http\Controllers\Student\SelectPathController;
+use App\Http\Controllers\Student\StudentCourseController;
+use App\Http\Controllers\Student\SubmissionController as StudentSubmission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
-
-use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
-use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
-
-use App\Http\Controllers\Admin\CharacterController;
-use App\Http\Controllers\Auth\SocialController;
-use App\Http\Controllers\Admin\CourseBuilderController;
-use App\Http\Controllers\Admin\CourseController;
-use App\Http\Controllers\Admin\RankController;
-use App\Http\Controllers\Admin\LevelBadgeController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\CareerGroupController;
-use App\Http\Controllers\Admin\ModuleManagementController;
-use App\Http\Controllers\ModuleContentController;
-use App\Http\Controllers\Student\DashboardController as StudentDashboard;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Student\SelectCharacterController;
-use App\Http\Controllers\Student\StudentCourseController;
-use App\Http\Controllers\Student\CompleteModuleController;
-use App\Http\Controllers\Student\SelectPathController;
-use App\Http\Controllers\Student\LeaderboardController;
-use App\Http\Controllers\Student\CompletePathController;
-use App\Http\Controllers\Student\CourseRoadmapController;
-use App\Http\Controllers\Student\LearnController;
-use App\Http\Controllers\Student\CourseController as StudentCourseActionController;
-use App\Http\Controllers\Student\CareerController;
-use App\Http\Controllers\Admin\QuizController;
-use App\Http\Controllers\Admin\AssetsController;
-use App\Http\Controllers\Mentor\PathController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,12 +71,11 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/dashboard', [AdminDashboard::class, 'index'])
             ->name('dashboard');
 
-
         /* ---------------- CHARACTERS ---------------- */
 
         // Route::resource('characters', CharacterController::class)
         //     ->except(['show']);
-    
+
         /* ---------------- COURSE CRUD ---------------- */
 
         Route::get('/courses', [CourseController::class, 'index'])
@@ -95,12 +96,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/courses/{course}', [CourseController::class, 'destroy'])
             ->name('courses.destroy');
 
-
         /* ---------------- COURSE BUILDER ---------------- */
 
         Route::get('/courses/{course}', [CourseBuilderController::class, 'show'])
             ->name('courses.builder');
-
 
         /* ---------------- BUILDER API ---------------- */
 
@@ -125,12 +124,12 @@ Route::middleware(['auth', 'role:admin'])
         /* ---------------- LEVEL BADGES ---------------- */
 
         // Route::resource('/levelbadge', LevelBadgeController::class);
-    
+
         /* ---------------- USER ---------------- */
 
         Route::resource('users', UserController::class);
         // Route::post('/admin/users/{user}', [UserController::class, 'update']);
-    
+
         /* ---------------- ASSIGN MENTOR ---------------- */
         Route::post('/career-groups/{group}/assign-mentor', [CareerGroupController::class, 'assignMentor']);
 
@@ -146,7 +145,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/module-contents/{content}', [ModuleContentController::class, 'destroy'])
             ->name('module-contents.destroy');
         Route::put('/module-contents/reorder', [ModuleContentController::class, 'reorder']);
-
 
         Route::put('/module-contents/{content}', [ModuleContentController::class, 'update'])
             ->name('module-contents.update');
@@ -168,10 +166,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
         Route::post('/select-career', [CareerController::class, 'select']);
         // Route::resource('ranks', RankController::class);
-    
+
         // Route::post('ranks/reorder', [RankController::class, 'reorder'])
         //     ->name('ranks.reorder');
-    
+
         // Route::get('assets', function () {
         //     return Inertia::render('Admin/Assets/Index');
         // })->name('assets');
@@ -195,6 +193,49 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::post('/career-groups/{group}/paths', [PathController::class, 'store'])
             ->name('paths.store');
+
+        Route::post(
+            '/paths/{path}/submissions',
+            [SubmissionController::class, 'store']
+        )->name('submissions.store');
+
+        Route::post('/submissions/{submission}/publish', [SubmissionController::class, 'publish'])
+            ->name('submissions.publish');
+
+        Route::get('/student-submissions/{studentSubmission}', [MentorStudentSubmission::class, 'show'])
+            ->name('student-submissions.show');
+        Route::put('/student-submissions/{studentSubmission}/grade', [MentorStudentSubmission::class, 'update'])
+            ->name('student-submissions.update');
+
+        Route::get(
+            '/career-groups/{group}/submissions',
+            [SubmissionController::class, 'index']
+        )->name('submissions.index');
+
+        Route::get(
+            '/career-groups/{group}/submissions/create',
+            [SubmissionController::class, 'create']
+        )->name('submissions.create');
+
+        Route::get(
+            '/submissions/{submission}',
+            [SubmissionController::class, 'show']
+        )->name('submissions.show');
+
+        Route::get(
+            '/submissions/{submission}/edit',
+            [SubmissionController::class, 'edit']
+        )->name('submissions.edit');
+
+        Route::put(
+            '/submissions/{submission}',
+            [SubmissionController::class, 'update']
+        )->name('submissions.update');
+
+        Route::post(
+            '/career-groups/{group}/submissions',
+            [SubmissionController::class, 'store']
+        )->name('submissions.store');
     });
 
 /*
@@ -210,6 +251,9 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 
         Route::get('/dashboard', [StudentDashboard::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/certificates', [CertificateController::class, 'index'])
+            ->name('student.certificates');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
@@ -231,8 +275,6 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::post('/paths/{path}/complete', CompletePathController::class)
             ->name('student.paths.complete');
 
-
-
         Route::get('/learn/{course}/{path}/{module}', [LearnController::class, 'show'])
             ->name('course.path.module.show');
 
@@ -243,6 +285,14 @@ Route::middleware(['auth', 'role:student', 'has.character'])
             ->name('select-career');
         Route::get('/leaderboard', [LeaderboardController::class, 'index'])
             ->name('leaderboard');
+
+        // SUBMISSION
+        Route::get('/career-groups/{group}/submissions', [StudentSubmission::class, 'index'])
+            ->name('submissions.index');
+        Route::get('/submissions/{submission}', [StudentSubmission::class, 'show'])
+            ->name('submissions.show');
+        Route::post('/submissions/{submission}/submit', [StudentSubmission::class, 'store'])
+            ->name('submissions.store');
     });
 
 /*
@@ -282,4 +332,4 @@ Route::get('/', function () {
 Route::get('/auth/google', [SocialController::class, 'redirect']);
 Route::get('/auth/google/callback', [SocialController::class, 'callback']);
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

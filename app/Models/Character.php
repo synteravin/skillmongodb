@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Character extends Model
 {
     use HasFactory;
 
     protected $connection = 'mongodb';
+
     protected $collection = 'characters';
 
     protected $fillable = [
@@ -23,7 +24,7 @@ class Character extends Model
         'personality',
         'system_bonus',
         'cosmetic_bonus',
-        'quote'
+        'quote',
     ];
 
     protected $casts = [
@@ -34,7 +35,6 @@ class Character extends Model
         'system_bonus' => 'array',
         'cosmetic_bonus' => 'array',
     ];
-
 
     public function users()
     {

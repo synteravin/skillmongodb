@@ -7,6 +7,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class Path extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'paths';
 
     protected $fillable = [

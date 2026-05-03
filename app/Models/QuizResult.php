@@ -7,6 +7,7 @@ use MongoDB\Laravel\Eloquent\Model;
 class QuizResult extends Model
 {
     protected $connection = 'mongodb';
+
     protected $collection = 'quiz_results';
 
     protected $fillable = [
@@ -15,6 +16,6 @@ class QuizResult extends Model
         'score',
         'answers',
         'passed',
-        'completed_at'
+        'completed_at',
     ];
 }

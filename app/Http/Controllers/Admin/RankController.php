@@ -13,7 +13,7 @@ class RankController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Assets/Rank/Index', [
-            'ranks' => Rank::orderBy('order')->get()
+            'ranks' => Rank::orderBy('order')->get(),
         ]);
     }
 
@@ -46,7 +46,7 @@ class RankController extends Controller
     public function edit(Rank $rank)
     {
         return Inertia::render('Admin/Assets/Rank/Edit', [
-            'rank' => $rank
+            'rank' => $rank,
         ]);
     }
 

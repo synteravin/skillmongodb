@@ -3,8 +3,8 @@
 namespace App\Actions\Quiz;
 
 use App\Models\Quiz;
-use App\Models\QuizQuestion;
 use App\Models\QuizAnswer;
+use App\Models\QuizQuestion;
 
 class CreateQuizAction
 {
@@ -15,7 +15,7 @@ class CreateQuizAction
             throw new \Exception('path_id is required');
         }
 
-        if (!isset($data['questions']) || !is_array($data['questions'])) {
+        if (! isset($data['questions']) || ! is_array($data['questions'])) {
             throw new \Exception('questions must be an array');
         }
 

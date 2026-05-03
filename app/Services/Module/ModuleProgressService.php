@@ -2,8 +2,8 @@
 
 namespace App\Services\Module;
 
-use App\Models\User;
 use App\Models\Module;
+use App\Models\User;
 use App\Models\UserStat;
 
 class ModuleProgressService
@@ -16,11 +16,11 @@ class ModuleProgressService
         ], [
             'completed_modules' => [],
             'completed_paths' => [],
-            'stage' => 'fundamental'
+            'stage' => 'fundamental',
         ]);
 
         // 🔥 prevent duplicate
-        if (!in_array($module->_id, $progress->completed_modules)) {
+        if (! in_array($module->_id, $progress->completed_modules)) {
             $progress->push('completed_modules', $module->_id);
         }
 

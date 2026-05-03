@@ -22,7 +22,7 @@ class ModuleContentService
                 'module_id' => $module->_id,
                 'type' => $item['type'],
                 'order' => $lastOrder + $index + 1,
-                'content' => $contentData
+                'content' => $contentData,
             ]);
         }
     }
@@ -40,7 +40,7 @@ class ModuleContentService
             'module_id' => $module->_id,
             'type' => $data['type'],
             'order' => $order + 1,
-            'content' => $contentData
+            'content' => $contentData,
         ]);
     }
 
@@ -70,11 +70,11 @@ class ModuleContentService
         // ================= FILE BASED =================
         if ($file) {
 
-            if ($type === 'image' && !str_starts_with($file->getMimeType(), 'image')) {
+            if ($type === 'image' && ! str_starts_with($file->getMimeType(), 'image')) {
                 throw new \Exception('Invalid image file');
             }
 
-            if ($type === 'video' && !str_starts_with($file->getMimeType(), 'video')) {
+            if ($type === 'video' && ! str_starts_with($file->getMimeType(), 'video')) {
                 throw new \Exception('Invalid video file');
             }
 
@@ -87,7 +87,7 @@ class ModuleContentService
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $ext = $file->getClientOriginalExtension();
 
-            $filename = \Str::slug($name) . '-' . time() . '.' . $ext;
+            $filename = \Str::slug($name).'-'.time().'.'.$ext;
 
             $path = $file->storeAs($folder, $filename, 'public');
 
@@ -95,7 +95,7 @@ class ModuleContentService
                 'url' => Storage::url($path),
                 'name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
-                'mime' => $file->getMimeType()
+                'mime' => $file->getMimeType(),
             ];
         }
 

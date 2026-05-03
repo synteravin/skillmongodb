@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 use MongoDB\BSON\ObjectId;
 
 class CourseController extends Controller
 {
-
     public function index()
     {
 
@@ -37,10 +36,10 @@ class CourseController extends Controller
                 ];
             }),
 
-            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
-            ])
+            ]),
         ]);
 
     }
@@ -66,7 +65,7 @@ class CourseController extends Controller
         $slug = Str::slug($data['title']);
 
         if (Course::where('slug', $slug)->exists()) {
-            $slug .= '-' . Str::random(4);
+            $slug .= '-'.Str::random(4);
         }
 
         /* ---------- UPLOAD THUMBNAIL ---------- */
@@ -89,7 +88,7 @@ class CourseController extends Controller
             'thumbnail' => $thumbnailPath,
             'slug' => $slug,
             'status' => 'draft',
-            'is_active' => true
+            'is_active' => true,
         ]);
 
         return redirect()->route('admin.courses.builder', $course->slug);
@@ -99,7 +98,7 @@ class CourseController extends Controller
     {
 
         return Inertia::render('Admin/Course/Edit', [
-            'course' => $course
+            'course' => $course,
         ]);
 
     }
@@ -126,7 +125,7 @@ class CourseController extends Controller
         $course->update([
             'title' => $data['title'],
             'description' => $data['description'],
-            'thumbnail' => $thumbnail
+            'thumbnail' => $thumbnail,
         ]);
 
         return redirect()->route('admin.courses.index');
@@ -147,7 +146,7 @@ class CourseController extends Controller
         $course = Course::where('_id', new ObjectId($course))->firstOrFail();
 
         $data = $request->validate([
-            'mentor_id' => ['required']
+            'mentor_id' => ['required'],
         ]);
 
         $mentor = User::where('_id', $data['mentor_id'])
@@ -155,7 +154,7 @@ class CourseController extends Controller
             ->firstOrFail();
 
         $course->update([
-            'mentor_id' => $mentor->_id
+            'mentor_id' => $mentor->_id,
         ]);
 
         return back();

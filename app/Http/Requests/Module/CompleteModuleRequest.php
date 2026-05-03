@@ -14,7 +14,7 @@ class CompleteModuleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'module_id' => 'required'
+            'module_id' => 'required',
         ];
     }
 }

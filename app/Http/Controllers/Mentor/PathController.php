@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Mentor;
 
+use App\Actions\Path\MentorCreatePathAction;
 use App\Http\Controllers\Controller;
-use App\Models\CareerGroup;
-use App\Actions\Path\CreatePathAction;
 use App\Http\Requests\Path\StorePathRequest;
+use App\Models\CareerGroup;
 use Inertia\Inertia;
 
 class PathController extends Controller
@@ -23,7 +23,7 @@ class PathController extends Controller
             'paths' => $group->paths()
                 ->orderBy('order')
                 ->get()
-                ->map(fn($p) => [
+                ->map(fn ($p) => [
                     'id' => (string) $p->_id,
                     'name' => $p->name,
                     'order' => $p->order,
@@ -34,7 +34,7 @@ class PathController extends Controller
     public function store(
         StorePathRequest $request,
         CareerGroup $group,
-        CreatePathAction $action
+        MentorCreatePathAction $action
     ) {
         $this->authorize('update', $group);
 

@@ -80,11 +80,11 @@ const typeIcons = {
 };
 
 const typeColors = {
-    text: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    image: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    video: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    file: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    youtube: "bg-red-500/10 text-red-500 border-red-500/20"
+    text: "bg-blue-500 text-blue-400 border-blue-500",
+    image: "bg-emerald-500 text-emerald-400 border-emerald-500",
+    video: "bg-purple-500 text-purple-400 border-purple-500",
+    file: "bg-amber-500 text-amber-400 border-amber-500",
+    youtube: "bg-red-500 text-red-400 border-red-500"
 };
 
 /* ================= ITEM ================= */
@@ -132,7 +132,7 @@ const SortableContent = ({
         <div
             ref={setNodeRef}
             style={style}
-            className={`flex gap-3 group bg-slate-900/40 backdrop-blur-sm p-3 sm:p-4 rounded-xl transition-all duration-200 border ${isEditing ? 'border-indigo-500/50 shadow-lg shadow-indigo-500/10' : 'border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/40 hover:-translate-y-0.5'}`}
+            className={`flex gap-3 group bg-slate-900 backdrop-blur-sm p-3 sm:p-4 rounded-xl transition-all duration-200 border ${isEditing ? 'border-indigo-500 shadow-lg shadow-indigo-500' : 'border-slate-800 hover:border-slate-700 hover:bg-slate-800 hover:-translate-y-0.5'}`}
         >
 
             {/* DRAG */}
@@ -151,7 +151,7 @@ const SortableContent = ({
                                     value={localTitle}
                                     onChange={(e) => setLocalTitle(e.target.value)}
                                     placeholder="Enter title..."
-                                    className="bg-slate-950/50 border border-slate-800 px-4 py-2.5 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                                    className="bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
                                 />
                             </div>
 
@@ -162,7 +162,7 @@ const SortableContent = ({
                                         value={localDesc}
                                         onChange={(e) => setLocalDesc(e.target.value)}
                                         placeholder="Write your content here..."
-                                        className="bg-slate-950/50 border border-slate-800 px-4 py-3 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all min-h-[120px] resize-y placeholder:text-slate-600 leading-relaxed"
+                                        className="bg-slate-950 border border-slate-800 px-4 py-3 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all min-h-[120px] resize-y placeholder:text-slate-600 leading-relaxed"
                                         rows={4}
                                     />
                                 </div>
@@ -179,20 +179,20 @@ const SortableContent = ({
                                             value={localUrl}
                                             onChange={(e) => setLocalUrl(e.target.value)}
                                             placeholder="https://youtube.com/watch?v=..."
-                                            className="bg-slate-950/50 border border-slate-800 pl-10 pr-4 py-2.5 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                                            className="bg-slate-950 border border-slate-800 pl-10 pr-4 py-2.5 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-2 pt-4 border-t border-slate-800/80">
+                        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-2 pt-4 border-t border-slate-800">
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     deleteContent(id, moduleId);
                                 }}
-                                className="flex items-center justify-center gap-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 px-3 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors border border-rose-500/20 sm:border-transparent"
+                                className="flex items-center justify-center gap-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500 px-3 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors border border-rose-500 sm:border-transparent"
                             >
                                 <Trash2 size={16} className="sm:w-3.5 sm:h-3.5" />
                                 Delete Content
@@ -660,17 +660,17 @@ export default function ModuleBuilder({ path }: { path: Path }) {
             <div className="min-h-screen p-4 sm:p-6 lg:p-8 w-full mx-auto space-y-6 sm:space-y-8">
 
                 {/* HEADER */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
-                            <div className="p-2 bg-indigo-500/10 rounded-lg">
+                            <div className="p-2 bg-indigo-500 rounded-lg">
                                 <Layers className="text-indigo-400" size={24} />
                             </div>
                             Module Builder
                         </h1>
                         <div className="flex items-center gap-2 mt-2">
                             <span className="text-slate-500 text-sm">Path:</span>
-                            <span className="text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 shadow-inner">{path.name}</span>
+                            <span className="text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-700 shadow-inner">{path.name}</span>
                         </div>
                     </div>
 
@@ -683,7 +683,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                 </div>
 
                 {/* CREATE MODULE */}
-                <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 shadow-xl flex flex-col sm:flex-row gap-4 items-center">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col sm:flex-row gap-4 items-center">
                     <div className="flex-1 w-full relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <Layers size={18} className="text-slate-500" />
@@ -693,7 +693,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                             onChange={(e) => setNewTitle(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && createModule()}
                             placeholder="Enter new module title..."
-                            className="w-full bg-slate-950/50 border border-slate-800 pl-11 pr-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-shadow placeholder:text-slate-600"
+                            className="w-full bg-slate-950 border border-slate-800 pl-11 pr-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-shadow placeholder:text-slate-600"
                         />
                     </div>
                     <button
@@ -713,11 +713,11 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                         const isOpen = openModule === moduleId;
 
                         return (
-                            <div key={moduleId} className="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl overflow-hidden shadow-lg transition-all duration-300">
+                            <div key={moduleId} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg transition-all duration-300">
 
                                 <div
                                     onClick={() => setOpenModule(isOpen ? null : moduleId)}
-                                    className={`p-5 flex justify-between items-center cursor-pointer hover:bg-slate-800/60 transition-colors ${isOpen ? 'bg-slate-800/40 border-b border-slate-800/80' : ''}`}
+                                    className={`p-5 flex justify-between items-center cursor-pointer hover:bg-slate-800 transition-colors ${isOpen ? 'bg-slate-800 border-b border-slate-800' : ''}`}
                                 >
                                     <div className="flex gap-4 items-center">
                                         <div className={`p-2 rounded-lg transition-colors ${isOpen ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-800 text-slate-400'}`}>

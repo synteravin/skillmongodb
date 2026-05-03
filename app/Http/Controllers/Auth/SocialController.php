@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Contracts\User as SocialiteUser;
-use Laravel\Socialite\Two\AbstractProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\AbstractProvider;
 
 class SocialController extends Controller
 {
@@ -27,13 +27,12 @@ class SocialController extends Controller
             ->stateless()
             ->user();
 
-
         $user = User::where('email', $googleUser->getEmail())->first();
 
-        if (!$user) {
+        if (! $user) {
             $user = User::create([
                 'name' => $googleUser->getName(),
-                'username' => Str::slug($googleUser->getName()) . rand(100, 999),
+                'username' => Str::slug($googleUser->getName()).rand(100, 999),
                 'email' => $googleUser->getEmail(),
                 'password' => bcrypt(Str::random(24)),
                 'role' => 'student',

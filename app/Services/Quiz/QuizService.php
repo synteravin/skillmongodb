@@ -3,8 +3,8 @@
 namespace App\Services\Quiz;
 
 use App\Models\Quiz;
-use App\Models\User;
 use App\Models\QuizAnswer;
+use App\Models\User;
 
 class QuizService
 {
@@ -13,7 +13,7 @@ class QuizService
         if (empty($answers)) {
             return [
                 'score' => 0,
-                'passed' => true
+                'passed' => true,
             ];
         }
 
@@ -24,7 +24,7 @@ class QuizService
 
             $answer = QuizAnswer::find($answerId);
 
-            if (!$answer) {
+            if (! $answer) {
                 continue;
             }
 
@@ -45,7 +45,7 @@ class QuizService
 
         return [
             'score' => $score,
-            'passed' => true
+            'passed' => true,
         ];
     }
 }

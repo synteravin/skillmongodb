@@ -2,10 +2,10 @@
 
 namespace App\Services\Course;
 
-use App\Models\User;
+use App\Enums\CourseStatus;
 use App\Models\Course;
 use App\Models\CourseStudent;
-use App\Enums\CourseStatus;
+use App\Models\User;
 
 class CourseService
 {
@@ -33,7 +33,7 @@ class CourseService
                 'description' => $course->description,
                 'thumbnail' => $course->thumbnail,
                 'slug' => $course->slug,
-                'status' => $status
+                'status' => $status,
             ];
         });
     }
@@ -57,11 +57,11 @@ class CourseService
         CourseStudent::updateOrCreate(
             [
                 'user_id' => $user->_id,
-                'course_id' => $courseId
+                'course_id' => $courseId,
             ],
             [
                 'status' => CourseStatus::ACTIVE->value,
-                'enrolled_at' => now()
+                'enrolled_at' => now(),
             ]
         );
     }

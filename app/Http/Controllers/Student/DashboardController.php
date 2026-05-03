@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $user = $request->user()->load(['character', 'userStats']);
 
         // 🚫 Kalau belum punya character
-        if (!$user->hasCharacter()) {
+        if (! $user->hasCharacter()) {
             return redirect()->route('student.SelectCharacter');
         }
 
@@ -25,8 +25,9 @@ class DashboardController extends Controller
         // =========================
         foreach ($user->userStats as $stat) {
 
-            if (!$stat->path_stats)
+            if (! $stat->path_stats) {
                 continue;
+            }
 
             $pathStats = $stat->path_stats;
 
@@ -81,7 +82,7 @@ class DashboardController extends Controller
 
                 // 🔥 USER AVATAR (UPLOAD)
                 'avatar' => $user->avatar
-                    ? asset('storage/' . $user->avatar)
+                    ? asset('storage/'.$user->avatar)
                     : null,
             ],
         ]);

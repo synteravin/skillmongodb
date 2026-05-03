@@ -2,10 +2,10 @@
 
 namespace App\Services\Learns;
 
-use App\Models\UserStat;
 use App\Models\Course;
-use App\Models\Path;
 use App\Models\Module;
+use App\Models\Path;
+use App\Models\UserStat;
 
 class LearnService
 {
@@ -29,7 +29,7 @@ class LearnService
                     $q->select('_id', 'path_id', 'title', 'order')
                         ->orderBy('order');
                 },
-                'quiz'
+                'quiz',
             ])
             ->firstOrFail();
 
@@ -40,7 +40,7 @@ class LearnService
                 'contents' => function ($q) {
                     $q->select('_id', 'module_id', 'type', 'content', 'order')
                         ->orderBy('order');
-                }
+                },
             ])
             ->firstOrFail();
 
@@ -48,11 +48,11 @@ class LearnService
         $progress = UserStat::firstOrCreate(
             [
                 'user_id' => $user->_id,
-                'course_id' => $courseId
+                'course_id' => $courseId,
             ],
             [
                 'completed_modules' => [],
-                'completed_paths' => []
+                'completed_paths' => [],
             ]
         );
 
@@ -62,7 +62,7 @@ class LearnService
         $modules = $path->modules->values();
 
         $currentIndex = $modules->search(
-            fn($m) => (string) $m->_id === (string) $module->_id
+            fn ($m) => (string) $m->_id === (string) $module->_id
         );
 
         /* ================= META ================= */
@@ -79,7 +79,7 @@ class LearnService
             'module' => $module,
             'modules' => $modules,
             'progress' => $completedModules,
-            'meta' => $meta
+            'meta' => $meta,
         ];
     }
 
@@ -90,7 +90,7 @@ class LearnService
         }
 
         return collect($data)
-            ->map(fn($id) => (string) $id)
+            ->map(fn ($id) => (string) $id)
             ->toArray();
     }
 }

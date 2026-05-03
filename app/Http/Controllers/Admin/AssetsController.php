@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Rank;
 use App\Models\Character;
 use App\Models\LevelBadge;
+use App\Models\Rank;
 use Inertia\Inertia;
 
 class AssetsController extends Controller

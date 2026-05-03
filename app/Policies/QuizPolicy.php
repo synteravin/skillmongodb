@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Quiz;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use App\Models\UserStat;
 
 class QuizPolicy
@@ -69,13 +68,15 @@ class QuizPolicy
     {
         $module = $quiz->module;
 
-        if (!$module)
+        if (! $module) {
             return false;
+        }
 
         $path = $module->path;
 
-        if (!$path)
+        if (! $path) {
             return false;
+        }
 
         return UserStat::where('user_id', (string) $user->_id)
             ->where('course_id', (string) $path->course_id)

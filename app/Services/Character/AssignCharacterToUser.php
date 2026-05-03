@@ -2,8 +2,8 @@
 
 namespace App\Services\Character;
 
-use App\Models\User;
 use App\Models\Character;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
 class AssignCharacterToUser
