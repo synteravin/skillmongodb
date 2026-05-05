@@ -10,12 +10,13 @@ class UploadCharacterAvatar
 {
     public function upload(UploadedFile $file): string
     {
-        $filename = 'char_' . Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $filename = 'char_' . Str::uuid() . '.' . $file->extension();
 
         return Storage::disk('s3')->putFileAs(
             'characters',
             $file,
-            $filename
+            $filename,
+            'public'
         );
     }
 }

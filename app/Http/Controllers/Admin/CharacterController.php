@@ -95,7 +95,7 @@ class CharacterController extends Controller
 
             // hapus avatar lama
             if ($character->avatar) {
-                Storage::disk('public')->delete($character->avatar);
+                Storage::disk('s3')->delete($character->avatar);
             }
 
             $data['avatar'] = $uploader->upload($request->file('avatar'));
@@ -126,7 +126,7 @@ class CharacterController extends Controller
 
         // 🔥 hapus avatar
         if ($character->avatar) {
-            Storage::disk('public')->delete($character->avatar);
+            Storage::disk('s3')->delete($character->avatar);
         }
 
         $character->delete();
