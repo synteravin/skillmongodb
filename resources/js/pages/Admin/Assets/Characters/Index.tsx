@@ -7,6 +7,7 @@ type Character = {
     name: string;
     backstory: string;
     avatar: string;
+    avatar_url: string;
 };
 
 export default function CharacterIndex({
@@ -67,7 +68,7 @@ export default function CharacterIndex({
                                     {/* Avatar */}
                                     <div className="relative z-10 flex justify-center">
                                         <img
-                                            src={`/${char.avatar}`}
+                                            src={char.avatar_url}
                                             alt={char.name}
                                             className="h-28 w-28 rounded-full object-cover shadow-lg ring-4 ring-slate-100 transition group-hover:scale-105 dark:ring-slate-800"
                                         />

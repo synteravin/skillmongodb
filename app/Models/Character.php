@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Character extends Model
 {
@@ -27,6 +28,8 @@ class Character extends Model
         'quote',
     ];
 
+
+
     protected $casts = [
         'character_type' => 'array',
         'abilities' => 'array',
@@ -44,5 +47,12 @@ class Character extends Model
     public function isUsed(): bool
     {
         return User::where('character_id', $this->_id)->exists();
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar
+            ? Storage::disk('s3')->url($this->avatar)
+            : null;
     }
 }

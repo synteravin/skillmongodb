@@ -229,7 +229,7 @@ export default function Edit({ character }: { character: Character }) {
                                 onClick={() => fileRef.current?.click()}
                             >
                                 <img
-                                    src={preview ?? `/${character.avatar}`}
+                                    src={preview ?? character.avatar}
                                     className="avatar"
                                 />
                                 <div className="overlay">Change</div>
