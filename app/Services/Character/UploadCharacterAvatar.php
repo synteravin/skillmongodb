@@ -4,21 +4,18 @@ namespace App\Services\Character;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class UploadCharacterAvatar
 {
     public function upload(UploadedFile $file): string
     {
-        $destination = public_path('images/characters');
+        $filename = 'char_' . Str::uuid() . '.' . $file->getClientOriginalExtension();
 
-        if (! is_dir($destination)) {
-            mkdir($destination, 0755, true);
-        }
-
-        $filename = 'char_'.Str::uuid().'.'.$file->getClientOriginalExtension();
-
-        $file->move($destination, $filename);
-
-        return 'images/characters/'.$filename;
+        return Storage::disk('s3')->putFileAs(
+            'characters',
+            $file,
+            $filename
+        );
     }
 }

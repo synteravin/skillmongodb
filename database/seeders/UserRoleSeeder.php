@@ -16,7 +16,7 @@ class UserRoleSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@skillmongo.com'],
             [
-                'name' => 'Admin Root',
+                'name' => 'Admin',
                 'password' => Hash::make('SkillVentura123!'),
                 'role' => 'admin',
             ]

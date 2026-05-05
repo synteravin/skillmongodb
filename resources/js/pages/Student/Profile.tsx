@@ -158,7 +158,7 @@ export default function ProfilePage({ user }: Props) {
                         className="mt-3 xl:mt-4 flex w-full items-center justify-center gap-1.5 xl:gap-2 border border-red-900/30 bg-transparent py-2 xl:py-3 font-['Orbitron'] text-[9px] xl:text-[10px] font-bold text-red-600 transition hover:bg-red-950/20 hover:border-red-900/60"
                     >
                         <Power size={14} className="xl:h-[16px] xl:w-[16px]" strokeWidth={2.5} />
-                        SYSTEM LOG OUT
+                        SYSTEM LOG OUTNIH
                     </button>
                 </div>
 
@@ -203,7 +203,7 @@ export default function ProfilePage({ user }: Props) {
 
                     {/* OPERATOR DATA */}
                     <div className="relative flex min-h-0 flex-1 flex-col justify-between overflow-hidden border border-[#1a1c33] bg-[#020205] p-3 sm:p-4 xl:p-6 shadow-xl">
-                        
+
                         {/* TITLE */}
                         <h3 className="flex flex-shrink-0 items-center gap-1.5 xl:gap-2 font-['Orbitron'] text-xs xl:text-sm font-bold tracking-widest text-blue-700 leading-none">
                             <UserCog size={16} className="xl:h-5 xl:w-5" strokeWidth={2} />
