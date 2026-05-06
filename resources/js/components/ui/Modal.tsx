@@ -5,9 +5,10 @@ type Props = {
     title: string
     onClose: () => void
     children: ReactNode
+    maxWidth?: string
 }
 
-export default function Modal({ open, title, onClose, children }: Props) {
+export default function Modal({ open, title, onClose, children, maxWidth = "max-w-lg" }: Props) {
 
     if (!open) return null
 
@@ -18,11 +19,11 @@ export default function Modal({ open, title, onClose, children }: Props) {
             {/* BACKDROP */}
             <div
                 onClick={onClose}
-                className="absolute inset-0 bg-black/40"
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-all"
             />
 
             {/* MODAL */}
-            <div className="relative w-full max-w-lg mx-4 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#0b0f2a] shadow-xl p-6">
+            <div className={`relative w-full ${maxWidth} mx-4 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#0b0f2a] shadow-xl p-6 transition-all`}>
 
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">

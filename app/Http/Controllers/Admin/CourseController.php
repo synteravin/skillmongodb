@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 use MongoDB\BSON\ObjectId;
 
 class CourseController extends Controller
@@ -27,6 +28,7 @@ class CourseController extends Controller
                         'name' => $course->mentor->name,
                     ] : null,
                     'thumbnail' => $course->thumbnail,
+                    'thumbnail_url' => $course->thumbnail_url,
                     'description' => $course->description,
                     'slug' => $course->slug,
                     'status' => $course->status,
@@ -44,12 +46,7 @@ class CourseController extends Controller
 
     }
 
-    public function create()
-    {
 
-        return Inertia::render('Admin/Course/Create');
-
-    }
 
     public function store(Request $request)
     {
@@ -76,7 +73,7 @@ class CourseController extends Controller
 
             $thumbnailPath = $request
                 ->file('thumbnail')
-                ->store('courses', 'public');
+                ->storePublicly('courses', 's3');
 
         }
 
@@ -94,14 +91,7 @@ class CourseController extends Controller
         return redirect()->route('admin.courses.builder', $course->slug);
     }
 
-    public function edit(Course $course)
-    {
 
-        return Inertia::render('Admin/Course/Edit', [
-            'course' => $course,
-        ]);
-
-    }
 
     public function update(Request $request, Course $course)
     {
@@ -116,9 +106,13 @@ class CourseController extends Controller
 
         if ($request->hasFile('thumbnail')) {
 
+            if ($course->thumbnail && !str_starts_with($course->thumbnail, 'http')) {
+                Storage::disk('s3')->delete($course->thumbnail);
+            }
+
             $thumbnail = $request
                 ->file('thumbnail')
-                ->store('courses', 'public');
+                ->storePublicly('courses', 's3');
 
         }
 
@@ -134,6 +128,9 @@ class CourseController extends Controller
 
     public function destroy(Course $course)
     {
+        if ($course->thumbnail && !str_starts_with($course->thumbnail, 'http')) {
+            Storage::disk('s3')->delete($course->thumbnail);
+        }
 
         $course->delete();
 

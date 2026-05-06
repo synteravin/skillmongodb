@@ -32,6 +32,21 @@ class Course extends Model
         'published_at' => 'datetime',
     ];
 
+    protected $appends = ['thumbnail_url'];
+
+    public function getThumbnailUrlAttribute()
+    {
+        if ($this->thumbnail) {
+            if (str_starts_with($this->thumbnail, 'http')) {
+                return $this->thumbnail;
+            }
+
+            return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->thumbnail);
+        }
+
+        return null;
+    }
+
     /* ================= RELATIONS ================= */
 
     public function careerGroups()
