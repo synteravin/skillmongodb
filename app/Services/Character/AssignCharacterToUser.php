@@ -17,8 +17,8 @@ class AssignCharacterToUser
             ]);
         }
 
-        // 2️⃣ Sudah punya character? Stop (idempotent)
-        if ($user->hasCharacter()) {
+        // 2️⃣ Sudah punya character & valid? Stop (idempotent)
+        if ($user->hasCharacter() && $user->character) {
             return;
         }
 

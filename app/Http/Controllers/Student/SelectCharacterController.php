@@ -13,7 +13,7 @@ class SelectCharacterController extends Controller
     {
         $user = $request->user();
 
-        if ($user->hasCharacter()) {
+        if ($user->hasCharacter() && $user->character) {
             return redirect()->route('student.dashboard');
         }
 
@@ -21,7 +21,7 @@ class SelectCharacterController extends Controller
             return [
                 '_id' => (string) $character->_id,
                 'name' => $character->name,
-                'avatar' => asset($character->avatar),
+                'avatar' => $character->avatar_url,
                 'backstory' => $character->backstory,
                 'abilities' => $character->abilities,
                 'quote' => $character->quote,

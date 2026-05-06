@@ -1,142 +1,195 @@
-import { useForm } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useForm, Link } from '@inertiajs/react';
+import { useState, useEffect, useRef } from 'react';
+import AppLayout from '@/layouts/app-layout';
+import { ChevronLeft, Save, UploadCloud } from 'lucide-react';
 
-export default function CreateBadge() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: "",
-        order: "",
+export default function Create() {
+    const fileRef = useRef<HTMLInputElement>(null);
+    const { data, setData, post, processing, errors } = useForm({
+        name: '',
+        order: '',
         icon: null as File | null,
     });
 
     const [preview, setPreview] = useState<string | null>(null);
+    const [dragActive, setDragActive] = useState(false);
 
-    const handleFile = (file: File | null) => {
-        if (!file) return;
-        setData("icon", file);
+    const handleImage = (file: File | null) => {
+        if (!file || !file.type.startsWith('image/')) return;
+        setData('icon', file);
         setPreview(URL.createObjectURL(file));
     };
 
-    // Bersihkan URL object untuk mencegah memory leak
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+        if (e.dataTransfer.files[0]) {
+            handleImage(e.dataTransfer.files[0]);
+        }
+    };
+
     useEffect(() => {
         return () => {
-            if (preview) {
-                URL.revokeObjectURL(preview);
-            }
+            if (preview) URL.revokeObjectURL(preview);
         };
     }, [preview]);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        post("/admin/assets/badges", {
+        post('/admin/assets/badges', {
             forceFormData: true,
-            onSuccess: () => {
-                reset();
-                if (preview) URL.revokeObjectURL(preview);
-                setPreview(null);
-            },
         });
     };
 
     return (
-        <form
-            onSubmit={submit}
-            encType="multipart/form-data"
-            className="bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 mb-4 shadow-[0_10px_30px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]"
-        >
-            {/* HEADER */}
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h2 className="text-base font-semibold text-white">Editor Lencana</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Tambah atau perbarui aset</p>
-                </div>
+        <AppLayout>
+            <div className="min-h-screen bg-slate-50 py-8 dark:bg-[#0B1120]">
+                <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <Link 
+                            href="/admin/assets/badges" 
+                            className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                        >
+                            <ChevronLeft size={16} />
+                            Back to Badges
+                        </Link>
+                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                            Create Badge
+                        </h1>
+                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                            Add a new badge to the system assets.
+                        </p>
+                    </div>
 
-                <button
-                    disabled={processing}
-                    className="px-4 py-2 bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white text-xs font-medium rounded-xl shadow-[0_4px_14px_rgba(99,102,241,0.4)] transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                    {processing ? "Menyimpan..." : "Simpan"}
-                </button>
-            </div>
+                    {/* Form */}
+                    <form onSubmit={submit} className="space-y-6">
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
+                            <div className="space-y-6">
+                                {/* Image Upload */}
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                        Badge Icon
+                                    </label>
+                                    
+                                    <div
+                                        onDragOver={(e) => {
+                                            e.preventDefault();
+                                            setDragActive(true);
+                                        }}
+                                        onDragLeave={() => setDragActive(false)}
+                                        onDrop={handleDrop}
+                                        onClick={() => fileRef.current?.click()}
+                                        className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+                                            dragActive
+                                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10'
+                                                : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-indigo-500 dark:hover:bg-slate-800/50'
+                                        }`}
+                                    >
+                                        <input
+                                            ref={fileRef}
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => handleImage(e.target.files?.[0] || null)}
+                                        />
 
-            {/* CONTENT */}
-            <div className="grid grid-cols-1 md:grid-cols-[110px_1fr] gap-5 items-start">
+                                        {preview ? (
+                                            <div className="relative">
+                                                <div className="absolute inset-0 z-10 rounded-xl bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
+                                                <div className="flex h-32 w-32 items-center justify-center rounded-xl bg-slate-100 p-2 shadow-inner dark:bg-slate-950">
+                                                    <img
+                                                        src={preview}
+                                                        alt="Preview"
+                                                        className="h-full w-full object-contain drop-shadow-md"
+                                                    />
+                                                </div>
+                                                <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                                                    <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm backdrop-blur-sm">
+                                                        Change Image
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-3 text-slate-500 dark:text-slate-400">
+                                                <div className="rounded-full bg-slate-100 p-3 group-hover:bg-indigo-100 group-hover:text-indigo-600 dark:bg-slate-800 dark:group-hover:bg-indigo-500/20 dark:group-hover:text-indigo-400">
+                                                    <UploadCloud size={24} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                                        Click to upload or drag and drop
+                                                    </p>
+                                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                                        PNG, JPG, WEBP up to 2MB
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {errors.icon && (
+                                        <p className="mt-1.5 text-sm font-medium text-red-500">{errors.icon}</p>
+                                    )}
+                                </div>
 
-                {/* PREVIEW */}
-                <div className="text-center flex flex-col items-center">
-                    <p className="text-[11px] text-slate-400 mb-2 font-medium">Preview</p>
+                                {/* Form Fields */}
+                                <div className="grid gap-6 sm:grid-cols-2">
+                                    {/* Name Input */}
+                                    <div>
+                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                            Badge Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.name}
+                                            onChange={(e) => setData('name', e.target.value)}
+                                            placeholder="e.g. Elite Warrior"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
+                                        />
+                                        {errors.name && (
+                                            <p className="mt-1.5 text-sm font-medium text-red-500">{errors.name}</p>
+                                        )}
+                                    </div>
 
-                    <label
-                        htmlFor="fileInput"
-                        className="w-[95px] h-[95px] rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 flex items-center justify-center overflow-hidden cursor-pointer mb-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.5)] transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-[0_12px_30px_rgba(0,0,0,0.6),0_0_0_1px_rgba(99,102,241,0.3)] group"
-                    >
-                        {preview ? (
-                            <img src={preview} alt="Preview" className="w-[85%] h-[85%] object-contain" />
-                        ) : (
-                            <div className="flex flex-col items-center gap-1 text-slate-500 group-hover:text-indigo-400 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
-                                <span className="text-[10px] font-medium mt-1">Upload</span>
+                                    {/* Order Input */}
+                                    <div>
+                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                            Order Number
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={data.order}
+                                            onChange={(e) => setData('order', e.target.value)}
+                                            placeholder="0"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
+                                        />
+                                        {errors.order && (
+                                            <p className="mt-1.5 text-sm font-medium text-red-500">{errors.order}</p>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        )}
-                    </label>
+                        </div>
 
-                    {/* Membungkus label agar dapat diklik untuk memilih gambar */}
-                    <label
-                        htmlFor="fileInput"
-                        className="text-[11px] font-medium text-indigo-400 hover:text-indigo-300 cursor-pointer transition-colors"
-                    >
-                        Unggah Baru
-                    </label>
-
-                    <input
-                        id="fileInput"
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={(e) => {
-                            handleFile(e.target.files?.[0] || null);
-                            // Mengosongkan value agar pemilihan file yang sama dapat memicu onChange kembali
-                            e.target.value = '';
-                        }}
-                    />
-
-                    {errors.icon && (
-                        <span className="text-red-400 text-[10px] mt-2 block font-medium">{errors.icon}</span>
-                    )}
+                        {/* Actions */}
+                        <div className="flex items-center justify-end gap-3">
+                            <Link
+                                href="/admin/assets/badges"
+                                className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 transition-all hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800"
+                            >
+                                Cancel
+                            </Link>
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50"
+                            >
+                                <Save size={18} />
+                                {processing ? 'Creating...' : 'Create Badge'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                {/* FORM */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                        <label className="text-[11px] font-medium text-slate-400">Nama Lencana</label>
-                        <input
-                            type="text"
-                            placeholder="Misal: Elite Warrior"
-                            value={data.name}
-                            onChange={(e) => setData("name", e.target.value)}
-                            className={`w-full px-3.5 py-2.5 rounded-xl bg-black/40 border ${errors.name ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' : 'border-white/10 focus:border-indigo-500 focus:ring-indigo-500/20'} text-[13px] text-white transition-all placeholder:text-slate-600 focus:outline-none focus:ring-2`}
-                        />
-                        {errors.name && (
-                            <span className="text-red-400 text-[10px] mt-0.5 font-medium">{errors.name}</span>
-                        )}
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                        <label className="text-[11px] font-medium text-slate-400">Urutan</label>
-                        <input
-                            type="number"
-                            placeholder="0"
-                            value={data.order}
-                            onChange={(e) => setData("order", e.target.value)}
-                            className={`w-full px-3.5 py-2.5 rounded-xl bg-black/40 border ${errors.order ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' : 'border-white/10 focus:border-indigo-500 focus:ring-indigo-500/20'} text-[13px] text-white transition-all placeholder:text-slate-600 focus:outline-none focus:ring-2`}
-                        />
-                        {errors.order && (
-                            <span className="text-red-400 text-[10px] mt-0.5 font-medium">{errors.order}</span>
-                        )}
-                    </div>
-                </div>
-
             </div>
-        </form>
+        </AppLayout>
     );
 }

@@ -29,7 +29,7 @@ class RankController extends Controller
             'image' => 'required|image|max:2048',
         ]);
 
-        $path = $request->file('image')->store('ranks', 'public');
+        $path = $request->file('image')->store('ranks', 's3');
 
         // ✅ AUTO ORDER (SAFE)
         $order = (Rank::max('order') ?? 0) + 1;
@@ -66,10 +66,10 @@ class RankController extends Controller
 
             // hapus file lama
             if ($rank->image) {
-                Storage::disk('public')->delete($rank->image);
+                Storage::disk('s3')->delete($rank->image);
             }
 
-            $data['image'] = $request->file('image')->store('ranks', 'public');
+            $data['image'] = $request->file('image')->store('ranks', 's3');
         }
 
         $rank->update($data);
@@ -94,7 +94,7 @@ class RankController extends Controller
     public function destroy(Rank $rank)
     {
         if ($rank->image) {
-            Storage::disk('public')->delete($rank->image);
+            Storage::disk('s3')->delete($rank->image);
         }
 
         $rank->delete();

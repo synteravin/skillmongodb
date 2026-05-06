@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Character extends Model
 {
@@ -28,8 +28,6 @@ class Character extends Model
         'quote',
     ];
 
-
-
     protected $casts = [
         'character_type' => 'array',
         'abilities' => 'array',
@@ -38,6 +36,8 @@ class Character extends Model
         'system_bonus' => 'array',
         'cosmetic_bonus' => 'array',
     ];
+
+    protected $appends = ['avatar_url'];
 
     public function users()
     {

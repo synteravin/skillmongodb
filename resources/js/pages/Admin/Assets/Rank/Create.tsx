@@ -1,93 +1,175 @@
-import { useForm, Link } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useForm, Link } from '@inertiajs/react';
+import { useState, useEffect, useRef } from 'react';
+import AppLayout from '@/layouts/app-layout';
+import { ChevronLeft, Save, UploadCloud } from 'lucide-react';
 
 export default function Create() {
+    const fileRef = useRef<HTMLInputElement>(null);
     const { data, setData, post, processing, errors } = useForm({
-        name: "",
+        name: '',
         image: null as File | null,
     });
 
     const [preview, setPreview] = useState<string | null>(null);
+    const [dragActive, setDragActive] = useState(false);
 
     const handleImage = (file: File | null) => {
-        setData("image", file);
-        if (file) setPreview(URL.createObjectURL(file));
+        if (!file || !file.type.startsWith('image/')) return;
+        setData('image', file);
+        setPreview(URL.createObjectURL(file));
     };
 
-    // 🔥 clean memory (optional tapi bagus)
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+        if (e.dataTransfer.files[0]) {
+            handleImage(e.dataTransfer.files[0]);
+        }
+    };
+
+    // Clean memory
     useEffect(() => {
         return () => {
             if (preview) URL.revokeObjectURL(preview);
         };
     }, [preview]);
 
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post('/admin/assets/ranks', {
+            forceFormData: true,
+        });
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#050816] to-[#0a0f2c] text-white p-6">
+        <AppLayout>
+            <div className="min-h-screen bg-slate-50 py-8 dark:bg-[#0B1120]">
+                <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <Link 
+                            href="/admin/assets/ranks" 
+                            className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                        >
+                            <ChevronLeft size={16} />
+                            Back to Ranks
+                        </Link>
+                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                            Create Rank
+                        </h1>
+                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                            Add a new rank tier for the student progression system.
+                        </p>
+                    </div>
 
-            <div className="max-w-xl mx-auto bg-[#0b1025] p-6 rounded-xl border border-blue-800">
+                    {/* Form */}
+                    <form onSubmit={submit} className="space-y-6">
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
+                            <div className="space-y-6">
+                                {/* Name Input */}
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                        Rank Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        placeholder="e.g. Bronze, Silver, Gold"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
+                                    />
+                                    {errors.name && (
+                                        <p className="mt-1.5 text-sm font-medium text-red-500">{errors.name}</p>
+                                    )}
+                                </div>
 
-                <div className="flex justify-between mb-6">
-                    <h1 className="text-xl font-bold text-blue-400">
-                        Create Rank
-                    </h1>
+                                {/* Image Upload */}
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                        Rank Icon
+                                    </label>
+                                    
+                                    <div
+                                        onDragOver={(e) => {
+                                            e.preventDefault();
+                                            setDragActive(true);
+                                        }}
+                                        onDragLeave={() => setDragActive(false)}
+                                        onDrop={handleDrop}
+                                        onClick={() => fileRef.current?.click()}
+                                        className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+                                            dragActive
+                                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10'
+                                                : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-indigo-500 dark:hover:bg-slate-800/50'
+                                        }`}
+                                    >
+                                        <input
+                                            ref={fileRef}
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => handleImage(e.target.files?.[0] || null)}
+                                        />
 
-                    {/* ✅ FIX */}
-                    <Link href="/admin/assets/ranks">
-                        ← Back
-                    </Link>
+                                        {preview ? (
+                                            <div className="relative">
+                                                <div className="absolute inset-0 z-10 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl" />
+                                                <div className="flex h-32 w-32 items-center justify-center rounded-xl bg-slate-100 p-2 shadow-inner dark:bg-slate-950">
+                                                    <img
+                                                        src={preview}
+                                                        alt="Preview"
+                                                        className="h-full w-full object-contain drop-shadow-md"
+                                                    />
+                                                </div>
+                                                <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                                                    <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm backdrop-blur-sm">
+                                                        Change
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="rounded-full bg-slate-100 p-3 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                                                    <UploadCloud size={24} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                                        Click to upload or drag and drop
+                                                    </p>
+                                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                                        PNG, JPG, WEBP up to 2MB
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {errors.image && (
+                                        <p className="mt-1.5 text-sm font-medium text-red-500">{errors.image}</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-end gap-3">
+                            <Link
+                                href="/admin/assets/ranks"
+                                className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 transition-all hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800"
+                            >
+                                Cancel
+                            </Link>
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-500 focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50"
+                            >
+                                <Save size={18} />
+                                {processing ? 'Saving...' : 'Save Rank'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-
-                        // ✅ FIX
-                        post("/admin/assets/ranks", {
-                            forceFormData: true,
-                        });
-                    }}
-                    className="space-y-5"
-                >
-
-                    <input
-                        type="text"
-                        placeholder="Rank Name"
-                        value={data.name}
-                        onChange={(e) => setData("name", e.target.value)}
-                        className="w-full p-3 bg-[#070c20] border border-blue-800 rounded-lg"
-                    />
-
-                    {errors.name && (
-                        <p className="text-red-400 text-sm">{errors.name}</p>
-                    )}
-
-                    <input
-                        type="file"
-                        onChange={(e) =>
-                            handleImage(e.target.files?.[0] || null)
-                        }
-                    />
-
-                    {errors.image && (
-                        <p className="text-red-400 text-sm">{errors.image}</p>
-                    )}
-
-                    {preview && (
-                        <img
-                            src={preview}
-                            className="w-24 h-24 object-contain mx-auto"
-                        />
-                    )}
-
-                    <button
-                        disabled={processing}
-                        className="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg"
-                    >
-                        {processing ? "Saving..." : "Save Rank"}
-                    </button>
-
-                </form>
             </div>
-        </div>
+        </AppLayout>
     );
 }

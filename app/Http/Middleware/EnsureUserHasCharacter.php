@@ -22,8 +22,8 @@ class EnsureUserHasCharacter
             return $next($request);
         }
 
-        // 3. Sudah punya character → lanjut
-        if ($user->hasCharacter()) {
+        // 3. Sudah punya character & datanya ada di database → lanjut
+        if ($user->hasCharacter() && $user->character) {
             return $next($request);
         }
 

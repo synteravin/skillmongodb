@@ -32,7 +32,7 @@ class LevelBadgeController extends Controller
 
         if ($request->hasFile('icon')) {
             $data['icon'] = $request->file('icon')
-                ->store('badges', 'public');
+                ->store('badges', 's3');
         }
 
         LevelBadge::create($data);
@@ -65,11 +65,11 @@ class LevelBadgeController extends Controller
 
             // 🔥 HAPUS FILE LAMA
             if ($badge->icon) {
-                Storage::disk('public')->delete($badge->icon);
+                Storage::disk('s3')->delete($badge->icon);
             }
 
             $data['icon'] = $request->file('icon')
-                ->store('badges', 'public');
+                ->store('badges', 's3');
         }
 
         $badge->update($data);
@@ -85,7 +85,7 @@ class LevelBadgeController extends Controller
 
         // 🔥 HAPUS FILE
         if ($badge->icon) {
-            Storage::disk('public')->delete($badge->icon);
+            Storage::disk('s3')->delete($badge->icon);
         }
 
         $badge->delete();

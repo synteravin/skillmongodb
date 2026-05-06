@@ -12,9 +12,9 @@ class DashboardController extends Controller
     {
         $user = $request->user()->load(['character', 'userStats']);
 
-        // 🚫 Kalau belum punya character
-        if (! $user->hasCharacter()) {
-            return redirect()->route('student.SelectCharacter');
+        // 🚫 Kalau belum punya character atau data character terhapus
+        if (! $user->hasCharacter() || ! $user->character) {
+            return redirect()->route('character.select');
         }
 
         $totalExp = 0;
@@ -76,7 +76,7 @@ class DashboardController extends Controller
                 // 🔥 CHARACTER
                 'character' => [
                     'name' => $user->character->name,
-                    'avatar' => asset($user->character->avatar),
+                    'avatar' => $user->character->avatar_url,
                     'backstory' => $user->character->backstory,
                 ],
 

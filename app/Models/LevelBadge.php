@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use MongoDB\Laravel\Eloquent\Model;
 
 class LevelBadge extends Model
@@ -13,4 +14,11 @@ class LevelBadge extends Model
         'icon',
         'order',
     ];
+
+    protected $appends = ['icon_url'];
+
+    public function getIconUrlAttribute()
+    {
+        return $this->icon ? Storage::disk('s3')->url($this->icon) : null;
+    }
 }
