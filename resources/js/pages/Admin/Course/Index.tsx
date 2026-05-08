@@ -61,7 +61,7 @@ export default function Index({ courses }: { courses: Course[] }) {
             description: course.description || "",
             thumbnail: null
         })
-        const initialPreview = course.thumbnail_url 
+        const initialPreview = course.thumbnail_url
             || (course.thumbnail?.startsWith('http') ? course.thumbnail : (course.thumbnail ? `/storage/${course.thumbnail}` : null))
         setPreview(initialPreview)
         setEditingCourse(course)
@@ -77,7 +77,7 @@ export default function Index({ courses }: { courses: Course[] }) {
     function submit(e: React.FormEvent) {
         e.preventDefault()
         const url = openModal === "edit" && editingCourse ? `/admin/courses/${editingCourse.slug}` : "/admin/courses"
-        
+
         post(url, {
             forceFormData: true,
             onSuccess: () => closeModal()
@@ -91,7 +91,7 @@ export default function Index({ courses }: { courses: Course[] }) {
 
     return (
         <AppLayout>
-            <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6 sm:space-y-8">
+            <div className="min-h-screen p-4 sm:p-6 lg:p-8 w-full mx-auto space-y-6 sm:space-y-8">
 
                 {/* HEADER */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-6 rounded-2xl shadow-lg">
@@ -189,14 +189,14 @@ export default function Index({ courses }: { courses: Course[] }) {
                 )}
 
                 {/* MODAL */}
-                <Modal 
-                    open={openModal !== null} 
-                    title={openModal === "edit" ? "Edit Course" : "Create Course"} 
+                <Modal
+                    open={openModal !== null}
+                    title={openModal === "edit" ? "Edit Course" : "Create Course"}
                     onClose={closeModal}
                     maxWidth="max-w-4xl"
                 >
                     <form onSubmit={submit} className="flex flex-col md:flex-row gap-6 lg:gap-8 pt-2">
-                        
+
                         {/* LEFT COLUMN: Thumbnail Upload */}
                         <div className="w-full md:w-2/5 flex flex-col space-y-4">
                             <div className="flex items-center justify-between">
@@ -205,7 +205,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     Course Cover
                                 </label>
                                 {preview && (
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => {
                                             setPreview(null)
@@ -218,15 +218,14 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     </button>
                                 )}
                             </div>
-                            
-                            <div 
-                                className={`relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden group cursor-pointer flex flex-col items-center justify-center ${
-                                    isDragging 
-                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 scale-[1.02]' 
-                                        : preview 
-                                            ? 'border-transparent bg-slate-100 dark:bg-slate-900 shadow-inner' 
+
+                            <div
+                                className={`relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden group cursor-pointer flex flex-col items-center justify-center ${isDragging
+                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 scale-[1.02]'
+                                        : preview
+                                            ? 'border-transparent bg-slate-100 dark:bg-slate-900 shadow-inner'
                                             : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500/50 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800'
-                                }`}
+                                    }`}
                                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
                                 onDragLeave={() => setIsDragging(false)}
                                 onDrop={handleDrop}
@@ -274,7 +273,7 @@ export default function Index({ courses }: { courses: Course[] }) {
 
                         {/* RIGHT COLUMN: Form Inputs */}
                         <div className="w-full md:w-3/5 flex flex-col space-y-5 justify-between">
-                            
+
                             <div className="space-y-5">
                                 {/* Title Input */}
                                 <div className="space-y-2">

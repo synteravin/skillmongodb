@@ -55,19 +55,20 @@ class LeaderboardController extends Controller
 
             $rank = $ranks[$rankIndex] ?? $ranks->last();
 
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+
             return [
                 'name' => $user->name,
 
                 'avatar' => $user->avatar
-                    ? asset('storage/'.$user->avatar)
+                    ? (str_starts_with($user->avatar, 'http') ? $user->avatar : $disk->url($user->avatar))
                     : asset('images/aizen.jpeg'),
                 'total_score' => $totalScore,
 
                 'rank' => [
                     'name' => $rank->name ?? 'Unknown',
-                    'image' => isset($rank->image)
-                        ? asset('storage/'.$rank->image)
-                        : null,
+                    'image' => $rank->image_url ?? null,
                     'star' => $star,
                 ],
             ];

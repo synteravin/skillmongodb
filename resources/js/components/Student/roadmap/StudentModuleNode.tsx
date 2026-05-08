@@ -85,7 +85,7 @@ export default function StudentModuleNode({
                     >
                         {hasValidIcon ? (
                             <img
-                                src={`/storage/${badge?.icon}`}
+                                src={badge?.icon || undefined}
                                 className="w-full h-full object-cover bg-black"
                                 alt="badge"
                             />

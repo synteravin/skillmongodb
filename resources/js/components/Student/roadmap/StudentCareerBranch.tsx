@@ -128,7 +128,7 @@ export default function StudentCareerBranch({
                             <div className={`relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 ${isCompleted ? 'border-emerald-500 shadow-[0_0_20px_rgba(52,211,153,0.4)]' : 'border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)]'} bg-[#0b1333]`}>
                                 {group.thumbnail ? (
                                     <img
-                                        src={`/storage/${group.thumbnail}`}
+                                        src={group.thumbnail}
                                         className="h-full w-full object-cover"
                                         alt={group.name}
                                     />
@@ -198,11 +198,7 @@ export default function StudentCareerBranch({
                                 group.mentor.avatar &&
                                 group.mentor.avatar !== 'null' ? (
                                 <img
-                                    src={
-                                        group.mentor.avatar.startsWith('http')
-                                            ? group.mentor.avatar
-                                            : `/storage/${group.mentor.avatar}`
-                                    }
+                                    src={group.mentor.avatar}
                                     className="h-10 w-10 flex-shrink-0 rounded-full border border-gray-400 object-cover"
                                     alt="mentor"
                                 />

@@ -27,7 +27,7 @@ class LearnController extends Controller
         /* ================= GET PROGRESS ================= */
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
-            'course_id' => $courseId,
+            'course_id' => $data['course']->_id,
         ], [
             'completed_modules' => [],
             'completed_paths' => [],
@@ -36,40 +36,43 @@ class LearnController extends Controller
         ]);
 
         /* ================= CHECK BASIC DONE ================= */
-        $basicPaths = Path::where('course_id', $courseId)
+        $basicPaths = Path::where('course_id', $data['course']->_id)
             ->where('phase', 'basic_fundamental')
+            ->get()
             ->pluck('_id')
-            ->map(fn ($id) => (string) $id);
+            ->map(fn($id) => (string) $id);
 
         $completedPaths = collect($progress->completed_paths ?? []);
 
         $allBasicCompleted = $basicPaths
-            ->every(fn ($id) => $completedPaths->contains($id));
+            ->every(fn($id) => $completedPaths->contains($id));
 
         /* ================= CAREER LOGIC ================= */
 
         if ($path->phase === 'career_branch') {
 
             /* ❌ BLOCK JIKA BASIC BELUM SELESAI */
-            if (! $allBasicCompleted) {
+            if (!$allBasicCompleted) {
                 abort(403, 'Selesaikan basic fundamental terlebih dahulu');
             }
 
             $pathIdString = (string) $path->_id;
 
             /* 🔥 AUTO SELECT (FIRST CLICK) */
-            if (! $progress->selected_path_id) {
+            if (!$progress->selected_path_id) {
                 $progress->update([
                     'selected_path_id' => $pathIdString,
                 ]);
             }
 
-            /* 🔒 BLOCK JIKA AKSES PATH LAIN */
-            if (
-                $progress->selected_path_id &&
-                $progress->selected_path_id !== $pathIdString
-            ) {
-                abort(403, 'Kamu sudah memilih jalur career lain');
+            /* 🔒 BLOCK JIKA AKSES PATH DARI CAREER GROUP LAIN */
+            if ($progress->selected_path_id && $progress->selected_path_id !== $pathIdString) {
+                $selectedPath = Path::find($progress->selected_path_id);
+                
+                // Block jika path yang direquest beda career_group_id dengan path yang sudah dipilih
+                if ($selectedPath && $selectedPath->career_group_id !== $path->career_group_id) {
+                    abort(403, 'Kamu sudah memilih jalur career lain');
+                }
             }
         }
 
@@ -93,7 +96,7 @@ class LearnController extends Controller
                     'id' => (string) $data['path']->quiz->_id,
                 ] : null,
 
-                'modules' => $data['modules']->map(fn ($m) => [
+                'modules' => $data['modules']->map(fn($m) => [
                     '_id' => (string) $m->_id,
                     'title' => $m->title,
                     'order' => $m->order,
@@ -105,7 +108,7 @@ class LearnController extends Controller
                 '_id' => (string) $data['module']->_id,
                 'title' => $data['module']->title,
 
-                'contents' => $data['module']->contents->map(fn ($c) => [
+                'contents' => $data['module']->contents->map(fn($c) => [
                     '_id' => (string) $c->_id,
                     'type' => $c->type,
                     'content' => $c->content,

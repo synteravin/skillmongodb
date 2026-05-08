@@ -133,7 +133,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     {/* IMAGE */}
                                     <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-200 dark:bg-slate-900 border-b border-[#1e2759]/50">
                                         <img
-                                            src={`/storage/${course.thumbnail}`}
+                                            src={course.thumbnail}
                                             alt={course.title}
                                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
                                             onError={(e) => {
@@ -262,11 +262,11 @@ export default function Index({ courses }: { courses: Course[] }) {
                     <div className="relative w-full h-[180px] md:h-[200px] lg:h-[220px] overflow-hidden">
                         {/* BACKGROUND (ISI AREA) */}
                         <img
-                            src={`/storage/${selectedCourse.thumbnail}`}
+                            src={selectedCourse.thumbnail}
                             className="absolute inset-0 w-full h-full object-cover blur-xs scale-110 opacity-40"/>
                         {/* MAIN IMAGE (TIDAK TERPOTONG) */}
                         <img
-                            src={`/storage/${selectedCourse.thumbnail}`}
+                            src={selectedCourse.thumbnail}
                             alt={selectedCourse.title}
                             className="relative z-10 w-full h-full object-contain object-center"
                             onError={(e) => {

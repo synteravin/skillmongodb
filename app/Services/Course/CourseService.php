@@ -31,7 +31,7 @@ class CourseService
                 '_id' => (string) $course->_id,
                 'title' => $course->title,
                 'description' => $course->description,
-                'thumbnail' => $course->thumbnail,
+                'thumbnail' => $course->thumbnail_url,
                 'slug' => $course->slug,
                 'status' => $status,
             ];

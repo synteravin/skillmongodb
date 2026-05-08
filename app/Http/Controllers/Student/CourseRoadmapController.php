@@ -77,7 +77,7 @@ class CourseRoadmapController extends Controller
                     '_id' => (string) $m->_id,
                     'title' => $m->title,
                     'badge' => $m->badge ? [
-                        'icon' => $m->badge->icon,
+                        'icon' => $m->badge->icon_url,
                     ] : null,
                 ]),
             ];
@@ -101,14 +101,29 @@ class CourseRoadmapController extends Controller
                 $groupId = (string) $group->_id;
                 $isGroupCompleted = in_array($groupId, $progress->completed_career_groups ?? []);
 
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+
+                $groupThumbnail = $group->thumbnail 
+                    ? (str_starts_with($group->thumbnail, 'http') ? $group->thumbnail : $disk->url($group->thumbnail)) 
+                    : null;
+
+                $mentorAvatar = null;
+                if ($group->mentor && $group->mentor->avatar) {
+                    $mentorAvatar = str_starts_with($group->mentor->avatar, 'http') 
+                        ? $group->mentor->avatar 
+                        : $disk->url($group->mentor->avatar);
+                }
+
                 return [
                     '_id' => $groupId,
                     'name' => $group->name,
                     'is_completed' => $isGroupCompleted,
+                    'thumbnail' => $groupThumbnail,
                     'mentor' => $group->mentor ? [
                         '_id' => (string) $group->mentor->_id,
                         'name' => $group->mentor->name,
-                        'avatar' => $group->mentor->avatar,
+                        'avatar' => $mentorAvatar,
                     ] : null,
 
                     'paths' => $group->paths
@@ -155,7 +170,7 @@ class CourseRoadmapController extends Controller
                                     '_id' => (string) $m->_id,
                                     'title' => $m->title,
                                     'badge' => $m->badge ? [
-                                        'icon' => $m->badge->icon,
+                                        'icon' => $m->badge->icon_url,
                                     ] : null,
                                 ]),
                             ];
@@ -177,7 +192,7 @@ class CourseRoadmapController extends Controller
 
             'badges' => LevelBadge::orderBy('order')->get()->map(fn ($b) => [
                 'order' => (int) $b->order,
-                'icon' => $b->icon,
+                'icon' => $b->icon_url,
             ]),
 
             'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [

@@ -122,7 +122,7 @@ class ProfileController extends Controller
 
         $rankData = [
             'name' => $tier->name,
-            'image' => asset('storage/'.$tier->image),
+            'image' => $tier->image_url,
             'star' => $star,
         ];
         // ========================
@@ -155,6 +155,14 @@ class ProfileController extends Controller
         //         ],
         //     ]
         // ]);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+        
+        $userAvatar = null;
+        if ($user->avatar) {
+            $userAvatar = str_starts_with($user->avatar, 'http') ? $user->avatar : $disk->url($user->avatar);
+        }
+
         // 🔥 RESPONSE
         return Inertia::render('Student/Profile', [
             'user' => [
@@ -168,9 +176,7 @@ class ProfileController extends Controller
                 'avg_score' => $avgScore,
                 'courses' => $user->courseStudents->count(),
 
-                'avatar' => $user->avatar
-                    ? asset('storage/'.$user->avatar)
-                    : null,
+                'avatar' => $userAvatar,
 
                 'rank' => $rankData,
 

@@ -48,7 +48,7 @@ class LearnService
         $progress = UserStat::firstOrCreate(
             [
                 'user_id' => $user->_id,
-                'course_id' => $courseId,
+                'course_id' => $course->_id,
             ],
             [
                 'completed_modules' => [],
