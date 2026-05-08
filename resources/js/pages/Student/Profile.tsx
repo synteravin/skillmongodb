@@ -1,5 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import { ArrowLeft, Power, Camera, UserCog, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Power, Camera, UserCog, ArrowRightLeft } from 'lucide-react';
 import { useState } from 'react';
 
 type Props = {
@@ -54,197 +54,211 @@ export default function ProfilePage({ user }: Props) {
     // ⚠️ pastikan ini dari backend
     const starProgress = ((user.total_score % 500) / 500) * 100;
 
-    return (
-        <div className="relative flex h-screen w-screen flex-col overflow-hidden bg-[#050508] text-white font-['Oxanium']">
-            {/* ── BACKGROUND GLOW ── */}
-            <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-                <div className="h-[300px] w-[600px] bg-blue-600 opacity-[0.03] blur-[150px]" />
-            </div>
 
-            {/* ── TOP BAR ── */}
-            <div className="relative z-10 flex flex-shrink-0 items-center justify-between px-4 sm:px-6 md:px-8 pt-4 pb-2 xl:pt-6 xl:pb-4">
-                {/* BACK */}
-                <Link
-                    href="/student/dashboard"
-                    className="group flex items-center gap-3 text-blue-700 hover:text-blue-500 transition-colors"
+return (
+    <div className="w-screen h-screen bg-[#0c0c14] text-white overflow-hidden flex flex-col">
+
+        {/* BG GLOW */}
+        <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center">
+            <div className="w-[700px] h-[400px] rounded-full bg-blue-600 opacity-10 blur-[160px]" />
+        </div>
+
+        {/* ── HEADER ── */}
+        <header className="relative z-10 flex-shrink-0 border-b border-[#1a1f3a] bg-[#08080f] px-4 md:px-8 py-2">
+            <span className="font-['Orbitron'] text-[10px] tracking-[4px] text-gray-500">PROFILL</span>
+        </header>
+
+        {/* ── TOOLBAR ── */}
+        <div className="relative z-10 flex-shrink-0 flex items-center justify-between px-4 md:px-8 pt-3 pb-2">
+
+            {/* BACK */}
+            <Link href="/student/dashboard">
+                <div
+                    className="flex items-center gap-2 px-4 py-1.5 border border-[#3B28F6] text-blue-400 text-[11px] font-['Orbitron'] tracking-widest hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_10px_rgba(0,212,255,0.35)] transition-all"
+                    style={{ clipPath: 'polygon(8px 0%,100% 0%,100% 100%,0% 100%,0% 8px)' }}
                 >
-                    <div className="flex h-6 w-6 xl:h-8 xl:w-8 items-center justify-center border border-blue-900/50 transition-all duration-300">
-                        <ArrowLeft size={16} />
-                    </div>
-                    <span className="text-xs xl:text-sm font-bold tracking-widest">
-                        BACK
-                    </span>
-                </Link>
+                    <ArrowLeft size={13} strokeWidth={2.5} />
+                    BACK
+                </div>
+            </Link>
 
-                <Link
-                    href="/student/profile/switch"
-                    className="flex h-6 w-6 xl:h-8 xl:w-8 items-center justify-center text-blue-700 hover:text-blue-500 transition-all duration-300"
-                    title="Switch Account"
-                >
-                    <RefreshCw size={18} className="xl:h-[22px] xl:w-[22px]" strokeWidth={2.5} />
-                </Link>
-            </div>
+            {/* SWITCH — pojok kanan */}
+            <Link
+                href="/student/profile/switch"
+                className="flex items-center justify-center w-9 h-9 border border-[#3B28F6] text-[#3B28F6] hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_12px_rgba(0,212,255,0.4)] transition-all"
+                title="Switch Account"
+            >
+                <ArrowRightLeft size={16} strokeWidth={2} />
+            </Link>
+        </div>
 
-            {/* ── MAIN CONTENT ── */}
-            <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 xl:gap-5 px-4 sm:px-6 md:px-8 pb-3 xl:pb-6 md:flex-row">
-                {/* ══════════ LEFT PANEL ══════════ */}
-                <div className="flex min-h-0 w-full flex-shrink-0 flex-col justify-between md:w-[260px] lg:w-[280px] xl:w-[320px]">
-                    {/* PROFILE CARD */}
-                    <div className="relative flex flex-col items-center border border-[#1a1c33] bg-[#020205] p-4 lg:p-5 xl:p-6 shadow-2xl">
-                        {/* Top-right corner accent */}
-                        <div className="absolute top-0 right-0 h-2 w-2 xl:h-3 xl:w-3 border-t-2 border-r-2 border-yellow-500" />
+        <main className="relative z-10 flex-1 flex flex-col md:flex-row gap-3 md:gap-4 px-4 md:px-8 pb-4 min-h-0 overflow-hidden">
 
-                        {/* HEX AVATAR */}
-                        <div className="relative mb-3 xl:mb-5 h-[80px] w-[80px] xl:h-[120px] xl:w-[120px]">
-                            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-xl">
-                                <defs>
-                                    <clipPath id="avatarHexClip">
-                                        <polygon points="50,2 95,25 95,75 50,98 5,75 5,25" />
-                                    </clipPath>
-                                </defs>
-                                <image
-                                    href={user.avatar ?? '/images/aizen.jpeg'}
-                                    x="0"
-                                    y="0"
-                                    width="100"
-                                    height="100"
-                                    preserveAspectRatio="xMidYMid slice"
-                                    clipPath="url(#avatarHexClip)"
-                                />
-                                <polygon
-                                    points="50,2 95,25 95,75 50,98 5,75 5,25"
-                                    fill="none"
-                                    stroke="#fff"
-                                    strokeWidth="1.5"
-                                />
-                            </svg>
-                            {/* Camera Icon Overlay */}
-                            <div className="absolute bottom-1 right-1 flex h-4 w-4 xl:h-5 xl:w-5 items-center justify-center rounded bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)] cursor-pointer hover:bg-yellow-400 transition-colors">
-                                <Camera size={10} className="xl:h-[12px] xl:w-[12px]" strokeWidth={3} />
-                            </div>
-                        </div>
+            {/* ══════════ LEFT PANEL WRAPPER ══════════ */}
+            <div className="w-full md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px] flex-shrink-0 flex flex-col gap-3">
+                {/* PROFILE CARD */}
+                <div className="h-[320px] border-2 border-[#3B28F6] bg-[#050619] p-4 md:p-5 flex flex-col items-center text-center">
 
-                        {/* username */}
-                        <h2 className="font-['Orbitron'] text-base xl:text-lg font-bold tracking-wider text-white leading-none">{user.name}</h2>
-                        <p className="mt-1 xl:mt-1.5 text-[10px] xl:text-xs text-[#1e2a6e] font-bold leading-none">
-                            Level <span className="text-blue-600">{user.level}</span>
-                        </p>
-
-                        {/* LINE SEPARATOR */}
-                        <div className="mt-3 mb-2 xl:mt-5 xl:mb-4 h-px w-full bg-[#1a1c33]" />
-
-                        {/* STATS */}
-                        <div className="flex w-full items-center justify-center gap-2 xl:gap-4 text-center">
-                            <div className="flex flex-col items-center">
-                                <p className="font-bold text-yellow-500 text-[10px] xl:text-xs leading-none">{user.courses}</p>
-                                <p className="text-[8px] xl:text-[9px] text-gray-500 tracking-wider mt-1">COURSES</p>
-                            </div>
-                            <div className="h-5 xl:h-7 w-px bg-[#1a1c33]" />
-                            <div className="flex flex-col items-center">
-                                <p className="font-bold text-blue-600 text-[10px] xl:text-xs leading-none">{user.avg_score}%</p>
-                                <p className="text-[8px] xl:text-[9px] text-gray-500 tracking-wider mt-1">AVG SCORE</p>
-                            </div>
-                            <div className="h-5 xl:h-7 w-px bg-[#1a1c33]" />
-                            <div className="flex flex-col items-center">
-                                <p className="font-bold text-white text-[10px] xl:text-xs leading-none">420</p>
-                                <p className="text-[8px] xl:text-[9px] text-gray-500 tracking-wider mt-1">HOURS</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* SYSTEM LOG OUT BUTTON */}
-                    <button
-                        onClick={() => router.post('/logout')}
-                        className="mt-3 xl:mt-4 flex w-full items-center justify-center gap-1.5 xl:gap-2 border border-red-900/30 bg-transparent py-2 xl:py-3 font-['Orbitron'] text-[9px] xl:text-[10px] font-bold text-red-600 transition hover:bg-red-950/20 hover:border-red-900/60"
+                    {/* AVATAR */}
+                    <div
+                        className="relative mb-3 cursor-pointer flex-shrink-0"
+                        style={{ width: '130px', height: '148px' }}
+                        onClick={() => setShowImage(true)}
                     >
-                        <Power size={14} className="xl:h-[16px] xl:w-[16px]" strokeWidth={2.5} />
-                        SYSTEM LOG OUTNIH
-                    </button>
+                        <div
+                            className="w-full h-full overflow-hidden"
+                            style={{ clipPath: "polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%)" }}
+                        >
+                            <img
+                                src={user.avatar ?? "/images/iam.jpeg"}
+                                className="w-full h-full object-cover"
+                                alt="avatar"
+                            />
+                        </div>
+                        <button className="absolute bottom-2 right-2 bg-[#FACC15] w-7 h-7 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition z-10">
+                            <Camera size={13} strokeWidth={3} className="text-black" />
+                        </button>
+                    </div>
+
+                    {/* NAME */}
+                    <h2 className="text-base font-extrabold font-['Orbitron'] tracking-wide break-words leading-tight mb-1">
+                        {user.name}
+                    </h2>
+
+                    {/* LEVEL */}
+                    <p className="text-[#3B28F6] font-extrabold text-sm mb-3">
+                        Level {user.level}
+                    </p>
+
+                    {/* STATS */}
+                    <div className="w-full border-t border-gray-700 pt-3 flex items-center text-sm">
+                        <div className="flex-1 text-center">
+                            <p className="text-yellow-400 font-bold">{user.courses}</p>
+                            <p className="text-gray-400 text-[10px] mt-0.5 tracking-widest">COURSES</p>
+                        </div>
+                        <div className="w-px h-8 bg-gray-700" />
+                        <div className="flex-1 text-center">
+                            <p className={`font-bold ${user.avg_score >= 90 ? "text-green-400" : user.avg_score >= 75 ? "text-[#3B28F6]" : "text-red-500"}`}>
+                                {user.avg_score}%
+                            </p>
+                            <p className="text-gray-400 text-[10px] mt-0.5 tracking-widest">AVG SCORE</p>
+                        </div>
+                        <div className="w-px h-8 bg-gray-700" />
+                        <div className="flex-1 text-center">
+                            <p className="text-white font-bold">420</p>
+                            <p className="text-gray-400 text-[10px] mt-0.5 tracking-widest">HOURS</p>
+                        </div>
+                    </div>
                 </div>
 
-                {/* ══════════ RIGHT PANEL ══════════ */}
-                <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 xl:gap-5">
-                    {/* MASTERY LEVEL */}
-                    <div className="flex-shrink-0 border border-[#1a1c33] bg-[#020205] p-2.5 sm:p-3 xl:p-4 shadow-xl">
-                        <div className="flex flex-col sm:flex-row items-center gap-3 xl:gap-5 text-center sm:text-left">
-                            {/* LEVEL CIRCLE */}
-                            <div className="relative flex h-[40px] w-[40px] xl:h-[50px] xl:w-[50px] flex-shrink-0 items-center justify-center rounded-full border-[3px] border-blue-600 font-['Orbitron'] text-base xl:text-lg font-bold text-white shadow-[0_0_15px_rgba(37,99,235,0.3)] mx-auto sm:mx-0">
-                                <span className="absolute -inset-1 rounded-full border border-[#1a1c33]" />
-                                {user.level}
+                {/* LOGOUT — di luar profile card, otomatis di bawah */}
+                <button
+                    onClick={() => router.post('/logout')}
+                    className="mt-auto w-full border-2 border-[#3B28F6] bg-[#050619] py-2.5 text-red-500 hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.3)] transition font-bold font-['Orbitron'] text-sm flex items-center justify-center gap-2"
+                >
+                    <Power size={16} strokeWidth={3} />
+                    SYSTEM LOG OUT
+                </button>
+            </div>
+
+            {/* ══════════ RIGHT PANEL ══════════ */}
+            <div className="flex-1 flex flex-col gap-3 min-h-0 min-w-0">
+                <div
+                    className="flex-shrink-0 border-2 border-[#3B28F6] bg-[#090915] p-4"
+                    style={{ boxShadow: '0 0 20px rgba(59,40,246,0.12)' }}
+                >
+                    <div className="flex items-center gap-4">
+
+                        {/* CIRCLE */}
+                        <div
+                            className="w-[58px] h-[58px] flex-shrink-0 rounded-full border-[4px] border-[#3B28F6] flex items-center justify-center font-['Orbitron'] text-2xl font-black"
+                            style={{ boxShadow: '0 0 18px rgba(59,40,246,0.5), inset 0 0 12px rgba(59,40,246,0.12)' }}
+                        >
+                            {user.level}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-baseline justify-between">
+                                <p className="font-['Orbitron'] text-lg xl:text-xl font-bold tracking-widest text-gray-100 leading-none">
+                                    MASTERY LEVEL
+                                </p>
+                                <span className="font-['Orbitron'] text-xs text-yellow-400 flex-shrink-0 ml-2">
+                                    {user.exp}<span className="text-gray-500">/{user.exp_max}</span>
+                                </span>
                             </div>
 
-                            <div className="min-w-0 flex-1 w-full">
-                                <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-1 gap-1 sm:gap-0">
-                                    <p className="font-['Oxanium'] text-sm xl:text-base font-bold tracking-widest text-white leading-none">
-                                        MASTERY LEVEL
-                                    </p>
-                                    <div className="font-['Orbitron'] text-right sm:text-left leading-none">
-                                        <span className="text-[10px] xl:text-[11px] font-bold text-yellow-500">
-                                            {user.exp}
-                                        </span>
-                                        <span className="ml-1 text-[8px] xl:text-[9px] text-gray-500">
-                                            /{user.exp_max}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="h-1.5 w-full bg-[#1a1f3a] rounded-sm overflow-hidden mt-0.5 xl:mt-1">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-[#4B30A5] to-yellow-500 transition-all duration-500"
-                                        style={{ width: `${Math.min(progress, 100)}%` }}
-                                    />
-                                </div>
-                                <div className="mt-1 flex items-center justify-end gap-1 text-[7px] xl:text-[8px] font-bold tracking-widest text-green-500 uppercase leading-none">
-                                    <span className="h-1 w-1 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
-                                    ONLINE
-                                </div>
+                            {/* EXP BAR */}
+                            <div className="w-full h-2.5 bg-[#0f1235] overflow-hidden mt-2">
+                                <div
+                                    className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-yellow-400 transition-all duration-700"
+                                    style={{ width: `${Math.min(progress, 100)}%` }}
+                                />
+                            </div>
+
+                            {/* ONLINE */}
+                            <div className="flex justify-end items-center gap-1 mt-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_4px_#4ade80]" />
+                                <span className="font-['Orbitron'] text-[9px] text-green-400 tracking-widest">ONLINE</span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    {/* OPERATOR DATA */}
-                    <div className="relative flex min-h-0 flex-1 flex-col justify-between overflow-hidden border border-[#1a1c33] bg-[#020205] p-3 sm:p-4 xl:p-6 shadow-xl">
+                {/* OPERATOR DATA */}
+                <div
+                    className="relative flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden border-2 border-[#3B28F6] bg-[#090915] p-4 md:p-5 lg:p-5 xl:p-6"
+                    style={{ boxShadow: '0 0 20px rgba(59,40,246,0.12)' }}
+                >
+                    {/* top glow line */}
+                    <div
+                        className="absolute top-0 left-0 right-0 h-px"
+                        style={{
+                            background:
+                                'linear-gradient(90deg,transparent,#3B28F6,#00e5ff,#3B28F6,transparent)',
+                        }}
+                    />
 
-                        {/* TITLE */}
-                        <h3 className="flex flex-shrink-0 items-center gap-1.5 xl:gap-2 font-['Orbitron'] text-xs xl:text-sm font-bold tracking-widest text-blue-700 leading-none">
-                            <UserCog size={16} className="xl:h-5 xl:w-5" strokeWidth={2} />
-                            OPERATOR DATA
-                        </h3>
+                    {/* TITLE */}
+                    <h3 className="flex-shrink-0 font-['Orbitron'] text-[#00d4ff] text-sm md:text-base xl:text-lg font-bold tracking-[3px] mb-3 md:mb-4 flex items-center gap-2">
+                        <UserCog size={20} strokeWidth={2} />
+                        OPERATOR DATA
+                    </h3>
 
+                    {/* CONTENT BODY - Flex col to fit one screen on md+ */}
+                    <div className="flex-1 overflow-y-auto md:overflow-hidden pr-1 md:pr-0 flex flex-col justify-between gap-3 xl:gap-4">
+                        
                         {/* RANK CARD */}
-                        <div className="flex flex-col sm:flex-row flex-shrink-0 items-center sm:items-start gap-2.5 xl:gap-4 rounded-lg border border-[#1a1c33] bg-[#020205] p-2.5 xl:p-3 relative overflow-hidden">
-                            {/* Blue glow accent */}
-                            <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-blue-600/50 to-transparent" />
-                            <div className="absolute top-0 right-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-blue-600/20 to-transparent" />
-                            <div className="absolute bottom-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-blue-600/50 to-transparent" />
-                            <div className="absolute top-0 left-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-blue-600/20 to-transparent" />
+                        <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-3 rounded-lg border border-[#3B28F6]/60 bg-[#3B28F6]/5 p-2.5 md:p-3 xl:p-4 overflow-hidden">
+                            <div className="w-[48px] h-[48px] xl:w-[52px] xl:h-[52px] flex-shrink-0">
+                                <svg viewBox="0 0 80 80" className="w-full h-full">
 
-                            {/* RANK IMAGE */}
-                            <div className="relative h-[40px] w-[40px] xl:h-[50px] xl:w-[50px] flex-shrink-0">
-                                <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full drop-shadow-[0_0_10px_rgba(250,204,21,0.3)]">
                                     <defs>
                                         <clipPath id="rankHexClip">
-                                            <polygon points="50,2 95,25 95,75 50,98 5,75 5,25" />
+                                            <polygon points="40,4 74,22 74,58 40,76 6,58 6,22" />
                                         </clipPath>
                                     </defs>
+
                                     <image
                                         href={user.rank?.image ?? '/images/romawi.png'}
-                                        x="15"
-                                        y="15"
-                                        width="70"
-                                        height="70"
+                                        x="0"
+                                        y="10"
+                                        width="80"
+                                        height="80"
                                         preserveAspectRatio="xMidYMid slice"
                                         clipPath="url(#rankHexClip)"
                                     />
+
                                     <polygon
-                                        points="50,2 95,25 95,75 50,98 5,75 5,25"
+                                        points="40,4 74,22 74,58 40,76 6,58 6,22"
                                         fill="none"
-                                        stroke="#eab308"
+                                        stroke="#FACC15"
                                         strokeWidth="1.5"
                                     />
                                 </svg>
                             </div>
 
                             {/* RANK INFO */}
+
                             <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 xl:gap-1.5 w-full text-center sm:text-left">
                                 <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-1 sm:gap-0">
                                     <div className="flex flex-col items-center sm:items-start">
@@ -255,177 +269,166 @@ export default function ProfilePage({ user }: Props) {
                                             {user.rank?.name ?? 'NEXUS II'}
                                         </p>
                                         {/* ⭐ STAR */}
-                                        <div className="mt-0.5 flex gap-0.5 xl:gap-1">
-                                            {Array.from({
-                                                length: user.rank?.star ?? 1,
-                                            }).map((_, i) => (
-                                                <img
-                                                    key={i}
-                                                    src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
-                                                    className="h-2 w-2 xl:h-2.5 xl:w-2.5 animate-pulse opacity-80"
-                                                    alt="star"
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
+                                            <div className="mt-0.5 flex gap-0.5 xl:gap-1">
+                                                {Array.from({
+                                                    length: user.rank?.star ?? 1,
+                                                }).map((_, i) => (
+                                                    <img
+                                                        key={i}
+                                                        src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                                                        className="h-3 w-3 xl:h-2.5 xl:w-2.5 opacity-80 animate-pulse"
+                                                        alt="star"
+                                                    />
+                                                ))}
+                                            </div>
+                                 </div>
 
-                                    <div className="flex flex-col items-center sm:items-end w-full sm:w-auto border-t sm:border-0 border-[#1a1c33] pt-1 sm:pt-0 mt-1 sm:mt-0 leading-none">
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="font-['Orbitron'] text-[9px] xl:text-[10px] font-bold text-yellow-500">
-                                                {Math.floor(user.total_score % 500)}
-                                            </span>
-                                            <span className="font-['Orbitron'] text-[8px] xl:text-[9px] text-gray-500">
-                                                /500
-                                            </span>
+
+                                    <div className="text-right">
+                                        <div className="font-['Orbitron'] text-[10px] text-yellow-400">
+                                            {Math.floor(user.total_score % 500)}
+                                            <span className="text-gray-600">/500</span>
                                         </div>
-                                        <span className="text-[7px] xl:text-[8px] text-gray-500 font-bold mt-0.5">
+
+                                        <p className="text-[9px] text-gray-500 mt-1">
                                             {Math.floor(starProgress)}%
-                                        </span>
+                                        </p>
                                     </div>
                                 </div>
-                                {/* PROGRESS BAR */}
-                                <div className="h-[3px] xl:h-[4px] w-full bg-[#1a1f3a] rounded-full overflow-hidden mt-0.5">
+
+
+                                {/* PROGRESS */}
+                                <div className="w-full h-1.5 bg-[#0f1235] border border-[#1a1f3a] rounded-sm overflow-hidden mt-2">
+
                                     <div
-                                        className="h-full transition-all duration-700 rounded-full"
+                                        className="h-full rounded-sm transition-all duration-700"
                                         style={{
                                             width: `${Math.min(starProgress, 100)}%`,
-                                            background: '#7dd3fc', // Light blue cyan
-                                            boxShadow: '0 0 10px #38bdf8',
+                                            background:
+                                                'linear-gradient(90deg,#00bfff,#00e5ff)',
+                                            boxShadow: '0 0 6px #00d4ff',
                                         }}
                                     />
                                 </div>
                             </div>
                         </div>
-
-                        {/* FIELDS */}
-                        <div className="flex flex-shrink-0 flex-wrap gap-x-4 xl:gap-x-6 gap-y-2 xl:gap-y-3">
-                            <div className="w-full sm:w-[calc(50%-8px)] xl:w-[calc(50%-12px)]">
-                                <label className="mb-0.5 block font-['Oxanium'] text-[8px] xl:text-[9px] font-bold tracking-[2px] text-yellow-500 leading-none">
+                        {/* FIELDS - Di XL/2XL Grid membesar memenuhi space */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 md:gap-y-3 xl:gap-y-4">
+                            <div className="flex flex-col">
+                                <label className="block text-[9px] text-yellow-400 tracking-[2px] mb-1">
                                     USERNAME
                                 </label>
-                                <div className="border border-[#1a1c33] bg-[#000000] px-2 py-1 xl:px-3 xl:py-1.5 rounded-sm">
-                                    <input
-                                        placeholder=""
-                                        defaultValue={user.name}
-                                        className="w-full bg-transparent font-['Oxanium'] text-[10px] xl:text-xs text-gray-300 outline-none leading-none"
-                                    />
-                                </div>
+                                <input
+                                    placeholder=""
+                                    defaultValue={user.name}
+                                    className="w-full bg-[#050510] border border-[#1e2a6e] text-gray-400 px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none"
+                                />
                             </div>
 
-                            <div className="w-full sm:w-[calc(50%-8px)] xl:w-[calc(50%-12px)]">
-                                <label className="mb-0.5 block font-['Oxanium'] text-[8px] xl:text-[9px] font-bold tracking-[2px] text-yellow-500 leading-none">
+                            <div className="flex flex-col">
+                                <label className="block text-[9px] text-yellow-400 tracking-[2px] mb-1">
                                     EMAIL
                                 </label>
-                                <div className="border border-[#1a1c33] bg-[#000000] px-2 py-1 xl:px-3 xl:py-1.5 rounded-sm">
-                                    <input
-                                        placeholder=""
-                                        className="w-full bg-transparent font-['Oxanium'] text-[10px] xl:text-xs text-gray-300 outline-none leading-none"
-                                    />
-                                </div>
+                                <input
+                                    placeholder=""
+                                    className="w-full bg-[#050510] border border-[#1e2a6e] text-gray-400 px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none"
+                                />
                             </div>
 
-                            <div className="w-full sm:w-[calc(50%-8px)] xl:w-[calc(50%-12px)]">
-                                <label className="mb-0.5 block font-['Oxanium'] text-[8px] xl:text-[9px] font-bold tracking-[2px] text-yellow-500 leading-none">
+                            <div className="flex flex-col">
+                                <label className="block text-[9px] text-yellow-400 tracking-[2px] mb-1">
                                     SOCIAL UPLINK
                                 </label>
-                                <div className="border border-[#1a1c33] bg-[#000000] px-2 py-1 xl:px-3 xl:py-1.5 rounded-sm">
-                                    <input
-                                        placeholder=""
-                                        className="w-full bg-transparent font-['Oxanium'] text-[10px] xl:text-xs text-gray-300 outline-none leading-none"
-                                    />
-                                </div>
+                                <input
+                                    placeholder=""
+                                    className="w-full bg-[rgba(0,0,20,0.7)] border border-[#1e2a6e] text-[#c0d0ff] px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.35)] transition-all"
+                                />
                             </div>
 
-                            <div className="w-full sm:w-[calc(50%-8px)] xl:w-[calc(50%-12px)]">
-                                <label className="mb-0.5 block font-['Oxanium'] text-[8px] xl:text-[9px] font-bold tracking-[2px] text-yellow-500 leading-none">
+                            <div className="flex flex-col">
+                                <label className="block text-[9px] text-yellow-400 tracking-[2px] mb-1">
                                     FAV COURSE
                                 </label>
-                                <div className="border border-[#1a1c33] bg-[#000000] px-2 py-1 xl:px-3 xl:py-1.5 rounded-sm">
-                                    <input
-                                        placeholder=""
-                                        className="w-full bg-transparent font-['Oxanium'] text-[10px] xl:text-xs text-gray-300 outline-none leading-none"
-                                    />
-                                </div>
+                                <input
+                                    placeholder=""
+                                    className="w-full bg-[rgba(0,0,20,0.7)] border border-[#1e2a6e] text-[#c0d0ff] px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.35)] transition-all"
+                                />
+                                
+
                             </div>
                         </div>
 
                         {/* LAST MISSION */}
-                        <div className="flex-shrink-0">
-                            <p className="mb-1 xl:mb-1.5 flex-shrink-0 text-[8px] xl:text-[9px] font-bold tracking-[3px] text-yellow-500 leading-none">
+
+
+                        <div className="flex flex-col">
+                            <p className="text-[9px] text-yellow-400 tracking-[3px] mb-1">
                                 LAST MISSION / COURSE
                             </p>
-                            <div className="flex-shrink-0">
-                                {user.last_course ? (
-                                    <div className="relative flex flex-col sm:flex-row min-h-[40px] xl:min-h-[50px] items-start sm:items-center gap-2 xl:gap-3 border border-[#1a1c33] bg-black p-2 xl:p-2.5 overflow-hidden rounded-sm">
-                                        {/* background banner if any */}
-                                        <div
-                                            className="absolute inset-0 right-1/4 bg-right bg-no-repeat opacity-50 mix-blend-screen pointer-events-none"
-                                            style={{ backgroundImage: "url('/images/fullstack.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent pointer-events-none" />
-
-                                        {/* BADGE IV */}
-                                        <div className="hidden sm:flex relative z-10 h-6 w-6 xl:h-8 xl:w-8 flex-shrink-0 items-center justify-center bg-black/50 border border-blue-900/50 rounded-full shadow-[0_0_10px_rgba(30,58,138,0.5)]">
-                                            <img src="/images/romawi.png" className="h-4 w-4 xl:h-5 xl:w-5 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]" alt="Badge" />
-                                        </div>
-
-                                        {/* TEXT */}
-                                        <div className="relative z-10 min-w-0 flex-1 pl-0 sm:pl-1 w-full">
-                                            <p className="truncate text-[11px] xl:text-xs font-bold tracking-wide text-white drop-shadow-md leading-none">
-                                                {user.last_course.course_name || 'Data Science Mastery'}
-                                            </p>
-                                            <p className="mt-0.5 truncate text-[8px] xl:text-[9px] text-gray-400 leading-none">
-                                                {user.last_course.path_name || 'Level 4'} : {user.last_course.module_name || 'Encryption Protocols'}
-                                            </p>
-                                        </div>
-
-                                        {/* RESUME BUTTON */}
-                                        <Link
-                                            href={user.last_course?.url || '#'}
-                                            className="relative z-10 sm:mr-1 flex-shrink-0 bg-yellow-400 w-full sm:w-auto text-center px-3 py-1 xl:px-4 xl:py-1.5 font-['Orbitron'] text-[8px] xl:text-[9px] font-bold tracking-widest text-black transition-colors hover:bg-yellow-300 rounded-sm mt-1 sm:mt-0 leading-none"
-                                        >
-                                            RESUME
-                                        </Link>
-
-                                        <div className="absolute bottom-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-[#4B30A5] to-blue-500 shadow-[0_-2px_10px_#2563eb]" />
+                            {user.last_course ? (
+                                <div className="border border-[#3B28F6]/40 bg-[rgba(0,0,20,0.5)] flex items-center gap-3 p-2 md:p-2.5 xl:p-3">
+                                    <div
+                                        className="w-10 h-10 xl:w-12 xl:h-12 flex-shrink-0 flex items-center justify-center border border-[#3B28F6] text-xs font-black text-[#a0a0ff]"
+                                        style={{
+                                            background: 'linear-gradient(135deg,#0a0a2a,#1a1040)',
+                                            textShadow: '0 0 8px #3B28F6',
+                                        }}
+                                    >
+                                        <img src="/images/romawi.png" className="h-6 w-6 xl:h-8 xl:w-8 object-contain" alt="Badge" />
                                     </div>
-                                ) : (
-                                    <div className="border border-[#1a1c33] p-2 text-center font-['Orbitron'] text-[8px] xl:text-[9px] tracking-widest text-gray-500 bg-black leading-none">
-                                        NO ACTIVE COURSE
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs md:text-sm xl:text-base font-bold text-[#e0e8ff] tracking-wide truncate">
+                                            {user.last_course.course_name || 'Data Science Mastery'}
+                                        </p>
+                                        <p className="text-[9px] md:text-[10px] xl:text-xs text-gray-500 mt-0.5 truncate">
+                                            {user.last_course.path_name || 'Level 4'} • {user.last_course.module_name || 'Encryption Protocols'}
+                                        </p>
                                     </div>
-                                )}
-                            </div>
+                                    <Link href={user.last_course?.url || '#'} className="bg-yellow-400 text-black px-4 py-1.5 xl:px-6 xl:py-2 font-['Orbitron'] text-[10px] md:text-xs font-bold tracking-wide hover:bg-yellow-300 transition-colors">
+                                        RESUME
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="border border-[#3B28F6]/40 p-2 md:p-3 text-center text-gray-600 text-xs font-['Orbitron'] tracking-widest uppercase">
+                                    NO ACTIVE COURSE
+                                </div>
+                            )}
                         </div>
+                    </div>
 
-                        {/* SAVE CHANGES */}
-                        <div className="flex justify-end">
-                            <button
-                                className="bg-[#4a2ee6] w-full sm:w-auto px-4 py-1.5 xl:px-6 xl:py-2 font-['Oxanium'] text-[9px] xl:text-[11px] font-bold tracking-widest text-white transition hover:bg-[#5b3df6] rounded-sm leading-none"
-                                style={{
-                                    boxShadow: '0 4px 15px rgba(74, 46, 230, 0.4)',
-                                }}
-                            >
-                                SAVE CHANGES
-                            </button>
-                        </div>
+                    {/* SAVE BUTTON - Dipastikan berada di paling bawah dan tidak melompat */}
+                    <div className="flex justify-end pt-2 md:pt-3 xl:pt-4 flex-shrink-0 mt-auto">
+                        <button
+                            className="font-['Orbitron'] text-xs xl:text-sm font-bold tracking-widest text-white px-8 xl:px-12 py-2 md:py-2.5 xl:py-3 transition-all hover:shadow-[0_0_24px_rgba(59,40,246,0.8)]"
+                            style={{
+                                background: 'linear-gradient(90deg,#3B28F6,#1a10b0)',
+                                clipPath: 'polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%)',
+                                boxShadow: '0 0 16px rgba(59,40,246,0.45)',
+                            }}
+                        >
+                            SAVE CHANGES
+                        </button>
                     </div>
                 </div>
             </div>
+            
+        </main>
 
-            {/* ── MODAL AVATAR ── */}
-            {showImage && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
-                    onClick={() => setShowImage(false)}
-                >
-                    <img
-                        src={user.avatar ?? '/images/iam.jpeg'}
-                        onClick={(e) => e.stopPropagation()}
-                        className="max-h-[90%] max-w-[90%] object-contain"
-                        alt="avatar full"
-                    />
-                </div>
-            )}
-        </div>
-    );
+        {/* MODAL AVATAR */}
+        {showImage && (
+            <div
+                className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+                onClick={() => setShowImage(false)}
+            >
+                <img
+                    src={user.avatar ?? "/images/iam.jpeg"}
+                    onClick={(e) => e.stopPropagation()}
+                    className="max-w-[90%] max-h-[90%] object-contain"
+                    alt="avatar full"
+                />
+            </div>
+        )}
+    </div>
+
+);
 }
