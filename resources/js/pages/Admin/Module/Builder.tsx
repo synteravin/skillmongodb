@@ -666,7 +666,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                             <div className="p-2 bg-indigo-500 rounded-lg">
                                 <Layers className="text-indigo-400" size={24} />
                             </div>
-                            Module Builder
+                            Module Builderr
                         </h1>
                         <div className="flex items-center gap-2 mt-2">
                             <span className="text-slate-500 text-sm">Path:</span>

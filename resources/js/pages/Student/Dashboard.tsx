@@ -241,7 +241,7 @@ and dominate the game`
 
       <div className="absolute bottom-[-60px] md:bottom-[-90px] lg:bottom-[-120px]
     right-[20px] md:right-[180px] lg:right-[220px] xl:right-[260px] 2xl:right-[370px]
-    translate-x-16 md:translate-x-24 lg:translate-x-32">
+    translate-x-16 md:translate-x-24 lg:translate-x-5">
 
         {showBubble && (
           <SpeechBubble className="absolute top-8 md:top-12 lg:top-14 -right-32 md:-right-56 lg:-right-75 animate-fadeIn">
