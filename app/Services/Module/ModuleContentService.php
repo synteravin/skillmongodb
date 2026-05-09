@@ -89,10 +89,14 @@ class ModuleContentService
 
             $filename = \Str::slug($name).'-'.time().'.'.$ext;
 
-            $path = $file->storeAs($folder, $filename, 'public');
+            $path = $file->storeAs($folder, $filename, 's3');
+
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = Storage::disk('s3');
 
             return [
-                'url' => Storage::url($path),
+                'url' => $disk->url($path),
+                'path' => $path,
                 'name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
                 'mime' => $file->getMimeType(),

@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Quiz\StoreQuizRequest;
 use App\Models\Path;
 use App\Models\Quiz;
-use App\Responses\Quiz\QuizResponse;
+use App\Responses\QuizResponse;
 use Inertia\Inertia;
 
 class QuizController extends Controller
@@ -81,7 +81,10 @@ class QuizController extends Controller
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
                         'question_text' => $q->question_text,
-                        'answers' => $q->answers->map(fn ($a) => [
+                        'media_url' => $q->media_url
+                            ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/' . $q->media_url))
+                            : null,
+                        'answers' => $q->answers->map(fn($a) => [
                             'answer_text' => $a->answer_text,
                             'is_correct' => $a->is_correct,
                         ]),

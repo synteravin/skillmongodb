@@ -21,7 +21,7 @@ class QuizResponse
 
                     // 🔥 TAMBAHKAN INI (WAJIB)
                     'media_url' => $q->media_url
-                        ? url('storage/'.$q->media_url)
+                        ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
                         : null,
 
                     'answers' => $q->answers->map(fn ($a) => [

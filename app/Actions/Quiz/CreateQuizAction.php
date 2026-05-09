@@ -34,11 +34,16 @@ class CreateQuizAction
         foreach ($data['questions'] as $qIndex => $q) {
 
             $mediaPath = null;
+            $mediaS3Path = null;
 
             /* ================= HANDLE MEDIA ================= */
             if (request()->hasFile("questions.$qIndex.media")) {
                 $file = request()->file("questions.$qIndex.media");
-                $mediaPath = $file->store('quiz-images', 'public');
+                $mediaS3Path = $file->store('quiz-images', 's3');
+                
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+                $mediaPath = $disk->url($mediaS3Path);
             }
 
             /* ================= CREATE QUESTION ================= */
@@ -46,6 +51,7 @@ class CreateQuizAction
                 'quiz_id' => (string) $quiz->_id, // 🔥 CONSISTENT STRING
                 'question_text' => $q['question_text'] ?? '',
                 'media_url' => $mediaPath,
+                'media_path' => $mediaS3Path,
                 'order' => $qIndex + 1,
             ]);
 
