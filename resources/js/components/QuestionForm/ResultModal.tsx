@@ -138,7 +138,7 @@ export default function ResultModal({ open, result, onClose }: ResultModalProps)
 
     const exp = useCountUp(result?.exp ?? 0, active)
     const gold = useCountUp(result?.gold ?? 0, active)
-    const erp = useCountUp(result?.erp ?? 0, active)
+    const erp = useCountUp(result?.score ?? 0, active)
 
     const rewards: RewardItem[] = [
         {
