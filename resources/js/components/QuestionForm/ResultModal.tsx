@@ -1,160 +1,298 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 
-export default function ResultModal({ open, result, onClose }: any) {
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-    const [exp, setExp] = useState(0)
-    const [gold, setGold] = useState(0)
+interface Result {
+    exp: number
+    gold: number
+    erp: number
+    score: number
+}
+
+interface ResultModalProps {
+    open: boolean
+    result: Result | null
+    onClose: () => void
+}
+
+interface RewardItem {
+    label: string
+    value: number
+    icon: string
+    color: string
+    glowColor: string
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function useCountUp(target: number, active: boolean, steps = 20, intervalMs = 30) {
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
-        if (!result) return
+        if (!active) return
+        const safe = Math.max(0, Number(target ?? 0))
+        let current = 0
+        const step = Math.max(1, Math.ceil(safe / steps))
 
-        const safeExp = Number(result?.exp ?? 0)
-        const safeGold = Number(result?.gold ?? 0)
-
-        let e = 0
-        let g = 0
-
-        const expStep = Math.max(1, Math.ceil(safeExp / 20))
-        const goldStep = Math.max(1, Math.ceil(safeGold / 20))
-
-        const expInterval = setInterval(() => {
-            e += expStep
-
-            if (e >= safeExp) {
-                e = safeExp
-                clearInterval(expInterval)
+        const timer = setInterval(() => {
+            current += step
+            if (current >= safe) {
+                setCount(safe)
+                clearInterval(timer)
+            } else {
+                setCount(current)
             }
+        }, intervalMs)
 
-            setExp(e)
-        }, 30)
+        return () => clearInterval(timer)
+    }, [target, active])
 
-        const goldInterval = setInterval(() => {
-            g += goldStep
+    return count
+}
 
-            if (g >= safeGold) {
-                g = safeGold
-                clearInterval(goldInterval)
-            }
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
-            setGold(g)
-        }, 30)
+const HexDecorLine = () => (
+    <div className="flex items-center gap-2 justify-center mb-6">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#3b82f6]/60 to-transparent" />
+        <div className="w-2 h-2 rotate-45 bg-[#3b82f6]/60" />
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#3b82f6]/60 to-transparent" />
+    </div>
+)
 
-        return () => {
-            clearInterval(expInterval)
-            clearInterval(goldInterval)
-        }
 
-    }, [result])
+
+interface RewardCardProps {
+    item: RewardItem
+    index: number
+}
+
+const RewardCard = ({ item, index }: RewardCardProps) => (
+    <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 + index * 0.1, type: "spring", stiffness: 180, damping: 18 }}
+        whileHover={{ y: -3, transition: { duration: 0.2 } }}
+        className="relative flex items-center justify-between px-4"
+        style={{ minHeight: 76 }}
+    >
+        {/* Card BG */}
+        <div
+            className="absolute inset-0 rounded-xl border border-[#1e3a5f]/70"
+            style={{
+                background:
+                    "linear-gradient(135deg, rgba(10,20,40,0.95) 0%, rgba(15,25,50,0.9) 100%)",
+                boxShadow: "inset 0 1px 0 rgba(96,165,250,0.07)",
+            }}
+        />
+
+        {/* Left – icon circle */}
+        <div className="relative flex items-center gap-4">
+            <div
+                className="relative flex items-center justify-center w-12 h-12 rounded-full"
+                style={{
+                    background: "rgba(6,12,28,0.9)",
+                    border: "1.5px solid rgba(234,179,8,0.35)",
+                    boxShadow: `0 0 12px ${item.glowColor}`,
+                }}
+            >
+                <img
+                    src={item.icon}
+                    alt={item.label}
+                    className="w-13 h-13 object-contain"
+                />
+            </div>
+
+            {/* Middle – label */}
+            <span
+                className="relative text-sm font-bold tracking-widest uppercase"
+                style={{
+                    fontFamily: "'Orbitron', sans-serif",
+                    color: "rgba(200,220,255,0.85)",
+                    letterSpacing: "0.18em",
+                }}
+            >
+                {item.label}
+            </span>
+        </div>
+
+        {/* Right – value */}
+        <span
+            className="relative text-2xl font-extrabold tracking-wide"
+            style={{
+                fontFamily: "'Orbitron', sans-serif",
+                color: item.color,
+                textShadow: `0 0 10px ${item.glowColor}`,
+            }}
+        >
+            +{item.value}
+        </span>
+    </motion.div>
+)
+
+// ─── Main Component ────────────────────────────────────────────────────────────
+
+export default function ResultModal({ open, result, onClose }: ResultModalProps) {
+    const active = open && !!result
+
+    const exp = useCountUp(result?.exp ?? 0, active)
+    const gold = useCountUp(result?.gold ?? 0, active)
+    const erp = useCountUp(result?.erp ?? 0, active)
+
+    const rewards: RewardItem[] = [
+        {
+            label: "EXP",
+            value: exp,
+            icon: "/images/exp.png",
+            color: "#93c5fd",
+            glowColor: "rgba(59,130,246,0.45)",
+        },
+        {
+            label: "GOLD",
+            value: gold,
+            icon: "/images/gold.png",
+            color: "#fbbf24",
+            glowColor: "rgba(251,191,36,0.45)",
+        },
+        {
+            label: "ERP",
+            value: erp,
+            icon: "/images/erp.png",
+            color: "#c084fc",
+            glowColor: "rgba(192,132,252,0.45)",
+        },
+    ]
 
     if (!open || !result) return null
 
     return (
         <AnimatePresence>
             <>
-                {/* BACKDROP */}
+                {/* ── Backdrop ── */}
                 <motion.div
+                    key="backdrop"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/70 backdrop-blur-lg z-50"
+                    className="fixed inset-0 z-50"
+                    style={{ backdropFilter: "blur(14px)", background: "rgba(0,5,20,0.78)" }}
                 />
 
-                {/* MODAL */}
+                {/* ── Modal ── */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.7, y: 80 }}
+                    key="modal"
+                    initial={{ opacity: 0, scale: 0.72, y: 60 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.7, y: 80 }}
-                    transition={{ type: "spring", stiffness: 120 }}
+                    exit={{ opacity: 0, scale: 0.72, y: 60 }}
+                    transition={{ type: "spring", stiffness: 130, damping: 16 }}
                     className="fixed inset-0 z-50 flex items-center justify-center px-4"
                 >
-                    <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f172a] via-[#111827] to-[#020617] border border-blue-500/20 shadow-[0_0_40px_rgba(59,130,246,0.4)] p-8 text-center text-white">
+                    <div
+                        className="relative w-full max-w-md rounded-2xl overflow-hidden"
+                        style={{
+                            background:
+                                "linear-gradient(160deg, #060d1f 0%, #080f22 50%, #040a18 100%)",
+                            border: "3px solid #3B28F6",
+                            boxShadow:
+                                "0 0 0 1px rgba(59,40,246,0.2), 0 0 30px rgba(59,40,246,0.5), 0 0 70px rgba(59,40,246,0.25), inset 0 1px 0 rgba(96,165,250,0.08)",
+                            padding: "36px 28px 32px",
+                        }}
+                    >
+                        {/* Ambient glow layers */}
+                        <div
+                            className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-32 pointer-events-none"
+                            style={{
+                                background:
+                                    "radial-gradient(ellipse at center, rgba(59,130,246,0.18) 0%, transparent 70%)",
+                            }}
+                        />
+                        <div
+                            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-56 h-24 pointer-events-none"
+                            style={{
+                                background:
+                                    "radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, transparent 70%)",
+                            }}
+                        />
 
-                        {/* GLOW */}
-                        <div className="absolute inset-0 opacity-20 blur-3xl bg-blue-500 pointer-events-none" />
 
-                        {/* ICON */}
+
+                        {/* ── Title ── */}
                         <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 200 }}
-                            className="text-7xl mb-4"
+                            initial={{ opacity: 0, y: -16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.05 }}
+                            className="relative text-center mb-2"
                         >
-                            🏆
+                            <h1
+                                className="text-3xl font-black tracking-[0.2em] uppercase"
+                                style={{
+                                    fontFamily: "'Orbitron', sans-serif",
+                                    color: "#f0f8ff",
+                                    textShadow:
+                                        "0 0 20px rgba(96,165,250,0.5), 0 0 40px rgba(139,92,246,0.25)",
+                                    letterSpacing: "0.12em",
+                                }}
+                            >
+                                Congratulations
+                            </h1>
                         </motion.div>
 
-                        {/* TITLE */}
-                        <h1 className="text-3xl font-extrabold mb-2">
-                            MISSION COMPLETE
-                        </h1>
+                        <HexDecorLine />
 
-                        <p className="text-blue-300 text-sm mb-6">
-                            You finished the challenge
-                        </p>
-
-                        {/* SCORE */}
-                        <div className="flex justify-center mb-6">
-                            <div className="w-32 h-32 rounded-full border-4 border-blue-400 flex items-center justify-center shadow-lg">
-                                <span className="font-extrabold">
-                                    <p>ERP</p>
-                                    <span className="text-4xl font-extrabold">
-                                        {result.score}
-                                    </span>
-                                </span>
-                            </div>
+                        {/* ── Reward Cards ── */}
+                        <div className="relative flex flex-col gap-3 mb-8">
+                            {rewards.map((item, index) => (
+                                <RewardCard key={item.label} item={item} index={index} />
+                            ))}
                         </div>
 
-                        {/* REWARD */}
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-
-                            {/* EXP */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
+                        {/* ── OK Button ── */}
+                        <div className="flex justify-center">
+                            <motion.button
+                                initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4"
+                                transition={{ delay: 0.5 }}
+                                whileHover={{
+                                    scale: 1.06,
+                                    boxShadow:
+                                        "0 0 35px rgba(59,40,246,0.8), 0 0 70px rgba(59,40,246,0.45)",
+                                }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={onClose}
+                                className="relative px-12 py-3 rounded-xl font-black uppercase tracking-widest transition-all duration-300 overflow-hidden"
+                                style={{
+                                    fontFamily: "'Orbitron', sans-serif",
+                                    fontSize: "1.4rem",
+                                    letterSpacing: "0.3em",
+                                    color: "#fff",
+                                    background: "#3B28F6",
+                                    border: "1px solid rgba(99,102,241,0.5)",
+                                    boxShadow:
+                                        "0 0 20px rgba(59,40,246,0.6), 0 0 45px rgba(59,40,246,0.3), inset 0 1px 0 rgba(255,255,255,0.1)",
+                                    minWidth: 150,
+                                }}
                             >
-                                <p className="text-xs text-blue-300">EXP</p>
-                                <p className="text-xl font-bold text-blue-400">
-                                    +{exp}
-                                </p>
-                            </motion.div>
-
-                            {/* GOLD */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 }}
-                                className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4"
-                            >
-                                <p className="text-xs text-yellow-300">GOLD</p>
-                                <p className="text-xl font-bold text-yellow-400">
-                                    +{gold}
-                                </p>
-                            </motion.div>
-
-                        </div>
-
-                        {/* PROGRESS BAR */}
-                        <div className="mb-6">
-                            <p className="text-xs text-gray-400 mb-2">PROGRESS</p>
-
-                            <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${result.score}%` }}
-                                    className="h-full bg-blue-500"
+                                {/* Button inner shimmer */}
+                                <span
+                                    className="absolute inset-0 pointer-events-none"
+                                    style={{
+                                        background:
+                                            "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)",
+                                    }}
                                 />
-                            </div>
+                                OK
+                            </motion.button>
                         </div>
 
-                        {/* BUTTON */}
-                        <motion.button
-                            whileTap={{ scale: 0.95 }}
-                            onClick={onClose}
-                            className="w-full py-3 rounded-xl font-semibold bg-blue-500 hover:bg-blue-600 transition shadow-lg"
-                        >
-                            Continue Journey →
-                        </motion.button>
+                        {/* Bottom scan line */}
+                        <div
+                            className="absolute bottom-0 left-0 right-0 h-px"
+                            style={{
+                                background:
+                                    "linear-gradient(90deg, transparent, rgba(59,130,246,0.5) 30%, rgba(139,92,246,0.5) 70%, transparent)",
+                            }}
+                        />
                     </div>
                 </motion.div>
             </>
