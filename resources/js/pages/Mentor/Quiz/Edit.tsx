@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { router } from "@inertiajs/react"
 import AppLayout from "@/layouts/app-layout"
-import { ArrowLeft, Check, CheckCircle2, Circle, HelpCircle, Image as ImageIcon, Plus, Trash2, X } from "lucide-react"
+import { ArrowLeft, Check, CheckCircle2, Circle, Edit3, HelpCircle, Plus, Trash2, X } from "lucide-react"
 
 /* ================= TYPES ================= */
 
@@ -12,16 +12,29 @@ type Answer = {
 
 type Question = {
     question_text: string
-    media_url?: string
-    media_file?: File
     answers: Answer[]
+}
+
+type Quiz = {
+    id: string
+    module_id: string
+    difficulty: string
+    questions: Question[]
 }
 
 /* ================= COMPONENT ================= */
 
-export default function Create({ pathId }: { pathId: string }) {
+export default function Edit({ quiz }: { quiz: Quiz }) {
     const [questions, setQuestions] = useState<Question[]>([])
     const [loading, setLoading] = useState(false)
+
+    /* ================= INIT DATA ================= */
+
+    useEffect(() => {
+        if (quiz && quiz.questions) {
+            setQuestions(quiz.questions)
+        }
+    }, [quiz])
 
     /* ================= ACTIONS ================= */
 
@@ -30,8 +43,6 @@ export default function Create({ pathId }: { pathId: string }) {
             ...questions,
             {
                 question_text: "",
-                media_url: "",
-                media_file: undefined,
                 answers: [
                     { answer_text: "", is_correct: false },
                     { answer_text: "", is_correct: false },
@@ -87,35 +98,24 @@ export default function Create({ pathId }: { pathId: string }) {
         return true
     }
 
-    /* ================= SUBMIT (FORMDATA) ================= */
+    /* ================= SUBMIT ================= */
 
     const submit = () => {
         if (!validate()) return
 
         setLoading(true)
-        const formData = new FormData()
 
-        formData.append("path_id", pathId)
-        formData.append("difficulty", "medium") // Can be made dynamic later
-
-        questions.forEach((q, i) => {
-            formData.append(`questions[${i}][question_text]`, q.question_text)
-
-            // MEDIA FILE
-            if (q.media_file) {
-                formData.append(`questions[${i}][media]`, q.media_file)
+        router.put(
+            `/mentor/quiz/${quiz.id}`,
+            {
+                module_id: quiz.module_id,
+                difficulty: quiz.difficulty,
+                questions,
+            },
+            {
+                onFinish: () => setLoading(false),
             }
-
-            q.answers.forEach((a, j) => {
-                formData.append(`questions[${i}][answers][${j}][answer_text]`, a.answer_text)
-                formData.append(`questions[${i}][answers][${j}][is_correct]`, a.is_correct ? "1" : "0")
-            })
-        })
-
-        router.post(`/admin/paths/${pathId}/quiz`, formData, {
-            forceFormData: true,
-            onFinish: () => setLoading(false)
-        })
+        )
     }
 
     /* ================= UI ================= */
@@ -136,13 +136,18 @@ export default function Create({ pathId }: { pathId: string }) {
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
                                 <div className="p-2 bg-indigo-500/10 rounded-lg">
-                                    <HelpCircle className="text-indigo-400" size={24} />
+                                    <Edit3 className="text-indigo-400" size={24} />
                                 </div>
-                                Create Quizz
+                                Edit Quiz
                             </h1>
-                            <p className="text-slate-400 text-sm mt-2 ml-1">
-                                Add questions, answers, and media to construct your quiz.
-                            </p>
+                            <div className="flex items-center gap-3 mt-3 ml-1">
+                                <span className={`text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${quiz.difficulty === 'hard' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                                    quiz.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                        'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                    }`}>
+                                    {quiz.difficulty} Difficulty
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -151,14 +156,14 @@ export default function Create({ pathId }: { pathId: string }) {
                         {questions.length === 0 ? (
                             <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-800/60 rounded-2xl bg-slate-900/20 text-center">
                                 <HelpCircle size={48} className="text-slate-600 mb-4 opacity-50" />
-                                <h3 className="text-lg font-medium text-slate-300 mb-1">No questions yet</h3>
-                                <p className="text-slate-500 text-sm mb-6">Start building your quiz by adding the first question.</p>
+                                <h3 className="text-lg font-medium text-slate-300 mb-1">No questions</h3>
+                                <p className="text-slate-500 text-sm mb-6">Add questions to complete this quiz.</p>
                                 <button
                                     onClick={addQuestion}
                                     className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
                                 >
                                     <Plus size={16} />
-                                    Add First Question
+                                    Add Question
                                 </button>
                             </div>
                         ) : (
@@ -196,18 +201,17 @@ export default function Create({ pathId }: { pathId: string }) {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Saving...
+                                        Updating...
                                     </>
                                 ) : (
                                     <>
                                         <Check size={16} />
-                                        Save Quiz
+                                        Update Quiz
                                     </>
                                 )}
                             </button>
                         </div>
                     )}
-
                 </div>
             </div>
         </AppLayout>
@@ -227,7 +231,6 @@ function QuestionCard({
     onChange: (data: Question) => void
     onDelete: () => void
 }) {
-
     const updateAnswer = (i: number, answer: Answer) => {
         const newAnswers = [...data.answers]
         newAnswers[i] = answer
@@ -280,57 +283,6 @@ function QuestionCard({
                     />
                 </div>
 
-                {/* IMAGE UPLOAD */}
-                <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Attach Media (Optional)</label>
-                    <div className="flex items-start gap-4">
-                        <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-700 text-sm text-slate-300 w-fit cursor-pointer transition-colors group">
-                            <ImageIcon size={16} className="text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                            <span>Choose Image</span>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0]
-                                    if (!file) return
-
-                                    onChange({
-                                        ...data,
-                                        media_file: file,
-                                        media_url: URL.createObjectURL(file)
-                                    })
-                                }}
-                                className="hidden"
-                            />
-                        </label>
-                        {data.media_file && (
-                            <span className="text-sm text-slate-400 py-2.5 truncate max-w-[200px] sm:max-w-xs">
-                                {data.media_file.name}
-                            </span>
-                        )}
-                        {data.media_url && (
-                            <button
-                                onClick={() => onChange({ ...data, media_file: undefined, media_url: undefined })}
-                                className="p-2.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors ml-auto"
-                                title="Remove Image"
-                            >
-                                <X size={16} />
-                            </button>
-                        )}
-                    </div>
-
-                    {/* PREVIEW */}
-                    {data.media_url && (
-                        <div className="mt-4 flex justify-center bg-black/40 p-4 rounded-xl border border-slate-800/50">
-                            <img
-                                src={data.media_url}
-                                className="max-w-full h-auto max-h-48 object-contain rounded-lg shadow-md"
-                                alt="Question attached media preview"
-                            />
-                        </div>
-                    )}
-                </div>
-
                 {/* ANSWERS */}
                 <div className="pt-4 border-t border-slate-800/60">
                     <div className="flex justify-between items-center mb-4">
@@ -343,16 +295,16 @@ function QuestionCard({
                             <div
                                 key={i}
                                 className={`flex items-stretch gap-2 sm:gap-3 p-2 rounded-xl border transition-all duration-200 ${a.is_correct
-                                        ? "bg-emerald-500/10 border-emerald-500/30 shadow-sm shadow-emerald-500/5"
-                                        : "bg-slate-950/50 border-slate-800/80 hover:border-slate-700"
+                                    ? "bg-emerald-500/10 border-emerald-500/30 shadow-sm shadow-emerald-500/5"
+                                    : "bg-slate-950/50 border-slate-800/80 hover:border-slate-700"
                                     }`}
                             >
                                 {/* MARK AS CORRECT TOGGLE */}
                                 <button
                                     onClick={() => updateAnswer(i, { ...a, is_correct: !a.is_correct })}
                                     className={`flex items-center justify-center px-3 sm:px-4 rounded-lg transition-colors ${a.is_correct
-                                            ? 'bg-emerald-500/20 text-emerald-400'
-                                            : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
+                                        ? 'bg-emerald-500/20 text-emerald-400'
+                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
                                         }`}
                                     title="Mark as correct answer"
                                 >

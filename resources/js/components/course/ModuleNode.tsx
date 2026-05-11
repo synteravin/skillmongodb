@@ -8,6 +8,7 @@ type Props = {
     isSubmission?: boolean
     badge?: {
         icon: string
+        icon_url?: string | null
     }
     pathId?: string
 }
@@ -39,8 +40,9 @@ export default function ModuleNode({
                 <div className="relative z-10 flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 bg-black flex items-center justify-center font-['Orbitron'] font-bold border-[#d97706] text-[#d97706]">
                     {hasValidIcon ? (
                         <img
-                            src={`/storage/${badge?.icon}`}
+                            src={badge?.icon_url || ""}
                             className="w-full h-full object-cover rounded-full"
+                            alt="badge"
                         />
                     ) : (
                         <span>

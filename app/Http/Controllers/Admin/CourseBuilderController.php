@@ -15,6 +15,7 @@ use App\Models\CareerGroup;
 use App\Models\Course;
 use App\Models\LevelBadge;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CourseBuilderController extends Controller
@@ -26,7 +27,7 @@ class CourseBuilderController extends Controller
 
         return Inertia::render('Admin/Course/Index', [
             'courses' => $courses,
-            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
             ]),
@@ -74,6 +75,9 @@ class CourseBuilderController extends Controller
                         '_id' => (string) $group->mentor->_id,
                         'name' => $group->mentor->name,
                         'avatar' => $group->mentor->avatar,
+                        'avatar_url' => $group->mentor->avatar
+                            ? Storage::disk('s3')->url($group->mentor->avatar)
+                            : null,
                     ] : null,
 
                     'paths' => $group->paths->map(function ($path) {
@@ -106,10 +110,13 @@ class CourseBuilderController extends Controller
                 return [
                     'order' => (int) $b->order,
                     'icon' => $b->icon,
+                    'icon_url' => $b->icon
+                        ? Storage::disk('s3')->url($b->icon)
+                        : null,
                 ];
             }),
 
-            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
             ]),
@@ -148,7 +155,7 @@ class CourseBuilderController extends Controller
     ) {
         $data = $request->validated();
 
-        if (! empty($data['career_group_id'])) {
+        if (!empty($data['career_group_id'])) {
             $group = CareerGroup::findOrFail($data['career_group_id']);
             $this->authorize('update', $group);
         }

@@ -5,186 +5,201 @@
     <meta charset="UTF-8">
     <title>Certificate of Achievement</title>
 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
     <style>
         @page {
-            margin: 0;
+            margin: 0px;
+            size: A4 landscape;
         }
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #0a0f2c;
-            color: #e2e8f0;
-        }
-
-        /* Container */
-        .container {
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: #333333;
             width: 100%;
             height: 100vh;
-            padding: 60px;
-            box-sizing: border-box;
-            background: radial-gradient(circle at top, #1e293b, #020617);
-            border: 12px solid #1e293b;
-            position: relative;
         }
 
-        /* Accent line */
-        .container::before {
-            content: "";
+        .background {
             position: absolute;
-            top: 40px;
-            left: 60px;
-            right: 60px;
-            height: 2px;
-            background: linear-gradient(to right, transparent, #38bdf8, transparent);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
 
-        /* Header */
-        .header {
-            margin-top: 60px;
-            font-size: 42px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #38bdf8;
-            text-transform: uppercase;
+        .certificate-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
-        .subheader {
-            margin-top: 10px;
-            font-size: 14px;
-            letter-spacing: 3px;
-            color: #94a3b8;
-            text-transform: uppercase;
+        .logo-container {
+            position: absolute;
+            top: 50px;
+            right: 80px;
+            width: 130px;
         }
 
-        /* Content */
-        .content {
-            margin-top: 80px;
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
         }
 
-        .presented-to {
-            font-size: 16px;
-            color: #94a3b8;
-            margin-bottom: 10px;
+        .header-container {
+            position: absolute;
+            top: 14%;
+            left: 0;
+            width: 100%;
+            text-align: center;
         }
 
-        .name {
-            font-size: 40px;
-            font-weight: 700;
-            color: #facc15;
-            margin: 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #38bdf8;
-            display: inline-block;
-        }
-
-        .reason {
-            margin-top: 25px;
-            font-size: 16px;
-            color: #cbd5f5;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-
-        .course {
-            font-size: 22px;
+        .cert-title {
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            color: #1a56a6;
+            letter-spacing: 12px;
+            margin-bottom: 5px;
             font-weight: 600;
-            color: #34d399;
-            margin-top: 15px;
         }
 
-        /* Module */
-        .module {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-top: 8px;
+        .cert-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a56a6;
+            letter-spacing: 6px;
         }
 
-        /* Badge */
-        .grade-badge {
-            margin-top: 40px;
-            display: inline-block;
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            padding: 12px 28px;
-            border-radius: 999px;
-            font-size: 16px;
-            font-weight: 600;
+        .awarded-to {
+            position: absolute;
+            top: 33%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            color: #666666;
+            font-weight: 500;
             letter-spacing: 1px;
         }
 
-        /* Footer */
-        .footer {
-            margin-top: 90px;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 40px;
+        .name-container {
+            position: absolute;
+            top: 40%;
+            left: 0;
+            width: 100%;
+            text-align: center;
         }
 
-        .signature-block {
+        .name {
+            font-family: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', serif;
+            font-size: 85px;
+            font-weight: 700;
+            color: #1a56a6;
+            line-height: 1;
+            font-style: italic;
+        }
+
+        .description-container {
+            position: absolute;
+            top: 59%;
+            left: 15%;
+            width: 70%;
+            text-align: center;
+            font-size: 16px;
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 14%;
+            left: 0;
+            width: 100%;
+        }
+
+        .signature-block-left {
+            position: absolute;
+            left: 16%;
+            width: 210px;
+            text-align: center;
+        }
+
+        .signature-block-right {
+            position: absolute;
+            right: 16%;
+            width: 210px;
             text-align: center;
         }
 
         .signature-line {
-            width: 220px;
-            border-bottom: 1px solid #94a3b8;
-            margin-bottom: 10px;
+            width: 100%;
+            border-top: 1px solid #888888;
+            margin-bottom: 8px;
         }
 
-        .signature-name {
-            font-family: 'Brush Script MT', cursive;
-            font-size: 22px;
-            color: #38bdf8;
-            margin-bottom: 5px;
+        .signer-name {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: #444444;
+            margin-bottom: 4px;
         }
 
-        .footer-text {
-            font-size: 12px;
-            color: #94a3b8;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        .signer-title {
+            font-size: 15px;
+            color: #777777;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <img src="{{ public_path('images/certificate.png') }}" class="background" alt="Certificate Background">
 
-        <div class="header">Certificate of Achievement</div>
-        <div class="subheader">Awarded for Excellence</div>
+    <div class="certificate-content">
 
-        <div class="content">
-            <div class="presented-to">This certificate is proudly presented to</div>
+        @if(file_exists(public_path('images/[WithoutBG]SVLogo (2).png')))
+            <div class="logo-container">
+                <img src="{{ public_path('images/[WithoutBG]SVLogo (2).png') }}" alt="SkillVentura Logo">
+            </div>
+        @endif
 
+        <div class="header-container">
+            <div class="cert-title">CERTIFICATE</div>
+            <div class="cert-subtitle">OF RECOGNITION</div>
+        </div>
+
+        <div class="awarded-to">This Certificate is proudly awarded to:</div>
+
+        <div class="name-container">
             <div class="name">{{ $studentName }}</div>
+        </div>
 
-            <div class="reason">
-                for successfully completing and demonstrating outstanding performance in
-            </div>
-
-            <div class="course">{{ $assignmentTitle }}</div>
-
-            @if(isset($groupName))
-                <div class="module">Module: {{ $groupName }}</div>
-            @endif
-
-            <div class="grade-badge">
-                Final Score: {{ $grade }} / 100
-            </div>
+        <div class="description-container">
+            This certificate is given to {{ $studentName }}<br>
+            for their achievement in {{ $assignmentTitle }}<br>
+            and proves that they are competent in their field.
         </div>
 
         <div class="footer">
-            <div class="signature-block">
+            <!-- <div class="signature-block-left">
                 <div class="signature-line"></div>
-                <div class="footer-text">{{ $date }}</div>
-                <div class="footer-text">Date of Issue</div>
-            </div>
+                <div class="signer-name">Daniel Martinez</div>
+                <div class="signer-title">Guild Master</div>
+            </div> -->
 
-            <div class="signature-block">
-                <div class="signature-name">{{ $mentorName }}</div>
+            <div class="signature-block-right">
                 <div class="signature-line"></div>
-                <div class="footer-text">Mentor Signature</div>
+                <div class="signer-name">{{ $mentorName }}</div>
+                <div class="signer-title">Mentor</div>
             </div>
         </div>
 

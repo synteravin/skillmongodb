@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -52,7 +53,7 @@ class UserController extends Controller
         if ($request->hasFile('avatar')) {
             $avatarPath = $request
                 ->file('avatar')
-                ->store('avatars', 'public');
+                ->store('avatars', 's3');
         }
 
         /* ---------- CREATE USER ---------- */
@@ -75,8 +76,8 @@ class UserController extends Controller
 
         $data = $request->validate([
             'name' => ['sometimes', 'string'],
-            'username' => ['sometimes', 'string', 'unique:users,username,'.$user->_id.',_id'],
-            'email' => ['sometimes', 'email', 'unique:users,email,'.$user->_id.',_id'],
+            'username' => ['sometimes', 'string', 'unique:users,username,' . $user->_id . ',_id'],
+            'email' => ['sometimes', 'email', 'unique:users,email,' . $user->_id . ',_id'],
             'role' => ['sometimes', 'in:admin,mentor,student'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -87,12 +88,12 @@ class UserController extends Controller
 
             // hapus avatar lama
             if ($user->avatar) {
-                \Storage::disk('public')->delete($user->avatar);
+                Storage::disk('s3')->delete($user->avatar);
             }
 
             $data['avatar'] = $request
                 ->file('avatar')
-                ->store('avatars', 'public');
+                ->store('avatars', 's3');
         }
 
         if ($request->filled('password')) {

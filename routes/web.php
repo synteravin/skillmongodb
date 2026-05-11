@@ -15,7 +15,9 @@ use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
 use App\Http\Controllers\Mentor\PathController;
 use App\Http\Controllers\Mentor\StudentSubmissionController as MentorStudentSubmission;
+use App\Http\Controllers\Mentor\MentorModuleManagementController as MentorModuleManagementController;
 use App\Http\Controllers\Mentor\SubmissionController;
+use App\Http\Controllers\Mentor\MentorQuizController;
 use App\Http\Controllers\ModuleContentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\CareerController;
@@ -75,7 +77,7 @@ Route::middleware(['auth', 'role:admin'])
 
         // Route::resource('characters', CharacterController::class)
         //     ->except(['show']);
-
+    
         /* ---------------- COURSE CRUD ---------------- */
 
         Route::get('/courses', [CourseController::class, 'index'])
@@ -122,12 +124,12 @@ Route::middleware(['auth', 'role:admin'])
         /* ---------------- LEVEL BADGES ---------------- */
 
         // Route::resource('/levelbadge', LevelBadgeController::class);
-
+    
         /* ---------------- USER ---------------- */
 
         Route::resource('users', UserController::class);
         // Route::post('/admin/users/{user}', [UserController::class, 'update']);
-
+    
         /* ---------------- ASSIGN MENTOR ---------------- */
         Route::post('/career-groups/{group}/assign-mentor', [CareerGroupController::class, 'assignMentor']);
 
@@ -164,10 +166,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
         Route::post('/select-career', [CareerController::class, 'select']);
         // Route::resource('ranks', RankController::class);
-
+    
         // Route::post('ranks/reorder', [RankController::class, 'reorder'])
         //     ->name('ranks.reorder');
-
+    
         // Route::get('assets', function () {
         //     return Inertia::render('Admin/Assets/Index');
         // })->name('assets');
@@ -234,6 +236,70 @@ Route::middleware(['auth', 'role:mentor'])
             '/career-groups/{group}/submissions',
             [SubmissionController::class, 'store']
         )->name('submissions.store');
+
+        // Route::get(
+        //     '/career-groups/{group}/paths/{path}/modules',
+        //     [MentorModuleManagementController::class, 'index']
+        // )->name('paths.modules');
+    
+        Route::get(
+            '/career-groups/{group}/paths/{path}/modules',
+            [MentorModuleManagementController::class, 'index']
+        )->name('paths.modules');
+
+        /* ---------------- MODULE BUILDER ---------------- */
+
+        Route::post(
+            '/modules',
+            [CourseBuilderController::class, 'storeModule']
+        )->name('modules.store');
+
+        Route::post(
+            '/modules/{module}/contents',
+            [ModuleContentController::class, 'store']
+        )->name('module-contents.store');
+
+        Route::put(
+            '/module-contents/reorder',
+            [ModuleContentController::class, 'reorder']
+        );
+
+        Route::put(
+            '/module-contents/{content}',
+            [ModuleContentController::class, 'update']
+        )->name('module-contents.update');
+
+        Route::delete(
+            '/module-contents/{content}',
+            [ModuleContentController::class, 'destroy']
+        )->name('module-contents.destroy');
+
+        /* ---------------- FINAL QUIZ ---------------- */
+
+        Route::get(
+            '/career-groups/{group}/paths/{path}/quiz/create',
+            [MentorQuizController::class, 'create']
+        )->name('quiz.create');
+
+        Route::post(
+            '/paths/{path}/quiz',
+            [MentorQuizController::class, 'store']
+        )->name('quiz.store');
+
+        Route::get(
+            '/quiz/{quiz}/edit',
+            [MentorQuizController::class, 'edit']
+        )->name('quiz.edit');
+
+        Route::put(
+            '/quiz/{quiz}',
+            [MentorQuizController::class, 'update']
+        )->name('quiz.update');
+
+        Route::delete(
+            '/quiz/{quiz}',
+            [MentorQuizController::class, 'destroy']
+        )->name('quiz.destroy');
     });
 
 /*
@@ -330,4 +396,4 @@ Route::get('/', function () {
 Route::get('/auth/google', [SocialController::class, 'redirect']);
 Route::get('/auth/google/callback', [SocialController::class, 'callback']);
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

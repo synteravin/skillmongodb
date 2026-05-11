@@ -39,7 +39,7 @@ export default function Index({ group, paths }: Props) {
     return (
         <AppLayout>
             <div className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8">
-                
+
                 {/* Header Section */}
                 <div className="flex items-center gap-4 mb-2">
                     <Link
@@ -59,7 +59,7 @@ export default function Index({ group, paths }: Props) {
                 </div>
 
                 <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
-                    
+
                     {/* LEFT SIDE - CREATE FORM */}
                     <div className="lg:col-span-1">
                         <div className="relative rounded-3xl bg-white dark:bg-[#0a0d27] border border-gray-100 dark:border-slate-800/80 shadow-xl overflow-hidden">
@@ -93,11 +93,10 @@ export default function Index({ group, paths }: Props) {
                                             onBlur={() => setFocus(false)}
                                             onChange={(e) => setData('name', e.target.value)}
                                             placeholder="e.g. Advanced React"
-                                            className={`w-full bg-slate-50 dark:bg-slate-900/50 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 transition-all shadow-sm outline-none border ${
-                                                focus
-                                                    ? 'border-indigo-500 ring-2 ring-indigo-500/20'
-                                                    : 'border-gray-200 dark:border-slate-700'
-                                            }`}
+                                            className={`w-full bg-slate-50 dark:bg-slate-900/50 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 transition-all shadow-sm outline-none border ${focus
+                                                ? 'border-indigo-500 ring-2 ring-indigo-500/20'
+                                                : 'border-gray-200 dark:border-slate-700'
+                                                }`}
                                         />
                                     </div>
 
@@ -177,7 +176,7 @@ export default function Index({ group, paths }: Props) {
                                             >
                                                 {/* Left accent line */}
                                                 <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                                
+
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-sm shrink-0">
                                                         {index + 1}
@@ -195,7 +194,7 @@ export default function Index({ group, paths }: Props) {
 
                                                 {/* ACTIONS */}
                                                 <div className="flex items-center gap-2 mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-slate-700 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity justify-end">
-                                                    <button 
+                                                    <button
                                                         className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors border border-transparent dark:border-slate-700"
                                                         title="Edit Path"
                                                     >
@@ -203,7 +202,18 @@ export default function Index({ group, paths }: Props) {
                                                         <span className="sm:hidden lg:inline">Edit</span>
                                                     </button>
 
-                                                    <button 
+                                                    <Link
+                                                        href={`/mentor/career-groups/${group.id}/paths/${path.id}/modules`}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 border border-transparent dark:border-indigo-500/20 transition-colors"
+                                                        title="Detail Module"
+                                                    >
+                                                        <Layers className="w-4 h-4" />
+                                                        <span className="sm:hidden lg:inline">
+                                                            Detail
+                                                        </span>
+                                                    </Link>
+
+                                                    <button
                                                         className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 border border-transparent dark:border-red-500/20 transition-colors"
                                                         title="Delete Path"
                                                     >

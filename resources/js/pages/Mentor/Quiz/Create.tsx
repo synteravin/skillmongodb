@@ -19,8 +19,18 @@ type Question = {
 
 /* ================= COMPONENT ================= */
 
-export default function Create({ pathId }: { pathId: string }) {
-    const [questions, setQuestions] = useState<Question[]>([])
+export default function Create({
+    pathId,
+    quiz,
+}: {
+    pathId: string;
+    quiz?: {
+        id: string;
+        difficulty: string;
+        questions: Question[];
+    } | null;
+}) {
+    const [questions, setQuestions] = useState<Question[]>(quiz?.questions ?? [])
     const [loading, setLoading] = useState(false)
 
     /* ================= ACTIONS ================= */
@@ -112,7 +122,7 @@ export default function Create({ pathId }: { pathId: string }) {
             })
         })
 
-        router.post(`/admin/paths/${pathId}/quiz`, formData, {
+        router.post(`/mentor/paths/${pathId}/quiz`, formData, {
             forceFormData: true,
             onFinish: () => setLoading(false)
         })
@@ -343,16 +353,16 @@ function QuestionCard({
                             <div
                                 key={i}
                                 className={`flex items-stretch gap-2 sm:gap-3 p-2 rounded-xl border transition-all duration-200 ${a.is_correct
-                                        ? "bg-emerald-500/10 border-emerald-500/30 shadow-sm shadow-emerald-500/5"
-                                        : "bg-slate-950/50 border-slate-800/80 hover:border-slate-700"
+                                    ? "bg-emerald-500/10 border-emerald-500/30 shadow-sm shadow-emerald-500/5"
+                                    : "bg-slate-950/50 border-slate-800/80 hover:border-slate-700"
                                     }`}
                             >
                                 {/* MARK AS CORRECT TOGGLE */}
                                 <button
                                     onClick={() => updateAnswer(i, { ...a, is_correct: !a.is_correct })}
                                     className={`flex items-center justify-center px-3 sm:px-4 rounded-lg transition-colors ${a.is_correct
-                                            ? 'bg-emerald-500/20 text-emerald-400'
-                                            : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
+                                        ? 'bg-emerald-500/20 text-emerald-400'
+                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
                                         }`}
                                     title="Mark as correct answer"
                                 >

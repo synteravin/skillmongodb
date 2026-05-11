@@ -25,6 +25,7 @@ type Mentor = {
     _id: string
     name: string
     avatar?: string | null
+    avatar_url?: string | null
 }
 
 type Course = {
@@ -108,9 +109,9 @@ export default function CareerBranch({ group, index, badges, mentors, courseId }
 
                                         {/* Avatar */}
                                         <div className="relative w-6 h-6 rounded-full overflow-hidden border border-blue-500 bg-gray-700">
-                                            {group.mentor?.avatar ? (
+                                            {group.mentor?.avatar_url ? (
                                                 <img
-                                                    src={`/storage/${group.mentor.avatar}`}
+                                                    src={group.mentor?.avatar_url}
                                                     className="w-full h-full object-cover"
                                                     alt={group.mentor.name}
                                                 />

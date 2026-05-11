@@ -14,7 +14,7 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
         <AppLayout>
             <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#020617] to-black text-white p-4 sm:p-6 lg:p-8">
                 <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8">
-                    
+
                     {/* HEADER */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">
                         <div>
@@ -22,7 +22,7 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
                                 <div className="p-2 bg-indigo-500/10 rounded-lg">
                                     <HelpCircle className="text-indigo-400" size={24} />
                                 </div>
-                                Quiz Management
+                                Quiz Managementtt
                             </h1>
                             <p className="text-slate-400 text-sm mt-2 ml-1">
                                 Manage quizzes, questions, and difficulty levels across all modules.
@@ -48,19 +48,18 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
                                         <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform duration-300">
                                             <Layers size={20} />
                                         </div>
-                                        <span className={`text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${
-                                            quiz.difficulty === 'hard' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 
-                                            quiz.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 
-                                            'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                                        }`}>
+                                        <span className={`text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${quiz.difficulty === 'hard' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                                                quiz.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                                    'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                            }`}>
                                             {quiz.difficulty}
                                         </span>
                                     </div>
-                                    
+
                                     <h2 className="text-base sm:text-lg font-semibold text-white mb-1 line-clamp-2">
                                         {quiz.module_name}
                                     </h2>
-                                    
+
                                     <p className="text-sm text-slate-400 mb-6 flex items-center gap-1.5">
                                         <HelpCircle size={14} />
                                         {quiz.questions_count} Questions

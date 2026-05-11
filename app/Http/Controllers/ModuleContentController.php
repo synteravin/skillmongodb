@@ -37,7 +37,7 @@ class ModuleContentController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'url' => $request->url, // Will overwrite only if sent
-        ], fn ($val) => ! is_null($val)));
+        ], fn($val) => !is_null($val)));
 
         $content->update([
             'content' => $updatedData,
@@ -56,10 +56,7 @@ class ModuleContentController extends Controller
                 ->update(['order' => $item['order']]);
         }
 
-        // 🔥 JANGAN redirect (biar gak reload)
-        return response()->json([
-            'success' => true,
-        ]);
+        return back();
     }
 
     /* ================= DELETE ================= */
