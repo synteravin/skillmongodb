@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\StudentSubmission;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CertificateController extends Controller
@@ -22,7 +23,7 @@ class CertificateController extends Controller
                     'certificate_id' => strtoupper(substr(md5($sub->id), 0, 12)),
                     'course_name' => $sub->submission->group->name ?? 'SkillMongo Course',
                     'assignment_title' => $sub->submission->title,
-                    'path' => $sub->certificate_path,
+                    'path' => Storage::disk('s3')->url($sub->certificate_path),
                 ];
             });
 

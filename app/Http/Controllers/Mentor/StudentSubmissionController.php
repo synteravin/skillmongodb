@@ -50,8 +50,10 @@ class StudentSubmissionController extends Controller
 
         $pdf = Pdf::loadView('certificate', $pdfData)->setPaper('a4', 'landscape');
 
-        $filename = 'certificates/'.$studentSubmission->id.'_certificate.pdf';
-        Storage::disk('public')->put($filename, $pdf->output());
+        $filename = 'certificates/' . $studentSubmission->id . '_certificate.pdf';
+        Storage::disk('s3')->put($filename, $pdf->output(), [
+            'visibility' => 'public',
+        ]);
 
         $updateData['certificate_path'] = $filename;
 
@@ -66,7 +68,7 @@ class StudentSubmissionController extends Controller
 
         if ($userStat) {
             $completedGroups = $userStat->completed_career_groups ?? [];
-            if (! in_array((string) $groupId, $completedGroups)) {
+            if (!in_array((string) $groupId, $completedGroups)) {
                 $completedGroups[] = (string) $groupId;
                 $userStat->completed_career_groups = $completedGroups;
                 $userStat->selected_path_id = null;
