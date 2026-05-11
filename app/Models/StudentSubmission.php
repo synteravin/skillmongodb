@@ -20,6 +20,21 @@ class StudentSubmission extends Model
         'certificate_path',
     ];
 
+    protected $appends = ['certificate_url'];
+
+    public function getCertificateUrlAttribute()
+    {
+        if ($this->certificate_path) {
+            if (str_starts_with($this->certificate_path, 'http')) {
+                return $this->certificate_path;
+            }
+
+            return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->certificate_path);
+        }
+
+        return null;
+    }
+
     public function submission()
     {
         return $this->belongsTo(Submission::class, 'submission_id');

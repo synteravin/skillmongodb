@@ -39,6 +39,7 @@ interface StudentSubmission {
     grade?: string | number;
     feedback?: string;
     certificate_path?: string;
+    certificate_url?: string;
 }
 
 interface Props {
@@ -187,11 +188,11 @@ export default function Show({ submission, studentSubmission }: Props) {
                                     </p>
                                 </div>
 
-                                {studentSubmission?.certificate_path && (
+                                {studentSubmission?.certificate_url && (
                                     <div className="mt-6 pt-6 border-t border-indigo-500/20">
                                         <h4 className="text-sm font-bold text-white mb-3 uppercase tracking-wider">Achievement Award</h4>
                                         <a
-                                            href={studentSubmission.certificate_path}
+                                            href={studentSubmission.certificate_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="inline-flex items-center justify-between w-full p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all group"
