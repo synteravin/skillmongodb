@@ -1,11 +1,11 @@
 import AppLayout from '@/layouts/app-layout';
 import { Link } from '@inertiajs/react';
-import { 
-    ArrowLeft, 
-    FileText, 
-    Calendar, 
-    CheckCircle2, 
-    Clock, 
+import {
+    ArrowLeft,
+    FileText,
+    Calendar,
+    CheckCircle2,
+    Clock,
     Users,
     ChevronRight,
     Search
@@ -39,7 +39,7 @@ export default function SubmissionShow({
     return (
         <AppLayout>
             <div className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8">
-                
+
                 {/* Header Section */}
                 <div className="flex items-center gap-4 mb-2">
                     <Link
@@ -61,25 +61,24 @@ export default function SubmissionShow({
                 {/* Submission Info Card */}
                 <div className="relative rounded-3xl bg-white dark:bg-gradient-to-br dark:from-[#0b0f2a] dark:to-[#050619] border border-gray-100 dark:border-slate-800 shadow-xl overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 dark:bg-indigo-500/10 rounded-bl-full pointer-events-none blur-2xl"></div>
-                    
+
                     <div className="p-6 sm:p-8 lg:p-10 relative z-10 flex flex-col md:flex-row gap-8">
                         <div className="flex-1 space-y-6">
                             <div className="flex flex-wrap items-center gap-3">
                                 <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                                     {submission.title}
                                 </h2>
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
-                                    submission.status === 'published'
-                                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30'
-                                        : 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30'
-                                }`}>
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${submission.status === 'published'
+                                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30'
+                                    : 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30'
+                                    }`}>
                                     {submission.status === 'published' ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                                     <span className="capitalize">{submission.status}</span>
                                 </span>
                             </div>
 
-                            <div className="prose prose-slate dark:prose-invert max-w-none">
-                                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg">
+                            <div className="prose prose-slate dark:prose-invert max-w-none break-words">
+                                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg whitespace-pre-line">
                                     {submission.description}
                                 </p>
                             </div>
@@ -90,7 +89,7 @@ export default function SubmissionShow({
                                 <span className="text-slate-900 dark:text-white font-bold">{submission.deadline ? new Date(submission.deadline).toLocaleString() : 'Not Set'}</span>
                             </div>
                         </div>
-                        
+
                         {/* Stats / Quick Info */}
                         <div className="w-full md:w-64 shrink-0 flex flex-col gap-4">
                             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-gray-100 dark:border-slate-700">
@@ -117,10 +116,10 @@ export default function SubmissionShow({
                                 Student Work
                             </h3>
                         </div>
-                        
+
                         <div className="relative">
                             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                            <input 
+                            <input
                                 type="text"
                                 placeholder="Search students..."
                                 className="w-full sm:w-64 pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-white transition-all placeholder-slate-400"
@@ -159,13 +158,12 @@ export default function SubmissionShow({
 
                                             <td className="px-6 py-4">
                                                 <span
-                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${
-                                                        item.status === 'graded'
-                                                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'
-                                                            : item.status === 'late'
-                                                                ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 border border-red-200 dark:border-red-500/20'
-                                                                : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20'
-                                                    }`}
+                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${item.status === 'graded'
+                                                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'
+                                                        : item.status === 'late'
+                                                            ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 border border-red-200 dark:border-red-500/20'
+                                                            : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20'
+                                                        }`}
                                                 >
                                                     <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
                                                     <span className="capitalize">{item.status}</span>

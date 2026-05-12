@@ -134,8 +134,8 @@ export default function Show({ submission, studentSubmission }: Props) {
                             )}
                         </div>
 
-                        <div className="prose prose-invert prose-slate max-w-none">
-                            <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                        <div className="prose prose-invert prose-slate max-w-none break-words">
+                            <p className="text-slate-300 leading-relaxed whitespace-pre-line">
                                 {submission.description}
                             </p>
                         </div>
