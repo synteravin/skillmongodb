@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { router } from "@inertiajs/react";
-import { ChevronDown, Plus, Layers, Trash2, GripVertical, Type, Image as ImageIcon, Video, FileText, Youtube, X, Check } from "lucide-react";
+import { router, Link } from "@inertiajs/react";
+import { ChevronDown, Plus, Layers, Trash2, GripVertical, Type, Image as ImageIcon, Video, FileText, Youtube, X, Check, ArrowLeft } from "lucide-react";
 import AppLayout from "@/layouts/app-layout";
 
 import {
@@ -673,15 +673,29 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                 {/* HEADER */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
-                            <div className="p-2 bg-indigo-500 rounded-lg">
-                                <Layers className="text-indigo-400" size={24} />
-                            </div>
-                            Module Builderr
-                        </h1>
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-3">
+                            <Link
+                                href={`/mentor/career-groups/${group.id}/paths`}
+                                className="flex items-center justify-center w-11 h-11 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:text-indigo-400 hover:border-indigo-500/50 hover:bg-slate-700 transition-all shadow-sm"
+                            >
+                                <ArrowLeft size={18} />
+                            </Link>
+
+                            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                                <div className="p-2 bg-indigo-500 rounded-lg">
+                                    <Layers className="text-indigo-400" size={24} />
+                                </div>
+
+                                Module Builder
+                            </h1>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-2 ml-14">
                             <span className="text-slate-500 text-sm">Path:</span>
-                            <span className="text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-700 shadow-inner">{path.name}</span>
+
+                            <span className="text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-700 shadow-inner">
+                                {path.name}
+                            </span>
                         </div>
                     </div>
 
