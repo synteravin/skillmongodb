@@ -59,7 +59,7 @@ export default function Index({ users }: { users: User[] }) {
             role: user.role,
             avatar: null,
         });
-        setPreview(user.avatar ? `/storage/${user.avatar}` : null);
+        setPreview(user.avatar ?? null);
         setShowModal(true);
     };
 
@@ -135,7 +135,11 @@ export default function Index({ users }: { users: User[] }) {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
                                                     <img
-                                                        src={user.avatar ? `/storage/${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`}
+                                                        src={
+                                                            user.avatar
+                                                                ? user.avatar
+                                                                : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
+                                                        }
                                                         className="w-10 h-10 rounded-full object-cover border border-slate-700/50 bg-slate-800"
                                                         alt={user.name}
                                                     />

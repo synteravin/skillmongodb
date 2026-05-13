@@ -19,12 +19,14 @@ class UserController extends Controller
 
         $users = User::latest()->get()->map(function ($user) {
             return [
-                '_id' => (string) $user->_id, // 🔥 FORCE STRING
+                '_id' => (string) $user->_id,
                 'name' => $user->name,
                 'username' => $user->username,
                 'email' => $user->email,
                 'role' => $user->role,
-                'avatar' => $user->avatar ?? null,
+                'avatar' => $user->avatar
+                    ? Storage::disk('s3')->url($user->avatar)
+                    : null,
             ];
         });
 
