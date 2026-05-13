@@ -7,7 +7,7 @@ interface Certificate {
     certificate_id: string;
     course_name: string;
     assignment_title: string;
-    path: string;
+    certificate_url: string;
 }
 
 interface Props {
@@ -51,7 +51,7 @@ export default function Index({ certificates }: Props) {
                     </svg>
 
                     <Link
-                        href="/student/course"
+                        href="/student/dashboard"
                         className="absolute inset-0 flex items-center justify-center text-white group-hover:text-yellow-400 transition-colors"
                     >
                         <Undo2 strokeWidth={3} className="w-8 h-8" />
@@ -101,7 +101,7 @@ export default function Index({ certificates }: Props) {
 
                                     <div className="w-1/3 text-right">
                                         <a
-                                            href={`/storage/${cert.path}`}
+                                            href={cert.certificate_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-lg text-white font-black uppercase text-sm tracking-widest hover:from-blue-500 hover:to-indigo-400 transition-all active:scale-95 shadow-[0_0_15px_rgba(79,70,229,0.6)]"

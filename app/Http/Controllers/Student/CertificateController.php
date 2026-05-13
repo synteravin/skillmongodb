@@ -19,11 +19,19 @@ class CertificateController extends Controller
             ->map(function ($sub) {
                 return [
                     'id' => $sub->id,
-                    // Format a nice ID like "CERT-850497706"
+
                     'certificate_id' => strtoupper(substr(md5($sub->id), 0, 12)),
-                    'course_name' => $sub->submission->group->name ?? 'SkillMongo Course',
+
+                    'course_name' =>
+                        $sub->submission->group->name ??
+                        'SkillMongo Course',
+
                     'assignment_title' => $sub->submission->title,
-                    'path' => Storage::disk('s3')->url($sub->certificate_path),
+
+                    // FULL URL S3
+                    'certificate_url' => Storage::disk('s3')->url(
+                        $sub->certificate_path,
+                    ),
                 ];
             });
 
