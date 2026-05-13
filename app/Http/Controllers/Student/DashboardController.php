@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -13,7 +14,7 @@ class DashboardController extends Controller
         $user = $request->user()->load(['character', 'userStats']);
 
         // 🚫 Kalau belum punya character atau data character terhapus
-        if (! $user->hasCharacter() || ! $user->character) {
+        if (!$user->hasCharacter() || !$user->character) {
             return redirect()->route('character.select');
         }
 
@@ -25,7 +26,7 @@ class DashboardController extends Controller
         // =========================
         foreach ($user->userStats as $stat) {
 
-            if (! $stat->path_stats) {
+            if (!$stat->path_stats) {
                 continue;
             }
 
@@ -82,7 +83,7 @@ class DashboardController extends Controller
 
                 // 🔥 USER AVATAR (UPLOAD)
                 'avatar' => $user->avatar
-                    ? asset('storage/'.$user->avatar)
+                    ? Storage::disk('s3')->url($user->avatar)
                     : null,
             ],
         ]);

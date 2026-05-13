@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\UserStat;
 
 class CareerController extends Controller
 {
@@ -15,7 +16,7 @@ class CareerController extends Controller
             ->where('course_id', request('course_id')) // optional kalau perlu
             ->firstOrFail();
 
-        if (! $progress->selected_path_id) {
+        if (!$progress->selected_path_id) {
             $progress->update([
                 'selected_path_id' => $request->path_id,
             ]);
