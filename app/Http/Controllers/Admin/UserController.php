@@ -18,6 +18,9 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $users = User::latest()->get()->map(function ($user) {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = Storage::disk('s3');
+
             return [
                 '_id' => (string) $user->_id,
                 'name' => $user->name,
@@ -25,7 +28,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'role' => $user->role,
                 'avatar' => $user->avatar
-                    ? Storage::disk('s3')->url($user->avatar)
+                    ? $disk->url($user->avatar)
                     : null,
             ];
         });
@@ -78,8 +81,8 @@ class UserController extends Controller
 
         $data = $request->validate([
             'name' => ['sometimes', 'string'],
-            'username' => ['sometimes', 'string', 'unique:users,username,' . $user->_id . ',_id'],
-            'email' => ['sometimes', 'email', 'unique:users,email,' . $user->_id . ',_id'],
+            'username' => ['sometimes', 'string', 'unique:users,username,'.$user->_id.',_id'],
+            'email' => ['sometimes', 'email', 'unique:users,email,'.$user->_id.',_id'],
             'role' => ['sometimes', 'in:admin,mentor,student'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);

@@ -51,8 +51,9 @@ class Character extends Model
 
     public function getAvatarUrlAttribute()
     {
-        return $this->avatar
-            ? Storage::disk('s3')->url($this->avatar)
-            : null;
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+
+        return $this->avatar ? $disk->url($this->avatar) : null;
     }
 }

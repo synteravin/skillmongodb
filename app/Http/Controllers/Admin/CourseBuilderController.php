@@ -27,7 +27,7 @@ class CourseBuilderController extends Controller
 
         return Inertia::render('Admin/Course/Index', [
             'courses' => $courses,
-            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
             ]),
@@ -67,6 +67,9 @@ class CourseBuilderController extends Controller
             ->values()
             ->map(function ($group) {
 
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
+
                 return [
                     '_id' => (string) $group->_id,
                     'name' => $group->name,
@@ -76,7 +79,7 @@ class CourseBuilderController extends Controller
                         'name' => $group->mentor->name,
                         'avatar' => $group->mentor->avatar,
                         'avatar_url' => $group->mentor->avatar
-                            ? Storage::disk('s3')->url($group->mentor->avatar)
+                            ? $disk->url($group->mentor->avatar)
                             : null,
                     ] : null,
 
@@ -107,16 +110,19 @@ class CourseBuilderController extends Controller
 
             ],
             'badges' => LevelBadge::orderBy('order')->get()->map(function ($b) {
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
+
                 return [
                     'order' => (int) $b->order,
                     'icon' => $b->icon,
                     'icon_url' => $b->icon
-                        ? Storage::disk('s3')->url($b->icon)
+                        ? $disk->url($b->icon)
                         : null,
                 ];
             }),
 
-            'mentors' => User::where('role', 'mentor')->get()->map(fn($m) => [
+            'mentors' => User::where('role', 'mentor')->get()->map(fn ($m) => [
                 '_id' => (string) $m->_id,
                 'name' => $m->name,
             ]),
@@ -155,7 +161,7 @@ class CourseBuilderController extends Controller
     ) {
         $data = $request->validated();
 
-        if (!empty($data['career_group_id'])) {
+        if (! empty($data['career_group_id'])) {
             $group = CareerGroup::findOrFail($data['career_group_id']);
             $this->authorize('update', $group);
         }

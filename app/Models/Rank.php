@@ -21,6 +21,9 @@ class Rank extends Model
 
     public function getImageUrlAttribute()
     {
-        return $this->image ? Storage::disk('s3')->url($this->image) : null;
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+
+        return $this->image ? $disk->url($this->image) : null;
     }
 }

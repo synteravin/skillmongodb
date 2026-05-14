@@ -14,7 +14,7 @@ class DashboardController extends Controller
         $user = $request->user()->load(['character', 'userStats']);
 
         // 🚫 Kalau belum punya character atau data character terhapus
-        if (!$user->hasCharacter() || !$user->character) {
+        if (! $user->hasCharacter() || ! $user->character) {
             return redirect()->route('character.select');
         }
 
@@ -26,7 +26,7 @@ class DashboardController extends Controller
         // =========================
         foreach ($user->userStats as $stat) {
 
-            if (!$stat->path_stats) {
+            if (! $stat->path_stats) {
                 continue;
             }
 
@@ -58,6 +58,9 @@ class DashboardController extends Controller
         // =========================
         // 🔥 RESPONSE
         // =========================
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+
         return Inertia::render('Student/Dashboard', [
             'user' => [
                 'name' => $user->name,
@@ -83,7 +86,7 @@ class DashboardController extends Controller
 
                 // 🔥 USER AVATAR (UPLOAD)
                 'avatar' => $user->avatar
-                    ? Storage::disk('s3')->url($user->avatar)
+                    ? $disk->url($user->avatar)
                     : null,
             ],
         ]);

@@ -17,19 +17,21 @@ class CertificateController extends Controller
             ->latest()
             ->get()
             ->map(function ($sub) {
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
+
                 return [
                     'id' => $sub->id,
 
                     'certificate_id' => strtoupper(substr(md5($sub->id), 0, 12)),
 
-                    'course_name' =>
-                        $sub->submission->group->name ??
+                    'course_name' => $sub->submission->group->name ??
                         'SkillMongo Course',
 
                     'assignment_title' => $sub->submission->title,
 
                     // FULL URL S3
-                    'certificate_url' => Storage::disk('s3')->url(
+                    'certificate_url' => $disk->url(
                         $sub->certificate_path,
                     ),
                 ];

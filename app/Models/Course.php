@@ -41,7 +41,10 @@ class Course extends Model
                 return $this->thumbnail;
             }
 
-            return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->thumbnail);
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+
+            return $disk->url($this->thumbnail);
         }
 
         return null;

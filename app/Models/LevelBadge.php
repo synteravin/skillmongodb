@@ -19,6 +19,9 @@ class LevelBadge extends Model
 
     public function getIconUrlAttribute()
     {
-        return $this->icon ? Storage::disk('s3')->url($this->icon) : null;
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+
+        return $this->icon ? $disk->url($this->icon) : null;
     }
 }
