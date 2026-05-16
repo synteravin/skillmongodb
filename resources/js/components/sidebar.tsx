@@ -39,7 +39,7 @@ const menu: MenuItem[] = [
         roles: ['admin', 'mentor', 'student'],
     },
     {
-        name: 'Course',
+        name: 'Courses',
         icon: UserCheckIcon,
         href: '/admin/courses',
         roles: ['admin'],
