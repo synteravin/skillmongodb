@@ -9,7 +9,10 @@ import {
     Users,
     LogOut,
     Settings,
-    Box
+    Box,
+    UserCircle,
+    UserCheck,
+    UserCheckIcon,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -36,10 +39,10 @@ const menu: MenuItem[] = [
         roles: ['admin', 'mentor', 'student'],
     },
     {
-        name: 'Courses',
-        icon: BookOpen,
-        href: '/admin/courses',
-        roles: ['admin', 'mentor'],
+        name: 'Student Journey',
+        icon: UserCheckIcon,
+        href: '/mentor/student-journey',
+        roles: ['mentor'],
     },
     {
         name: 'Users',
@@ -52,7 +55,7 @@ const menu: MenuItem[] = [
         icon: Box,
         href: '/admin/assets',
         roles: ['admin'],
-    }
+    },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -157,8 +160,8 @@ export default function Sidebar({
                                     key={item.name}
                                     href={href}
                                     className={`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${active
-                                        ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
+                                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
                                         } `}
                                     onClick={() =>
                                         window.innerWidth < 768 &&

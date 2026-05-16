@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
+use App\Http\Controllers\Mentor\DetailController as MentorDetailController;
 use App\Http\Controllers\Mentor\PathController;
 use App\Http\Controllers\Mentor\StudentSubmissionController as MentorStudentSubmission;
 use App\Http\Controllers\Mentor\MentorModuleManagementController as MentorModuleManagementController;
@@ -187,7 +188,11 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::get('/dashboard', [MentorDashboard::class, 'index'])
             ->name('dashboard');
+        Route::get('/student-journey', [MentorDetailController::class, 'index'])
+            ->name('student-journey');
 
+        Route::get('/student-journey/{student}', [MentorDetailController::class, 'show'])
+            ->name('student-journey.show');
         Route::get('/career-groups/{group}/paths', [PathController::class, 'index'])
             ->name('paths.index');
 
