@@ -167,6 +167,7 @@ class ProfileController extends Controller
         return Inertia::render('Student/Profile', [
             'user' => [
                 'name' => $user->name,
+                'email' => $user->email, // Added email
 
                 'level' => $currentLevel,
                 'exp' => $totalExp,
@@ -192,5 +193,25 @@ class ProfileController extends Controller
                 ],
             ],
         ]);
+    }
+
+    public function update(\Illuminate\Http\Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'avatar' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 's3');
+            $validated['avatar'] = $path;
+        }
+
+        $user->update($validated);
+
+        return back()->with('success', 'Profile updated successfully.');
     }
 }

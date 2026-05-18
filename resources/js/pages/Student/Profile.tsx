@@ -1,10 +1,11 @@
-import { Link, router } from '@inertiajs/react';
-import { ArrowLeft, Power, Camera, UserCog, ArrowRightLeft } from 'lucide-react';
-import { useState } from 'react';
+import { Link, router, useForm } from '@inertiajs/react';
+import { ArrowLeft, Power, Camera, UserCog, ArrowRightLeft, Loader2 } from 'lucide-react';
+import { useState, useRef } from 'react';
 
 type Props = {
     user: {
         name: string;
+        email: string;
         level: number;
         avatar: string;
 
@@ -36,6 +37,32 @@ type Props = {
 
 export default function ProfilePage({ user }: Props) {
     const [showImage, setShowImage] = useState(false);
+    
+    const { data, setData, post, processing, errors } = useForm({
+        name: user.name,
+        email: user.email,
+        avatar: null as File | null,
+    });
+    
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
+    };
+    
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setData('avatar', e.target.files[0]);
+        }
+    };
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post('/student/profile', {
+            preserveScroll: true,
+        });
+    };
+
     const progress =
         ((user.exp - user.exp_min) / (user.exp_max - user.exp_min)) * 100;
 
@@ -92,7 +119,7 @@ export default function ProfilePage({ user }: Props) {
                 </Link>
             </div>
 
-            <main className="relative z-10 flex-1 flex flex-col md:flex-row gap-3 md:gap-4 px-4 md:px-8 pb-4 min-h-0 overflow-hidden">
+            <form onSubmit={submit} className="relative z-10 flex-1 flex flex-col md:flex-row gap-3 md:gap-4 px-4 md:px-8 pb-4 min-h-0 overflow-hidden">
 
                 {/* ══════════ LEFT PANEL WRAPPER ══════════ */}
                 <div className="w-full md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px] flex-shrink-0 flex flex-col gap-3">
@@ -100,24 +127,32 @@ export default function ProfilePage({ user }: Props) {
                     <div className="h-[320px] border-2 border-[#3B28F6] bg-[#050619] p-4 md:p-5 flex flex-col items-center text-center">
 
                         {/* AVATAR */}
-                        <div
-                            className="relative mb-3 cursor-pointer flex-shrink-0"
-                            style={{ width: '130px', height: '148px' }}
-                            onClick={() => setShowImage(true)}
-                        >
+                        <div className="relative mb-3 flex-shrink-0" style={{ width: '130px', height: '148px' }}>
                             <div
-                                className="w-full h-full overflow-hidden"
+                                className="w-full h-full overflow-hidden cursor-pointer"
                                 style={{ clipPath: "polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%)" }}
+                                onClick={() => setShowImage(true)}
                             >
                                 <img
-                                    src={user.avatar ?? "/images/iam.jpeg"}
+                                    src={data.avatar ? URL.createObjectURL(data.avatar) : (user.avatar ?? "/images/aizen.jpeg")}
                                     className="w-full h-full object-cover"
                                     alt="avatar"
                                 />
                             </div>
-                            <button className="absolute bottom-2 right-2 bg-[#FACC15] w-7 h-7 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition z-10">
+                            <button 
+                                type="button"
+                                onClick={handleAvatarClick}
+                                className="absolute bottom-2 right-2 bg-[#FACC15] w-7 h-7 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition z-10"
+                            >
                                 <Camera size={13} strokeWidth={3} className="text-black" />
                             </button>
+                            <input 
+                                type="file" 
+                                ref={fileInputRef} 
+                                className="hidden" 
+                                accept="image/*"
+                                onChange={handleFileChange} 
+                            />
                         </div>
 
                         {/* NAME */}
@@ -153,6 +188,7 @@ export default function ProfilePage({ user }: Props) {
 
                     {/* LOGOUT — di luar profile card, otomatis di bawah */}
                     <button
+                        type="button"
                         onClick={() => router.post('/logout')}
                         className="mt-auto w-full border-2 border-[#3B28F6] bg-[#050619] py-2.5 text-red-500 hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.3)] transition font-bold font-['Orbitron'] text-sm flex items-center justify-center gap-2"
                     >
@@ -319,10 +355,12 @@ export default function ProfilePage({ user }: Props) {
                                         USERNAME
                                     </label>
                                     <input
-                                        placeholder=""
-                                        defaultValue={user.name}
-                                        className="w-full bg-[#050510] border border-[#1e2a6e] text-gray-400 px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none"
+                                        type="text"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        className="w-full bg-[#050510] border border-[#1e2a6e] text-gray-400 px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.35)] transition-all"
                                     />
+                                    {errors.name && <span className="text-red-500 text-xs mt-1">{errors.name}</span>}
                                 </div>
 
                                 <div className="flex flex-col">
@@ -330,9 +368,12 @@ export default function ProfilePage({ user }: Props) {
                                         EMAIL
                                     </label>
                                     <input
-                                        placeholder=""
-                                        className="w-full bg-[#050510] border border-[#1e2a6e] text-gray-400 px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) => setData('email', e.target.value)}
+                                        className="w-full bg-[#050510] border border-[#1e2a6e] text-gray-400 px-3 py-1.5 md:py-2 xl:py-3 font-['Rajdhani'] text-sm xl:text-base tracking-wide outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.35)] transition-all"
                                     />
+                                    {errors.email && <span className="text-red-500 text-xs mt-1">{errors.email}</span>}
                                 </div>
 
                                 <div className="flex flex-col">
@@ -399,20 +440,23 @@ export default function ProfilePage({ user }: Props) {
                         {/* SAVE BUTTON - Dipastikan berada di paling bawah dan tidak melompat */}
                         <div className="flex justify-end pt-2 md:pt-3 xl:pt-4 flex-shrink-0 mt-auto">
                             <button
-                                className="font-['Orbitron'] text-xs xl:text-sm font-bold tracking-widest text-white px-8 xl:px-12 py-2 md:py-2.5 xl:py-3 transition-all hover:shadow-[0_0_24px_rgba(59,40,246,0.8)]"
+                                type="submit"
+                                disabled={processing}
+                                className="font-['Orbitron'] text-xs xl:text-sm font-bold tracking-widest text-white px-8 xl:px-12 py-2 md:py-2.5 xl:py-3 transition-all hover:shadow-[0_0_24px_rgba(59,40,246,0.8)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 style={{
                                     background: 'linear-gradient(90deg,#3B28F6,#1a10b0)',
                                     clipPath: 'polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%)',
                                     boxShadow: '0 0 16px rgba(59,40,246,0.45)',
                                 }}
                             >
+                                {processing ? <Loader2 className="animate-spin" size={18} /> : null}
                                 SAVE CHANGES
                             </button>
                         </div>
                     </div>
                 </div>
 
-            </main>
+            </form>
 
             {/* MODAL AVATAR */}
             {showImage && (

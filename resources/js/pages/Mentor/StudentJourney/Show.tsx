@@ -82,6 +82,23 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
         student.avatar ||
         `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`;
 
+    const formatDate = (dateString: string | null) => {
+        if (!dateString) return 'Tidak ada tanggal';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return new Intl.DateTimeFormat('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            }).format(date);
+        } catch (e) {
+            return dateString;
+        }
+    };
+
     return (
         <AppLayout>
             <Head title={`Detail Siswa: ${student.name}`} />
@@ -123,8 +140,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                             </span>
                                             <span className="flex items-center gap-1 text-xs font-medium text-slate-500">
                                                 <Clock size={12} /> Aktif:{' '}
-                                                {student.lastActivity ||
-                                                    'Tidak pernah'}
+                                                {student.lastActivity ? formatDate(student.lastActivity) : 'Tidak pernah'}
                                             </span>
                                         </div>
                                         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
@@ -376,8 +392,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                                 : 'Gagal'}
                                                         </span>
                                                         <span className="text-slate-400">
-                                                            {quiz.completedAt ||
-                                                                'Tidak ada tanggal'}
+                                                            {formatDate(quiz.completedAt)}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -467,7 +482,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                                 : sub.status}
                                                         </span>
                                                         <span className="text-slate-400">
-                                                            {sub.createdAt}
+                                                            {formatDate(sub.createdAt)}
                                                         </span>
                                                     </div>
                                                 </div>

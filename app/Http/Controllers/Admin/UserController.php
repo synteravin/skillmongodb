@@ -13,11 +13,22 @@ class UserController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::latest()->paginate(25)->through(function ($user) {
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->latest()->paginate(25)->withQueryString()->through(function ($user) {
             /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
 
@@ -35,6 +46,7 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
+            'filters' => $request->only('search'),
         ]);
     }
 
