@@ -11,6 +11,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::post('settings/signature', [App\Http\Controllers\Settings\SignatureController::class, 'update'])->name('profile.signature.update');
+    Route::delete('settings/signature', [App\Http\Controllers\Settings\SignatureController::class, 'destroy'])->name('profile.signature.destroy');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -15,7 +15,7 @@ class DeleteQuizAction
         foreach ($questions as $q) {
             if (isset($q->media_path)) {
                 \Illuminate\Support\Facades\Storage::disk('s3')->delete($q->media_path);
-            } elseif ($q->media_url && !str_starts_with($q->media_url, 'http')) {
+            } elseif ($q->media_url && ! str_starts_with($q->media_url, 'http')) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($q->media_url);
             }
         }

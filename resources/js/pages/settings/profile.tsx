@@ -12,6 +12,7 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
 import type { BreadcrumbItem, SharedData } from '@/types';
+import SignaturePad from '@/components/signature-pad';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -141,6 +142,15 @@ export default function Profile({
                             </>
                         )}
                     </Form>
+                </div>
+
+                <div className="space-y-6 pt-6 border-t">
+                    <Heading
+                        variant="small"
+                        title="Digital Signature"
+                        description="Draw your signature below to be used on student certificates."
+                    />
+                    <SignaturePad currentSignatureUrl={auth.user.signature_url} />
                 </div>
 
                 <DeleteUser />

@@ -40,7 +40,7 @@ class CreateQuizAction
             if (request()->hasFile("questions.$qIndex.media")) {
                 $file = request()->file("questions.$qIndex.media");
                 $mediaS3Path = $file->store('quiz-images', 's3');
-                
+
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
                 $disk = \Illuminate\Support\Facades\Storage::disk('s3');
                 $mediaPath = $disk->url($mediaS3Path);

@@ -6,6 +6,7 @@ use App\Enums\CourseStatus;
 use App\Http\Controllers\Controller;
 use App\Models\CourseStudent;
 use App\Models\StudentSubmission;
+use App\Models\User;
 use App\Models\UserStat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -38,6 +39,12 @@ class StudentSubmissionController extends Controller
             'status' => 'graded',
         ];
 
+        $mentor = auth()->user();
+        $admin = User::where('role', 'admin')->first();
+
+        $mentorSignature = $this->getSignatureBase64($mentor?->signature_path);
+        $adminSignature = $this->getSignatureBase64($admin?->signature_path);
+
         // Generate Certificate
         $pdfData = [
             'studentName' => $studentSubmission->student->name,
@@ -45,12 +52,15 @@ class StudentSubmissionController extends Controller
             'groupName' => $studentSubmission->submission->group->name ?? 'SkillMongo',
             'grade' => $validated['grade'],
             'date' => now()->format('F j, Y'),
-            'mentorName' => auth()->user()->name,
+            'mentorName' => $mentor->name,
+            'adminName' => $admin->name ?? 'Guild Master',
+            'mentorSignature' => $mentorSignature,
+            'adminSignature' => $adminSignature,
         ];
 
         $pdf = Pdf::loadView('certificate', $pdfData)->setPaper('a4', 'landscape');
 
-        $filename = 'certificates/' . $studentSubmission->id . '_certificate.pdf';
+        $filename = 'certificates/'.$studentSubmission->id.'_certificate.pdf';
         Storage::disk('s3')->put($filename, $pdf->output(), [
             'visibility' => 'public',
         ]);
@@ -68,7 +78,7 @@ class StudentSubmissionController extends Controller
 
         if ($userStat) {
             $completedGroups = $userStat->completed_career_groups ?? [];
-            if (!in_array((string) $groupId, $completedGroups)) {
+            if (! in_array((string) $groupId, $completedGroups)) {
                 $completedGroups[] = (string) $groupId;
                 $userStat->completed_career_groups = $completedGroups;
                 $userStat->selected_path_id = null;
@@ -85,5 +95,26 @@ class StudentSubmissionController extends Controller
         }
 
         return back()->with('success', 'Review submitted successfully.');
+    }
+
+    private function getSignatureBase64(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        $disk = Storage::disk('s3');
+        if ($disk->exists($path)) {
+            $content = $disk->get($path);
+            if ($content) {
+                // Determine mime type from extension
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $mime = 'image/'.($ext === 'jpg' ? 'jpeg' : $ext);
+
+                return 'data:'.$mime.';base64,'.base64_encode($content);
+            }
+        }
+
+        return null;
     }
 }

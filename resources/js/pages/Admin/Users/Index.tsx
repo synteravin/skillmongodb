@@ -1,7 +1,7 @@
 import AppLayout from "@/layouts/app-layout";
-import { router } from "@inertiajs/react";
+import { router, Link } from "@inertiajs/react";
 import { useState } from "react";
-import { Pencil, Trash2, Plus, X, Users, Upload, User as UserIcon, Mail, Shield, Camera } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Users, Upload, User as UserIcon, Mail, Shield, Camera, Eye } from "lucide-react";
 
 interface User {
     _id: string;
@@ -12,7 +12,17 @@ interface User {
     avatar?: string | null;
 }
 
-export default function Index({ users }: { users: User[] }) {
+interface PaginatedUsers {
+    data: User[];
+    links: { url: string | null; label: string; active: boolean }[];
+    current_page: number;
+    last_page: number;
+    total: number;
+    from: number;
+    to: number;
+}
+
+export default function Index({ users }: { users: PaginatedUsers }) {
 
     const [showModal, setShowModal] = useState(false);
     const [editUser, setEditUser] = useState<User | null>(null);
@@ -129,8 +139,8 @@ export default function Index({ users }: { users: User[] }) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/50">
-                                {users.length > 0 ? (
-                                    users.map((user) => (
+                                {users.data.length > 0 ? (
+                                    users.data.map((user) => (
                                         <tr key={user._id} className="hover:bg-slate-800/30 transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
@@ -163,6 +173,13 @@ export default function Index({ users }: { users: User[] }) {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <Link
+                                                        href={`/admin/users/${user._id}`}
+                                                        className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                                                        title="View User Details"
+                                                    >
+                                                        <Eye size={16} />
+                                                    </Link>
                                                     <button
                                                         onClick={() => openEdit(user)}
                                                         className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
@@ -195,6 +212,37 @@ export default function Index({ users }: { users: User[] }) {
                         </table>
                     </div>
                 </div>
+
+                {/* PAGINATION */}
+                {users.last_page > 1 && (
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900 border border-slate-800/80 rounded-2xl px-6 py-4 shadow-xl">
+                        <div className="text-sm text-slate-400">
+                            Showing <span className="font-medium text-white">{users.from}</span> to <span className="font-medium text-white">{users.to}</span> of <span className="font-medium text-white">{users.total}</span> results
+                        </div>
+                        <div className="flex flex-wrap items-center justify-center gap-1.5">
+                            {users.links.map((link, i) => (
+                                link.url ? (
+                                    <Link
+                                        key={i}
+                                        href={link.url}
+                                        className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+                                            link.active
+                                                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+                                                : 'bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-700/50'
+                                        }`}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                ) : (
+                                    <span
+                                        key={i}
+                                        className="px-3.5 py-2 rounded-xl text-sm font-medium bg-slate-900 text-slate-500 border border-slate-800/50 cursor-not-allowed"
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                )
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* MODAL */}
                 {showModal && (

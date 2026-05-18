@@ -18,4 +18,9 @@ class QuizResult extends Model
         'passed',
         'completed_at',
     ];
+
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class, 'quiz_id', '_id');
+    }
 }

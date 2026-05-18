@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::latest()->get()->map(function ($user) {
+        $users = User::latest()->paginate(25)->through(function ($user) {
             /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
 
@@ -108,6 +108,35 @@ class UserController extends Controller
         $user->update($data);
 
         return back();
+    }
+
+    public function show(User $user, \App\Services\Admin\UserDetailService $userDetailService)
+    {
+        $this->authorize('view', $user);
+
+        $details = [];
+        if ($user->role === 'student') {
+            $details = $userDetailService->getStudentDetails($user);
+        } elseif ($user->role === 'mentor') {
+            $details = $userDetailService->getMentorDetails($user);
+        }
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+        $userData = [
+            '_id' => (string) $user->_id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'role' => $user->role,
+            'created_at' => $user->created_at,
+            'avatar' => $user->avatar ? $disk->url($user->avatar) : null,
+        ];
+
+        return Inertia::render('Admin/Users/Show', [
+            'user' => $userData,
+            'details' => $details,
+        ]);
     }
 
     public function destroy(User $user)

@@ -13,11 +13,12 @@ use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
+use App\Http\Controllers\Mentor\DetailController as MentorDetailController;
+use App\Http\Controllers\Mentor\MentorModuleManagementController;
+use App\Http\Controllers\Mentor\MentorQuizController;
 use App\Http\Controllers\Mentor\PathController;
 use App\Http\Controllers\Mentor\StudentSubmissionController as MentorStudentSubmission;
-use App\Http\Controllers\Mentor\MentorModuleManagementController as MentorModuleManagementController;
 use App\Http\Controllers\Mentor\SubmissionController;
-use App\Http\Controllers\Mentor\MentorQuizController;
 use App\Http\Controllers\ModuleContentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\CareerController;
@@ -77,18 +78,14 @@ Route::middleware(['auth', 'role:admin'])
 
         // Route::resource('characters', CharacterController::class)
         //     ->except(['show']);
-    
+
         /* ---------------- COURSE CRUD ---------------- */
 
         Route::get('/courses', [CourseController::class, 'index'])
             ->name('courses.index');
 
-
-
         Route::post('/courses', [CourseController::class, 'store'])
             ->name('courses.store');
-
-
 
         Route::put('/courses/{course}', [CourseController::class, 'update'])
             ->name('courses.update');
@@ -124,12 +121,12 @@ Route::middleware(['auth', 'role:admin'])
         /* ---------------- LEVEL BADGES ---------------- */
 
         // Route::resource('/levelbadge', LevelBadgeController::class);
-    
+
         /* ---------------- USER ---------------- */
 
         Route::resource('users', UserController::class);
         // Route::post('/admin/users/{user}', [UserController::class, 'update']);
-    
+
         /* ---------------- ASSIGN MENTOR ---------------- */
         Route::post('/career-groups/{group}/assign-mentor', [CareerGroupController::class, 'assignMentor']);
 
@@ -166,10 +163,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
         Route::post('/select-career', [CareerController::class, 'select']);
         // Route::resource('ranks', RankController::class);
-    
+
         // Route::post('ranks/reorder', [RankController::class, 'reorder'])
         //     ->name('ranks.reorder');
-    
+
         // Route::get('assets', function () {
         //     return Inertia::render('Admin/Assets/Index');
         // })->name('assets');
@@ -187,6 +184,12 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::get('/dashboard', [MentorDashboard::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/student-journey', [MentorDetailController::class, 'index'])
+            ->name('student-journey');
+
+        Route::get('/student-journey/{student}', [MentorDetailController::class, 'show'])
+            ->name('student-journey.show');
 
         Route::get('/career-groups/{group}/paths', [PathController::class, 'index'])
             ->name('paths.index');
@@ -241,7 +244,7 @@ Route::middleware(['auth', 'role:mentor'])
         //     '/career-groups/{group}/paths/{path}/modules',
         //     [MentorModuleManagementController::class, 'index']
         // )->name('paths.modules');
-    
+
         Route::get(
             '/career-groups/{group}/paths/{path}/modules',
             [MentorModuleManagementController::class, 'index']
@@ -396,4 +399,4 @@ Route::get('/', function () {
 Route::get('/auth/google', [SocialController::class, 'redirect']);
 Route::get('/auth/google/callback', [SocialController::class, 'callback']);
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

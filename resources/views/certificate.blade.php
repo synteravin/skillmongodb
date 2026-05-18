@@ -119,24 +119,35 @@
             line-height: 1.6;
         }
 
-        .footer {
+        .date-container {
             position: absolute;
-            bottom: 14%;
+            top: 80%;
             left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: #444444;
+            letter-spacing: 1px;
+        }
+
+        .footer {
             width: 100%;
         }
 
         .signature-block-left {
             position: absolute;
-            left: 16%;
-            width: 210px;
+            bottom: 10%;
+            left: 15%;
+            width: 280px;
             text-align: center;
         }
 
         .signature-block-right {
             position: absolute;
-            right: 16%;
-            width: 210px;
+            bottom: 10%;
+            right: 15%;
+            width: 280px;
             text-align: center;
         }
 
@@ -157,6 +168,15 @@
         .signer-title {
             font-size: 15px;
             color: #777777;
+        }
+
+        .signature-img {
+            max-width: 280px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: -15px;
+            z-index: 2;
+            position: relative;
         }
     </style>
 </head>
@@ -189,14 +209,28 @@
             and proves that they are competent in their field.
         </div>
 
+        <div class="date-container">
+            {{ $date }}
+        </div>
+
         <div class="footer">
-            <!-- <div class="signature-block-left">
+            <div class="signature-block-left">
+                @if(isset($adminSignature) && $adminSignature)
+                    <img src="{{ $adminSignature }}" class="signature-img" alt="Admin Signature">
+                @else
+                    <div style="height: 120px;"></div>
+                @endif
                 <div class="signature-line"></div>
-                <div class="signer-name">Daniel Martinez</div>
+                <div class="signer-name">{{ $adminName ?? 'Guild Master' }}</div>
                 <div class="signer-title">Guild Master</div>
-            </div> -->
+            </div>
 
             <div class="signature-block-right">
+                @if(isset($mentorSignature) && $mentorSignature)
+                    <img src="{{ $mentorSignature }}" class="signature-img" alt="Mentor Signature">
+                @else
+                    <div style="height: 120px;"></div>
+                @endif
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $mentorName }}</div>
                 <div class="signer-title">Mentor</div>

@@ -35,4 +35,21 @@ class UserStat extends Model
     {
         return $this->belongsTo(User::class, 'user_id', '_id');
     }
+
+    public function getTotalExpAttribute(): int
+    {
+        $totalExp = 0;
+        if (is_array($this->path_stats)) {
+            foreach ($this->path_stats as $pathStat) {
+                $totalExp += $pathStat['exp'] ?? 0;
+            }
+        }
+
+        return max((int) $this->exp, $totalExp);
+    }
+
+    public function getCurrentLevelAttribute(): int
+    {
+        return max((int) $this->level, floor($this->total_exp / 100) + 1);
+    }
 }
