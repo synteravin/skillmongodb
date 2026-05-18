@@ -104,14 +104,14 @@ class CourseRoadmapController extends Controller
                 /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
                 $disk = \Illuminate\Support\Facades\Storage::disk('s3');
 
-                $groupThumbnail = $group->thumbnail 
-                    ? (str_starts_with($group->thumbnail, 'http') ? $group->thumbnail : $disk->url($group->thumbnail)) 
+                $groupThumbnail = $group->thumbnail
+                    ? (str_starts_with($group->thumbnail, 'http') ? $group->thumbnail : $disk->url($group->thumbnail))
                     : null;
 
                 $mentorAvatar = null;
                 if ($group->mentor && $group->mentor->avatar) {
-                    $mentorAvatar = str_starts_with($group->mentor->avatar, 'http') 
-                        ? $group->mentor->avatar 
+                    $mentorAvatar = str_starts_with($group->mentor->avatar, 'http')
+                        ? $group->mentor->avatar
                         : $disk->url($group->mentor->avatar);
                 }
 

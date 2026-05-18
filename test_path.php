@@ -1,17 +1,18 @@
 <?php
+
 require __DIR__.'/vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-$courseId = '69fbbeff21b6002d6203202a'; 
+$courseId = '69fbbeff21b6002d6203202a';
 $course = \App\Models\Course::where('_id', $courseId)->first();
 
 $rawBasicPaths = \App\Models\Path::where('course_id', $course->_id)
     ->where('phase', 'basic_fundamental')
     ->get();
 
-dump("Count: " . $rawBasicPaths->count());
+dump('Count: '.$rawBasicPaths->count());
 foreach ($rawBasicPaths as $p) {
     dump([
         'id' => $p->_id,

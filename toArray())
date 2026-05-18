@@ -19,6 +19,6 @@ Warning: Module "mongodb" is already loaded in Unknown on line 0
       Psy\Exception\ParseErrorException::fromParseError(Object(PhpParser\Error))
 
   2   vendor\psy\psysh\src\CodeCleaner.php:269
-      Psy\CodeCleaner::parse("<?php dump(App\Models\Course::first()-;
+      Psy\CodeCleaner::parse("<?php dd(\App\Models\UserStat::first()-;
 ")
 

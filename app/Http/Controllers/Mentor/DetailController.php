@@ -17,13 +17,13 @@ use Inertia\Inertia;
 
 class DetailController extends Controller
 {
-    public function __construct(private StudentJourneyService $studentJourneyService)
-    {
-    }
+
+    public function __construct(private StudentJourneyService $studentJourneyService) {}
 
     private function s3Url(?string $path): ?string
     {
-        if (!$path) {
+        if (! $path) {
+
             return null;
         }
 
@@ -37,7 +37,9 @@ class DetailController extends Controller
     {
         return CareerGroup::where('mentor_id', (string) $mentor->_id)
             ->get()
-            ->map(fn($careerGroup) => (string) $careerGroup->_id)
+
+            ->map(fn ($careerGroup) => (string) $careerGroup->_id)
+
             ->toArray();
     }
 
@@ -47,7 +49,8 @@ class DetailController extends Controller
             ->map(function ($enrollment) {
                 $careerGroup = CareerGroup::find($enrollment->career_group_id);
 
-                if (!$careerGroup) {
+
+                if (! $careerGroup) {
                     return null;
                 }
 
@@ -66,7 +69,9 @@ class DetailController extends Controller
     {
         $mentor = $request->user();
 
-        abort_if(!$mentor->isMentor() && !$mentor->isAdmin(), 403);
+
+        abort_if(! $mentor->isMentor() && ! $mentor->isAdmin(), 403);
+
 
         $careerGroupIds = $this->getCareerGroupIds($mentor);
 
@@ -95,7 +100,8 @@ class DetailController extends Controller
 
                 $user = User::find($studentId);
 
-                if (!$user) {
+
+                if (! $user) {
                     return null;
                 }
 
@@ -160,7 +166,9 @@ class DetailController extends Controller
     {
         $mentor = $request->user();
 
-        abort_if(!$mentor->isMentor() && !$mentor->isAdmin(), 403);
+
+        abort_if(! $mentor->isMentor() && ! $mentor->isAdmin(), 403);
+
 
         $student = User::findOrFail($student);
 
@@ -175,7 +183,9 @@ class DetailController extends Controller
         // ]);
         abort_if($enrollments->isEmpty(), 404);
 
-        abort_if($enrollments->isEmpty() && !$mentor->isAdmin(), 403);
+
+        abort_if($enrollments->isEmpty() && ! $mentor->isAdmin(), 403);
+
 
         $stat = UserStat::where('user_id', (string) $student->_id)->first();
 

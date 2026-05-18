@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use MongoDB\BSON\ObjectId;
 
 class CourseController extends Controller
@@ -45,8 +45,6 @@ class CourseController extends Controller
         ]);
 
     }
-
-
 
     public function store(Request $request)
     {
@@ -91,8 +89,6 @@ class CourseController extends Controller
         return redirect()->route('admin.courses.builder', $course->slug);
     }
 
-
-
     public function update(Request $request, Course $course)
     {
 
@@ -106,7 +102,7 @@ class CourseController extends Controller
 
         if ($request->hasFile('thumbnail')) {
 
-            if ($course->thumbnail && !str_starts_with($course->thumbnail, 'http')) {
+            if ($course->thumbnail && ! str_starts_with($course->thumbnail, 'http')) {
                 Storage::disk('s3')->delete($course->thumbnail);
             }
 
@@ -128,7 +124,7 @@ class CourseController extends Controller
 
     public function destroy(Course $course)
     {
-        if ($course->thumbnail && !str_starts_with($course->thumbnail, 'http')) {
+        if ($course->thumbnail && ! str_starts_with($course->thumbnail, 'http')) {
             Storage::disk('s3')->delete($course->thumbnail);
         }
 

@@ -82,9 +82,9 @@ class QuizController extends Controller
                     return [
                         'question_text' => $q->question_text,
                         'media_url' => $q->media_url
-                            ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/' . $q->media_url))
+                            ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
                             : null,
-                        'answers' => $q->answers->map(fn($a) => [
+                        'answers' => $q->answers->map(fn ($a) => [
                             'answer_text' => $a->answer_text,
                             'is_correct' => $a->is_correct,
                         ]),

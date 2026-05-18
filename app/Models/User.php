@@ -34,6 +34,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'role',
         'character_id',
         'avatar',
+        'signature_path',
     ];
 
     /**
@@ -63,6 +64,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         ];
     }
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'signature_url',
+    ];
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -76,6 +86,19 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    public function getSignatureUrlAttribute()
+    {
+        if ($this->signature_path) {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+            if ($disk->exists($this->signature_path)) {
+                return $disk->temporaryUrl($this->signature_path, now()->addMinutes(30));
+            }
+        }
+
+        return null;
     }
 
     public function character()

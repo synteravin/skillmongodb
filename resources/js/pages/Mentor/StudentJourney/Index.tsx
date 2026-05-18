@@ -153,11 +153,12 @@ export default function StudentJourneyIndex({ statistics, students }: Props) {
                                             </td>
                                             <td className="px-4 py-3">
                                                 <span
-                                                    className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${student.status.toLowerCase() ===
-                                                            'active'
+                                                    className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${
+                                                        student.status.toLowerCase() ===
+                                                        'active'
                                                             ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                                                             : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400'
-                                                        }`}
+                                                    }`}
                                                 >
                                                     {student.status}
                                                 </span>

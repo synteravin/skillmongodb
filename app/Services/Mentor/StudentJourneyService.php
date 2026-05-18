@@ -28,7 +28,9 @@ class StudentJourneyService
 
         return CareerGroup::whereIn('_id', $allCareerGroupIds)
             ->get()
-            ->map(fn($group) => ['id' => (string) $group->_id, 'name' => $group->name])
+
+            ->map(fn ($group) => ['id' => (string) $group->_id, 'name' => $group->name])
+
             ->values()->all();
     }
 
@@ -38,7 +40,9 @@ class StudentJourneyService
 
         return Module::whereIn('_id', $completedModuleIds)
             ->get(['title', 'type'])
-            ->map(fn($m) => ['title' => $m->title, 'type' => $m->type ?? 'Module'])
+
+            ->map(fn ($m) => ['title' => $m->title, 'type' => $m->type ?? 'Module'])
+
             ->values()->all();
     }
 
@@ -52,7 +56,8 @@ class StudentJourneyService
 
                 return [
                     'id' => (string) $q->_id,
-                    'title' => $path ? $path->name . ' Quiz' : 'Quiz',
+
+                    'title' => $path ? $path->name.' Quiz' : 'Quiz',
                     'score' => $q->score,
                     'passed' => $q->passed,
                     'completedAt' => $q->completed_at ?? $q->created_at,
@@ -66,7 +71,7 @@ class StudentJourneyService
         $userStats = UserStat::where('user_id', $studentId)->get();
         $totalExp = 0;
         foreach ($userStats as $s) {
-            if (!$s->path_stats) {
+            if (! $s->path_stats) {
                 continue;
             }
 
@@ -105,7 +110,7 @@ class StudentJourneyService
 
         $pathIds = Path::whereIn('course_id', $courseIds)
             ->get()
-            ->map(fn($path) => (string) $path->_id)
+            ->map(fn ($path) => (string) $path->_id)
             ->toArray();
 
         $totalModules = Module::whereIn('path_id', $pathIds)->count();

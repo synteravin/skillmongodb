@@ -112,11 +112,12 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     <div className="text-center sm:text-left">
                                         <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
                                             <span
-                                                className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase ${student.status.toLowerCase() ===
-                                                        'active'
+                                                className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
+                                                    student.status.toLowerCase() ===
+                                                    'active'
                                                         ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 ring-inset dark:bg-emerald-500/10 dark:text-emerald-400'
                                                         : 'bg-slate-100 text-slate-700 ring-1 ring-slate-500/10 ring-inset dark:bg-slate-800 dark:text-slate-400'
-                                                    }`}
+                                                }`}
                                             >
                                                 {student.status}
                                             </span>
@@ -317,10 +318,10 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     )}
                                     {student.completedModulesList.length ===
                                         0 && (
-                                            <p className="w-full rounded-lg bg-slate-50 p-4 text-center text-sm text-slate-500 dark:bg-slate-800/50">
-                                                Belum ada modul yang diselesaikan.
-                                            </p>
-                                        )}
+                                        <p className="w-full rounded-lg bg-slate-50 p-4 text-center text-sm text-slate-500 dark:bg-slate-800/50">
+                                            Belum ada modul yang diselesaikan.
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -364,10 +365,11 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                     </h4>
                                                     <div className="mt-2 flex items-center gap-2 text-xs">
                                                         <span
-                                                            className={`rounded px-2 py-0.5 font-medium ${quiz.passed
+                                                            className={`rounded px-2 py-0.5 font-medium ${
+                                                                quiz.passed
                                                                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                                                                     : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400'
-                                                                }`}
+                                                            }`}
                                                         >
                                                             {quiz.passed
                                                                 ? 'Lulus'
@@ -448,7 +450,8 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                     </p>
                                                     <div className="mt-2 flex items-center gap-2 text-xs">
                                                         <span
-                                                            className={`rounded px-2 py-0.5 font-medium ${[
+                                                            className={`rounded px-2 py-0.5 font-medium ${
+                                                                [
                                                                     'graded',
                                                                     'passed',
                                                                 ].includes(
@@ -456,10 +459,10 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                                 )
                                                                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                                                                     : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
-                                                                }`}
+                                                            }`}
                                                         >
                                                             {sub.status ===
-                                                                'graded'
+                                                            'graded'
                                                                 ? 'Sudah Dinilai'
                                                                 : sub.status}
                                                         </span>

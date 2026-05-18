@@ -157,7 +157,7 @@ class ProfileController extends Controller
         // ]);
         /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
         $disk = \Illuminate\Support\Facades\Storage::disk('s3');
-        
+
         $userAvatar = null;
         if ($user->avatar) {
             $userAvatar = str_starts_with($user->avatar, 'http') ? $user->avatar : $disk->url($user->avatar);
