@@ -70,6 +70,13 @@ class DashboardController extends Controller
                     ];
                 })->values()->all(),
             ],
+            'notifications' => $mentor->unreadNotifications()->take(10)->get()->map(function($notif) {
+                return [
+                    'id' => $notif->id,
+                    'data' => $notif->data,
+                    'created_at' => $notif->created_at->diffForHumans(),
+                ];
+            }),
         ]);
     }
 }

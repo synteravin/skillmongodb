@@ -133,6 +133,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             ->latest('updated_at');
     }
 
+    public function notifications()
+    {
+        return $this->morphMany(\App\Models\Notification::class, 'notifiable')->latest();
+    }
+
+    public function readNotifications()
+    {
+        return $this->notifications()->read();
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->unread();
+    }
+
     const ROLE_ADMIN = 'admin';
 
     const ROLE_MENTOR = 'mentor';

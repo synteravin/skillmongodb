@@ -184,6 +184,9 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::get('/dashboard', [MentorDashboard::class, 'index'])
             ->name('dashboard');
+
+        Route::post('/notifications/{id}/read', [\App\Http\Controllers\Mentor\NotificationController::class, 'markAsRead'])
+            ->name('notifications.read');
         Route::get('/student-journey', [MentorDetailController::class, 'index'])
             ->name('student-journey');
 

@@ -257,7 +257,7 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
                                 ) : (
                                     course.career_groups?.map(group => (
                                         <div key={String(group._id)} className="rounded-2xl border border-gray-200/60 dark:border-slate-700/60 bg-gray-50/30 dark:bg-slate-800/20 overflow-hidden">
-                                            {/* Group Header */}
+
                                             <div className="flex items-center justify-between p-4 sm:p-5 bg-white/50 dark:bg-slate-800/40 border-b border-gray-200/60 dark:border-slate-700/60 backdrop-blur-sm">
                                                 <div className="flex items-center gap-3">
                                                     <div className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
@@ -276,7 +276,6 @@ export default function Builder({ course, mentors }: { course: Course, mentors: 
                                                 </button>
                                             </div>
 
-                                            {/* Paths Grid */}
                                             <div className="p-4 sm:p-5">
                                                 {group.paths?.length === 0 ? (
                                                     <p className="text-sm text-slate-400 dark:text-slate-500 italic text-center py-4">No paths added to this group yet.</p>

@@ -89,13 +89,16 @@ class SubmissionController extends Controller
         }
 
         // Update or Create
-        StudentSubmission::updateOrCreate(
+        $studentSubmission = StudentSubmission::updateOrCreate(
             [
                 'submission_id' => $submission->id,
                 'student_id' => auth()->id(),
             ],
             $data
         );
+
+        // Notify Mentors
+        app(\App\Actions\Submission\NotifyMentorOfSubmissionAction::class)->execute($studentSubmission, auth()->user());
 
         return back()->with('success', 'Your work has been submitted successfully.');
     }

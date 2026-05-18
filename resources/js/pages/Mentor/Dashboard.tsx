@@ -1,7 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { BookOpen, Users, Activity, ArrowRight, Layers, GraduationCap, ClipboardList, TrendingUp } from 'lucide-react';
-import { Link } from '@inertiajs/react';
-
+import { Link, router } from '@inertiajs/react';
 type CareerGroup = {
     id: string;
     name: string;
@@ -19,7 +18,7 @@ type Mentor = {
     careerGroups: CareerGroup[];
 };
 
-export default function Dashboard({ mentor }: { mentor: Mentor }) {
+export default function Dashboard({ mentor, notifications = [] }: { mentor: Mentor, notifications?: any[] }) {
     const groups = mentor?.careerGroups ?? [];
 
     return (
@@ -80,6 +79,58 @@ export default function Dashboard({ mentor }: { mentor: Mentor }) {
                         color="purple" 
                     />
                 </section>
+
+                {/* NOTIFICATIONS INBOX */}
+                {notifications.length > 0 && (
+                    <section className="relative rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border border-amber-100 dark:border-amber-500/20 shadow-lg">
+                        <div className="flex items-center gap-3 mb-6 relative z-10">
+                            <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                                <Activity className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+                                    Needs Attention
+                                </h2>
+                                <p className="text-sm text-amber-600/80 dark:text-amber-400/80 font-medium">
+                                    You have {notifications.length} new student submissions waiting for your review.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 relative z-10">
+                            {notifications.map((notif) => (
+                                <div key={notif.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-4 rounded-2xl border border-amber-100/50 dark:border-amber-500/10 shadow-sm hover:shadow-md transition-shadow">
+                                    <div>
+                                        <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                                            {notif.data.message}
+                                        </p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                Task: {notif.data.submission_title} • {notif.created_at}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Link
+                                            href={`/mentor/student-submissions/${notif.data.student_submission_id}`}
+                                            className="flex items-center justify-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-xl transition-colors shadow-sm shadow-amber-500/20"
+                                        >
+                                            Review Now
+                                        </Link>
+                                        <button 
+                                            onClick={() => router.post(`/mentor/notifications/${notif.id}/read`, {}, { preserveScroll: true })}
+                                            className="flex items-center justify-center p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-xl transition-colors"
+                                            title="Mark as Read"
+                                        >
+                                            <ArrowRight className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
                 {/* CAREER GROUP LIST */}
                 <section className="relative rounded-3xl p-6 lg:p-8 bg-white dark:bg-gradient-to-br dark:from-[#0b0f2a] dark:to-[#050619] border border-gray-100 dark:border-slate-800 shadow-lg">
