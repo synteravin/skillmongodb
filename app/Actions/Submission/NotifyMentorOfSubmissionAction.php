@@ -17,21 +17,28 @@ class NotifyMentorOfSubmissionAction
             return;
         }
 
-        $careerGroup = CareerGroup::with('mentors')->find($submission->group_id);
+        $careerGroup = CareerGroup::find($submission->group_id);
         if (!$careerGroup) {
             return;
         }
 
-        $mentors = clone $careerGroup->mentors;
-        
+        // Ambil mentor dari MentorCareerGroup (karena belongsToMany terkadang bermasalah di MongoDB)
+        $mentorIds = \App\Models\MentorCareerGroup::where('career_group_id', $careerGroup->id)
+            ->pluck('mentor_id')
+            ->toArray();
+            
+        // Tambahkan juga mentor_id bawaan dari grup jika ada
         if ($careerGroup->mentor_id) {
-            $primaryMentor = User::find($careerGroup->mentor_id);
-            if ($primaryMentor && !$mentors->contains('_id', $primaryMentor->_id)) {
-                $mentors->push($primaryMentor);
-            }
+            $mentorIds[] = $careerGroup->mentor_id;
         }
+        
+        $mentorIds = array_unique(array_filter($mentorIds));
+        
+        // Ambil data User mentor
+        $mentors = User::whereIn('_id', $mentorIds)->get();
 
         foreach ($mentors as $mentor) {
+            /** @var User $mentor */
             $mentor->notify(new StudentSubmissionNotification(
                 (string) $studentSubmission->_id,
                 $student->name,
