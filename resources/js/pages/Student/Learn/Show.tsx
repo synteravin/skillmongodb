@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { router, Link } from '@inertiajs/react';
 import { Lock, Check, Play, FileText, X, ZoomIn } from 'lucide-react';
 
@@ -33,6 +33,115 @@ type Progress = {
     completed_modules: string[];
 };
 
+/* ================= IMAGE CONTENT ================= */
+function ImageContent({ item }: { item: Content }) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <>
+            {/* Lightbox Modal */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md dark:bg-black/90"
+                    onClick={() => setIsOpen(false)}
+                >
+                    <div
+                        className="relative mx-4 w-full max-w-4xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Close button */}
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="absolute -top-10 right-0 flex items-center gap-1.5 text-white/70 transition-colors hover:text-white dark:text-gray-400 dark:hover:text-white"
+                        >
+                            <X className="h-4 w-4" />
+                            <span className="font-['Orbitron'] text-xs tracking-wider uppercase">
+                                Tutup
+                            </span>
+                        </button>
+
+                        {/* Image */}
+                        <div className="overflow-hidden rounded-xl border border-blue-300 shadow-[0_0_60px_rgba(59,130,246,0.25)] dark:border-blue-500/40 dark:shadow-[0_0_60px_rgba(59,130,246,0.2)]">
+                            <div className="flex items-center gap-2 border-b border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-500/30 dark:bg-blue-500/10">
+                                <span className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400 dark:shadow-[0_0_8px_#60a5fa]" />
+                                <span className="text-[10px] font-semibold tracking-widest text-blue-500 uppercase dark:text-gray-400">
+                                    Image Preview
+                                </span>
+                            </div>
+                            <img
+                                src={item.content.url}
+                                alt=""
+                                className="block max-h-[75vh] w-full bg-white object-contain dark:bg-black"
+                            />
+                        </div>
+
+                        {/* Caption di bawah modal */}
+                        {item.content?.caption && (
+                            <p className="mt-4 text-center text-sm text-white/80 dark:text-gray-300">
+                                {item.content.caption}
+                            </p>
+                        )}
+                        <p className="mt-2 text-center text-xs text-white/50 italic dark:text-gray-500">
+                            Klik di luar gambar untuk menutup
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Layout normal: gambar kiri + caption kanan (atau atas-bawah di mobile) */}
+            <div className="mb-5 flex flex-col items-start gap-4 md:flex-row">
+                {/* Gambar */}
+                <div className="w-full flex-shrink-0 md:w-[55%]">
+                    <div className="flex items-center gap-2 rounded-t-xl border border-b-0 border-blue-200 bg-blue-50 px-3 py-2 dark:border-blue-500/20 dark:bg-blue-500/10">
+                        <span className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400 dark:shadow-[0_0_8px_#60a5fa]" />
+                        <span className="text-[10px] font-semibold tracking-widest text-blue-500 uppercase dark:text-gray-400">
+                            Image
+                        </span>
+                    </div>
+                    <div
+                        className="group relative cursor-pointer overflow-hidden rounded-b-xl border border-blue-200 bg-[#f8faff] dark:border-blue-500/20 dark:bg-black"
+                        onClick={() => setIsOpen(true)}
+                    >
+                        <img
+                            src={item.content.url}
+                            alt={item.content.caption || 'Module image'}
+                            className="block h-auto w-full object-cover transition-all duration-300 group-hover:brightness-90 dark:group-hover:brightness-75"
+                        />
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <div className="flex items-center gap-2 rounded-lg border border-blue-300 bg-white/80 px-3 py-1.5 shadow backdrop-blur-sm dark:border-blue-500/50 dark:bg-blue-500/30 dark:shadow-none">
+                                <ZoomIn className="h-4 w-4 text-blue-600 dark:text-white" />
+                                <span className="text-xs font-semibold text-blue-700 dark:text-white">
+                                    Perbesar
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Caption */}
+                {item.content?.caption && (
+                    <div className="flex w-full flex-1 flex-col gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-500/15 dark:bg-blue-500/5">
+                        <div className="flex items-center gap-2">
+                            <span className="rounded border border-blue-300 bg-blue-100 px-2 py-0.5 text-[9px] font-bold tracking-widest text-blue-600 uppercase dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-400">
+                                Catatan
+                            </span>
+                        </div>
+                        <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-[#334155] dark:text-gray-300">
+                            {item.content.caption}
+                        </p>
+                        <div className="mt-auto flex items-center gap-2 border-t border-dashed border-blue-200 pt-3 dark:border-blue-500/20">
+                            <span className="text-[10px] text-gray-400 italic dark:text-gray-500">
+                                💡 Klik gambar untuk memperbesar
+                            </span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+}
+
 /* ================= PAGE ================= */
 export default function LearnShow({
     course,
@@ -52,7 +161,7 @@ export default function LearnShow({
 
     if (currentIndex === -1) {
         return (
-            <div className="p-10 text-white">
+            <div className="p-10 text-[#1e3a8a] dark:text-white">
                 Module tidak ditemukan / tidak valid
             </div>
         );
@@ -108,108 +217,54 @@ export default function LearnShow({
     };
 
     return (
-        <div className="flex h-screen flex-col overflow-hidden bg-[#040812] text-white">
-            {/* ================= HEADER (DIAM) ================= */}
+        <div className="flex h-screen flex-col overflow-hidden bg-[#f0f4ff] text-[#1e293b] dark:bg-[#040812] dark:text-white">
+            {/* ================= HEADER ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
-                    className="relative border-[2px] md:border-[3px] border-transparent"
+                    className="relative border-[2px] border-transparent md:border-[3px]"
                     style={{
                         borderImage:
-                            'linear-gradient(to right, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1',
+                            'linear-gradient(to right, #2563EB 0%, #3b82f6 30%, #6366f1 50%, #facc15 100%) 1',
                     }}
                 >
-                    <div className="flex items-center gap-4 bg-[#040812] px-4 py-4 md:px-6">
+                    <div className="flex items-center gap-4 bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">
                         <Link
                             href={`/student/courses/${course.slug}`}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-800 bg-[#0b1021] p-2 transition-colors hover:border-blue-600 hover:bg-blue-900/40 md:h-12 md:w-12"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-300 bg-[#eff6ff] p-2 transition-colors hover:border-blue-500 hover:bg-blue-100 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
                             <svg
                                 viewBox="0 0 48 48"
-                                className="h-7 w-7 scale-125 text-indigo-500 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9"
+                                className="h-7 w-7 scale-125 text-blue-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
-                                <rect
-                                    x="12"
-                                    y="20"
-                                    width="29"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="8"
-                                    y="20"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="5"
-                                    y="20"
-                                    width="5"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="8"
-                                    y="16"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="8"
-                                    y="24"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="12"
-                                    y="12"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="12"
-                                    y="28"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="16"
-                                    y="8"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="16"
-                                    y="32"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
+                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
+                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
+                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
+                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
                             </svg>
                         </Link>
-                        <h1 className="font-['Orbitron'] text-xl font-bold tracking-[0.15em] text-white uppercase md:text-2xl lg:text-3xl">
+                        <h1 className="font-['Orbitron'] text-xl font-bold tracking-[0.15em] text-[#1e3a8a] uppercase md:text-2xl lg:text-3xl dark:text-white">
                             {course.title}
                         </h1>
                     </div>
                 </div>
             </div>
 
-            {/* ================= MAIN (flex-1 + overflow-hidden) ================= */}
-            <div className="flex min-h-0 flex-1 flex-col md:flex-row gap-2 overflow-hidden px-1 pt-2 pb-1">
-                {/* ================= LEFT PANEL (DIAM) ================= */}
-                <div className="flex w-full md:w-[260px] lg:w-[280px] md:flex-shrink-0 flex-col gap-2 overflow-hidden rounded-xl p-3 bg-gradient-to-b from-[#0d1229] to-[#080d1e] border border-blue-500/30">
+            {/* ================= MAIN ================= */}
+            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-1 pt-2 pb-1 md:flex-row">
+                {/* ================= LEFT PANEL ================= */}
+                <div className="flex w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
                     {/* Label header sidebar */}
-                    <p className="flex-shrink-0 px-1 text-xs font-bold tracking-[0.2em] text-gray-400 uppercase font-['Orbitron']">
+                    <p className="font-['Orbitron'] flex-shrink-0 px-1 text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
                         Quest Modules
                     </p>
 
                     {/* List modul */}
-                    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent">
+                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1 dark:scrollbar-thumb-blue-500/30">
                         {modules.map((mod, index) => {
                             const isActive = module._id === mod._id;
                             const unlocked = isUnlocked(index);
@@ -222,34 +277,34 @@ export default function LearnShow({
                                     className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
                                         unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
                                     } ${
-                                        isActive 
-                                            ? 'bg-gradient-to-br from-[#1a2060] to-[#0e1540] border border-blue-500/80 shadow-[0_0_16px_rgba(99,130,255,0.2)]'
+                                        isActive
+                                            ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
                                             : done
-                                                ? 'bg-gradient-to-br from-[#0a2a1a] to-[#0d1f2d] border border-green-500/50 shadow-[0_0_10px_rgba(74,222,128,0.1)]'
-                                                : 'bg-white/5 border border-white/5'
+                                              ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d] dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]'
+                                              : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5 dark:hover:border-white/5 dark:hover:bg-white/5'
                                     }`}
                                 >
                                     {/* Icon Box */}
                                     <div
                                         className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border ${
                                             isActive
-                                                ? 'bg-blue-500/20 border-blue-500/60'
+                                                ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
                                                 : done
-                                                    ? 'bg-green-500/15 border-green-500/40'
-                                                    : 'bg-white/5 border-white/10'
+                                                  ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
+                                                  : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
                                         }`}
                                     >
                                         {!unlocked ? (
-                                            <Lock className="h-4 w-4 text-gray-500" />
+                                            <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                                         ) : done ? (
-                                            <Check className="h-4 w-4 text-green-400" />
+                                            <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                                         ) : isActive ? (
                                             <Play
-                                                className="h-4 w-4 text-indigo-300"
+                                                className="h-4 w-4 text-blue-600 dark:text-indigo-300"
                                                 fill="currentColor"
                                             />
                                         ) : (
-                                            <span className="text-xs font-bold text-gray-400 font-['Orbitron']">
+                                            <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
                                                 {String(index + 1).padStart(2, '0')}
                                             </span>
                                         )}
@@ -258,15 +313,25 @@ export default function LearnShow({
                                     {/* Text */}
                                     <div className="flex min-w-0 flex-col">
                                         <span
-                                            className={`mb-0.5 text-[10px] font-semibold tracking-widest uppercase font-['Orbitron'] ${
-                                                isActive ? 'text-blue-400' : done ? 'text-green-400' : 'text-white/30'
+                                            className={`font-['Orbitron'] mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${
+                                                isActive
+                                                    ? 'text-blue-500 dark:text-blue-400'
+                                                    : done
+                                                      ? 'text-green-600 dark:text-green-400'
+                                                      : 'text-blue-300 dark:text-white/30'
                                             }`}
                                         >
                                             Modul {String(index + 1).padStart(2, '0')}
                                         </span>
                                         <span
                                             className={`truncate text-sm leading-tight font-bold ${
-                                                isActive ? 'text-white' : done ? 'text-green-200' : unlocked ? 'text-white/60' : 'text-white/30'
+                                                isActive
+                                                    ? 'text-[#1e3a8a] dark:text-white'
+                                                    : done
+                                                      ? 'text-green-800 dark:text-green-200'
+                                                      : unlocked
+                                                        ? 'text-[#334155] dark:text-white/60'
+                                                        : 'text-gray-400 dark:text-white/30'
                                             }`}
                                         >
                                             {mod.title}
@@ -274,7 +339,7 @@ export default function LearnShow({
                                     </div>
 
                                     {isActive && (
-                                        <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#99E4FD] to-[#9681FF]" />
+                                        <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
                                     )}
                                 </div>
                             );
@@ -284,17 +349,17 @@ export default function LearnShow({
 
                 {/* ================= RIGHT PANEL ================= */}
                 <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
-                    <div className="min-h-0 flex-1 overflow-y-auto rounded-xl p-4 md:p-6 lg:p-8 bg-gradient-to-b from-[#0d1229] to-[#080d1e] border border-blue-500/30 scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent">
+                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 min-h-0 flex-1 overflow-y-auto rounded-xl border border-blue-200 bg-white p-4 shadow-sm md:p-6 lg:p-8 dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none dark:scrollbar-thumb-blue-500/30">
                         {/* Module Title */}
                         <div className="mb-6 flex items-center gap-3">
-                            <div className="w-[3px] h-6 rounded-full bg-gradient-to-b from-blue-400 to-purple-400" />
-                            <h2 className="text-lg md:text-xl font-bold text-white tracking-widest font-['Orbitron']">
+                            <div className="h-6 w-[3px] rounded-full bg-gradient-to-b from-blue-500 to-indigo-400 dark:from-blue-400 dark:to-purple-400" />
+                            <h2 className="font-['Orbitron'] text-lg font-bold tracking-widest text-[#1e3a8a] md:text-xl dark:text-white">
                                 {module.title}
                             </h2>
                         </div>
 
                         {module.contents.length === 0 && (
-                            <p className="text-sm text-gray-500 italic">
+                            <p className="text-sm text-gray-400 italic dark:text-gray-500">
                                 Belum ada materi.
                             </p>
                         )}
@@ -306,15 +371,15 @@ export default function LearnShow({
                                     <div className="mb-5">
                                         {item.content?.title && (
                                             <div className="mb-2 flex items-center gap-2">
-                                                <span className="rounded px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                                                <span className="rounded border border-blue-300 bg-blue-100 px-2 py-0.5 text-[10px] font-bold tracking-widest text-blue-600 uppercase dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-400">
                                                     {String(index + 1).padStart(2, '0')}
                                                 </span>
-                                                <h3 className="text-base font-bold text-blue-300 font-['Orbitron']">
+                                                <h3 className="font-['Orbitron'] text-base font-bold text-blue-700 dark:text-blue-300">
                                                     {item.content.title}
                                                 </h3>
                                             </div>
                                         )}
-                                        <p className="text-[14px] md:text-[15px] leading-relaxed whitespace-pre-wrap text-gray-300 pl-6 border-l-2 border-blue-500/20">
+                                        <p className="border-l-2 border-blue-300 pl-6 text-[14px] leading-relaxed whitespace-pre-wrap text-[#334155] md:text-[15px] dark:border-blue-500/20 dark:text-gray-300">
                                             {item.content?.description || item.content?.text}
                                         </p>
                                     </div>
@@ -322,145 +387,39 @@ export default function LearnShow({
 
                                 {/* ── YOUTUBE ── */}
                                 {item.type === 'youtube' && (
-                                    <div className="mb-5 overflow-hidden rounded-xl border border-blue-500/20 shadow-lg shadow-black/50">
-                                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border-b border-blue-500/20">
+                                    <div className="mb-5 overflow-hidden rounded-xl border border-blue-200 shadow-md dark:border-blue-500/20 dark:shadow-lg dark:shadow-black/50">
+                                        <div className="flex items-center gap-2 border-b border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-500/20 dark:bg-blue-500/10">
                                             <span className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
-                                            <span className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase">
+                                            <span className="text-[10px] font-semibold tracking-widest text-blue-500 uppercase dark:text-gray-400">
                                                 Video
                                             </span>
                                         </div>
                                         <div className="aspect-video w-full">
                                             <iframe
                                                 src={getYoutubeEmbedUrl(item.content.url)}
-                                                className="w-full h-full block"
+                                                className="block h-full w-full"
                                                 allowFullScreen
                                             />
                                         </div>
                                     </div>
                                 )}
+
                                 {/* ── IMAGE ── */}
-                                {item.type === 'image' &&
-                                    (() => {
-                                        const [isOpen, setIsOpen] =
-                                            React.useState(false);
-                                        return (
-                                            <>
-                                                {/* Lightbox Modal */}
-                                                {isOpen && (
-                                                    <div
-                                                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md"
-                                                        onClick={() => setIsOpen(false)}
-                                                    >
-                                                        <div
-                                                            className="relative mx-4 w-full max-w-4xl"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            {/* Close button */}
-                                                            <button
-                                                                onClick={() => setIsOpen(false)}
-                                                                className="absolute -top-10 right-0 flex items-center gap-1.5 text-gray-400 transition-colors hover:text-white"
-                                                            >
-                                                                <X className="h-4 w-4" />
-                                                                <span className="text-xs tracking-wider uppercase font-['Orbitron']">
-                                                                    Tutup
-                                                                </span>
-                                                            </button>
-
-                                                            {/* Image */}
-                                                            <div className="overflow-hidden rounded-xl border border-blue-500/40 shadow-[0_0_60px_rgba(59,130,246,0.2)]">
-                                                                <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border-b border-blue-500/30">
-                                                                    <span className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]" />
-                                                                    <span className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase">
-                                                                        Image Preview
-                                                                    </span>
-                                                                </div>
-                                                                <img
-                                                                    src={item.content.url}
-                                                                    alt=""
-                                                                    className="w-full max-h-[75vh] object-contain bg-black block"
-                                                                />
-                                                            </div>
-
-                                                            {/* Caption di bawah modal */}
-                                                            {item.content?.caption && (
-                                                                <p className="mt-4 text-center text-sm text-gray-300">
-                                                                    {item.content.caption}
-                                                                </p>
-                                                            )}
-                                                            <p className="mt-2 text-center text-xs text-gray-500 italic">
-                                                                Klik di luar gambar untuk menutup
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Layout normal: gambar kiri + caption kanan (atau atas-bawah di mobile) */}
-                                                <div className="mb-5 flex flex-col md:flex-row items-start gap-4">
-                                                    {/* Gambar */}
-                                                    <div className="w-full md:w-[55%] flex-shrink-0">
-                                                        <div className="flex items-center gap-2 rounded-t-xl px-3 py-2 bg-blue-500/10 border border-blue-500/20 border-b-0">
-                                                            <span className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]" />
-                                                            <span className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase">
-                                                                Image
-                                                            </span>
-                                                        </div>
-                                                        <div
-                                                            className="group relative overflow-hidden rounded-b-xl border border-blue-500/20 cursor-pointer bg-black"
-                                                            onClick={() => setIsOpen(true)}
-                                                        >
-                                                            <img
-                                                                src={item.content.url}
-                                                                alt={item.content.caption || 'Module image'}
-                                                                className="w-full h-auto block transition-all duration-300 group-hover:brightness-75 object-cover"
-                                                            />
-                                                            {/* Hover overlay */}
-                                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                                                <div className="flex items-center gap-2 rounded-lg px-3 py-1.5 bg-blue-500/30 border border-blue-500/50 backdrop-blur-sm">
-                                                                    <ZoomIn className="h-4 w-4 text-white" />
-                                                                    <span className="text-xs font-semibold text-white">
-                                                                        Perbesar
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Caption */}
-                                                    {item.content?.caption && (
-                                                        <div className="flex flex-1 flex-col gap-3 rounded-xl p-4 bg-blue-500/5 border border-blue-500/15 w-full">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="rounded px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30">
-                                                                    Catatan
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-[13px] leading-relaxed text-gray-300 whitespace-pre-wrap">
-                                                                {item.content.caption}
-                                                            </p>
-                                                            <div className="mt-auto flex items-center gap-2 pt-3 border-t border-dashed border-blue-500/20">
-                                                                <span className="text-[10px] text-gray-500 italic">
-                                                                    💡 Klik gambar untuk memperbesar
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </>
-                                        );
-                                    })()}
+                                {item.type === 'image' && <ImageContent item={item} />}
 
                                 {/* ── VIDEO ── */}
                                 {item.type === 'video' && (
-                                    <div className="mb-5 overflow-hidden rounded-xl border border-blue-500/20 shadow-lg shadow-black/50">
-                                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border-b border-blue-500/20">
-                                            <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_8px_#4ade80]" />
-                                            <span className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase">
+                                    <div className="mb-5 overflow-hidden rounded-xl border border-blue-200 shadow-md dark:border-blue-500/20 dark:shadow-lg dark:shadow-black/50">
+                                        <div className="flex items-center gap-2 border-b border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-500/20 dark:bg-blue-500/10">
+                                            <span className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400 dark:shadow-[0_0_8px_#4ade80]" />
+                                            <span className="text-[10px] font-semibold tracking-widest text-blue-500 uppercase dark:text-gray-400">
                                                 Video
                                             </span>
                                         </div>
                                         <div className="aspect-video w-full">
                                             <video
                                                 controls
-                                                className="w-full h-full block bg-black"
+                                                className="block h-full w-full bg-[#f8faff] dark:bg-black"
                                             >
                                                 <source src={item.content.url} />
                                             </video>
@@ -470,22 +429,20 @@ export default function LearnShow({
 
                                 {/* ── FILE ── */}
                                 {item.type === 'file' && (
-                                    <div className="mb-4 flex items-center gap-3 rounded-xl border border-gray-700 bg-[#0f1226] px-4 py-3">
+                                    <div className="mb-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 dark:border-gray-700 dark:bg-[#0f1226]">
                                         {/* icon */}
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10">
-                                            <FileText className="h-5 w-5 text-indigo-400" />
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-300 bg-blue-100 dark:border-transparent dark:bg-indigo-500/10">
+                                            <FileText className="h-5 w-5 text-blue-600 dark:text-indigo-400" />
                                         </div>
 
                                         {/* content */}
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-sm font-semibold text-white">
+                                            <p className="text-sm font-semibold text-[#1e3a8a] dark:text-white">
                                                 Materi File
                                             </p>
 
-                                            <p className="truncate text-xs text-gray-400">
-                                                {item.content.url
-                                                    .split('/')
-                                                    .pop()}
+                                            <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                                                {item.content.url.split('/').pop()}
                                             </p>
                                         </div>
 
@@ -493,7 +450,7 @@ export default function LearnShow({
                                         <a
                                             href={item.content.url}
                                             target="_blank"
-                                            className="rounded-md bg-indigo-500/20 px-3 py-1.5 text-xs text-indigo-300"
+                                            className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700 dark:bg-indigo-500/20 dark:font-normal dark:text-indigo-300 dark:hover:bg-indigo-500/20"
                                         >
                                             Download
                                         </a>
@@ -502,19 +459,19 @@ export default function LearnShow({
 
                                 {/* Divider antar konten */}
                                 {index < (module.contents?.length ?? 0) - 1 && (
-                                    <div className="mb-5 border-b border-dashed border-blue-500/20" />
+                                    <div className="mb-5 border-b border-dashed border-blue-200 dark:border-blue-500/20" />
                                 )}
                             </div>
                         ))}
                     </div>
 
-                    {/* ================= FOOTER (DIAM) ================= */}
-                    <div className="flex flex-shrink-0 flex-col sm:flex-row gap-3 items-center justify-between pt-2">
-                        <div className="flex w-full sm:w-auto justify-between sm:justify-start gap-2">
+                    {/* ================= FOOTER ================= */}
+                    <div className="flex flex-shrink-0 flex-col items-center justify-between gap-3 pt-2 sm:flex-row">
+                        <div className="flex w-full justify-between gap-2 sm:w-auto sm:justify-start">
                             {prevModule && (
                                 <button
                                     onClick={() => goToModule(prevModule)}
-                                    className="rounded-lg px-4 py-2.5 sm:py-2 text-sm font-bold text-white transition-all hover:brightness-110 bg-white/5 border border-white/20 font-['Orbitron'] flex-1 sm:flex-none text-center"
+                                    className="font-['Orbitron'] flex-1 rounded-lg border border-blue-300 bg-white px-4 py-2.5 text-center text-sm font-bold text-[#1e3a8a] transition-all hover:bg-blue-100 sm:flex-none sm:py-2 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/5 dark:hover:brightness-110"
                                 >
                                     ← Prev
                                 </button>
@@ -527,10 +484,10 @@ export default function LearnShow({
                                         }
                                     }}
                                     disabled={!isUnlocked(currentIndex + 1)}
-                                    className={`rounded-lg px-4 py-2.5 sm:py-2 text-sm font-bold transition-all font-['Orbitron'] flex-1 sm:flex-none text-center ${
+                                    className={`font-['Orbitron'] flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-bold transition-all sm:flex-none sm:py-2 ${
                                         isUnlocked(currentIndex + 1)
-                                            ? 'text-white hover:brightness-110 bg-blue-500/10 border border-blue-500/40'
-                                            : 'text-gray-500 bg-gray-800/50 border border-gray-700 cursor-not-allowed opacity-50'
+                                            ? 'border border-blue-600 bg-[#2563EB] text-white shadow-sm hover:bg-[#1d4ed8] dark:border-blue-500/40 dark:bg-blue-500/10 dark:shadow-none dark:hover:bg-blue-500/10 dark:hover:brightness-110'
+                                            : 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 opacity-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-500'
                                     }`}
                                 >
                                     Next Module
@@ -538,11 +495,11 @@ export default function LearnShow({
                             )}
                         </div>
 
-                        <div className="flex w-full sm:w-auto gap-2">
+                        <div className="flex w-full gap-2 sm:w-auto">
                             {!isCompleted(module._id) && (
                                 <button
                                     onClick={completeModule}
-                                    className="rounded-lg px-5 py-2.5 sm:py-2 text-sm font-bold transition-all hover:brightness-110 bg-green-500/15 border border-green-500/50 text-green-400 font-['Orbitron'] w-full sm:w-auto"
+                                    className="font-['Orbitron'] w-full rounded-lg border border-green-400 bg-green-50 px-5 py-2.5 text-sm font-bold text-green-700 shadow-sm transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-green-500/50 dark:bg-green-500/15 dark:text-green-400 dark:shadow-none dark:hover:brightness-110"
                                 >
                                     ✓ Tandai Selesai
                                 </button>
@@ -550,7 +507,7 @@ export default function LearnShow({
                             {isLastModule && finalQuizId && allCompleted && (
                                 <button
                                     onClick={() => router.visit(`/student/quiz/${finalQuizId}`)}
-                                    className="rounded-lg px-6 py-2.5 sm:py-2 text-sm font-bold transition-all hover:brightness-110 bg-[#F0C419] text-black font-['Orbitron'] shadow-[0_0_16px_rgba(240,196,25,0.4)] w-full sm:w-auto"
+                                    className="font-['Orbitron'] w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"
                                 >
                                     MULAI TEST →
                                 </button>

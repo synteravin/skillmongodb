@@ -54,25 +54,25 @@ export default function Index({ courses }: { courses: Course[] }) {
         <>
             <Head title="My Courses" />
 
-           <div className="h-screen overflow-hidden flex flex-col bg-[#e6ebf2] dark:bg-[#040812] text-gray-800 dark:text-slate-200 font-sans">
+           <div className="h-screen overflow-hidden flex flex-col bg-slate-100 dark:bg-[#020202] text-slate-900 dark:text-slate-200 font-sans">
                
 
             {/* ================= HEADER (DIAM) ================= */}
-            <div className="flex-shrink-0 w-full pt-0.5 px-1">
+            <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
-                    className="relative border-[2px] md:border-[3px]"
+                    className="relative border-[2px] md:border-[3px] border-transparent"
                     style={{
-                        borderImage: "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
+                        borderImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1',
                     }}
                 >
-                    <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-[#040812]">
+                    <div className="flex items-center gap-4 bg-white dark:bg-[#040812] px-4 py-4 md:px-6 relative">
 
-                        {/* Back Button */}
-                        <Link
+                      <Link
                             href="/student/dashboard"
-                            className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0"
+                            className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40 md:h-12 md:w-12"
                         >
-                            <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500 scale-125 hover:scale-150 transition-transform duration-200">
+                            <svg viewBox="0 0 48 48" className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 dark:text-indigo-500 md:h-9 md:w-9">
                                 <rect x="12" y="20" width="29" height="4" fill="currentColor" />
                                 <rect x="8"  y="20" width="4"  height="4" fill="currentColor" />
                                 <rect x="5"  y="20" width="5"  height="4" fill="currentColor" />
@@ -86,8 +86,8 @@ export default function Index({ courses }: { courses: Course[] }) {
                         </Link>
 
                         {/* Title */}
-                        <h1 className="absolute left-0 right-0 text-center text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold text-gray-900 dark:text-white tracking-[0.1em] md:tracking-[0.15em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase px-16 pointer-events-none">
-                           SELECT YOUR COURSE
+                        <h1 className="pointer-events-none absolute left-0 right-0 text-center text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold dark:text-white text-[#020202] tracking-[0.1em] md:tracking-[0.15em] uppercase">
+                            SELECT YOUR COURSE
                         </h1>
                     </div>
                 </div>
@@ -104,50 +104,43 @@ export default function Index({ courses }: { courses: Course[] }) {
                                 <div
                                     key={course._id}
                                     className={`
-                                        relative cursor-pointer group flex flex-col
-                                        bg-white dark:bg-[#0b1021]
-                                        border-[3px] rounded-xl overflow-hidden
-                                        transition-all duration-500
-                                        hover:shadow-[0_10px_30px_rgba(0,0,0,0.1)]
-                                        dark:hover:shadow-[0_0_25px_rgba(30,58,138,0.3)]
-                                        ${isLocked && 'opacity-40 pointer-events-none'}
+                                        relative cursor-pointer group flex flex-col rounded-[28px] overflow-hidden
+                                        border-4 transition-all duration-500 shadow-[0_18px_45px_rgba(15,23,42,0.06)]
+                                        ${isLocked ? 'bg-slate-100 dark:bg-[#02040f] border-blue-300 dark:border-[#1e3a8a] shadow-[0_0_30px_rgba(15,23,42,0.08)]' : 'bg-white dark:bg-[#061028] border-blue-300 dark:border-[#1e3a8a]'}
+                                        ${isLocked && 'pointer-events-none'}
                                         ${
-                                            isLocked
-                                                ? 'border-gray-400 dark:border-gray-600'
-                                                : isActive
-                                                ? 'border-[#3B28F6]'
-                                                : isCompleted
-                                                ? 'border-blue-500'
-                                                : isUnlocked
-                                                ? 'border-yellow-400'
-                                                : 'border-yellow-300 dark:border-yellow-400'
+                                            !isLocked
+                                                ? isActive
+                                                    ? 'border-indigo-600 hover:shadow-[0_0_30px_rgba(59,40,246,0.12)]'
+                                                    : isCompleted
+                                                    ? 'border-emerald-500 hover:shadow-[0_0_25px_rgba(16,185,129,0.18)]'
+                                                    : isUnlocked
+                                                    ? 'border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.14)]'
+                                                    : 'border-amber-300 dark:border-amber-500 hover:shadow-[0_0_25px_rgba(245,158,11,0.12)]'
+                                                : ''
                                         }
                                     `}
                                 >
-                                    {isLocked && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-20 rounded-xl">
-                                            <Lock className="w-12 h-12 text-white drop-shadow-lg" />
-                                        </div>
-                                    )}
-
                                     {/* IMAGE */}
-                                    <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-200 dark:bg-slate-900 border-b border-[#1e2759]/50">
+                                    <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-900 border-b border-slate-200/40 dark:border-[#1e2759]/60">
                                         <img
                                             src={course.thumbnail}
                                             alt={course.title}
-                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                                             onError={(e) => {
                                                 e.currentTarget.src = 'https://via.placeholder.com/400x300?text=No+Image'
                                             }}
                                         />
+
+                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-50/30 via-transparent to-slate-50/0 dark:from-[#020714]/95 dark:via-transparent dark:to-[#000000]/0 pointer-events-none" />
                                     </div>
 
                                     {/* CONTENT */}
                                     <div className="p-4 md:p-5 flex flex-col flex-1">
-                                        <h2 className="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-400 transition">
+                                        <h2 className="text-base md:text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2 line-clamp-1 transition-colors duration-300 group-hover:text-[#3b4ffa] dark:group-hover:text-[#8ea8ff]">
                                             {course.title}
                                         </h2>
-                                        <p className="text-xs md:text-sm text-gray-700 dark:text-slate-400 line-clamp-2 md:line-clamp-3 mb-6">
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 md:line-clamp-3 mb-6">
                                             {course.description}
                                         </p>
 
@@ -175,26 +168,30 @@ export default function Index({ courses }: { courses: Course[] }) {
                                                         }
                                                     }}
                                                 className={`
-                                                    w-full py-2 md:py-2.5 rounded-md border text-center font-bold text-xs md:text-sm transition-all duration-300 cursor-pointer
+                                                    w-full py-2 md:py-2.5 rounded-xl border text-center font-bold text-xs md:text-sm transition-all duration-300 cursor-pointer
                                                     ${isActive && `
-                                                        bg-[#050619] border-[#3B28F6] text-white
-                                                        shadow-[0_0_3px_rgba(59,40,246,0.5)]
-                                                        hover:bg-[#3B28F6] hover:border-[#2e1fd4]
+                                                        bg-indigo-600 border-indigo-600 text-white
+                                                        shadow-[0_0_18px_rgba(79,70,229,0.18)]
+                                                        hover:bg-indigo-500 hover:border-indigo-500
                                                     `}
                                                     ${isCompleted && `
                                                         bg-emerald-500 text-white border-emerald-500
                                                         hover:bg-emerald-600 hover:border-emerald-600
                                                         shadow-[0_0_10px_rgba(16,185,129,0.3)]
                                                     `}
-                                                    ${isLocked && 'bg-gray-700 text-gray-400 border-gray-700 cursor-not-allowed'}
+                                                    ${isLocked && `
+                                                        bg-slate-200 border-slate-200 text-slate-700
+                                                        dark:bg-slate-700 dark:border-slate-700 dark:text-slate-300
+                                                        shadow-sm cursor-not-allowed
+                                                    `}
                                                     ${!course.status && `
-                                                        border-[#FACC15] text-[#FACC15]
-                                                        hover:bg-yellow-500 hover:text-white
+                                                        border-amber-300 text-amber-500
+                                                        hover:bg-amber-500 hover:text-white
                                                         dark:hover:text-[#090d19]
                                                     `}
                                                     ${isUnlocked && `
-                                                        border-yellow-400 text-yellow-400
-                                                        hover:bg-yellow-500 hover:text-[#090d19]
+                                                        border-amber-300 text-amber-500
+                                                        hover:bg-amber-500 hover:text-white
                                                     `}
                                                 `}
                                             >
@@ -211,6 +208,15 @@ export default function Index({ courses }: { courses: Course[] }) {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* LOCK OVERLAY - CENTERED IN CARD */}
+                                    {isLocked && (
+                                        <div className="absolute inset-0 z-20 flex items-center justify-center px-4 rounded-[28px]">
+                                            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-200/60 dark:bg-blue-950/40 border border-blue-400 dark:border-blue-700 shadow-md">
+                                                <Lock className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )
                         })}
@@ -263,7 +269,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                         {/* BACKGROUND (ISI AREA) */}
                         <img
                             src={selectedCourse.thumbnail}
-                            className="absolute inset-0 w-full h-full object-cover blur-xs scale-110 opacity-40"/>
+                            className="absolute inset-0 w-full h-full object-cover scale-110 opacity-20"/>
                         {/* MAIN IMAGE (TIDAK TERPOTONG) */}
                         <img
                             src={selectedCourse.thumbnail}

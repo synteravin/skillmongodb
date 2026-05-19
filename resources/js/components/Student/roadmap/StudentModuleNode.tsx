@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
-import { Check, Lock, Shield } from "lucide-react";
-
+ 
 type Props = {
     title: string;
     locked?: boolean;
@@ -13,7 +12,7 @@ type Props = {
     } | null;
     href?: string;
 };
-
+ 
 export default function StudentModuleNode({
     title,
     locked = false,
@@ -25,129 +24,264 @@ export default function StudentModuleNode({
 }: Props) {
     const romanNumerals = [
         "I", "II", "III", "IV", "V", "VI",
-        "VII", "VIII", "IX", "X", "XI", "XII"
+        "VII", "VIII", "IX", "X", "XI", "XII",
     ];
-
-    const roman = romanNumerals[index] || (index + 1);
-
+    const roman = romanNumerals[index] || String(index + 1);
+ 
     const hasValidIcon =
-        badge &&
-        badge.icon &&
-        badge.icon !== "null" &&
-        badge.icon !== "";
-
+        badge?.icon && badge.icon !== "null" && badge.icon !== "";
+ 
     const Wrapper = href && !locked ? Link : "div";
-
+ 
+    /* ── status label ── */
+    const statusLabel = done ? "Completed" : locked ? "Locked" : "Available";
+ 
     return (
         <div className="flex flex-col items-center w-full relative px-1 sm:px-0">
             <Wrapper
                 {...(href && !locked ? { href } : {})}
-                className={`
-            block relative w-full flex items-center gap-3 overflow-hidden
-            transition-all duration-300
-            ${href && !locked ? "hover:scale-[1.02] hover:brightness-110" : ""}
-            ${locked ? "opacity-40 grayscale" : ""}
-        `}
+                className="block relative w-full transition-all duration-300"
                 style={{
                     borderRadius: "14px",
                     padding: "2px",
+                    /* ── BORDER ──
+                       done  : biru terang (light) / biru neon (dark)
+                       locked: abu silver (light) / abu gelap (dark)
+                       active: biru-ungu gradient */
                     background: done
-                        ? "linear-gradient(to right, #99E4FD, #9681FF)"
-                        : "linear-gradient(to right, #99E4FD, #9681FF)",
+                        ? "linear-gradient(135deg, #60a5fa, #3b82f6, #93c5fd)"
+                        : locked
+                            ? "linear-gradient(135deg, #cbd5e1, #94a3b8, #cbd5e1)"   /* silver */
+                            : "linear-gradient(135deg, #60a5fa, #818cf8, #60a5fa)",
                     boxShadow: done
-                        ? "0 4px 24px rgba(150,200,255,0.2)"
-                        : "0 4px 24px rgba(150,129,255,0.2)",
+                        ? "0 0 0 0 transparent, 0 2px 16px rgba(59,130,246,0.25)"
+                        : locked
+                            ? "none"
+                            : "0 2px 16px rgba(99,102,241,0.2)",
                 }}
             >
-                {/* Inner container */}
+                {/* ── INNER CARD ── */}
                 <div
-                    className="flex items-center gap-3 w-full overflow-hidden"
+                    className="flex items-center gap-0 w-full overflow-hidden"
                     style={{
                         borderRadius: "12px",
+                        minHeight: "72px",
+                        /* light: putih bersih / abu sangat tipis saat locked
+                           dark : navy gelap */
                         background: done
-                            ? "linear-gradient(135deg, #0a2a1a 0%, #0d1f2d 100%)"
-                            : "linear-gradient(135deg, #1a2060 0%, #0e1540 100%)",
-                        minHeight: "64px",
+                            ? "var(--mn-done-bg)"
+                            : locked
+                                ? "var(--mn-locked-bg)"
+                                : "var(--mn-active-bg)",
                     }}
                 >
-                    {/* Badge / Icon — full height, flush left */}
+                    <style>{`
+                        /* LIGHT */
+                        :root {
+                            --mn-done-bg:   #ffffff;
+                            --mn-locked-bg: #f1f5f9;
+                            --mn-active-bg: #ffffff;
+                            --mn-badge-done:   #000000;
+                            --mn-badge-locked: #e2e8f0;
+                            --mn-badge-active: #000000;
+                            --mn-title-done:   #1e40af;
+                            --mn-title-locked: #94a3b8;
+                            --mn-title-active: #1e3a8a;
+                            --mn-status-done:   #3b82f6;
+                            --mn-status-locked: #94a3b8;
+                            --mn-status-active: #6366f1;
+                            --mn-roman-done:   #2563eb;
+                            --mn-roman-locked: #94a3b8;
+                            --mn-roman-active: #3b82f6;
+                            --mn-circuit-opacity: 0.06;
+                        }
+                        /* DARK */
+                        .dark {
+                            --mn-done-bg:   linear-gradient(135deg, #0a1f3a 0%, #0d2040 100%);
+                            --mn-locked-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                            --mn-active-bg: linear-gradient(135deg, #0f1d40 0%, #0a1530 100%);
+                            --mn-badge-done:   #000000;
+                            --mn-badge-locked: #1e293b;
+                            --mn-badge-active: #000000;
+                            --mn-title-done:   #93c5fd;
+                            --mn-title-locked: #475569;
+                            --mn-title-active: #e2e8f0;
+                            --mn-status-done:   #60a5fa;
+                            --mn-status-locked: #475569;
+                            --mn-status-active: #818cf8;
+                            --mn-roman-done:   #f59e0b;
+                            --mn-roman-locked: #475569;
+                            --mn-roman-active: #f59e0b;
+                            --mn-circuit-opacity: 0.12;
+                        }
+                    `}</style>
+ 
+                    {/* ── BADGE / ICON — flush left ── */}
                     <div
-                        className="relative flex-shrink-0 self-stretch"
+                        className="relative flex-shrink-0 self-stretch flex items-center justify-center"
                         style={{
-                            width: "64px",
+                            width: "72px",
                             borderRadius: "10px 0 0 10px",
-                            background: "#000",
+                            background: "var(--mn-badge-" + (done ? "done" : locked ? "locked" : "active") + ")",
                             overflow: "hidden",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
                         }}
                     >
+                       
+ 
                         {hasValidIcon ? (
                             <img
                                 src={badge?.icon || undefined}
-                                className="w-full h-full object-cover bg-black"
+                                className="w-12 h-12 object-cover rounded-lg"
                                 alt="badge"
                             />
-                        ) : (
-                            <span
-                                className="font-bold text-lg"
+                        ) : isSubmission ? (
+                            /* ★ submission */
+                            <div
+                                className="flex items-center justify-center w-12 h-12 rounded-full"
                                 style={{
-                                    fontFamily: "Orbitron, sans-serif",
-                                    color: done ? "#4ade80" : "#d97706",
+                                    background: locked
+                                        ? "radial-gradient(circle, #cbd5e1 0%, #94a3b8 100%)"
+                                        : done
+                                            ? "radial-gradient(circle, #60a5fa 0%, #2563eb 100%)"
+                                            : "radial-gradient(circle, #818cf8 0%, #4f46e5 100%)",
+                                    boxShadow: locked ? "none" : done
+                                        ? "0 0 14px rgba(59,130,246,0.5)"
+                                        : "0 0 14px rgba(99,102,241,0.4)",
                                 }}
                             >
-                                {isSubmission ? "★" : roman}
-                            </span>
+                                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
+                                    <path d="M12 2l2.9 6.3L22 9.3l-5 4.9 1.2 6.9L12 18l-6.2 3.1L7 14.2 2 9.3l7.1-1L12 2z"/>
+                                </svg>
+                            </div>
+                        ) : (
+                            /* roman numeral badge — lingkaran seperti di gambar */
+                            <div
+                                className="flex items-center justify-center w-12 h-12 rounded-full"
+                                style={{
+                                    background: locked
+                                        /* silver gradient saat locked seperti gambar */
+                                        ? "radial-gradient(circle at 35% 35%, #e2e8f0 0%, #94a3b8 60%, #64748b 100%)"
+                                        : done
+                                            ? "radial-gradient(circle at 35% 35%, #fbbf24 0%, #d97706 60%, #92400e 100%)"
+                                            : "radial-gradient(circle at 35% 35%, #fbbf24 0%, #d97706 60%, #92400e 100%)",
+                                    boxShadow: locked
+                                        ? "inset 0 2px 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.15)"
+                                        : "inset 0 2px 4px rgba(255,255,255,0.3), 0 0 14px rgba(251,191,36,0.4)",
+                                    border: locked
+                                        ? "2px solid #cbd5e1"
+                                        : "2px solid rgba(251,191,36,0.6)",
+                                }}
+                            >
+                                <span
+                                    className="font-bold select-none"
+                                    style={{
+                                        fontFamily: "Orbitron, sans-serif",
+                                        fontSize: roman.length > 3 ? "10px" : "13px",
+                                        color: locked ? "#64748b" : "#fff",
+                                        textShadow: locked ? "none" : "0 1px 3px rgba(0,0,0,0.4)",
+                                    }}
+                                >
+                                    {roman}
+                                </span>
+                            </div>
                         )}
-
-                        {/* Status badge pojok kanan bawah */}
+ 
+                        {/* ── status badge pojok kanan bawah ── */}
                         <div
-                            className="absolute bottom-1 right-1 flex items-center justify-center z-20"
+                            className="absolute bottom-1.5 right-1.5 flex items-center justify-center z-20"
                             style={{
-                                width: "18px",
-                                height: "18px",
+                                width: "20px",
+                                height: "20px",
                                 borderRadius: "50%",
-                                background: "#000",
-                                border: done
-                                    ? "1.5px solid #4ade80"
+                                background: done
+                                    ? "#2563eb"
                                     : locked
-                                        ? "1.5px solid #555"
-                                        : "1.5px solid #99E4FD",
+                                        ? "#94a3b8"
+                                        : "#3b82f6",
+                                border: done
+                                    ? "2px solid #fff"
+                                    : locked
+                                        ? "2px solid #e2e8f0"
+                                        : "2px solid #fff",
                                 boxShadow: done
-                                    ? "0 0 6px rgba(74,222,128,0.6)"
+                                    ? "0 0 8px rgba(37,99,235,0.6)"
                                     : locked
                                         ? "none"
-                                        : "0 0 6px rgba(153,228,253,0.5)",
+                                        : "0 0 8px rgba(59,130,246,0.5)",
                             }}
                         >
                             {locked ? (
-                                <Lock className="w-2 h-2 text-gray-500" />
+                                /* kunci */
+                                <svg viewBox="0 0 16 16" fill="white" className="w-2.5 h-2.5">
+                                    <path d="M11 7V5a3 3 0 1 0-6 0v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1ZM6 5a2 2 0 1 1 4 0v2H6V5Z"/>
+                                </svg>
                             ) : done ? (
-                                <Check className="w-2 h-2 text-green-400" />
+                                /* centang */
+                                <svg viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2.5"
+                                    strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
+                                    <polyline points="2,9 6,13 14,4"/>
+                                </svg>
                             ) : (
-                                <Shield className="w-2 h-2 text-[#99E4FD]" />
+                                /* panah kanan — available */
+                                <svg viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2.5"
+                                    strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
+                                    <polyline points="5,3 11,8 5,13"/>
+                                </svg>
                             )}
                         </div>
                     </div>
-
-                    {/* Title */}
-                    <div
-                        className="flex-1 pr-3 py-2 leading-snug font-semibold text-white text-xs"
-                        style={{ fontFamily: "Orbitron, sans-serif" }}
-                    >
-                        {title}
+ 
+                    {/* ── TITLE + STATUS ── */}
+                    <div className="flex-1 flex flex-col justify-center px-4 py-2 gap-0.5 relative overflow-hidden">
+ 
+                        <span
+                            className="font-bold text-sm leading-snug"
+                            style={{
+                                fontFamily: "Orbitron, sans-serif",
+                                color: "var(--mn-title-" + (done ? "done" : locked ? "locked" : "active") + ")",
+                            }}
+                        >
+                            {title}
+                        </span>
+ 
+                        <span
+                            className="text-[11px] font-semibold"
+                            style={{
+                                color: "var(--mn-status-" + (done ? "done" : locked ? "locked" : "active") + ")",
+                            }}
+                        >
+                            {statusLabel}
+                        </span>
                     </div>
-
-                    {/* Right glow accent */}
-                    <div
-                        className="absolute right-0 top-0 h-full w-16 pointer-events-none"
-                        style={{
-                            background: "linear-gradient(to left, rgba(150,129,255,0.1), transparent)",
-                            borderRadius: "0 12px 12px 0",
-                        }}
-
-                    />
+ 
+                    {/* ── ARROW KANAN (done/active) atau LOCK KANAN (locked) ── */}
+                    <div className="flex-shrink-0 flex items-center justify-center pr-4">
+                        {locked ? (
+                            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5"
+                                style={{ color: "var(--mn-status-locked)" }}>
+                                <rect x="5" y="11" width="14" height="10" rx="2.5"
+                                    fill="currentColor" fillOpacity="0.15"
+                                    stroke="currentColor" strokeWidth="1.5"/>
+                                <path d="M8 11V7a4 4 0 0 1 8 0v4"
+                                    stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                            </svg>
+                        ) : (
+                            <div
+                                className="flex items-center justify-center w-8 h-8 rounded-full"
+                                style={{
+                                    background: done ? "#2563eb" : "#4f46e5",
+                                    boxShadow: "0 0 10px rgba(59,130,246,0.4)",
+                                }}
+                            >
+                                <svg viewBox="0 0 16 16" fill="none" stroke="white"
+                                    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                                    className="w-3.5 h-3.5">
+                                    <polyline points="5,3 11,8 5,13"/>
+                                </svg>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </Wrapper>
         </div>

@@ -125,14 +125,14 @@ export default function Login({
                                             type="button"
                                             onClick={() => window.location.href = '/auth/google'}
                                             className="
-        flex w-full items-center justify-center gap-3 
-        rounded-xl border-2 border-indigo-500 
-        py-3 
-        text-gray-800 dark:text-white 
-        transition-all duration-300 
-        hover:bg-indigo-500/10 
-        hover:shadow-[0_0_20px_rgba(99,102,241,0.7)]
-        hover:scale-[1.02] active:scale-[0.98]
+                                                flex w-full items-center justify-center gap-3 
+                                                rounded-xl border-2 border-indigo-500 
+                                                py-3 
+                                                text-gray-800 dark:text-white 
+                                                transition-all duration-300 
+                                                hover:bg-indigo-500/10 
+                                                hover:shadow-[0_0_20px_rgba(99,102,241,0.7)]
+                                                hover:scale-[1.02] active:scale-[0.98]
     "
                                         >
                                             <FcGoogle size={20} />
@@ -170,7 +170,7 @@ export default function Login({
 
                     {/* Background */}
                     <img
-                        src="/images/background-login.png"
+                        src="/images/background-login.webp"
                         className="absolute inset-0 h-full w-full object-cover"
                         alt="Background"
                     />

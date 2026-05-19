@@ -398,7 +398,7 @@ function AnswerButton({ label, text, selected, onClick }: any) {
                             {label}.
                         </span>
                         <span className={`text-base leading-relaxed ${selected ? "text-white" : "text-gray-300 group-hover:text-white"}`}>
-                            {text}
+                            {text} 
                         </span>
                     </div>
                 </div>

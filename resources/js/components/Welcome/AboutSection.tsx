@@ -21,7 +21,7 @@ export default function AboutSection() {
                             {/* 🔥 PNG 1 — PHONE (KIRI ATAS) */}
                             <div className="absolute top-6 left-4 sm:top-10 sm:left-8 md:top-12 md:left-12 lg:top-[20px] lg:left-[280px]">
                                 <img
-                                    src="/images/phone.png"
+                                    src="/images/phone.webp"
                                     alt="phone"
                                     className="w-16 drop-shadow-2xl sm:w-20 md:w-24 lg:w-18"
                                 />
@@ -30,7 +30,7 @@ export default function AboutSection() {
                             {/* 🔥 PNG 2 — MONITOR (KIRI BAWAH) */}
                             <div className="absolute bottom-16 left-6 sm:bottom-20 sm:left-12 md:bottom-24 md:left-16 lg:bottom-[1px] lg:left-[60px]">
                                 <img
-                                    src="/images/monitor.png"
+                                    src="/images/monitor.webp"
                                     alt="monitor"
                                     className="w-20 drop-shadow-2xl sm:w-24 md:w-28 lg:w-24"
                                 />
@@ -39,7 +39,7 @@ export default function AboutSection() {
                             {/* 🔥 PNG 3 — GAMEPAD MIRING (KANAN BAWAH) */}
                             <div className="md:none absolute right-4 bottom-14 rotate-[5deg] sm:right-10 sm:bottom-18 md:right-14 md:bottom-20 lg:right-[5px] lg:bottom-[60px]">
                                 <img
-                                    src="/images/gamepad.png"
+                                    src="/images/gamepad.webp"
                                     alt="gamepad"
                                     className="w-20 drop-shadow-2xl sm:w-24 md:w-28 lg:w-32"
                                 />

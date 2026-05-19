@@ -37,7 +37,7 @@ export default function Roadmap({
     const { badges } = usePage().props as any;
 
     return (
-        <div className="h-screen w-full overflow-hidden flex flex-col bg-[#e6ebf2] dark:bg-[#040812] text-gray-800 dark:text-slate-200 font-sans">
+        <div className="h-screen w-full overflow-hidden flex flex-col bg-blue-100/30 dark:bg-[#020202] text-gray-800 dark:text-slate-200 font-sans">
 
             {/* ================= HEADER (DIAM) ================= */}
             <div className="flex-shrink-0 w-full pt-0.5 px-1">
@@ -47,14 +47,14 @@ export default function Roadmap({
                         borderImage: "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
                     }}
                 >
-                    <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-[#040812]">
+                    <div className="py-4 px-4 md:px-6 flex items-center gap-4 bg-white dark:bg-[#040812]">
 
                         {/* Back Button */}
                         <Link
                             href="/student/course"
                             className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0"
                         >
-                            <svg viewBox="0 0 48 48" className="w-7 h-7 md:w-9 md:h-9 text-indigo-500 scale-125 hover:scale-150 transition-transform duration-200">
+                            <svg viewBox="0 0 48 48" className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 dark:text-indigo-500 md:h-9 md:w-9">
                                 <rect x="12" y="20" width="29" height="4" fill="currentColor" />
                                 <rect x="8"  y="20" width="4"  height="4" fill="currentColor" />
                                 <rect x="5"  y="20" width="5"  height="4" fill="currentColor" />
@@ -69,7 +69,7 @@ export default function Roadmap({
 
                         {/* Title */}
                         <h1 className="absolute left-0 right-0 text-center text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold text-gray-900 dark:text-white tracking-[0.1em] md:tracking-[0.15em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase px-16 pointer-events-none">
-                            {course.title}
+                            {course.title}  
                         </h1>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ export default function Roadmap({
                                         thumbnail={path.thumbnail}
                                         href={href}
                                     />
-                                    <div className="w-[2px] h-12 bg-[#F0F0F0] dark:bg-white/10" />
+                                    <div className="w-[2px] h-12 bg-blue-500/70 dark:bg-white/80" />
                                 </React.Fragment>
                             );
                         })}
@@ -127,15 +127,15 @@ export default function Roadmap({
                                         {hasMultiple && (
                                             <>
                                                 {!isFirst && (
-                                                    <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-[#F0F0F0] dark:bg-white/10 z-0 hidden sm:block" />
+                                                    <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-blue-500/70 dark:bg-white/80 z-0 hidden sm:block" />
                                                 )}
                                                 {!isLast && (
-                                                    <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-[#F0F0F0] dark:bg-white/10 z-0 hidden sm:block" />
+                                                    <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-blue-500/70 dark:bg-white/80 z-0 hidden sm:block" />
                                                 )}
                                             </>
                                         )}
 
-                                        <div className="w-[2px] h-10 bg-[#F0F0F0] dark:bg-white/10 z-10 hidden sm:block" />
+                                        <div className="w-[2px] h-10 bg-blue-500/70 dark:bg-white/80 z-10 hidden sm:block" />
 
                                         <StudentCareerBranch
                                             group={group}

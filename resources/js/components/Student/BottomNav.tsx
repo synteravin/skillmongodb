@@ -18,7 +18,7 @@ export default function BottomNav() {
             "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
         }}
       >
-        <div className="flex bg-[#1D215D]/40">
+        <div className="flex dark:bg-[#1D215D]/40 bg-blue-200/40">
           {menus.map((menu, index) => (
             <NavItem
               key={menu.label}
@@ -47,7 +47,7 @@ function NavItem({
     h-12 md:h-14 lg:h-16 xl:h-18 2xl:h-20
     font-semibold uppercase tracking-wide md:tracking-widest
     text-[9px] md:text-xs lg:text-sm xl:text-base 2xl:text-lg
-    transition hover:text-blue-200
+    transition dark:hover:text-gray-300 hover:text-blue-900
   `;
 
   const content = (
