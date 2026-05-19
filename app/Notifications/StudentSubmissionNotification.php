@@ -26,6 +26,11 @@ class StudentSubmissionNotification extends Notification implements ShouldQueue
     {
         return (new \Illuminate\Notifications\Messages\MailMessage)
             ->subject('Tugas Baru Menunggu Penilaian - ' . $this->studentName)
+            ->withSymfonyMessage(function ($message) {
+                // Menambahkan header High Priority agar Gmail membunyikan notifikasi HP
+                $message->getHeaders()->addTextHeader('X-Priority', '1 (Highest)');
+                $message->getHeaders()->addTextHeader('Importance', 'High');
+            })
             ->greeting('Halo ' . $notifiable->name . ',')
             ->line('Ada submission (tugas) baru yang butuh direview dari siswa Anda:')
             ->line('**Nama Siswa:** ' . $this->studentName)
