@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class StudentSubmissionNotification extends Notification implements ShouldQueue
+class StudentSubmissionNotification extends Notification
 {
     use Queueable;
 
