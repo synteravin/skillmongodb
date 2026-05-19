@@ -15,11 +15,11 @@ export default function HeroSection() {
 
             {/* GRID */}
             <img
-                src="/images/grid-left.png"
+                src="/images/grid-left.webp"
                 className="pointer-events-none absolute top-0 left-0 h-[85%] w-1/2 [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)] object-cover"
             />
             <img
-                src="/images/gird-right.png"
+                src="/images/gird-right.webp"
                 className="pointer-events-none absolute top-0 right-0 h-[85%] w-1/2 [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)] object-cover"
             />
 
@@ -67,7 +67,7 @@ export default function HeroSection() {
                         <div className="absolute top-1/2 left-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3B28F6] blur-[500px] transition-all duration-500 md:h-[700px] md:w-[700px] lg:h-[600px] lg:w-[600px] xl:h-[700px] xl:w-[700px] 2xl:h-[700px] 2xl:w-[700px] dark:bg-[#3B28F6] dark:opacity-60 dark:blur-[220px]" />
 
                         <img
-                            src="/images/play.png"
+                            src="/images/play.webp"
                             alt="controller"
                             className="relative z-10 w-[260px] drop-shadow-none transition-all duration-500 md:w-[420px] lg:w-[480px] xl:w-[540px] 2xl:w-[600px] dark:drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
                         />

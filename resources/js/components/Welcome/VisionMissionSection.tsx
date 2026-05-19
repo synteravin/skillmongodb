@@ -30,99 +30,99 @@ export default function VisionMissionSection() {
                             {/* ---------- ARROW 1 ---------- */}
                             {/* curve */}
                             <img
-                                src="/images/arrow/curve1-black.png"
+                                src="/images/arrow/curve1-black.webp"
                                 className="absolute top-[26px] right-[135px] w-[26px] rotate-[0deg] lg:top-[28px] lg:right-[110px] lg:w-[30px] lg:rotate-[-2deg] xl:top-[37px] xl:right-[160px] xl:w-[33px] xl:rotate-[-2deg] 2xl:top-[38px] 2xl:right-[200px] 2xl:w-[38px] 2xl:rotate-[0deg] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/curve1.png"
+                                src="/images/arrow/curve1.webp"
                                 className="absolute top-[26px] right-[135px] hidden w-[26px] rotate-[0deg] lg:top-[28px] lg:right-[110px] lg:w-[30px] lg:rotate-[-2deg] xl:top-[37px] xl:right-[160px] xl:w-[33px] xl:rotate-[-2deg] 2xl:top-[38px] 2xl:right-[200px] 2xl:w-[38px] 2xl:rotate-[0deg] dark:block"
                             />
 
                             {/* arrow */}
                             <img
-                                src="/images/arrow/arrow1-black.png"
+                                src="/images/arrow/arrow1-black.webp"
                                 className="absolute -top-[30px] right-[35px] w-[110px] rotate-[13deg] lg:-top-[44px] lg:right-[11px] lg:w-[125px] lg:rotate-[7deg] xl:-top-[39px] xl:right-[37px] xl:w-[145px] xl:rotate-[13deg] 2xl:-top-[48px] 2xl:right-[63px] 2xl:w-[165px] 2xl:rotate-[13deg] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/arrow1.png"
+                                src="/images/arrow/arrow1.webp"
                                 className="absolute -top-[30px] right-[35px] hidden w-[110px] rotate-[13deg] lg:-top-[44px] lg:right-[11px] lg:w-[125px] lg:rotate-[7deg] xl:-top-[39px] xl:right-[37px] xl:w-[145px] xl:rotate-[13deg] 2xl:-top-[48px] 2xl:right-[63px] 2xl:w-[165px] 2xl:rotate-[13deg] dark:block"
                             />
 
                             {/* ---------- ARROW 2 ---------- */}
                             {/* curve */}
                             <img
-                                src="/images/arrow/curve1-black.png"
+                                src="/images/arrow/curve1-black.webp"
                                 className="absolute right-[120px] bottom-[115px] w-[26px] rotate-[20deg] lg:right-[89px] lg:bottom-[127px] lg:w-[29px] xl:right-[138px] xl:bottom-[145px] xl:w-[33px] 2xl:right-[175px] 2xl:bottom-[163px] 2xl:w-[38px] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/curve1.png"
+                                src="/images/arrow/curve1.webp"
                                 className="absolute right-[120px] bottom-[115px] hidden w-[26px] rotate-[20deg] lg:right-[89px] lg:bottom-[127px] lg:w-[29px] xl:right-[138px] xl:bottom-[145px] xl:w-[33px] 2xl:right-[175px] 2xl:bottom-[163px] 2xl:w-[38px] dark:block"
                             />
 
                             {/* arrow */}
                             <img
-                                src="/images/arrow/arrow1-black.png"
+                                src="/images/arrow/arrow1-black.webp"
                                 className="absolute top-[22px] right-[14px] w-[108px] rotate-[27deg] lg:top-[27px] lg:right-[-20px] lg:w-[120px] xl:top-[32px] xl:right-[9px] xl:w-[140px] 2xl:top-[33px] 2xl:right-[28px] 2xl:w-[160px] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/arrow1.png"
+                                src="/images/arrow/arrow1.webp"
                                 className="absolute top-[22px] right-[14px] hidden w-[108px] rotate-[27deg] lg:top-[27px] lg:right-[-20px] lg:w-[120px] xl:top-[32px] xl:right-[9px] xl:w-[140px] 2xl:top-[33px] 2xl:right-[28px] 2xl:w-[160px] dark:block"
                             />
 
                             {/* ---------- ARROW 3 ---------- */}
                             {/* curve */}
                             <img
-                                src="/images/arrow/curve1-black.png"
+                                src="/images/arrow/curve1-black.webp"
                                 className="absolute right-[120px] bottom-[70px] w-[26px] rotate-[44deg] lg:right-[88px] lg:bottom-[74px] lg:w-[30px] xl:right-[138px] xl:bottom-[89px] xl:w-[32px] 2xl:right-[175px] 2xl:bottom-[98px] 2xl:w-[38px] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/curve1.png"
+                                src="/images/arrow/curve1.webp"
                                 className="absolute right-[120px] bottom-[70px] hidden w-[26px] rotate-[44deg] lg:right-[88px] lg:bottom-[74px] lg:w-[30px] xl:right-[138px] xl:bottom-[89px] xl:w-[32px] 2xl:right-[175px] 2xl:bottom-[98px] 2xl:w-[38px] dark:block"
                             />
 
                             {/* arrow */}
                             <img
-                                src="/images/arrow/arrow1-black.png"
+                                src="/images/arrow/arrow1-black.webp"
                                 className="absolute right-[2px] bottom-[64px] w-[110px] rotate-[40deg] lg:right-[-37px] lg:bottom-[66px] lg:w-[125px] lg:rotate-[43deg] xl:right-[-7px] xl:bottom-[75px] xl:w-[145px] xl:rotate-[43deg] 2xl:right-[11px] 2xl:bottom-[90px] 2xl:w-[162px] 2xl:rotate-[40deg] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/arrow1.png"
+                                src="/images/arrow/arrow1.webp"
                                 className="absolute right-[2px] bottom-[64px] hidden w-[110px] rotate-[40deg] lg:right-[-37px] lg:bottom-[66px] lg:w-[125px] lg:rotate-[43deg] xl:right-[-7px] xl:bottom-[75px] xl:w-[145px] xl:rotate-[43deg] 2xl:right-[11px] 2xl:bottom-[90px] 2xl:w-[162px] 2xl:rotate-[40deg] dark:block"
                             />
 
                             {/* ---------- ARROW 4 ---------- */}
                             {/* curve */}
                             <img
-                                src="/images/arrow/curve1-black.png"
+                                src="/images/arrow/curve1-black.webp"
                                 className="absolute right-[140px] bottom-[20px] w-[26px] rotate-[65deg] lg:right-[108px] lg:bottom-[26px] lg:w-[30px] xl:right-[160px] xl:bottom-[32px] xl:w-[34px] 2xl:right-[200px] 2xl:bottom-[38px] 2xl:w-[38px] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/curve1.png"
+                                src="/images/arrow/curve1.webp"
                                 className="absolute right-[140px] bottom-[20px] hidden w-[26px] rotate-[65deg] lg:right-[108px] lg:bottom-[26px] lg:w-[30px] xl:right-[160px] xl:bottom-[32px] xl:w-[34px] 2xl:right-[200px] 2xl:bottom-[38px] 2xl:w-[38px] dark:block"
                             />
 
                             {/* arrow */}
                             <img
-                                src="/images/arrow/arrow1-black.png"
+                                src="/images/arrow/arrow1-black.webp"
                                 className="absolute right-[14px] bottom-[14px] w-[110px] rotate-[54deg] lg:right-[-16px] lg:bottom-[-10px] lg:w-[125px] lg:rotate-[64deg] xl:right-[17px] xl:bottom-[-11px] xl:w-[145px] xl:rotate-[64deg] 2xl:right-[29px] 2xl:bottom-[-4px] 2xl:w-[165px] 2xl:rotate-[57deg] dark:hidden"
                             />
 
                             <img
-                                src="/images/arrow/arrow1.png"
+                                src="/images/arrow/arrow1.webp"
                                 className="absolute right-[14px] bottom-[14px] hidden w-[110px] rotate-[54deg] lg:right-[-16px] lg:bottom-[-10px] lg:w-[125px] lg:rotate-[64deg] xl:right-[17px] xl:bottom-[-11px] xl:w-[145px] xl:rotate-[64deg] 2xl:right-[29px] 2xl:bottom-[-4px] 2xl:w-[165px] 2xl:rotate-[57deg] dark:block"
                             />
                         </div>
 
                         {/* ================= CENTER LOGO ================= */}
                         <img
-                            src="/images/Ventura.png"
+                            src="/images/Ventura.webp"
                             alt="Ventura Logo"
                             className="absolute top-1/2 left-1/2 w-[260px] -translate-x-1/2 -translate-y-1/2 object-contain lg:w-[295px] xl:w-[337px] 2xl:w-[385px]"
                         />
@@ -184,7 +184,7 @@ export default function VisionMissionSection() {
                             <div className="relative top-2.5 z-20 flex h-[80px] w-[80px] items-center justify-center rounded-full bg-[#161A4E] md:h-[95px] md:w-[95px] lg:h-[110px] lg:w-[110px]">
                                 <span className="absolute inset-0 rounded-full border-2 border-blue-500 border-r-transparent border-b-transparent"></span>
                                 <img
-                                    src="/images/roket.png"
+                                    src="/images/roket.webp"
                                     className="w-8 object-contain md:w-10 lg:w-12"
                                 />
                             </div>
@@ -214,7 +214,7 @@ export default function VisionMissionSection() {
                             <div className="relative top-2.5 z-20 flex h-[80px] w-[80px] items-center justify-center rounded-full bg-[#161A4E] md:h-[95px] md:w-[95px] lg:h-[110px] lg:w-[110px]">
                                 <span className="absolute inset-0 rounded-full border-2 border-blue-500 border-r-transparent border-b-transparent"></span>
                                 <img
-                                    src="/images/lamp.png"
+                                    src="/images/lamp.webp"
                                     className="w-8 object-contain md:w-10 lg:w-12"
                                 />
                             </div>
@@ -244,7 +244,7 @@ export default function VisionMissionSection() {
                             <div className="relative top-2.5 z-20 flex h-[80px] w-[80px] items-center justify-center rounded-full bg-[#161A4E] md:h-[95px] md:w-[95px] lg:h-[110px] lg:w-[110px]">
                                 <span className="absolute inset-0 rounded-full border-2 border-blue-500 border-r-transparent border-b-transparent"></span>
                                 <img
-                                    src="/images/diamond.png"
+                                    src="/images/diamond.webp"
                                     className="w-8 object-contain md:w-10 lg:w-12"
                                 />
                             </div>
@@ -274,7 +274,7 @@ export default function VisionMissionSection() {
                             <div className="relative top-2.5 z-20 flex h-[80px] w-[80px] items-center justify-center rounded-full bg-[#161A4E] md:h-[95px] md:w-[95px] lg:h-[110px] lg:w-[110px]">
                                 <span className="absolute inset-0 rounded-full border-2 border-blue-500 border-r-transparent border-b-transparent"></span>
                                 <img
-                                    src="/images/target.png"
+                                    src="/images/target.webp"
                                     className="w-8 object-contain md:w-10 lg:w-12"
                                 />
                             </div>

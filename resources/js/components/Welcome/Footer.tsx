@@ -5,7 +5,7 @@ export default function Footer() {
                 {/* BRAND */}
                 <div className="mx-auto max-w-sm text-center md:mx-0 md:text-left">
                     <div className="mb-4 flex items-center justify-center gap-3 md:justify-start">
-                        <img src="/images/logo.png" className="w-10" />
+                        <img src="/images/logo.webp" className="w-10" />
 
                         <div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">

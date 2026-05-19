@@ -39,7 +39,7 @@ useEffect(() => {
                     <div className="flex items-center justify-center rounded-lg text-white">
                         {/* <Gem size={24} /> */}
                        <img
-                            src="/images/logo.png"
+                            src="/images/logo.webp"
                             alt="Logo"
                             className="h-10 md:h-12 lg:h-14 xl:h-15 w-auto object-contain"
                         />

@@ -157,7 +157,7 @@ export default function Register() {
                 <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex">
 
                     <img
-                        src="/images/background-login.png"
+                        src="/images/background-login.webp"
                         className="absolute inset-0 h-full w-full object-cover"
                         alt="Background"
                     />
