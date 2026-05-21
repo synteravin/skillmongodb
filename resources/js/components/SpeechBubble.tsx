@@ -21,7 +21,7 @@ export default function SpeechBubble({
       {children}
 
       {/* Tail */}
-      <div className="absolute -bottom-3 left-10 h-6 w-6 rotate-45 bg-black/70"></div>
+      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0 h-6 w-6 rotate-45 bg-black/70"></div>
     </div>
   )
 }
