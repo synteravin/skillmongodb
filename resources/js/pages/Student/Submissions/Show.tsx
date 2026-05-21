@@ -1,8 +1,8 @@
-import AppLayout from '@/layouts/app-layout';
 import { useForm, Link } from '@inertiajs/react';
 import {
     ArrowLeft, Calendar, FileText, Link as LinkIcon,
-    UploadCloud, CheckCircle2, AlertCircle, MessageSquare, Download
+    UploadCloud, CheckCircle2, AlertCircle, MessageSquare, Download,
+    ClipboardList
 } from 'lucide-react';
 import { FormEventHandler, useState, useRef } from 'react';
 
@@ -86,290 +86,286 @@ export default function Show({ submission, studentSubmission }: Props) {
     };
 
     return (
-
-        <div className="w-full mx-auto space-y-6 p-4 sm:p-6 lg:p-8 max-w-5xl">
-
-            {/* Header Back Link */}
-            <div className="flex items-center gap-4 mb-2">
-                <Link
-                    href={`/student/career-groups/${submission.group_id}/submissions`}
-                    className="p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-colors"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                </Link>
-                <div>
-                    <h1 className="text-2xl font-bold text-white">
-                        {submission.title}
-                    </h1>
-                    <p className="text-sm text-slate-400">
-                        {submission.group?.name || 'Assignment'}
-                    </p>
+        <div className="flex min-h-screen bg-slate-50 dark:bg-[#020202]">
+            {/* ─── SIDEBAR (DESKTOP) ─── */}
+            <aside className="w-[240px] shrink-0 flex-col bg-white dark:bg-[#050619] border-r border-slate-200 dark:border-slate-800/60 min-h-screen hidden md:flex sticky top-0">
+                <div className="px-6 py-6 border-b border-slate-100 dark:border-slate-800/60">
+                    <div className="flex items-center gap-3">
+                        <img
+                            src="/images/logo-sv.webp"
+                            alt="Skill Ventura Logo"
+                            className="w-8 h-8 object-contain shrink-0"
+                        />
+                        <span
+                            className="text-gray-900 dark:text-white text-sm tracking-widest leading-tight"
+                            style={{ fontFamily: "'Orbitron', sans-serif", fontWeight: 700 }}
+                        >
+                            Skill<span className="text-[#FACC15]">Ventura</span>
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            <div className="grid lg:grid-cols-3 gap-6">
+                <nav className="flex-1 px-4 py-6 space-y-2">
+                    <Link
+                        href={`/student/career-groups/${submission.group_id}/submissions`}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all text-sm font-medium group"
+                    >
+                        <ArrowLeft className="w-4 h-4 shrink-0 group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-['Oxanium']">Back to List</span>
+                    </Link>
 
-                {/* LEFT COLUMN - Assignment Details */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="rounded-3xl bg-[#0b0f2a] border border-slate-800 shadow-xl p-6 sm:p-8">
-                        <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-slate-800">
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-sm font-medium">
-                                <Calendar className="w-4 h-4 text-indigo-400" />
-                                {submission.deadline
-                                    ? `Due: ${new Date(submission.deadline).toLocaleString()}`
-                                    : 'No Deadline'}
+                    <div className="my-4 border-t border-slate-100 dark:border-slate-800/60" />
+
+                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#3B28F6]/10 dark:bg-[#3B28F6]/15 border border-[#3B28F6]/20 text-[#3B28F6] dark:text-white text-sm font-semibold shadow-inner">
+                        <UploadCloud className="w-4 h-4 text-[#3B28F6] dark:text-[#FACC15]" />
+                        <span className="font-['Oxanium']">Workspace</span>
+                    </div>
+                </nav>
+            </aside>
+
+            {/* ─── MAIN CONTENT: FOCUS WORKSPACE ─── */}
+            <main className="flex-1 w-full max-w-full md:max-w-[calc(100vw-240px)] flex flex-col relative">
+                
+                {/* ─── MOBILE HEADER ─── */}
+                <div className="md:hidden flex items-center justify-between px-6 py-4 bg-white dark:bg-[#050619] border-b border-slate-200 dark:border-slate-800/60 sticky top-0 z-20 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <img src="/images/logo-sv.webp" alt="Logo" className="w-6 h-6 object-contain" />
+                        <span className="text-gray-900 dark:text-white text-xs tracking-widest font-bold font-['Orbitron']">
+                            Skill<span className="text-[#FACC15]">Ventura</span>
+                        </span>
+                    </div>
+                    <Link
+                        href={`/student/career-groups/${submission.group_id}/submissions`}
+                        className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                    </Link>
+                </div>
+
+                <div className="flex-1 flex flex-col items-center justify-center p-6 py-12 md:p-12 lg:p-16 relative">
+                    {/* Decorative Background Elements */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-64 bg-gradient-to-b from-[#3B28F6]/5 to-transparent dark:from-[#3B28F6]/10 pointer-events-none rounded-b-full blur-3xl opacity-60" />
+
+                    <div className="w-full max-w-3xl relative z-10 flex flex-col items-center">
+                        
+                        {/* Header Area */}
+                        <div className="text-center mb-10 w-full">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/50 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+                                <FileText className="w-3.5 h-3.5 text-[#3B28F6] dark:text-[#FACC15]" />
+                                {submission.submission_type} Submission
                             </div>
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-sm font-medium uppercase">
-                                {submission.submission_type === 'file' ? (
-                                    <><FileText className="w-4 h-4 text-blue-400" /> File Upload</>
-                                ) : (
-                                    <><LinkIcon className="w-4 h-4 text-emerald-400" /> Link Submission</>
-                                )}
-                            </div>
-                            {submission.mentor && (
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 text-sm font-medium">
-                                    <span className="text-slate-500">Mentor:</span>
-                                    <span className="text-indigo-400">{submission.mentor.name}</span>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="prose prose-invert prose-slate max-w-none break-words">
-                            <p className="text-slate-300 leading-relaxed whitespace-pre-line">
-                                {submission.description}
+                            
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white font-['Orbitron'] leading-tight mb-4 tracking-tight">
+                                {submission.title}
+                            </h1>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base font-['Oxanium'] max-w-lg mx-auto leading-relaxed">
+                                You are about to submit your work. Please ensure all requirements are met before uploading.
                             </p>
                         </div>
 
-                        {submission.attachment && (
-                            <div className="mt-8 pt-6 border-t border-slate-800">
-                                <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                                    <FileText className="w-4 h-4 text-indigo-400" />
-                                    Reference Material
-                                </h3>
-                                <a
-                                    href={`/storage/${submission.attachment}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-between w-full p-4 rounded-xl border border-slate-700 bg-slate-800/30 hover:bg-slate-800 hover:border-indigo-500/50 transition-all group"
-                                >
-                                    <div className="flex items-center gap-3 truncate">
-                                        <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
-                                            <FileText className="w-5 h-5" />
-                                        </div>
-                                        <span className="text-slate-300 font-medium truncate group-hover:text-indigo-300 transition-colors">
-                                            Download Attachment
-                                        </span>
+                        {/* WORKSPACE: ACTION AREA */}
+                        <div className="w-full relative">
+                            {/* Glow Effect */}
+                            <div className="absolute -inset-1 bg-gradient-to-r from-[#3B28F6]/20 to-[#FACC15]/20 rounded-3xl blur-xl opacity-50 dark:opacity-70 pointer-events-none" />
+
+                            <div className="relative rounded-3xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#050619]/90 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
+                                
+                                <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800/80 pb-6 mb-8">
+                                    <div className="p-3 bg-[#3B28F6]/10 dark:bg-[#FACC15]/10 rounded-xl">
+                                        <UploadCloud className="w-6 h-6 text-[#3B28F6] dark:text-[#FACC15]" />
                                     </div>
-                                    <Download className="w-5 h-5 text-slate-500 group-hover:text-indigo-400 transition-colors shrink-0" />
-                                </a>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* MENTOR FEEDBACK IF GRADED */}
-                    {isGraded && (
-                        <div className="rounded-3xl bg-indigo-900/20 border border-indigo-500/30 shadow-xl p-6 sm:p-8 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-8 opacity-10">
-                                <CheckCircle2 className="w-32 h-32 text-indigo-400 transform rotate-12" />
-                            </div>
-                            <div className="relative z-10">
-                                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                    <MessageSquare className="w-5 h-5 text-indigo-400" />
-                                    Mentor Feedback & Grade
-                                </h3>
-                                <div className="mb-6 p-4 rounded-2xl bg-[#0a0d27]/50 border border-indigo-500/20">
-                                    <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-                                        {studentSubmission?.grade} / 100
-                                    </div>
-                                </div>
-                                <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/50">
-                                    <p className="text-slate-300 italic">
-                                        "{studentSubmission?.feedback || 'No written feedback provided.'}"
-                                    </p>
-                                </div>
-
-                                {studentSubmission?.certificate_url && (
-                                    <div className="mt-6 pt-6 border-t border-indigo-500/20">
-                                        <h4 className="text-sm font-bold text-white mb-3 uppercase tracking-wider">Achievement Award</h4>
-                                        <a
-                                            href={studentSubmission.certificate_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center justify-between w-full p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-emerald-500/20 rounded-lg text-emerald-400">
-                                                    <FileText className="w-5 h-5" />
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="text-emerald-400 font-bold group-hover:text-emerald-300 transition-colors">
-                                                        Certificate of Completion
-                                                    </div>
-                                                    <div className="text-xs text-emerald-500/70 mt-0.5">
-                                                        Click to preview and download your PDF
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <Download className="w-5 h-5 text-emerald-500 group-hover:text-emerald-400 transition-colors shrink-0" />
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* RIGHT COLUMN - Submission Form / Status */}
-                <div className="lg:col-span-1">
-                    <div className="rounded-3xl bg-[#0b0f2a] border border-slate-800 shadow-xl p-6 sm:p-8 sticky top-8">
-
-                        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                            <UploadCloud className="w-5 h-5 text-indigo-400" />
-                            Your Work
-                        </h2>
-
-                        {isSubmitted ? (
-                            <div className="space-y-6">
-                                <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-emerald-500/30 bg-emerald-500/5 rounded-2xl text-center">
-                                    <CheckCircle2 className="w-12 h-12 text-emerald-400 mb-3" />
-                                    <h3 className="text-emerald-400 font-bold text-lg">Submitted Successfully</h3>
-                                    <p className="text-slate-400 text-sm mt-1">
-                                        Status: <span className="uppercase text-slate-300 font-bold">{studentSubmission?.status}</span>
-                                    </p>
-                                </div>
-
-                                <div className="space-y-4">
-                                    {studentSubmission?.link && (
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Submitted Link</label>
-                                            <a
-                                                href={studentSubmission.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="mt-1 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 break-all bg-slate-900/50 p-3 rounded-lg border border-slate-800"
-                                            >
-                                                <LinkIcon className="w-4 h-4 shrink-0" />
-                                                {studentSubmission.link}
-                                            </a>
-                                        </div>
-                                    )}
-
-                                    {studentSubmission?.file_path && (
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Submitted File</label>
-                                            <div className="mt-1 flex items-center gap-2 text-blue-400 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-                                                <FileText className="w-4 h-4 shrink-0" />
-                                                File uploaded successfully
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {studentSubmission?.notes && (
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Your Notes</label>
-                                            <div className="mt-1 text-slate-300 bg-slate-900/50 p-3 rounded-lg border border-slate-800 text-sm">
-                                                {studentSubmission.notes}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {!isGraded && (
-                                    <div className="pt-6 border-t border-slate-800">
-                                        <p className="text-sm text-slate-500 flex items-start gap-2">
-                                            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-yellow-500" />
-                                            You can resubmit your work to overwrite the previous submission until it is graded.
+                                    <div>
+                                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white font-['Orbitron']">
+                                            Submission Hub
+                                        </h2>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-['Oxanium'] uppercase tracking-wider mt-1">
+                                            Secure Workspace
                                         </p>
                                     </div>
-                                )}
-                            </div>
-                        ) : null}
+                                </div>
 
-                        {(!isSubmitted || (!isGraded)) && (
-                            <form onSubmit={submit} className={`space-y-5 ${isSubmitted ? 'mt-6 pt-6 border-t border-slate-800' : ''}`}>
-                                {submission.submission_type === 'link' ? (
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-300 mb-2">Project/Repo URL</label>
-                                        <input
-                                            type="url"
-                                            required
-                                            placeholder="https://github.com/..."
-                                            value={data.link}
-                                            onChange={e => setData('link', e.target.value)}
-                                            className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
-                                        />
-                                        {errors.link && <p className="text-red-400 text-xs mt-1">{errors.link}</p>}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-300 mb-2">Upload File</label>
-                                        <div
-                                            className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all ${dragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-slate-700 hover:border-slate-500 hover:bg-slate-800/50'
-                                                } ${data.file ? 'border-emerald-500/50 bg-emerald-500/5' : ''}`}
-                                            onDragEnter={handleDrag}
-                                            onDragLeave={handleDrag}
-                                            onDragOver={handleDrag}
-                                            onDrop={handleDrop}
-                                        >
-                                            <input
-                                                type="file"
-                                                ref={fileInputRef}
-                                                onChange={e => setData('file', e.target.files?.[0] || null)}
-                                                className="hidden"
-                                            />
+                                {isSubmitted ? (
+                                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                        <div className="flex flex-col items-center justify-center py-10 border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-500/5 rounded-2xl text-center shadow-inner">
+                                            <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-500/20 rounded-full flex items-center justify-center mb-5 ring-4 ring-emerald-50 dark:ring-emerald-500/10 shadow-lg shadow-emerald-500/10">
+                                                <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                                            </div>
+                                            <h3 className="text-emerald-800 dark:text-emerald-300 font-extrabold text-2xl font-['Orbitron']">Task Submitted!</h3>
+                                            <p className="text-emerald-600 dark:text-emerald-400/80 text-sm mt-2 font-['Oxanium'] max-w-sm">
+                                                Your work has been securely uploaded and is awaiting mentor review.
+                                            </p>
+                                        </div>
 
-                                            {data.file ? (
-                                                <div className="flex flex-col items-center">
-                                                    <FileText className="w-8 h-8 text-emerald-400 mb-2" />
-                                                    <p className="text-sm text-emerald-400 font-medium truncate w-full px-4">{data.file.name}</p>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setData('file', null)}
-                                                        className="text-xs text-slate-500 hover:text-red-400 mt-2 transition-colors"
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {studentSubmission?.link && (
+                                                <div className="col-span-1 md:col-span-2 bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block flex items-center gap-2">
+                                                        <LinkIcon className="w-3.5 h-3.5" /> Project URL
+                                                    </label>
+                                                    <a
+                                                        href={studentSubmission.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-sm font-medium text-[#3B28F6] dark:text-[#FACC15] hover:underline break-all"
                                                     >
-                                                        Remove
-                                                    </button>
+                                                        {studentSubmission.link}
+                                                    </a>
                                                 </div>
-                                            ) : (
-                                                <div
-                                                    className="flex flex-col items-center cursor-pointer"
-                                                    onClick={() => fileInputRef.current?.click()}
-                                                >
-                                                    <UploadCloud className="w-8 h-8 text-slate-400 mb-2" />
-                                                    <p className="text-sm text-slate-300 font-medium">Click or drag file here</p>
-                                                    <p className="text-xs text-slate-500 mt-1">Max size: 10MB</p>
+                                            )}
+
+                                            {studentSubmission?.file_path && (
+                                                <div className="col-span-1 md:col-span-2 bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                                                    <div>
+                                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block flex items-center gap-2">
+                                                            <FileText className="w-3.5 h-3.5" /> Attached Document
+                                                        </label>
+                                                        <div className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                                                            File Uploaded Successfully
+                                                        </div>
+                                                    </div>
+                                                    <div className="p-2 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full">
+                                                        <CheckCircle2 className="w-4 h-4" />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {studentSubmission?.notes && (
+                                                <div className="col-span-1 md:col-span-2 bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block flex items-center gap-2">
+                                                        <MessageSquare className="w-3.5 h-3.5" /> Private Notes
+                                                    </label>
+                                                    <div className="text-sm text-slate-600 dark:text-slate-300 italic font-['Oxanium']">
+                                                        "{studentSubmission.notes}"
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
-                                        {errors.file && <p className="text-red-400 text-xs mt-1">{errors.file}</p>}
+
+                                        {!isGraded && (
+                                            <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+                                                <div className="flex items-start gap-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/50 dark:border-amber-500/20 text-amber-700 dark:text-amber-400/90 text-sm">
+                                                    <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                                                    <div>
+                                                        <strong className="block mb-1 font-['Orbitron']">Need to make changes?</strong>
+                                                        <span className="font-['Oxanium']">You can overwrite your submission using the form below as long as it hasn't been graded.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
+                                ) : null}
+
+                                {(!isSubmitted || (!isGraded)) && (
+                                    <form onSubmit={submit} className={`space-y-8 ${isSubmitted ? 'mt-8' : ''} animate-in fade-in duration-700`}>
+                                        {submission.submission_type === 'link' ? (
+                                            <div className="group">
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 block">
+                                                    Project URL <span className="text-red-500">*</span>
+                                                </label>
+                                                <div className="relative">
+                                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                        <LinkIcon className="w-5 h-5 text-slate-400 group-focus-within:text-[#3B28F6] dark:group-focus-within:text-[#FACC15] transition-colors" />
+                                                    </div>
+                                                    <input
+                                                        type="url"
+                                                        required
+                                                        placeholder="https://github.com/username/project"
+                                                        value={data.link}
+                                                        onChange={e => setData('link', e.target.value)}
+                                                        className="w-full bg-slate-50 dark:bg-[#020202] border border-slate-200 dark:border-slate-700 rounded-2xl pl-12 pr-4 py-4 text-gray-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-[#3B28F6]/50 dark:focus:ring-[#FACC15]/50 outline-none transition-all text-sm font-medium shadow-inner"
+                                                    />
+                                                </div>
+                                                {errors.link && <p className="text-red-500 text-xs mt-2 font-medium">{errors.link}</p>}
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 block">
+                                                    Upload File <span className="text-red-500">*</span>
+                                                </label>
+                                                <div
+                                                    className={`relative border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer flex flex-col items-center justify-center min-h-[200px] ${
+                                                        dragActive 
+                                                            ? 'border-[#3B28F6] bg-[#3B28F6]/5 scale-[1.02]' 
+                                                            : 'border-slate-300 dark:border-slate-700 hover:border-[#3B28F6]/50 hover:bg-slate-50 dark:hover:bg-slate-800/30'
+                                                    } ${data.file ? 'border-emerald-500/50 bg-emerald-50 dark:bg-emerald-500/5' : ''}`}
+                                                    onDragEnter={handleDrag}
+                                                    onDragLeave={handleDrag}
+                                                    onDragOver={handleDrag}
+                                                    onDrop={handleDrop}
+                                                    onClick={() => fileInputRef.current?.click()}
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        ref={fileInputRef}
+                                                        onChange={e => setData('file', e.target.files?.[0] || null)}
+                                                        className="hidden"
+                                                    />
+
+                                                    {data.file ? (
+                                                        <div className="flex flex-col items-center animate-in zoom-in duration-300">
+                                                            <div className="p-4 bg-emerald-100 dark:bg-emerald-500/20 rounded-full mb-4 ring-4 ring-emerald-50 dark:ring-emerald-500/10">
+                                                                <FileText className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+                                                            </div>
+                                                            <p className="text-sm text-emerald-800 dark:text-emerald-300 font-bold truncate max-w-[250px] px-2">{data.file.name}</p>
+                                                            <p className="text-xs text-emerald-600/70 dark:text-emerald-400/60 mt-1 font-medium">Ready to upload</p>
+                                                            <button
+                                                                type="button"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setData('file', null);
+                                                                }}
+                                                                className="text-xs text-slate-500 hover:text-white mt-4 transition-colors font-bold px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-red-500 dark:hover:bg-red-500 rounded-full"
+                                                            >
+                                                                Remove File
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                                                            <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                                                                <UploadCloud className="w-8 h-8 text-slate-500 dark:text-slate-400" />
+                                                            </div>
+                                                            <p className="text-base text-slate-700 dark:text-slate-300 font-bold font-['Oxanium']">Click to browse or drag file here</p>
+                                                            <p className="text-xs text-slate-500 mt-2 font-medium tracking-wide">Supported: PDF, ZIP, DOCX (Max 10MB)</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {errors.file && <p className="text-red-500 text-xs mt-2 font-medium">{errors.file}</p>}
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 block flex items-center justify-between">
+                                                <span>Private Notes <span className="text-slate-400 font-normal normal-case">(Optional)</span></span>
+                                            </label>
+                                            <textarea
+                                                rows={4}
+                                                placeholder="Add context, challenges you faced, or questions for your mentor..."
+                                                value={data.notes}
+                                                onChange={e => setData('notes', e.target.value)}
+                                                className="w-full bg-slate-50 dark:bg-[#020202] border border-slate-200 dark:border-slate-700 rounded-2xl p-5 text-gray-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-[#3B28F6]/50 dark:focus:ring-[#FACC15]/50 outline-none transition-all resize-none text-sm font-medium shadow-inner"
+                                            />
+                                            {errors.notes && <p className="text-red-500 text-xs mt-2 font-medium">{errors.notes}</p>}
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className="relative w-full overflow-hidden group rounded-2xl disabled:opacity-70 disabled:cursor-not-allowed"
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-[#3B28F6] to-[#5140ff] dark:from-[#3B28F6] dark:to-[#FACC15]/80 transition-transform duration-500 group-hover:scale-[1.05]" />
+                                            <div className="relative flex justify-center items-center gap-3 px-8 py-4 text-white font-bold text-sm uppercase tracking-widest shadow-xl shadow-[#3B28F6]/30">
+                                                <UploadCloud className="w-5 h-5" />
+                                                <span>{isSubmitted ? 'Update Submission' : 'Submit Assignment'}</span>
+                                            </div>
+                                        </button>
+                                    </form>
                                 )}
+                            </div>
+                        </div>
 
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-300 mb-2">Additional Notes (Optional)</label>
-                                    <textarea
-                                        rows={3}
-                                        placeholder="Any notes for your mentor..."
-                                        value={data.notes}
-                                        onChange={e => setData('notes', e.target.value)}
-                                        className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all resize-none"
-                                    />
-                                    {errors.notes && <p className="text-red-400 text-xs mt-1">{errors.notes}</p>}
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="w-full inline-flex justify-center items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-indigo-500/20 transition-all disabled:opacity-50 active:scale-95"
-                                >
-                                    {isSubmitted ? 'Resubmit Work' : 'Submit Work'}
-                                </button>
-                            </form>
-                        )}
                     </div>
                 </div>
-
-            </div>
+            </main>
         </div>
     );
 }

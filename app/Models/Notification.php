@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotificationCollection;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Notification extends Model
 {
@@ -44,12 +44,12 @@ class Notification extends Model
     {
         return $this->read_at !== null;
     }
-    
+
     public function scopeUnread($query)
     {
         return $query->whereNull('read_at');
     }
-    
+
     public function scopeRead($query)
     {
         return $query->whereNotNull('read_at');

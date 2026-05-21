@@ -34,7 +34,7 @@ class StudentJourneyService
         $careerGroupIds = CareerGroup::where('mentor_id', (string) $mentor->_id)
             ->get()
             ->pluck('_id')
-            ->map(fn($id) => (string) $id)
+            ->map(fn ($id) => (string) $id)
             ->toArray();
 
         $courseStudents = CourseStudent::whereIn('career_group_id', $careerGroupIds)->get();
@@ -50,11 +50,13 @@ class StudentJourneyService
         $students = $courseStudents->groupBy('user_id')->map(function ($enrollments) use ($userStats, $submissions) {
             $studentId = $enrollments->first()->user_id;
             $user = User::find($studentId);
-            if (! $user) return null;
+            if (! $user) {
+                return null;
+            }
 
             $stats = $userStats->get($studentId, collect());
             $progress = $this->calculateProgress($enrollments, $stats);
-            
+
             $studentSubmissions = $submissions->get($studentId, collect());
             $avgScore = $studentSubmissions->count() > 0 ? $studentSubmissions->pluck('grade')->avg() : 0;
 

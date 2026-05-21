@@ -190,7 +190,6 @@ Route::middleware(['auth', 'role:mentor'])
         Route::get('/student-journey', [MentorDetailController::class, 'index'])
             ->name('student-journey');
 
-
         Route::get('/student-journey', [MentorDetailController::class, 'index'])
             ->name('student-journey');
 

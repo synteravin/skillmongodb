@@ -109,14 +109,14 @@ class UserDetailService
                     $goldVal = is_array($pathStat) ? ($pathStat['gold'] ?? 0) : 0;
                     $quizScore = is_array($pathStat) ? ($pathStat['quiz_score'] ?? 0) : 0;
                     $pId = is_array($pathStat) ? ($pathStat['path_id'] ?? $key) : $key;
-                    
+
                     // Add nested gold to global total
                     $totalGold += $goldVal;
                     $totalScore += $quizScore;
 
                     if ($expVal > 0) {
-                        $pathName = \App\Models\Path::where('_id', $pId)->value('name') ?? 'Path ' . substr((string)$pId, 0, 5);
-                        if (!isset($pathStatsBreakdown[$pathName])) {
+                        $pathName = \App\Models\Path::where('_id', $pId)->value('name') ?? 'Path '.substr((string) $pId, 0, 5);
+                        if (! isset($pathStatsBreakdown[$pathName])) {
                             $pathStatsBreakdown[$pathName] = 0;
                         }
                         $pathStatsBreakdown[$pathName] += $expVal;
@@ -143,7 +143,7 @@ class UserDetailService
                     'name' => $tier->name ?? 'Unknown Rank',
                     'image' => $tier->image_url ?? null,
                     'star' => $star,
-                    'total_score' => $totalScore
+                    'total_score' => $totalScore,
                 ];
             }
         }
