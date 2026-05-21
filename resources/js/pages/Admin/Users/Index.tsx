@@ -143,24 +143,35 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
 
     return (
         <AppLayout>
-            <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-[1200px] mx-auto space-y-6 sm:space-y-8">
+            <div className="min-h-screen p-3.5 sm:p-6 lg:p-8 max-w-[1200px] mx-auto space-y-5 sm:space-y-8">
                 
                 {/* HEADER & CONTROLS */}
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
+                <div className="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 sm:gap-6 bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
                     {/* Decorative gradient blur */}
                     <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none"></div>
                     
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
-                            <div className="p-2.5 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
-                                <Users className="text-indigo-400" size={24} />
-                            </div>
-                            User Management
-                        </h1>
-                        <p className="text-slate-400 text-sm mt-2 ml-1">Manage system users, assigned roles, and access control.</p>
+                    <div className="flex justify-between items-center w-full lg:w-auto z-10">
+                        <div>
+                            <h1 className="text-xl sm:text-3xl font-bold text-white flex items-center gap-2.5">
+                                <div className="p-2 bg-indigo-500/10 rounded-xl border border-indigo-500/20 shrink-0">
+                                    <Users className="text-indigo-400 w-5 h-5 sm:w-6 sm:h-6" />
+                                </div>
+                                <span>User Management</span>
+                            </h1>
+                            <p className="text-slate-400 text-xs sm:text-sm mt-1 sm:mt-2 ml-1 hidden sm:block">Manage system users, assigned roles, and access control.</p>
+                        </div>
+                        
+                        {/* Mobile Add User Button (compact beside the title for superb mobile real estate) */}
+                        <button 
+                            onClick={openCreate} 
+                            className="flex md:hidden items-center justify-center p-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 active:scale-95 hover:from-indigo-400 hover:to-purple-500 text-white rounded-xl transition-all shadow-lg shadow-indigo-500/25 shrink-0"
+                            title="Add User"
+                        >
+                            <Plus size={20} />
+                        </button>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto z-10">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full lg:w-auto z-10">
                         {/* Search Form */}
                         <form onSubmit={handleSearch} className="relative flex-grow sm:min-w-[300px]">
                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -171,13 +182,14 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                 placeholder="Search by name, username or email..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600 hover:bg-slate-900"
+                                className="w-full pl-10 pr-4 py-2.5 bg-slate-950/50 border border-slate-800 rounded-xl text-white text-base md:text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600 hover:bg-slate-900"
                             />
                         </form>
 
+                        {/* Desktop Add User Button */}
                         <button 
                             onClick={openCreate} 
-                            className="group flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 whitespace-nowrap"
+                            className="hidden md:flex group items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 whitespace-nowrap"
                         >
                             <Plus size={18} className="transition-transform duration-300 group-hover:rotate-90" />
                             Add User
@@ -185,8 +197,8 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                     </div>
                 </div>
 
-                {/* TABLE CARD */}
-                <div className="bg-slate-900 border border-slate-800/80 rounded-2xl overflow-hidden shadow-xl">
+                {/* DESKTOP TABLE VIEW */}
+                <div className="hidden md:block bg-slate-900 border border-slate-800/80 rounded-2xl overflow-hidden shadow-xl">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm whitespace-nowrap">
                             <thead className="bg-slate-950/50 text-slate-400 border-b border-slate-800/80">
@@ -282,9 +294,107 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                     </div>
                 </div>
 
-                {/* PAGINATION */}
+                {/* MOBILE CARD VIEW (Highly Professional Decoupled Floating Card list) */}
+                <div className="block md:hidden space-y-4">
+                    {users.data.length > 0 ? (
+                        users.data.map((user) => {
+                            // Assign premium roles specific color gradients on left edge indicators
+                            const roleColor = user.role === 'admin' 
+                                ? 'from-rose-500 to-pink-600' 
+                                : user.role === 'mentor' 
+                                ? 'from-blue-500 to-indigo-600' 
+                                : 'from-emerald-500 to-teal-600';
+
+                            return (
+                                <div 
+                                    key={user._id} 
+                                    className="relative overflow-hidden pl-5 pr-4 py-4.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 active:scale-[0.99] hover:border-slate-700/80 transition-all duration-300 shadow-lg"
+                                >
+                                    {/* Accent strip signifying user role */}
+                                    <div className={`absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b ${roleColor} rounded-l-2xl`}></div>
+                                    
+                                    {/* Avatar & User Details */}
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative shrink-0">
+                                                <img
+                                                    src={
+                                                        user.avatar
+                                                            ? user.avatar
+                                                            : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
+                                                    }
+                                                    className="w-11 h-11 rounded-full object-cover border border-slate-700/40 bg-slate-850 shadow-sm"
+                                                    alt={user.name}
+                                                />
+                                                <div className="absolute inset-0 rounded-full shadow-inner ring-1 ring-white/10 pointer-events-none"></div>
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h4 className="text-white font-semibold text-sm truncate hover:text-indigo-400 transition-colors">{user.name}</h4>
+                                                <p className="text-slate-500 text-xs truncate">@{user.username}</p>
+                                            </div>
+                                        </div>
+                                        <div className="shrink-0">
+                                            <RoleBadge role={user.role} />
+                                        </div>
+                                    </div>
+
+                                    {/* Email Contact Row */}
+                                    <div className="mt-3.5 flex items-center gap-2 text-slate-400 bg-slate-950/40 border border-slate-800/60 rounded-xl px-3.5 py-2.5 text-xs font-medium">
+                                        <Mail size={14} className="text-indigo-400/80 shrink-0" />
+                                        <span className="truncate select-all">{user.email}</span>
+                                    </div>
+
+                                    {/* Touch-Friendly Action Buttons */}
+                                    <div className="grid grid-cols-3 gap-2 mt-4 pt-1">
+                                        <Link
+                                            href={`/admin/users/${user._id}`}
+                                            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-300 active:scale-95 transition-all shadow-sm"
+                                        >
+                                            <Eye size={14} className="text-slate-400" />
+                                            <span>View</span>
+                                        </Link>
+                                        <button
+                                            onClick={() => openEdit(user)}
+                                            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-400 active:scale-95 transition-all"
+                                        >
+                                            <Pencil size={14} />
+                                            <span>Edit</span>
+                                        </button>
+                                        <button
+                                            onClick={() => deleteUser(user._id)}
+                                            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 active:scale-95 transition-all"
+                                        >
+                                            <Trash2 size={14} />
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-16 px-4 bg-slate-900 border border-slate-800/80 rounded-2xl text-center">
+                            <div className="w-14 h-14 bg-slate-800/50 rounded-full flex items-center justify-center mb-3 border border-slate-700/50">
+                                <Users size={28} className="text-slate-500" />
+                            </div>
+                            <h3 className="text-white font-medium text-base mb-1">No users found</h3>
+                            <p className="text-slate-400 text-xs max-w-sm">
+                                {searchQuery ? `No users matching "${searchQuery}" were found.` : "Get started by adding a new user to the system."}
+                            </p>
+                            {!searchQuery && (
+                                <button 
+                                    onClick={openCreate}
+                                    className="mt-5 px-4 py-2 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 rounded-xl text-xs font-semibold transition-colors border border-indigo-500/20"
+                                >
+                                    Add First User
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* DESKTOP PAGINATION */}
                 {users.last_page > 1 && (
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900 border border-slate-800/80 rounded-2xl px-6 py-4 shadow-xl">
+                    <div className="hidden md:flex justify-between items-center gap-4 bg-slate-900 border border-slate-800/80 rounded-2xl px-6 py-4 shadow-xl">
                         <div className="text-sm text-slate-400">
                             Showing <span className="font-medium text-white">{users.from}</span> to <span className="font-medium text-white">{users.to}</span> of <span className="font-medium text-white">{users.total}</span> results
                         </div>
@@ -314,6 +424,48 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                     </div>
                 )}
 
+                {/* MOBILE PAGINATION (Clean, touch-friendly, non-cluttering pagination for small devices) */}
+                {users.last_page > 1 && (
+                    <div className="block md:hidden bg-slate-900 border border-slate-800/80 rounded-2xl p-4 shadow-xl">
+                        <div className="flex items-center justify-between gap-3">
+                            {/* Previous Button */}
+                            {users.links[0]?.url ? (
+                                <Link
+                                    href={users.links[0].url}
+                                    preserveScroll
+                                    className="flex items-center justify-center px-4 py-2 bg-slate-950/50 text-slate-300 border border-slate-800 hover:bg-slate-900 rounded-xl text-xs font-semibold active:scale-95 transition-all"
+                                >
+                                    Previous
+                                </Link>
+                            ) : (
+                                <span className="px-4 py-2 bg-slate-900 text-slate-600 border border-slate-800/50 rounded-xl text-xs font-semibold cursor-not-allowed opacity-40">
+                                    Previous
+                                </span>
+                            )}
+
+                            {/* Page Indicator */}
+                            <div className="text-xs font-medium text-slate-400">
+                                Page <span className="text-white font-semibold">{users.current_page}</span> of <span className="text-white font-semibold">{users.last_page}</span>
+                            </div>
+
+                            {/* Next Button */}
+                            {users.links[users.links.length - 1]?.url ? (
+                                <Link
+                                    href={users.links[users.links.length - 1].url}
+                                    preserveScroll
+                                    className="flex items-center justify-center px-4 py-2 bg-slate-950/50 text-slate-300 border border-slate-800 hover:bg-slate-900 rounded-xl text-xs font-semibold active:scale-95 transition-all"
+                                >
+                                    Next
+                                </Link>
+                            ) : (
+                                <span className="px-4 py-2 bg-slate-900 text-slate-600 border border-slate-800/50 rounded-xl text-xs font-semibold cursor-not-allowed opacity-40">
+                                    Next
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {/* MODAL */}
                 {showModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -322,12 +474,12 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                         
                         <form
                             onSubmit={submit}
-                            className="w-full max-w-md bg-[#0B1120] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col relative z-10 animate-in zoom-in-95 duration-200"
+                            className="w-full max-w-md bg-[#0B1120] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col relative z-10 animate-in zoom-in-95 duration-200 max-h-[90vh]"
                         >
-                            <div className="p-6 border-b border-slate-800/80 flex justify-between items-center bg-slate-900/50">
+                            <div className="p-5 border-b border-slate-800/80 flex justify-between items-center bg-slate-900/50 shrink-0">
                                 <div>
-                                    <h2 className="text-xl font-bold text-white">{editUser ? "Edit User Details" : "Create New User"}</h2>
-                                    <p className="text-xs text-slate-400 mt-1">{editUser ? "Update the user's information and role." : "Add a new user to the system."}</p>
+                                    <h2 className="text-lg font-bold text-white">{editUser ? "Edit User Details" : "Create New User"}</h2>
+                                    <p className="text-[11px] text-slate-400 mt-0.5">{editUser ? "Update the user's information and role." : "Add a new user to the system."}</p>
                                 </div>
                                 <button
                                     type="button"
@@ -335,30 +487,30 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                     className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors bg-slate-950/50 border border-slate-800/50"
                                     disabled={processing}
                                 >
-                                    <X size={18} />
+                                    <X size={16} />
                                 </button>
                             </div>
 
-                            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                            <div className="p-5 space-y-5 overflow-y-auto custom-scrollbar flex-grow">
                                 {/* AVATAR */}
                                 <div className="flex flex-col items-center justify-center">
                                     <div
-                                        className={`relative w-24 h-24 rounded-full bg-slate-950/80 border-2 border-dashed ${errors.avatar ? 'border-rose-500' : 'border-slate-700 hover:border-indigo-500'} flex items-center justify-center cursor-pointer overflow-hidden group transition-all duration-300 shadow-inner`}
+                                        className={`relative w-20 h-20 rounded-full bg-slate-950/80 border-2 border-dashed ${errors.avatar ? 'border-rose-500' : 'border-slate-700 hover:border-indigo-500'} flex items-center justify-center cursor-pointer overflow-hidden group transition-all duration-300 shadow-inner`}
                                         onClick={() => document.getElementById("avatarInput")?.click()}
                                     >
                                         {preview ? (
                                             <>
-                                                <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                                                <img src={preview} alt="Avatar Preview" className="w-full h-full object-cover" />
                                                 <div className="absolute inset-0 bg-slate-950/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                    <Camera size={24} className="text-white" />
+                                                    <Camera size={20} className="text-white" />
                                                 </div>
                                             </>
                                         ) : (
                                             <div className="flex flex-col items-center text-slate-500 group-hover:text-indigo-400 transition-colors">
-                                                <div className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-slate-800">
-                                                    <Upload size={16} />
+                                                <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center mb-1 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-slate-800">
+                                                    <Upload size={14} />
                                                 </div>
-                                                <span className="text-[10px] font-medium uppercase tracking-wider">Photo</span>
+                                                <span className="text-[9px] font-medium uppercase tracking-wider">Photo</span>
                                             </div>
                                         )}
                                     </div>
@@ -372,8 +524,8 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                     {errors.avatar && <span className="text-xs text-rose-500 mt-2 font-medium">{errors.avatar}</span>}
                                 </div>
 
-                                <div className="space-y-5">
-                                    <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Full Name <span className="text-rose-500">*</span></label>
                                             <div className="relative">
@@ -384,7 +536,7 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                                     placeholder="John Doe"
                                                     value={data.name}
                                                     onChange={(e) => setData("name", e.target.value)}
-                                                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.name ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-sm focus:outline-none focus:ring-1 transition-shadow placeholder:text-slate-600`}
+                                                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.name ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-base md:text-sm focus:outline-none focus:ring-1 transition-all placeholder:text-slate-600`}
                                                     required
                                                 />
                                             </div>
@@ -394,13 +546,13 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                             <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Username <span className="text-rose-500">*</span></label>
                                             <div className="relative">
                                                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                                    <span className={`font-medium ${errors.username ? "text-rose-500" : "text-slate-500"}`}>@</span>
+                                                    <span className={`font-semibold text-sm ${errors.username ? "text-rose-500" : "text-slate-500"}`}>@</span>
                                                 </div>
                                                 <input
                                                     placeholder="johndoe"
                                                     value={data.username}
                                                     onChange={(e) => setData("username", e.target.value)}
-                                                    className={`w-full pl-9 pr-4 py-2.5 bg-slate-950 border ${errors.username ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-sm focus:outline-none focus:ring-1 transition-shadow placeholder:text-slate-600`}
+                                                    className={`w-full pl-9 pr-4 py-2.5 bg-slate-950 border ${errors.username ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-base md:text-sm focus:outline-none focus:ring-1 transition-all placeholder:text-slate-600`}
                                                     required
                                                 />
                                             </div>
@@ -419,14 +571,14 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                                 placeholder="john@example.com"
                                                 value={data.email}
                                                 onChange={(e) => setData("email", e.target.value)}
-                                                className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.email ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-sm focus:outline-none focus:ring-1 transition-shadow placeholder:text-slate-600`}
+                                                className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.email ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-base md:text-sm focus:outline-none focus:ring-1 transition-all placeholder:text-slate-600`}
                                                 required
                                             />
                                         </div>
                                         {errors.email && <span className="text-xs text-rose-500 mt-1 ml-1 inline-block">{errors.email}</span>}
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">
                                                 Password {editUser ? <span className="text-slate-500 text-[10px] ml-1">(Optional)</span> : <span className="text-rose-500">*</span>}
@@ -436,7 +588,7 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                                 placeholder={editUser ? "Leave blank to keep" : "••••••••"}
                                                 value={data.password}
                                                 onChange={(e) => setData("password", e.target.value)}
-                                                className={`w-full px-4 py-2.5 bg-slate-950 border ${errors.password ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-sm focus:outline-none focus:ring-1 transition-shadow placeholder:text-slate-600`}
+                                                className={`w-full px-4 py-2.5 bg-slate-950 border ${errors.password ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-base md:text-sm focus:outline-none focus:ring-1 transition-all placeholder:text-slate-600`}
                                                 required={!editUser}
                                             />
                                             {errors.password && <span className="text-xs text-rose-500 mt-1 ml-1 inline-block">{errors.password}</span>}
@@ -450,7 +602,7 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                                 <select
                                                     value={data.role}
                                                     onChange={(e) => setData("role", e.target.value as any)}
-                                                    className={`w-full pl-10 pr-8 py-2.5 bg-slate-950 border ${errors.role ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-sm focus:outline-none focus:ring-1 transition-shadow appearance-none`}
+                                                    className={`w-full pl-10 pr-8 py-2.5 bg-slate-950 border ${errors.role ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-white text-base md:text-sm focus:outline-none focus:ring-1 transition-all appearance-none`}
                                                 >
                                                     <option value="student">Student</option>
                                                     <option value="mentor">Mentor</option>
@@ -466,19 +618,19 @@ export default function Index({ users, filters }: { users: PaginatedUsers, filte
                                 </div>
                             </div>
 
-                            <div className="p-5 border-t border-slate-800/80 bg-slate-900/40 flex justify-end gap-3 mt-auto">
+                            <div className="p-4 border-t border-slate-800/80 bg-slate-900/40 flex justify-end gap-3 shrink-0">
                                 <button
                                     type="button"
                                     onClick={() => !processing && setShowModal(false)}
                                     disabled={processing}
-                                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors disabled:opacity-50"
+                                    className="px-4.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors disabled:opacity-50"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/25 disabled:opacity-70 disabled:cursor-not-allowed"
+                                    className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-500/25 disabled:opacity-70 disabled:cursor-not-allowed"
                                 >
                                     {processing && <Loader2 size={16} className="animate-spin" />}
                                     {editUser ? "Save Changes" : "Create User"}
