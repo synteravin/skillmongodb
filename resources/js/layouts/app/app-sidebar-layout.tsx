@@ -17,7 +17,7 @@ export default function AppSidebarLayout({
             <AppContent
                 variant="sidebar"
                 className={`min-h-screen overflow-x-hidden transition-all duration-300
-        ${isOpen ? 'md:ml-64' : 'md:ml-16'}
+        ${isOpen ? 'ml-64' : 'ml-16'}
     `}
             >
                 {/* <AppSidebarHeader breadcrumbs={breadcrumbs} /> */}

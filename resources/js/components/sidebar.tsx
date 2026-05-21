@@ -107,22 +107,14 @@ export default function Sidebar({
 
     return (
         <>
-            {/* Mobile Toggle */}
-            <button
-                onClick={() => setSidebarOpen(!isOpen)}
-                className="fixed top-4 left-4 z-50 rounded-md bg-indigo-600 p-2 text-white shadow-lg md:hidden"
-            >
-                <Menu size={18} />
-            </button>
-
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 flex flex-col ${isOpen ? 'w-64' : 'w-16'} border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} `}
+                className={`fixed inset-y-0 left-0 z-40 flex flex-col ${isOpen ? 'w-64' : 'w-16'} border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 translate-x-0`}
             >
-                {/* Desktop Toggle */}
+                {/* Toggle Button */}
                 <button
                     onClick={() => setSidebarOpen(!isOpen)}
-                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-white shadow-md transition hover:scale-105 md:flex dark:border-indigo-700 dark:bg-indigo-800"
+                    className="absolute top-4 -right-3 flex h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-white shadow-md transition hover:scale-105 dark:border-indigo-700 dark:bg-indigo-800"
                 >
                     {isOpen ? (
                         <ChevronLeft size={14} />

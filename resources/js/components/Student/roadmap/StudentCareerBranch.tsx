@@ -69,7 +69,7 @@ export default function StudentCareerBranch({
         );
     };
 
-return (
+    return (
         <div className="text-sans relative flex w-full flex-col items-center px-8 sm:px-4">
 
             {/* ═══════════════════════════════════════════════
@@ -85,11 +85,11 @@ return (
                     ${isCompleted
                         ? 'border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.35)]'
                         : isChosen
-                        ? 'border-blue-400 shadow-[0_0_40px_rgba(96,165,250,0.35)]'
-                        : !basicCompleted || isOtherChosen
-                            /* locked light: border biru tipis; dark: tetap ungu */
-                            ? 'border-blue-200 dark:border-[#3B28F6] shadow-[0_0_0_1px_rgba(147,197,253,0.4)] dark:shadow-[0_0_35px_6px_rgba(59,40,246,0.3)]'
-                            : 'border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]'
+                            ? 'border-blue-400 shadow-[0_0_40px_rgba(96,165,250,0.35)]'
+                            : !basicCompleted || isOtherChosen
+                                /* locked light: border biru tipis; dark: tetap ungu */
+                                ? 'border-blue-200 dark:border-[#3B28F6] shadow-[0_0_0_1px_rgba(147,197,253,0.4)] dark:shadow-[0_0_35px_6px_rgba(59,40,246,0.3)]'
+                                : 'border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]'
                     }`}
             >
                 {/* TOP ACCENT LINE */}
@@ -122,12 +122,12 @@ return (
                                 className="w-3.5 h-3.5 text-blue-400 dark:text-[#1e3a8a]">
                                 <rect x="5" y="11" width="14" height="10" rx="2.5"
                                     fill="currentColor" fillOpacity="0.15"
-                                    stroke="currentColor" strokeWidth="1.8"/>
+                                    stroke="currentColor" strokeWidth="1.8" />
                                 <path d="M8 11V7a4 4 0 0 1 8 0v4"
                                     stroke="currentColor" strokeWidth="1.8"
-                                    strokeLinecap="round"/>
+                                    strokeLinecap="round" />
                                 <circle cx="12" cy="16" r="1.5"
-                                    fill="currentColor" fillOpacity="0.9"/>
+                                    fill="currentColor" fillOpacity="0.9" />
                             </svg>
                         </div>
                     )}
@@ -163,11 +163,11 @@ return (
                                             }`}
                                     >
                                         <path d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z"
-                                            stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                                            stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
                                         <path d="M9 15l-2 4 3-1M15 15l2 4-3-1"
                                             stroke="currentColor" strokeWidth="1.5"
-                                            strokeLinecap="round" strokeLinejoin="round"/>
-                                        <circle cx="12" cy="13" r="1.5" fill="currentColor"/>
+                                            strokeLinecap="round" strokeLinejoin="round" />
+                                        <circle cx="12" cy="13" r="1.5" fill="currentColor" />
                                     </svg>
                                 )}
                             </div>
@@ -292,7 +292,7 @@ return (
                                     font-['Orbitron'] text-[12px] font-bold tracking-widest uppercase
                                     text-emerald-400 shadow-[0_0_8px_1px_rgba(52,211,153,0.3)]"
                             >
-                                Completed
+                                Finish
                             </button>
                         ) : (
                             <button
@@ -330,7 +330,7 @@ return (
             {/* ── PATHS LIST ── */}
             <div className={`flex w-full flex-col items-center
                 ${!basicCompleted || isOtherChosen ? 'opacity-60' : ''}`}
-                /* ↑ grayscale dihapus, cukup opacity ringan */
+            /* ↑ grayscale dihapus, cukup opacity ringan */
             >
                 <div className={`h-8 w-[2px] bg-blue-200 dark:bg-gray-500
                     ${isOtherChosen ? 'opacity-30' : ''}`}

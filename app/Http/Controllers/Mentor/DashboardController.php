@@ -70,7 +70,7 @@ class DashboardController extends Controller
                     ];
                 })->values()->all(),
             ],
-            'notifications' => $mentor->unreadNotifications()->take(10)->get()->map(function($notif) {
+            'notifications' => $mentor->unreadNotifications()->take(10)->get()->map(function ($notif) {
                 return [
                     'id' => $notif->id,
                     'data' => $notif->data,
