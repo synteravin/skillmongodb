@@ -5,6 +5,7 @@ import {
     ChevronRight,
     Home,
     Menu,
+    X,
     Sparkles,
     Users,
     LogOut,
@@ -107,14 +108,24 @@ export default function Sidebar({
 
     return (
         <>
+            {/* Mobile Backdrop Overlay */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 md:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 flex flex-col ${isOpen ? 'w-64' : 'w-16'} border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 translate-x-0`}
+                className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 w-64 md:translate-x-0 ${
+                    isOpen ? 'translate-x-0' : '-translate-x-full'
+                } ${isOpen ? 'md:w-64' : 'md:w-16'}`}
             >
-                {/* Toggle Button */}
+                {/* Desktop Toggle Button */}
                 <button
                     onClick={() => setSidebarOpen(!isOpen)}
-                    className="absolute top-4 -right-3 flex h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-white shadow-md transition hover:scale-105 dark:border-indigo-700 dark:bg-indigo-800"
+                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-white shadow-md transition hover:scale-105 md:flex dark:border-indigo-700 dark:bg-indigo-800"
                 >
                     {isOpen ? (
                         <ChevronLeft size={14} />
@@ -123,18 +134,27 @@ export default function Sidebar({
                     )}
                 </button>
 
-                {/* Brand */}
+                {/* Brand with Mobile Close Button */}
                 {isOpen && (
-                    <div className="px-6 py-6">
-                        <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
-                            Skill
-                            <span className="text-indigo-600 dark:text-indigo-400">
-                                Ventura
-                            </span>
-                        </h1>
-                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Learning Management System
-                        </p>
+                    <div className="flex items-start justify-between px-6 py-6">
+                        <div>
+                            <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                                Skill
+                                <span className="text-indigo-600 dark:text-indigo-400">
+                                    Ventura
+                                </span>
+                            </h1>
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                Learning Management System
+                            </p>
+                        </div>
+                        {/* Mobile Close Button inside Drawer */}
+                        <button
+                            onClick={() => setSidebarOpen(false)}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 active:scale-95 transition dark:text-slate-400 dark:hover:bg-slate-800 md:hidden"
+                        >
+                            <X size={18} />
+                        </button>
                     </div>
                 )}
 
