@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import ResultModal from "@/components/QuestionForm/ResultModal"
 import { router } from "@inertiajs/react"
 import { Flag } from "lucide-react"
-import "./quizLandscape.css";
- 
+
+
 interface FooterProps {
     current: number
     total: number
@@ -13,14 +13,15 @@ interface FooterProps {
     handleBack: () => void
     next: () => void
 }
- 
+
 function Footer({ current, total, selected, loading, handleBack, next }: FooterProps) {
     return (
-        <div className="quiz-footer fixed bottom-4 left-0 w-full z-40 h-[90px] lg:h-[110px]">
+        <div className="quiz-footer fixed bottom-4 max-[767px]:bottom-[5px] left-0 w-full z-40 h-[90px] max-[767px]:h-[62px] lg:h-[110px]">
             <div className="absolute inset-0 pointer-events-none">
 
                 {/* ── DIAGONAL KIRI ── */}
-                <div className="absolute -bottom-[2px] left-0 bg-[#3B28F6] block lg:hidden footer-diag-left"
+                <div className="absolute -bottom-[2px] left-0 bg-[#3B28F6] block md:hidden footer-diag-left w-[clamp(82px,25vw,128px)] h-[30px] [clip-path:polygon(0_0,100%_0,calc(100%_-_24px)_100%,0_100%)]" />
+                <div className="absolute -bottom-[2px] left-0 bg-[#3B28F6] hidden md:block lg:hidden footer-diag-left"
                     style={{ width: 210, height: 50, clipPath: "polygon(0 0, 100% 0, calc(100% - 52px) 100%, 0 100%)" }} />
                 <div className="absolute -bottom-[2px] left-0 bg-[#3B28F6] hidden lg:block xl:hidden"
                     style={{ width: 320, height: 65, clipPath: "polygon(0 0, 100% 0, calc(100% - 60px) 100%, 0 100%)" }} />
@@ -30,7 +31,8 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                     style={{ width: 442, height: 65, clipPath: "polygon(0 0, 100% 0, calc(100% - 68px) 100%, 0 100%)" }} />
 
                 {/* ── DIAGONAL KANAN ── */}
-                <div className="absolute -bottom-[2px] right-0 bg-[#3B28F6] block lg:hidden footer-diag-right"
+                <div className="absolute -bottom-[2px] right-0 bg-[#3B28F6] block md:hidden footer-diag-right w-[clamp(82px,25vw,128px)] h-[30px] [clip-path:polygon(0_0,100%_0,100%_100%,24px_100%)]" />
+                <div className="absolute -bottom-[2px] right-0 bg-[#3B28F6] hidden md:block lg:hidden footer-diag-right"
                     style={{ width: 208, height: 50, clipPath: "polygon(0 0, 100% 0, 100% 100%, 52px 100%)" }} />
                 <div className="absolute -bottom-[2px] right-0 bg-[#3B28F6] hidden lg:block xl:hidden"
                     style={{ width: 320, height: 65, clipPath: "polygon(0 0, 100% 0, 100% 100%, 60px 100%)" }} />
@@ -42,29 +44,32 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                 {/* ── GARIS KUNING TENGAH ATAS — FIX RESPONSIVE ── */}
                 <div
                     className="
-                        absolute h-[5px] bg-[#FACC15] rounded-tl-lg rounded-tr-lg footer-bar-top
+                        absolute h-[3px] md:h-[5px] bg-[#FACC15] rounded-tl-lg rounded-tr-lg footer-bar-top
 
-                        left-[80px] md:left-[209px] lg:left-[318px] xl:left-[378px] 2xl:left-[442px]
-                        right-[80px] md:right-[209px] lg:right-[317px] xl:right-[369px] 2xl:right-[440px]
+                        left-[clamp(82px,25vw,128px)] md:left-[209px] lg:left-[318px] xl:left-[378px] 2xl:left-[442px]
+                        right-[clamp(82px,25vw,128px)] md:right-[209px] lg:right-[317px] xl:right-[369px] 2xl:right-[440px]
 
                         top-[44%] md:top-[46.5%] lg:top-[43%] xl:top-[47%] 2xl:top-[42%]
                     "
                 />
 
                 {/* ── GARIS KUNING BAWAH KIRI ── */}
-                <div className="absolute -bottom-2 left-0 h-[5px] bg-[#FACC15] block lg:hidden footer-bar-bottom-left" style={{ width: 161 }} />
+                <div className="absolute -bottom-2 left-0 h-[3px] bg-[#FACC15] block md:hidden footer-bar-bottom-left w-[clamp(62px,19vw,98px)]" />
+                <div className="absolute -bottom-2 left-0 h-[5px] bg-[#FACC15] hidden md:block lg:hidden footer-bar-bottom-left" style={{ width: 161 }} />
                 <div className="absolute -bottom-2 left-0 h-[5px] bg-[#FACC15] hidden lg:block xl:hidden rounded-br-xs" style={{ width: 263 }} />
                 <div className="absolute -bottom-2 left-0 h-[5px] bg-[#FACC15] hidden xl:block 2xl:hidden" style={{ width: 323 }} />
                 <div className="absolute -bottom-2 left-0 h-[5px] bg-[#FACC15] hidden 2xl:block" style={{ width: 381 }} />
 
                 {/* ── GARIS KUNING BAWAH KANAN ── */}
-                <div className="absolute -bottom-2 right-0 h-[5px] bg-[#FACC15] block lg:hidden rounded-bl-xs footer-bar-bottom-right" style={{ width: 159 }} />
+                <div className="absolute -bottom-2 right-0 h-[3px] bg-[#FACC15] block md:hidden rounded-bl-xs footer-bar-bottom-right w-[clamp(62px,19vw,98px)]" />
+                <div className="absolute -bottom-2 right-0 h-[5px] bg-[#FACC15] hidden md:block lg:hidden rounded-bl-xs footer-bar-bottom-right" style={{ width: 159 }} />
                 <div className="absolute -bottom-2 right-0 h-[5px] bg-[#FACC15] hidden lg:block xl:hidden" style={{ width: 262 }} />
                 <div className="absolute -bottom-2 right-0 h-[5px] bg-[#FACC15] hidden xl:block 2xl:hidden" style={{ width: 318 }} />
                 <div className="absolute -bottom-2 right-0 h-[5px] bg-[#FACC15] hidden 2xl:block" style={{ width: 381 }} />
 
                 {/* ── GARIS DIAGONAL KUNING KIRI ── */}
-                <div className="absolute -bottom-7 w-[4px] rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] block lg:hidden rounded-br-xs footer-slash-left"
+                <div className="absolute -bottom-[14px] left-[clamp(82px,25vw,128px)] w-[3px] h-[42px] rotate-45 origin-top-left rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] block md:hidden rounded-br-xs footer-slash-left" />
+                <div className="absolute -bottom-7 w-[4px] rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] hidden md:block lg:hidden rounded-br-xs footer-slash-left"
                     style={{ left: 212, height: 77, transform: "rotate(45deg)", transformOrigin: "top left" }} />
                 <div className="absolute -bottom-8 w-[5px] rounded-tl-sm rounded-br-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] hidden lg:block xl:hidden"
                     style={{ left: 322, height: 95, transform: "rotate(43deg)", transformOrigin: "top left" }} />
@@ -74,7 +79,8 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                     style={{ left: 444, height: 95, transform: "rotate(45deg)", transformOrigin: "top left" }} />
 
                 {/* ── GARIS DIAGONAL KUNING KANAN ── */}
-                <div className="absolute -bottom-7 w-[4px] rounded-tr-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] block lg:hidden rounded-bl-xs footer-slash-right"
+                <div className="absolute -bottom-[14px] right-[clamp(82px,25vw,128px)] w-[3px] h-[42px] -translate-x-full -rotate-45 origin-top-right rounded-tr-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] block md:hidden rounded-bl-xs footer-slash-right" />
+                <div className="absolute -bottom-7 w-[4px] rounded-tr-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] hidden md:block lg:hidden rounded-bl-xs footer-slash-right"
                     style={{ right: 206, height: 77, transform: "translateX(-100%) rotate(-45deg)", transformOrigin: "top right" }} />
                 <div className="absolute -bottom-8 w-[5px] rounded-tr-sm rounded-bl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] hidden lg:block xl:hidden"
                     style={{ right: 317, height: 95, transform: "translateX(-100%) rotate(-43deg)", transformOrigin: "top right" }} />
@@ -85,9 +91,51 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
 
             </div>
 
-            {/* ── WRAPPER TOMBOL BACK / NOMOR / NEXT ── */}
+            {/* ── WRAPPER TOMBOL (MOBILE ONLY) ── */}
+            <div className="absolute footer-btn-wrapper block md:hidden left-1/2 -translate-x-1/2 top-[calc(41%+2px)] w-[clamp(230px,72vw,300px)] h-[38px]">
+                {/* BACK — mobile */}
+                <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleBack}
+                    disabled={current === 0}
+                    className={`absolute top-[2px] left-0 w-[clamp(66px,22vw,90px)] h-[31px] font-bold footer-btn-back ${current === 0 ? "opacity-40" : "opacity-100"}`}
+                >
+                    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 260 45" preserveAspectRatio="none">
+                        <path d="M73 0 H258 V45 H0 V45 L0 45 Z" fill="none" stroke="#FACC15" strokeWidth={6} vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <span className="relative z-10 flex items-center justify-center w-full h-full font-['orbitron'] text-white text-[clamp(9px,2.8vw,12px)] tracking-[1px] translate-x-[2px] footer-btn-back-text">
+                        &lt;&lt; BACK
+                    </span>
+                </motion.button>
+
+                {/* NOMOR — mobile */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-[2px] w-[clamp(58px,17vw,76px)] h-[31px] flex items-center justify-center font-bold text-[#FACC15] border-[3px] border-[#FACC15] text-[clamp(13px,3.6vw,16px)] tracking-[1px] footer-counter">
+                    {String(current + 1).padStart(2, "0")}
+                    <span className="mx-1 opacity-50">/</span>
+                    {String(total).padStart(2, "0")}
+                </div>
+
+                {/* NEXT — mobile */}
+                <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={next}
+                    disabled={!selected || loading}
+                    className={`absolute top-[2px] right-0 w-[clamp(66px,22vw,90px)] h-[31px] font-bold footer-btn-next ${(!selected || loading) ? "opacity-40" : "opacity-100"}`}
+                >
+                    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 260 45" preserveAspectRatio="none">
+                        <path d="M0 0 H183 L258 45 H0 Z" fill="none" stroke="#FACC15" strokeWidth={6} vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <span className="relative z-10 flex items-center justify-center gap-1 w-full h-full font-['orbitron'] text-white text-[clamp(9px,2.8vw,12px)] tracking-[1px] -translate-x-[2px] footer-btn-next-text">
+                        {loading ? "..." : current + 1 === total
+                            ? <><span>FINISH</span><Flag className="w-3.5 h-3.5 text-white" strokeWidth={3} /></>
+                            : "NEXT >>"}
+                    </span>
+                </motion.button>
+            </div>
+
+            {/* ── WRAPPER TOMBOL (MD KE ATAS) ── */}
             <div
-                className="absolute footer-btn-wrapper"
+                className="absolute footer-btn-wrapper hidden md:block"
                 style={{
                     left: "50%",
                     transform: "translateX(-50%)",
@@ -96,7 +144,7 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                     height: 70,
                 }}
             >
-                {/* BACK — mobile */}
+                {/* BACK — md */}
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleBack}
@@ -160,7 +208,7 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                     </span>
                 </motion.button>
 
-                {/* NOMOR — mobile */}
+                {/* NOMOR — md */}
                 <div className="absolute flex items-center justify-center font-bold text-[#FACC15] border-4 border-[#FACC15] block lg:hidden footer-counter"
                     style={{ left: "54%", marginLeft: -60, top: -1, width: 100, height: 48, fontSize: 22, letterSpacing: "3px" }}>
                     {String(current + 1).padStart(2, "0")}
@@ -189,7 +237,7 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                     {String(total).padStart(2, "0")}
                 </div>
 
-                {/* NEXT — mobile */}
+                {/* NEXT — md */}
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
@@ -260,7 +308,6 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
                             : "NEXT >>"}
                     </span>
                 </motion.button>
-
             </div>
         </div>
     )
@@ -268,90 +315,87 @@ function Footer({ current, total, selected, loading, handleBack, next }: FooterP
 
 function BoxSoal({ question }: { current: number; total: number; question: any }) {
     return (
-        <div className="quiz-question-inner relative w-full h-full p-4 md:p-6 lg:p-8">
-            <div className="w-full h-full p-[4px] bg-[#3B28F6]">
-                <div className="w-full h-full p-[15px] bg-[#04080f]">
-                    <div className="w-full h-full p-[4px] bg-[#3B28F6]">
-                        <div className="w-full h-full p-[15px] bg-[#04080f]">
-                            <div className="relative w-full h-full bg-[#04080f] p-9 min-h-[350px] flex flex-col border-4 border-[#3B28F6] quiz-box-soal">
+        <div className="quiz-question-inner relative w-full h-full p-[2px] md:p-6 lg:p-8">
+            <div className="w-full h-full p-[3px] md:p-[4px] bg-[#3B28F6]">
+                <div className="w-full h-full p-[7px] md:p-[15px] bg-[#04080f]">
+                    <div className="w-full h-full p-[2px] md:p-[4px] bg-[#3B28F6]">
+                        <div className="w-full h-full p-[6px] md:p-[15px] bg-[#04080f]">
+                            <div className="relative w-full h-full bg-[#04080f] px-[10px] py-[12px] md:p-9 min-h-0 md:min-h-[350px] flex flex-col border-2 md:border-4 border-[#3B28F6] overflow-visible quiz-box-soal">
 
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-[270px] h-[9px] overflow-visible z-20">
+                                <div className="absolute top-[-8px] min-[390px]:top-[-9px] min-[500px]:top-[-10px] min-[620px]:top-[-12px] md:-top-4 left-1/2 -translate-x-1/2 w-[210px] md:w-[270px] h-[9px] overflow-visible z-20 scale-[0.38] min-[390px]:scale-[0.42] min-[500px]:scale-[0.48] min-[620px]:scale-[0.58] min-[700px]:scale-[0.64] md:scale-100 origin-bottom">
                                     <div className="relative w-full h-full flex items-center justify-center">
-                                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[273px] h-[8.5px] bg-yellow-400"
+                                        <div className="absolute -top-2 max-[767px]:top-[-17px] left-1/2 -translate-x-1/2 w-[264px] max-[767px]:w-[314px] h-[8.5px] bg-yellow-400"
                                             style={{ clipPath: "polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%)" }} />
-                                        <div className="absolute top-0.5 left-34 -translate-x-1/2 w-[227px] h-[5.5px] bg-[#3B28F6]" />
-                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[227px] flex justify-between px-2">
+                                       <div className="absolute top-0.5 max-[767px]:top-[-7px] left-34 max-[767px]:left-[50%] -translate-x-1/2 w-[227px] max-[767px]:w-[265px] h-[5.5px] max-[767px]:h-[4px] bg-[#3B28F6]" />
+                                      <div className="absolute top-2 max-[767px]:top-[1px] left-1/2 max-[767px]:left-[49%] -translate-x-1/2 w-[227px] max-[767px]:w-[210px] flex justify-between px-2 max-[767px]:px-1">
                                             {Array.from({ length: 10 }).map((_, i) => (
-                                                <div key={i} className="w-2 h-2 bg-yellow-400 rounded-full" />
+                                                <div key={i} className="w-2 h-2 max-[767px]:w-[10px] max-[767px]:h-[10px] bg-yellow-400 rounded-full" />
                                             ))}
                                         </div>
-                                        <div className="absolute right-3 mt-7 -translate-y-1/2">
+                                        <div className="absolute right-3 mt-7 max-[767px]:mt-2 -translate-y-1/2">
                                             <div className="relative w-[32px] h-[32px]">
-                                                <div className="absolute top-1/2 -left-58 w-[32px] h-[4.5px] bg-[#3B28F6] rotate-[19deg] origin-right rounded-full" />
-                                                <div className="absolute top-1/2 -left-58 w-[32px] h-[4px] bg-[#3B28F6] -rotate-[19deg] origin-right rounded-full" />
+                                                <div className="absolute top-1/2 -left-58 max-[767px]:-left-56 w-[32px] h-[4.5px] bg-[#3B28F6] rotate-[19deg] origin-right rounded-full" />
+                                                <div className="absolute top-1/2 -left-58 max-[767px]:-left-56 w-[32px] h-[4px] bg-[#3B28F6] -rotate-[19deg] origin-right rounded-full" />
                                             </div>
                                         </div>
-                                        <div className="absolute left-3 mt-7 -translate-y-1/2">
+                                        <div className="absolute left-3 mt-7 max-[767px]:mt-2 -translate-y-1/2">
                                             <div className="relative w-[32px] h-[32px]">
-                                                <div className="absolute top-1/2 -right-58 w-[32px] h-[4.5px] bg-[#3B28F6] -rotate-[19deg] origin-left rounded-full" />
-                                                <div className="absolute top-1/2 -right-58 w-[32px] h-[4px] bg-[#3B28F6] rotate-[19deg] origin-left rounded-full" />
+                                                <div className="absolute top-1/2 -right-58 max-[767px]:-right-56 w-[32px] h-[4.5px] bg-[#3B28F6] -rotate-[19deg] origin-left rounded-full" />
+                                                <div className="absolute top-1/2 -right-58 max-[767px]:-right-56 w-[32px] h-[4px] bg-[#3B28F6] rotate-[19deg] origin-left rounded-full" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="absolute -bottom-[35px] left-1/2 -translate-x-1/2 w-[270px] h-[9px] overflow-visible z-20">
-                                    <div className="relative w-full h-full flex items-center justify-center">
-                                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[227px] flex justify-between px-2">
-                                            {Array.from({ length: 10 }).map((_, i) => (
-                                                <div key={i} className="w-2 h-2 bg-yellow-400 rounded-full" />
-                                            ))}
-                                        </div>
-                                        <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-[227px] h-[5.5px] bg-[#3B28F6]" />
-                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[264px] h-[9px] bg-yellow-400"
-                                            style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%)" }} />
-                                        <div className="absolute right-3 mt-7 -translate-y-1/2">
-                                            <div className="relative w-[32px] h-[32px]">
-                                                <div className="absolute top-1/2 -left-58 w-[32px] h-[4.5px] bg-[#3B28F6] rotate-[19deg] origin-right rounded-full" />
-                                                <div className="absolute top-1/2 -left-58 w-[32px] h-[4px] bg-[#3B28F6] -rotate-[19deg] origin-right rounded-full" />
-                                            </div>
-                                        </div>
-                                        <div className="absolute left-3 mt-7 -translate-y-1/2">
-                                            <div className="relative w-[32px] h-[32px]">
-                                                <div className="absolute top-1/2 -right-58 w-[32px] h-[4.5px] bg-[#3B28F6] -rotate-[19deg] origin-left rounded-full" />
-                                                <div className="absolute top-1/2 -right-58 w-[32px] h-[4px] bg-[#3B28F6] rotate-[19deg] origin-left rounded-full" />
-                                            </div>
+                               <div className="absolute bottom-[-13px] min-[390px]:bottom-[-14px] min-[500px]:bottom-[-16px] min-[620px]:bottom-[-18px] min-[700px]:bottom-[-20px] md:-bottom-[35px] left-1/2 -translate-x-1/2 w-[210px] md:w-[270px] h-[9px] overflow-visible z-20 scale-[0.38] min-[390px]:scale-[0.42] min-[500px]:scale-[0.48] min-[620px]:scale-[0.58] min-[700px]:scale-[0.64] md:scale-100 origin-top">
+                                <div className="relative w-full h-full flex items-center justify-center">
+
+                                    <div className="absolute -top-2 max-[767px]:top-[-13px] left-1/2 max-[767px]:left-[49%] -translate-x-1/2 w-[227px] max-[767px]:w-[210px] flex justify-between px-2 max-[767px]:px-1">
+                                        {Array.from({ length: 10 }).map((_, i) => (
+                                            <div key={i} className="w-2 h-2 max-[767px]:w-[10px] max-[767px]:h-[12px] bg-yellow-400 rounded-full" />
+                                        ))}
+                                    </div>
+
+                                    <div className="absolute top-0.5 max-[767px]:top-[-1px] left-1/2 max-[767px]:left-[49%] -translate-x-1/2 w-[227px] max-[767px]:w-[268px] h-[5.5px] max-[767px]:h-[4px] bg-[#3B28F6]" />
+
+                                    <div
+                                        className="absolute top-2 max-[767px]:top-[5px] left-1/2 max-[767px]:left-[50%] -translate-x-1/2 w-[264px] max-[767px]:w-[302px] h-[9px] max-[767px]:h-[7px] bg-yellow-400"
+                                        style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%)" }}
+                                    />
+
+                                    <div className="absolute right-3 mt-7 max-[767px]:mt-5.5 -translate-y-1/2">
+                                        <div className="relative w-[32px] h-[32px]">
+                                            <div className="absolute top-1/2 -left-58 max-[767px]:-left-56 w-[32px] h-[4.5px] bg-[#3B28F6] rotate-[19deg] origin-right rounded-full" />
+                                            <div className="absolute top-1/2 -left-58 max-[767px]:-left-56 w-[32px] h-[4px] bg-[#3B28F6] -rotate-[19deg] origin-right rounded-full" />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-[270px] h-[8px] bg-[#04080f] z-10" />
-                                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[270px] h-[9px] bg-[#04080f] z-10" />
-                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[270px] h-[8px] bg-[#04080f] z-10" />
-                                <div className="absolute -bottom-11 left-1/2 -translate-x-1/2 w-[270px] h-[8px] bg-[#04080f] z-10" />
+                                    <div className="absolute left-3 mt-7 max-[767px]:mt-5.5 -translate-y-1/2">
+                                        <div className="relative w-[32px] h-[32px]">
+                                            <div className="absolute top-1/2 -right-58 max-[767px]:-right-56 w-[32px] h-[4.5px] bg-[#3B28F6] -rotate-[19deg] origin-left rounded-full" />
+                                            <div className="absolute top-1/2 -right-58 max-[767px]:-right-56 w-[32px] h-[4px] bg-[#3B28F6] rotate-[19deg] origin-left rounded-full" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                                <div className="quiz-mask-top1 absolute top-[-14px] md:-top-6 left-1/2 -translate-x-1/2 w-[120px] min-[390px]:w-[128px] min-[500px]:w-[150px] min-[620px]:w-[172px] min-[700px]:w-[184px] md:w-[270px] h-[8px] bg-[#04080f] z-10" />
+                                <div className="quiz-mask-top2 absolute top-[-5px] md:-top-2 left-1/2 -translate-x-1/2 w-[120px] min-[390px]:w-[128px] min-[500px]:w-[150px] min-[620px]:w-[172px] min-[700px]:w-[184px] md:w-[270px] h-[9px] bg-[#04080f] z-10" />
+                                <div className="quiz-mask-bot1 absolute bottom-[-6px] sm:bottom-[-9px] md:-bottom-6 left-1/2 -translate-x-1/2 w-[120px] sm:w-[185px] md:w-[270px] h-[8px] bg-[#04080f] z-10" />
+                                <div className="quiz-mask-bot2 absolute bottom-[-12px] sm:bottom-[-11px] md:-bottom-11 left-1/2 -translate-x-1/2 w-[120px] sm:w-[185px] md:w-[270px] h-[10px] bg-[#04080f] z-10" />
 
                                 <div className="flex flex-col flex-1 gap-4 min-h-0 w-full">
                                     {question.media_url && (
-                                        <div className="w-full flex-shrink-0 h-[120px] md:h-[150px] lg:h-[180px] -mt-4 flex items-center justify-center quiz-media">
+                                        <div className="w-full flex-shrink-0 h-[70px] md:h-[150px] lg:h-[180px] -mt-1 md:-mt-4 flex items-center justify-center quiz-media">
                                             <img src={question.media_url} alt="Soal" className="w-full h-full object-contain" />
                                         </div>
                                     )}
-                                    <div className="
-                                        flex-1 overflow-y-auto min-h-0 w-full max-w-[700px] mx-auto text-white font-semibold px-2 md:px-4
-                                        text-sm sm:text-base md:text-xs lg:text-xs xl:text-sm 2xl:text-lg
-                                        leading-normal
-                                        [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a]
-                                        [&::-webkit-scrollbar]:w-[6px]
-                                        [&::-webkit-scrollbar-track]:bg-[#0d0d1a]
-                                        [&::-webkit-scrollbar-track]:rounded-full
-                                        [&::-webkit-scrollbar-thumb]:bg-[#3B28F6]
-                                        [&::-webkit-scrollbar-thumb]:rounded-full
-                                        [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff]
-                                        quiz-question-text
-                                    ">
+                                    <div className="flex-1 overflow-y-auto min-h-0 w-full max-w-[700px] mx-auto text-white font-semibold px-[2px] md:px-4 text-[11px] sm:text-[11px] md:text-xs lg:text-xs xl:text-sm 2xl:text-lg leading-[1.4] md:leading-normal [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-[#0d0d1a] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] quiz-question-text">
                                         {question.question_text}
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -369,7 +413,7 @@ function AnswerButton({ label, text, selected, onClick }: any) {
         <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={onClick}
-            className="quiz-answer-btn w-full text-left relative group mb-6 outline-none block mt-7"
+            className="quiz-answer-btn w-full text-left relative group mb-[3px] md:mb-6 outline-none block mt-[3px] md:mt-7 scale-[0.86] md:scale-100 origin-center"
         >
             <div className="relative">
                 <div className="absolute -top-[14px] w-[173px] h-[12px] z-[1]">
@@ -397,11 +441,11 @@ function AnswerButton({ label, text, selected, onClick }: any) {
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
                         style={{ background: "linear-gradient(90deg, rgba(59,40,246,0.2) 0%, transparent 100%)" }}
                     />
-                    <div className="px-2 py-2 flex gap-4 relative z-10 items-start quiz-answer-content">
-                        <span className={`font-mono font-bold text-lg mt-0.5 ${selected ? "text-[#FACC15]" : "text-[#3B28F6] group-hover:text-[#00e5ff]"}`}>
+                    <div className="px-2 py-[3px] pb-[5px] md:py-2 flex gap-2 md:gap-4 relative z-10 items-start quiz-answer-content">
+                        <span className={`font-mono font-bold text-[13px] md:text-lg mt-0.5 ${selected ? "text-[#FACC15]" : "text-[#3B28F6] group-hover:text-[#00e5ff]"}`}>
                             {label}.
                         </span>
-                        <span className={`text-base leading-relaxed ${selected ? "text-white" : "text-gray-300 group-hover:text-white"}`}>
+                        <span className={`text-[11px] md:text-base leading-[1.3] md:leading-relaxed ${selected ? "text-white" : "text-gray-300 group-hover:text-white"}`}>
                             {text}
                         </span>
                     </div>
@@ -412,18 +456,18 @@ function AnswerButton({ label, text, selected, onClick }: any) {
 }
 
 export default function Play({ quiz, has_submitted }: any) {
-    const [current, setCurrent]         = useState(0)
-    const [answers, setAnswers]         = useState<any[]>([])
-    const [selected, setSelected]       = useState<string | null>(null)
-    const [loading, setLoading]         = useState(false)
-    const [showResult, setShowResult]   = useState(false)
+    const [current, setCurrent] = useState(0)
+    const [answers, setAnswers] = useState<any[]>([])
+    const [selected, setSelected] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [showResult, setShowResult] = useState(false)
     const [finalResult, setFinalResult] = useState<any>(null)
 
     if (!quiz?.questions?.length) return null
 
     const question = quiz.questions[current]
-    const total    = quiz.questions.length
-    const labels   = ["A", "B", "C", "D", "E"]
+    const total = quiz.questions.length
+    const labels = ["A", "B", "C", "D", "E"]
 
     const selectAnswer = (id: string) => { if (!loading) setSelected(id) }
 
@@ -453,7 +497,7 @@ export default function Play({ quiz, has_submitted }: any) {
     const submit = async (finalAnswers: any[]) => {
         setLoading(true)
         try {
-            const csrf      = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
             const formatted = Object.fromEntries(finalAnswers.map(a => [a.question_id, a.answer_id]))
             const res = await fetch(`/student/quiz/${quiz.id}/submit`, {
                 method: "POST",
@@ -501,27 +545,15 @@ export default function Play({ quiz, has_submitted }: any) {
 
     return (
         <>
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
-
-                html, body {
-                    overflow: hidden !important;
-                    height: 100svh !important;
-                    background: #04080f;
-                    -ms-overflow-style: none;
-                }
-                html::-webkit-scrollbar,
-                body::-webkit-scrollbar { display: none;  `}</style>
-
             <div className="quiz-page h-screen overflow-hidden flex flex-col bg-[#04080f] font-['Rajdhani',sans-serif]">
                 <div className="quiz-layout flex-1 overflow-hidden
                     flex flex-col md:flex-row
-                    gap-4
+                    gap-0 md:gap-4
                     w-full max-w-[1500px] mx-auto
-                    px-4 pt-4
-                    pb-[100px]">
+                    px-[2px] md:px-4 pt-2 md:pt-4
+                    pb-[14px] md:pb-[100px]">
 
-                    <div className="quiz-question w-full md:w-[58%] h-[52%] md:h-full shrink-0">
+                    <div className="quiz-question w-full md:w-[58%] h-[39%] md:h-full shrink-0 overflow-visible">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id}
@@ -538,6 +570,7 @@ export default function Play({ quiz, has_submitted }: any) {
 
                     <div className="quiz-answer w-full md:w-[42%] flex-1 md:flex-none
                         flex flex-col justify-center
+                        px-0 py-[2px] md:p-0
                         overflow-y-auto
                         [scrollbar-width:none]
                         [&::-webkit-scrollbar]:hidden">
