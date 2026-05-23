@@ -7,13 +7,13 @@ use App\Models\CareerGroup;
 use App\Models\MentorCareerGroup;
 use App\Models\User;
 use Illuminate\Http\Request;
-use MongoDB\BSON\ObjectId;
+use Illuminate\Support\Facades\Auth;
 
 class CareerGroupController extends Controller
 {
     public function assignMentor(Request $request, $group)
     {
-        $group = CareerGroup::where('_id', new ObjectId($group))->firstOrFail();
+        $group = CareerGroup::findOrFail($group);
 
         $data = $request->validate([
             'mentor_id' => ['required'],
@@ -31,7 +31,7 @@ class CareerGroupController extends Controller
             ['career_group_id' => (string) $group->_id],
             [
                 'mentor_id' => (string) $mentor->_id,
-                'assigned_by' => (string) auth()->id(),
+                'assigned_by' => (string) Auth::id(),
             ]
         );
 
