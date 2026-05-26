@@ -379,7 +379,7 @@ Route::controller(SelectCharacterController::class)->group(function () {
     Route::post('/select-character', 'store')->name('character.store');
 });
 
-Route::middleware('has.character')->group(function () {
+Route::middleware(['auth', 'has.character'])->group(function () {
     Route::get('/dashboard', [StudentDashboard::class, 'index'])
         ->name('dashboard');
 });
