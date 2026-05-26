@@ -1,13 +1,16 @@
 /* ============================================================
    QUIZ — Mobile Landscape
-   Aktif saat: orientation landscape AND tinggi layar <= 430px
    ============================================================ */
 
-@media (orientation: landscape) and (max-height: 430px) {
+/* ============================================================
+   SHARED — layout & box soal & jawaban
+   ============================================================ */
+@media (orientation: landscape) and (max-height: 412px) {
 
     html, body {
         height: 100svh !important;
         min-height: 100svh !important;
+        overflow: hidden !important;
     }
 
     .quiz-page {
@@ -20,7 +23,7 @@
         flex-direction: row !important;
         gap: 10px !important;
         padding: 6px 10px 78px !important;
-        height: calc(100svh - 0px) !important;
+        height: 100svh !important;
         overflow: hidden !important;
     }
 
@@ -31,9 +34,7 @@
         flex: none !important;
     }
 
-    .quiz-question-inner {
-        padding: 6px !important;
-    }
+    .quiz-question-inner { padding: 6px !important; }
 
     .quiz-box-soal {
         padding: 18px 14px !important;
@@ -65,126 +66,477 @@
         scrollbar-color: #3B28F6 #0d0d1a !important;
     }
 
-    .quiz-answer::-webkit-scrollbar        { width: 4px !important; }
-    .quiz-answer::-webkit-scrollbar-track  { background: #0d0d1a !important; border-radius: 9999px !important; }
-    .quiz-answer::-webkit-scrollbar-thumb  { background: #3B28F6 !important; border-radius: 9999px !important; }
+    .quiz-answer::-webkit-scrollbar { width: 4px !important; }
+    .quiz-answer::-webkit-scrollbar-track { background: #0d0d1a !important; border-radius: 9999px !important; }
+    .quiz-answer::-webkit-scrollbar-thumb { background: #3B28F6 !important; border-radius: 9999px !important; }
 
-    .quiz-answer-btn {
-        margin-bottom: 14px !important;
-        margin-top: 18px !important;
+    .quiz-answer-btn { margin-bottom: 6px !important; margin-top: 12px !important; }
+
+    .quiz-answer-content { padding: 2px 6px 4px 6px !important; gap: 8px !important; }
+    .quiz-answer-content span:first-child { font-size: 13px !important; margin-top: 0 !important; }
+    .quiz-answer-content span:last-child  { font-size: 11px !important; line-height: 1.35 !important; }
+
+    .quiz-footer .footer-btn-wrapper + .footer-btn-wrapper,
+    .quiz-footer .footer-btn-wrapper ~ .footer-btn-wrapper { display: none !important; }
+    .quiz-footer .footer-btn-wrapper:first-of-type { display: flex !important; }
+
+    .footer-btn-back,
+    .footer-btn-next {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        transform: none !important;
     }
 
-    .quiz-answer-content {
-        padding: 2px 6px 4px 6px !important;
-        gap: 8px !important;
+    .footer-counter {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        transform: none !important;
     }
 
-    .quiz-answer-content span:first-child {
-        font-size: 13px !important;
-        margin-top: 0 !important;
+    .footer-btn-wrapper {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
     }
+}
 
-    .quiz-answer-content span:last-child {
-        font-size: 11px !important;
-        line-height: 1.35 !important;
-    }
-
-    /* ── FOOTER ── */
+/* ============================================================
+   FOOTER 360px — Android kecil (740×360) & Android umum (800×360)
+   JANGAN DIUBAH
+   ============================================================ */
+@media (orientation: landscape) and (max-height: 360px) {
 
     .quiz-footer {
-        height: 74px !important;
-        bottom: 7px !important;
+        height: 62px !important;
+        bottom: 0px !important;
+        left: 0 !important;
+        right: 0 !important;
     }
 
     .footer-diag-left {
-        width: 245px !important;
-        height: 44px !important;
-        clip-path: polygon(0 0, 100% 0, calc(100% - 44px) 100%, 0 100%) !important;
+        left: 0 !important;
+        bottom: -2px !important;
+        width: calc(55% - 170px) !important;
+        height: 36px !important;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 0 100%) !important;
     }
 
     .footer-diag-right {
-        width: 245px !important;
-        height: 44px !important;
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 44px 100%) !important;
+        right: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 108px) !important;
+        height: 36px !important;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 22px 100%) !important;
     }
 
     .footer-bar-top {
-        left: 245px !important;
-        top: 45% !important;
-        width: 43.5% !important;
-        height: 4px !important;
+        left: calc(50% - 132px) !important;
+        right: calc(50% - 108px) !important;
+        top: 46% !important;
+        width: auto !important;
+        height: 3px !important;
     }
 
     .footer-bar-bottom-left {
-        width: 205px !important;
-        height: 4px !important;
+        left: 0 !important;
+        bottom: 0px !important;
+        width: calc(50% - 153px) !important;
+        height: 3px !important;
     }
 
     .footer-bar-bottom-right {
-        width: 205px !important;
-        height: 4px !important;
+        right: 0 !important;
+        bottom: 0px !important;
+        width: calc(50% - 123px) !important;
+        height: 3px !important;
     }
 
     .footer-slash-left {
-        left: 248px !important;
-        height: 66px !important;
-        bottom: -24px !important;
-        width: 4px !important;
-        transform: rotate(45deg) !important;
+        left: calc(50% - 131px) !important;
+        bottom: -18px !important;
+        width: 3px !important;
+        height: 52px !important;
+        transform: rotate(-8deg) !important;
         transform-origin: top left !important;
     }
 
     .footer-slash-right {
-        right: 243px !important;
-        height: 64px !important;
-        bottom: -22px !important;
-        width: 4px !important;
-        transform: translateX(-100%) rotate(-45deg) !important;
+        right: calc(50% - 111px) !important;
+        bottom: -13px !important;
+        width: 3px !important;
+        height: 50px !important;
+        transform: translateX(-100%) rotate(13deg) !important;
         transform-origin: top right !important;
     }
 
-        .footer-btn-wrapper {
-        left: 50% !important;
-        top: calc(36% + 8px) !important;
+    .footer-btn-wrapper {
+        left: 66% !important;
+        top: 77% !important;
+        width: 270px !important;
+        height: 36px !important;
+        gap: 6px !important;
+    }
 
-        transform: none !important;
-        margin-left: -21% !important;
+    .footer-btn-back,
+    .footer-btn-next      { width: 92px !important; height: 30px !important; }
+    .footer-counter       { width: 68px !important; height: 30px !important; font-size: 13px !important; }
+    .footer-btn-back-text,
+    .footer-btn-next-text { font-size: 10px !important; letter-spacing: 1px !important; }
+    .footer-btn-back-text { transform: translateX(3px) !important; }
+    .footer-btn-next-text { transform: translateX(-3px) !important; }
+}
 
-        width: 42% !important;
+/* ============================================================
+   FOOTER 375px — iPhone SE (667×375)
+   ============================================================ */
+@media (orientation: landscape) and (min-width: 650px) and (max-width: 690px) and (min-height: 350px) and (max-height: 390px) {
+
+    .quiz-footer {
+        height: 64px !important;
+        bottom: 0px !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .footer-diag-left {
+        left: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 118px) !important;
+        height: 38px !important;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 26px) 100%, 0 100%) !important;
+    }
+
+    .footer-diag-right {
+        right: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 130px) !important;
+        height: 38px !important;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 26px 100%) !important;
+    }
+
+    .footer-bar-top {
+        left: calc(50% - 117px) !important;
+        right: calc(50% - 126px) !important;
+        top: 41% !important;
+        width: auto !important;
+        height: 3px !important;
+    }
+
+    .footer-bar-bottom-left {
+        left: 0 !important;
+        bottom: 0px !important;
+        width: calc(50% - 137px) !important;
+        height: 3px !important;
+    }
+
+    .footer-bar-bottom-right {
+        right: 0 !important;
+        bottom: 0px !important;
+        width: calc(50% - 148px) !important;
+        height: 3px !important;
+    }
+
+    .footer-slash-left {
+        left: calc(50% - 116px) !important;
+        bottom: -19px !important;
+        width: 3px !important;
+        height: 55px !important;
+        transform: rotate(-10deg) !important;
+        transform-origin: top left !important;
+    }
+
+    .footer-slash-right {
+        right: calc(50% - 131px) !important;
+        bottom: -12px !important;
+        width: 3px !important;
+        height: 53px !important;
+        transform: translateX(-100%) rotate(10deg) !important;
+        transform-origin: top right !important;
+    }
+
+    .footer-btn-wrapper {
+        left: 72% !important;
+        top: 74% !important;
+        width: 280px !important;
+        height: 38px !important;
+        gap: 5px !important;
+    }
+
+    .footer-btn-back,
+    .footer-btn-next      { width: 96px !important; height: 32px !important; }
+    .footer-counter       { width: 72px !important; height: 32px !important; font-size: 14px !important; }
+    .footer-btn-back-text,
+    .footer-btn-next-text { font-size: 11px !important; letter-spacing: 1px !important; }
+    .footer-btn-back-text { transform: translateX(3px) !important; }
+    .footer-btn-next-text { transform: translateX(-3px) !important; }
+}
+
+/* ============================================================
+   FOOTER 390px — iPhone 12/13/14 (844×390)
+   ============================================================ */
+@media (orientation: landscape) and (min-width: 820px) and (max-width: 880px) and (min-height: 376px) and (max-height: 400px) {
+
+    .quiz-footer {
+        height: 68px !important;
+        bottom: 0px !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .footer-diag-left {
+        left: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 108px) !important;
+        height: 42px !important;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 52px) 100%, 0 100%) !important;
+    }
+
+    .footer-diag-right {
+        right: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 131px) !important;
+        height: 42px !important;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 52px 100%) !important;
+    }
+
+    .footer-bar-top {
+        left: calc(50% - 108px) !important;
+        right: calc(50% - 130px) !important;
+        top: 42% !important;
+        width: auto !important;
+        height: 3px !important;
+    }
+
+    .footer-bar-bottom-left {
+        left: 0 !important;
+        bottom: -0px !important;
+        width: calc(50% - 150px) !important;
+        height: 3px !important;
+    }
+
+    .footer-bar-bottom-right {
+        right: 0 !important;
+        bottom: -0px !important;
+        width: calc(50% - 171px) !important;
+        height: 3px !important;
+    }
+
+    .footer-slash-left {
+        left: calc(50% - 106px) !important;
+        bottom: -20px !important;
+        width: 3px !important;
+        height: 60px !important;
+        transform: rotate(51deg) !important;
+        transform-origin: top left !important;
+    }
+
+    .footer-slash-right {
+        right: calc(50% - 131px) !important;
+        bottom: -18px !important;
+        width: 3px !important;
+        height: 58px !important;
+        transform: translateX(-100%) rotate(-51deg) !important;
+        transform-origin: top right !important;
+    }
+
+    .footer-btn-wrapper {
+        left: 70% !important;
+        top: 74% !important;
+        width: 315px !important;
+        height: 40px !important;
+        gap: 6px !important;
+    }
+
+    .footer-btn-back,
+    .footer-btn-next      { width: 105px !important; height: 34px !important; }
+    .footer-counter       { width: 78px !important; height: 34px !important; font-size: 15px !important; }
+    .footer-btn-back-text,
+    .footer-btn-next-text { font-size: 12px !important; letter-spacing: 1.5px !important; }
+    .footer-btn-back-text { transform: translateX(4px) !important; }
+    .footer-btn-next-text { transform: translateX(-4px) !important; }
+}
+
+/* ============================================================
+   FOOTER 390px–412px — Infinix / Xiaomi / Samsung
+   ============================================================ */
+@media (orientation: landscape) and (min-width: 881px) and (max-width: 915px) and (min-height: 376px) and (max-height: 412px) { 
+
+    .quiz-footer {
+        height: 72px !important;
+        bottom: 2px !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .footer-diag-left {
+        left: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 126px) !important;
+        height: 43px !important;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 54px) 100%, 0 100%) !important;
+    }
+
+    .footer-diag-right {
+        right: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 134px) !important;
+        height: 43px !important;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 54px 100%) !important;
+    }
+
+    .footer-bar-top {
+        left: calc(50% - 126px) !important;
+        right: calc(50% - 130px) !important;
+        top: 44% !important;
+        width: auto !important;
+        height: 3px !important;
+    }
+
+    .footer-bar-bottom-left {
+        left: 0 !important;
+        bottom: -2px !important;
+        width: calc(51% - 179px) !important;
+        height: 3px !important;
+    }
+
+    .footer-bar-bottom-right {
+        right: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 177px) !important;
+        height: 3px !important;
+    }
+
+    .footer-slash-left {
+        left: calc(50% - 124px) !important;
+        bottom: -22px !important;
+        width: 3px !important;
+        height: 62px !important;
+        transform: rotate(52deg) !important;
+        transform-origin: top left !important;
+    }
+
+    .footer-slash-right {
+        right: calc(50% - 130px) !important;
+        bottom: -25px !important;
+        width: 3px !important;
+        height: 66px !important;
+        transform: translateX(-100%) rotate(-52deg) !important;
+        transform-origin: top right !important;
+    }
+
+    .footer-btn-wrapper {
+        left: 69% !important;
+        top: 77% !important;
+        width: 332px !important;
+        height: 44px !important;
+        gap: 6px !important;
+    }
+
+    .footer-btn-back,
+    .footer-btn-next      { width: 112px !important; height: 36px !important; }
+    .footer-counter       { width: 86px !important; height: 36px !important; font-size: 15px !important; }
+    .footer-btn-back-text,
+    .footer-btn-next-text { font-size: 13px !important; letter-spacing: 1.5px !important; }
+    .footer-btn-back-text { transform: translateX(3px) !important; }
+    .footer-btn-next-text { transform: translateX(-3px) !important; }
+}
+
+/* ============================================================
+   FOOTER 412px — HP tinggi modern (900×412 / 915×412)
+   ============================================================ */
+@media (orientation: landscape) and (min-width: 890px) and (max-width: 930px) and (min-height: 391px) and (max-height: 430px) {
+
+    .quiz-footer {
+        height: 74px !important;
+        bottom: 7px !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .footer-diag-left {
+        left: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 146px) !important;
+        height: 44px !important;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 57px) 100%, 0 100%) !important;
+    }
+
+    .footer-diag-right {
+        right: 0 !important;
+        bottom: -2px !important;
+        width: calc(50% - 150px) !important;
+        height: 44px !important;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 57px 100%) !important;
+    }
+
+    .footer-bar-top {
+        left: calc(50% - 146px) !important;
+        right: calc(50% - 148px) !important;
+        top: 45% !important;
+        width: auto !important;
+        height: 4px !important;
+    }
+
+    .footer-bar-bottom-left {
+        left: 0 !important;
+        bottom: -5px !important;
+        width: calc(50% - 196px) !important;
+        height: 4px !important;
+    }
+
+    .footer-bar-bottom-right {
+        right: 0 !important;
+        bottom: -4px !important;
+        width: calc(50% - 196px) !important;
+        height: 4px !important;
+    }
+
+    .footer-slash-left {
+        left: calc(50% - 142px) !important;
+        bottom: -30px !important;
+        width: 4px !important;
+        height: 72px !important;
+        transform: rotate(53deg) !important;
+        transform-origin: top left !important;
+    }
+
+    .footer-slash-right {
+        right: calc(50% - 148px) !important;
+        bottom: -28px !important;
+        width: 4px !important;
+        height: 70px !important;
+        transform: translateX(-100%) rotate(-53deg) !important;
+        transform-origin: top right !important;
+    }
+
+    .footer-btn-wrapper {
+        left: 71% !important;
+        top: 80% !important;
+        width: 380px !important;
         height: 52px !important;
-     }
-
-    .footer-btn-back {
-        left: -37px !important;
-        width: 140px !important;
-        height: 40px !important;
-        top: 5px !important;
+        max-width: 380px !important;
+        gap: 6px !important;
     }
 
-    .footer-btn-back-text {
-        font-size: 16px !important;
-        letter-spacing: 4px !important;
-        transform: translateX(7px) !important;
-    }
-
-    .footer-counter {
-        top: 5px !important;
-        width: 140px !important;
-        height: 40px !important;
-        font-size: 17px !important;
-        margin-left: -87px !important;
-    }
-
-    .footer-btn-next {
-        right: -34px !important;
-        width: 140px !important;
-        height: 40px !important;
-        top: 5px !important;
-    }
-
-    .footer-btn-next-text {
-        font-size: 16px !important;
-        letter-spacing: 2px !important;
-        transform: translateX(3px) !important;
-    }
+    .footer-btn-back,
+    .footer-btn-next      { width: 130px !important; height: 40px !important; }
+    .footer-counter       { width: 110px !important; height: 40px !important; font-size: 17px !important; }
+    .footer-btn-back-text,
+    .footer-btn-next-text { font-size: 16px !important; letter-spacing: 2px !important; }
+    .footer-btn-back-text { transform: translateX(0px) !important; }
+    .footer-btn-next-text { transform: translateX(0px) !important; }
 }

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import ResultModal from "@/components/QuestionForm/ResultModal"
 import { router } from "@inertiajs/react"
 import { Flag } from "lucide-react"
-
+import "./quizLandscape.css"
 
 interface FooterProps {
     current: number
