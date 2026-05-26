@@ -1,18 +1,9 @@
-<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
 import { router } from '@inertiajs/react';
 import { Flag } from 'lucide-react';
 import './quizLandscape.css';
-=======
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import ResultModal from "@/components/QuestionForm/ResultModal"
-import { router } from "@inertiajs/react"
-import { Flag } from "lucide-react"
-import "./quizLandscape.css"
->>>>>>> aeba8ec339f11256dea90a222fffccab67f288ff
 
 interface FooterProps {
     current: number;
