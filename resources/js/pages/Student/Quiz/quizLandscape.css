@@ -5,7 +5,7 @@
 /* ============================================================
    SHARED — layout & box soal & jawaban
    ============================================================ */
-@media (orientation: landscape) and (max-height: 412px) {
+@media (orientation: landscape) and (max-height: 480px) {
 
     html, body {
         height: 100svh !important;

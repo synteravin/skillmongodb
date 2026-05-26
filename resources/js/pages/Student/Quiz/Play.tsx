@@ -26,16 +26,7 @@ function Footer({
         <div className="quiz-footer fixed bottom-4 left-0 z-40 h-[90px] w-full max-[767px]:bottom-[5px] max-[767px]:h-[62px] lg:h-[110px]">
             <div className="pointer-events-none absolute inset-0">
                 {/* ── DIAGONAL KIRI ── */}
-                <div className="footer-diag-left absolute -bottom-[2px] left-0 block h-[30px] w-[81px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,calc(100%_-_30px)_100%,0_100%)] min-[390px]:max-[767px]:w-[95px] min-[500px]:max-[767px]:w-[130px] min-[620px]:max-[767px]:w-[172px] min-[700px]:max-[767px]:w-[199px] md:hidden" />
-                <div
-                    className="footer-diag-left absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] md:block lg:hidden"
-                    style={{
-                        width: 210,
-                        height: 50,
-                        clipPath:
-                            'polygon(0 0, 100% 0, calc(100% - 52px) 100%, 0 100%)',
-                    }}
-                />
+                <div className="footer-diag-left absolute -bottom-[2px] left-0 block h-[30px] w-[81px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,calc(100%_-_30px)_100%,0_100%)] min-[390px]:max-[767px]:w-[95px] min-[500px]:max-[767px]:w-[130px] min-[620px]:max-[767px]:w-[172px] min-[700px]:w-[199px] lg:hidden" />
                 <div
                     className="absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] lg:block xl:hidden"
                     style={{
@@ -65,15 +56,7 @@ function Footer({
                 />
 
                 {/* ── DIAGONAL KANAN ── */}
-                <div className="footer-diag-right absolute right-0 -bottom-[2px] block h-[30px] w-[83px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,100%_100%,30px_100%)] min-[390px]:max-[767px]:w-[98px] min-[500px]:max-[767px]:w-[133px] min-[620px]:max-[767px]:w-[172px] min-[700px]:max-[767px]:w-[199px] md:hidden" />
-                <div
-                    className="footer-diag-right absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] md:block lg:hidden"
-                    style={{
-                        width: 208,
-                        height: 50,
-                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 52px 100%)',
-                    }}
-                />
+                <div className="footer-diag-right absolute right-0 -bottom-[2px] block h-[30px] w-[83px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,100%_100%,30px_100%)] min-[390px]:max-[767px]:w-[98px] min-[500px]:max-[767px]:w-[133px] min-[620px]:max-[767px]:w-[172px] min-[700px]:w-[199px] lg:hidden" />
                 <div
                     className="absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] lg:block xl:hidden"
                     style={{
@@ -100,14 +83,10 @@ function Footer({
                 />
 
                 {/* ── GARIS KUNING TENGAH ATAS — MOBILE TANPA CLAMP ── */}
-                <div className="footer-bar-top absolute top-[55%] right-[83px] left-[81px] h-[3px] rounded-tl-lg rounded-tr-lg bg-[#FACC15] min-[390px]:max-[767px]:right-[97px] min-[390px]:max-[767px]:left-[94px] min-[500px]:max-[767px]:right-[133px] min-[500px]:max-[767px]:left-[130px] min-[620px]:max-[767px]:right-[172px] min-[620px]:max-[767px]:left-[173px] min-[700px]:max-[767px]:right-[199px] min-[700px]:max-[767px]:left-[199px] md:top-[46.5%] md:right-[209px] md:left-[209px] md:h-[5px] lg:top-[43%] lg:right-[317px] lg:left-[318px] xl:top-[47%] xl:right-[369px] xl:left-[378px] 2xl:top-[42%] 2xl:right-[440px] 2xl:left-[442px]" />
+                <div className="footer-bar-top absolute top-[55%] right-[83px] left-[81px] h-[3px] rounded-tl-lg rounded-tr-lg bg-[#FACC15] min-[390px]:max-[767px]:right-[97px] min-[390px]:max-[767px]:left-[94px] min-[500px]:max-[767px]:right-[133px] min-[500px]:max-[767px]:left-[130px] min-[620px]:max-[767px]:right-[172px] min-[620px]:max-[767px]:left-[173px] min-[700px]:right-[199px] min-[700px]:left-[199px] lg:top-[43%] lg:right-[317px] lg:left-[318px] xl:top-[47%] xl:right-[369px] xl:left-[378px] 2xl:top-[42%] 2xl:right-[440px] 2xl:left-[442px]" />
 
                 {/* ── GARIS KUNING BAWAH KIRI ── */}
-                <div className="footer-bar-bottom-left absolute -bottom-1 left-0 block h-[3px] w-[54px] bg-[#FACC15] min-[390px]:max-[767px]:w-[68px] min-[500px]:max-[767px]:w-[104px] min-[620px]:max-[767px]:w-[147px] min-[700px]:max-[767px]:w-[173px] md:hidden" />
-                <div
-                    className="footer-bar-bottom-left absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] md:block lg:hidden"
-                    style={{ width: 161 }}
-                />
+                <div className="footer-bar-bottom-left absolute -bottom-1 left-0 block h-[3px] w-[54px] bg-[#FACC15] min-[390px]:max-[767px]:w-[68px] min-[500px]:max-[767px]:w-[104px] min-[620px]:max-[767px]:w-[147px] min-[700px]:w-[173px] lg:hidden" />
                 <div
                     className="absolute -bottom-2 left-0 hidden h-[5px] rounded-br-xs bg-[#FACC15] lg:block xl:hidden"
                     style={{ width: 263 }}
@@ -122,11 +101,7 @@ function Footer({
                 />
 
                 {/* ── GARIS KUNING BAWAH KANAN ── */}
-                <div className="footer-bar-bottom-right absolute right-0 -bottom-1 block h-[3px] w-[58px] rounded-bl-xs bg-[#FACC15] min-[390px]:max-[767px]:w-[72px] min-[500px]:max-[767px]:w-[109px] min-[620px]:max-[767px]:w-[147px] min-[700px]:max-[767px]:w-[174px] md:hidden" />
-                <div
-                    className="footer-bar-bottom-right absolute right-0 -bottom-2 hidden h-[5px] rounded-bl-xs bg-[#FACC15] md:block lg:hidden"
-                    style={{ width: 159 }}
-                />
+                <div className="footer-bar-bottom-right absolute right-0 -bottom-1 block h-[3px] w-[58px] rounded-bl-xs bg-[#FACC15] min-[390px]:max-[767px]:w-[72px] min-[500px]:max-[767px]:w-[109px] min-[620px]:max-[767px]:w-[147px] min-[700px]:w-[174px] lg:hidden" />
                 <div
                     className="absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] lg:block xl:hidden"
                     style={{ width: 262 }}
@@ -141,16 +116,7 @@ function Footer({
                 />
 
                 {/* ── GARIS DIAGONAL KUNING KIRI ── */}
-                <div className="footer-slash-left absolute -bottom-[14px] left-[82px] block h-[42px] w-[3px] origin-top-left rotate-45 rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:left-[96px] min-[500px]:max-[767px]:left-[132px] min-[620px]:max-[767px]:left-[174px] min-[700px]:max-[767px]:left-[201px] md:hidden" />
-                <div
-                    className="footer-slash-left absolute -bottom-7 hidden w-[4px] rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] md:block lg:hidden"
-                    style={{
-                        left: 212,
-                        height: 77,
-                        transform: 'rotate(45deg)',
-                        transformOrigin: 'top left',
-                    }}
-                />
+                <div className="footer-slash-left absolute -bottom-[14px] left-[82px] block h-[42px] w-[3px] origin-top-left rotate-45 rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:left-[96px] min-[500px]:max-[767px]:left-[132px] min-[620px]:max-[767px]:left-[174px] min-[700px]:left-[201px] lg:hidden" />
                 <div
                     className="absolute -bottom-8 hidden w-[5px] rounded-tl-sm rounded-br-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] lg:block xl:hidden"
                     style={{
@@ -180,16 +146,7 @@ function Footer({
                 />
 
                 {/* ── GARIS DIAGONAL KUNING KANAN ── */}
-                <div className="footer-slash-right absolute right-[82px] -bottom-[14px] block h-[42px] w-[3px] origin-top-right -translate-x-full -rotate-45 rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:right-[96px] min-[500px]:max-[767px]:right-[132px] min-[620px]:max-[767px]:right-[171px] min-[700px]:max-[767px]:right-[198px] md:hidden" />
-                <div
-                    className="footer-slash-right absolute -bottom-7 hidden w-[4px] rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] md:block lg:hidden"
-                    style={{
-                        right: 206,
-                        height: 77,
-                        transform: 'translateX(-100%) rotate(-45deg)',
-                        transformOrigin: 'top right',
-                    }}
-                />
+                <div className="footer-slash-right absolute right-[82px] -bottom-[14px] block h-[42px] w-[3px] origin-top-right -translate-x-full -rotate-45 rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:right-[96px] min-[500px]:max-[767px]:right-[132px] min-[620px]:max-[767px]:right-[171px] min-[700px]:right-[198px] lg:hidden" />
                 <div
                     className="absolute -bottom-8 hidden w-[5px] rounded-tr-sm rounded-bl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] lg:block xl:hidden"
                     style={{
@@ -220,12 +177,12 @@ function Footer({
             </div>
 
             {/* ── WRAPPER TOMBOL (MOBILE ONLY) ── */}
-            <div className="footer-btn-wrapper absolute top-[calc(41%+2px)] left-1/2 block h-[38px] w-[230px] -translate-x-1/2 min-[390px]:max-[767px]:w-[250px] min-[500px]:max-[767px]:w-[270px] min-[620px]:max-[767px]:w-[288px] min-[700px]:max-[767px]:w-[300px] md:hidden">
+            <div className="footer-btn-wrapper absolute top-[calc(41%+2px)] left-1/2 block h-[38px] w-[230px] -translate-x-1/2 min-[390px]:max-[1023px]:w-[250px] min-[500px]:max-[1023px]:w-[270px] min-[620px]:max-[1023px]:w-[288px] min-[700px]:w-[300px] lg:hidden">
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleBack}
                     disabled={current === 0}
-                    className={`footer-btn-back absolute top-[12px] left-4 h-[26px] w-[66px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:left-[3px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[84px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:left-[-4px] min-[500px]:max-[767px]:h-[27px] min-[500px]:max-[767px]:w-[97px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:left-[-13px] min-[620px]:max-[767px]:h-[26px] min-[620px]:max-[767px]:w-[114px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:left-[-21px] min-[700px]:max-[767px]:h-[27px] min-[700px]:max-[767px]:w-[118px] ${current === 0 ? 'opacity-40' : 'opacity-100'}`}
+                    className={`footer-btn-back absolute top-[12px] left-4 h-[26px] w-[66px] font-bold min-[390px]:max-[1023px]:top-[12px] min-[390px]:max-[1023px]:left-[3px] min-[390px]:max-[1023px]:h-[26px] min-[390px]:max-[1023px]:w-[84px] min-[500px]:max-[1023px]:top-[12px] min-[500px]:max-[1023px]:left-[-4px] min-[500px]:max-[1023px]:h-[27px] min-[500px]:max-[1023px]:w-[97px] min-[620px]:max-[1023px]:top-[12px] min-[620px]:max-[1023px]:left-[-13px] min-[620px]:max-[1023px]:h-[26px] min-[620px]:max-[1023px]:w-[114px] min-[700px]:top-[12px] min-[700px]:left-[-21px] min-[700px]:h-[27px] min-[700px]:w-[118px] ${current === 0 ? 'opacity-40' : 'opacity-100'}`}
                 >
                     <svg
                         className="absolute inset-0 h-full w-full"
@@ -234,19 +191,19 @@ function Footer({
                     >
                         <path
                             d="M108 0 H258 V45 H0 V45 L0 45 Z"
-                            className="[d:path('M108_0_H258_V45_H0_V45_L0_45_Z')] min-[390px]:max-[767px]:[d:path('M83_0_H258_V45_H0_V45_L0_45_Z')] min-[500px]:max-[767px]:[d:path('M72_0_H258_V45_H0_V45_L0_45_Z')] min-[620px]:max-[767px]:[d:path('M63_0_H258_V45_H0_V45_L0_45_Z')] min-[700px]:max-[767px]:[d:path('M60_0_H258_V45_H0_V45_L0_45_Z')]"
+                            className="[d:path('M108_0_H258_V45_H0_V45_L0_45_Z')] min-[390px]:max-[1023px]:[d:path('M83_0_H258_V45_H0_V45_L0_45_Z')] min-[500px]:max-[1023px]:[d:path('M72_0_H258_V45_H0_V45_L0_45_Z')] min-[620px]:max-[1023px]:[d:path('M63_0_H258_V45_H0_V45_L0_45_Z')] min-[700px]:[d:path('M60_0_H258_V45_H0_V45_L0_45_Z')]"
                             fill="none"
                             stroke="#FACC15"
                             strokeWidth={3}
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
-                    <span className="footer-btn-back-text relative z-10 flex h-full w-full translate-x-[6px] items-center justify-center font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[767px]:translate-x-[7px] min-[390px]:max-[767px]:text-[10px] min-[500px]:max-[767px]:translate-x-[4px] min-[500px]:max-[767px]:text-[10px] min-[620px]:max-[767px]:translate-x-[6px] min-[620px]:max-[767px]:text-[11px] min-[700px]:max-[767px]:translate-x-[8px] min-[700px]:max-[767px]:text-[12px]">
+                    <span className="footer-btn-back-text relative z-10 flex h-full w-full translate-x-[6px] items-center justify-center font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[1023px]:translate-x-[7px] min-[390px]:max-[1023px]:text-[10px] min-[500px]:max-[1023px]:translate-x-[4px] min-[500px]:max-[1023px]:text-[10px] min-[620px]:max-[1023px]:translate-x-[6px] min-[620px]:max-[1023px]:text-[11px] min-[700px]:translate-x-[8px] min-[700px]:text-[12px]">
                         &lt;&lt; BACK
                     </span>
                 </motion.button>
 
-                <div className="-top-translate-x-1/2 footer-counter absolute top-[12px] left-[37%] flex h-[24px] w-[58px] items-center justify-center border-[3px] border-[#FACC15] text-[13px] font-bold tracking-[1px] text-[#FACC15] min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:left-[37%] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[64px] min-[390px]:max-[767px]:text-[14px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:left-[37%] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[70px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:left-[38%] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[70px] min-[620px]:max-[767px]:text-[15px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:left-[34%] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[95px] min-[700px]:max-[767px]:text-[16px]">
+                <div className="-top-translate-x-1/2 footer-counter absolute top-[12px] left-[37%] flex h-[24px] w-[58px] items-center justify-center border-[3px] border-[#FACC15] text-[13px] font-bold tracking-[1px] text-[#FACC15] min-[390px]:max-[1023px]:top-[12px] min-[390px]:max-[1023px]:left-[37%] min-[390px]:max-[1023px]:h-[26px] min-[390px]:max-[1023px]:w-[64px] min-[390px]:max-[1023px]:text-[14px] min-[500px]:max-[1023px]:top-[12px] min-[500px]:max-[1023px]:left-[37%] min-[500px]:max-[1023px]:h-[28px] min-[500px]:max-[1023px]:w-[70px] min-[620px]:max-[1023px]:top-[12px] min-[620px]:max-[1023px]:left-[38%] min-[620px]:max-[1023px]:h-[28px] min-[620px]:max-[1023px]:w-[70px] min-[620px]:max-[1023px]:text-[15px] min-[700px]:top-[12px] min-[700px]:left-[34%] min-[700px]:h-[28px] min-[700px]:w-[95px] min-[700px]:text-[16px]">
                     {String(current + 1).padStart(2, '0')}
                     <span className="mx-1 opacity-50">/</span>
                     {String(total).padStart(2, '0')}
@@ -256,7 +213,7 @@ function Footer({
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
                     disabled={!selected || loading}
-                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:right-[4px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[85px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:right-[-4px] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[98px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:right-[-15px] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[116px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:right-[-21px] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[118px] ${!selected || loading ? 'opacity-40' : 'opacity-100'}`}
+                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[1023px]:top-[12px] min-[390px]:max-[1023px]:right-[4px] min-[390px]:max-[1023px]:h-[26px] min-[390px]:max-[1023px]:w-[85px] min-[500px]:max-[1023px]:top-[12px] min-[500px]:max-[1023px]:right-[-4px] min-[500px]:max-[1023px]:h-[28px] min-[500px]:max-[1023px]:w-[98px] min-[620px]:max-[1023px]:top-[12px] min-[620px]:max-[1023px]:right-[-15px] min-[620px]:max-[1023px]:h-[28px] min-[620px]:max-[1023px]:w-[116px] min-[700px]:top-[12px] min-[700px]:right-[-21px] min-[700px]:h-[28px] min-[700px]:w-[118px] ${!selected || loading ? 'opacity-40' : 'opacity-100'}`}
                 >
                     <svg
                         className="absolute inset-0 h-full w-full"
@@ -265,14 +222,14 @@ function Footer({
                     >
                         <path
                             d="M0 0 H150 L258 45 H0 Z"
-                            className="[d:path('M0_0_H150_L258_45_H0_Z')] min-[390px]:max-[767px]:[d:path('M0_0_H170_L251_45_H0_Z')] min-[500px]:max-[767px]:[d:path('M0_0_H182_L258_45_H0_Z')] min-[620px]:max-[767px]:[d:path('M0_0_H194_L258_45_H0_Z')] min-[700px]:max-[767px]:[d:path('M0_0_H205_L258_45_H0_Z')]"
+                            className="[d:path('M0_0_H150_L258_45_H0_Z')] min-[390px]:max-[1023px]:[d:path('M0_0_H170_L251_45_H0_Z')] min-[500px]:max-[1023px]:[d:path('M0_0_H182_L258_45_H0_Z')] min-[620px]:max-[1023px]:[d:path('M0_0_H194_L258_45_H0_Z')] min-[700px]:[d:path('M0_0_H205_L258_45_H0_Z')]"
                             fill="none"
                             stroke="#FACC15"
                             strokeWidth={3}
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
-                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-6px] items-center justify-center gap-1 font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[767px]:translate-x-[-7px] min-[390px]:max-[767px]:text-[10px] min-[500px]:max-[767px]:translate-x-[-6px] min-[500px]:max-[767px]:text-[10px] min-[620px]:max-[767px]:translate-x-[-6px] min-[620px]:max-[767px]:text-[11px] min-[700px]:max-[767px]:translate-x-[-8px] min-[700px]:max-[767px]:text-[12px]">
+                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-6px] items-center justify-center gap-1 font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[1023px]:translate-x-[-7px] min-[390px]:max-[1023px]:text-[10px] min-[500px]:max-[1023px]:translate-x-[-6px] min-[500px]:max-[1023px]:text-[10px] min-[620px]:max-[1023px]:translate-x-[-6px] min-[620px]:max-[1023px]:text-[11px] min-[700px]:translate-x-[-8px] min-[700px]:text-[12px]">
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
@@ -292,7 +249,7 @@ function Footer({
 
             {/* ── WRAPPER TOMBOL (MD KE ATAS) ── */}
             <div
-                className="footer-btn-wrapper absolute hidden md:block"
+                className="footer-btn-wrapper absolute hidden lg:block"
                 style={{
                     left: '50%',
                     transform: 'translateX(-50%)',
@@ -912,10 +869,16 @@ export default function Play({ quiz, has_submitted }: any) {
             { question_id: question.id, answer_id: selected },
         ];
         setAnswers(updated);
-        setSelected(null);
+        
         if (current + 1 < total) {
+            const nextQuestion = quiz.questions[current + 1];
+            const nextSaved = updated.find(
+                (a) => a.question_id === nextQuestion.id,
+            );
+            setSelected(nextSaved?.answer_id ?? null);
             setCurrent(current + 1);
         } else {
+            setSelected(null);
             submit(updated);
         }
     };
@@ -942,6 +905,7 @@ export default function Play({ quiz, has_submitted }: any) {
             const data = await res.json();
             if (!res.ok) {
                 alert(data.message || 'Submit gagal');
+                setLoading(false);
                 return;
             }
             setFinalResult(data.result);
@@ -991,9 +955,9 @@ export default function Play({ quiz, has_submitted }: any) {
 
     return (
         <>
-            <div className="quiz-page flex min-h-screen flex-col overflow-y-auto bg-[#04080f] font-['Rajdhani',sans-serif] md:h-screen md:overflow-hidden">
-                <div className="quiz-layout mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-4 overflow-visible px-4 pt-4 pb-[85px] md:flex-row md:overflow-hidden md:pb-[100px]">
-                    <div className="quiz-question h-auto w-full shrink-0 overflow-visible md:h-full md:w-[58%]">
+            <div className="quiz-page flex min-h-screen flex-col overflow-y-auto bg-[#04080f] font-['Rajdhani',sans-serif] lg:h-screen lg:overflow-hidden">
+                <div className="quiz-layout mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-4 overflow-visible px-4 pt-4 pb-[85px] lg:flex-row lg:overflow-hidden lg:pb-[100px]">
+                    <div className="quiz-question h-auto w-full shrink-0 overflow-visible lg:h-full lg:w-[58%]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id}
@@ -1012,7 +976,7 @@ export default function Play({ quiz, has_submitted }: any) {
                         </AnimatePresence>
                     </div>
 
-                    <div className="quiz-answer mt-4 flex w-full flex-shrink-0 flex-col justify-start p-0 md:mt-0 md:w-[42%] md:justify-center">
+                    <div className="quiz-answer mt-4 flex w-full flex-shrink-0 flex-col justify-start p-0 lg:mt-0 lg:w-[42%] lg:justify-center">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id + '-answers'}
