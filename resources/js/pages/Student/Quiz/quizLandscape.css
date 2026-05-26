@@ -110,8 +110,9 @@
 
     .footer-bar-top {
         left: 245px !important;
+        right: 245px !important;
         top: 45% !important;
-        width: 43.5% !important;
+        width: auto !important;
         height: 4px !important;
     }
 
@@ -147,15 +148,15 @@
         left: 50% !important;
         top: calc(36% + 8px) !important;
 
-        transform: none !important;
-        margin-left: -21% !important;
+        transform: translateX(-50%) !important;
+        margin-left: 0 !important;
 
-        width: 42% !important;
+        width: 440px !important;
         height: 52px !important;
      }
 
     .footer-btn-back {
-        left: -37px !important;
+        left: 0 !important;
         width: 140px !important;
         height: 40px !important;
         top: 5px !important;
@@ -172,11 +173,12 @@
         width: 140px !important;
         height: 40px !important;
         font-size: 17px !important;
-        margin-left: -87px !important;
+        left: 50% !important;
+        margin-left: -70px !important;
     }
 
     .footer-btn-next {
-        right: -34px !important;
+        right: 0 !important;
         width: 140px !important;
         height: 40px !important;
         top: 5px !important;

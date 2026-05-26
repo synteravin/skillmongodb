@@ -206,7 +206,7 @@ export default function Index({
                         {/* Mobile Add User Button (compact beside the title for superb mobile real estate) */}
                         <button
                             onClick={openCreate}
-                            className="flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 p-2.5 text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-400 hover:to-purple-500 active:scale-95 md:hidden"
+                            className="flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 p-2.5 text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-400 hover:to-purple-500 active:scale-95 lg:hidden"
                             title="Add User"
                         >
                             <Plus size={20} />
@@ -234,7 +234,7 @@ export default function Index({
                         {/* Desktop Add User Button */}
                         <button
                             onClick={openCreate}
-                            className="group hidden items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-white shadow-lg shadow-indigo-500/25 transition-all hover:-translate-y-0.5 hover:from-indigo-400 hover:to-purple-500 hover:shadow-indigo-500/40 md:flex"
+                            className="group hidden items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-white shadow-lg shadow-indigo-500/25 transition-all hover:-translate-y-0.5 hover:from-indigo-400 hover:to-purple-500 hover:shadow-indigo-500/40 lg:flex"
                         >
                             <Plus
                                 size={18}
@@ -246,7 +246,7 @@ export default function Index({
                 </div>
 
                 {/* DESKTOP TABLE VIEW */}
-                <div className="hidden overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900 shadow-xl md:block">
+                <div className="hidden overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900 shadow-xl lg:block">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm whitespace-nowrap">
                             <thead className="border-b border-slate-800/80 bg-slate-950/50 text-slate-400">
@@ -368,8 +368,8 @@ export default function Index({
                     </div>
                 </div>
 
-                {/* MOBILE CARD VIEW (Highly Professional Decoupled Floating Card list) */}
-                <div className="block space-y-4 md:hidden">
+                {/* CARD VIEW (Responsive Grid of Cards on Mobile & Tablet) */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:hidden">
                     {users.data.length > 0 ? (
                         users.data.map((user) => {
                             // Assign premium roles specific color gradients on left edge indicators
@@ -487,7 +487,7 @@ export default function Index({
 
                 {/* DESKTOP PAGINATION */}
                 {users.last_page > 1 && (
-                    <div className="hidden items-center justify-between gap-4 rounded-2xl border border-slate-800/80 bg-slate-900 px-6 py-4 shadow-xl md:flex">
+                    <div className="hidden items-center justify-between gap-4 rounded-2xl border border-slate-800/80 bg-slate-900 px-6 py-4 shadow-xl lg:flex">
                         <div className="text-sm text-slate-400">
                             Showing{' '}
                             <span className="font-medium text-white">
@@ -535,7 +535,7 @@ export default function Index({
 
                 {/* MOBILE PAGINATION (Clean, touch-friendly, non-cluttering pagination for small devices) */}
                 {users.last_page > 1 && (
-                    <div className="block rounded-2xl border border-slate-800/80 bg-slate-900 p-4 shadow-xl md:hidden">
+                    <div className="block rounded-2xl border border-slate-800/80 bg-slate-900 p-4 shadow-xl lg:hidden">
                         <div className="flex items-center justify-between gap-3">
                             {/* Previous Button */}
                             {users.links[0]?.url ? (
