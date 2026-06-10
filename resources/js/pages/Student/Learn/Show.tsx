@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { router, Link } from '@inertiajs/react';
-import { Lock, Check, Play, FileText, X, ZoomIn } from 'lucide-react';
+import { Lock, Check, Play, FileText, X, ZoomIn,ChevronDown, BookOpen } from 'lucide-react';
 
 /* ================= TYPES ================= */
 type Content = {
@@ -216,6 +216,8 @@ export default function LearnShow({
         }
     };
 
+    const [moduleDropdownOpen, setModuleDropdownOpen] = useState(false);
+    
     return (
         <div className="flex h-screen flex-col overflow-hidden bg-[#f0f4ff] text-[#1e293b] dark:bg-[#040812] dark:text-white">
             {/* ================= HEADER ================= */}
@@ -256,96 +258,179 @@ export default function LearnShow({
 
             {/* ================= MAIN ================= */}
             <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-1 pt-2 pb-1 md:flex-row">
-                {/* ================= LEFT PANEL ================= */}
-                <div className="flex w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
-                    {/* Label header sidebar */}
-                    <p className="font-['Orbitron'] flex-shrink-0 px-1 text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
-                        Quest Modules
-                    </p>
+               {/* ================= LEFT PANEL ================= */}
 
-                    {/* List modul */}
-                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1 dark:scrollbar-thumb-blue-500/30">
-                        {modules.map((mod, index) => {
-                            const isActive = module._id === mod._id;
-                            const unlocked = isUnlocked(index);
-                            const done = isCompleted(mod._id);
+{/* MOBILE: Dropdown */}
+<div className="md:hidden flex-shrink-0">
+    <button
+        onClick={() => setModuleDropdownOpen(prev => !prev)}
+        className="flex w-full items-center justify-between rounded-xl border border-blue-200 bg-white px-4 py-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-r dark:from-[#0d1229] dark:to-[#080d1e]"
+    >
+        <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-blue-500 dark:text-blue-400" />
+            <span className="font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
+                Quest Modules
+            </span>
+        </div>
+        <div className="flex items-center gap-2">
+            <span className="text-xs text-blue-400 dark:text-gray-500">
+                {modules.filter(m => isCompleted(m._id)).length}/{modules.length}
+            </span>
+            <ChevronDown
+                className={`h-4 w-4 text-blue-400 transition-transform duration-300 dark:text-gray-400 ${
+                    moduleDropdownOpen ? 'rotate-180' : ''
+                }`}
+            />
+        </div>
+    </button>
 
-                            return (
-                                <div
-                                    key={`mod_${index}`}
-                                    onClick={() => unlocked && goToModule(mod)}
-                                    className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
-                                        unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
-                                    } ${
-                                        isActive
-                                            ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
-                                            : done
-                                              ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d] dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]'
-                                              : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5 dark:hover:border-white/5 dark:hover:bg-white/5'
-                                    }`}
-                                >
-                                    {/* Icon Box */}
-                                    <div
-                                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border ${
-                                            isActive
-                                                ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
-                                                : done
-                                                  ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
-                                                  : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
-                                        }`}
-                                    >
-                                        {!unlocked ? (
-                                            <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                                        ) : done ? (
-                                            <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                        ) : isActive ? (
-                                            <Play
-                                                className="h-4 w-4 text-blue-600 dark:text-indigo-300"
-                                                fill="currentColor"
-                                            />
-                                        ) : (
-                                            <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
-                                                {String(index + 1).padStart(2, '0')}
-                                            </span>
-                                        )}
-                                    </div>
+    <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            moduleDropdownOpen ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+    >
+        <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 mt-1 flex max-h-[60vh] flex-col gap-2 overflow-y-auto rounded-xl border border-blue-200 bg-white p-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e]">
+            {modules.map((mod, index) => {
+                const isActive = module._id === mod._id;
+                const unlocked = isUnlocked(index);
+                const done = isCompleted(mod._id);
 
-                                    {/* Text */}
-                                    <div className="flex min-w-0 flex-col">
-                                        <span
-                                            className={`font-['Orbitron'] mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${
-                                                isActive
-                                                    ? 'text-blue-500 dark:text-blue-400'
-                                                    : done
-                                                      ? 'text-green-600 dark:text-green-400'
-                                                      : 'text-blue-300 dark:text-white/30'
-                                            }`}
-                                        >
-                                            Modul {String(index + 1).padStart(2, '0')}
-                                        </span>
-                                        <span
-                                            className={`truncate text-sm leading-tight font-bold ${
-                                                isActive
-                                                    ? 'text-[#1e3a8a] dark:text-white'
-                                                    : done
-                                                      ? 'text-green-800 dark:text-green-200'
-                                                      : unlocked
-                                                        ? 'text-[#334155] dark:text-white/60'
-                                                        : 'text-gray-400 dark:text-white/30'
-                                            }`}
-                                        >
-                                            {mod.title}
-                                        </span>
-                                    </div>
-
-                                    {isActive && (
-                                        <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
-                                    )}
-                                </div>
-                            );
-                        })}
+                return (
+                    <div
+                        key={`mod_mobile_${index}`}
+                        onClick={() => {
+                            if (unlocked) {
+                                goToModule(mod);
+                                setModuleDropdownOpen(false);
+                            }
+                        }}
+                        className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
+                            unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
+                        } ${
+                            isActive
+                                ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
+                                : done
+                                  ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d]'
+                                  : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5'
+                        }`}
+                    >
+                        <div
+                            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border ${
+                                isActive
+                                    ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
+                                    : done
+                                      ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
+                                      : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
+                            }`}
+                        >
+                            {!unlocked ? (
+                                <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                            ) : done ? (
+                                <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                            ) : isActive ? (
+                                <Play className="h-4 w-4 text-blue-600 dark:text-indigo-300" fill="currentColor" />
+                            ) : (
+                                <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
+                                    {String(index + 1).padStart(2, '0')}
+                                </span>
+                            )}
+                        </div>
+                        <div className="flex min-w-0 flex-col">
+                            <span
+                                className={`font-['Orbitron'] mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${
+                                    isActive ? 'text-blue-500 dark:text-blue-400' : done ? 'text-green-600 dark:text-green-400' : 'text-blue-300 dark:text-white/30'
+                                }`}
+                            >
+                                Modul {String(index + 1).padStart(2, '0')}
+                            </span>
+                            <span
+                                className={`truncate text-sm leading-tight font-bold ${
+                                    isActive ? 'text-[#1e3a8a] dark:text-white' : done ? 'text-green-800 dark:text-green-200' : unlocked ? 'text-[#334155] dark:text-white/60' : 'text-gray-400 dark:text-white/30'
+                                }`}
+                            >
+                                {mod.title}
+                            </span>
+                        </div>
+                        {isActive && (
+                            <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
+                        )}
                     </div>
+                );
+            })}
+        </div>
+    </div>
+</div>
+
+{/* DESKTOP: Panel biasa */}
+<div className="hidden w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:flex md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
+    <p className="font-['Orbitron'] flex-shrink-0 px-1 text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
+        Quest Modules
+    </p>
+    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1 dark:scrollbar-thumb-blue-500/30">
+        {modules.map((mod, index) => {
+            const isActive = module._id === mod._id;
+            const unlocked = isUnlocked(index);
+            const done = isCompleted(mod._id);
+
+            return (
+                <div
+                    key={`mod_${index}`}
+                    onClick={() => unlocked && goToModule(mod)}
+                    className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
+                        unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
+                    } ${
+                        isActive
+                            ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
+                            : done
+                              ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d] dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]'
+                              : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5 dark:hover:border-white/5 dark:hover:bg-white/5'
+                    }`}
+                >
+                    <div
+                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border ${
+                            isActive
+                                ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
+                                : done
+                                  ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
+                                  : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
+                        }`}
+                    >
+                        {!unlocked ? (
+                            <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        ) : done ? (
+                            <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                        ) : isActive ? (
+                            <Play className="h-4 w-4 text-blue-600 dark:text-indigo-300" fill="currentColor" />
+                        ) : (
+                            <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
+                                {String(index + 1).padStart(2, '0')}
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex min-w-0 flex-col">
+                        <span
+                            className={`font-['Orbitron'] mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${
+                                isActive ? 'text-blue-500 dark:text-blue-400' : done ? 'text-green-600 dark:text-green-400' : 'text-blue-300 dark:text-white/30'
+                            }`}
+                        >
+                            Modul {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <span
+                            className={`truncate text-sm leading-tight font-bold ${
+                                isActive ? 'text-[#1e3a8a] dark:text-white' : done ? 'text-green-800 dark:text-green-200' : unlocked ? 'text-[#334155] dark:text-white/60' : 'text-gray-400 dark:text-white/30'
+                            }`}
+                        >
+                            {mod.title}
+                        </span>
+                    </div>
+                    {isActive && (
+                        <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
+                    )}
                 </div>
+            );
+        })}
+    </div>
+</div>
 
                 {/* ================= RIGHT PANEL ================= */}
                 <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">

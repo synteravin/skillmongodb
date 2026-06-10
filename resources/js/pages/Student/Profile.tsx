@@ -76,14 +76,14 @@ export default function ProfilePage({ user }: Props) {
     const starProgress = ((user.total_score % 500) / 500) * 100;
 
     return (
-        <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#0c0c14] dark:text-white">
+        <div className="flex min-h-screen w-screen flex-col bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#0c0c14] dark:text-white lg:h-screen lg:overflow-hidden overflow-y-auto">
             {/* BG GLOW */}
             <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
                 <div className="h-[400px] w-[700px] rounded-full bg-blue-600 opacity-5 blur-[160px] dark:opacity-10" />
             </div>
 
             {/* ── TOOLBAR ── */}
-            <div className="relative z-10 flex flex-shrink-0 items-center justify-between px-4 pt-3 pb-2 md:px-8">
+            <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-3 pb-2 md:px-8">
                 {/* BACK */}
                 <Link href="/student/dashboard">
                     <div
@@ -110,15 +110,15 @@ export default function ProfilePage({ user }: Props) {
 
             <form
                 onSubmit={submit}
-                className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-4 pb-4 md:flex-row md:gap-4 md:px-8"
+                className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 overflow-visible px-4 pb-4 sm:flex-row md:gap-4 md:px-8 lg:overflow-hidden"
             >
                 {/* ══════════ LEFT PANEL ══════════ */}
-                <div className="flex w-full flex-shrink-0 flex-col gap-3 md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px]">
+                <div className="flex w-full shrink-0 flex-col gap-3 sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px]">
                     {/* PROFILE CARD */}
-                    <div className="flex h-[320px] flex-col items-center border-2 border-[#3B28F6]/60 bg-white p-4 text-center shadow-[0_4px_20px_rgba(59,40,246,0.07)] md:p-5 dark:bg-[#050619] dark:shadow-none">
+                    <div className="flex min-h-[320px] md:h-[320px] shrink-0 h-auto flex-col items-center border-2 border-[#3B28F6]/60 bg-white p-4 text-center shadow-[0_4px_20px_rgba(59,40,246,0.07)] md:p-5 pb-4 dark:bg-[#050619] dark:shadow-none">
                         {/* AVATAR */}
                         <div
-                            className="relative mb-3 flex-shrink-0"
+                            className="relative mb-3 shrink-0"
                             style={{ width: '130px', height: '148px' }}
                         >
                             <div
@@ -207,7 +207,7 @@ export default function ProfilePage({ user }: Props) {
                     <button
                         type="button"
                         onClick={() => router.post('/logout')}
-                        className="mt-auto flex w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                        className="mt-auto hidden sm:flex w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
                     >
                         <Power size={16} strokeWidth={3} />
                         SYSTEM LOG OUT
@@ -217,11 +217,11 @@ export default function ProfilePage({ user }: Props) {
                 {/* ══════════ RIGHT PANEL ══════════ */}
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
                     {/* MASTERY LEVEL */}
-                    <div className="flex-shrink-0 border-2 border-[#3B28F6] bg-white p-4 shadow-[0_2px_16px_rgba(59,40,246,0.07)] dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
-                        <div className="flex items-center gap-4">
+                    <div className="shrink-0 border-2 border-[#3B28F6] bg-white p-3 sm:p-4 shadow-[0_2px_16px_rgba(59,40,246,0.07)] dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
+                        <div className="flex items-center gap-3 sm:gap-4">
                             {/* CIRCLE */}
                             <div
-                                className="flex h-[58px] w-[58px] flex-shrink-0 items-center justify-center rounded-full border-[4px] border-[#3B28F6] font-['Orbitron'] text-2xl font-black text-gray-900 dark:text-white"
+                                className="flex h-[48px] w-[48px] sm:h-[58px] sm:w-[58px] shrink-0 items-center justify-center rounded-full border-[3px] sm:border-[4px] border-[#3B28F6] font-['Orbitron'] text-xl sm:text-2xl font-black text-gray-900 dark:text-white"
                                 style={{
                                     boxShadow:
                                         '0 0 18px rgba(59,40,246,0.3), inset 0 0 12px rgba(59,40,246,0.08)',
@@ -231,11 +231,11 @@ export default function ProfilePage({ user }: Props) {
                             </div>
 
                             <div className="min-w-0 flex-1">
-                                <div className="flex items-baseline justify-between">
-                                    <p className="font-['Orbitron'] text-lg leading-none font-bold tracking-widest text-gray-900 xl:text-xl dark:text-gray-100">
+                                <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                                    <p className="font-['Orbitron'] text-sm sm:text-base md:text-lg leading-none font-bold tracking-wider sm:tracking-widest text-gray-900 xl:text-xl dark:text-gray-100">
                                         MASTERY LEVEL
                                     </p>
-                                    <span className="ml-2 flex-shrink-0 font-['Orbitron'] text-xs text-yellow-500 dark:text-yellow-400">
+                                    <span className="shrink-0 font-['Orbitron'] text-xs text-yellow-500 dark:text-yellow-400">
                                         {user.exp}
                                         <span className="text-gray-400 dark:text-gray-500">
                                             /{user.exp_max}
@@ -265,7 +265,7 @@ export default function ProfilePage({ user }: Props) {
                     </div>
 
                     {/* OPERATOR DATA */}
-                    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border-2 border-[#3B28F6] bg-white p-1 shadow-[0_2px_16px_rgba(59,40,246,0.07)] md:p-5 lg:p-5 xl:p-5 dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
+                    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border-2 border-[#3B28F6] bg-white p-3 sm:p-4 md:p-5 shadow-[0_2px_16px_rgba(59,40,246,0.07)] dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
                         {/* top glow line */}
                         <div
                             className="absolute top-0 right-0 left-0 h-px"
@@ -276,16 +276,16 @@ export default function ProfilePage({ user }: Props) {
                         />
 
                         {/* TITLE */}
-                        <h3 className="mb-1 flex flex-shrink-0 items-center gap-2 font-['Orbitron'] text-sm font-bold tracking-[3px] text-[#0070b8] md:mb-1 md:text-base xl:text-lg dark:text-[#00d4ff]">
+                        <h3 className="mb-1.5 flex shrink-0 items-center gap-2 font-['Orbitron'] text-sm font-bold tracking-[3px] text-[#0070b8] md:text-base xl:text-lg dark:text-[#00d4ff]">
                             <UserCog size={20} strokeWidth={2} />
                             OPERATOR DATA
                         </h3>
 
                         {/* CONTENT BODY */}
-                        <div className="flex flex-1 flex-col justify-between gap-2 overflow-y-auto pr-1 md:overflow-hidden md:pr-0 xl:gap-2">
+                        <div className="flex flex-1 flex-col justify-between gap-3 overflow-visible lg:overflow-hidden pr-1 md:pr-0 xl:gap-2">
                             {/* RANK CARD */}
-                            <div className="relative flex flex-col items-start gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/25 bg-[#3B28F6]/[0.04] p-2.5 sm:flex-row sm:items-center md:p-2 xl:p-8 dark:border-[#3B28F6]/60 dark:bg-[#3B28F6]/5">
-                                <div className="h-[48px] w-[48px] flex-shrink-0 xl:h-[52px] xl:w-[52px]">
+                            <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/25 bg-[#3B28F6]/[0.04] p-2.5 md:p-3 xl:p-6 dark:border-[#3B28F6]/60 dark:bg-[#3B28F6]/5">
+                                <div className="h-[48px] w-[48px] shrink-0 md:h-[50px] md:w-[50px] xl:h-[56px] xl:w-[56px]">
                                     <svg
                                         viewBox="0 0 80 80"
                                         className="h-full w-full"
@@ -300,10 +300,10 @@ export default function ProfilePage({ user }: Props) {
                                                 user.rank?.image ??
                                                 '/images/romawi.png'
                                             }
-                                            x="0"
-                                            y="10"
-                                            width="80"
-                                            height="80"
+                                            x="10"
+                                            y="14"
+                                            width="60"
+                                            height="60"
                                             preserveAspectRatio="xMidYMid slice"
                                             clipPath="url(#rankHexClip)"
                                         />
@@ -317,16 +317,16 @@ export default function ProfilePage({ user }: Props) {
                                 </div>
 
                                 {/* RANK INFO */}
-                                <div className="flex w-full min-w-0 flex-1 flex-col justify-center gap-1 text-center sm:text-left xl:gap-1.5">
-                                    <div className="flex flex-col items-center justify-between gap-1 sm:flex-row sm:items-end sm:gap-0">
-                                        <div className="flex flex-col items-center sm:items-start">
-                                            <p className="mb-0.5 text-[7px] leading-none font-bold tracking-[2px] text-[#3B28F6]/60 uppercase xl:text-[8px] dark:text-blue-600">
+                                <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex flex-col min-w-0">
+                                            <p className="mb-0.5 text-[8px] leading-none font-bold tracking-[2px] text-[#3B28F6]/60 uppercase dark:text-blue-500/80">
                                                 CURRENT RANK
                                             </p>
-                                            <p className="font-['Orbitron'] text-sm leading-none font-bold tracking-wider text-[#3B28F6] drop-shadow-md xl:text-base dark:text-blue-400">
+                                            <p className="truncate font-['Orbitron'] text-xs font-bold tracking-wider text-[#3B28F6] drop-shadow-sm sm:text-sm dark:text-blue-400">
                                                 {user.rank?.name ?? 'NEXUS II'}
                                             </p>
-                                            <div className="mt-0.5 flex gap-0.5 xl:gap-1">
+                                            <div className="mt-1 flex gap-0.5">
                                                 {Array.from({
                                                     length:
                                                         user.rank?.star ?? 1,
@@ -334,15 +334,15 @@ export default function ProfilePage({ user }: Props) {
                                                     <img
                                                         key={i}
                                                         src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
-                                                        className="h-3 w-3 animate-pulse opacity-80 xl:h-2.5 xl:w-2.5"
+                                                        className="h-2.5 w-2.5 animate-pulse opacity-80"
                                                         alt="star"
                                                     />
                                                 ))}
                                             </div>
                                         </div>
 
-                                        <div className="text-right">
-                                            <div className="font-['Orbitron'] text-[10px] text-yellow-500 dark:text-yellow-400">
+                                        <div className="flex flex-col items-end shrink-0 text-right">
+                                            <div className="font-['Orbitron'] text-[10px] font-bold text-yellow-500 sm:text-xs dark:text-yellow-400">
                                                 {Math.floor(
                                                     user.total_score % 500,
                                                 )}
@@ -350,14 +350,14 @@ export default function ProfilePage({ user }: Props) {
                                                     /500
                                                 </span>
                                             </div>
-                                            <p className="mt-1 text-[9px] text-gray-400 dark:text-gray-500">
+                                            <p className="mt-0.5 text-[9px] text-gray-400 dark:text-gray-500">
                                                 {Math.floor(starProgress)}%
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* PROGRESS */}
-                                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-sm border border-gray-200 bg-gray-100 dark:border-[#1a1f3a] dark:bg-[#0f1235]">
+                                    <div className="mt-1 h-1.5 w-full overflow-hidden rounded-sm border border-gray-200 bg-gray-100 dark:border-[#1a1f3a] dark:bg-[#0f1235]">
                                         <div
                                             className="h-full rounded-sm transition-all duration-700"
                                             style={{
@@ -439,8 +439,8 @@ export default function ProfilePage({ user }: Props) {
                                     LAST MISSION / COURSE
                                 </p>
                                 {user.last_course ? (
-                                    <div className="flex items-center gap-3 border border-[#3B28F6]/25 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/40 dark:bg-[rgba(0,0,20,0.5)]">
-                                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
+                                    <div className="flex items-center gap-2.5 border border-[#3B28F6]/25 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/40 dark:bg-[rgba(0,0,20,0.5)]">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
                                             <img
                                                 src="/images/romawi.webp"
                                                 className="h-6 w-6 object-contain xl:h-8 xl:w-8"
@@ -462,7 +462,7 @@ export default function ProfilePage({ user }: Props) {
                                         </div>
                                         <Link
                                             href={user.last_course?.url || '#'}
-                                            className="bg-[#3B28F6] px-4 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wide text-white transition-all hover:opacity-90 md:text-xs xl:px-6 xl:py-2 dark:bg-yellow-400 dark:text-black"
+                                            className="shrink-0 bg-[#3B28F6] px-3 py-1.5 font-['Orbitron'] text-[9px] sm:text-[10px] font-bold tracking-wide text-white transition-all hover:opacity-90 md:text-xs xl:px-6 xl:py-2 dark:bg-yellow-400 dark:text-black"
                                         >
                                             RESUME
                                         </Link>
@@ -476,7 +476,7 @@ export default function ProfilePage({ user }: Props) {
                         </div>
 
                         {/* SAVE BUTTON */}
-                        <div className="mt-auto flex flex-shrink-0 justify-end pt-2 md:pt-3 xl:pt-4">
+                        <div className="mt-auto flex shrink-0 justify-end pt-2 md:pt-3 xl:pt-4">
                             <button
                                 type="submit"
                                 disabled={processing}
@@ -500,6 +500,16 @@ export default function ProfilePage({ user }: Props) {
                         </div>
                     </div>
                 </div>
+
+                {/* LOGOUT (PORTRAIT MOBILE) */}
+                <button
+                    type="button"
+                    onClick={() => router.post('/logout')}
+                    className="flex sm:hidden w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                >
+                    <Power size={16} strokeWidth={3} />
+                    SYSTEM LOG OUT
+                </button>
             </form>
 
             {/* MODAL AVATAR */}
