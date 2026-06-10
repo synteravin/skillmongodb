@@ -185,6 +185,11 @@ Route::middleware(['auth', 'role:mentor'])
         Route::get('/dashboard', [MentorDashboard::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/profile', [\App\Http\Controllers\Mentor\ProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::post('/profile', [\App\Http\Controllers\Mentor\ProfileController::class, 'update'])
+            ->name('profile.update');
+
         Route::post('/notifications/{id}/read', [\App\Http\Controllers\Mentor\NotificationController::class, 'markAsRead'])
             ->name('notifications.read');
         Route::get('/student-journey', [MentorDetailController::class, 'index'])
@@ -329,6 +334,9 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+        Route::get('/mentors/{mentor}', [\App\Http\Controllers\Student\MentorProfileController::class, 'show'])
+            ->name('mentors.show');
 
         Route::get('/course', [StudentCourseController::class, 'index'])
             ->name('course');

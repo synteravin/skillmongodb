@@ -3,7 +3,7 @@ import StudentModuleNode from './StudentModuleNode';
 
 import { User } from 'lucide-react';
 
-import { router } from '@inertiajs/react';
+import { router, Link } from '@inertiajs/react';
 
 type Props = {
     group: any;
@@ -243,45 +243,60 @@ export default function StudentCareerBranch({
                         }`}
                     >
                         {/* MENTOR */}
-                        <div className="flex max-w-[60%] items-center gap-2">
-                            {group.mentor && group.mentor.avatar && group.mentor.avatar !== 'null' ? (
-                                <img
-                                    src={group.mentor.avatar}
-                                    className="h-10 w-10 flex-shrink-0 rounded-full border border-gray-400 object-cover"
-                                    alt="mentor"
-                                />
-                            ) : (
-                                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center
-                                    rounded-full border border-blue-500
-                                    bg-gradient-to-br from-blue-500 to-indigo-600">
-                                    {group.mentor?.name ? (
+                        {group.mentor ? (
+                            <Link
+                                href={`/student/mentors/${group.mentor._id}`}
+                                className="flex max-w-[60%] items-center gap-2 group/mentor cursor-pointer"
+                            >
+                                {group.mentor.avatar && group.mentor.avatar !== 'null' ? (
+                                    <img
+                                        src={group.mentor.avatar}
+                                        className="h-10 w-10 flex-shrink-0 rounded-full border border-gray-400 object-cover group-hover/mentor:scale-105 group-hover/mentor:border-indigo-400 transition-all shadow-sm"
+                                        alt="mentor"
+                                    />
+                                ) : (
+                                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center
+                                        rounded-full border border-blue-500
+                                        bg-gradient-to-br from-blue-500 to-indigo-600 group-hover/mentor:scale-105 group-hover/mentor:border-indigo-400 transition-all">
                                         <span className="text-[11px] font-bold text-white">
                                             {group.mentor.name.charAt(0).toUpperCase()}
                                         </span>
-                                    ) : (
-                                        <User className="h-5 w-5 text-white" />
-                                    )}
+                                    </div>
+                                )}
+                                <div className="flex flex-col truncate">
+                                    <span className={`truncate text-[10px] leading-none font-bold transition-colors
+                                        ${!basicCompleted || isOtherChosen
+                                            ? 'text-blue-400 dark:text-gray-500'
+                                            : 'text-gray-900 dark:text-[#F0F0F0] group-hover/mentor:text-indigo-500 dark:group-hover/mentor:text-[#00d4ff]'
+                                        }`}>
+                                        {group.mentor.name}
+                                    </span>
+                                    <span className={`mt-0.5 truncate text-[8px]
+                                        ${!basicCompleted || isOtherChosen
+                                            ? 'text-blue-300/70 dark:text-gray-600'
+                                            : 'text-gray-400 dark:text-gray-450'
+                                        }`}>
+                                        {group.name} Professional
+                                    </span>
                                 </div>
-                            )}
-                            <div className="flex flex-col truncate">
-                                <span className={`truncate text-[10px] leading-none font-bold
-                                    ${!basicCompleted || isOtherChosen
-                                        ? 'text-blue-400 dark:text-gray-500'
-                                        : 'text-gray-900 dark:text-[#F0F0F0]'
-                                    }`}>
-                                    {group.mentor?.name ?? 'No Mentor'}
-                                </span>
-                                <span className={`mt-0.5 truncate text-[8px]
-                                    ${!basicCompleted || isOtherChosen
-                                        ? 'text-blue-300/70 dark:text-gray-600'
-                                        : 'text-gray-400 dark:text-gray-400'
-                                    }`}>
-                                    {group.mentor
-                                        ? `${group.name} Professional`
-                                        : 'Unassigned'}
-                                </span>
+                            </Link>
+                        ) : (
+                            <div className="flex max-w-[60%] items-center gap-2">
+                                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center
+                                    rounded-full border border-blue-200 dark:border-blue-900
+                                    bg-slate-200 dark:bg-slate-800">
+                                    <User className="h-5 w-5 text-gray-400 dark:text-gray-600" />
+                                </div>
+                                <div className="flex flex-col truncate">
+                                    <span className="truncate text-[10px] leading-none font-bold text-gray-400 dark:text-gray-600">
+                                        No Mentor
+                                    </span>
+                                    <span className="mt-0.5 truncate text-[8px] text-gray-400 dark:text-gray-600">
+                                        Unassigned
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* START / COMPLETED BUTTON */}
                         {isCompleted ? (

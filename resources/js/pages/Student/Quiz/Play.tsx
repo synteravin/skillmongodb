@@ -23,12 +23,63 @@ function Footer({
     next,
 }: FooterProps) {
     return (
-        <div className="quiz-footer fixed bottom-4 left-0 z-40 h-[90px] w-full max-[767px]:bottom-[5px] max-[767px]:h-[62px] lg:h-[110px]">
-            <div className="pointer-events-none absolute inset-0">
+        <div className="quiz-footer fixed bottom-4 left-0 z-40 h-[90px] w-full max-[767px]:bottom-[5px] max-[767px]:h-[62px] lg:h-[110px]" style={{ '--half-gap': 'clamp(115px, 90px + 7.5vw, 150px)' } as React.CSSProperties}>
+            {/* ── MOBILE DECORATIVE BACKGROUND (PURE AUTO-LAYOUT - PORTRAIT ONLY) ── */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 portrait:flex landscape:hidden w-full items-end h-[30px] lg:hidden">
+                {/* Sayap Kiri */}
+                <div className="flex-1 h-full bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,calc(100%_-_30px)_100%,0_100%)] relative">
+                    {/* Garis Kuning Bawah Kiri */}
+                    <div className="absolute bottom-0 left-0 right-[26px] h-[3px] bg-[#FACC15]" />
+                </div>
+                
+                {/* Celah Tengah */}
+                <div className="w-[calc(var(--half-gap)*2)] shrink-0 h-full relative">
+                    {/* Garis Kuning Tengah Atas */}
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#FACC15]" />
+                    
+                    {/* Slash Kuning Kiri */}
+                    <div className="absolute top-0 left-0 -translate-x-[11px] h-[42px] w-[3px] origin-top-left rotate-45 rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
+                    
+                    {/* Slash Kuning Kanan */}
+                    <div className="absolute top-0 right-0 translate-x-[11px] h-[42px] w-[3px] origin-top-right -rotate-45 rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
+                </div>
+                
+                {/* Sayap Kanan */}
+                <div className="flex-1 h-full bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,100%_100%,30px_100%)] relative">
+                    {/* Garis Kuning Bawah Kanan */}
+                    <div className="absolute bottom-0 left-[26px] right-0 h-[3px] bg-[#FACC15]" />
+                </div>
+            </div>
+
+            {/* ── MOBILE DECORATIVE BACKGROUND (LANDSCAPE ONLY) ── */}
+            <div className="pointer-events-none absolute inset-0 landscape:block portrait:hidden lg:hidden">
                 {/* ── DIAGONAL KIRI ── */}
-                <div className="footer-diag-left absolute -bottom-[2px] left-0 block h-[30px] w-[81px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,calc(100%_-_30px)_100%,0_100%)] min-[390px]:max-[767px]:w-[95px] min-[500px]:max-[767px]:w-[130px] min-[620px]:max-[767px]:w-[172px] min-[700px]:w-[199px] lg:hidden" />
+                <div className="footer-diag-left absolute -bottom-[2px] left-0 block h-[30px] w-[81px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,calc(100%_-_30px)_100%,0_100%)] min-[390px]:max-[1023px]:w-[95px] min-[500px]:max-[1023px]:w-[130px] min-[620px]:max-[1023px]:w-[172px] min-[700px]:max-[1023px]:w-[199px]" />
+
+                {/* ── DIAGONAL KANAN ── */}
+                <div className="footer-diag-right absolute right-0 -bottom-[2px] block h-[30px] w-[83px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,100%_100%,30px_100%)] min-[390px]:max-[1023px]:w-[98px] min-[500px]:max-[1023px]:w-[133px] min-[620px]:max-[1023px]:w-[172px] min-[700px]:max-[1023px]:w-[199px]" />
+
+                {/* ── GARIS KUNING TENGAH ATAS ── */}
+                <div className="footer-bar-top absolute top-[55%] right-[83px] left-[81px] h-[3px] rounded-tl-lg rounded-tr-lg bg-[#FACC15] min-[390px]:max-[1023px]:right-[97px] min-[390px]:max-[1023px]:left-[94px] min-[500px]:max-[1023px]:right-[133px] min-[500px]:max-[1023px]:left-[130px] min-[620px]:max-[1023px]:right-[172px] min-[620px]:max-[1023px]:left-[173px] min-[700px]:max-[1023px]:right-[199px] min-[700px]:max-[1023px]:left-[199px]" />
+
+                {/* ── GARIS KUNING BAWAH KIRI ── */}
+                <div className="footer-bar-bottom-left absolute -bottom-1 left-0 block h-[3px] w-[54px] bg-[#FACC15] min-[390px]:max-[1023px]:w-[68px] min-[500px]:max-[1023px]:w-[104px] min-[620px]:max-[1023px]:w-[147px] min-[700px]:max-[1023px]:w-[173px]" />
+
+                {/* ── GARIS KUNING BAWAH KANAN ── */}
+                <div className="footer-bar-bottom-right absolute right-0 -bottom-1 block h-[3px] w-[58px] rounded-bl-xs bg-[#FACC15] min-[390px]:max-[1023px]:w-[72px] min-[500px]:max-[1023px]:w-[109px] min-[620px]:max-[1023px]:w-[147px] min-[700px]:max-[1023px]:w-[174px]" />
+
+                {/* ── GARIS DIAGONAL KUNING KIRI ── */}
+                <div className="footer-slash-left absolute left-[80px] -bottom-[14px] block h-[42px] w-[3px] origin-top-left rotate-45 rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[1023px]:left-[93px] min-[500px]:max-[1023px]:left-[129px] min-[620px]:max-[1023px]:left-[171px] min-[700px]:max-[1023px]:left-[198px]" />
+
+                {/* ── GARIS DIAGONAL KUNING KANAN ── */}
+                <div className="footer-slash-right absolute right-[82px] -bottom-[14px] block h-[42px] w-[3px] origin-top-right -translate-x-full -rotate-45 rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[1023px]:right-[96px] min-[390px]:max-[1023px]:right-[132px] min-[620px]:max-[1023px]:right-[171px] min-[700px]:max-[1023px]:right-[198px]" />
+            </div>
+
+            {/* ── DESKTOP DECORATIVE BACKGROUND (ABSOLUTE BREAKPOINTS) ── */}
+            <div className="pointer-events-none absolute inset-0 hidden lg:block">
+                {/* ── DIAGONAL KIRI DESKTOP ── */}
                 <div
-                    className="absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] lg:block xl:hidden"
+                    className="absolute -bottom-[2px] left-0 bg-[#3B28F6] xl:hidden"
                     style={{
                         width: 320,
                         height: 65,
@@ -55,10 +106,9 @@ function Footer({
                     }}
                 />
 
-                {/* ── DIAGONAL KANAN ── */}
-                <div className="footer-diag-right absolute right-0 -bottom-[2px] block h-[30px] w-[83px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,100%_100%,30px_100%)] min-[390px]:max-[767px]:w-[98px] min-[500px]:max-[767px]:w-[133px] min-[620px]:max-[767px]:w-[172px] min-[700px]:w-[199px] lg:hidden" />
+                {/* ── DIAGONAL KANAN DESKTOP ── */}
                 <div
-                    className="absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] lg:block xl:hidden"
+                    className="absolute right-0 -bottom-[2px] bg-[#3B28F6] xl:hidden"
                     style={{
                         width: 320,
                         height: 65,
@@ -82,43 +132,21 @@ function Footer({
                     }}
                 />
 
-                {/* ── GARIS KUNING TENGAH ATAS — MOBILE TANPA CLAMP ── */}
-                <div className="footer-bar-top absolute top-[55%] right-[83px] left-[81px] h-[3px] rounded-tl-lg rounded-tr-lg bg-[#FACC15] min-[390px]:max-[767px]:right-[97px] min-[390px]:max-[767px]:left-[94px] min-[500px]:max-[767px]:right-[133px] min-[500px]:max-[767px]:left-[130px] min-[620px]:max-[767px]:right-[172px] min-[620px]:max-[767px]:left-[173px] min-[700px]:right-[199px] min-[700px]:left-[199px] lg:top-[43%] lg:right-[317px] lg:left-[318px] xl:top-[47%] xl:right-[369px] xl:left-[378px] 2xl:top-[42%] 2xl:right-[440px] 2xl:left-[442px]" />
+                {/* ── GARIS KUNING TENGAH ATAS DESKTOP ── */}
+                <div className="absolute h-[5px] bg-[#FACC15] lg:top-[43%] lg:right-[317px] lg:left-[318px] xl:top-[47%] xl:right-[369px] xl:left-[378px] 2xl:top-[42%] 2xl:right-[440px] 2xl:left-[442px]" />
 
-                {/* ── GARIS KUNING BAWAH KIRI ── */}
-                <div className="footer-bar-bottom-left absolute -bottom-1 left-0 block h-[3px] w-[54px] bg-[#FACC15] min-[390px]:max-[767px]:w-[68px] min-[500px]:max-[767px]:w-[104px] min-[620px]:max-[767px]:w-[147px] min-[700px]:w-[173px] lg:hidden" />
-                <div
-                    className="absolute -bottom-2 left-0 hidden h-[5px] rounded-br-xs bg-[#FACC15] lg:block xl:hidden"
-                    style={{ width: 263 }}
-                />
-                <div
-                    className="absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] xl:block 2xl:hidden"
-                    style={{ width: 323 }}
-                />
-                <div
-                    className="absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] 2xl:block"
-                    style={{ width: 381 }}
-                />
+                {/* ── GARIS BAWAH KUNING DESKTOP ── */}
+                <div className="absolute -bottom-2 left-0 h-[5px] bg-[#FACC15] xl:hidden" style={{ width: 263 }} />
+                <div className="absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] xl:block 2xl:hidden" style={{ width: 323 }} />
+                <div className="absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] 2xl:block" style={{ width: 381 }} />
 
-                {/* ── GARIS KUNING BAWAH KANAN ── */}
-                <div className="footer-bar-bottom-right absolute right-0 -bottom-1 block h-[3px] w-[58px] rounded-bl-xs bg-[#FACC15] min-[390px]:max-[767px]:w-[72px] min-[500px]:max-[767px]:w-[109px] min-[620px]:max-[767px]:w-[147px] min-[700px]:w-[174px] lg:hidden" />
-                <div
-                    className="absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] lg:block xl:hidden"
-                    style={{ width: 262 }}
-                />
-                <div
-                    className="absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] xl:block 2xl:hidden"
-                    style={{ width: 318 }}
-                />
-                <div
-                    className="absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] 2xl:block"
-                    style={{ width: 381 }}
-                />
+                <div className="absolute right-0 -bottom-2 h-[5px] bg-[#FACC15] xl:hidden" style={{ width: 262 }} />
+                <div className="absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] xl:block 2xl:hidden" style={{ width: 318 }} />
+                <div className="absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] 2xl:block" style={{ width: 381 }} />
 
-                {/* ── GARIS DIAGONAL KUNING KIRI ── */}
-                <div className="footer-slash-left absolute -bottom-[14px] left-[82px] block h-[42px] w-[3px] origin-top-left rotate-45 rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:left-[96px] min-[500px]:max-[767px]:left-[132px] min-[620px]:max-[767px]:left-[174px] min-[700px]:left-[201px] lg:hidden" />
+                {/* ── GARIS SLASHE KUNING DESKTOP ── */}
                 <div
-                    className="absolute -bottom-8 hidden w-[5px] rounded-tl-sm rounded-br-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] lg:block xl:hidden"
+                    className="absolute -bottom-8 w-[5px] bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:hidden"
                     style={{
                         left: 322,
                         height: 95,
@@ -127,7 +155,7 @@ function Footer({
                     }}
                 />
                 <div
-                    className="absolute -bottom-7 hidden w-[5px] rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:block 2xl:hidden"
+                    className="absolute -bottom-7 hidden w-[5px] bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:block 2xl:hidden"
                     style={{
                         left: 380,
                         height: 88,
@@ -136,7 +164,7 @@ function Footer({
                     }}
                 />
                 <div
-                    className="absolute -bottom-8 hidden w-[5px] rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] 2xl:block"
+                    className="absolute -bottom-8 hidden w-[5px] bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] 2xl:block"
                     style={{
                         left: 444,
                         height: 95,
@@ -145,10 +173,8 @@ function Footer({
                     }}
                 />
 
-                {/* ── GARIS DIAGONAL KUNING KANAN ── */}
-                <div className="footer-slash-right absolute right-[82px] -bottom-[14px] block h-[42px] w-[3px] origin-top-right -translate-x-full -rotate-45 rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:right-[96px] min-[500px]:max-[767px]:right-[132px] min-[620px]:max-[767px]:right-[171px] min-[700px]:right-[198px] lg:hidden" />
                 <div
-                    className="absolute -bottom-8 hidden w-[5px] rounded-tr-sm rounded-bl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] lg:block xl:hidden"
+                    className="absolute -bottom-8 w-[5px] bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:hidden"
                     style={{
                         right: 317,
                         height: 95,
@@ -157,7 +183,7 @@ function Footer({
                     }}
                 />
                 <div
-                    className="absolute -bottom-7 hidden w-[5px] rounded-tr-sm bg-[#FACC15] shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:block 2xl:hidden"
+                    className="absolute -bottom-7 hidden w-[5px] bg-[#FACC15] shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:block 2xl:hidden"
                     style={{
                         right: 369,
                         height: 88,
@@ -166,7 +192,7 @@ function Footer({
                     }}
                 />
                 <div
-                    className="absolute -bottom-8 hidden w-[5px] rounded-tr-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] 2xl:block"
+                    className="absolute -bottom-8 hidden w-[5px] bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] 2xl:block"
                     style={{
                         right: 440,
                         height: 95,
@@ -177,12 +203,12 @@ function Footer({
             </div>
 
             {/* ── WRAPPER TOMBOL (MOBILE ONLY) ── */}
-            <div className="footer-btn-wrapper absolute top-[calc(41%+2px)] left-1/2 block h-[38px] w-[230px] -translate-x-1/2 min-[390px]:max-[1023px]:w-[250px] min-[500px]:max-[1023px]:w-[270px] min-[620px]:max-[1023px]:w-[288px] min-[700px]:w-[300px] lg:hidden">
+            <div className="footer-btn-wrapper lg:hidden portrait:absolute portrait:top-[calc(41%+2px)] portrait:left-1/2 portrait:block portrait:h-[38px] portrait:w-[calc(var(--half-gap)*2)] portrait:-translate-x-1/2">
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleBack}
                     disabled={current === 0}
-                    className={`footer-btn-back absolute top-[12px] left-4 h-[26px] w-[66px] font-bold min-[390px]:max-[1023px]:top-[12px] min-[390px]:max-[1023px]:left-[3px] min-[390px]:max-[1023px]:h-[26px] min-[390px]:max-[1023px]:w-[84px] min-[500px]:max-[1023px]:top-[12px] min-[500px]:max-[1023px]:left-[-4px] min-[500px]:max-[1023px]:h-[27px] min-[500px]:max-[1023px]:w-[97px] min-[620px]:max-[1023px]:top-[12px] min-[620px]:max-[1023px]:left-[-13px] min-[620px]:max-[1023px]:h-[26px] min-[620px]:max-[1023px]:w-[114px] min-[700px]:top-[12px] min-[700px]:left-[-21px] min-[700px]:h-[27px] min-[700px]:w-[118px] ${current === 0 ? 'opacity-40' : 'opacity-100'}`}
+                    className={`footer-btn-back font-bold portrait:absolute portrait:top-[12px] portrait:left-[calc(129px-var(--half-gap))] portrait:h-[27px] portrait:w-[calc(var(--half-gap)-32px)] ${current === 0 ? 'opacity-40' : 'opacity-100'}`}
                 >
                     <svg
                         className="absolute inset-0 h-full w-full"
@@ -190,20 +216,19 @@ function Footer({
                         preserveAspectRatio="none"
                     >
                         <path
-                            d="M108 0 H258 V45 H0 V45 L0 45 Z"
-                            className="[d:path('M108_0_H258_V45_H0_V45_L0_45_Z')] min-[390px]:max-[1023px]:[d:path('M83_0_H258_V45_H0_V45_L0_45_Z')] min-[500px]:max-[1023px]:[d:path('M72_0_H258_V45_H0_V45_L0_45_Z')] min-[620px]:max-[1023px]:[d:path('M63_0_H258_V45_H0_V45_L0_45_Z')] min-[700px]:[d:path('M60_0_H258_V45_H0_V45_L0_45_Z')]"
+                            d="M75 0 H258 V45 H0 Z"
                             fill="none"
                             stroke="#FACC15"
                             strokeWidth={3}
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
-                    <span className="footer-btn-back-text relative z-10 flex h-full w-full translate-x-[6px] items-center justify-center font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[1023px]:translate-x-[7px] min-[390px]:max-[1023px]:text-[10px] min-[500px]:max-[1023px]:translate-x-[4px] min-[500px]:max-[1023px]:text-[10px] min-[620px]:max-[1023px]:translate-x-[6px] min-[620px]:max-[1023px]:text-[11px] min-[700px]:translate-x-[8px] min-[700px]:text-[12px]">
+                    <span className="footer-btn-back-text relative z-10 flex h-full w-full translate-x-[4px] items-center justify-center font-['orbitron'] text-[10px] tracking-[1px] text-white min-[620px]:text-[11px] min-[700px]:translate-x-[8px] min-[700px]:text-[12px]">
                         &lt;&lt; BACK
                     </span>
                 </motion.button>
 
-                <div className="-top-translate-x-1/2 footer-counter absolute top-[12px] left-[37%] flex h-[24px] w-[58px] items-center justify-center border-[3px] border-[#FACC15] text-[13px] font-bold tracking-[1px] text-[#FACC15] min-[390px]:max-[1023px]:top-[12px] min-[390px]:max-[1023px]:left-[37%] min-[390px]:max-[1023px]:h-[26px] min-[390px]:max-[1023px]:w-[64px] min-[390px]:max-[1023px]:text-[14px] min-[500px]:max-[1023px]:top-[12px] min-[500px]:max-[1023px]:left-[37%] min-[500px]:max-[1023px]:h-[28px] min-[500px]:max-[1023px]:w-[70px] min-[620px]:max-[1023px]:top-[12px] min-[620px]:max-[1023px]:left-[38%] min-[620px]:max-[1023px]:h-[28px] min-[620px]:max-[1023px]:w-[70px] min-[620px]:max-[1023px]:text-[15px] min-[700px]:top-[12px] min-[700px]:left-[34%] min-[700px]:h-[28px] min-[700px]:w-[95px] min-[700px]:text-[16px]">
+                <div className="footer-counter flex items-center justify-center border-[3px] border-[#FACC15] text-[14px] font-bold tracking-[1px] text-[#FACC15] portrait:absolute portrait:top-[12px] portrait:left-1/2 portrait:-translate-x-1/2 portrait:h-[28px] portrait:w-[calc(var(--half-gap)*0.6+2px)] min-[620px]:text-[15px] min-[700px]:text-[16px]">
                     {String(current + 1).padStart(2, '0')}
                     <span className="mx-1 opacity-50">/</span>
                     {String(total).padStart(2, '0')}
@@ -213,7 +238,7 @@ function Footer({
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
                     disabled={!selected || loading}
-                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[1023px]:top-[12px] min-[390px]:max-[1023px]:right-[4px] min-[390px]:max-[1023px]:h-[26px] min-[390px]:max-[1023px]:w-[85px] min-[500px]:max-[1023px]:top-[12px] min-[500px]:max-[1023px]:right-[-4px] min-[500px]:max-[1023px]:h-[28px] min-[500px]:max-[1023px]:w-[98px] min-[620px]:max-[1023px]:top-[12px] min-[620px]:max-[1023px]:right-[-15px] min-[620px]:max-[1023px]:h-[28px] min-[620px]:max-[1023px]:w-[116px] min-[700px]:top-[12px] min-[700px]:right-[-21px] min-[700px]:h-[28px] min-[700px]:w-[118px] ${!selected || loading ? 'opacity-40' : 'opacity-100'}`}
+                    className={`footer-btn-next font-bold portrait:absolute portrait:top-[12px] portrait:right-[calc(129px-var(--half-gap))] portrait:h-[28px] portrait:w-[calc(var(--half-gap)-32px)] ${!selected || loading ? 'opacity-40' : 'opacity-100'}`}
                 >
                     <svg
                         className="absolute inset-0 h-full w-full"
@@ -221,15 +246,14 @@ function Footer({
                         preserveAspectRatio="none"
                     >
                         <path
-                            d="M0 0 H150 L258 45 H0 Z"
-                            className="[d:path('M0_0_H150_L258_45_H0_Z')] min-[390px]:max-[1023px]:[d:path('M0_0_H170_L251_45_H0_Z')] min-[500px]:max-[1023px]:[d:path('M0_0_H182_L258_45_H0_Z')] min-[620px]:max-[1023px]:[d:path('M0_0_H194_L258_45_H0_Z')] min-[700px]:[d:path('M0_0_H205_L258_45_H0_Z')]"
+                            d="M0 0 H180 L258 45 H0 Z"
                             fill="none"
                             stroke="#FACC15"
                             strokeWidth={3}
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
-                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-6px] items-center justify-center gap-1 font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[1023px]:translate-x-[-7px] min-[390px]:max-[1023px]:text-[10px] min-[500px]:max-[1023px]:translate-x-[-6px] min-[500px]:max-[1023px]:text-[10px] min-[620px]:max-[1023px]:translate-x-[-6px] min-[620px]:max-[1023px]:text-[11px] min-[700px]:translate-x-[-8px] min-[700px]:text-[12px]">
+                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-4px] items-center justify-center gap-1 font-['orbitron'] text-[10px] tracking-[1px] text-white min-[620px]:text-[11px] min-[700px]:translate-x-[8px] min-[700px]:text-[12px]">
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
@@ -258,38 +282,6 @@ function Footer({
                     height: 70,
                 }}
             >
-                {/* BACK — md */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleBack}
-                    disabled={current === 0}
-                    className="footer-btn-back absolute top-[-1px] block font-bold lg:hidden"
-                    style={{
-                        left: -52,
-                        width: 160,
-                        height: 48,
-                        opacity: current === 0 ? 0.4 : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M73 0 H258 V45 H0 V45 L0 45 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="footer-btn-back-text relative z-10 flex h-full w-full items-center justify-center font-['orbitron'] text-lg text-white">
-                        &lt;&lt; BACK
-                    </span>
-                </motion.button>
-
                 {/* BACK — lg */}
                 <motion.button
                     whileTap={{ scale: 0.95 }}
@@ -388,23 +380,6 @@ function Footer({
 
                 {/* NOMOR */}
                 <div
-                    className="footer-counter absolute block flex items-center justify-center border-4 border-[#FACC15] font-bold text-[#FACC15] lg:hidden"
-                    style={{
-                        left: '54%',
-                        marginLeft: -60,
-                        top: -1,
-                        width: 100,
-                        height: 48,
-                        fontSize: 22,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    {String(current + 1).padStart(2, '0')}
-                    <span className="mx-2 opacity-50">/</span>
-                    {String(total).padStart(2, '0')}
-                </div>
-
-                <div
                     className="absolute flex hidden items-center justify-center border-4 border-[#FACC15] font-bold text-[#FACC15] lg:flex xl:hidden"
                     style={{
                         left: '49%',
@@ -454,50 +429,6 @@ function Footer({
                     <span className="mx-2 opacity-50">/</span>
                     {String(total).padStart(2, '0')}
                 </div>
-
-                {/* NEXT — md */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={next}
-                    disabled={!selected || loading}
-                    className="footer-btn-next absolute top-[-1px] block font-bold lg:hidden"
-                    style={{
-                        right: -56,
-                        width: 160,
-                        height: 48,
-                        opacity: !selected || loading ? 0.4 : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0 0 H183 L258 45 H0 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-16px] items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
-                        {loading ? (
-                            '...'
-                        ) : current + 1 === total ? (
-                            <>
-                                <span>FINISH</span>
-                                <Flag
-                                    className="h-5 w-5 text-white"
-                                    strokeWidth={3}
-                                />
-                            </>
-                        ) : (
-                            'NEXT >>'
-                        )}
-                    </span>
-                </motion.button>
 
                 {/* NEXT — lg */}
                 <motion.button

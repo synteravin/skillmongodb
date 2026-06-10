@@ -3,19 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use MongoDB\Laravel\Eloquent\Model;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmailContract
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use Authenticatable, Authorizable, CanResetPassword, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use Authenticatable, Authorizable, CanResetPassword, HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable;
 
     protected $connection = 'mongodb';
 
@@ -35,6 +37,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'character_id',
         'avatar',
         'signature_path',
+        'profession',
+        'linkedin',
+        'description',
+        'user_experience',
+        'work_experiences',
+        'educations',
     ];
 
     /**
@@ -61,6 +69,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'work_experiences' => 'array',
+            'educations' => 'array',
         ];
     }
 

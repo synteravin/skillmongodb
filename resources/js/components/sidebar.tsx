@@ -12,6 +12,7 @@ import {
     Settings,
     Box,
     UserCheckIcon,
+    User,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -48,6 +49,18 @@ const menu: MenuItem[] = [
         icon: UserCheckIcon,
         href: '/mentor/student-journey',
         roles: ['mentor'],
+    },
+    {
+        name: 'My Profile',
+        icon: User,
+        href: '/mentor/profile',
+        roles: ['mentor'],
+    },
+    {
+        name: 'My Profile',
+        icon: User,
+        href: '/student/profile',
+        roles: ['student'],
     },
     {
         name: 'Users',

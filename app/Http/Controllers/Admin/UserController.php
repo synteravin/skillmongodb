@@ -87,17 +87,64 @@ class UserController extends Controller
         return back();
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user, \App\Actions\Mentor\UpdateMentorProfileAction $updateMentorProfileAction)
     {
         $this->authorize('update', $user);
 
-        $data = $request->validate([
+        $rules = [
             'name' => ['sometimes', 'string'],
             'username' => ['sometimes', 'string', 'unique:users,username,'.$user->_id.',_id'],
             'email' => ['sometimes', 'email', 'unique:users,email,'.$user->_id.',_id'],
             'role' => ['sometimes', 'in:admin,mentor,student'],
             'avatar' => ['nullable', 'image', 'max:2048'],
-        ]);
+        ];
+
+        if ($user->isMentor()) {
+            $rules = array_merge($rules, [
+                'profession' => ['nullable', 'string', 'max:255'],
+                'linkedin' => ['nullable', 'string', 'max:255'],
+                'description' => ['nullable', 'string'],
+                'user_experience' => ['nullable', 'string', 'max:255'],
+                'work_experiences' => ['nullable', 'array'],
+                'work_experiences.*.jabatan' => ['nullable', 'string', 'max:255'],
+                'work_experiences.*.perusahaan' => ['nullable', 'string', 'max:255'],
+                'work_experiences.*.tahun_mulai' => ['nullable', 'string', 'max:50'],
+                'work_experiences.*.tahun_selesai' => ['nullable', 'string', 'max:50'],
+                'work_experiences.*.deskripsi' => ['nullable', 'string'],
+                'educations' => ['nullable', 'array'],
+                'educations.*.gelar' => ['nullable', 'string', 'max:255'],
+                'educations.*.prodi' => ['nullable', 'string', 'max:255'],
+                'educations.*.universitas' => ['nullable', 'string', 'max:255'],
+                'educations.*.tahun_mulai' => ['nullable', 'string', 'max:50'],
+                'educations.*.tahun_selesai' => ['nullable', 'string', 'max:50'],
+                'educations.*.spesialisasi' => ['nullable', 'string'],
+            ]);
+        }
+
+        $data = $request->validate($rules);
+
+        if ($user->isMentor()) {
+            $data['name'] = $data['name'] ?? $user->name;
+            $data['email'] = $data['email'] ?? $user->email;
+            $data['profession'] = $data['profession'] ?? $user->profession;
+            $data['linkedin'] = $data['linkedin'] ?? $user->linkedin;
+            $data['description'] = $data['description'] ?? $user->description;
+            $data['user_experience'] = $data['user_experience'] ?? $user->user_experience;
+            $data['work_experiences'] = $data['work_experiences'] ?? $user->work_experiences;
+            $data['educations'] = $data['educations'] ?? $user->educations;
+            $data['avatar'] = $request->file('avatar') ?? null;
+
+            $updateMentorProfileAction->execute($user, $data);
+
+            if ($request->filled('password')) {
+                $user->update(['password' => $request->password]);
+            }
+            if ($request->filled('role')) {
+                $user->update(['role' => $request->role]);
+            }
+
+            return back();
+        }
 
         /* ---------- UPLOAD AVATAR ---------- */
 
@@ -143,6 +190,12 @@ class UserController extends Controller
             'role' => $user->role,
             'created_at' => $user->created_at,
             'avatar' => $user->avatar ? $disk->url($user->avatar) : null,
+            'profession' => $user->profession ?? '',
+            'linkedin' => $user->linkedin ?? '',
+            'description' => $user->description ?? '',
+            'user_experience' => $user->user_experience ?? '',
+            'work_experiences' => is_array($user->work_experiences) ? $user->work_experiences : [],
+            'educations' => is_array($user->educations) ? $user->educations : [],
         ];
 
         return Inertia::render('Admin/Users/Show', [

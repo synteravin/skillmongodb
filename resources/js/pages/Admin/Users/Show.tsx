@@ -1,5 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
-import { Link } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
+import ProfileFormBasic from '@/components/Mentor/ProfileFormBasic';
+import ProfileFormWorkExperience from '@/components/Mentor/ProfileFormWorkExperience';
+import ProfileFormEducation from '@/components/Mentor/ProfileFormEducation';
 import {
     ArrowLeft,
     User as UserIcon,
@@ -20,6 +23,7 @@ import {
     MessageSquare,
     Link as LinkIcon,
     Download,
+    Loader2,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -28,6 +32,28 @@ export default function Show({ user, details }: { user: any; details: any }) {
         type: 'quiz' | 'submission' | 'mentor_submission';
         data: any;
     } | null>(null);
+
+    const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+
+    const { data, setData, post, processing, errors } = useForm({
+        name: user.name || '',
+        email: user.email || '',
+        profession: user.profession || '',
+        linkedin: user.linkedin || '',
+        description: user.description || '',
+        user_experience: user.user_experience || '',
+        work_experiences: user.work_experiences || [],
+        educations: user.educations || [],
+        _method: 'put',
+    });
+
+    const submitProfileUpdate = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(`/admin/users/${user._id}`, {
+            preserveScroll: true,
+            onSuccess: () => setShowEditProfileModal(false),
+        });
+    };
 
     const StudentDetails = () => (
         <div className="space-y-6">
@@ -420,10 +446,19 @@ export default function Show({ user, details }: { user: any; details: any }) {
         <div className="space-y-6">
             {/* Mentor Workload & Stats */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                    <Activity className="text-rose-500" size={20} />
-                    Mentor Workload & Statistics
-                </h3>
+                <div className="mb-4 flex items-center justify-between">
+                    <h3 className="flex items-center gap-2 text-lg font-bold text-white">
+                        <Activity className="text-rose-500" size={20} />
+                        Mentor Workload & Statistics
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={() => setShowEditProfileModal(true)}
+                        className="rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-3.5 py-1.5 text-xs font-bold text-indigo-400 transition-all hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] cursor-pointer"
+                    >
+                        Edit Profile Details
+                    </button>
+                </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5">
                         <p className="mb-1 text-sm text-slate-400">
@@ -1037,6 +1072,87 @@ export default function Show({ user, details }: { user: any; details: any }) {
                             )}
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Mentor Profile Edit Modal */}
+            {showEditProfileModal && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
+                    onClick={() => setShowEditProfileModal(false)}
+                >
+                    <form
+                        onSubmit={submitProfileUpdate}
+                        className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0B1120] shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/50 p-6">
+                            <div>
+                                <h2 className="text-xl font-bold text-white">
+                                    Edit Mentor Profile Details
+                                </h2>
+                                <p className="mt-1 text-xs text-slate-400">
+                                    Update professional bio, LinkedIn link, work experience, and educational background.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowEditProfileModal(false)}
+                                className="rounded-lg bg-slate-950/50 p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div
+                            className="custom-scrollbar overflow-y-auto p-6 space-y-6"
+                            style={{
+                                scrollbarWidth: 'thin',
+                                scrollbarColor: 'rgba(99,102,241,0.3) transparent',
+                            }}
+                        >
+                            {/* Basic profile info */}
+                            <ProfileFormBasic data={data} setData={setData} errors={errors} />
+
+                            <div className="h-px bg-slate-800 my-4" />
+
+                            {/* Work Experience */}
+                            <ProfileFormWorkExperience
+                                workExperiences={data.work_experiences}
+                                onChange={(val) => setData('work_experiences', val)}
+                                errors={errors}
+                            />
+
+                            <div className="h-px bg-slate-800 my-4" />
+
+                            {/* Education */}
+                            <ProfileFormEducation
+                                educations={data.educations}
+                                onChange={(val) => setData('educations', val)}
+                                errors={errors}
+                            />
+                        </div>
+
+                        <div className="border-t border-slate-800/80 bg-slate-900/30 p-5 flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setShowEditProfileModal(false)}
+                                className="rounded-xl border border-slate-800 bg-slate-950 px-5 py-2.5 text-xs font-semibold text-slate-300 transition-all active:scale-95 cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-indigo-500/20 hover:from-indigo-400 hover:to-purple-500 transition-all disabled:opacity-50 cursor-pointer"
+                            >
+                                {processing ? (
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : null}
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
                 </div>
             )}
         </AppLayout>
