@@ -637,8 +637,18 @@ and dominate the game`;
     }, [showBubble]);
 
     return (
-        <div className="absolute inset-0 z-10 flex justify-center items-end pb-24 md:pb-0 md:block pointer-events-none">
-            <div className="relative pointer-events-auto md:absolute bottom-[-20px] md:bottom-[-90px] lg:bottom-[-120px] md:right-[180px] lg:right-[220px] xl:right-[260px] 2xl:right-[370px] translate-x-0 md:translate-x-24 lg:translate-x-5">
+        <div className="absolute inset-0 z-10 pointer-events-none">
+            {/* Mobile: centered horizontally, bottom-0 agar kaki tenggelam ke fixed BottomNav (z-30) */}
+            {/* Desktop md+: absolute right-positioned, bottom negatif agar tenggelam ke absolute BottomNav */}
+            <div className="
+                absolute pointer-events-auto
+                bottom-0 md:bottom-[-90px] lg:bottom-[-120px]
+                left-1/2 -translate-x-1/2
+                md:left-auto md:translate-x-24 md:right-[180px]
+                lg:translate-x-5 lg:right-[220px]
+                xl:right-[260px]
+                2xl:right-[370px]
+            ">
                 {showBubble && (
                     <SpeechBubble className="animate-fadeIn absolute bottom-full mb-4 left-1/2 -translate-x-1/2 md:bottom-auto md:top-12 md:left-auto md:translate-x-0 md:-right-56 lg:-right-75">
                         <p className="text-xs leading-relaxed whitespace-pre-line md:text-sm lg:text-base">
@@ -651,7 +661,7 @@ and dominate the game`;
                 <img
                     src={avatar}
                     onClick={triggerBubble}
-                    className="relative z-50 h-[320px] cursor-pointer transition hover:scale-[1.02] md:h-[420px] lg:h-[540px] xl:h-[600px] 2xl:h-[620px]"
+                    className="relative z-50 h-[300px] cursor-pointer transition hover:scale-[1.02] sm:h-[340px] md:h-[420px] lg:h-[540px] xl:h-[600px] 2xl:h-[620px]"
                     style={{ animation: 'breathe 3s ease-in-out infinite' }}
                 />
             </div>
