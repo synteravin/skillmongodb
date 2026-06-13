@@ -160,7 +160,7 @@ export default function Index({
     const RoleBadge = ({ role }: { role: string }) => {
         const styles = {
             admin: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-            mentor: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+            mentor: 'bg-[#7C5CFF]/15 text-[#7C5CFF] border-[#7C5CFF]/20',
             student: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
         };
         const activeStyle =
@@ -169,10 +169,10 @@ export default function Index({
 
         return (
             <span
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${activeStyle}`}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold tracking-wide ${activeStyle}`}
             >
                 <span
-                    className={`h-1.5 w-1.5 rounded-full ${role === 'admin' ? 'bg-rose-400' : role === 'mentor' ? 'bg-blue-400' : role === 'student' ? 'bg-emerald-400' : 'bg-slate-400'}`}
+                    className={`h-1.5 w-1.5 rounded-full ${role === 'admin' ? 'bg-rose-400' : role === 'mentor' ? 'bg-[#7C5CFF]' : role === 'student' ? 'bg-emerald-400' : 'bg-slate-400'}`}
                 ></span>
                 {role
                     ? role.charAt(0).toUpperCase() + role.slice(1)
@@ -183,291 +183,290 @@ export default function Index({
 
     return (
         <AppLayout>
-            <div className="mx-auto min-h-screen max-w-[1200px] space-y-6 px-6 py-6 sm:space-y-8 sm:px-6 lg:px-10">
-                {/* HEADER & CONTROLS */}
-                <div className="relative flex flex-col items-stretch justify-between gap-4 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl sm:gap-6 sm:p-6 lg:flex-row lg:items-center">
-                    {/* Decorative gradient blur */}
-                    <div className="pointer-events-none absolute top-0 right-0 -mt-20 -mr-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl"></div>
+            <div className="relative min-h-screen bg-[#030712] text-white px-6 py-4 sm:px-6 lg:px-10 overflow-hidden">
+                {/* Subtle top-center ambient glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] pointer-events-none select-none z-0" />
 
-                    <div className="z-10 flex w-full items-center justify-between lg:w-auto">
-                        <div>
-                            <h1 className="flex items-center gap-2.5 text-xl font-bold text-white sm:text-3xl">
-                                <div className="shrink-0 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-2">
-                                    <Users className="h-5 w-5 text-indigo-400 sm:h-6 sm:w-6" />
-                                </div>
-                                <span>User Management</span>
-                            </h1>
-                            <p className="mt-1 ml-1 hidden text-xs text-slate-400 sm:mt-2 sm:block sm:text-sm">
-                                Manage system users, assigned roles, and access
-                                control.
-                            </p>
-                        </div>
+                <div className="relative z-10 mx-auto max-w-7xl space-y-4 sm:space-y-5">
+                    {/* HEADER */}
+                    <header
+                        className="relative overflow-hidden rounded-xl px-6 py-5 bg-[#0d0f17] dark:bg-[#0d0f17] bg-[#f5f6ff]"
+                        style={{
+                            backgroundImage: `
+                            linear-gradient(rgba(59,40,246,0.07) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(59,40,246,0.07) 1px, transparent 1px)
+                            `,
+                            backgroundSize: '40px 40px',
+                        }}
+                    >
+                        {/* Corner brackets */}
+                        <span className="absolute left-3.5 top-3.5 h-3 w-3 border-l border-t dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
+                        <span className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
+                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
+                        <span className="absolute bottom-3.5 right-3.5 h-3 w-3 border-b border-r dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
 
-                        {/* Mobile Add User Button (compact beside the title for superb mobile real estate) */}
-                        <button
-                            onClick={openCreate}
-                            className="flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 p-2.5 text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-400 hover:to-purple-500 active:scale-95 lg:hidden"
-                            title="Add User"
-                        >
-                            <Plus size={20} />
-                        </button>
-                    </div>
-
-                    <div className="z-10 flex w-full flex-col items-stretch gap-3.5 sm:flex-row sm:items-center lg:w-auto">
-                        {/* Search Form */}
-                        <form
-                            onSubmit={handleSearch}
-                            className="relative flex-grow sm:min-w-[300px]"
-                        >
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                <Search size={16} className="text-slate-500" />
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Search by name, username or email..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full rounded-xl border border-slate-800 bg-slate-950/50 py-2.5 pr-4 pl-10 text-base text-white transition-all placeholder:text-slate-600 hover:bg-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none md:text-sm"
-                            />
-                        </form>
-
-                        {/* Desktop Add User Button */}
-                        <button
-                            onClick={openCreate}
-                            className="group hidden items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-medium whitespace-nowrap text-white shadow-lg shadow-indigo-500/25 transition-all hover:-translate-y-0.5 hover:from-indigo-400 hover:to-purple-500 hover:shadow-indigo-500/40 lg:flex"
-                        >
-                            <Plus
-                                size={18}
-                                className="transition-transform duration-300 group-hover:rotate-90"
-                            />
-                            Add User
-                        </button>
-                    </div>
-                </div>
-
-                {/* DESKTOP TABLE VIEW */}
-                <div className="hidden overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900 shadow-xl lg:block">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm whitespace-nowrap">
-                            <thead className="border-b border-slate-800/80 bg-slate-950/50 text-slate-400">
-                                <tr>
-                                    <th className="px-6 py-4 text-xs font-semibold tracking-wider uppercase">
-                                        User
-                                    </th>
-                                    <th className="px-6 py-4 text-xs font-semibold tracking-wider uppercase">
-                                        Email Address
-                                    </th>
-                                    <th className="px-6 py-4 text-xs font-semibold tracking-wider uppercase">
-                                        Role
-                                    </th>
-                                    <th className="px-6 py-4 text-right text-xs font-semibold tracking-wider uppercase">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800/50">
-                                {users.data.length > 0 ? (
-                                    users.data.map((user) => (
-                                        <tr
-                                            key={user._id}
-                                            className="group transition-colors hover:bg-slate-800/40"
-                                        >
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="relative">
-                                                        <img
-                                                            src={
-                                                                user.avatar
-                                                                    ? user.avatar
-                                                                    : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
-                                                            }
-                                                            className="h-10 w-10 rounded-full border border-slate-700/50 bg-slate-800 object-cover shadow-sm"
-                                                            alt={user.name}
-                                                        />
-                                                        <div className="pointer-events-none absolute inset-0 rounded-full shadow-inner ring-1 ring-white/10"></div>
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-medium text-white transition-colors group-hover:text-indigo-400">
-                                                            {user.name}
-                                                        </p>
-                                                        <p className="mt-0.5 text-xs text-slate-500">
-                                                            @{user.username}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm font-medium text-slate-400">
-                                                {user.email}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <RoleBadge role={user.role} />
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                                                    <Link
-                                                        href={`/admin/users/${user._id}`}
-                                                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
-                                                        title="View User Details"
-                                                    >
-                                                        <Eye size={16} />
-                                                    </Link>
-                                                    <button
-                                                        onClick={() =>
-                                                            openEdit(user)
-                                                        }
-                                                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-indigo-500/10 hover:text-indigo-400"
-                                                        title="Edit User"
-                                                    >
-                                                        <Pencil size={16} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() =>
-                                                            deleteUser(user._id)
-                                                        }
-                                                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-500/10 hover:text-rose-400"
-                                                        title="Delete User"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={4}>
-                                            <div className="flex flex-col items-center justify-center py-20 text-center">
-                                                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-slate-700/50 bg-slate-800/50">
-                                                    <Users
-                                                        size={32}
-                                                        className="text-slate-500"
-                                                    />
-                                                </div>
-                                                <h3 className="mb-1 text-lg font-medium text-white">
-                                                    No users found
-                                                </h3>
-                                                <p className="max-w-sm text-sm text-slate-400">
-                                                    {searchQuery
-                                                        ? `No users matching "${searchQuery}" were found.`
-                                                        : 'Get started by adding a new user to the system.'}
-                                                </p>
-                                                {!searchQuery && (
-                                                    <button
-                                                        onClick={openCreate}
-                                                        className="mt-6 rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-400 transition-colors hover:bg-indigo-500/20"
-                                                    >
-                                                        Add First User
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* CARD VIEW (Responsive Grid of Cards on Mobile & Tablet) */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:hidden">
-                    {users.data.length > 0 ? (
-                        users.data.map((user) => {
-                            // Assign premium roles specific color gradients on left edge indicators
-                            const roleColor =
-                                user.role === 'admin'
-                                    ? 'from-rose-500 to-pink-600'
-                                    : user.role === 'mentor'
-                                      ? 'from-blue-500 to-indigo-600'
-                                      : 'from-emerald-500 to-teal-600';
-
-                            return (
-                                <div
-                                    key={user._id}
-                                    className="relative overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/60 py-4.5 pr-4 pl-5 shadow-lg transition-all duration-300 hover:border-slate-700/80 active:scale-[0.99]"
+                        <div className="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                            <div className="flex flex-col gap-3">
+                                {/* Badge */}
+                                <div className="inline-flex w-fit items-center gap-1.5 rounded border px-2.5 py-1
+                                dark:border-[rgba(59,40,246,0.35)] dark:bg-[rgba(59,40,246,0.1)]
+                                border-[rgba(59,40,246,0.2)] bg-[rgba(59,40,246,0.06)]"
                                 >
-                                    {/* Accent strip signifying user role */}
-                                    <div
-                                        className={`absolute top-0 bottom-0 left-0 w-1.5 bg-gradient-to-b ${roleColor} rounded-l-2xl`}
-                                    ></div>
+                                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B28F6]" />
+                                    <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#3B28F6]">
+                                        Users
+                                    </span>
+                                </div>
 
-                                    {/* Avatar & User Details */}
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="relative shrink-0">
-                                                <img
-                                                    src={
-                                                        user.avatar
-                                                            ? user.avatar
-                                                            : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
-                                                    }
-                                                    className="bg-slate-850 h-11 w-11 rounded-full border border-slate-700/40 object-cover shadow-sm"
-                                                    alt={user.name}
-                                                />
-                                                <div className="pointer-events-none absolute inset-0 rounded-full shadow-inner ring-1 ring-white/10"></div>
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h4 className="truncate text-sm font-semibold text-white transition-colors hover:text-indigo-400">
-                                                    {user.name}
-                                                </h4>
-                                                <p className="truncate text-xs text-slate-500">
-                                                    @{user.username}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="shrink-0">
-                                            <RoleBadge role={user.role} />
-                                        </div>
+                                {/* Title */}
+                                <h1
+                                    className="m-0 text-3xl font-bold leading-none tracking-tight"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #2a1ce0 0%, #3B28F6 100%)',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        backgroundClip: 'text',
+                                        fontFamily:'Orbitron, sans-serif',
+                                    }}
+                                >
+                                    User Management
+                                </h1>
+
+                                {/* Subtitle */}
+                                <p className="m-0 text-[13.5px] dark:text-slate-400/70 text-slate-600/75">
+                                    Manage system users, assigned roles, and access control.
+                                    <span className="mx-2 inline-block h-[11px] w-px dark:bg-white/10 bg-black/10 align-middle" />
+                                    <span className="text-xs dark:text-slate-400/30 text-slate-500/35 tracking-wide">
+                                        Access and roles control
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                {/* Search Form */}
+                                <form
+                                    onSubmit={handleSearch}
+                                    className="relative flex-grow sm:min-w-[280px]"
+                                >
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <Search size={14} className="text-slate-450" />
                                     </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Search by name, username or email..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full rounded-lg border border-white/8 bg-white/4 py-2 pr-4 pl-8 text-sm text-white transition-all placeholder:text-slate-500 hover:bg-white/5 focus:border-[#7C5CFF] focus:ring-1 focus:ring-[#7C5CFF] focus:outline-none"
+                                    />
+                                </form>
 
-                                    {/* Email Contact Row */}
-                                    <div className="mt-3.5 flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/40 px-3.5 py-2.5 text-xs font-medium text-slate-400">
-                                        <Mail
-                                            size={14}
-                                            className="shrink-0 text-indigo-400/80"
+                                {/* Desktop Add User Button */}
+                            <button
+                                onClick={openCreate}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-[#3B28F6] hover:bg-[#2A1CE0] text-white text-sm font-medium border border-[#4A38FF] shadow-sm shadow-[#3B28F6]/20 transition-colors duration-200"
+                            >
+                                <Plus size={16} />
+                                Add User
+                            </button>
+                            </div>
+                        </div>
+                    </header>
+
+
+            {/* TABLE VIEW (Desktop) */}
+            <div className="relative hidden overflow-hidden rounded-xl border border-indigo-100 dark:border-[#7C5CFF]/15 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-md lg:block">
+                {/* Corner brackets */}
+                <span className="absolute top-2 left-2 h-2.5 w-2.5 border-t border-l" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
+                <span className="absolute top-2 right-2 h-2.5 w-2.5 border-t border-r" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
+                <span className="absolute bottom-2 left-2 h-2.5 w-2.5 border-b border-l" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
+                <span className="absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
+
+                <div className="absolute top-0 left-8 right-8 h-px"
+                    style={{ background: 'linear-gradient(90deg, transparent, rgba(108, 99, 255, 0.4), transparent)' }} />
+
+                {/* Header */}
+                <div className="border-b px-5 py-3.5 sm:px-6" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-700 dark:text-white"
+                        style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        Users
+                    </h2>
+                </div>
+
+                {/* List */}
+                <div className="divide-y divide-indigo-50 dark:divide-white/5">
+                    {users.data.length > 0 ? (
+                        users.data.map((user, i) => (
+                            <div
+                                key={user._id}
+                                className="flex items-center justify-between gap-4 py-2.5 px-5 transition-colors"
+                                style={{ fontFamily: "'Outfit', sans-serif" }}
+                                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(108,99,255,0.04)')}
+                                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                            >
+                                {/* Left: Number + Avatar + Name */}
+                                <div className="flex items-center gap-4 min-w-0">
+                                    <span className="text-sm font-black tabular-nums shrink-0" style={{ color: 'rgba(108,99,255,0.35)' }}>
+                                        {i + 1}
+                                    </span>
+                                    <div className="relative shrink-0">
+                                        <img
+                                            src={
+                                                user.avatar
+                                                    ? user.avatar
+                                                    : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
+                                            }
+                                            className="h-8 w-8 rounded-full border border-indigo-100 dark:border-white/10 bg-slate-100 dark:bg-slate-800 object-cover"
+                                            alt={user.name}
                                         />
-                                        <span className="truncate select-all">
-                                            {user.email}
-                                        </span>
                                     </div>
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-semibold text-slate-800 dark:text-white">
+                                            {user.name}
+                                        </p>
+                                        <p className="truncate text-xs text-slate-400 dark:text-slate-400/70">
+                                            @{user.username}
+                                        </p>
+                                    </div>
+                                </div>
 
-                                    {/* Touch-Friendly Action Buttons */}
-                                    <div className="mt-4 grid grid-cols-3 gap-2 pt-1">
+                                {/* Right: Email + Role + Actions */}
+                                <div className="flex items-center gap-5 shrink-0">
+                                    <span className="text-xs font-medium hidden xl:block" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                                        {user.email}
+                                    </span>
+                                    <RoleBadge role={user.role} />
+                                    <div className="flex items-center gap-0.5">
                                         <Link
                                             href={`/admin/users/${user._id}`}
-                                            className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-800 bg-slate-950 px-3 py-2.5 text-xs font-semibold text-slate-300 shadow-sm transition-all active:scale-95"
+                                            className="rounded-lg p-1.5 text-slate-450 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-800 dark:hover:text-white transition-all duration-200"
+                                            title="View User Details"
                                         >
-                                            <Eye
-                                                size={14}
-                                                className="text-slate-400"
-                                            />
-                                            <span>View</span>
+                                            <Eye size={14} />
                                         </Link>
                                         <button
                                             onClick={() => openEdit(user)}
-                                            className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-3 py-2.5 text-xs font-semibold text-indigo-400 transition-all hover:bg-indigo-500/20 active:scale-95"
+                                            className="rounded-lg p-1.5 text-slate-450 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-[#7C5CFF]/15 hover:text-indigo-650 dark:hover:text-[#7C5CFF] transition-all duration-200"
+                                            title="Edit User"
                                         >
                                             <Pencil size={14} />
-                                            <span>Edit</span>
                                         </button>
                                         <button
                                             onClick={() => deleteUser(user._id)}
-                                            className="flex items-center justify-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2.5 text-xs font-semibold text-rose-400 transition-all hover:bg-rose-500/20 active:scale-95"
+                                            className="rounded-lg p-1.5 text-slate-450 dark:text-slate-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-200"
+                                            title="Delete User"
                                         >
                                             <Trash2 size={14} />
-                                            <span>Delete</span>
                                         </button>
                                     </div>
                                 </div>
-                            );
-                        })
-                    ) : (
-                        <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-800/80 bg-slate-900 px-4 py-16 text-center">
-                            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-slate-700/50 bg-slate-800/50">
-                                <Users size={28} className="text-slate-500" />
                             </div>
-                            <h3 className="mb-1 text-base font-medium text-white">
+                        ))
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-20 text-center">
+                            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-indigo-50 dark:border-white/8 bg-slate-50 dark:bg-white/5">
+                                <Users size={32} className="text-slate-400" />
+                            </div>
+                            <h3 className="mb-1 text-lg font-medium text-slate-800 dark:text-white">
                                 No users found
                             </h3>
+                            <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">
+                                {searchQuery
+                                    ? `No users matching "${searchQuery}" were found.`
+                                    : 'Get started by adding a new user to the system.'}
+                            </p>
+                            {!searchQuery && (
+                                <button
+                                    onClick={openCreate}
+                                    className="mt-6 rounded-lg border border-[#7C5CFF]/20 bg-[#7C5CFF]/10 px-4 py-2 text-sm font-medium text-[#7C5CFF] transition-colors hover:bg-[#7C5CFF]/20"
+                                >
+                                    Add First User
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* CARD VIEW (Mobile & Tablet) */}
+            <div className="lg:hidden">
+                {/* Header */}
+                <div className="border-b px-5 py-3.5" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-white"
+                        style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        Users
+                    </h2>
+                </div>
+
+                {/* List */}
+                <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+                    {users.data.length > 0 ? (
+                        users.data.map((user, i) => (
+                            <div
+                                key={user._id}
+                                className="flex items-center justify-between gap-3 py-3 px-5 transition-colors"
+                                style={{ fontFamily: "'Outfit', sans-serif" }}
+                                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(108,99,255,0.04)')}
+                                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                            >
+                                {/* Left: Number + Avatar + Name */}
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <span className="text-sm font-black tabular-nums shrink-0 w-7" style={{ color: 'rgba(108,99,255,0.35)' }}>
+                                        #{i + 1}
+                                    </span>
+                                    <img
+                                        src={
+                                            user.avatar
+                                                ? user.avatar
+                                                : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
+                                        }
+                                        className="h-9 w-9 rounded-full border border-white/10 object-cover bg-slate-800 shrink-0"
+                                        alt={user.name}
+                                    />
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-semibold text-white">
+                                            {user.name}
+                                        </p>
+                                        <p className="truncate text-xs text-slate-400/70">
+                                            @{user.username}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Right: Role + Actions */}
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <RoleBadge role={user.role} />
+                                    <div className="flex items-center gap-0.5">
+                                        <Link
+                                            href={`/admin/users/${user._id}`}
+                                            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/5 hover:text-white transition-all duration-200"
+                                            title="View"
+                                        >
+                                            <Eye size={14} />
+                                        </Link>
+                                        <button
+                                            onClick={() => openEdit(user)}
+                                            className="rounded-lg p-1.5 text-slate-400 hover:bg-[#7C5CFF]/15 hover:text-[#7C5CFF] transition-all duration-200"
+                                            title="Edit"
+                                        >
+                                            <Pencil size={14} />
+                                        </button>
+                                        <button
+                                            onClick={() => deleteUser(user._id)}
+                                            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-200"
+                                            title="Delete"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
+                            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-white/8 bg-white/5">
+                                <Users size={28} className="text-slate-400" />
+                            </div>
+                            <h3 className="mb-1 text-base font-medium text-white">No users found</h3>
                             <p className="max-w-sm text-xs text-slate-400">
                                 {searchQuery
                                     ? `No users matching "${searchQuery}" were found.`
@@ -476,7 +475,7 @@ export default function Index({
                             {!searchQuery && (
                                 <button
                                     onClick={openCreate}
-                                    className="mt-5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-xs font-semibold text-indigo-400 transition-colors hover:bg-indigo-500/20"
+                                    className="mt-5 rounded-lg border border-[#7C5CFF]/20 bg-[#7C5CFF]/10 px-4 py-2 text-xs font-semibold text-[#7C5CFF] transition-colors hover:bg-[#7C5CFF]/20"
                                 >
                                     Add First User
                                 </button>
@@ -484,109 +483,99 @@ export default function Index({
                         </div>
                     )}
                 </div>
+            </div>
 
-                {/* DESKTOP PAGINATION */}
-                {users.last_page > 1 && (
-                    <div className="hidden items-center justify-between gap-4 rounded-2xl border border-slate-800/80 bg-slate-900 px-6 py-4 shadow-xl lg:flex">
-                        <div className="text-sm text-slate-400">
-                            Showing{' '}
-                            <span className="font-medium text-white">
-                                {users.from}
-                            </span>{' '}
-                            to{' '}
-                            <span className="font-medium text-white">
-                                {users.to}
-                            </span>{' '}
-                            of{' '}
-                            <span className="font-medium text-white">
-                                {users.total}
-                            </span>{' '}
-                            results
-                        </div>
-                        <div className="flex flex-wrap items-center justify-center gap-1.5">
-                            {users.links.map((link, i) =>
-                                link.url ? (
-                                    <Link
-                                        key={i}
-                                        href={link.url}
-                                        preserveScroll
-                                        className={`rounded-xl px-3.5 py-2 text-sm font-medium transition-all ${
-                                            link.active
-                                                ? 'border border-indigo-400 bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                                                : 'border border-slate-800/80 bg-slate-950/50 text-slate-400 hover:bg-slate-800 hover:text-white'
-                                        }`}
-                                        dangerouslySetInnerHTML={{
-                                            __html: link.label,
-                                        }}
-                                    />
-                                ) : (
-                                    <span
-                                        key={i}
-                                        className="cursor-not-allowed rounded-xl border border-slate-800/50 bg-slate-900 px-3.5 py-2 text-sm font-medium text-slate-600 opacity-50"
-                                        dangerouslySetInnerHTML={{
-                                            __html: link.label,
-                                        }}
-                                    />
-                                ),
-                            )}
-                        </div>
-                    </div>
-                )}
+               {/* DESKTOP PAGINATION */}
+            {users.last_page > 1 && (
+                <div className="hidden items-center justify-between gap-4 border-t px-5 py-3.5 lg:flex"
+                    style={{ borderColor: 'rgba(255,255,255,0.05)', fontFamily: "'Outfit', sans-serif" }}>
+                    <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                        Showing{' '}
+                        <span className="font-semibold text-white">{users.from}</span>
+                        {' '}–{' '}
+                        <span className="font-semibold text-white">{users.to}</span>
+                        {' '}of{' '}
+                        <span className="font-semibold text-white">{users.total}</span>
+                    </span>
 
-                {/* MOBILE PAGINATION (Clean, touch-friendly, non-cluttering pagination for small devices) */}
-                {users.last_page > 1 && (
-                    <div className="block rounded-2xl border border-slate-800/80 bg-slate-900 p-4 shadow-xl lg:hidden">
-                        <div className="flex items-center justify-between gap-3">
-                            {/* Previous Button */}
-                            {users.links[0]?.url ? (
+                    <div className="flex items-center gap-1">
+                        {users.links.map((link, i) =>
+                            link.url ? (
                                 <Link
-                                    href={users.links[0].url}
+                                    key={i}
+                                    href={link.url}
                                     preserveScroll
-                                    className="flex items-center justify-center rounded-xl border border-slate-800 bg-slate-950/50 px-4 py-2 text-xs font-semibold text-slate-300 transition-all hover:bg-slate-900 active:scale-95"
-                                >
-                                    Previous
-                                </Link>
+                                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold tabular-nums transition-all duration-150 ${
+                                        link.active
+                                            ? 'bg-[#7C5CFF] text-white'
+                                            : 'text-slate-400 hover:text-white'
+                                    }`}
+                                    style={!link.active ? undefined : undefined}
+                                    onMouseEnter={e => { if (!link.active) e.currentTarget.style.background = 'rgba(108,99,255,0.08)' }}
+                                    onMouseLeave={e => { if (!link.active) e.currentTarget.style.background = 'transparent' }}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
                             ) : (
-                                <span className="cursor-not-allowed rounded-xl border border-slate-800/50 bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-600 opacity-40">
-                                    Previous
-                                </span>
-                            )}
-
-                            {/* Page Indicator */}
-                            <div className="text-xs font-medium text-slate-400">
-                                Page{' '}
-                                <span className="font-semibold text-white">
-                                    {users.current_page}
-                                </span>{' '}
-                                of{' '}
-                                <span className="font-semibold text-white">
-                                    {users.last_page}
-                                </span>
-                            </div>
-
-                            {/* Next Button */}
-                            {users.links[users.links.length - 1]?.url ? (
-                                <Link
-                                    href={
-                                        users.links[users.links.length - 1].url
-                                    }
-                                    preserveScroll
-                                    className="flex items-center justify-center rounded-xl border border-slate-800 bg-slate-950/50 px-4 py-2 text-xs font-semibold text-slate-300 transition-all hover:bg-slate-900 active:scale-95"
-                                >
-                                    Next
-                                </Link>
-                            ) : (
-                                <span className="cursor-not-allowed rounded-xl border border-slate-800/50 bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-600 opacity-40">
-                                    Next
-                                </span>
-                            )}
-                        </div>
+                                <span
+                                    key={i}
+                                    className="rounded-lg px-3 py-1.5 text-xs font-semibold tabular-nums text-slate-600 cursor-not-allowed opacity-40"
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            )
+                        )}
                     </div>
-                )}
+                </div>
+            )}
+
+            {/* MOBILE PAGINATION */}
+            {users.last_page > 1 && (
+                <div className="flex items-center justify-between border-t px-5 py-3.5 lg:hidden"
+                    style={{ borderColor: 'rgba(255,255,255,0.05)', fontFamily: "'Outfit', sans-serif" }}>
+
+                    {users.links[0]?.url ? (
+                        <Link
+                            href={users.links[0].url}
+                            preserveScroll
+                            className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-400 transition-all active:scale-95"
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(108,99,255,0.08)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                            ← Prev
+                        </Link>
+                    ) : (
+                        <span className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-600 opacity-40 cursor-not-allowed">
+                            ← Prev
+                        </span>
+                    )}
+
+                    <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                        Page{' '}
+                        <span className="font-bold text-white">{users.current_page}</span>
+                        {' '}/{' '}
+                        <span className="font-bold text-white">{users.last_page}</span>
+                    </span>
+
+                    {users.links[users.links.length - 1]?.url ? (
+                        <Link
+                            href={users.links[users.links.length - 1].url}
+                            preserveScroll
+                            className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-400 transition-all active:scale-95"
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(108,99,255,0.08)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                            Next →
+                        </Link>
+                    ) : (
+                        <span className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-600 opacity-40 cursor-not-allowed">
+                            Next →
+                        </span>
+                    )}
+                </div>
+            )}
 
                 {/* MODAL */}
                 {showModal && (
-                    <div className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm duration-200 fade-in">
+                    <div className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-[#030712]/80 p-4 backdrop-blur-sm duration-200 fade-in">
                         {/* Overlay click area */}
                         <div
                             className="absolute inset-0"
@@ -595,9 +584,9 @@ export default function Index({
 
                         <form
                             onSubmit={submit}
-                            className="relative z-10 flex max-h-[90vh] w-full max-w-md animate-in flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0B1120] shadow-2xl duration-200 zoom-in-95"
+                            className="relative z-10 flex max-h-[90vh] w-full max-w-md animate-in flex-col overflow-hidden rounded-xl border border-white/8 bg-[#060B1A] shadow-2xl duration-200 zoom-in-95"
                         >
-                            <div className="flex shrink-0 items-center justify-between border-b border-slate-800/80 bg-slate-900/50 p-5">
+                            <div className="flex shrink-0 items-center justify-between border-b border-white/8 bg-white/[0.02] p-5">
                                 <div>
                                     <h2 className="text-lg font-bold text-white">
                                         {editUser
@@ -615,7 +604,7 @@ export default function Index({
                                     onClick={() =>
                                         !processing && setShowModal(false)
                                     }
-                                    className="rounded-lg border border-slate-800/50 bg-slate-950/50 p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+                                    className="rounded-lg border border-white/8 bg-white/4 p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-white"
                                     disabled={processing}
                                 >
                                     <X size={16} />
@@ -626,7 +615,7 @@ export default function Index({
                                 {/* AVATAR */}
                                 <div className="flex flex-col items-center justify-center">
                                     <div
-                                        className={`relative h-20 w-20 rounded-full border-2 border-dashed bg-slate-950/80 ${errors.avatar ? 'border-rose-500' : 'border-slate-700 hover:border-indigo-500'} group flex cursor-pointer items-center justify-center overflow-hidden shadow-inner transition-all duration-300`}
+                                        className={`relative h-20 w-20 rounded-full border-2 border-dashed bg-white/4 ${errors.avatar ? 'border-rose-500' : 'border-white/10 hover:border-[#7C5CFF]'} group flex cursor-pointer items-center justify-center overflow-hidden shadow-inner transition-all duration-300`}
                                         onClick={() =>
                                             document
                                                 .getElementById('avatarInput')
@@ -921,6 +910,7 @@ export default function Index({
                     </div>
                 )}
             </div>
+        </div>
 
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
