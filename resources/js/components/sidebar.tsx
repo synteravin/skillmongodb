@@ -124,21 +124,21 @@ export default function Sidebar({
             {/* Mobile Backdrop Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300 md:hidden"
+                    className="fixed inset-0 z-30 bg-[#030712]/60 backdrop-blur-sm transition-opacity duration-300 md:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-white bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-slate-800 dark:bg-slate-900 w-64 md:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-white/8 bg-[#060B1A] transition-all duration-300 ease-in-out w-64 rounded-r-xl md:translate-x-0 ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } ${isOpen ? 'md:w-64' : 'md:w-16'}`}
             >
                 {/* Desktop Toggle Button */}
                 <button
                     onClick={() => setSidebarOpen(!isOpen)}
-                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-white shadow-md transition hover:scale-105 md:flex dark:border-indigo-700 dark:bg-indigo-800"
+                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-[#060B1A] text-[#7C5CFF] border border-white/8 shadow-[0_0_10px_rgba(124,92,255,0.15)] transition hover:scale-105 hover:bg-[#7C5CFF]/10 md:flex"
                 >
                     {isOpen ? (
                         <ChevronLeft size={14} />
@@ -149,22 +149,22 @@ export default function Sidebar({
 
                 {/* Brand with Mobile Close Button */}
                 {isOpen && (
-                    <div className="flex items-start justify-between px-6 py-6">
+                    <div className="flex items-start justify-between px-6 py-6 border-b border-white/5">
                         <div>
-                            <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                            <h1 className="text-lg font-bold tracking-tight text-white select-none">
                                 Skill
-                                <span className="text-indigo-600 dark:text-indigo-400">
+                                <span className="text-[#7C5CFF]">
                                     Ventura
                                 </span>
                             </h1>
-                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-[11px] text-slate-400 tracking-wide">
                                 Learning Management System
                             </p>
                         </div>
                         {/* Mobile Close Button inside Drawer */}
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 active:scale-95 transition dark:text-slate-400 dark:hover:bg-slate-800 md:hidden"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white/4 active:scale-95 transition md:hidden"
                         >
                             <X size={18} />
                         </button>
@@ -172,7 +172,7 @@ export default function Sidebar({
                 )}
 
                 {/* Menu */}
-                <nav className="flex-1 space-y-1 px-2">
+                <nav className="flex-1 space-y-1.5 px-3 py-6">
                     {menu
                         .filter((item) => hasRole(item.roles))
                         .map((item) => {
@@ -188,19 +188,17 @@ export default function Sidebar({
                                 <Link
                                     key={item.name}
                                     href={href}
-                                    className={`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${active
-                                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
-                                        } `}
+                                    className={`group relative flex items-center gap-3 py-2.5 px-3 text-sm font-medium transition-all duration-200 border-l-[3px] ${
+                                        active
+                                            ? 'bg-[#7C5CFF]/15 text-white border-[#7C5CFF] shadow-[inset_0_0_12px_rgba(124,92,255,0.08)] rounded-r-lg'
+                                            : 'text-slate-400 border-transparent hover:bg-white/4 hover:text-white rounded-lg'
+                                    }`}
                                     onClick={() =>
                                         window.innerWidth < 768 &&
                                         setSidebarOpen(false)
                                     }
                                 >
-                                    {active && (
-                                        <span className="absolute left-0 h-6 w-1 rounded-r bg-indigo-600 dark:bg-indigo-400" />
-                                    )}
-                                    <Icon size={18} />
+                                    <Icon size={18} className={active ? 'text-[#7C5CFF]' : 'text-slate-400 group-hover:text-white transition-colors'} />
                                     {isOpen && <span>{item.name}</span>}
                                 </Link>
                             );
@@ -208,18 +206,18 @@ export default function Sidebar({
                 </nav>
 
                 {/* User Section */}
-                <div className="mt-auto border-t border-slate-200 p-4 dark:border-slate-800">
+                <div className="mt-auto border-t border-white/8 p-4 bg-[#030712]/40">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-semibold text-white shadow">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#7C5CFF]/20 text-[#7C5CFF] border border-[#7C5CFF]/30 text-sm font-semibold shadow-[0_0_10px_rgba(124,92,255,0.15)]">
                             {props?.auth?.user?.name?.charAt(0)}
                         </div>
 
                         {isOpen && (
-                            <div className="flex flex-col">
-                                <span className="text-sm font-medium text-slate-900 dark:text-white">
+                            <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-medium text-white truncate">
                                     {props?.auth?.user?.name}
                                 </span>
-                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                <span className="text-[11px] text-slate-400 truncate">
                                     {props?.auth?.user?.email}
                                 </span>
                             </div>
@@ -230,7 +228,7 @@ export default function Sidebar({
                         {/* Settings */}
                         <Link
                             href="/settings"
-                            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-white/4 px-3 py-2 text-slate-300 transition hover:bg-white/8 border border-white/8"
                         >
                             <Settings size={16} />
                             {isOpen && (
@@ -245,7 +243,7 @@ export default function Sidebar({
                             href="/logout"
                             method="post"
                             as="button"
-                            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-red-600 transition hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-rose-500/10 px-3 py-2 text-rose-400 transition hover:bg-rose-500/20 border border-rose-500/20"
                         >
                             <LogOut size={16} />
                             {isOpen && (
@@ -259,7 +257,7 @@ export default function Sidebar({
 
                 {/* Footer */}
                 {isOpen && (
-                    <div className="border-t border-slate-200 px-5 py-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                    <div className="border-t border-white/8 px-5 py-4 text-[10px] text-slate-500 tracking-wider uppercase font-semibold">
                         © {new Date().getFullYear()} SkillVentura
                     </div>
                 )}
