@@ -23,18 +23,18 @@ export default function Modal({ open, title, onClose, children, maxWidth = "max-
             />
 
             {/* MODAL */}
-            <div className={`relative w-full ${maxWidth} mx-4 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#0b0f2a] shadow-xl p-6 transition-all`}>
+            <div className={`relative w-full ${maxWidth} mx-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xl dark:shadow-none p-6 transition-all`}>
 
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
 
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                    <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
                         {title}
                     </h2>
 
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 dark:text-slate-400"
+                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                     >
                         ✕
                     </button>
@@ -42,10 +42,9 @@ export default function Modal({ open, title, onClose, children, maxWidth = "max-
                 </div>
 
                 {/* Divider */}
-                <div className="border-b border-gray-200 dark:border-slate-700 mb-4"></div>
+                <div className="border-b border-slate-200 dark:border-white/5 mb-4"></div>
 
-                    {children}
-               
+                {children}
 
             </div>
 

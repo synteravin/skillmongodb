@@ -123,7 +123,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
     return (
         <AppLayout>
             <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#020617] to-black text-white p-4 sm:p-6 lg:p-8">
-                <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+                <div className="w-full mx-auto space-y-6 sm:space-y-8">
 
                     {/* HEADER */}
                     <div className="flex flex-col justify-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">

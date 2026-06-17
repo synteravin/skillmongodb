@@ -70,91 +70,73 @@ export default function AssetsPage({ stats }: any) {
                         {/* RANK */}
                         <Link
                             href="/admin/assets/ranks"
-                            className="group relative overflow-hidden rounded-xl border p-4 sm:p-5 transition-all duration-250 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#7C5CFF]/5"
-                            style={{
-                                fontFamily: "'Outfit', sans-serif",
-                                borderColor: "rgba(108,99,255,0.15)",
-                                background: "linear-gradient(160deg, #0e0e1a, #090910)",
-                            }}
+                            className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-[#6C63FF]/5"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
-                            {/* Corner brackets */}
-                            <span className="absolute top-2 left-2 h-2.5 w-2.5 border-t border-l" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute top-2 right-2 h-2.5 w-2.5 border-t border-r" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute bottom-2 left-2 h-2.5 w-2.5 border-b border-l" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
+                            {/* Top accent line */}
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                            <div className="flex justify-between items-center mb-3">
-                                <h2 className="font-semibold text-lg group-hover:text-[#6C63FF] text-white transition-colors">
-                                    Level Rank
-                                </h2>
-                                <span className="text-xs text-[#6C63FF] font-semibold bg-[#6C63FF]/10 px-2.5 py-1 rounded-lg border border-[#6C63FF]/20">
-                                    {stats?.ranks ?? 0}
-                                </span>
+                            <div className="p-4 sm:p-5">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h2 className="font-semibold text-lg text-slate-800 group-hover:text-[#6C63FF] dark:text-white transition-colors">
+                                        Level Rank
+                                    </h2>
+                                    <span className="text-xs text-[#6C63FF] font-semibold bg-[#6C63FF]/10 px-2.5 py-1 rounded-lg border border-[#6C63FF]/20">
+                                        {stats?.ranks ?? 0}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-slate-400 leading-relaxed">
+                                    Manage progression tiers and ranking system
+                                </p>
                             </div>
-
-                            <p className="text-sm text-slate-400 leading-relaxed">
-                                Manage progression tiers and ranking system
-                            </p>
                         </Link>
 
                         {/* CHARACTER */}
                         <Link
                             href="/admin/assets/characters"
-                            className="group relative overflow-hidden rounded-xl border p-4 sm:p-5 transition-all duration-250 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#7C5CFF]/5"
-                            style={{
-                                fontFamily: "'Outfit', sans-serif",
-                                borderColor: "rgba(108,99,255,0.15)",
-                                background: "linear-gradient(160deg, #0e0e1a, #090910)",
-                            }}
+                            className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-[#6C63FF]/5"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
-                            {/* Corner brackets */}
-                            <span className="absolute top-2 left-2 h-2.5 w-2.5 border-t border-l" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute top-2 right-2 h-2.5 w-2.5 border-t border-r" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute bottom-2 left-2 h-2.5 w-2.5 border-b border-l" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
+                            {/* Top accent line */}
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                            <div className="flex justify-between items-center mb-3">
-                                <h2 className="font-semibold text-lg group-hover:text-[#6C63FF] text-white transition-colors">
-                                    Character
-                                </h2>
-                                <span className="text-xs text-[#6C63FF] font-semibold bg-[#6C63FF]/10 px-2.5 py-1 rounded-lg border border-[#6C63FF]/20">
-                                    {stats?.characters ?? 0}
-                                </span>
+                            <div className="p-4 sm:p-5">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h2 className="font-semibold text-lg text-slate-800 group-hover:text-[#6C63FF] dark:text-white transition-colors">
+                                        Character
+                                    </h2>
+                                    <span className="text-xs text-[#6C63FF] font-semibold bg-[#6C63FF]/10 px-2.5 py-1 rounded-lg border border-[#6C63FF]/20">
+                                        {stats?.characters ?? 0}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-slate-400 leading-relaxed">
+                                    Manage avatars and playable identities
+                                </p>
                             </div>
-
-                            <p className="text-sm text-slate-400 leading-relaxed">
-                                Manage avatars and playable identities
-                            </p>
                         </Link>
 
                         {/* BADGE */}
                         <Link
                             href="/admin/assets/badges"
-                            className="group relative overflow-hidden rounded-xl border p-4 sm:p-5 transition-all duration-250 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#7C5CFF]/5"
-                            style={{
-                                fontFamily: "'Outfit', sans-serif",
-                                borderColor: "rgba(108,99,255,0.15)",
-                                background: "linear-gradient(160deg, #0e0e1a, #090910)",
-                            }}
+                            className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none transition-all duration-250 hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-[#6C63FF]/5"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
-                            {/* Corner brackets */}
-                            <span className="absolute top-2 left-2 h-2.5 w-2.5 border-t border-l" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute top-2 right-2 h-2.5 w-2.5 border-t border-r" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute bottom-2 left-2 h-2.5 w-2.5 border-b border-l" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
-                            <span className="absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r" style={{ borderColor: "#6C63FF", opacity: 0.45 }} />
+                            {/* Top accent line */}
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                            <div className="flex justify-between items-center mb-3">
-                                <h2 className="font-semibold text-lg group-hover:text-[#6C63FF] text-white transition-colors">
-                                    Level Badge
-                                </h2>
-                                <span className="text-xs text-[#6C63FF] font-semibold bg-[#6C63FF]/10 px-2.5 py-1 rounded-lg border border-[#6C63FF]/20">
-                                    {stats?.badges ?? 0}
-                                </span>
+                            <div className="p-4 sm:p-5">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h2 className="font-semibold text-lg text-slate-800 group-hover:text-[#6C63FF] dark:text-white transition-colors">
+                                        Level Badge
+                                    </h2>
+                                    <span className="text-xs text-[#6C63FF] font-semibold bg-[#6C63FF]/10 px-2.5 py-1 rounded-lg border border-[#6C63FF]/20">
+                                        {stats?.badges ?? 0}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-slate-400 leading-relaxed">
+                                    Manage achievements and milestones
+                                </p>
                             </div>
-
-                            <p className="text-sm text-slate-400 leading-relaxed">
-                                Manage achievements and milestones
-                            </p>
                         </Link>
 
                     </div>

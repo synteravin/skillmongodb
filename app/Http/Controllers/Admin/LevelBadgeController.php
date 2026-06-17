@@ -26,13 +26,12 @@ class LevelBadgeController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'order' => 'required|integer',
+            'order' => 'required|integer|min:1',
             'icon' => 'required|image|max:2048',
         ]);
 
         if ($request->hasFile('icon')) {
-            $data['icon'] = $request->file('icon')
-                ->store('badges', 's3');
+            $data['icon'] = $request->file('icon')->store('badges', 's3');
         }
 
         LevelBadge::create($data);
@@ -57,19 +56,23 @@ class LevelBadgeController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'order' => 'required|integer',
+            'order' => 'required|integer|min:1',
             'icon' => 'nullable|image|max:2048',
         ]);
 
-        if ($request->hasFile('icon')) {
+        // Cast order to int (MongoDB needs it as int, not string)
+        $data['order'] = (int) $data['order'];
 
+        // Remove the icon key from validated array; we handle it separately
+        unset($data['icon']);
+
+        if ($request->hasFile('icon')) {
             // 🔥 HAPUS FILE LAMA
             if ($badge->icon) {
                 Storage::disk('s3')->delete($badge->icon);
             }
 
-            $data['icon'] = $request->file('icon')
-                ->store('badges', 's3');
+            $data['icon'] = $request->file('icon')->store('badges', 's3');
         }
 
         $badge->update($data);
@@ -77,6 +80,20 @@ class LevelBadgeController extends Controller
         return redirect()
             ->route('admin.assets.badges.index')
             ->with('success', 'Badge updated');
+    }
+
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'badges' => 'required|array',
+        ]);
+
+        foreach ($request->badges as $badge) {
+            LevelBadge::where('_id', $badge['id'])
+                ->update(['order' => $badge['order']]);
+        }
+
+        return back();
     }
 
     public function destroy($id)

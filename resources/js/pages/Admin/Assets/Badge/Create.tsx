@@ -1,13 +1,12 @@
 import { useForm, Link } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import AppLayout from '@/layouts/app-layout';
-import { ChevronLeft, Save, UploadCloud } from 'lucide-react';
 
 export default function Create() {
     const fileRef = useRef<HTMLInputElement>(null);
     const { data, setData, post, processing, errors } = useForm({
         name: '',
-        order: '',
+        order: 1,
         icon: null as File | null,
     });
 
@@ -36,54 +35,100 @@ export default function Create() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/admin/assets/badges', {
-            forceFormData: true,
-        });
+        post('/admin/assets/badges', { forceFormData: true });
     };
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-slate-50 py-8 dark:bg-[#0B1120]">
-                <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            <div
+                className="min-h-screen bg-[#f8fafc] dark:bg-[#030712] py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+            >
+                <div className="w-full space-y-6">
+
                     {/* Header */}
-                    <div className="mb-8">
-                        <Link 
-                            href="/admin/assets/badges" 
-                            className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                    <div>
+                        <Link
+                            href="/admin/assets/badges"
+                            className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
                         >
-                            <ChevronLeft size={16} />
-                            Back to Badges
+                            ← Back to Badges
                         </Link>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                        <h1
+                            className="text-2xl font-bold tracking-tight text-slate-800 dark:text-white"
+                            style={{ fontFamily: 'Orbitron, sans-serif' }}
+                        >
                             Create Badge
                         </h1>
-                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                            Add a new badge to the system assets.
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            Add a new badge for the student progression system.
                         </p>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={submit} className="space-y-6">
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
-                            <div className="space-y-6">
+                    {/* Form Card */}
+                    <form onSubmit={submit} className="space-y-5">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            {/* top accent line */}
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                            <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-800 dark:text-white">
+                                    Badge Details
+                                </h2>
+                            </div>
+
+                            <div className="space-y-6 p-4 sm:p-6">
+                                {/* Row: Name + Order */}
+                                <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                                    {/* Badge Name */}
+                                    <div className="sm:col-span-2">
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Badge Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.name}
+                                            onChange={(e) => setData('name', e.target.value)}
+                                            placeholder="e.g. Bronze, Silver, Gold"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                        />
+                                        {errors.name && (
+                                            <p className="mt-1.5 text-xs font-medium text-red-500">{errors.name}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Order */}
+                                    <div>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Order
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min={1}
+                                            value={data.order}
+                                            onChange={(e) => setData('order', parseInt(e.target.value) || 1)}
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                        />
+                                        {errors.order && (
+                                            <p className="mt-1.5 text-xs font-medium text-red-500">{errors.order}</p>
+                                        )}
+                                    </div>
+                                </div>
+
                                 {/* Image Upload */}
                                 <div>
-                                    <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                         Badge Icon
                                     </label>
-                                    
                                     <div
-                                        onDragOver={(e) => {
-                                            e.preventDefault();
-                                            setDragActive(true);
-                                        }}
+                                        onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                                         onDragLeave={() => setDragActive(false)}
                                         onDrop={handleDrop}
                                         onClick={() => fileRef.current?.click()}
-                                        className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+                                        className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-6 sm:p-8 text-center transition-all ${
                                             dragActive
-                                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10'
-                                                : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-indigo-500 dark:hover:bg-slate-800/50'
+                                                ? 'border-slate-400 bg-slate-50 dark:border-slate-500 dark:bg-white/5'
+                                                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-white/[0.03]'
                                         }`}
                                     >
                                         <input
@@ -97,97 +142,60 @@ export default function Create() {
                                         {preview ? (
                                             <div className="relative">
                                                 <div className="absolute inset-0 z-10 rounded-xl bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
-                                                <div className="flex h-32 w-32 items-center justify-center rounded-xl bg-slate-100 p-2 shadow-inner dark:bg-slate-950">
+                                                <div className="flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-white/5">
                                                     <img
                                                         src={preview}
                                                         alt="Preview"
-                                                        className="h-full w-full object-contain drop-shadow-md"
+                                                        className="h-full w-full object-contain"
                                                     />
                                                 </div>
                                                 <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                                                    <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm backdrop-blur-sm">
-                                                        Change Image
+                                                    <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm backdrop-blur-sm dark:bg-black/70 dark:text-white">
+                                                        Change
                                                     </span>
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="flex flex-col items-center gap-3 text-slate-500 dark:text-slate-400">
-                                                <div className="rounded-full bg-slate-100 p-3 group-hover:bg-indigo-100 group-hover:text-indigo-600 dark:bg-slate-800 dark:group-hover:bg-indigo-500/20 dark:group-hover:text-indigo-400">
-                                                    <UploadCloud size={24} />
+                                            <div className="flex flex-col items-center gap-2">
+                                                <div className="rounded-full border border-slate-200 bg-slate-100 p-3 text-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-slate-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                                                    </svg>
                                                 </div>
-                                                <div>
-                                                    <p className="text-sm font-medium text-slate-900 dark:text-white">
-                                                        Click to upload or drag and drop
-                                                    </p>
-                                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                                        PNG, JPG, WEBP up to 2MB
-                                                    </p>
-                                                </div>
+                                                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                                    Click to upload or drag and drop
+                                                </p>
+                                                <p className="text-xs text-slate-400 dark:text-slate-500">
+                                                    PNG, JPG, WEBP up to 2MB
+                                                </p>
                                             </div>
                                         )}
                                     </div>
                                     {errors.icon && (
-                                        <p className="mt-1.5 text-sm font-medium text-red-500">{errors.icon}</p>
+                                        <p className="mt-1.5 text-xs font-medium text-red-500">{errors.icon}</p>
                                     )}
-                                </div>
-
-                                {/* Form Fields */}
-                                <div className="grid gap-6 sm:grid-cols-2">
-                                    {/* Name Input */}
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                            Badge Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
-                                            placeholder="e.g. Elite Warrior"
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                        />
-                                        {errors.name && (
-                                            <p className="mt-1.5 text-sm font-medium text-red-500">{errors.name}</p>
-                                        )}
-                                    </div>
-
-                                    {/* Order Input */}
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                            Order Number
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={data.order}
-                                            onChange={(e) => setData('order', e.target.value)}
-                                            placeholder="0"
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                        />
-                                        {errors.order && (
-                                            <p className="mt-1.5 text-sm font-medium text-red-500">{errors.order}</p>
-                                        )}
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center justify-end gap-3">
+                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                             <Link
                                 href="/admin/assets/badges"
-                                className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 transition-all hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
                             >
                                 Cancel
                             </Link>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50"
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-slate-700 disabled:opacity-50 dark:bg-white/10 dark:hover:bg-white/20"
                             >
-                                <Save size={18} />
-                                {processing ? 'Creating...' : 'Create Badge'}
+                                {processing ? 'Saving...' : 'Save Badge'}
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </AppLayout>

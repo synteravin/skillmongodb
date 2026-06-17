@@ -7,6 +7,8 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class LevelBadge extends Model
 {
+    protected $connection = 'mongodb';
+
     protected $collection = 'level_badges';
 
     protected $fillable = [

@@ -70,74 +70,97 @@ export default function CareerBranch({ group, index, badges, mentors, courseId }
 
     return (
         <>
-            <div className="flex flex-col items-center w-full max-w-[320px] px-2 relative z-10">
+            <div className="flex flex-col items-center w-full max-w-[340px] px-4 relative z-10 transition-all font-sans text-white">
 
                 {/* Header Card */}
-                <div className="relative w-full rounded-xl flex flex-col p-[2px] shadow-lg mb-0 bg-gradient-to-b from-[#1e2759] to-[#040812] border-2 border-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]">
+                <div 
+                    className="relative w-full overflow-hidden rounded-xl border-2 border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.4)]"
+                >
+                    {/* TOP ACCENT LINE */}
+                    <div className="absolute top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
 
-                    <div className="w-full h-full rounded-lg bg-[#0a0f1d] flex flex-col p-4">
-                        <div className="flex justify-center mb-2">
-                            {/* Fake Icon */}
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-blue-500 bg-[#3a50d2]">
-                                <span className="text-xl text-white">⬢</span>
+                    <div className="w-full h-full rounded-xl bg-[#050619] flex flex-col p-5">
+                        
+                        {/* THUMBNAIL CIRCLE */}
+                        <div className="mb-4 flex justify-center">
+                            <div className="relative">
+                                <div className="absolute inset-0 scale-110 rounded-full blur-md bg-blue-500/20" />
+                                <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.4)] bg-blue-50 dark:bg-[#0b1333]">
+                                    <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8 text-blue-400">
+                                        <path d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                                        <path d="M9 15l-2 4 3-1M15 15l2 4-3-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <circle cx="12" cy="13" r="1.5" fill="currentColor"/>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
-                        <h2 className="text-sm sm:text-base font-['Orbitron'] font-bold text-center text-white mb-2 uppercase tracking-widest break-words leading-tight">
+                        <h2 
+                            className="mb-2 text-center font-['Orbitron'] text-sm sm:text-base font-bold uppercase leading-tight tracking-widest text-white"
+                        >
                             {group.name}
                         </h2>
 
-                        <p className="text-[10px] text-gray-400 text-center mb-3 leading-relaxed">
-                            A special package to become a professional {group.name} Developer, starting with modern web fundamentals.
+                        <p className="mb-4 text-center text-[10px] text-slate-400 leading-relaxed font-sans">
+                            A special package to become a professional {group.name} Developer, starting with modern web development fundamentals.
                         </p>
 
-                        <div className="flex justify-between gap-2 mb-3">
-                            <div className="flex-1 bg-black/60 border border-[#1e2759] rounded p-1.5 text-center flex flex-col items-center justify-center">
-                                <span className="block text-[9px] text-[#eab308]">Modules</span>
-                                <span className="block text-[11px] font-bold text-white">{totalModules} Units</span>
-                            </div>
-                            <div className="flex-1 bg-black/60 border border-[#1e2759] rounded p-1.5 text-center flex flex-col items-center justify-center">
-                                <span className="block text-[9px] text-[#eab308]">Formats</span>
-                                <span className="block text-[11px] font-bold text-white">Video & project</span>
+                        <div className="mb-4 flex justify-between gap-2">
+                            <div className="flex-1 flex flex-col items-center justify-center gap-0.5 rounded-lg border border-[#1A2E99] bg-[#020101] p-2 text-center">
+                                <span className="block text-[9px] font-semibold uppercase tracking-wider text-[#F0E427]">
+                                    Learning Path
+                                </span>
+                                <span className="block text-xs font-bold text-[#B3B3B3]">
+                                    {totalModules} Units
+                                </span>
                             </div>
                         </div>
 
-                        <div className="mt-auto pt-3 border-t border-gray-800 flex justify-between items-center bg-[#0a0f1d]">
-                            <div className="flex items-center gap-1.5">
-                                <div className="flex flex-col">
-                                    <div className="flex items-center gap-2">
-
-                                        {/* Avatar */}
-                                        <div className="relative w-6 h-6 rounded-full overflow-hidden border border-blue-500 bg-gray-700">
-                                            {group.mentor?.avatar_url ? (
-                                                <img
-                                                    src={group.mentor?.avatar_url}
-                                                    className="w-full h-full object-cover"
-                                                    alt={group.mentor.name}
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-[10px] text-white bg-gradient-to-br from-blue-500 to-indigo-600">
-                                                    {group.mentor?.name?.charAt(0) || "?"}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Info */}
-                                        <div className="flex flex-col">
-                                            <span className="text-[9px] font-bold text-white leading-none">
-                                                {group.mentor?.name || "No Mentor"}
-                                            </span>
-                                            <span className="text-[7px] text-gray-400">
-                                                {group.mentor ? "Mentor" : "Unassigned"}
+                        <div className="relative z-45 flex items-center justify-between border-t border-[#1A2E99]/85 pt-3 mt-auto">
+                            {/* MENTOR */}
+                            {group.mentor ? (
+                                <div className="flex max-w-[65%] items-center gap-2">
+                                    {group.mentor.avatar_url ? (
+                                        <img
+                                            src={group.mentor.avatar_url}
+                                            className="h-8 w-8 shrink-0 rounded-full border border-slate-500 object-cover shadow-sm"
+                                            alt="mentor"
+                                        />
+                                    ) : (
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-blue-500 bg-gradient-to-br from-blue-500 to-indigo-650">
+                                            <span className="text-[10px] font-bold text-white">
+                                                {group.mentor.name.charAt(0).toUpperCase()}
                                             </span>
                                         </div>
-
+                                    )}
+                                    <div className="flex flex-col truncate">
+                                        <span className="truncate text-[9.5px] font-bold leading-none text-[#F0F0F0]">
+                                            {group.mentor.name}
+                                        </span>
+                                        <span className="mt-0.5 truncate text-[7.5px] text-gray-500">
+                                            Mentor Assigned
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="flex max-w-[65%] items-center gap-2">
+                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-blue-900 bg-slate-800">
+                                        <span className="text-xs text-gray-400">?</span>
+                                    </div>
+                                    <div className="flex flex-col truncate">
+                                        <span className="truncate text-[9.5px] font-bold leading-none text-gray-400">
+                                            No Mentor
+                                        </span>
+                                        <span className="mt-0.5 truncate text-[7.5px] text-gray-650">
+                                            Unassigned
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
                             <button
                                 onClick={() => setShowModal(true)}
-                                className="px-3 py-1 rounded text-[10px] font-bold bg-black border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-colors"
+                                className="shrink-0 rounded-lg border-2 border-indigo-400 bg-indigo-500/10 px-3 py-1 font-['Orbitron'] text-[10px] font-bold uppercase tracking-wider text-indigo-300 shadow-[0_0_8px_1px_rgba(99,102,241,0.2)] hover:bg-indigo-500 hover:text-white transition-all duration-300"
                             >
                                 Manage
                             </button>
@@ -146,7 +169,7 @@ export default function CareerBranch({ group, index, badges, mentors, courseId }
                 </div>
 
                 {/* Connecting Pipe Drop to modules */}
-                <div className="w-[2px] h-8 bg-gray-300"></div>
+                <div className="w-[2px] h-8 bg-blue-500/70"></div>
 
                 {/* Module Nodes List */}
                 <div className="flex flex-col w-full items-center">

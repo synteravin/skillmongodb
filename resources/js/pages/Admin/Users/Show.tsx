@@ -3,29 +3,280 @@ import { Link, useForm } from '@inertiajs/react';
 import ProfileFormBasic from '@/components/Mentor/ProfileFormBasic';
 import ProfileFormWorkExperience from '@/components/Mentor/ProfileFormWorkExperience';
 import ProfileFormEducation from '@/components/Mentor/ProfileFormEducation';
-import {
-    ArrowLeft,
-    User as UserIcon,
-    Mail,
-    Shield,
-    ShieldCheck,
-    Trophy,
-    Target,
-    BookOpen,
-    Clock,
-    Activity,
-    Briefcase,
-    FileText,
-    CheckCircle,
-    XCircle,
-    Eye,
-    X,
-    MessageSquare,
-    Link as LinkIcon,
-    Download,
-    Loader2,
-} from 'lucide-react';
 import { useState } from 'react';
+
+// Helper to normalize strings
+const normalizeString = (val: any): string => {
+    if (val === null || val === undefined) {
+        return '';
+    }
+    return String(val)
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, ' ');
+};
+
+// Helper to check if value looks like a valid identifier (not empty, not just "unknown" or "assignment")
+const isValidIdentifier = (val: string): boolean => {
+    if (!val) {
+        return false;
+    }
+    const ignored = ['unknown', 'assignment', 'undefined', 'null', 'course', 'path', 'quiz', 'module', 'none'];
+    return !ignored.includes(val);
+};
+
+// Helper to extract all strings and values recursively from an object/array
+const collectAllValues = (obj: any, keysToCollect: string[]): string[] => {
+    const values: string[] = [];
+    
+    const recurse = (current: any) => {
+        if (!current) {
+            return;
+        }
+        if (typeof current === 'string' || typeof current === 'number' || typeof current === 'boolean') {
+            const normalized = normalizeString(current);
+            if (isValidIdentifier(normalized)) {
+                values.push(normalized);
+            }
+            return;
+        }
+        if (Array.isArray(current)) {
+            current.forEach(item => recurse(item));
+            return;
+        }
+        if (typeof current === 'object') {
+            Object.keys(current).forEach(k => {
+                const isTargetKey = keysToCollect.some(target => 
+                    k === target || 
+                    k.toLowerCase() === target.toLowerCase() || 
+                    k.toLowerCase().includes(target.toLowerCase())
+                );
+                
+                if (isTargetKey) {
+                    const val = current[k];
+                    if (val && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+                        const normalized = normalizeString(val);
+                        if (isValidIdentifier(normalized)) {
+                            values.push(normalized);
+                        }
+                    } else if (val && (typeof val === 'object' || Array.isArray(val))) {
+                        recurse(val);
+                    }
+                } else {
+                    recurse(current[k]);
+                }
+            });
+        }
+    };
+    
+    recurse(obj);
+    return Array.from(new Set(values));
+};
+
+// Extract Selected Course Identifiers
+const getSelectedCourseIdentifiers = (course: any): string[] => {
+    if (!course) {
+        return [];
+    }
+    
+    const ids: string[] = [];
+    const add = (val: any) => {
+        const norm = normalizeString(val);
+        if (norm && isValidIdentifier(norm)) {
+            ids.push(norm);
+        }
+    };
+
+    add(course.id);
+    add(course._id);
+    add(course.slug);
+    add(course.title);
+    add(course.name);
+    add(course.course_name);
+    add(course.courseName);
+    add(course.career_group);
+    add(course.careerGroup);
+
+    const deepKeys = [
+        'id', '_id', 'slug', 'title', 'name', 'course_name', 'courseName',
+        'career_group', 'careerGroup', 'basic_paths', 'basic_path', 'path', 'paths',
+        'module', 'modules', 'quiz', 'quizzes'
+    ];
+    
+    const deepValues = collectAllValues(course, deepKeys);
+    deepValues.forEach(v => {
+        if (!ids.includes(v)) {
+            ids.push(v);
+        }
+    });
+
+    return ids;
+};
+
+// Extract Item Identifiers
+const getItemIdentifiers = (item: any): string[] => {
+    if (!item) {
+        return [];
+    }
+    
+    const ids: string[] = [];
+    const add = (val: any) => {
+        const norm = normalizeString(val);
+        if (norm && isValidIdentifier(norm)) {
+            ids.push(norm);
+        }
+    };
+
+    add(item.course_id);
+    add(item.courseId);
+    add(item.basic_path_id);
+    add(item.basicPathId);
+    add(item.basic_path_title);
+    add(item.basicPathTitle);
+    add(item.path_id);
+    add(item.pathId);
+    add(item.path_title);
+    add(item.pathTitle);
+    add(item.path_name);
+    add(item.pathName);
+    add(item.module_id);
+    add(item.moduleId);
+    add(item.module_title);
+    add(item.moduleTitle);
+    add(item.quiz_id);
+    add(item.quizId);
+    add(item.quiz_title);
+    add(item.quizTitle);
+    add(item.title);
+    add(item.name);
+    add(item.slug);
+    add(item.career_group);
+    add(item.careerGroup);
+
+    const deepKeys = [
+        'id', '_id', 'slug', 'title', 'name', 'course_id', 'courseId',
+        'basic_path_id', 'basicPathId', 'basic_path_title', 'basicPathTitle',
+        'path_id', 'pathId', 'path_title', 'pathTitle', 'path_name', 'pathName',
+        'module_id', 'moduleId', 'module_title', 'moduleTitle',
+        'quiz_id', 'quizId', 'quiz_title', 'quizTitle', 'career_group', 'careerGroup'
+    ];
+    
+    const deepValues = collectAllValues(item, deepKeys);
+    deepValues.forEach(v => {
+        if (!ids.includes(v)) {
+            ids.push(v);
+        }
+    });
+
+    return ids;
+};
+
+// Match Condition
+const isMatch = (selectedCourseIdentifiers: string[], itemIdentifiers: string[]): boolean => {
+    for (const cId of selectedCourseIdentifiers) {
+        for (const iId of itemIdentifiers) {
+            if (cId === iId) {
+                return true;
+            }
+            if (cId.length > 2 && iId.length > 2) {
+                if (cId.includes(iId) || iId.includes(cId)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+};
+
+// Reusable premium card component with unified blue-grey colors and no corner brackets/icons
+function PremiumCard({
+    title,
+    badgeText,
+    children,
+    footer,
+    className = '',
+}: {
+    title?: string;
+    badgeText?: string;
+    children: React.ReactNode;
+    footer?: React.ReactNode;
+    className?: string;
+}) {
+    return (
+        <div
+            className={`relative flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none ${className}`}
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+            {/* Top accent line */}
+            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+            <div>
+                {/* Header */}
+                {title && (
+                    <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5 sm:px-6 dark:border-white/5">
+                        <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
+                            {title}
+                        </h2>
+                        {badgeText && (
+                            <span
+                                className="rounded border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase text-slate-650 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400"
+                            >
+                                {badgeText}
+                            </span>
+                        )}
+                    </div>
+                )}
+
+                {/* Content */}
+                <div className="p-5 sm:p-6">{children}</div>
+            </div>
+
+            {/* Footer */}
+            {footer && (
+                <div className="border-t border-slate-200 bg-slate-50/50 px-5 py-3.5 sm:px-6 dark:border-white/5 dark:bg-white/[0.01]">
+                    {footer}
+                </div>
+            )}
+        </div>
+    );
+}
+
+// Reusable metric card with unified blue-grey border, no icons, no corner brackets
+function StatCard({
+    title,
+    value,
+    subtitle,
+}: {
+    title: string;
+    value: any;
+    subtitle: string;
+}) {
+    return (
+        <div
+            className="relative overflow-hidden rounded-xl border border-slate-200 p-4 sm:p-5 dark:border-slate-800"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+            <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+            {/* Top accent line */}
+            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+            {/* Content */}
+            <div className="relative z-10">
+                <p className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                    {title} 
+                </p>
+
+                <p className="mt-2 text-2xl leading-none font-black tracking-tight text-slate-800 sm:text-3xl dark:text-white">
+                    {value}
+                </p>
+
+                <p className="text-slate-550 mt-2 text-xs tracking-wide dark:text-slate-400/60">
+                    {subtitle}
+                </p>
+            </div>
+        </div>
+    );
+}
 
 export default function Show({ user, details }: { user: any; details: any }) {
     const [selectedDetail, setSelectedDetail] = useState<{
@@ -34,6 +285,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
     } | null>(null);
 
     const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
     const { data, setData, post, processing, errors } = useForm({
         name: user.name || '',
@@ -55,292 +307,224 @@ export default function Show({ user, details }: { user: any; details: any }) {
         });
     };
 
+    // Filter submissions and quizzes based on selected course (career group or course name)
+    const quizResults = details.recent_quizzes || [];
+    const submissions = details.recent_submissions || [];
+
+    const isSingleCourse = details.course_history?.length === 1;
+    const selectedCourseIdentifiers = selectedCourse ? getSelectedCourseIdentifiers(selectedCourse) : [];
+
+    const filteredSubmissions = selectedCourse
+        ? (isSingleCourse
+            ? submissions
+            : submissions.filter((sub: any) => {
+                  const itemIds = getItemIdentifiers(sub);
+                  const matched = isMatch(selectedCourseIdentifiers, itemIds);
+                  return matched;
+              }))
+        : [];
+
+    const filteredQuizResults = selectedCourse
+        ? (isSingleCourse
+            ? quizResults
+            : quizResults.filter((quiz: any) => {
+                  const itemIds = getItemIdentifiers(quiz);
+                  const matched = isMatch(selectedCourseIdentifiers, itemIds);
+                  return matched;
+              }))
+        : [];
+
+    const filteredQuizzes = filteredQuizResults;
+
+    console.log("selectedCourse", selectedCourse);
+    console.log("course identifiers", selectedCourseIdentifiers);
+    console.log("quizResults raw", quizResults);
+    console.log("submissions raw", submissions);
+    console.log("filteredQuizResults", filteredQuizResults);
+    console.log("filteredSubmissions", filteredSubmissions);
+
     const StudentDetails = () => (
         <div className="space-y-6">
-            {/* Gamification Stats */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                    <Trophy className="text-yellow-500" size={20} />
-                    Gamification Status
-                </h3>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-4">
-                        <p className="mb-1 text-xs text-slate-400">Level</p>
-                        <p className="text-2xl font-bold text-white">
-                            {details.gamification.level}
-                        </p>
-                    </div>
-                    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-4">
-                        <p className="mb-1 text-xs text-slate-400">EXP</p>
-                        <p className="text-2xl font-bold text-indigo-400">
-                            {details.gamification.exp}
-                        </p>
-                    </div>
-                    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-4">
-                        <p className="mb-1 text-xs text-slate-400">
-                            Total Gold
-                        </p>
-                        <p className="text-2xl font-bold text-yellow-400">
-                            {details.gamification.gold}
-                        </p>
-                    </div>
-                    {details.gamification.rank ? (
-                        <div className="flex flex-col items-center justify-center rounded-xl border border-slate-700/50 bg-slate-800/50 p-4">
-                            {details.gamification.rank.image ? (
-                                <img
-                                    src={details.gamification.rank.image}
-                                    alt={details.gamification.rank.name}
-                                    className="mb-1 h-8 w-8 object-contain"
-                                />
-                            ) : (
-                                <Trophy
-                                    className="mb-1 text-yellow-500"
-                                    size={24}
-                                />
-                            )}
-                            <p className="text-xs font-bold text-white uppercase">
-                                {details.gamification.rank.name}
+            {/* KPI Cards: Level, EXP, Gold, Rank (grid-cols-2 on mobile, lg:grid-cols-4 on desktop) */}
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <StatCard
+                    title="Level"
+                    value={details.gamification.level}
+                    subtitle="Current student level"
+                />
+                <StatCard
+                    title="EXP"
+                    value={details.gamification.exp}
+                    subtitle="Experience points accumulated"
+                />
+                <StatCard
+                    title="Total Gold"
+                    value={details.gamification.gold}
+                    subtitle="Acquired game gold"
+                />
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-4 sm:p-5 dark:border-slate-800">
+                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                    <div className="relative z-10 flex h-full items-center justify-between">
+                        <div className="text-left">
+                            <p className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                Rank
                             </p>
-                            <div className="mt-1 flex gap-1">
+                            <p
+                                className="mt-2 text-lg leading-none font-black text-slate-800 uppercase dark:text-white"
+                                style={{ fontFamily: "'Outfit', sans-serif" }}
+                            >
+                                {details.gamification.rank?.name || 'Unranked'}
+                            </p>
+                            <div className="mt-2 flex gap-1">
                                 {[...Array(3)].map((_, i) => (
                                     <span
                                         key={i}
-                                        className={`h-2 w-2 rounded-full ${i < details.gamification.rank.star ? 'bg-yellow-400' : 'bg-slate-700'}`}
+                                        className={`h-2 w-2 rounded-full ${details.gamification.rank && i < details.gamification.rank.star ? 'dark:bg-slate-555 bg-slate-400' : 'bg-slate-200 dark:bg-slate-700'}`}
                                     ></span>
                                 ))}
                             </div>
                         </div>
-                    ) : (
-                        <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-4">
-                            <p className="mb-1 text-xs text-slate-400">Rank</p>
-                            <p className="text-lg font-bold text-slate-500">
-                                Unranked
-                            </p>
-                        </div>
-                    )}
-                    <div className="relative col-span-2 flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/50 p-4 sm:flex-row md:col-span-full lg:col-span-2">
-                        {/* Glow effect for background */}
-                        <div className="pointer-events-none absolute -top-8 -right-8 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl"></div>
-
-                        <div className="z-10 flex-shrink-0">
-                            {details.gamification.character_avatar ? (
-                                <div className="flex h-16 w-auto items-center justify-center rounded-lg border border-slate-700/50 bg-slate-900/40 p-1 shadow-inner">
-                                    <img
-                                        src={
-                                            details.gamification
-                                                .character_avatar
-                                        }
-                                        alt={details.gamification.character}
-                                        className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]"
-                                    />
-                                </div>
-                            ) : (
-                                <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-slate-700 bg-slate-900/80">
-                                    <UserIcon
-                                        size={24}
-                                        className="text-slate-500"
-                                    />
-                                </div>
-                            )}
-                        </div>
-                        <div className="z-10">
-                            <p className="mb-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                                Active Character
-                            </p>
-                            <p className="truncate bg-gradient-to-r from-indigo-300 to-purple-400 bg-clip-text text-lg font-black text-transparent">
-                                {details.gamification.character}
-                            </p>
-                        </div>
+                        {details.gamification.rank?.image && (
+                            <img
+                                src={details.gamification.rank.image}
+                                alt={details.gamification.rank.name}
+                                className="h-10 w-10 object-contain"
+                            />
+                        )}
                     </div>
                 </div>
+            </div>
 
-                {/* Additional Stats Details */}
-                {Object.keys(details.gamification.exp_breakdown || {}).length >
-                    0 && (
-                    <div className="mt-6 border-t border-slate-800 pt-6">
-                        <p className="mb-4 text-xs font-bold tracking-widest text-slate-500 uppercase">
-                            EXP Distribution Breakdown
-                        </p>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-                            {Object.entries(
-                                details.gamification.exp_breakdown,
-                            ).map(
-                                ([pathName, expValue]: [string, any], idx) => (
+            {/* Course History (Paling Atas) */}
+            <PremiumCard
+                title="Course History"
+                badgeText="Select a course to view details"
+            >
+                {details.course_history?.length > 0 ? (
+                    <div
+                        className="custom-scrollbar max-h-[300px] space-y-2 overflow-y-auto pr-1"
+                        style={{ scrollbarWidth: 'thin' }}
+                    >
+                        {details.course_history.map(
+                            (course: any, idx: number) => {
+                                const isSelected =
+                                    selectedCourse?.course_name ===
+                                    course.course_name;
+                                return (
                                     <div
                                         key={idx}
-                                        className="flex items-center justify-between rounded-xl border border-slate-700/50 bg-slate-800/30 px-4 py-3 transition-colors hover:bg-slate-800/50"
+                                        onClick={() =>
+                                            setSelectedCourse(course)
+                                        }
+                                        className={`flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-3 transition-colors ${
+                                            isSelected
+                                                ? 'border-slate-400 bg-slate-100/80 dark:border-slate-600 dark:bg-slate-800/60'
+                                                : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20'
+                                        }`}
                                     >
-                                        <span
-                                            className="truncate pr-3 text-sm text-slate-300"
-                                            title={pathName}
-                                        >
-                                            {pathName}
-                                        </span>
-                                        <span className="text-sm font-black text-indigo-400">
-                                            +{expValue}
-                                        </span>
-                                    </div>
-                                ),
-                            )}
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Active Course */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                    <Target className="text-emerald-500" size={20} />
-                    Active Learning Path
-                </h3>
-                {details.active_course ? (
-                    <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-slate-700/50 bg-slate-800/50 p-4 md:flex-row md:items-center">
-                        <div className="flex items-center gap-4">
-                            {details.active_course.thumbnail_url ? (
-                                <img
-                                    src={details.active_course.thumbnail_url}
-                                    alt="Course Thumbnail"
-                                    className="h-16 w-16 rounded-lg border border-slate-700 object-cover shadow-md"
-                                />
-                            ) : (
-                                <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-700 bg-slate-900">
-                                    <BookOpen
-                                        size={24}
-                                        className="text-slate-500"
-                                    />
-                                </div>
-                            )}
-                            <div>
-                                <h4 className="text-lg font-bold text-white">
-                                    {details.active_course.course_name}
-                                </h4>
-                                <p className="mt-1 text-sm text-slate-400">
-                                    {details.active_course.career_group}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="mt-3 text-right md:mt-0">
-                            <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-emerald-400 uppercase">
-                                {details.active_course.status}
-                            </span>
-                            <p className="mt-2 text-xs text-slate-500">
-                                Enrolled:{' '}
-                                {new Date(
-                                    details.active_course.enrolled_at,
-                                ).toLocaleDateString('en-US', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                })}
-                            </p>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                        <p className="text-sm text-slate-400">
-                            No active course.
-                        </p>
-                    </div>
-                )}
-            </div>
-
-            {/* Course History */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                    <BookOpen className="text-blue-500" size={20} />
-                    All Course History
-                </h3>
-                {details.course_history?.length > 0 ? (
-                    <div className="custom-scrollbar max-h-96 space-y-3 overflow-y-auto pr-2">
-                        {details.course_history.map(
-                            (course: any, idx: number) => (
-                                <div
-                                    key={idx}
-                                    className="flex items-center justify-between gap-4 rounded-xl border border-slate-700/50 bg-slate-800/50 p-3"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        {course.thumbnail_url ? (
-                                            <img
-                                                src={course.thumbnail_url}
-                                                alt="Thumbnail"
-                                                className="h-10 w-10 rounded-md border border-slate-700 object-cover"
-                                            />
-                                        ) : (
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-700 bg-slate-900">
-                                                <BookOpen
-                                                    size={16}
-                                                    className="text-slate-500"
+                                        <div className="flex min-w-0 items-center gap-3">
+                                            {course.thumbnail_url ? (
+                                                <img
+                                                    src={course.thumbnail_url}
+                                                    alt="Thumbnail"
+                                                    className="h-10 w-10 rounded-md border border-slate-200 bg-white object-cover dark:border-slate-700 dark:bg-slate-900"
                                                 />
+                                            ) : (
+                                                <div className="text-slate-405 flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-xs font-semibold dark:border-slate-700 dark:bg-slate-900">
+                                                    Course
+                                                </div>
+                                            )}
+                                            <div className="min-w-0">
+                                                <h4 className="truncate text-xs font-semibold text-slate-800 dark:text-white">
+                                                    {course.course_name}
+                                                </h4>
+                                                <p className="truncate text-[10px] text-slate-400 dark:text-slate-500">
+                                                    {course.career_group}
+                                                </p>
                                             </div>
-                                        )}
-                                        <div>
-                                            <h4 className="text-sm font-medium text-white">
-                                                {course.course_name}
-                                            </h4>
-                                            <p className="text-xs text-slate-500">
-                                                {course.career_group}
-                                            </p>
                                         </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="text-xs text-slate-400 capitalize">
+                                        <span
+                                            className={`inline-block rounded border px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase ${
+                                                isSelected
+                                                    ? 'border-slate-400/30 bg-slate-200 text-slate-800 dark:border-slate-600/30 dark:bg-slate-700 dark:text-slate-200'
+                                                    : 'bg-slate-55 text-slate-650 dark:text-slate-350 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50'
+                                            }`}
+                                        >
                                             {course.status}
                                         </span>
                                     </div>
-                                </div>
-                            ),
+                                );
+                            },
                         )}
                     </div>
                 ) : (
-                    <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                        <p className="text-sm text-slate-400">
-                            No course history available.
-                        </p>
+                    <div className="py-8 text-center text-sm text-slate-400 dark:text-slate-500">
+                        No course history available.
                     </div>
                 )}
-            </div>
+            </PremiumCard>
 
-            {/* Recent Submissions & Quizzes */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                    <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                        <FileText className="text-indigo-500" size={20} />
-                        All Submissions
-                    </h3>
-                    {details.recent_submissions?.length > 0 ? (
-                        <div className="custom-scrollbar max-h-96 space-y-3 overflow-y-auto pr-2">
-                            {details.recent_submissions.map(
+            {/* Layout Grid: Submissions and Quiz Results */}
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-6">
+                {/* All Submissions */}
+                <PremiumCard title="All Submissions">
+                    {!selectedCourse ? (
+                        <div className="flex flex-col items-center justify-center py-16 text-center">
+                            <p className="text-sm font-medium text-slate-400 dark:text-slate-500 max-w-xs leading-relaxed">
+                                Select a course from Course History to view related quiz results and submissions.
+                            </p>
+                        </div>
+                    ) : filteredSubmissions.length > 0 ? (
+                        <div
+                            className="custom-scrollbar max-h-[300px] space-y-3 overflow-y-auto pr-2"
+                            style={{ scrollbarWidth: 'thin' }}
+                        >
+                            {filteredSubmissions.map(
                                 (sub: any, idx: number) => (
                                     <div
                                         key={idx}
-                                        className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-3"
+                                        className="border-slate-200 dark:border-slate-800 rounded-lg border bg-slate-50/50 p-4 transition-colors hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
                                     >
                                         <div className="flex items-start justify-between gap-4">
-                                            <div className="flex-1">
-                                                <h4 className="text-sm font-medium text-white">
+                                            <div className="min-w-0 flex-1">
+                                                <h4 className="truncate text-sm font-semibold text-slate-800 dark:text-white">
                                                     {sub.title}
                                                 </h4>
-                                                <p className="mt-0.5 text-[10px] text-slate-400">
+                                                <p className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">
                                                     {sub.career_group}
                                                 </p>
-                                                <p className="mt-2 text-xs text-slate-500">
+                                                <p className="mt-2.5 text-[10px] text-slate-500 dark:text-slate-400">
                                                     Submitted:{' '}
                                                     {new Date(
                                                         sub.submitted_at,
                                                     ).toLocaleDateString(
                                                         'en-US',
+                                                        {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                        },
                                                     )}
                                                 </p>
                                             </div>
-                                            <div className="flex flex-col items-end gap-2 text-right">
+                                            <div className="flex flex-shrink-0 flex-col items-end gap-2 text-right">
                                                 <span
-                                                    className={`rounded border px-2 py-1 text-[10px] font-bold uppercase ${sub.status === 'graded' || sub.status === 'approved' ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400' : 'border-amber-500/20 bg-amber-500/10 text-amber-400'}`}
+                                                    className={`rounded border px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase ${
+                                                        sub.status ===
+                                                            'graded' ||
+                                                        sub.status ===
+                                                            'approved'
+                                                            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                                            : 'dark:text-amber-450 border-amber-500/20 bg-amber-500/10 text-amber-600'
+                                                    }`}
                                                 >
                                                     {sub.status}
                                                 </span>
                                                 {sub.grade && (
-                                                    <p className="text-sm font-bold text-white">
-                                                        Score: {sub.grade}
+                                                    <p className="text-xs font-bold text-slate-700 dark:text-white">
+                                                        Grade: {sub.grade}
                                                     </p>
                                                 )}
                                                 <button
@@ -350,10 +534,9 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                                             data: sub,
                                                         })
                                                     }
-                                                    className="mt-1 flex items-center gap-1.5 rounded-md bg-indigo-500/10 px-2 py-1 text-xs text-indigo-400 transition-colors hover:text-indigo-300"
+                                                    className="mt-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                                 >
-                                                    <Eye size={12} /> View
-                                                    Details
+                                                    View
                                                 </button>
                                             </div>
                                         </div>
@@ -362,303 +545,304 @@ export default function Show({ user, details }: { user: any; details: any }) {
                             )}
                         </div>
                     ) : (
-                        <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                            <p className="text-sm text-slate-400">
-                                No submissions found.
+                        <div className="flex flex-col items-center justify-center py-16 text-center">
+                            <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                Tidak ada submissions untuk course ini
                             </p>
                         </div>
                     )}
-                </div>
+                </PremiumCard>
 
-                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                    <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                        <CheckCircle className="text-emerald-500" size={20} />
-                        All Quiz Results
-                    </h3>
-                    {details.recent_quizzes?.length > 0 ? (
-                        <div className="custom-scrollbar max-h-96 space-y-3 overflow-y-auto pr-2">
-                            {details.recent_quizzes.map(
-                                (quiz: any, idx: number) => (
-                                    <div
-                                        key={idx}
-                                        className="flex items-center justify-between rounded-xl border border-slate-700/50 bg-slate-800/50 p-3"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            {quiz.passed ? (
-                                                <CheckCircle
-                                                    className="text-emerald-500"
-                                                    size={16}
-                                                />
-                                            ) : (
-                                                <XCircle
-                                                    className="text-rose-500"
-                                                    size={16}
-                                                />
-                                            )}
-                                            <div>
-                                                <h4 className="text-sm font-medium text-white">
-                                                    Quiz: {quiz.path_name}
-                                                </h4>
-                                                <p className="mt-1 text-xs text-slate-500">
-                                                    {new Date(
-                                                        quiz.completed_at,
-                                                    ).toLocaleDateString(
-                                                        'en-US',
-                                                    )}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col items-end gap-2 text-right">
-                                            <span
-                                                className={`text-sm font-bold ${quiz.passed ? 'text-emerald-400' : 'text-rose-400'}`}
-                                            >
-                                                {quiz.score} / 100
-                                            </span>
-                                            <button
-                                                onClick={() =>
-                                                    setSelectedDetail({
-                                                        type: 'quiz',
-                                                        data: quiz,
-                                                    })
-                                                }
-                                                className="flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-2 py-1 text-xs text-emerald-400 transition-colors hover:text-emerald-300"
-                                            >
-                                                <Eye size={12} /> See Answers
-                                            </button>
-                                        </div>
+                {/* All Quiz Results */}
+                <PremiumCard title="All Quiz Results">
+                    {!selectedCourse ? (
+                        <div className="flex flex-col items-center justify-center py-16 text-center">
+                            <p className="text-sm font-medium text-slate-400 dark:text-slate-500 max-w-xs leading-relaxed">
+                                Select a course from Course History to view related quiz results and submissions.
+                            </p>
+                        </div>
+                    ) : filteredQuizzes.length > 0 ? (
+                        <div
+                            className="custom-scrollbar max-h-[300px] space-y-3 overflow-y-auto pr-2"
+                            style={{ scrollbarWidth: 'thin' }}
+                        >
+                            {filteredQuizzes.map((quiz: any, idx: number) => (
+                                <div
+                                    key={idx}
+                                    className="border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 rounded-lg border bg-slate-50/50 p-3.5 transition-colors hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
+                                >
+                                    <div className="min-w-0">
+                                        <h4 className="truncate text-xs font-semibold text-slate-800 dark:text-white">
+                                            Quiz: {quiz.path_name}
+                                        </h4>
+                                        <p className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">
+                                            {new Date(
+                                                quiz.completed_at,
+                                            ).toLocaleDateString('en-US', {
+                                                day: 'numeric',
+                                                month: 'short',
+                                                year: 'numeric',
+                                            })}
+                                        </p>
                                     </div>
-                                ),
-                            )}
+                                    <div className="flex flex-shrink-0 flex-col items-end gap-1.5 text-right">
+                                        <span
+                                            className={`text-xs font-black ${quiz.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-650 dark:text-rose-455'}`}
+                                        >
+                                            Score: {quiz.score}/100 (+{quiz.score * 2} ERP)
+                                        </span>
+                                        <button
+                                            onClick={() =>
+                                                setSelectedDetail({
+                                                    type: 'quiz',
+                                                    data: quiz,
+                                                })
+                                            }
+                                            className="dark:bg-slate-955 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+                                        >
+                                            Answers
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : (
-                        <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                            <p className="text-sm text-slate-400">
-                                No quiz attempts found.
+                        <div className="flex flex-col items-center justify-center py-16 text-center">
+                            <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                Tidak ada quiz results untuk course ini
                             </p>
                         </div>
                     )}
-                </div>
+                </PremiumCard>
             </div>
+
+            {/* Character Details (Dipindah Paling Bawah) */}
+            <PremiumCard title="Character Details">
+                <div className="border-slate-200 dark:border-slate-800 relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border bg-slate-50/50 p-4 sm:flex-row dark:bg-slate-900/20">
+                    <div className="z-10 flex-shrink-0">
+                        {details.gamification.character_avatar ? (
+                            <div className="flex h-16 w-auto items-center justify-center rounded-lg border border-slate-200 bg-white p-1 dark:border-slate-700/50 dark:bg-slate-900/40">
+                                <img
+                                    src={details.gamification.character_avatar}
+                                    alt={details.gamification.character}
+                                    className="h-full w-auto object-contain"
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-900/80">
+                                No Avatar
+                            </div>
+                        )}
+                    </div>
+                    <div className="z-10 text-center sm:text-left">
+                        <p className="mb-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                            Active Character
+                        </p>
+                        <p className="truncate text-lg font-black text-slate-800 dark:text-white">
+                            {details.gamification.character ||
+                                'No Active Character'}
+                        </p>
+                    </div>
+                </div>
+            </PremiumCard>
         </div>
     );
 
     const MentorDetails = () => (
         <div className="space-y-6">
-            {/* Mentor Workload & Stats */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <div className="mb-4 flex items-center justify-between">
-                    <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                        <Activity className="text-rose-500" size={20} />
-                        Mentor Workload & Statistics
-                    </h3>
-                    <button
-                        type="button"
-                        onClick={() => setShowEditProfileModal(true)}
-                        className="rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-3.5 py-1.5 text-xs font-bold text-indigo-400 transition-all hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] cursor-pointer"
-                    >
-                        Edit Profile Details
-                    </button>
-                </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5">
-                        <p className="mb-1 text-sm text-slate-400">
-                            Total Mentored
-                        </p>
-                        <p className="text-3xl font-bold text-white">
-                            {details.stats.total_students}
-                        </p>
-                    </div>
-                    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5">
-                        <p className="mb-1 text-sm text-slate-400">
-                            Active Students
-                        </p>
-                        <p className="text-3xl font-bold text-indigo-400">
-                            {details.stats.active_students}
-                        </p>
-                    </div>
-                    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5">
-                        <p className="mb-1 text-sm text-slate-400">
-                            Graduated Students
-                        </p>
-                        <p className="text-3xl font-bold text-emerald-400">
-                            {details.stats.graduated_students}
-                        </p>
-                    </div>
-                </div>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                <StatCard
+                    title="Total Mentored"
+                    value={details.stats.total_students}
+                    subtitle="Students guided"
+                />
+                <StatCard
+                    title="Active Students"
+                    value={details.stats.active_students}
+                    subtitle="Currently active"
+                />
+                <StatCard
+                    title="Graduated"
+                    value={details.stats.graduated_students}
+                    subtitle="Completed learning path"
+                />
+                <StatCard
+                    title="Pending Submissions"
+                    value={details.stats.pending_submissions_count}
+                    subtitle="Awaiting evaluation"
+                />
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {/* Pending Submissions Queue */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                    <div className="mb-4 flex items-center justify-between">
-                        <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                            <Clock className="text-amber-500" size={20} />
-                            Submission Queue
-                        </h3>
-                        <span className="rounded border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-xs font-bold text-amber-400">
-                            {details.stats.pending_submissions_count} Pending
-                        </span>
-                    </div>
-                    {details.recent_pending_submissions?.length > 0 ? (
-                        <div className="custom-scrollbar max-h-96 space-y-3 overflow-y-auto pr-2">
-                            {details.recent_pending_submissions.map(
-                                (sub: any, idx: number) => (
-                                    <div
-                                        key={idx}
-                                        className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-3"
-                                    >
-                                        <div className="mb-2 flex items-start justify-between">
-                                            <div>
-                                                <h4 className="text-sm font-medium text-white">
-                                                    {sub.task_title}
-                                                </h4>
-                                                <p className="mt-0.5 text-[10px] text-slate-400">
-                                                    {sub.career_group}
+            {/* Layout Grid */}
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-6">
+                {/* Left Column */}
+                <div className="space-y-6">
+                    {/* Pending Submission Queue */}
+                    <PremiumCard
+                        title="Submission Queue"
+                        badgeText={`${details.stats.pending_submissions_count} Pending`}
+                    >
+                        {details.recent_pending_submissions?.length > 0 ? (
+                            <div
+                                className="custom-scrollbar max-h-[300px] space-y-3 overflow-y-auto pr-2"
+                                style={{ scrollbarWidth: 'thin' }}
+                            >
+                                {details.recent_pending_submissions.map(
+                                    (sub: any, idx: number) => (
+                                        <div
+                                            key={idx}
+                                            className="border-slate-150 dark:border-slate-855 rounded-lg border bg-slate-50/50 p-3.5 transition-colors hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
+                                        >
+                                            <div className="mb-2.5 flex items-start justify-between gap-4">
+                                                <div className="min-w-0">
+                                                    <h4 className="text-slate-850 truncate text-xs font-semibold dark:text-white">
+                                                        {sub.task_title}
+                                                    </h4>
+                                                    <p className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">
+                                                        {sub.career_group}
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={() =>
+                                                        setSelectedDetail({
+                                                            type: 'mentor_submission',
+                                                            data: sub,
+                                                        })
+                                                    }
+                                                    className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                                >
+                                                    Detail
+                                                </button>
+                                            </div>
+                                            <div className="border-slate-150 mt-2.5 flex items-center justify-between border-t pt-2 text-[10px] dark:border-slate-800">
+                                                <p className="font-medium text-slate-500 dark:text-slate-400">
+                                                    Student: {sub.student_name}
+                                                </p>
+                                                <p className="text-slate-400 dark:text-slate-500">
+                                                    {new Date(
+                                                        sub.submitted_at,
+                                                    ).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                        },
+                                                    )}
                                                 </p>
                                             </div>
-                                            <button
-                                                onClick={() =>
-                                                    setSelectedDetail({
-                                                        type: 'mentor_submission',
-                                                        data: sub,
-                                                    })
+                                        </div>
+                                    ),
+                                )}
+                            </div>
+                        ) : (
+                            <div className="py-8 text-center text-sm text-slate-400 dark:text-slate-500">
+                                No pending submissions.
+                            </div>
+                        )}
+                    </PremiumCard>
+
+                    {/* Active Students List */}
+                    <PremiumCard title="Active Students Under Guidance">
+                        {details.active_students_list?.length > 0 ? (
+                            <div
+                                className="custom-scrollbar grid max-h-[300px] grid-cols-1 gap-3 overflow-y-auto pr-2 sm:grid-cols-2"
+                                style={{ scrollbarWidth: 'thin' }}
+                            >
+                                {details.active_students_list.map(
+                                    (student: any, idx: number) => (
+                                        <div
+                                            key={idx}
+                                            className="border-slate-150 flex items-center gap-3 rounded-lg border bg-slate-50/50 p-3 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
+                                        >
+                                            <img
+                                                src={
+                                                    student.avatar ||
+                                                    `https://ui-avatars.com/api/?name=${student.name}&background=6366f1&color=fff`
                                                 }
-                                                className="flex items-center gap-1 rounded border border-amber-500/20 bg-amber-500/10 px-2 py-1 text-xs text-amber-400 transition-colors hover:text-amber-300"
-                                            >
-                                                <Eye size={12} /> Detail
-                                            </button>
+                                                alt={student.name}
+                                                className="h-9 w-9 rounded-full border border-slate-200 bg-white object-cover dark:border-slate-700 dark:bg-slate-900"
+                                            />
+                                            <div className="min-w-0">
+                                                <p className="text-slate-855 truncate text-xs font-semibold dark:text-white">
+                                                    {student.name}
+                                                </p>
+                                                <p className="truncate text-[10px] text-slate-400 dark:text-slate-500">
+                                                    @{student.username}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="mt-2 flex items-center justify-between border-t border-slate-700/50 pt-2">
-                                            <p className="flex items-center gap-1 text-xs text-slate-400">
-                                                <UserIcon size={12} />{' '}
-                                                {sub.student_name}
-                                            </p>
-                                            <p className="text-[10px] text-slate-500">
-                                                {new Date(
-                                                    sub.submitted_at,
-                                                ).toLocaleDateString('en-US')}
-                                            </p>
-                                        </div>
+                                    ),
+                                )}
+                            </div>
+                        ) : (
+                            <div className="py-8 text-center text-sm text-slate-400 dark:text-slate-500">
+                                No active students currently.
+                            </div>
+                        )}
+                    </PremiumCard>
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-6">
+                    {/* Assigned Career Groups */}
+                    <PremiumCard title="Assigned Career Groups">
+                        {details.career_groups?.length > 0 ? (
+                            <div
+                                className="custom-scrollbar grid max-h-[300px] grid-cols-1 gap-2.5 overflow-y-auto pr-2"
+                                style={{ scrollbarWidth: 'thin' }}
+                            >
+                                {details.career_groups.map((group: any) => (
+                                    <div
+                                        key={group.id}
+                                        className="border-slate-150 flex items-center gap-3 rounded-lg border bg-slate-50/50 p-3 dark:border-slate-800 dark:bg-slate-900/10"
+                                    >
+                                        <div className="h-2 w-2 rounded-full bg-slate-400 shadow-sm"></div>
+                                        <span className="text-slate-850 text-xs font-semibold dark:text-white">
+                                            {group.name}
+                                        </span>
                                     </div>
-                                ),
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="py-8 text-center text-sm text-slate-400 dark:text-slate-500">
+                                No career groups assigned yet.
+                            </div>
+                        )}
+                    </PremiumCard>
+
+                    {/* Signature Management */}
+                    <PremiumCard title="Digital Signature Preview">
+                        <div className="border-slate-150 flex min-h-[180px] flex-col items-center justify-center rounded-xl border bg-slate-50/30 p-5 dark:border-slate-800 dark:bg-slate-900/10">
+                            {details.signature_url ? (
+                                <div className="text-center">
+                                    <img
+                                        src={details.signature_url}
+                                        alt="Mentor Signature"
+                                        className="border-slate-250 mx-auto mb-3.5 h-auto max-w-[240px] rounded-lg border bg-white object-contain p-3 dark:border-slate-700 dark:bg-white/5"
+                                    />
+                                    <p className="text-slate-450 dark:text-slate-450 text-[11px]">
+                                        Signature is used for generating valid
+                                        PDF certificates.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="text-center">
+                                    <p className="mb-1.5 text-xs font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
+                                        No Signature
+                                    </p>
+                                    <p className="dark:text-slate-405 text-xs font-medium text-slate-500">
+                                        No digital signature uploaded yet.
+                                    </p>
+                                    <p className="mt-1.5 text-[10px] font-bold text-rose-500 dark:text-rose-400">
+                                        Warning: Certificates signed by this
+                                        mentor may fail to generate.
+                                    </p>
+                                </div>
                             )}
                         </div>
-                    ) : (
-                        <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                            <p className="text-sm text-slate-400">
-                                No pending submissions.
-                            </p>
-                        </div>
-                    )}
-                </div>
-
-                {/* Assigned Career Groups */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                    <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                        <Briefcase className="text-indigo-500" size={20} />
-                        Assigned Career Groups
-                    </h3>
-                    {details.career_groups?.length > 0 ? (
-                        <div className="custom-scrollbar grid max-h-96 grid-cols-1 gap-3 overflow-y-auto pr-2">
-                            {details.career_groups.map((group: any) => (
-                                <div
-                                    key={group.id}
-                                    className="flex items-center gap-3 rounded-xl border border-slate-700/50 bg-slate-800/50 p-4"
-                                >
-                                    <div className="h-2 w-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
-                                    <span className="font-medium text-white">
-                                        {group.name}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                            <p className="text-sm text-slate-400">
-                                No career groups assigned yet.
-                            </p>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Active Students List */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                    <UserIcon className="text-cyan-500" size={20} />
-                    Active Students Under Guidance
-                </h3>
-                {details.active_students_list?.length > 0 ? (
-                    <div className="custom-scrollbar grid max-h-96 grid-cols-1 gap-4 overflow-y-auto pr-2 md:grid-cols-2 lg:grid-cols-3">
-                        {details.active_students_list.map(
-                            (student: any, idx: number) => (
-                                <div
-                                    key={idx}
-                                    className="flex items-center gap-4 rounded-xl border border-slate-700/50 bg-slate-800/50 p-4"
-                                >
-                                    <img
-                                        src={
-                                            student.avatar ||
-                                            `https://ui-avatars.com/api/?name=${student.name}&background=6366f1&color=fff`
-                                        }
-                                        alt={student.name}
-                                        className="h-10 w-10 rounded-full border border-slate-700 bg-slate-900 object-cover"
-                                    />
-                                    <div>
-                                        <p className="text-sm font-medium text-white">
-                                            {student.name}
-                                        </p>
-                                        <p className="text-[10px] text-slate-400">
-                                            @{student.username}
-                                        </p>
-                                    </div>
-                                </div>
-                            ),
-                        )}
-                    </div>
-                ) : (
-                    <div className="rounded-xl border border-dashed border-slate-800 bg-slate-800/30 py-6 text-center">
-                        <p className="text-sm text-slate-400">
-                            No active students currently.
-                        </p>
-                    </div>
-                )}
-            </div>
-
-            {/* Signature Management */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-white">
-                    <ShieldCheck className="text-emerald-500" size={20} />
-                    Digital Signature Preview
-                </h3>
-                <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-slate-700/50 bg-slate-800/50 p-6">
-                    {details.signature_url ? (
-                        <div className="text-center">
-                            <img
-                                src={details.signature_url}
-                                alt="Mentor Signature"
-                                className="mx-auto mb-4 h-auto max-w-[300px] rounded-lg bg-white/5 object-contain p-4"
-                            />
-                            <p className="mt-2 text-xs text-slate-400">
-                                Signature is used for generating valid PDF
-                                certificates.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="text-center">
-                            <Shield
-                                className="mx-auto mb-3 text-slate-600"
-                                size={40}
-                            />
-                            <p className="text-sm text-slate-400">
-                                No digital signature uploaded yet.
-                            </p>
-                            <p className="mt-1 text-xs text-rose-400">
-                                Warning: Certificates signed by this mentor may
-                                fail to generate.
-                            </p>
-                        </div>
-                    )}
+                    </PremiumCard>
                 </div>
             </div>
         </div>
@@ -666,90 +850,161 @@ export default function Show({ user, details }: { user: any; details: any }) {
 
     return (
         <AppLayout>
-            <div className="mx-auto min-h-screen max-w-[1200px] space-y-6 px-6 py-6 sm:space-y-8 sm:px-6 lg:px-10">
-                {/* BACK BUTTON */}
-                <div>
-                    <Link
-                        href="/admin/users"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition-colors hover:text-white"
-                    >
-                        <ArrowLeft size={16} />
-                        Back to Users
-                    </Link>
-                </div>
+            <div className="relative min-h-screen overflow-hidden bg-[#f8fafc] px-6 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-[#030712] dark:text-white">
+                {/* Subtle topglow */}
+                <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[400px] w-full max-w-7xl -translate-x-1/2 bg-gradient-to-b from-indigo-500/5 to-transparent blur-3xl" />
 
-                {/* USER PROFILE HEADER */}
-                <div className="flex flex-col items-center gap-6 rounded-2xl border border-slate-800/80 bg-slate-900 p-6 shadow-xl sm:p-8 md:flex-row md:items-start">
-                    <img
-                        src={
-                            user.avatar ||
-                            `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
-                        }
-                        alt={user.name}
-                        className="h-24 w-24 rounded-full border-4 border-slate-800 bg-slate-800 object-cover sm:h-32 sm:w-32"
-                    />
-                    <div className="flex-1 text-center md:text-left">
-                        <div className="mb-2 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                            <div>
-                                <h1 className="text-2xl font-bold text-white sm:text-3xl">
-                                    {user.name}
-                                </h1>
-                                <p className="text-slate-400">
-                                    @{user.username}
+                <div className="relative z-10 mx-auto max-w-7xl space-y-6 sm:space-y-8">
+                    {/* BACK BUTTON */}
+                    <div>
+                        <Link
+                            href="/admin/users"
+                            className="dark:text-slate-450 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#3B28F6] dark:hover:text-[#8B82FF]"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
+                        >
+                            Back to Users
+                        </Link>
+                    </div>
+
+                    {/* USER PROFILE HEADER */}
+                    <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 md:flex-row md:items-start dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none">
+                        {/* Top accent line */}
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                        {/* Avatar (No shadows, no glows, no hover) */}
+                        <div className="flex-shrink-0">
+                            <img
+                                src={
+                                    user.avatar ||
+                                    `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
+                                }
+                                alt={user.name}
+                                className="h-24 w-24 rounded-full border border-slate-200 bg-slate-100 object-cover sm:h-32 sm:w-32 dark:border-slate-800 dark:bg-slate-900"
+                            />
+                        </div>
+
+                        {/* Content */}
+                        <div className="relative z-10 flex-1 text-center md:text-left">
+                            <div className="mb-2 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                                <div>
+                                    <h1
+                                        className="text-slate-805 text-2xl leading-none font-bold tracking-tight sm:text-3xl dark:text-white"
+                                        style={{
+                                            background:
+                                                'linear-gradient(135deg, #2a1ce0 0%, #3B28F6 100%)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundClip: 'text',
+                                            fontFamily: 'Orbitron, sans-serif',
+                                        }}
+                                    >
+                                        {user.name}
+                                    </h1>
+                                    <p
+                                        className="mt-1.5 text-sm font-medium text-slate-400 dark:text-slate-500"
+                                        style={{
+                                            fontFamily: "'Outfit', sans-serif",
+                                        }}
+                                    >
+                                        @{user.username}
+                                    </p>
+                                </div>
+                                <div className="flex items-center justify-center gap-2.5 md:justify-start">
+                                    <span
+                                        className={`inline-flex self-center rounded-full border px-4 py-1.5 text-xs font-black tracking-wider uppercase ${
+                                            user.role === 'admin'
+                                                ? 'dark:text-rose-455 border-rose-500/20 bg-rose-500/10 text-rose-600'
+                                                : user.role === 'mentor'
+                                                  ? 'dark:text-blue-455 border-blue-500/20 bg-blue-500/10 text-blue-600'
+                                                  : 'text-emerald-650 dark:text-emerald-455 border-emerald-500/20 bg-emerald-500/10'
+                                        }`}
+                                        style={{
+                                            fontFamily: "'Outfit', sans-serif",
+                                        }}
+                                    >
+                                        {user.role}
+                                    </span>
+                                    {user.role === 'mentor' && (
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setShowEditProfileModal(true)
+                                            }
+                                            className="text-indigo-650 cursor-pointer rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-xs font-bold transition-all hover:bg-indigo-500/20 hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] dark:text-indigo-400"
+                                            style={{
+                                                fontFamily:
+                                                    "'Outfit', sans-serif",
+                                            }}
+                                        >
+                                            Edit Details
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div
+                                className="mt-5 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 md:justify-start dark:text-slate-400"
+                                style={{ fontFamily: "'Outfit', sans-serif" }}
+                            >
+                                <div className="flex items-center gap-1.5 rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 dark:border-slate-800 dark:bg-slate-800/40">
+                                    <span className="mr-1 text-[9px] font-semibold tracking-widest text-slate-400 uppercase">
+                                        Email
+                                    </span>
+                                    <span className="font-semibold">
+                                        {user.email}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1.5 rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 dark:border-slate-800 dark:bg-slate-800/40">
+                                    <span className="mr-1 text-[9px] font-semibold tracking-widest text-slate-400 uppercase">
+                                        Joined
+                                    </span>
+                                    <span className="font-semibold">
+                                        {new Date(
+                                            user.created_at,
+                                        ).toLocaleDateString('en-US', {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric',
+                                        })}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* DYNAMIC CONTENT BASED ON ROLE */}
+                    {user.role === 'student' && <StudentDetails />}
+                    {user.role === 'mentor' && <MentorDetails />}
+                    {user.role === 'admin' && (
+                        <div
+                            className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
+                        >
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                            <div className="relative z-10 py-6">
+                                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400">
+                                    Admin
+                                </div>
+                                <h3
+                                    className="text-slate-850 text-lg font-bold dark:text-white"
+                                    style={{
+                                        fontFamily: "'Orbitron', sans-serif",
+                                    }}
+                                >
+                                    Administrator Account
+                                </h3>
+                                <p className="text-slate-550 mx-auto mt-2 max-w-md text-sm dark:text-slate-400">
+                                    This account has full system-wide
+                                    permissions and access controls. No learning
+                                    path or guidance details to show.
                                 </p>
                             </div>
-                            <span
-                                className={`inline-flex self-center rounded-full border px-4 py-1.5 text-sm font-bold md:self-start ${
-                                    user.role === 'admin'
-                                        ? 'border-rose-500/20 bg-rose-500/10 text-rose-400'
-                                        : user.role === 'mentor'
-                                          ? 'border-blue-500/20 bg-blue-500/10 text-blue-400'
-                                          : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400'
-                                }`}
-                            >
-                                {user.role.toUpperCase()}
-                            </span>
                         </div>
-                        <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-slate-400 md:justify-start">
-                            <div className="flex items-center gap-1.5">
-                                <Mail size={16} />
-                                {user.email}
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <Clock size={16} />
-                                Joined{' '}
-                                {new Date(user.created_at).toLocaleDateString(
-                                    'en-US',
-                                    {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric',
-                                    },
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </div>
-
-                {/* DYNAMIC CONTENT BASED ON ROLE */}
-                {user.role === 'student' && <StudentDetails />}
-                {user.role === 'mentor' && <MentorDetails />}
-                {user.role === 'admin' && (
-                    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center shadow-xl">
-                        <Shield
-                            className="mx-auto mb-4 text-indigo-500/50"
-                            size={48}
-                        />
-                        <h3 className="text-xl font-bold text-white">
-                            Administrator Account
-                        </h3>
-                        <p className="mt-2 text-slate-400">
-                            This account has full access to the system. No
-                            specific operational details to show.
-                        </p>
-                    </div>
-                )}
             </div>
+
             {/* Detail Modal */}
             {selectedDetail && (
                 <div
@@ -757,37 +1012,55 @@ export default function Show({ user, details }: { user: any; details: any }) {
                     onClick={() => setSelectedDetail(null)}
                 >
                     <div
-                        className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0B1120] shadow-2xl"
+                        className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-[#0e0e1a]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/50 p-6">
+                        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-800/80 dark:bg-slate-900/50">
                             <div>
-                                <h2 className="text-xl font-bold text-white capitalize">
+                                <h2
+                                    className="text-slate-850 text-lg font-bold capitalize dark:text-white"
+                                    style={{
+                                        fontFamily: "'Orbitron', sans-serif",
+                                    }}
+                                >
                                     {selectedDetail.type.replace('_', ' ')}{' '}
                                     Details
                                 </h2>
-                                <p className="mt-1 text-xs text-slate-400">
+                                <p
+                                    className="text-slate-450 mt-1 text-xs dark:text-slate-400"
+                                    style={{
+                                        fontFamily: "'Outfit', sans-serif",
+                                    }}
+                                >
                                     Deep dive into the records.
                                 </p>
                             </div>
                             <button
                                 onClick={() => setSelectedDetail(null)}
-                                className="rounded-lg bg-slate-950/50 p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+                                className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 dark:bg-slate-950/50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                             >
-                                <X size={20} />
+                                Close
                             </button>
                         </div>
 
-                        <div className="custom-scrollbar overflow-y-auto p-6">
+                        <div
+                            className="custom-scrollbar overflow-y-auto bg-white p-6 text-slate-800 dark:bg-[#090910] dark:text-slate-200"
+                            style={{ scrollbarWidth: 'thin' }}
+                        >
                             {/* Quiz Detail */}
                             {selectedDetail.type === 'quiz' && (
-                                <div className="space-y-6">
-                                    <div className="flex items-center justify-between rounded-xl border border-slate-700 bg-slate-900 p-4">
+                                <div
+                                    className="space-y-6"
+                                    style={{
+                                        fontFamily: "'Outfit', sans-serif",
+                                    }}
+                                >
+                                    <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
                                         <div>
-                                            <h3 className="text-lg font-bold text-white">
+                                            <h3 className="text-slate-805 text-sm font-bold dark:text-white">
                                                 {selectedDetail.data.path_name}
                                             </h3>
-                                            <p className="text-sm text-slate-400">
+                                            <p className="text-slate-455 mt-1 text-xs dark:text-slate-400">
                                                 Completed at{' '}
                                                 {new Date(
                                                     selectedDetail.data
@@ -796,14 +1069,16 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-2xl font-black text-white">
+                                            <p className="text-slate-850 text-2xl font-black dark:text-white">
                                                 {selectedDetail.data.score}{' '}
-                                                <span className="text-sm font-normal text-slate-500">
-                                                    / 100
+                                                <span className="text-xs font-normal text-slate-500">
+                                                    / 100 (+
+                                                    {selectedDetail.data.score * 2}{' '}
+                                                    ERP)
                                                 </span>
                                             </p>
                                             <p
-                                                className={`mt-1 text-xs font-bold tracking-widest uppercase ${selectedDetail.data.passed ? 'text-emerald-400' : 'text-rose-400'}`}
+                                                className={`mt-1 text-[10px] font-bold tracking-widest uppercase ${selectedDetail.data.passed ? 'text-emerald-500 dark:text-emerald-400' : 'dark:text-rose-455 text-rose-500'}`}
                                             >
                                                 {selectedDetail.data.passed
                                                     ? 'PASSED'
@@ -813,13 +1088,11 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                     </div>
 
                                     <div className="space-y-4">
-                                        <h4 className="mb-2 border-b border-slate-800 pb-2 text-sm font-bold tracking-wider text-slate-300 uppercase">
+                                        <h4 className="border-slate-150 mb-2 border-b pb-2 text-xs font-bold tracking-wider text-slate-400 uppercase dark:border-slate-800 dark:text-slate-500">
                                             Questions & Answers
                                         </h4>
                                         {selectedDetail.data.questions?.map(
                                             (q: any, qIdx: number) => {
-                                                // Find the chosen answer logic
-                                                // quiz_results answers array typically stores [question_id => answer_id]
                                                 let chosenAnswerId = null;
                                                 if (
                                                     Array.isArray(
@@ -848,15 +1121,15 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                                 return (
                                                     <div
                                                         key={q._id}
-                                                        className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4"
+                                                        className="border-slate-150 rounded-xl border bg-slate-50/50 p-4 dark:border-slate-700/50 dark:bg-slate-800/20"
                                                     >
-                                                        <p className="mb-3 font-medium text-white">
-                                                            <span className="mr-2 text-slate-500">
+                                                        <p className="text-slate-805 mb-3 text-xs font-semibold dark:text-white">
+                                                            <span className="text-slate-455 dark:text-slate-555 mr-2">
                                                                 {qIdx + 1}.
                                                             </span>{' '}
                                                             {q.question_text}
                                                         </p>
-                                                        <div className="space-y-2 pl-6">
+                                                        <div className="space-y-2 pl-4">
                                                             {q.answers?.map(
                                                                 (ans: any) => {
                                                                     const isChosen =
@@ -866,44 +1139,34 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                                                         ans.is_correct;
 
                                                                     let highlightClass =
-                                                                        'text-slate-400';
-                                                                    let icon =
-                                                                        null;
+                                                                        'text-slate-500 dark:text-slate-455 bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-805';
+                                                                    let prefixText =
+                                                                        '';
 
                                                                     if (
                                                                         isChosen &&
                                                                         isCorrect
                                                                     ) {
                                                                         highlightClass =
-                                                                            'text-emerald-400 font-medium bg-emerald-500/10 border-emerald-500/20';
-                                                                        icon = (
-                                                                            <CheckCircle
-                                                                                size={
-                                                                                    14
-                                                                                }
-                                                                                className="text-emerald-500"
-                                                                            />
-                                                                        );
+                                                                            'text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 border-emerald-500/20';
+                                                                        prefixText =
+                                                                            '[Correct] ';
                                                                     } else if (
                                                                         isChosen &&
                                                                         !isCorrect
                                                                     ) {
                                                                         highlightClass =
-                                                                            'text-rose-400 font-medium bg-rose-500/10 border-rose-500/20';
-                                                                        icon = (
-                                                                            <XCircle
-                                                                                size={
-                                                                                    14
-                                                                                }
-                                                                                className="text-rose-500"
-                                                                            />
-                                                                        );
+                                                                            'text-rose-600 dark:text-rose-455 font-bold bg-rose-500/10 border-rose-500/20';
+                                                                        prefixText =
+                                                                            '[Wrong] ';
                                                                     } else if (
                                                                         !isChosen &&
                                                                         isCorrect
                                                                     ) {
                                                                         highlightClass =
-                                                                            'text-emerald-400 border-emerald-500/20 border-dashed';
+                                                                            'text-emerald-650 dark:text-emerald-400 border-emerald-500/20 border-dashed';
+                                                                        prefixText =
+                                                                            '[Correct Key] ';
                                                                     }
 
                                                                     return (
@@ -911,16 +1174,12 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                                                             key={
                                                                                 ans._id
                                                                             }
-                                                                            className={`flex items-start gap-2 rounded-lg border border-transparent p-2 ${highlightClass}`}
+                                                                            className={`flex items-start gap-2 rounded-lg border p-2 text-xs transition ${highlightClass}`}
                                                                         >
-                                                                            <div className="mt-0.5">
-                                                                                {icon ? (
-                                                                                    icon
-                                                                                ) : (
-                                                                                    <div className="h-3.5 w-3.5 rounded-full border border-slate-600"></div>
-                                                                                )}
-                                                                            </div>
-                                                                            <span className="text-sm">
+                                                                            <span className="text-xs">
+                                                                                {
+                                                                                    prefixText
+                                                                                }
                                                                                 {
                                                                                     ans.answer_text
                                                                                 }
@@ -938,28 +1197,29 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                 </div>
                             )}
 
-                            {/* Submission Detail (For Student History OR Mentor Pending) */}
+                            {/* Submission Detail */}
                             {(selectedDetail.type === 'submission' ||
                                 selectedDetail.type ===
                                     'mentor_submission') && (
-                                <div className="space-y-6">
-                                    <div className="rounded-xl border border-slate-700 bg-slate-900 p-4">
-                                        <h3 className="text-lg font-bold text-white">
+                                <div
+                                    className="space-y-6"
+                                    style={{
+                                        fontFamily: "'Outfit', sans-serif",
+                                    }}
+                                >
+                                    <div className="border-slate-250 rounded-xl border bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
+                                        <h3 className="text-slate-805 text-sm font-bold dark:text-white">
                                             {selectedDetail.data.title ||
                                                 selectedDetail.data.task_title}
                                         </h3>
-                                        <p className="mt-1 text-sm text-slate-400">
+                                        <p className="text-slate-455 dark:text-slate-555 mt-1 text-xs">
                                             {selectedDetail.data.career_group}
                                         </p>
 
                                         {selectedDetail.data.student_name && (
-                                            <div className="mt-3 flex items-center gap-2 border-t border-slate-800 pt-3 text-sm text-slate-300">
-                                                <UserIcon
-                                                    size={14}
-                                                    className="text-indigo-400"
-                                                />
+                                            <div className="border-slate-150 text-slate-650 dark:text-slate-305 mt-3 flex items-center gap-2 border-t pt-3 text-xs dark:border-slate-800">
                                                 Submitted by:{' '}
-                                                <span className="font-medium text-white">
+                                                <span className="text-slate-850 font-semibold dark:text-white">
                                                     {
                                                         selectedDetail.data
                                                             .student_name
@@ -969,60 +1229,63 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                         )}
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                        <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
-                                            <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-500 uppercase">
-                                                <MessageSquare size={14} />{' '}
-                                                Student Notes
-                                            </h4>
-                                            <p className="text-sm whitespace-pre-wrap text-slate-300">
-                                                {selectedDetail.data.notes || (
-                                                    <span className="text-slate-600 italic">
-                                                        No notes provided.
-                                                    </span>
-                                                )}
-                                            </p>
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div className="border-slate-150 flex flex-col justify-between rounded-xl border bg-slate-50/50 p-4 dark:border-slate-700/50 dark:bg-slate-800/10">
+                                            <div>
+                                                <h4 className="mb-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                                    Student Notes
+                                                </h4>
+                                                <p className="text-xs whitespace-pre-wrap text-slate-600 dark:text-slate-300">
+                                                    {selectedDetail.data
+                                                        .notes || (
+                                                        <span className="text-slate-400 italic dark:text-slate-600">
+                                                            No notes provided.
+                                                        </span>
+                                                    )}
+                                                </p>
+                                            </div>
                                         </div>
 
-                                        <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
-                                            <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-500 uppercase">
-                                                <FileText size={14} />{' '}
-                                                Attachments
-                                            </h4>
-                                            <div className="space-y-2">
-                                                {selectedDetail.data.link ? (
-                                                    <a
-                                                        href={
-                                                            selectedDetail.data
-                                                                .link
-                                                        }
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="flex items-center gap-2 rounded-lg bg-blue-500/10 p-2 text-sm text-blue-400 transition-colors hover:text-blue-300"
-                                                    >
-                                                        <LinkIcon size={16} />{' '}
-                                                        Open External Link
-                                                    </a>
-                                                ) : null}
-                                                {selectedDetail.data
-                                                    .file_path ? (
-                                                    <a
-                                                        href={`/storage/${selectedDetail.data.file_path}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="flex items-center gap-2 rounded-lg bg-emerald-500/10 p-2 text-sm text-emerald-400 transition-colors hover:text-emerald-300"
-                                                    >
-                                                        <Download size={16} />{' '}
-                                                        Download Attached File
-                                                    </a>
-                                                ) : null}
-                                                {!selectedDetail.data.link &&
-                                                    !selectedDetail.data
-                                                        .file_path && (
-                                                        <p className="text-sm text-slate-500 italic">
-                                                            No attachments.
-                                                        </p>
-                                                    )}
+                                        <div className="border-slate-150 flex flex-col justify-between rounded-xl border bg-slate-50/50 p-4 dark:border-slate-700/50 dark:bg-slate-800/10">
+                                            <div>
+                                                <h4 className="mb-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                                    Attachments
+                                                </h4>
+                                                <div className="space-y-2">
+                                                    {selectedDetail.data
+                                                        .link ? (
+                                                        <a
+                                                            href={
+                                                                selectedDetail
+                                                                    .data.link
+                                                            }
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="flex items-center justify-center gap-2 rounded-lg border border-blue-500/20 bg-blue-500/10 p-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-500/20 dark:text-blue-400"
+                                                        >
+                                                            Open External Link
+                                                        </a>
+                                                    ) : null}
+                                                    {selectedDetail.data
+                                                        .file_path ? (
+                                                        <a
+                                                            href={`/storage/${selectedDetail.data.file_path}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="flex items-center justify-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-2 text-xs font-semibold text-emerald-600 transition hover:bg-emerald-500/20 dark:text-emerald-400"
+                                                        >
+                                                            Download File
+                                                        </a>
+                                                    ) : null}
+                                                    {!selectedDetail.data
+                                                        .link &&
+                                                        !selectedDetail.data
+                                                            .file_path && (
+                                                            <p className="dark:text-slate-555 text-xs text-slate-400 italic">
+                                                                No attachments.
+                                                            </p>
+                                                        )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1031,18 +1294,17 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                     {selectedDetail.type === 'submission' &&
                                         (selectedDetail.data.feedback ||
                                             selectedDetail.data.grade) && (
-                                            <div className="rounded-xl border border-indigo-500/30 bg-indigo-900/20 p-4">
-                                                <h4 className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wider text-indigo-400 uppercase">
-                                                    <CheckCircle size={14} />{' '}
+                                            <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-4 dark:border-indigo-500/30 dark:bg-indigo-950/20">
+                                                <h4 className="mb-3 text-[10px] font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
                                                     Mentor Evaluation
                                                 </h4>
 
                                                 {selectedDetail.data.grade && (
-                                                    <div className="mb-3">
-                                                        <span className="text-sm text-slate-400">
+                                                    <div className="mb-3 text-xs">
+                                                        <span className="text-slate-555 dark:text-slate-400">
                                                             Score Awarded:{' '}
                                                         </span>
-                                                        <span className="text-lg font-bold text-white">
+                                                        <span className="text-sm font-black text-slate-800 dark:text-white">
                                                             {
                                                                 selectedDetail
                                                                     .data.grade
@@ -1053,11 +1315,11 @@ export default function Show({ user, details }: { user: any; details: any }) {
 
                                                 {selectedDetail.data
                                                     .feedback && (
-                                                    <div>
-                                                        <span className="mb-1 block text-sm text-slate-400">
+                                                    <div className="text-xs">
+                                                        <span className="text-slate-555 mb-1 block dark:text-slate-400">
                                                             Feedback:
                                                         </span>
-                                                        <div className="rounded-lg border border-slate-700/50 bg-slate-900/50 p-3 text-sm whitespace-pre-wrap text-slate-300">
+                                                        <div className="text-slate-650 rounded-lg border border-slate-200 bg-white p-3 whitespace-pre-wrap dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300">
                                                             {
                                                                 selectedDetail
                                                                     .data
@@ -1083,47 +1345,61 @@ export default function Show({ user, details }: { user: any; details: any }) {
                 >
                     <form
                         onSubmit={submitProfileUpdate}
-                        className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0B1120] shadow-2xl"
+                        className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-[#0e0e1a]"
                         onClick={(e) => e.stopPropagation()}
+                        style={{ fontFamily: "'Outfit', sans-serif" }}
                     >
-                        <div className="flex items-center justify-between border-b border-slate-800/80 bg-slate-900/50 p-6">
+                        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 p-6 dark:border-slate-800/80 dark:bg-slate-900/50">
                             <div>
-                                <h2 className="text-xl font-bold text-white">
+                                <h2
+                                    className="text-slate-855 text-lg font-bold dark:text-white"
+                                    style={{
+                                        fontFamily: "'Orbitron', sans-serif",
+                                    }}
+                                >
                                     Edit Mentor Profile Details
                                 </h2>
-                                <p className="mt-1 text-xs text-slate-400">
-                                    Update professional bio, LinkedIn link, work experience, and educational background.
+                                <p className="text-slate-550 dark:text-slate-450 mt-1 text-xs">
+                                    Update professional bio, LinkedIn link, work
+                                    experience, and educational background.
                                 </p>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setShowEditProfileModal(false)}
-                                className="rounded-lg bg-slate-950/50 p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+                                className="bg-slate-105 dark:bg-slate-955/50 text-slate-550 dark:text-slate-455 dark:hover:bg-slate-805 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors hover:bg-slate-200 hover:text-slate-800 dark:hover:text-white"
                             >
-                                <X size={20} />
+                                Close
                             </button>
                         </div>
 
                         <div
-                            className="custom-scrollbar overflow-y-auto p-6 space-y-6"
+                            className="custom-scrollbar space-y-6 overflow-y-auto bg-white p-6 dark:bg-[#090910]"
                             style={{
                                 scrollbarWidth: 'thin',
-                                scrollbarColor: 'rgba(99,102,241,0.3) transparent',
+                                scrollbarColor:
+                                    'rgba(99,102,241,0.3) transparent',
                             }}
                         >
                             {/* Basic profile info */}
-                            <ProfileFormBasic data={data} setData={setData} errors={errors} />
+                            <ProfileFormBasic
+                                data={data}
+                                setData={setData}
+                                errors={errors}
+                            />
 
-                            <div className="h-px bg-slate-800 my-4" />
+                            <div className="bg-slate-150 my-4 h-px dark:bg-slate-800" />
 
                             {/* Work Experience */}
                             <ProfileFormWorkExperience
                                 workExperiences={data.work_experiences}
-                                onChange={(val) => setData('work_experiences', val)}
+                                onChange={(val) =>
+                                    setData('work_experiences', val)
+                                }
                                 errors={errors}
                             />
 
-                            <div className="h-px bg-slate-800 my-4" />
+                            <div className="bg-slate-150 my-4 h-px dark:bg-slate-800" />
 
                             {/* Education */}
                             <ProfileFormEducation
@@ -1133,23 +1409,20 @@ export default function Show({ user, details }: { user: any; details: any }) {
                             />
                         </div>
 
-                        <div className="border-t border-slate-800/80 bg-slate-900/30 p-5 flex justify-end gap-3">
+                        <div className="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 p-5 dark:border-slate-800/80 dark:bg-slate-900/30">
                             <button
                                 type="button"
                                 onClick={() => setShowEditProfileModal(false)}
-                                className="rounded-xl border border-slate-800 bg-slate-950 px-5 py-2.5 text-xs font-semibold text-slate-300 transition-all active:scale-95 cursor-pointer"
+                                className="text-slate-605 dark:text-slate-350 hover:bg-slate-55 cursor-pointer rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-semibold transition-all active:scale-95 dark:bg-slate-950 dark:hover:bg-slate-900"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-indigo-500/20 hover:from-indigo-400 hover:to-purple-500 transition-all disabled:opacity-50 cursor-pointer"
+                                className="hover:to-purple-550 flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:from-indigo-400 disabled:opacity-50"
                             >
-                                {processing ? (
-                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                ) : null}
-                                Save Changes
+                                {processing ? 'Saving...' : 'Save Changes'}
                             </button>
                         </div>
                     </form>

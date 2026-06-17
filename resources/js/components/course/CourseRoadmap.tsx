@@ -12,6 +12,7 @@ type Path = {
     _id: string
     name: string
     modules: Module[]
+    thumbnail?: string | null
 }
 
 type CareerGroup = {
@@ -37,7 +38,7 @@ export default function CourseRoadmap({ course, mentors }: { course: Course, men
     if (!course) return null;
     const { badges } = usePage().props as any;
     return (
-        <section className="w-full py-16 sm:py-20 bg-[#040812] relative overflow-hidden font-sans border-t-2 border-[#1e2759] mt-20 text-white rounded-xl shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
+        <section className="w-full py-16 sm:py-20 bg-[#020202] relative overflow-hidden font-sans border-t border-slate-800 mt-10 text-white rounded-xl shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
             <div className="mx-auto max-w-[1200px] px-2 sm:px-4 relative z-10">
 
                 <div className="flex flex-col items-center">
@@ -49,6 +50,7 @@ export default function CourseRoadmap({ course, mentors }: { course: Course, men
                                 title={path.name}
                                 index={index}
                                 isLast={index === (course.basic_paths.length - 1)}
+                                thumbnail={path.thumbnail}
                                 href={`/admin/paths/${path._id}/modules`}
                             />
                         ))}
@@ -67,12 +69,12 @@ export default function CourseRoadmap({ course, mentors }: { course: Course, men
                                         {/* Horizontal line piece linking the centers */}
                                         {hasMultiple && (
                                             <>
-                                                {!isFirst && <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-gray-300"></div>}
-                                                {!isLast && <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-gray-300"></div>}
+                                                {!isFirst && <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-blue-500/70"></div>}
+                                                {!isLast && <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-blue-500/70"></div>}
                                             </>
                                         )}
                                         {/* Vertical line dropping to the CareerHeader */}
-                                        <div className="w-[2px] h-10 bg-gray-300"></div>
+                                        <div className="w-[2px] h-10 bg-blue-500/70"></div>
 
                                         {/* Placed CareerBranch inside the column so it centers perfectly under the vertical drop */}
                                         <CareerBranch group={group} index={idx} total={course.career_groups.length} badges={badges} mentors={mentors} courseId={course._id} />
