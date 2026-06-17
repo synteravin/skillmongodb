@@ -67,6 +67,8 @@ Route::middleware(['auth', 'role:admin'])
 
                 // BADGE
                 Route::resource('badges', LevelBadgeController::class);
+                Route::post('badges/reorder', [LevelBadgeController::class, 'reorder'])
+                    ->name('badges.reorder');
 
             });
         /* ---------------- DASHBOARD ---------------- */

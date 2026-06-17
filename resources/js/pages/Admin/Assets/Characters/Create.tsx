@@ -1,7 +1,7 @@
 import { useForm, Link } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
-import { ImagePlus, X, ChevronLeft, Save } from 'lucide-react';
+import { X } from 'lucide-react';
 
 function TagInput({
     value,
@@ -29,17 +29,17 @@ function TagInput({
     };
 
     return (
-        <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50">
+        <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:focus-within:border-slate-500 dark:focus-within:ring-slate-500">
             {value.map((tag) => (
                 <span
                     key={tag}
-                    className="flex items-center gap-1.5 rounded-lg bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300"
+                    className="flex items-center gap-1.5 rounded-lg bg-slate-200 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-white/10 dark:text-slate-300"
                 >
                     {tag}
                     <button
                         type="button"
                         onClick={() => removeTag(tag)}
-                        className="rounded-full p-0.5 hover:bg-indigo-200 dark:hover:bg-indigo-500/30"
+                        className="rounded-full p-0.5 hover:bg-slate-300 dark:hover:bg-white/20"
                     >
                         <X size={14} />
                     </button>
@@ -49,8 +49,8 @@ function TagInput({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={addTag}
-                placeholder={value.length === 0 ? placeholder : "Add more..."}
-                className="flex-1 min-w-[120px] bg-transparent px-2 py-1 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
+                placeholder={value.length === 0 ? placeholder : 'Add more...'}
+                className="flex-1 min-w-[120px] bg-transparent px-2 py-1 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder-slate-600"
             />
         </div>
     );
@@ -66,18 +66,14 @@ export default function CreateCharacter() {
         quote: '',
         guide_power_title: '',
         guide_power_description: '',
-
         character_type: [] as string[],
         abilities: [] as string[],
         personality: [] as string[],
-
         system_bonus: {
             exp_boost: '',
             gold_boost: '',
         },
-
         cosmetic_bonus: [] as string[],
-
         avatar: null as File | null,
     });
 
@@ -100,192 +96,210 @@ export default function CreateCharacter() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/admin/assets/characters', {
-            forceFormData: true,
-        });
+        post('/admin/assets/characters', { forceFormData: true });
     };
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-slate-50 py-8 dark:bg-[#0B1120]">
-                <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <Link 
-                                href="/admin/assets/characters" 
-                                className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
-                            >
-                                <ChevronLeft size={16} />
-                                Back to Characters
-                            </Link>
-                            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                                Create Character
-                            </h1>
-                            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                                Add a new character, define their traits, abilities, and bonuses.
-                            </p>
-                        </div>
-                        <div className="hidden sm:block">
-                            <button
-                                type="button"
-                                onClick={submit}
-                                disabled={processing}
-                                className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50"
-                            >
-                                <Save size={18} />
-                                {processing ? 'Saving...' : 'Save Character'}
-                            </button>
-                        </div>
-                    </div>
+        <div
+            className="min-h-screen bg-[#f8fafc] dark:bg-[#030712] py-8 px-4 sm:px-6 lg:px-10 transition-colors duration-200"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+            <div className="w-full space-y-6">
 
-                    <form onSubmit={submit} className="grid gap-8 lg:grid-cols-3">
-                        {/* LEFT COLUMN */}
-                        <div className="space-y-8 lg:col-span-2">
-                            {/* Basic Info */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                                <h2 className="mb-6 flex items-center text-lg font-bold text-slate-900 dark:text-white">
-                                    <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
-                                        1
-                                    </span>
+                {/* Header */}
+                <div>
+                    <Link
+                        href="/admin/assets/characters"
+                        className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                    >
+                        ← Back to Characters
+                    </Link>
+                    <h1
+                        className="text-2xl font-bold tracking-tight text-slate-800 dark:text-white"
+                        style={{ fontFamily: 'Orbitron, sans-serif' }}
+                    >
+                        Create Character
+                    </h1>
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        Add a new character, define their traits, abilities, and bonuses.
+                    </p>
+                </div>
+
+                <form onSubmit={submit} className="grid gap-6 lg:grid-cols-3">
+
+                    {/* LEFT COLUMN */}
+                    <div className="space-y-5 lg:col-span-2">
+
+                        {/* Basic Info Card */}
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                            <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-800 dark:text-white">
                                     Basic Information
                                 </h2>
-
-                                <div className="space-y-5">
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Character Name</label>
-                                        <input
-                                            type="text"
-                                            value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
-                                            placeholder="e.g. Orion The Sage"
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                        />
-                                    </div>
-                                    <div className="grid gap-5 sm:grid-cols-2">
-                                        <div>
-                                            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Tagline</label>
-                                            <input
-                                                type="text"
-                                                value={data.tagline}
-                                                onChange={(e) => setData('tagline', e.target.value)}
-                                                placeholder="e.g. Master of the Arcane"
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Quote</label>
-                                            <input
-                                                type="text"
-                                                value={data.quote}
-                                                onChange={(e) => setData('quote', e.target.value)}
-                                                placeholder="e.g. Magic is merely science we don't understand yet."
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="grid gap-5 sm:grid-cols-2">
-                                        <div>
-                                            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Guide Power Title</label>
-                                            <input
-                                                type="text"
-                                                value={data.guide_power_title}
-                                                onChange={(e) => setData('guide_power_title', e.target.value)}
-                                                placeholder="e.g. Arcane Insight"
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Guide Power Description</label>
-                                            <input
-                                                type="text"
-                                                value={data.guide_power_description}
-                                                onChange={(e) => setData('guide_power_description', e.target.value)}
-                                                placeholder="e.g. Reveals hidden clues in challenges."
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Backstory</label>
-                                        <textarea
-                                            rows={4}
-                                            value={data.backstory}
-                                            onChange={(e) => setData('backstory', e.target.value)}
-                                            placeholder="Write the character's origins and lore..."
-                                            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
-                                        />
-                                    </div>
-                                </div>
                             </div>
-
-                            {/* Traits */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                                <h2 className="mb-6 flex items-center text-lg font-bold text-slate-900 dark:text-white">
-                                    <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
-                                        2
-                                    </span>
-                                    Traits & Abilities
-                                </h2>
-                                <div className="space-y-5">
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Character Types</label>
-                                        <TagInput
-                                            value={data.character_type}
-                                            onChange={(tags) => setData('character_type', tags)}
-                                            placeholder="Press enter to add types (e.g. Mage, Support)"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Abilities</label>
-                                        <TagInput
-                                            value={data.abilities}
-                                            onChange={(tags) => setData('abilities', tags)}
-                                            placeholder="Press enter to add abilities"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Personality Traits</label>
-                                        <TagInput
-                                            value={data.personality}
-                                            onChange={(tags) => setData('personality', tags)}
-                                            placeholder="Press enter to add traits (e.g. Wise, Calm)"
-                                        />
-                                    </div>
+                            <div className="space-y-5 p-4 sm:p-6">
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                        Character Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        placeholder="e.g. Orion The Sage"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                    />
+                                    {errors.name && <p className="mt-1.5 text-xs font-medium text-red-500">{errors.name}</p>}
                                 </div>
-                            </div>
-
-                            {/* Bonuses */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                                <h2 className="mb-6 flex items-center text-lg font-bold text-slate-900 dark:text-white">
-                                    <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">
-                                        3
-                                    </span>
-                                    Bonuses
-                                </h2>
                                 <div className="grid gap-5 sm:grid-cols-2">
                                     <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">EXP Boost (%)</label>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Tagline
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.tagline}
+                                            onChange={(e) => setData('tagline', e.target.value)}
+                                            placeholder="e.g. Master of the Arcane"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Quote
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.quote}
+                                            onChange={(e) => setData('quote', e.target.value)}
+                                            placeholder="e.g. Magic is merely science we don't understand yet."
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid gap-5 sm:grid-cols-2">
+                                    <div>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Guide Power Title
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.guide_power_title}
+                                            onChange={(e) => setData('guide_power_title', e.target.value)}
+                                            placeholder="e.g. Arcane Insight"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Guide Power Description
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.guide_power_description}
+                                            onChange={(e) => setData('guide_power_description', e.target.value)}
+                                            placeholder="e.g. Reveals hidden clues in challenges."
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                        Backstory
+                                    </label>
+                                    <textarea
+                                        rows={4}
+                                        value={data.backstory}
+                                        onChange={(e) => setData('backstory', e.target.value)}
+                                        placeholder="Write the character's origins and lore..."
+                                        className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Traits & Abilities Card */}
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                            <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-800 dark:text-white">
+                                    Traits &amp; Abilities
+                                </h2>
+                            </div>
+                            <div className="space-y-5 p-4 sm:p-6">
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                        Character Types
+                                    </label>
+                                    <TagInput
+                                        value={data.character_type}
+                                        onChange={(tags) => setData('character_type', tags)}
+                                        placeholder="Press enter to add types (e.g. Mage, Support)"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                        Abilities
+                                    </label>
+                                    <TagInput
+                                        value={data.abilities}
+                                        onChange={(tags) => setData('abilities', tags)}
+                                        placeholder="Press enter to add abilities"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                        Personality Traits
+                                    </label>
+                                    <TagInput
+                                        value={data.personality}
+                                        onChange={(tags) => setData('personality', tags)}
+                                        placeholder="Press enter to add traits (e.g. Wise, Calm)"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Bonuses Card */}
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                            <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-800 dark:text-white">
+                                    Bonuses
+                                </h2>
+                            </div>
+                            <div className="p-4 sm:p-6">
+                                <div className="grid gap-5 sm:grid-cols-2">
+                                    <div>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            EXP Boost (%)
+                                        </label>
                                         <input
                                             type="number"
                                             value={data.system_bonus.exp_boost}
                                             onChange={(e) => setData('system_bonus', { ...data.system_bonus, exp_boost: e.target.value })}
                                             placeholder="e.g. 15"
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
                                         />
                                     </div>
                                     <div>
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Gold Boost (%)</label>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Gold Boost (%)
+                                        </label>
                                         <input
                                             type="number"
                                             value={data.system_bonus.gold_boost}
                                             onChange={(e) => setData('system_bonus', { ...data.system_bonus, gold_boost: e.target.value })}
                                             placeholder="e.g. 10"
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-500 dark:placeholder-slate-600"
                                         />
                                     </div>
                                     <div className="sm:col-span-2">
-                                        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Cosmetic Bonuses</label>
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                            Cosmetic Bonuses
+                                        </label>
                                         <TagInput
                                             value={data.cosmetic_bonus}
                                             onChange={(tags) => setData('cosmetic_bonus', tags)}
@@ -295,85 +309,96 @@ export default function CreateCharacter() {
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        {/* RIGHT COLUMN */}
-                        <div className="space-y-6">
-                            <div className="sticky top-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                                <h2 className="mb-6 flex items-center text-lg font-bold text-slate-900 dark:text-white">
+                    {/* RIGHT COLUMN */}
+                    <div className="space-y-5">
+
+                        {/* Avatar Card */}
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                            <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-800 dark:text-white">
                                     Avatar
                                 </h2>
-                                
+                            </div>
+                            <div className="p-4 sm:p-6">
                                 <div
-                                    onDragOver={(e) => {
-                                        e.preventDefault();
-                                        setDragActive(true);
-                                    }}
+                                    onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                                     onDragLeave={() => setDragActive(false)}
                                     onDrop={handleDrop}
                                     onClick={() => fileInputRef.current?.click()}
-                                    className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+                                    className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-6 sm:p-8 text-center transition-all ${
                                         dragActive
-                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10'
-                                            : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-indigo-500 dark:hover:bg-slate-800/50'
+                                            ? 'border-slate-400 bg-slate-50 dark:border-slate-500 dark:bg-white/5'
+                                            : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-white/[0.03]'
                                     }`}
                                 >
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => { if (e.target.files?.[0]) handleFile(e.target.files[0]); }}
+                                    />
+
                                     {preview ? (
-                                        <>
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 z-10" />
+                                        <div className="relative">
+                                            <div className="absolute inset-0 z-10 rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
                                             <img
                                                 src={preview}
                                                 alt="Preview"
-                                                className="h-48 w-48 rounded-full object-cover shadow-lg ring-4 ring-white dark:ring-slate-800"
+                                                className="h-28 w-28 rounded-full object-cover shadow-lg ring-4 ring-white dark:ring-slate-800"
                                             />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 z-20">
-                                                <span className="rounded-lg bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur-sm">
-                                                    Change Image
+                                            <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                                                <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm backdrop-blur-sm dark:bg-black/70 dark:text-white">
+                                                    Change
                                                 </span>
                                             </div>
-                                        </>
+                                        </div>
                                     ) : (
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="rounded-full bg-slate-100 p-4 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-indigo-500/20 dark:group-hover:text-indigo-400">
-                                                <ImagePlus size={32} />
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="rounded-full border border-slate-200 bg-slate-100 p-3 text-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-slate-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                                                </svg>
                                             </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-slate-900 dark:text-white">
-                                                    Click to upload or drag & drop
-                                                </p>
-                                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                                    SVG, PNG, JPG or GIF (max. 2MB)
-                                                </p>
-                                            </div>
+                                            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                                Click to upload or drag and drop
+                                            </p>
+                                            <p className="text-xs text-slate-400 dark:text-slate-500">
+                                                PNG, JPG, WEBP up to 2MB
+                                            </p>
                                         </div>
                                     )}
                                 </div>
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={(e) => {
-                                        if (e.target.files?.[0]) {
-                                            handleFile(e.target.files[0]);
-                                        }
-                                    }}
-                                />
-
-                                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 sm:hidden">
-                                    <button
-                                        type="submit"
-                                        disabled={processing}
-                                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50"
-                                    >
-                                        <Save size={18} />
-                                        {processing ? 'Saving...' : 'Save Character'}
-                                    </button>
-                                </div>
+                                {errors.avatar && (
+                                    <p className="mt-1.5 text-xs font-medium text-red-500">{errors.avatar}</p>
+                                )}
                             </div>
                         </div>
-                    </form>
-                </div>
+
+                        {/* Actions */}
+                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
+                            <Link
+                                href="/admin/assets/characters"
+                                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+                            >
+                                Cancel
+                            </Link>
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-slate-700 disabled:opacity-50 dark:bg-white/10 dark:hover:bg-white/20"
+                            >
+                                {processing ? 'Saving...' : 'Save Character'}
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
             </div>
+        </div>
         </AppLayout>
     );
 }

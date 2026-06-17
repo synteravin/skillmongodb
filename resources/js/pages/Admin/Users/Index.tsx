@@ -275,11 +275,6 @@ export default function Index({
 
             {/* TABLE VIEW (Desktop) */}
             <div className="relative hidden overflow-hidden rounded-xl border border-indigo-100 dark:border-[#7C5CFF]/15 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-md lg:block">
-                {/* Corner brackets */}
-                <span className="absolute top-2 left-2 h-2.5 w-2.5 border-t border-l" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
-                <span className="absolute top-2 right-2 h-2.5 w-2.5 border-t border-r" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
-                <span className="absolute bottom-2 left-2 h-2.5 w-2.5 border-b border-l" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
-                <span className="absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r" style={{ borderColor: '#6C63FF', opacity: 0.4 }} />
 
                 <div className="absolute top-0 left-8 right-8 h-px"
                     style={{ background: 'linear-gradient(90deg, transparent, rgba(108, 99, 255, 0.4), transparent)' }} />
@@ -322,9 +317,6 @@ export default function Index({
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-semibold text-slate-800 dark:text-white">
                                             {user.name}
-                                        </p>
-                                        <p className="truncate text-xs text-slate-400 dark:text-slate-400/70">
-                                            @{user.username}
                                         </p>
                                     </div>
                                 </div>
@@ -576,338 +568,309 @@ export default function Index({
                 {/* MODAL */}
                 {showModal && (
                     <div className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-[#030712]/80 p-4 backdrop-blur-sm duration-200 fade-in">
-                        {/* Overlay click area */}
-                        <div
-                            className="absolute inset-0"
-                            onClick={() => !processing && setShowModal(false)}
-                        ></div>
+    {/* Overlay click area */}
+    <div
+        className="absolute inset-0"
+        onClick={() => !processing && setShowModal(false)}
+    ></div>
 
-                        <form
-                            onSubmit={submit}
-                            className="relative z-10 flex max-h-[90vh] w-full max-w-md animate-in flex-col overflow-hidden rounded-xl border border-white/8 bg-[#060B1A] shadow-2xl duration-200 zoom-in-95"
-                        >
-                            <div className="flex shrink-0 items-center justify-between border-b border-white/8 bg-white/[0.02] p-5">
-                                <div>
-                                    <h2 className="text-lg font-bold text-white">
-                                        {editUser
-                                            ? 'Edit User Details'
-                                            : 'Create New User'}
-                                    </h2>
-                                    <p className="mt-0.5 text-[11px] text-slate-400">
-                                        {editUser
-                                            ? "Update the user's information and role."
-                                            : 'Add a new user to the system.'}
-                                    </p>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        !processing && setShowModal(false)
-                                    }
-                                    className="rounded-lg border border-white/8 bg-white/4 p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-white"
-                                    disabled={processing}
-                                >
-                                    <X size={16} />
-                                </button>
+    <form
+        onSubmit={submit}
+        className="relative z-10 flex max-h-[92vh] w-full max-w-2xl animate-in flex-col overflow-hidden rounded-xl border bg-gradient-to-b from-[#0e0e1a] to-[#090910] shadow-2xl duration-200 zoom-in-95"
+        style={{
+            borderColor: 'rgba(108,99,255,0.3)',
+            fontFamily: "'Outfit', sans-serif",
+        }}
+    >
+        {/* Top highlight line */}
+        <div
+            className="pointer-events-none absolute top-0 left-10 right-10 h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(108,99,255,0.5), transparent)' }}
+        />
+
+        {/* Modal Header */}
+        <div
+            className="flex shrink-0 items-center justify-between p-6"
+            style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.015)' }}
+        >
+            <div>
+                <div className="mb-2 inline-flex w-fit items-center gap-1.5 rounded border px-2.5 py-1"
+                    style={{ borderColor: 'rgba(59,40,246,0.35)', background: 'rgba(59,40,246,0.1)' }}>
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B28F6]" />
+                    <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#3B28F6]">
+                        {editUser ? 'Edit User' : 'New User'}
+                    </span>
+                </div>
+                <h2
+                    className="text-lg font-bold uppercase tracking-[0.12em] text-white"
+                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                >
+                    {editUser ? 'Edit User Details' : 'Create New User'}
+                </h2>
+                <p className="mt-1 text-[12px]" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: "'Outfit', sans-serif" }}>
+                    {editUser
+                        ? "Update the user's information and role."
+                        : 'Add a new user to the system.'}
+                </p>
+            </div>
+            <button
+                type="button"
+                onClick={() => !processing && setShowModal(false)}
+                className="rounded-lg p-2 transition-colors"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                disabled={processing}
+            >
+                <X size={16} />
+            </button>
+        </div>
+
+        <div className="custom-scrollbar flex-grow space-y-5 overflow-y-auto p-6">
+            {/* AVATAR */}
+            <div className="flex flex-col items-center justify-center">
+                <div
+                    className={`relative h-24 w-24 rounded-full border-2 border-dashed group flex cursor-pointer items-center justify-center overflow-hidden shadow-inner transition-all duration-300`}
+                    style={{
+                        borderColor: errors.avatar ? '#f43f5e' : 'rgba(108,99,255,0.35)',
+                        background: 'rgba(255,255,255,0.03)',
+                    }}
+                    onClick={() =>
+                        document.getElementById('avatarInput')?.click()
+                    }
+                    onMouseEnter={e => { if (!errors.avatar) (e.currentTarget.style.borderColor = 'rgba(108,99,255,0.7)'); }}
+                    onMouseLeave={e => { if (!errors.avatar) (e.currentTarget.style.borderColor = 'rgba(108,99,255,0.35)'); }}
+                >
+                    {preview ? (
+                        <>
+                            <img
+                                src={preview}
+                                alt="Avatar Preview"
+                                className="h-full w-full object-cover"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                <Camera size={22} className="text-white" />
                             </div>
-
-                            <div className="custom-scrollbar flex-grow space-y-5 overflow-y-auto p-5">
-                                {/* AVATAR */}
-                                <div className="flex flex-col items-center justify-center">
-                                    <div
-                                        className={`relative h-20 w-20 rounded-full border-2 border-dashed bg-white/4 ${errors.avatar ? 'border-rose-500' : 'border-white/10 hover:border-[#7C5CFF]'} group flex cursor-pointer items-center justify-center overflow-hidden shadow-inner transition-all duration-300`}
-                                        onClick={() =>
-                                            document
-                                                .getElementById('avatarInput')
-                                                ?.click()
-                                        }
-                                    >
-                                        {preview ? (
-                                            <>
-                                                <img
-                                                    src={preview}
-                                                    alt="Avatar Preview"
-                                                    className="h-full w-full object-cover"
-                                                />
-                                                <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                                    <Camera
-                                                        size={20}
-                                                        className="text-white"
-                                                    />
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="flex flex-col items-center text-slate-500 transition-colors group-hover:text-indigo-400">
-                                                <div className="mb-1 flex h-8 w-8 items-center justify-center rounded-full border border-slate-800 bg-slate-900 shadow-sm transition-transform duration-300 group-hover:scale-110">
-                                                    <Upload size={14} />
-                                                </div>
-                                                <span className="text-[9px] font-medium tracking-wider uppercase">
-                                                    Photo
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <input
-                                        id="avatarInput"
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={(e) =>
-                                            e.target.files &&
-                                            handleFile(e.target.files[0])
-                                        }
-                                    />
-                                    {errors.avatar && (
-                                        <span className="mt-2 text-xs font-medium text-rose-500">
-                                            {errors.avatar}
-                                        </span>
-                                    )}
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        <div>
-                                            <label className="mb-1.5 ml-1 block text-xs font-medium text-slate-400">
-                                                Full Name{' '}
-                                                <span className="text-rose-500">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <div className="relative">
-                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                                    <UserIcon
-                                                        size={16}
-                                                        className={
-                                                            errors.name
-                                                                ? 'text-rose-500'
-                                                                : 'text-slate-500'
-                                                        }
-                                                    />
-                                                </div>
-                                                <input
-                                                    placeholder="John Doe"
-                                                    value={data.name}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            'name',
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className={`w-full border bg-slate-950 py-2.5 pr-4 pl-10 ${errors.name ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-base text-white transition-all placeholder:text-slate-600 focus:ring-1 focus:outline-none md:text-sm`}
-                                                    required
-                                                />
-                                            </div>
-                                            {errors.name && (
-                                                <span className="mt-1 ml-1 inline-block text-xs text-rose-500">
-                                                    {errors.name}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="mb-1.5 ml-1 block text-xs font-medium text-slate-400">
-                                                Username{' '}
-                                                <span className="text-rose-500">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <div className="relative">
-                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                                    <span
-                                                        className={`text-sm font-semibold ${errors.username ? 'text-rose-500' : 'text-slate-500'}`}
-                                                    >
-                                                        @
-                                                    </span>
-                                                </div>
-                                                <input
-                                                    placeholder="johndoe"
-                                                    value={data.username}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            'username',
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className={`w-full border bg-slate-950 py-2.5 pr-4 pl-9 ${errors.username ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-base text-white transition-all placeholder:text-slate-600 focus:ring-1 focus:outline-none md:text-sm`}
-                                                    required
-                                                />
-                                            </div>
-                                            {errors.username && (
-                                                <span className="mt-1 ml-1 inline-block text-xs text-rose-500">
-                                                    {errors.username}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-1.5 ml-1 block text-xs font-medium text-slate-400">
-                                            Email Address{' '}
-                                            <span className="text-rose-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                                <Mail
-                                                    size={16}
-                                                    className={
-                                                        errors.email
-                                                            ? 'text-rose-500'
-                                                            : 'text-slate-500'
-                                                    }
-                                                />
-                                            </div>
-                                            <input
-                                                type="email"
-                                                placeholder="john@example.com"
-                                                value={data.email}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'email',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={`w-full border bg-slate-950 py-2.5 pr-4 pl-10 ${errors.email ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-base text-white transition-all placeholder:text-slate-600 focus:ring-1 focus:outline-none md:text-sm`}
-                                                required
-                                            />
-                                        </div>
-                                        {errors.email && (
-                                            <span className="mt-1 ml-1 inline-block text-xs text-rose-500">
-                                                {errors.email}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        <div>
-                                            <label className="mb-1.5 ml-1 block text-xs font-medium text-slate-400">
-                                                Password{' '}
-                                                {editUser ? (
-                                                    <span className="ml-1 text-[10px] text-slate-500">
-                                                        (Optional)
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-rose-500">
-                                                        *
-                                                    </span>
-                                                )}
-                                            </label>
-                                            <input
-                                                type="password"
-                                                placeholder={
-                                                    editUser
-                                                        ? 'Leave blank to keep'
-                                                        : '••••••••'
-                                                }
-                                                value={data.password}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'password',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={`w-full border bg-slate-950 px-4 py-2.5 ${errors.password ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} rounded-xl text-base text-white transition-all placeholder:text-slate-600 focus:ring-1 focus:outline-none md:text-sm`}
-                                                required={!editUser}
-                                            />
-                                            {errors.password && (
-                                                <span className="mt-1 ml-1 inline-block text-xs text-rose-500">
-                                                    {errors.password}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="mb-1.5 ml-1 block text-xs font-medium text-slate-400">
-                                                Role{' '}
-                                                <span className="text-rose-500">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <div className="relative">
-                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                                    <Shield
-                                                        size={16}
-                                                        className={
-                                                            errors.role
-                                                                ? 'text-rose-500'
-                                                                : 'text-slate-500'
-                                                        }
-                                                    />
-                                                </div>
-                                                <select
-                                                    value={data.role}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            'role',
-                                                            e.target
-                                                                .value as any,
-                                                        )
-                                                    }
-                                                    className={`w-full border bg-slate-950 py-2.5 pr-8 pl-10 ${errors.role ? 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500' : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500'} appearance-none rounded-xl text-base text-white transition-all focus:ring-1 focus:outline-none md:text-sm`}
-                                                >
-                                                    <option value="student">
-                                                        Student
-                                                    </option>
-                                                    <option value="mentor">
-                                                        Mentor
-                                                    </option>
-                                                    <option value="admin">
-                                                        Admin
-                                                    </option>
-                                                </select>
-                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
-                                                    <svg
-                                                        className="h-4 w-4 text-slate-400"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth={2}
-                                                            d="M19 9l-7 7-7-7"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            {errors.role && (
-                                                <span className="mt-1 ml-1 inline-block text-xs text-rose-500">
-                                                    {errors.role}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                        </>
+                    ) : (
+                        <div className="flex flex-col items-center transition-colors" style={{ color: 'rgba(108,99,255,0.6)' }}>
+                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110"
+                                style={{ background: 'rgba(108,99,255,0.1)', border: '1px solid rgba(108,99,255,0.2)' }}>
+                                <Upload size={15} />
                             </div>
+                            <span className="text-[9px] font-medium tracking-wider uppercase">
+                                Photo
+                            </span>
+                        </div>
+                    )}
+                </div>
+                <input
+                    id="avatarInput"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => e.target.files && handleFile(e.target.files[0])}
+                />
+                {errors.avatar && (
+                    <span className="mt-2 text-xs font-medium text-rose-400">
+                        {errors.avatar}
+                    </span>
+                )}
+            </div>
 
-                            <div className="flex shrink-0 justify-end gap-3 border-t border-slate-800/80 bg-slate-900/40 p-4">
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        !processing && setShowModal(false)
-                                    }
-                                    disabled={processing}
-                                    className="rounded-xl px-4.5 py-2 text-sm font-semibold text-slate-300 transition-colors hover:bg-slate-800 hover:text-white disabled:opacity-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-400 hover:to-purple-500 disabled:cursor-not-allowed disabled:opacity-70"
-                                >
-                                    {processing && (
-                                        <Loader2
-                                            size={16}
-                                            className="animate-spin"
-                                        />
-                                    )}
-                                    {editUser ? 'Save Changes' : 'Create User'}
-                                </button>
+            <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {/* Full Name */}
+                    <div>
+                        <label className="mb-1.5 ml-1 block text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Outfit', sans-serif" }}>
+                            Full Name <span className="text-rose-400">*</span>
+                        </label>
+                        <div className="relative">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                <UserIcon size={15} style={{ color: errors.name ? '#f43f5e' : 'rgba(255,255,255,0.3)' }} />
                             </div>
-                        </form>
+                            <input
+                                placeholder="John Doe"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                className="w-full py-2.5 pr-4 pl-10 text-sm text-white transition-all placeholder:text-slate-600 focus:outline-none focus:ring-1 rounded-lg"
+                                style={{
+                                    background: 'rgba(255,255,255,0.04)',
+                                    border: `1px solid ${errors.name ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.08)'}`,
+                                    fontFamily: "'Outfit', sans-serif",
+                                }}
+                                onFocus={e => { if (!errors.name) e.currentTarget.style.borderColor = 'rgba(108,99,255,0.6)'; }}
+                                onBlur={e => { if (!errors.name) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                                required
+                            />
+                        </div>
+                        {errors.name && (
+                            <span className="mt-1 ml-1 inline-block text-xs text-rose-400">{errors.name}</span>
+                        )}
                     </div>
+                    {/* Username */}
+                    <div>
+                        <label className="mb-1.5 ml-1 block text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Outfit', sans-serif" }}>
+                            Username <span className="text-rose-400">*</span>
+                        </label>
+                        <div className="relative">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                <span className="text-sm font-semibold" style={{ color: errors.username ? '#f43f5e' : 'rgba(255,255,255,0.3)' }}>@</span>
+                            </div>
+                            <input
+                                placeholder="johndoe"
+                                value={data.username}
+                                onChange={(e) => setData('username', e.target.value)}
+                                className="w-full py-2.5 pr-4 pl-9 text-sm text-white transition-all placeholder:text-slate-600 focus:outline-none rounded-lg"
+                                style={{
+                                    background: 'rgba(255,255,255,0.04)',
+                                    border: `1px solid ${errors.username ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.08)'}`,
+                                    fontFamily: "'Outfit', sans-serif",
+                                }}
+                                onFocus={e => { if (!errors.username) e.currentTarget.style.borderColor = 'rgba(108,99,255,0.6)'; }}
+                                onBlur={e => { if (!errors.username) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                                required
+                            />
+                        </div>
+                        {errors.username && (
+                            <span className="mt-1 ml-1 inline-block text-xs text-rose-400">{errors.username}</span>
+                        )}
+                    </div>
+                </div>
+
+                {/* Email */}
+                <div>
+                    <label className="mb-1.5 ml-1 block text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Outfit', sans-serif" }}>
+                        Email Address <span className="text-rose-400">*</span>
+                    </label>
+                    <div className="relative">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                            <Mail size={15} style={{ color: errors.email ? '#f43f5e' : 'rgba(255,255,255,0.3)' }} />
+                        </div>
+                        <input
+                            type="email"
+                            placeholder="john@example.com"
+                            value={data.email}
+                            onChange={(e) => setData('email', e.target.value)}
+                            className="w-full py-2.5 pr-4 pl-10 text-sm text-white transition-all placeholder:text-slate-600 focus:outline-none rounded-lg"
+                            style={{
+                                background: 'rgba(255,255,255,0.04)',
+                                border: `1px solid ${errors.email ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.08)'}`,
+                                fontFamily: "'Outfit', sans-serif",
+                            }}
+                            onFocus={e => { if (!errors.email) e.currentTarget.style.borderColor = 'rgba(108,99,255,0.6)'; }}
+                            onBlur={e => { if (!errors.email) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                            required
+                        />
+                    </div>
+                    {errors.email && (
+                        <span className="mt-1 ml-1 inline-block text-xs text-rose-400">{errors.email}</span>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {/* Password */}
+                    <div>
+                        <label className="mb-1.5 ml-1 block text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Outfit', sans-serif" }}>
+                            Password{' '}
+                            {editUser ? (
+                                <span className="ml-1 text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>(Optional)</span>
+                            ) : (
+                                <span className="text-rose-400">*
+                                </span>
+                            )}
+                        </label>
+                        <input
+                            type="password"
+                            placeholder={editUser ? 'Leave blank to keep' : '••••••••'}
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            className="w-full px-4 py-2.5 text-sm text-white transition-all placeholder:text-slate-600 focus:outline-none rounded-lg"
+                            style={{
+                                background: 'rgba(255,255,255,0.04)',
+                                border: `1px solid ${errors.password ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.08)'}`,
+                                fontFamily: "'Outfit', sans-serif",
+                            }}
+                            onFocus={e => { if (!errors.password) e.currentTarget.style.borderColor = 'rgba(108,99,255,0.6)'; }}
+                            onBlur={e => { if (!errors.password) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                            required={!editUser}
+                        />
+                        {errors.password && (
+                            <span className="mt-1 ml-1 inline-block text-xs text-rose-400">{errors.password}</span>
+                        )}
+                    </div>
+                    {/* Role */}
+                    <div>
+                        <label className="mb-1.5 ml-1 block text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Outfit', sans-serif" }}>
+                            Role <span className="text-rose-400">*</span>
+                        </label>
+                        <div className="relative">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                <Shield size={15} style={{ color: errors.role ? '#f43f5e' : 'rgba(255,255,255,0.3)' }} />
+                            </div>
+                            <select
+                                value={data.role}
+                                onChange={(e) => setData('role', e.target.value as any)}
+                                className="w-full appearance-none py-2.5 pr-8 pl-10 text-sm text-white transition-all focus:outline-none rounded-lg"
+                                style={{
+                                    background: 'rgba(255,255,255,0.04)',
+                                    border: `1px solid ${errors.role ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.08)'}`,
+                                    fontFamily: "'Outfit', sans-serif",
+                                }}
+                                onFocus={e => { if (!errors.role) e.currentTarget.style.borderColor = 'rgba(108,99,255,0.6)'; }}
+                                onBlur={e => { if (!errors.role) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                            >
+                                <option value="student" style={{ background: '#0e0e1a' }}>Student</option>
+                                <option value="mentor" style={{ background: '#0e0e1a' }}>Mentor</option>
+                                <option value="admin" style={{ background: '#0e0e1a' }}>Admin</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+                                <svg className="h-4 w-4" style={{ color: 'rgba(255,255,255,0.3)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                        {errors.role && (
+                            <span className="mt-1 ml-1 inline-block text-xs text-rose-400">{errors.role}</span>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            className="flex shrink-0 justify-end gap-3 p-5"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.015)', fontFamily: "'Outfit', sans-serif" }}
+        >
+            <button
+                type="button"
+                onClick={() => !processing && setShowModal(false)}
+                disabled={processing}
+                className="rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50"
+                style={{ color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'white'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
+            >
+                Cancel
+            </button>
+            <button
+                type="submit"
+                disabled={processing}
+                className="flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-70"
+                style={{
+                    background: 'linear-gradient(135deg, #3B28F6 0%, #6C63FF 100%)',
+                    border: '1px solid rgba(108,99,255,0.4)',
+                    boxShadow: '0 4px 15px rgba(59,40,246,0.3)',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(59,40,246,0.5)'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 15px rgba(59,40,246,0.3)'; }}
+            >
+                {processing && <Loader2 size={16} className="animate-spin" />}
+                {editUser ? 'Save Changes' : 'Create User'}
+            </button>
+        </div>
+    </form>
+</div>
                 )}
             </div>
         </div>

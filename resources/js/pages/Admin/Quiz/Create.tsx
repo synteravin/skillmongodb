@@ -123,28 +123,49 @@ export default function Create({ pathId }: { pathId: string }) {
     return (
         <AppLayout>
             <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#020617] to-black text-white p-4 sm:p-6 lg:p-8">
-                <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+                <div className="w-full mx-auto space-y-6 sm:space-y-8">
 
                     {/* HEADER */}
-                    <div className="flex flex-col justify-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">
-                        <button
-                            onClick={() => window.history.back()}
-                            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium w-fit mb-2"
-                        >
-                            <ArrowLeft size={16} /> Back
-                        </button>
-                        <div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
-                                <div className="p-2 bg-indigo-500/10 rounded-lg">
-                                    <HelpCircle className="text-indigo-400" size={24} />
-                                </div>
+                    <header
+                        className="relative overflow-hidden rounded-xl px-6 py-5 bg-slate-900/50 border border-slate-800/60 backdrop-blur-xl shadow-lg w-full"
+                        style={{
+                            backgroundImage: `
+                                linear-gradient(rgba(148,163,184,0.05) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(148,163,184,0.05) 1px, transparent 1px)
+                            `,
+                            backgroundSize: "40px 40px",
+                        }}
+                    >
+                        {/* Corner brackets */}
+                        <span className="absolute left-3.5 top-3.5 h-3 w-3 border-l border-t border-slate-700" />
+                        <span className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t border-slate-700" />
+                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l border-slate-700" />
+                        <span className="absolute bottom-3.5 right-3.5 h-3 w-3 border-b border-r border-slate-700" />
+
+                        <div className="relative z-10 flex flex-col gap-2">
+                            <button
+                                onClick={() => window.history.back()}
+                                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium w-fit mb-2"
+                            >
+                                <ArrowLeft size={16} /> Back
+                            </button>
+
+                            {/* Badge */}
+                            <div className="inline-flex w-fit items-center gap-1.5 rounded border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-1">
+                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-400" />
+                                <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-indigo-400">
+                                    Quiz Builder
+                                </span>
+                            </div>
+
+                            <h1 className="text-2xl sm:text-3xl font-bold text-white">
                                 Create Quizz
                             </h1>
-                            <p className="text-slate-400 text-sm mt-2 ml-1">
+                            <p className="text-slate-400 text-sm mt-1">
                                 Add questions, answers, and media to construct your quiz.
                             </p>
                         </div>
-                    </div>
+                    </header>
 
                     {/* QUESTIONS LIST */}
                     <div className="space-y-6">
@@ -157,7 +178,7 @@ export default function Create({ pathId }: { pathId: string }) {
                                     onClick={addQuestion}
                                     className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
                                 >
-                                    <Plus size={16} />
+                                    +
                                     Add First Question
                                 </button>
                             </div>

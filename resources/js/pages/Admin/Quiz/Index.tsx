@@ -15,7 +15,7 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
             <div className="relative min-h-screen bg-[#030712] text-white p-4 sm:p-6 lg:p-8 w-full mx-auto overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] pointer-events-none select-none bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.12),transparent_50%)] z-0" />
 
-                <div className="relative z-10 max-w-5xl mx-auto space-y-6 sm:space-y-8">
+                <div className="relative z-10 w-full mx-auto space-y-6 sm:space-y-8">
 
                     {/* HEADER */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#060B1A]/80 p-6 rounded-xl border border-white/8 backdrop-blur-sm shadow-md">

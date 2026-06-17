@@ -8,7 +8,7 @@ export default function ModuleIndex({ path }: any) {
             <div className="relative min-h-screen bg-[#030712] text-white p-6 overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] pointer-events-none select-none bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.12),transparent_50%)] z-0" />
 
-                <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-6">
+                <div className="relative z-10 w-full mx-auto flex flex-col gap-6">
 
                     {/* HEADER */}
                     <div className="flex justify-between items-center bg-[#060B1A]/80 border border-white/8 p-6 rounded-xl backdrop-blur-sm shadow-md">
