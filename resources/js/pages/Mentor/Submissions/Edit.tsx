@@ -29,19 +29,20 @@ export default function EditSubmission({ submission }: Props) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
         put(`/mentor/submissions/${submission.id}`);
     };
 
     return (
         <AppLayout>
-            <div className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8">
-                
-                {/* Header Section */}
-                <div className="flex items-center gap-4 mb-6">
+            <div
+                className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+            >
+                {/* Header */}
+                <div className="flex items-center gap-4">
                     <Link
                         href={`/mentor/career-groups/${submission.group_id}/submissions`}
-                        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 transition-colors"
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all shadow-sm"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
@@ -55,21 +56,17 @@ export default function EditSubmission({ submission }: Props) {
                     </div>
                 </div>
 
-                <div className="mx-auto max-w-4xl relative">
-                    {/* Decorative glow */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl blur opacity-20 dark:opacity-30 pointer-events-none"></div>
-                    
-                    <div className="relative rounded-3xl bg-white dark:bg-[#0a0d27] border border-gray-100 dark:border-slate-800/80 shadow-xl overflow-hidden">
-                        {/* Inner accent */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 dark:bg-blue-500/10 rounded-bl-full pointer-events-none"></div>
+                {/* Form Card */}
+                <div className="max-w-4xl mx-auto">
+                    <div className="rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                        <form onSubmit={submit} className="p-6 sm:p-8 space-y-8">
 
-                        <form onSubmit={submit} className="p-6 sm:p-8 md:p-10 space-y-8 relative z-10">
-                            
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                                    <Edit className="w-6 h-6" />
+                            {/* Section Header */}
+                            <div className="flex items-center gap-3">
+                                <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                    <Edit className="w-5 h-5" />
                                 </div>
-                                <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+                                <h2 className="text-lg font-bold text-slate-800 dark:text-white">
                                     Assignment Information
                                 </h2>
                             </div>
@@ -83,11 +80,12 @@ export default function EditSubmission({ submission }: Props) {
                                     type="text"
                                     value={data.title}
                                     onChange={(e) => setData('title', e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                                    placeholder="Enter submission title..."
+                                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                                 />
                                 {errors.title && (
                                     <p className="mt-2 text-sm text-red-500 flex items-center gap-1.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                                         {errors.title}
                                     </p>
                                 )}
@@ -102,20 +100,22 @@ export default function EditSubmission({ submission }: Props) {
                                     rows={5}
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm resize-none"
+                                    placeholder="Describe the assignment requirements..."
+                                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
                                 />
                                 {errors.description && (
                                     <p className="mt-2 text-sm text-red-500 flex items-center gap-1.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                                         {errors.description}
                                     </p>
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {/* Submission Type & Deadline */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Submission Type */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                                         <LinkIcon className="w-4 h-4 text-slate-400" />
                                         Submission Type
                                     </label>
@@ -123,19 +123,21 @@ export default function EditSubmission({ submission }: Props) {
                                         <select
                                             value={data.submission_type}
                                             onChange={(e) => setData('submission_type', e.target.value)}
-                                            className="w-full appearance-none bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                                            className="w-full appearance-none bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all pr-10"
                                         >
                                             <option value="file">File Upload Only</option>
                                             <option value="link">URL Link Only</option>
-                                            <option value="both">Both (File & Link)</option>
+                                            <option value="both">Both (File &amp; Link)</option>
                                         </select>
                                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
                                         </div>
                                     </div>
                                     {errors.submission_type && (
                                         <p className="mt-2 text-sm text-red-500 flex items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                                             {errors.submission_type}
                                         </p>
                                     )}
@@ -143,7 +145,7 @@ export default function EditSubmission({ submission }: Props) {
 
                                 {/* Deadline */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                                         <Calendar className="w-4 h-4 text-slate-400" />
                                         Deadline
                                     </label>
@@ -151,68 +153,70 @@ export default function EditSubmission({ submission }: Props) {
                                         type="datetime-local"
                                         value={data.deadline}
                                         onChange={(e) => setData('deadline', e.target.value)}
-                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm [color-scheme:light] dark:[color-scheme:dark]"
+                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all [color-scheme:light] dark:[color-scheme:dark]"
                                     />
                                     {errors.deadline && (
                                         <p className="mt-2 text-sm text-red-500 flex items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                                             {errors.deadline}
                                         </p>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Attachment */}
-                            <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                            {/* Replace Attachment */}
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
                                     <Paperclip className="w-4 h-4 text-slate-400" />
-                                    Replace Attachment <span className="text-slate-400 dark:text-slate-500 font-normal">(Optional)</span>
+                                    Replace Attachment{' '}
+                                    <span className="text-slate-400 dark:text-slate-500 font-normal">(Optional)</span>
                                 </label>
-                                <div className="mt-2 flex justify-center rounded-xl border border-dashed border-gray-300 dark:border-slate-600 px-6 py-8 bg-slate-50/50 dark:bg-slate-900/30 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                                <div className="flex justify-center rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 px-6 py-10 bg-slate-50 dark:bg-slate-900/30 hover:bg-slate-100/60 dark:hover:bg-slate-900/50 transition-colors">
                                     <div className="text-center">
-                                        <Paperclip className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-500 mb-3" aria-hidden="true" />
-                                        <div className="mt-4 flex text-sm leading-6 text-slate-600 dark:text-slate-400 justify-center">
+                                        <Paperclip className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600 mb-3" aria-hidden="true" />
+                                        <div className="flex text-sm leading-6 text-slate-600 dark:text-slate-400 justify-center">
                                             <label
                                                 htmlFor="file-upload"
-                                                className="relative cursor-pointer rounded-md font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 focus-within:ring-offset-slate-900"
+                                                className="relative cursor-pointer rounded-md font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500"
                                             >
                                                 <span>Select new file</span>
-                                                <input 
-                                                    id="file-upload" 
-                                                    name="file-upload" 
-                                                    type="file" 
-                                                    className="sr-only" 
+                                                <input
+                                                    id="file-upload"
+                                                    name="file-upload"
+                                                    type="file"
+                                                    className="sr-only"
                                                     onChange={(e) => setData('attachment', e.target.files?.[0] || null)}
                                                 />
                                             </label>
                                             <p className="pl-1">to replace existing</p>
                                         </div>
-                                        <p className="text-xs leading-5 text-slate-500 mt-1">
+                                        <p className="text-xs text-slate-400 mt-1">
                                             {data.attachment ? data.attachment.name : 'PDF, DOCX, ZIP up to 10MB'}
                                         </p>
                                     </div>
                                 </div>
                                 {errors.attachment && (
                                     <p className="mt-2 text-sm text-red-500 flex items-center gap-1.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                                         {errors.attachment}
                                     </p>
                                 )}
                             </div>
 
-                            <div className="flex items-center justify-end gap-4 pt-6 border-t border-gray-100 dark:border-slate-800">
+                            {/* Actions */}
+                            <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                                 <Link
                                     href={`/mentor/career-groups/${submission.group_id}/submissions`}
-                                    className="px-6 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                    className="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 rounded-xl font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
                                 >
                                     Cancel
                                 </Link>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                                    className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm shadow-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                                 >
-                                    <Save className="w-5 h-5" />
+                                    <Save className="w-4 h-4" />
                                     {processing ? 'Updating...' : 'Update Submission'}
                                 </button>
                             </div>
