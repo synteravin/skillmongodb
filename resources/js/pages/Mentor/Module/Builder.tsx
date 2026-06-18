@@ -91,11 +91,11 @@ const typeIcons = {
 };
 
 const typeColors = {
-    text: "bg-blue-500 text-blue-400 border-blue-500",
-    image: "bg-emerald-500 text-emerald-400 border-emerald-500",
-    video: "bg-purple-500 text-purple-400 border-purple-500",
-    file: "bg-amber-500 text-amber-400 border-amber-500",
-    youtube: "bg-red-500 text-red-400 border-red-500"
+    text: "bg-blue-50/80 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20",
+    image: "bg-emerald-50/80 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
+    video: "bg-purple-50/80 text-purple-600 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20",
+    file: "bg-amber-50/80 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
+    youtube: "bg-red-50/80 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
 };
 
 /* ================= ITEM ================= */
@@ -143,11 +143,11 @@ const SortableContent = ({
         <div
             ref={setNodeRef}
             style={style}
-            className={`flex gap-3 group bg-slate-900 backdrop-blur-sm p-3 sm:p-4 rounded-xl transition-all duration-200 border ${isEditing ? 'border-indigo-500 shadow-lg shadow-indigo-500' : 'border-slate-800 hover:border-slate-700 hover:bg-slate-800 hover:-translate-y-0.5'}`}
+            className={`flex gap-3 group bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] backdrop-blur-sm p-3 sm:p-4 rounded-xl transition-all duration-200 border ${isEditing ? 'border-indigo-500 shadow-md shadow-indigo-500/10' : 'border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/30 hover:-translate-y-0.5'}`}
         >
 
             {/* DRAG */}
-            <div {...listeners} {...attributes} className="cursor-grab pt-1 text-slate-600 hover:text-indigo-400 transition-colors flex flex-col items-center justify-start touch-none">
+            <div {...listeners} {...attributes} className="cursor-grab pt-1 text-slate-450 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors flex flex-col items-center justify-start touch-none">
                 <GripVertical size={20} />
             </div>
 
@@ -157,23 +157,23 @@ const SortableContent = ({
                     <div className="flex flex-col gap-4">
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Content Title</label>
+                                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Content Title</label>
                                 <input
                                     value={localTitle}
                                     onChange={(e) => setLocalTitle(e.target.value)}
                                     placeholder="Enter title..."
-                                    className="bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                                    className="bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 px-4 py-2.5 rounded-xl w-full text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                 />
                             </div>
 
                             {content.type === "text" && (
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Description / Text Content</label>
+                                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Description / Text Content</label>
                                     <textarea
                                         value={localDesc}
                                         onChange={(e) => setLocalDesc(e.target.value)}
                                         placeholder="Write your content here..."
-                                        className="bg-slate-950 border border-slate-800 px-4 py-3 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all min-h-[120px] resize-y placeholder:text-slate-600 leading-relaxed"
+                                        className="bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 px-4 py-3 rounded-xl w-full text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all min-h-[120px] resize-y placeholder:text-slate-400 dark:placeholder:text-slate-600 leading-relaxed"
                                         rows={4}
                                     />
                                 </div>
@@ -181,29 +181,29 @@ const SortableContent = ({
 
                             {content.type === "youtube" && (
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">YouTube URL</label>
+                                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">YouTube URL</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                            <Youtube size={16} className="text-slate-500" />
+                                            <Youtube size={16} className="text-slate-450 dark:text-slate-550" />
                                         </div>
                                         <input
                                             value={localUrl}
                                             onChange={(e) => setLocalUrl(e.target.value)}
                                             placeholder="https://youtube.com/watch?v=..."
-                                            className="bg-slate-950 border border-slate-800 pl-10 pr-4 py-2.5 rounded-xl w-full text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                                            className="bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 pl-10 pr-4 py-2.5 rounded-xl w-full text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                                         />
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-2 pt-4 border-t border-slate-800">
+                        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-2 pt-4 border-t border-slate-200 dark:border-slate-800">
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     deleteContent(id, moduleId);
                                 }}
-                                className="flex items-center justify-center gap-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500 px-3 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors border border-rose-500 sm:border-transparent"
+                                className="flex items-center justify-center gap-1.5 text-rose-600 hover:text-white hover:bg-rose-600 dark:text-rose-455 dark:hover:text-white dark:hover:bg-rose-600 px-3 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors border border-rose-200 dark:border-rose-500/20"
                             >
                                 <Trash2 size={16} className="sm:w-3.5 sm:h-3.5" />
                                 Delete Content
@@ -212,7 +212,7 @@ const SortableContent = ({
                             <div className="flex items-center gap-2 w-full sm:w-auto">
                                 <button
                                     onClick={() => setEditingId(null)}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-slate-400 hover:text-white hover:bg-slate-800 px-4 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors border border-slate-700 sm:border-transparent"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-slate-550 dark:text-slate-400 hover:text-slate-850 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 px-4 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors border border-slate-200 dark:border-slate-700"
                                 >
                                     <X size={16} className="sm:w-3.5 sm:h-3.5" />
                                     Cancel
@@ -234,7 +234,7 @@ const SortableContent = ({
                                         saveContent(newContent);
                                         setEditingId(null);
                                     }}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-indigo-500/20"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-indigo-650 hover:bg-indigo-600 text-white px-5 py-2 sm:py-1.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-indigo-500/20"
                                 >
                                     <Check size={16} className="sm:w-3.5 sm:h-3.5" />
                                     Save
@@ -245,25 +245,25 @@ const SortableContent = ({
                 ) : (
                     <div
                         onClick={() => setEditingId(id)}
-                        className="cursor-pointer relative pr-8 group-hover:bg-slate-800/30 rounded-xl p-2 sm:p-3 -m-2 sm:-m-3 transition-colors w-full min-w-0"
+                        className="cursor-pointer relative pr-8 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 rounded-xl p-2 sm:p-3 -m-2 sm:-m-3 transition-colors w-full min-w-0"
                     >
                         <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
-                            <span className={`flex shrink-0 items-center gap-1.5 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${typeColors[content.type as keyof typeof typeColors] || "bg-slate-700 text-slate-300 border-slate-600"}`}>
+                            <span className={`flex shrink-0 items-center gap-1.5 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${typeColors[content.type as keyof typeof typeColors] || "bg-slate-100 dark:bg-slate-750 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-655"}`}>
                                 {typeIcons[content.type as keyof typeof typeIcons]}
                                 {content.type || "unknown"}
                             </span>
-                            <h3 className="font-semibold text-sm sm:text-base text-white group-hover:text-indigo-400 transition-colors line-clamp-1 break-all">
+                            <h3 className="font-semibold text-sm sm:text-base text-slate-800 dark:text-white group-hover:text-indigo-650 dark:group-hover:text-indigo-400 transition-colors line-clamp-1 break-all">
                                 {content.content?.title || "Untitled Content"}
                             </h3>
                         </div>
 
                         {/* PREVIEW WRAPPER */}
-                        <div className="mt-2 sm:mt-3 rounded-xl border border-slate-800/80 bg-slate-950/40 overflow-hidden shadow-inner w-full">
+                        <div className="mt-2 sm:mt-3 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/40 overflow-hidden shadow-inner w-full">
 
                             {/* TEXT PREVIEW */}
                             {content.type === "text" && content.content?.description && (
                                 <div className="p-4 sm:p-5 w-full overflow-hidden">
-                                    <p className="text-sm sm:text-base text-slate-300 whitespace-pre-wrap break-words" style={{ wordBreak: 'break-word' }}>
+                                    <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 whitespace-pre-wrap break-words" style={{ wordBreak: 'break-word' }}>
                                         {content.content.description}
                                     </p>
                                 </div>
@@ -345,7 +345,7 @@ const SortableContent = ({
                                 e.stopPropagation();
                                 deleteContent(id, moduleId);
                             }}
-                            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg"
+                            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 text-rose-500 hover:text-rose-450 hover:bg-rose-500/10 p-2 rounded-lg"
                             title="Delete Content"
                         >
                             <Trash2 size={16} />
@@ -448,7 +448,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
 
     const renderAddButtons = (moduleId: string, module: Module, isCentered = false) => {
         return activeYoutubeModule === moduleId ? (
-            <div className={`flex flex-col sm:flex-row gap-3 bg-slate-900/80 p-4 rounded-xl border border-red-500/30 animate-in fade-in zoom-in-95 duration-200 shadow-inner w-full ${isCentered ? 'max-w-xl mx-auto' : ''}`}>
+            <div className={`flex flex-col sm:flex-row gap-3 bg-slate-100/50 dark:bg-slate-900/80 p-4 rounded-xl border border-red-500/30 animate-in fade-in zoom-in-95 duration-200 shadow-inner w-full ${isCentered ? 'max-w-xl mx-auto' : ''}`}>
                 <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                         <Youtube size={16} className="text-red-500" />
@@ -458,7 +458,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                         value={youtubeUrl}
                         onChange={e => setYoutubeUrl(e.target.value)}
                         placeholder="Paste YouTube URL here (https://...)"
-                        className="w-full bg-slate-950/80 border border-slate-700 pl-10 pr-4 py-2.5 rounded-lg text-sm text-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                        className="w-full bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-750 pl-10 pr-4 py-2.5 rounded-lg text-sm text-slate-900 dark:text-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') submitYoutube(module);
                             if (e.key === 'Escape') setActiveYoutubeModule(null);
@@ -468,7 +468,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <button
                         onClick={() => setActiveYoutubeModule(null)}
-                        className="flex-1 sm:flex-none px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors border border-slate-700 sm:border-transparent"
+                        className="flex-1 sm:flex-none px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-850 rounded-lg transition-colors border border-slate-200 dark:border-slate-700 sm:border-transparent"
                     >
                         Cancel
                     </button>
@@ -483,11 +483,11 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
         ) : (
             <div className={`grid grid-cols-2 sm:flex sm:flex-wrap gap-2.5 w-full ${isCentered ? 'justify-center' : ''}`}>
                 {[
-                    { type: 'text', icon: Type, color: 'hover:border-blue-500/50 hover:text-blue-400 hover:bg-blue-500/10 border-slate-700/80 bg-slate-900/80' },
-                    { type: 'image', icon: ImageIcon, color: 'hover:border-emerald-500/50 hover:text-emerald-400 hover:bg-emerald-500/10 border-slate-700/80 bg-slate-900/80' },
-                    { type: 'video', icon: Video, color: 'hover:border-purple-500/50 hover:text-purple-400 hover:bg-purple-500/10 border-slate-700/80 bg-slate-900/80' },
-                    { type: 'file', icon: FileText, color: 'hover:border-amber-500/50 hover:text-amber-400 hover:bg-amber-500/10 border-slate-700/80 bg-slate-900/80' },
-                    { type: 'youtube', icon: Youtube, color: 'hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 border-slate-700/80 bg-slate-900/80' }
+                    { type: 'text', icon: Type, color: 'hover:border-blue-500/50 hover:text-blue-650 dark:hover:text-blue-450 hover:bg-blue-500/5 dark:hover:bg-blue-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'image', icon: ImageIcon, color: 'hover:border-emerald-500/50 hover:text-emerald-650 dark:hover:text-emerald-450 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'video', icon: Video, color: 'hover:border-purple-500/50 hover:text-purple-650 dark:hover:text-purple-450 hover:bg-purple-500/5 dark:hover:bg-purple-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'file', icon: FileText, color: 'hover:border-amber-500/50 hover:text-amber-650 dark:hover:text-amber-450 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'youtube', icon: Youtube, color: 'hover:border-red-500/50 hover:text-red-650 dark:hover:text-red-450 hover:bg-red-500/5 dark:hover:bg-red-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' }
                 ].map(({ type, icon: Icon, color }) => (
                     <button
                         key={type}
@@ -499,7 +499,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                                 addContent(module, type as ContentType);
                             }
                         }}
-                        className={`flex flex-1 min-w-[100px] justify-center items-center gap-2 text-xs font-medium text-slate-300 px-4 py-2.5 rounded-xl border transition-all duration-200 ${color} shadow-sm`}
+                        className={`flex flex-1 min-w-[100px] justify-center items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl border transition-all duration-200 ${color} shadow-sm`}
                     >
                         <Icon size={16} className="opacity-80" />
                         <span className="capitalize">{type}</span>
@@ -668,74 +668,84 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
 
     return (
         <AppLayout>
-            <div className="min-h-screen p-4 sm:p-6 lg:p-8 w-full mx-auto space-y-6 sm:space-y-8">
+            <div className="w-full mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
 
                 {/* HEADER */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <Link
-                                href={`/mentor/career-groups/${group.id}/paths`}
-                                className="flex items-center justify-center w-11 h-11 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 hover:text-indigo-400 hover:border-indigo-500/50 hover:bg-slate-700 transition-all shadow-sm"
-                            >
-                                <ArrowLeft size={18} />
-                            </Link>
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
-                                <div className="p-2 bg-indigo-500 rounded-lg">
-                                    <Layers className="text-indigo-400" size={24} />
-                                </div>
+                    <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full">
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <Link
+                                    href={`/mentor/career-groups/${group.id}/paths`}
+                                    className="flex items-center justify-center w-11 h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
+                                >
+                                    <ArrowLeft size={18} />
+                                </Link>
 
-                                Module Builder
-                            </h1>
+                                <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                                    <div className="p-2 bg-indigo-500/10 rounded-lg">
+                                        <Layers className="text-indigo-500" size={24} />
+                                    </div>
+
+                                    Module Builder
+                                </h1>
+                            </div>
+
+                            <div className="flex items-center gap-2 mt-2 ml-14">
+                                <span className="text-slate-450 dark:text-slate-500 text-sm">Path:</span>
+
+                                <span className="text-slate-700 dark:text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-inner">
+                                    {path.name}
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-2 mt-2 ml-14">
-                            <span className="text-slate-500 text-sm">Path:</span>
-
-                            <span className="text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-700 shadow-inner">
-                                {path.name}
-                            </span>
-                        </div>
+                        <button
+                            onClick={() => {
+                                if (path.quiz?.id) {
+                                    router.get(`/mentor/quiz/${path.quiz.id}/edit`);
+                                } else {
+                                    router.get(
+                                        `/mentor/career-groups/${group.id}/paths/${getId(path)}/quiz/create`
+                                    );
+                                }
+                            }}
+                            className="group flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                        >
+                            <span>🎯 Manage Final Quiz</span>
+                        </button>
                     </div>
-
-                    <button
-                        onClick={() => {
-                            if (path.quiz?.id) {
-                                router.get(`/mentor/quiz/${path.quiz.id}/edit`);
-                            } else {
-                                router.get(
-                                    `/mentor/career-groups/${group.id}/paths/${getId(path)}/quiz/create`
-                                );
-                            }
-                        }}
-                        className="group flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:-translate-y-0.5"
-                    >
-                        <span>🎯 Manage Final Quiz</span>
-                    </button>
                 </div>
 
                 {/* CREATE MODULE */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col sm:flex-row gap-4 items-center">
-                    <div className="flex-1 w-full relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Layers size={18} className="text-slate-500" />
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 shadow-sm dark:border-slate-800">
+                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                    <div className="relative z-10 flex flex-col sm:flex-row gap-4 items-center w-full">
+                        <div className="flex-1 w-full relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <Layers size={18} className="text-slate-400 dark:text-slate-500" />
+                            </div>
+                            <input
+                                value={newTitle}
+                                onChange={(e) => setNewTitle(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && createModule()}
+                                placeholder="Enter new module title..."
+                                className="w-full bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 pl-11 pr-4 py-3 rounded-xl text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-655"
+                            />
                         </div>
-                        <input
-                            value={newTitle}
-                            onChange={(e) => setNewTitle(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && createModule()}
-                            placeholder="Enter new module title..."
-                            className="w-full bg-slate-950 border border-slate-800 pl-11 pr-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-shadow placeholder:text-slate-600"
-                        />
+                        <button
+                            onClick={createModule}
+                            disabled={!newTitle.trim()}
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-650 hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl text-sm font-medium transition-all shadow-md shadow-indigo-500/20"
+                        >
+                            <Plus size={18} /> Add Module
+                        </button>
                     </div>
-                    <button
-                        onClick={createModule}
-                        disabled={!newTitle.trim()}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
-                    >
-                        <Plus size={18} /> Add Module
-                    </button>
                 </div>
 
                 {/* MODULES LIST */}
@@ -746,28 +756,30 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                         const isOpen = openModule === moduleId;
 
                         return (
-                            <div key={moduleId} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg transition-all duration-300">
+                            <div key={moduleId} className="relative overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-800 transition-all duration-300">
+                                <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                                 <div
                                     onClick={() => setOpenModule(isOpen ? null : moduleId)}
-                                    className={`p-5 flex justify-between items-center cursor-pointer hover:bg-slate-800 transition-colors ${isOpen ? 'bg-slate-800 border-b border-slate-800' : ''}`}
+                                    className={`relative z-10 p-5 flex justify-between items-center cursor-pointer hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors ${isOpen ? 'border-b border-slate-200 dark:border-slate-800/80 bg-slate-50/20 dark:bg-slate-950/10' : ''}`}
                                 >
                                     <div className="flex gap-4 items-center">
-                                        <div className={`p-2 rounded-lg transition-colors ${isOpen ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-800 text-slate-400'}`}>
+                                        <div className={`p-2 rounded-lg transition-colors ${isOpen ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'}`}>
                                             <Layers size={20} />
                                         </div>
-                                        <h2 className="text-lg font-semibold text-white">{module.title}</h2>
-                                        <span className="text-xs font-medium bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full border border-slate-700">
+                                        <h2 className="text-lg font-semibold text-slate-800 dark:text-white">{module.title}</h2>
+                                        <span className="text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700">
                                             {module.contents.length} items
                                         </span>
                                     </div>
-                                    <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-800 text-white rotate-180' : 'text-slate-500'}`}>
+                                    <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-white rotate-180' : 'text-slate-450 dark:text-slate-500'}`}>
                                         <ChevronDown size={20} />
                                     </div>
                                 </div>
 
                                 {isOpen && (
-                                    <div className="p-5 flex flex-col gap-5 bg-slate-950/30">
+                                    <div className="relative z-10 p-5 flex flex-col gap-5 bg-slate-50/30 dark:bg-slate-950/30">
 
                                         <div className="space-y-4">
                                             <DndContext
@@ -797,10 +809,10 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                                             </DndContext>
 
                                             {module.contents.length === 0 && (
-                                                <div className="flex flex-col items-center justify-center p-8 sm:p-12 border-2 border-dashed border-slate-800/60 rounded-xl bg-slate-900/20 text-center">
-                                                    <Layers size={40} className="text-slate-600 mb-4 opacity-50" />
-                                                    <p className="text-slate-300 font-medium mb-1">No content in this module yet.</p>
-                                                    <p className="text-slate-500 text-sm mb-8">Add your first content block to get started.</p>
+                                                <div className="flex flex-col items-center justify-center p-8 sm:p-12 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-xl bg-slate-50 dark:bg-slate-900/20 text-center">
+                                                    <Layers size={40} className="text-slate-400 dark:text-slate-600 mb-4 opacity-50" />
+                                                    <p className="text-slate-750 dark:text-slate-350 font-medium mb-1">No content in this module yet.</p>
+                                                    <p className="text-slate-500 dark:text-slate-400/60 text-sm mb-8">Add your first content block to get started.</p>
 
                                                     <div className="w-full max-w-3xl">
                                                         {renderAddButtons(moduleId, module, true)}
@@ -810,8 +822,8 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                                         </div>
 
                                         {module.contents.length > 0 && (
-                                            <div className="flex flex-col gap-3 mt-4 pt-5 border-t border-slate-800/80">
-                                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider pl-1">Add Content Block</span>
+                                            <div className="flex flex-col gap-3 mt-4 pt-5 border-t border-slate-200 dark:border-slate-800/80">
+                                                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-1">Add Content Block</span>
                                                 {renderAddButtons(moduleId, module, false)}
                                             </div>
                                         )}
@@ -823,10 +835,10 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                     })}
 
                     {modules.length === 0 && (
-                        <div className="text-center py-20 border-2 border-dashed border-slate-800/60 rounded-2xl bg-slate-900/30">
-                            <Layers className="mx-auto text-slate-500 mb-4" size={48} />
-                            <h3 className="text-lg font-semibold text-white mb-1">No Modules Created</h3>
-                            <p className="text-slate-400 text-sm">Start building your learning path by creating a module above.</p>
+                        <div className="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-sm">
+                            <Layers className="mx-auto text-slate-400 dark:text-slate-500 mb-4" size={48} />
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-1">No Modules Created</h3>
+                            <p className="text-slate-500 dark:text-slate-400/60 text-sm">Start building your learning path by creating a module above.</p>
                         </div>
                     )}
 

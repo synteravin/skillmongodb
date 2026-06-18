@@ -72,40 +72,45 @@ export default function Show({ studentSubmission }: Props) {
 
     return (
         <AppLayout>
-            <div className="w-full mx-auto space-y-6 p-4 sm:p-6 lg:p-8 max-w-7xl font-sans text-slate-200">
+            <div className="w-full mx-auto space-y-6 p-4 sm:p-6 lg:p-8 max-w-7xl text-slate-800 dark:text-slate-100" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 
                 {/* BREADCRUMB & HEADER */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0B1021] border border-slate-800 p-6 rounded-2xl shadow-xl">
-                    <div className="flex items-center gap-4">
-                        <Link
-                            href={`/mentor/submissions/${studentSubmission.submission_id}`}
-                            className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-800 text-slate-300 hover:bg-indigo-600 hover:text-white border border-slate-700 hover:border-indigo-500 transition-all shadow-md"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </Link>
-                        <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
-                                    {studentSubmission.submission.group?.name || 'Project'}
-                                </span>
-                                <ChevronRight className="w-3 h-3 text-slate-600" />
-                                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                                    Student Review
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <Link
+                                href={`/mentor/submissions/${studentSubmission.submission_id}`}
+                                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-850 transition-all shadow-sm"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                            </Link>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+                                        {studentSubmission.submission.group?.name || 'Project'}
+                                    </span>
+                                    <ChevronRight className="w-3 h-3 text-slate-400 dark:text-slate-600" />
+                                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                                        Student Review
+                                    </span>
+                                </div>
+                                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                                    {studentSubmission.submission.title}
+                                </h1>
+                            </div>
+                        </div>
+                        {isGraded && (
+                            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-250 dark:bg-emerald-500/10 dark:border-emerald-500/20 rounded-xl shadow-sm">
+                                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-450" />
+                                <span className="text-sm font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                                    Graded
                                 </span>
                             </div>
-                            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-                                {studentSubmission.submission.title}
-                            </h1>
-                        </div>
+                        )}
                     </div>
-                    {isGraded && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-[#064E3B] border border-[#059669] rounded-xl shadow-[0_0_15px_rgba(5,150,105,0.2)]">
-                            <CheckCircle2 className="w-5 h-5 text-[#34D399]" />
-                            <span className="text-sm font-bold uppercase tracking-wider text-[#34D399]">
-                                Graded
-                            </span>
-                        </div>
-                    )}
                 </div>
 
                 <div className="grid lg:grid-cols-12 gap-6 items-start">
@@ -114,206 +119,224 @@ export default function Show({ studentSubmission }: Props) {
                     <div className="lg:col-span-7 xl:col-span-8 space-y-6">
                         
                         {/* STUDENT PROFILE CARD */}
-                        <div className="bg-[#0B1021] border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                            <div className="flex items-center gap-5">
-                                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg border-[3px] border-indigo-900 shrink-0">
-                                    {studentSubmission.student.name.charAt(0)}
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-extrabold text-white mb-1">
-                                        {studentSubmission.student.name}
-                                    </h2>
-                                    <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
-                                        <User className="w-4 h-4 text-slate-500" />
-                                        {studentSubmission.student.email}
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                            <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                                <div className="flex items-center gap-5">
+                                    <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-650 flex items-center justify-center text-white font-black text-2xl shadow-md shrink-0">
+                                        {studentSubmission.student.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1">
+                                            {studentSubmission.student.name}
+                                        </h2>
+                                        <div className="flex items-center gap-2 text-sm text-slate-550 dark:text-slate-400 font-medium">
+                                            <User className="w-4 h-4 text-slate-400 dark:text-slate-550" />
+                                            {studentSubmission.student.email}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-col sm:items-end gap-1">
-                                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                                    Submitted At
-                                </span>
-                                <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-sm text-slate-300 font-semibold shadow-inner">
-                                    <Calendar className="w-4 h-4 text-indigo-400" />
-                                    {new Date(studentSubmission.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                <div className="flex flex-col sm:items-end gap-1">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-450">
+                                        Submitted At
+                                    </span>
+                                    <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl text-sm text-slate-700 dark:text-slate-300 font-semibold shadow-sm">
+                                        <Calendar className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                                        {new Date(studentSubmission.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* STUDENT'S WORK */}
-                        <div className="bg-[#0B1021] border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 shadow-sm dark:border-slate-800">
+                            <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                             
-                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-800">
-                                <div className="p-2 bg-indigo-600 rounded-lg shadow-lg">
-                                    <FileText className="w-5 h-5 text-white" />
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800/60">
+                                    <div className="p-2 bg-indigo-500/10 rounded-lg">
+                                        <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-wide">
+                                        Student's Work
+                                    </h3>
                                 </div>
-                                <h3 className="text-xl font-bold text-white tracking-wide">
-                                    Student's Work
-                                </h3>
-                            </div>
 
-                            <div className="space-y-6 relative z-10">
-                                {studentSubmission.link && (
-                                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-inner">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3 block">
-                                            Project / Repository Link
-                                        </label>
-                                        <a
-                                            href={studentSubmission.link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group flex items-center justify-between p-4 rounded-xl border border-indigo-900 bg-[#0f172a] hover:bg-indigo-950 hover:border-indigo-500 transition-all shadow-md"
-                                        >
-                                            <div className="flex items-center gap-4 truncate">
-                                                <div className="p-2.5 bg-indigo-900 rounded-lg text-indigo-400 group-hover:text-white group-hover:bg-indigo-600 transition-colors">
-                                                    <LinkIcon className="w-5 h-5" />
+                                <div className="space-y-6">
+                                    {studentSubmission.link && (
+                                        <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-850 rounded-xl p-5 shadow-sm">
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 block">
+                                                Project / Repository Link
+                                            </label>
+                                            <a
+                                                href={studentSubmission.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:border-slate-350 dark:hover:border-slate-700 transition-all shadow-sm"
+                                            >
+                                                <div className="flex items-center gap-4 truncate">
+                                                    <div className="p-2.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-lg text-indigo-600 dark:text-indigo-400 group-hover:text-white group-hover:bg-indigo-600 transition-colors">
+                                                        <LinkIcon className="w-5 h-5" />
+                                                    </div>
+                                                    <span className="text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 font-bold truncate text-sm sm:text-base">
+                                                        {studentSubmission.link}
+                                                    </span>
                                                 </div>
-                                                <span className="text-indigo-400 group-hover:text-indigo-300 font-bold truncate text-sm sm:text-base">
-                                                    {studentSubmission.link}
-                                                </span>
-                                            </div>
-                                            <ArrowLeft className="w-5 h-5 text-indigo-600 group-hover:text-indigo-400 rotate-135 transition-colors shrink-0" />
-                                        </a>
-                                    </div>
-                                )}
-
-                                {studentSubmission.file_path && (
-                                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-inner">
-                                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3 block">
-                                            Attached Document
-                                        </label>
-                                        <a
-                                            href={`/storage/${studentSubmission.file_path}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group flex items-center justify-between p-4 rounded-xl border border-blue-900 bg-[#0f172a] hover:bg-blue-950 hover:border-blue-500 transition-all shadow-md"
-                                        >
-                                            <div className="flex items-center gap-4 truncate">
-                                                <div className="p-2.5 bg-blue-900 rounded-lg text-blue-400 group-hover:text-white group-hover:bg-blue-600 transition-colors shrink-0">
-                                                    <Download className="w-5 h-5" />
-                                                </div>
-                                                <span className="text-blue-400 group-hover:text-blue-300 font-bold truncate text-sm sm:text-base">
-                                                    Download Submission File
-                                                </span>
-                                            </div>
-                                            <ArrowLeft className="w-5 h-5 text-blue-600 group-hover:text-blue-400 rotate-135 transition-colors shrink-0" />
-                                        </a>
-                                    </div>
-                                )}
-
-                                {studentSubmission.notes && (
-                                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-inner">
-                                        <label className="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest mb-3">
-                                            <MessageSquare className="w-4 h-4" /> Student's Note
-                                        </label>
-                                        <div className="p-4 rounded-xl bg-[#0f172a] border border-slate-800 text-slate-300 whitespace-pre-wrap leading-relaxed font-medium italic">
-                                            "{studentSubmission.notes}"
+                                                <ArrowLeft className="w-5 h-5 text-indigo-500 group-hover:text-indigo-650 rotate-135 transition-colors shrink-0" />
+                                            </a>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+
+                                    {studentSubmission.file_path && (
+                                        <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-850 rounded-xl p-5 shadow-sm">
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 block">
+                                                Attached Document
+                                            </label>
+                                            <a
+                                                href={`/storage/${studentSubmission.file_path}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:border-slate-350 dark:hover:border-slate-700 transition-all shadow-sm"
+                                            >
+                                                <div className="flex items-center gap-4 truncate">
+                                                    <div className="p-2.5 bg-blue-50 dark:bg-blue-950/50 rounded-lg text-blue-600 dark:text-blue-400 group-hover:text-white group-hover:bg-blue-600 transition-colors shrink-0">
+                                                        <Download className="w-5 h-5" />
+                                                    </div>
+                                                    <span className="text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 font-bold truncate text-sm sm:text-base">
+                                                        Download Submission File
+                                                    </span>
+                                                </div>
+                                                <ArrowLeft className="w-5 h-5 text-blue-500 group-hover:text-blue-650 rotate-135 transition-colors shrink-0" />
+                                            </a>
+                                        </div>
+                                    )}
+
+                                    {studentSubmission.notes && (
+                                        <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-850 rounded-xl p-5 shadow-sm">
+                                            <label className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
+                                                <MessageSquare className="w-4 h-4 text-slate-400" /> Student's Note
+                                            </label>
+                                            <div className="p-4 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed font-medium italic">
+                                                "{studentSubmission.notes}"
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
                         {/* ASSIGNMENT REFERENCE */}
-                        <div className="bg-[#0B1021] border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
-                            <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-5 flex items-center gap-2">
-                                <FileText className="w-4 h-4" /> Assignment Instructions
-                            </h3>
-                            <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-inner">
-                                <p className="text-slate-300 whitespace-pre-wrap leading-loose font-medium text-sm">
-                                    {studentSubmission.submission.description}
-                                </p>
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 shadow-sm dark:border-slate-800">
+                            <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                            
+                            <div className="relative z-10">
+                                <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-5 flex items-center gap-2">
+                                    <FileText className="w-4 h-4 text-slate-450 dark:text-slate-500" /> Assignment Instructions
+                                </h3>
+                                <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-850 p-5 rounded-xl shadow-sm">
+                                    <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-loose font-medium text-sm">
+                                        {studentSubmission.submission.description}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* RIGHT COLUMN - GRADING */}
                     <div className="lg:col-span-5 xl:col-span-4">
-                        <div className="bg-[#0B1021] border border-indigo-900 rounded-2xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(79,70,229,0.15)] sticky top-8">
-                            <div className="flex items-center gap-3 mb-8 border-b border-slate-800 pb-5">
-                                <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-                                    <Award className="w-6 h-6 text-white" />
-                                </div>
-                                <h2 className="text-xl font-extrabold text-white tracking-wide">
-                                    Evaluation
-                                </h2>
-                            </div>
+                        <div className="relative overflow-hidden rounded-xl border border-indigo-100 dark:border-slate-800 p-6 sm:p-8 shadow-md sticky top-8">
+                            <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-indigo-200 to-transparent dark:via-slate-700" />
 
-                            <form onSubmit={submit} className="space-y-8">
-                                
-                                {/* SCORE INPUT */}
-                                <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-inner">
-                                    <div className="flex flex-col items-center justify-center gap-3 mb-5">
-                                        <label className="text-sm font-black text-slate-400 uppercase tracking-widest">
-                                            Final Score
-                                        </label>
-                                        {/* STARS */}
-                                        <div className="flex gap-1.5 bg-[#0f172a] py-2 px-4 rounded-full border border-slate-800">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <Star
-                                                    key={star}
-                                                    className={`w-6 h-6 ${star <= stars
-                                                        ? 'fill-yellow-400 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.6)]'
-                                                        : 'text-slate-700'
-                                                        } transition-all duration-500`}
-                                                />
-                                            ))}
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-8 border-b border-slate-200 dark:border-slate-800 pb-5">
+                                    <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-purple-650 rounded-xl shadow-md">
+                                        <Award className="w-6 h-6 text-white" />
+                                    </div>
+                                    <h2 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-wide">
+                                        Evaluation
+                                    </h2>
+                                </div>
+
+                                <form onSubmit={submit} className="space-y-8">
+                                    
+                                    {/* SCORE INPUT */}
+                                    <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-850 p-5 rounded-xl shadow-sm">
+                                        <div className="flex flex-col items-center justify-center gap-3 mb-5">
+                                            <label className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                                                Final Score
+                                            </label>
+                                            {/* STARS */}
+                                            <div className="flex gap-1.5 bg-white dark:bg-slate-950 py-2 px-4 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <Star
+                                                        key={star}
+                                                        className={`w-6 h-6 ${star <= stars
+                                                            ? 'fill-yellow-400 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.6)]'
+                                                            : 'text-slate-300 dark:text-slate-700'
+                                                            } transition-all duration-500`}
+                                                    />
+                                                ))}
+                                            </div>
                                         </div>
+
+                                        <div className="relative max-w-[200px] mx-auto">
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                required
+                                                value={data.grade === 0 && !isGraded ? '' : data.grade}
+                                                onChange={e => setData('grade', parseInt(e.target.value) || 0)}
+                                                className="w-full bg-white dark:bg-slate-950 border-2 border-indigo-100 dark:border-slate-800 rounded-xl px-4 py-5 text-5xl font-black text-center text-emerald-600 dark:text-emerald-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-800"
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                        {errors.grade && <p className="text-rose-500 font-bold text-xs mt-3 text-center">{errors.grade}</p>}
                                     </div>
 
-                                    <div className="relative max-w-[200px] mx-auto">
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="100"
+                                    {/* FEEDBACK */}
+                                    <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-850 p-5 rounded-xl shadow-sm">
+                                        <label className="flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
+                                            <MessageSquare className="w-4 h-4 text-slate-400" /> Mentor Feedback
+                                        </label>
+                                        <textarea
+                                            rows={7}
                                             required
-                                            value={data.grade === 0 && !isGraded ? '' : data.grade}
-                                            onChange={e => setData('grade', parseInt(e.target.value) || 0)}
-                                            className="w-full bg-[#050812] border-2 border-indigo-900 rounded-xl px-4 py-5 text-5xl font-black text-center text-emerald-400 focus:border-indigo-500 focus:ring-0 outline-none transition-all placeholder-slate-800 shadow-inner"
-                                            placeholder="0"
+                                            placeholder="Provide constructive feedback, highlight what was done well, and suggest areas for improvement..."
+                                            value={data.feedback}
+                                            onChange={e => setData('feedback', e.target.value)}
+                                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-4 text-slate-850 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all resize-none text-sm font-medium"
                                         />
+                                        {errors.feedback && <p className="text-rose-550 font-bold text-xs mt-2">{errors.feedback}</p>}
                                     </div>
-                                    {errors.grade && <p className="text-red-500 font-bold text-xs mt-3 text-center">{errors.grade}</p>}
-                                </div>
 
-                                {/* FEEDBACK */}
-                                <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-inner">
-                                    <label className="flex items-center gap-2 text-sm font-black text-slate-400 uppercase tracking-widest mb-4">
-                                        <MessageSquare className="w-4 h-4" /> Mentor Feedback
-                                    </label>
-                                    <textarea
-                                        rows={7}
-                                        required
-                                        placeholder="Provide constructive feedback, highlight what was done well, and suggest areas for improvement..."
-                                        value={data.feedback}
-                                        onChange={e => setData('feedback', e.target.value)}
-                                        className="w-full bg-[#050812] border border-slate-800 rounded-xl px-4 py-4 text-slate-200 placeholder-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all resize-none text-sm font-medium shadow-inner"
-                                    />
-                                    {errors.feedback && <p className="text-red-500 font-bold text-xs mt-2">{errors.feedback}</p>}
-                                </div>
+                                    {/* SUBMIT BUTTON */}
+                                    <div className="pt-2">
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className={`w-full flex justify-center items-center gap-2 py-4 rounded-xl font-extrabold text-sm uppercase tracking-widest transition-all duration-300 shadow-md active:scale-[0.98]
+                                                ${processing 
+                                                    ? 'bg-slate-100 text-slate-400 dark:bg-slate-850 dark:text-slate-600 border border-slate-250 dark:border-slate-800 cursor-not-allowed'
+                                                    : 'bg-indigo-650 hover:bg-indigo-600 text-white hover:shadow-lg hover:shadow-indigo-550/20 border border-indigo-650 hover:border-indigo-600'
+                                                }`}
+                                        >
+                                            {processing ? 'Processing...' : (isGraded ? 'Update Review' : 'Submit Review')}
+                                        </button>
 
-                                {/* SUBMIT BUTTON */}
-                                <div className="pt-2">
-                                    <button
-                                        type="submit"
-                                        disabled={processing}
-                                        className={`w-full flex justify-center items-center gap-2 py-4 rounded-xl font-extrabold text-sm uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-[0.98]
-                                            ${processing 
-                                                ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
-                                                : 'bg-indigo-600 hover:bg-indigo-500 text-white hover:shadow-[0_0_25px_rgba(79,70,229,0.4)] border border-indigo-500'
-                                            }`}
-                                    >
-                                        {processing ? 'Processing...' : (isGraded ? 'Update Review' : 'Submit Review')}
-                                    </button>
-
-                                    {isGraded && (
-                                        <p className="text-xs text-center text-emerald-500 font-bold mt-4 px-2">
-                                            This submission has been graded. Submitting again will update the existing grade and regenerate the certificate.
-                                        </p>
-                                    )}
-                                </div>
-                            </form>
+                                        {isGraded && (
+                                            <p className="text-xs text-center text-emerald-600 dark:text-emerald-500 font-bold mt-4 px-2">
+                                                This submission has been graded. Submitting again will update the existing grade and regenerate the certificate.
+                                            </p>
+                                        )}
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
 

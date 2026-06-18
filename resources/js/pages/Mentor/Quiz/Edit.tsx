@@ -122,69 +122,77 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#020617] to-black text-white p-4 sm:p-6 lg:p-8">
-                <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+            <div className="w-full mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8 max-w-4xl text-slate-800 dark:text-slate-100" style={{ fontFamily: "'Outfit', sans-serif" }}>
 
-                    {/* HEADER */}
-                    <div className="flex flex-col justify-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">
+                {/* HEADER */}
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                    <div className="relative z-10 flex flex-col justify-center gap-4">
                         <button
                             onClick={() => window.history.back()}
-                            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium w-fit mb-2"
+                            className="flex items-center gap-2 text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-white transition-colors text-sm font-medium w-fit mb-2"
                         >
                             <ArrowLeft size={16} /> Back
                         </button>
                         <div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                                 <div className="p-2 bg-indigo-500/10 rounded-lg">
-                                    <Edit3 className="text-indigo-400" size={24} />
+                                    <Edit3 className="text-indigo-600 dark:text-indigo-400" size={24} />
                                 </div>
                                 Edit Quiz
                             </h1>
                             <div className="flex items-center gap-3 mt-3 ml-1">
-                                <span className={`text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${quiz.difficulty === 'hard' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
-                                    quiz.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                                        'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                <span className={`text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider border ${quiz.difficulty === 'hard' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20' :
+                                    quiz.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-450 border-amber-500/20' :
+                                        'bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 border-emerald-500/20'
                                     }`}>
                                     {quiz.difficulty} Difficulty
                                 </span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    {/* QUESTIONS LIST */}
-                    <div className="space-y-6">
-                        {questions.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-800/60 rounded-2xl bg-slate-900/20 text-center">
-                                <HelpCircle size={48} className="text-slate-600 mb-4 opacity-50" />
-                                <h3 className="text-lg font-medium text-slate-300 mb-1">No questions</h3>
-                                <p className="text-slate-500 text-sm mb-6">Add questions to complete this quiz.</p>
-                                <button
-                                    onClick={addQuestion}
-                                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
-                                >
-                                    <Plus size={16} />
-                                    Add Question
-                                </button>
-                            </div>
-                        ) : (
-                            questions.map((q, i) => (
-                                <QuestionCard
-                                    key={i}
-                                    index={i}
-                                    data={q}
-                                    onChange={(data) => updateQuestion(i, data)}
-                                    onDelete={() => removeQuestion(i)}
-                                />
-                            ))
-                        )}
-                    </div>
-
-                    {/* ACTIONS */}
-                    {questions.length > 0 && (
-                        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">
+                {/* QUESTIONS LIST */}
+                <div className="space-y-6">
+                    {questions.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-xl bg-slate-50 dark:bg-slate-900/20 text-center shadow-inner">
+                            <HelpCircle size={48} className="text-slate-400 dark:text-slate-600 mb-4 opacity-50" />
+                            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-1">No questions</h3>
+                            <p className="text-slate-500 dark:text-slate-400/60 text-sm mb-6">Add questions to complete this quiz.</p>
                             <button
                                 onClick={addQuestion}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors font-medium text-sm"
+                                className="flex items-center gap-2 bg-indigo-650 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-md shadow-indigo-500/20"
+                            >
+                                <Plus size={16} />
+                                Add Question
+                            </button>
+                        </div>
+                    ) : (
+                        questions.map((q, i) => (
+                            <QuestionCard
+                                key={i}
+                                index={i}
+                                data={q}
+                                onChange={(data) => updateQuestion(i, data)}
+                                onDelete={() => removeQuestion(i)}
+                            />
+                        ))
+                    )}
+                </div>
+
+                {/* ACTIONS */}
+                {questions.length > 0 && (
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                        <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
+                            <button
+                                onClick={addQuestion}
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-850 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors font-medium text-sm"
                             >
                                 <Plus size={16} />
                                 Add Another Question
@@ -193,7 +201,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                             <button
                                 onClick={submit}
                                 disabled={loading}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors font-medium text-sm shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 rounded-xl bg-indigo-650 hover:bg-indigo-600 text-white transition-colors font-medium text-sm shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? (
                                     <>
@@ -211,8 +219,8 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                                 )}
                             </button>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </AppLayout>
     )
@@ -250,99 +258,104 @@ function QuestionCard({
     }
 
     return (
-        <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:border-slate-700/80">
-            {/* HEADER */}
-            <div className="flex justify-between items-center bg-slate-950/50 p-4 border-b border-slate-800/60">
-                <div className="flex items-center gap-3">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 font-bold text-sm">
-                        {index + 1}
-                    </span>
-                    <span className="text-sm font-semibold text-slate-300">
-                        Question Configuration
-                    </span>
-                </div>
-                <button
-                    onClick={onDelete}
-                    className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
-                    title="Delete Question"
-                >
-                    <Trash2 size={16} />
-                </button>
-            </div>
-
-            <div className="p-5 sm:p-6 space-y-6">
-                {/* QUESTION TEXT */}
-                <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Question Text</label>
-                    <textarea
-                        placeholder="e.g. What is the core feature of React?"
-                        value={data.question_text}
-                        onChange={(e) => onChange({ ...data, question_text: e.target.value })}
-                        rows={3}
-                        className="w-full bg-slate-950/50 border border-slate-800 px-4 py-3 rounded-xl text-sm text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-y placeholder:text-slate-600"
-                    />
+        <div className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-sm transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-700">
+            {/* Top decorative line */}
+            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
+            
+            <div className="relative z-10">
+                {/* HEADER */}
+                <div className="flex justify-between items-center bg-slate-50/50 dark:bg-slate-950/20 p-4 border-b border-slate-200 dark:border-slate-800/60">
+                    <div className="flex items-center gap-3">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
+                            {index + 1}
+                        </span>
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            Question Configuration
+                        </span>
+                    </div>
+                    <button
+                        onClick={onDelete}
+                        className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors"
+                        title="Delete Question"
+                    >
+                        <Trash2 size={16} />
+                    </button>
                 </div>
 
-                {/* ANSWERS */}
-                <div className="pt-4 border-t border-slate-800/60">
-                    <div className="flex justify-between items-center mb-4">
-                        <label className="block text-xs font-medium text-slate-400 ml-1">Possible Answers</label>
-                        <span className="text-[10px] text-slate-500">Select the correct answer(s)</span>
+                <div className="p-5 sm:p-6 space-y-6">
+                    {/* QUESTION TEXT */}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Question Text</label>
+                        <textarea
+                            placeholder="e.g. What is the core feature of React?"
+                            value={data.question_text}
+                            onChange={(e) => onChange({ ...data, question_text: e.target.value })}
+                            rows={3}
+                            className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-y"
+                        />
                     </div>
 
-                    <div className="space-y-3">
-                        {data.answers.map((a, i) => (
-                            <div
-                                key={i}
-                                className={`flex items-stretch gap-2 sm:gap-3 p-2 rounded-xl border transition-all duration-200 ${a.is_correct
-                                    ? "bg-emerald-500/10 border-emerald-500/30 shadow-sm shadow-emerald-500/5"
-                                    : "bg-slate-950/50 border-slate-800/80 hover:border-slate-700"
-                                    }`}
-                            >
-                                {/* MARK AS CORRECT TOGGLE */}
-                                <button
-                                    onClick={() => updateAnswer(i, { ...a, is_correct: !a.is_correct })}
-                                    className={`flex items-center justify-center px-3 sm:px-4 rounded-lg transition-colors ${a.is_correct
-                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
+                    {/* ANSWERS */}
+                    <div className="pt-4 border-t border-slate-200 dark:border-slate-800/60">
+                        <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 ml-1">Possible Answers</label>
+                            <span className="text-[10px] text-slate-450 dark:text-slate-500">Select the correct answer(s)</span>
+                        </div>
+
+                        <div className="space-y-3">
+                            {data.answers.map((a, i) => (
+                                <div
+                                    key={i}
+                                    className={`flex items-stretch gap-2 sm:gap-3 p-2 rounded-xl border transition-all duration-200 ${a.is_correct
+                                        ? "bg-emerald-550/5 dark:bg-emerald-500/10 border-emerald-500/30 dark:border-emerald-500/40 shadow-sm shadow-emerald-500/5"
+                                        : "bg-white dark:bg-slate-950/40 border-slate-200 dark:border-slate-800/80 hover:border-slate-350 dark:hover:border-slate-700"
                                         }`}
-                                    title="Mark as correct answer"
                                 >
-                                    {a.is_correct ? <CheckCircle2 size={18} /> : <Circle size={18} />}
-                                </button>
+                                    {/* MARK AS CORRECT TOGGLE */}
+                                    <button
+                                        onClick={() => updateAnswer(i, { ...a, is_correct: !a.is_correct })}
+                                        className={`flex items-center justify-center px-3 sm:px-4 rounded-lg transition-colors ${a.is_correct
+                                            ? 'bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                                            : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-400'
+                                            }`}
+                                        title="Mark as correct answer"
+                                    >
+                                        {a.is_correct ? <CheckCircle2 size={18} /> : <Circle size={18} />}
+                                    </button>
 
-                                {/* INPUT */}
-                                <input
-                                    type="text"
-                                    placeholder={`Answer Option ${String.fromCharCode(65 + i)}...`}
-                                    value={a.answer_text}
-                                    onChange={(e) =>
-                                        updateAnswer(i, { ...a, answer_text: e.target.value })
-                                    }
-                                    className="flex-1 bg-transparent border-none px-2 py-2.5 text-sm text-white outline-none focus:ring-0 placeholder:text-slate-600"
-                                />
+                                    {/* INPUT */}
+                                    <input
+                                        type="text"
+                                        placeholder={`Answer Option ${String.fromCharCode(65 + i)}...`}
+                                        value={a.answer_text}
+                                        onChange={(e) =>
+                                            updateAnswer(i, { ...a, answer_text: e.target.value })
+                                        }
+                                        className="flex-1 bg-transparent border-none px-2 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:ring-0 placeholder:text-slate-400 dark:placeholder:text-slate-650"
+                                    />
 
-                                {/* DELETE */}
-                                <button
-                                    onClick={() => removeAnswer(i)}
-                                    className="px-3 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
-                                    title="Remove answer"
-                                >
-                                    <X size={16} />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                                    {/* DELETE */}
+                                    <button
+                                        onClick={() => removeAnswer(i)}
+                                        className="px-3 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors"
+                                        title="Remove answer"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
 
-                    {/* ADD ANSWER BUTTON */}
-                    <div className="mt-4">
-                        <button
-                            onClick={addAnswer}
-                            className="flex items-center gap-2 text-xs font-medium text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 px-3 py-2 rounded-lg transition-colors"
-                        >
-                            <Plus size={14} />
-                            Add Option
-                        </button>
+                        {/* ADD ANSWER BUTTON */}
+                        <div className="mt-4">
+                            <button
+                                onClick={addAnswer}
+                                className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 px-3 py-2 rounded-lg transition-colors"
+                            >
+                                <Plus size={14} />
+                                Add Option
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
