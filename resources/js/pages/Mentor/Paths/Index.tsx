@@ -61,14 +61,14 @@ export default function Index({ group, paths }: Props) {
                 <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
 
                     {/* LEFT SIDE - CREATE FORM */}
-                    <div className="lg:col-span-1">
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="lg:col-span-1">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm font-outfit">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             <div className="p-6 sm:p-8 relative z-10">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                    <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                         <Plus className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -83,7 +83,8 @@ export default function Index({ group, paths }: Props) {
 
                                 <form onSubmit={submit} className="space-y-5">
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">
+                                        <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 ml-1">
+                                            <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-500" />
                                             Path Name
                                         </label>
                                         <input
@@ -93,8 +94,8 @@ export default function Index({ group, paths }: Props) {
                                             onBlur={() => setFocus(false)}
                                             onChange={(e) => setData('name', e.target.value)}
                                             placeholder="Advanced React"
-                                            className={`w-full bg-white dark:bg-slate-950/60 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-655 transition-all shadow-sm outline-none border ${focus
-                                                ? 'border-indigo-500 ring-1 ring-indigo-500'
+                                            className={`w-full bg-white dark:bg-slate-950/60 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-600 transition-all duration-200 shadow-sm outline-none border ${focus
+                                                ? 'border-slate-400 dark:border-slate-500 ring-1 ring-slate-300 dark:ring-slate-600'
                                                 : 'border-slate-200 dark:border-slate-800'
                                                 }`}
                                         />
@@ -102,22 +103,32 @@ export default function Index({ group, paths }: Props) {
 
                                     {/* DESCRIPTION */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">
-                                            Description
-                                        </label>
+                                        <div className="flex items-center justify-between mb-2 ml-1 mr-1">
+                                            <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                                <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-500" />
+                                                Description
+                                            </label>
+                                            <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
+                                                {data.description?.length ?? 0}/250
+                                            </span>
+                                        </div>
                                         <textarea
                                             rows={4}
+                                            maxLength={250}
                                             value={data.description}
                                             onChange={(e) => setData('description', e.target.value)}
                                             placeholder="Explain what the student will learn..."
-                                            className="w-full bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-655 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm resize-none"
+                                            className="w-full bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-slate-600 focus:border-slate-400 dark:focus:border-slate-500 transition-all duration-200 shadow-sm resize-none"
                                         />
                                     </div>
+
+                                    {/* DIVIDER */}
+                                    <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent" />
 
                                     {/* BUTTON */}
                                     <button
                                         disabled={processing}
-                                        className="w-full inline-flex justify-center items-center gap-2 bg-indigo-650 hover:bg-indigo-600 text-white py-3 rounded-xl font-semibold shadow-md shadow-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 mt-4"
+                                        className="w-full inline-flex justify-center items-center gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white py-3 rounded-xl font-semibold border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 mt-4 font-outfit"
                                     >
                                         <Plus className="w-5 h-5" />
                                         {processing ? 'Creating...' : 'Create Path'}
