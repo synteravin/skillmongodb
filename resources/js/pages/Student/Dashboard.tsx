@@ -521,7 +521,7 @@ function TopBar({
 
                 <div className="leading-tight">
                     <p
-                        className="text-xs sm:text-sm font-semibold md:text-lg lg:text-2xl truncate max-w-[90px] sm:max-w-[150px] md:max-w-none"
+                        className=" text-xs sm:text-sm font-semibold md:text-lg lg:text-2xl truncate max-w-[90px] sm:max-w-[150px] md:max-w-none"
                         style={{ fontFamily: 'Orbitron' }}
                         title={user.name}
                     >
@@ -529,7 +529,7 @@ function TopBar({
                     </p>
 
                     <p
-                        className="text-[10px] sm:text-xs font-semibold md:text-sm lg:text-xl md:text-inherit dark:md:text-inherit text-blue-500 dark:text-sky-300"
+                        className="text-[10px] sm:text-xs font-semibold md:text-sm lg:text-xl md:text-inherit dark:md:text-inherit "
                         style={{ fontFamily: 'Orbitron' }}
                     >
                         lvl {user.level}

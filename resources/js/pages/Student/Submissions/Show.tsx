@@ -155,7 +155,7 @@ export default function Show({ submission, studentSubmission }: Props) {
                                 {submission.submission_type} Submission
                             </div>
                             
-                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white font-['Orbitron'] leading-tight mb-4 tracking-tight">
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-[#1e3a8a] dark:text-white font-['Orbitron'] leading-tight mb-4 tracking-tight">
                                 {submission.title}
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base font-['Oxanium'] max-w-lg mx-auto leading-relaxed">
