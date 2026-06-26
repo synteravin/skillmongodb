@@ -14,7 +14,10 @@ use App\Http\Requests\Path\StorePathRequest;
 use App\Models\CareerGroup;
 use App\Models\Course;
 use App\Models\LevelBadge;
+use App\Models\Path;
 use App\Models\User;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -46,6 +49,7 @@ class CourseBuilderController extends Controller
 
         $basicPaths = $course->paths
             ->where('phase', 'basic_fundamental')
+            ->sortBy('order')
             ->values()
             ->map(function ($path) {
 
@@ -67,7 +71,7 @@ class CourseBuilderController extends Controller
             ->values()
             ->map(function ($group) {
 
-                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                /** @var FilesystemAdapter $disk */
                 $disk = Storage::disk('s3');
 
                 return [
@@ -83,7 +87,7 @@ class CourseBuilderController extends Controller
                             : null,
                     ] : null,
 
-                    'paths' => $group->paths->map(function ($path) {
+                    'paths' => $group->paths->sortBy('order')->values()->map(function ($path) {
                         return [
                             '_id' => (string) $path->_id,
                             'name' => $path->name,
@@ -110,7 +114,7 @@ class CourseBuilderController extends Controller
 
             ],
             'badges' => LevelBadge::orderBy('order')->get()->map(function ($b) {
-                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                /** @var FilesystemAdapter $disk */
                 $disk = Storage::disk('s3');
 
                 return [
@@ -182,5 +186,20 @@ class CourseBuilderController extends Controller
 
         return redirect()->back();
 
+    }
+
+    public function reorderPaths(Request $request)
+    {
+        $data = $request->validate([
+            'paths' => ['required', 'array'],
+            'paths.*.id' => ['required', 'string'],
+            'paths.*.order' => ['required', 'integer'],
+        ]);
+
+        foreach ($data['paths'] as $p) {
+            Path::where('_id', $p['id'])->update(['order' => (int) $p['order']]);
+        }
+
+        return back()->with('success', 'Paths reordered');
     }
 }

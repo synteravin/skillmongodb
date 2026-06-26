@@ -16,12 +16,21 @@ class MentorCreatePathAction
             $slug .= '-'.Str::random(5);
         }
 
-        $order = Path::where('career_group_id', $group->_id)->max('order');
+        $phase = $data['phase'] ?? 'career_branch';
+        $careerGroupId = $phase === 'basic_fundamental' ? null : (string) $group->_id;
+
+        if ($phase === 'basic_fundamental') {
+            $order = Path::where('course_id', (string) $group->course_id)
+                ->where('phase', 'basic_fundamental')
+                ->max('order');
+        } else {
+            $order = Path::where('career_group_id', $careerGroupId)->max('order');
+        }
 
         return Path::create([
             'course_id' => (string) $group->course_id,
-            'career_group_id' => (string) $group->_id,
-            'phase' => 'career_branch',
+            'career_group_id' => $careerGroupId,
+            'phase' => $phase,
             'name' => $data['name'],
             'slug' => $slug,
             'description' => $data['description'] ?? null,

@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth', 'verified', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

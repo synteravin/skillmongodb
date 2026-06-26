@@ -18,10 +18,17 @@ class MentorQuizController extends Controller
     {
         $this->authorize('create', Quiz::class);
 
-        abort_unless(
-            (string) $path->career_group_id === (string) $group->_id,
-            404
-        );
+        if ($path->phase === 'basic_fundamental') {
+            abort_unless(
+                (string) $path->course_id === (string) $group->course_id,
+                404
+            );
+        } else {
+            abort_unless(
+                (string) $path->career_group_id === (string) $group->_id,
+                404
+            );
+        }
 
         $path->load('quiz.questions.answers');
 

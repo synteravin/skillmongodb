@@ -13,7 +13,7 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'admin@skillmongo.com'],
             [
                 'name' => 'Admin',
@@ -21,8 +21,10 @@ class UserRoleSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
+        $admin->email_verified_at = now();
+        $admin->save();
 
-        User::firstOrCreate(
+        $mentor = User::firstOrCreate(
             ['email' => 'mentor@skillmongo.com'],
             [
                 'name' => 'Mentor Sample',
@@ -30,5 +32,7 @@ class UserRoleSeeder extends Seeder
                 'role' => 'mentor',
             ]
         );
+        $mentor->email_verified_at = now();
+        $mentor->save();
     }
 }
