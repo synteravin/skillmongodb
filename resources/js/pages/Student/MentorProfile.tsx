@@ -63,7 +63,7 @@ export default function MentorProfile({ mentor }: Props) {
                             <ArrowLeft className="h-5 w-5 text-indigo-600 dark:text-indigo-500" />
                         </button>
 
-                        <h1 className="absolute left-0 right-0 text-center text-lg md:text-xl lg:text-2xl font-['Orbitron'] font-bold text-gray-900 dark:text-white tracking-[0.1em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase pointer-events-none">
+                        <h1 className="absolute left-0 right-0 text-center text-lg md:text-xl lg:text-2xl font-['Orbitron'] font-bold text-[#1e3a8a] dark:text-white tracking-[0.1em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase pointer-events-none">
                             Mentor Profile
                         </h1>
 

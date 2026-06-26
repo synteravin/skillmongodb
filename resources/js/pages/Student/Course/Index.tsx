@@ -86,7 +86,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                         </Link>
 
                         {/* Title */}
-                        <h1 className="flex-1 text-center text-sm min-[390px]:text-base sm:text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold dark:text-white text-[#020202] tracking-[0.05em] min-[390px]:tracking-[0.1em] md:tracking-[0.15em] uppercase">
+                        <h1 className="flex-1 text-center text-sm min-[390px]:text-base sm:text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold dark:text-white text-[#1e3a8a] tracking-[0.05em] min-[390px]:tracking-[0.1em] md:tracking-[0.15em] uppercase">
                             SELECT YOUR COURSE
                         </h1>
 

@@ -144,7 +144,7 @@ export default function Index({ group, submissions, studentSubmissions }: Props)
                             <ClipboardList className="w-8 h-8 text-[#3B28F6] dark:text-[#FACC15]" />
                         </div>
                         <div>
-                            <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 dark:text-white font-['Orbitron'] tracking-tight">
+                            <h1 className="text-2xl md:text-4xl font-extrabold text-[#1e3a8a] dark:text-white font-['Orbitron'] tracking-tight">
                                 {group.name} Module
                             </h1>
                             <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm md:text-base font-['Oxanium']">
