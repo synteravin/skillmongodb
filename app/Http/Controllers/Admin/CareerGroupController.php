@@ -6,18 +6,26 @@ use App\Http\Controllers\Controller;
 use App\Models\CareerGroup;
 use App\Models\MentorCareerGroup;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CareerGroupController extends Controller
 {
-    public function assignMentor(Request $request, $group)
+    public function assignMentor(Request $request, string $group): RedirectResponse
     {
         $group = CareerGroup::findOrFail($group);
 
         $data = $request->validate([
-            'mentor_id' => ['required'],
+            'mentor_id' => ['nullable', 'string'],
         ]);
+
+        if (empty($data['mentor_id'])) {
+            $group->update(['mentor_id' => null]);
+            MentorCareerGroup::where('career_group_id', (string) $group->_id)->delete();
+
+            return back()->with('success', 'Mentor unassigned');
+        }
 
         $mentor = User::where('_id', $data['mentor_id'])
             ->where('role', 'mentor')

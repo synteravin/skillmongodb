@@ -16,6 +16,7 @@ use App\Http\Controllers\Mentor\DashboardController as MentorDashboard;
 use App\Http\Controllers\Mentor\DetailController as MentorDetailController;
 use App\Http\Controllers\Mentor\MentorModuleManagementController;
 use App\Http\Controllers\Mentor\MentorQuizController;
+use App\Http\Controllers\Mentor\NotificationController;
 use App\Http\Controllers\Mentor\PathController;
 use App\Http\Controllers\Mentor\StudentSubmissionController as MentorStudentSubmission;
 use App\Http\Controllers\Mentor\SubmissionController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\Student\CourseRoadmapController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
 use App\Http\Controllers\Student\LeaderboardController;
 use App\Http\Controllers\Student\LearnController;
+use App\Http\Controllers\Student\MentorProfileController;
 use App\Http\Controllers\Student\SelectCharacterController;
 use App\Http\Controllers\Student\SelectPathController;
 use App\Http\Controllers\Student\StudentCourseController;
@@ -108,6 +110,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/paths', [CourseBuilderController::class, 'storePath'])
             ->name('paths.store');
 
+        Route::put('/paths/reorder', [CourseBuilderController::class, 'reorderPaths'])
+            ->name('paths.reorder');
+
         Route::post('/modules', [CourseBuilderController::class, 'storeModule'])
             ->name('modules.store');
 
@@ -130,7 +135,8 @@ Route::middleware(['auth', 'role:admin'])
         // Route::post('/admin/users/{user}', [UserController::class, 'update']);
 
         /* ---------------- ASSIGN MENTOR ---------------- */
-        Route::post('/career-groups/{group}/assign-mentor', [CareerGroupController::class, 'assignMentor']);
+        Route::post('/career-groups/{group}/assign-mentor', [CareerGroupController::class, 'assignMentor'])
+            ->name('career-groups.assign-mentor');
 
         /* ---------------- MODULE MANAGEMENT ---------------- */
         Route::get('/paths/{path}/modules', [ModuleManagementController::class, 'index'])
@@ -187,12 +193,12 @@ Route::middleware(['auth', 'role:mentor'])
         Route::get('/dashboard', [MentorDashboard::class, 'index'])
             ->name('dashboard');
 
-        Route::get('/profile', [\App\Http\Controllers\Mentor\ProfileController::class, 'edit'])
+        Route::get('/profile', [App\Http\Controllers\Mentor\ProfileController::class, 'edit'])
             ->name('profile.edit');
-        Route::post('/profile', [\App\Http\Controllers\Mentor\ProfileController::class, 'update'])
+        Route::post('/profile', [App\Http\Controllers\Mentor\ProfileController::class, 'update'])
             ->name('profile.update');
 
-        Route::post('/notifications/{id}/read', [\App\Http\Controllers\Mentor\NotificationController::class, 'markAsRead'])
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
             ->name('notifications.read');
         Route::get('/student-journey', [MentorDetailController::class, 'index'])
             ->name('student-journey');
@@ -208,6 +214,15 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::post('/career-groups/{group}/paths', [PathController::class, 'store'])
             ->name('paths.store');
+
+        Route::put('/paths/reorder', [PathController::class, 'reorder'])
+            ->name('paths.reorder');
+
+        Route::put('/paths/{path}', [PathController::class, 'update'])
+            ->name('paths.update');
+
+        Route::delete('/paths/{path}', [PathController::class, 'destroy'])
+            ->name('paths.destroy');
 
         Route::post(
             '/paths/{path}/submissions',
@@ -337,7 +352,7 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-        Route::get('/mentors/{mentor}', [\App\Http\Controllers\Student\MentorProfileController::class, 'show'])
+        Route::get('/mentors/{mentor}', [MentorProfileController::class, 'show'])
             ->name('mentors.show');
 
         Route::get('/course', [StudentCourseController::class, 'index'])
@@ -361,9 +376,9 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/learn/{course}/{path}/{module}', [LearnController::class, 'show'])
             ->name('course.path.module.show');
 
-        Route::get('/quiz/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
-        Route::post('/quiz/{quiz}/submit', [\App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
-        Route::get('/quiz/{quiz}/result', [\App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
+        Route::get('/quiz/{quiz}', [App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
+        Route::post('/quiz/{quiz}/submit', [App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
+        Route::get('/quiz/{quiz}/result', [App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
         Route::post('/select-career/{path}', SelectPathController::class)
             ->name('select-career');
         Route::get('/leaderboard', [LeaderboardController::class, 'index'])

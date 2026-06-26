@@ -27,7 +27,7 @@ test('student can view quiz play page if completed all modules', function () {
     ]);
 
     // 1. Create a student user
-    $user = User::create([
+    $user = User::factory()->create([
         'name' => 'Student Test',
         'email' => 'student@test.com',
         'password' => bcrypt('password'),

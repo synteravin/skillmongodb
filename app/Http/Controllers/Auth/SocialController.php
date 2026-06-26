@@ -37,6 +37,8 @@ class SocialController extends Controller
                 'password' => bcrypt(Str::random(24)),
                 'role' => 'student',
             ]);
+            $user->email_verified_at = now();
+            $user->save();
         }
 
         Auth::login($user);
