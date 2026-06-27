@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\SignatureController;
 use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -12,8 +13,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::post('settings/signature', [App\Http\Controllers\Settings\SignatureController::class, 'update'])->name('profile.signature.update');
-    Route::delete('settings/signature', [App\Http\Controllers\Settings\SignatureController::class, 'destroy'])->name('profile.signature.destroy');
+    Route::middleware(['role:admin,mentor'])->group(function () {
+        Route::get('signature', [SignatureController::class, 'edit'])->name('profile.signature.edit');
+        Route::post('signature', [SignatureController::class, 'update'])->name('profile.signature.update');
+        Route::delete('signature', [SignatureController::class, 'destroy'])->name('profile.signature.destroy');
+    });
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
