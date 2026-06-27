@@ -6,9 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SignatureController extends Controller
 {
+    public function edit(Request $request): Response
+    {
+        return Inertia::render('settings/signature');
+    }
+
     public function update(Request $request)
     {
         $request->validate([

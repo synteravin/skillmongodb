@@ -13,6 +13,7 @@ import {
     Box,
     UserCheckIcon,
     User,
+    FileSignature,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -73,6 +74,12 @@ const menu: MenuItem[] = [
         icon: Box,
         href: '/admin/assets',
         roles: ['admin'],
+    },
+    {
+        name: 'Signature',
+        icon: FileSignature,
+        href: '/signature',
+        roles: ['admin', 'mentor'],
     },
 ];
 

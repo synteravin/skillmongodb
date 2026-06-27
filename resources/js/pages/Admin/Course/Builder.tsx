@@ -646,10 +646,10 @@ export default function Builder({
                                                                         p._id,
                                                                 )}
                                                                 strategy={
-                                                                    rectSortingStrategy
+                                                                    verticalListSortingStrategy
                                                                 }
                                                             >
-                                                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                                <div className="space-y-3">
                                                                     {group.paths?.map(
                                                                         (
                                                                             path,
