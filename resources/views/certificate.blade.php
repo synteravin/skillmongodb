@@ -182,7 +182,7 @@
 </head>
 
 <body>
-    <img src="{{ public_path('images/certificate.png') }}" class="background" alt="Certificate Background">
+    <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.png') }}" class="background" alt="Certificate Background">
 
     <div class="certificate-content">
 
