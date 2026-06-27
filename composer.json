@@ -19,7 +19,7 @@
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
         "league/flysystem-aws-s3-v3": "3.0",
-        "mongodb/laravel-mongodb": "^5.5",
+        "mongodb/laravel-mongodb": "^5.8",
         "tightenco/ziggy": "^2.6"
     },
     "require-dev": {
