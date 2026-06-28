@@ -4,7 +4,6 @@ import { Plus, FolderGit2, PlusCircle, Layers, ArrowLeft } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
 import Modal from '@/components/ui/Modal';
-import CourseRoadmap from '@/components/course/CourseRoadmap';
 
 import {
     DndContext,
@@ -77,7 +76,11 @@ function SortablePathCard({ path }: { path: any }) {
 
     const handleCardClick = (e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
-        if (target.closest('.cursor-grab') || target.closest('a') || target.closest('button')) {
+        if (
+            target.closest('.cursor-grab') ||
+            target.closest('a') ||
+            target.closest('button')
+        ) {
             return;
         }
         router.visit(`/admin/paths/${path._id}/modules`);
@@ -88,7 +91,7 @@ function SortablePathCard({ path }: { path: any }) {
             ref={setNodeRef}
             style={style}
             onClick={handleCardClick}
-            className="group relative rounded-xl border border-slate-200 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-md dark:border-slate-800 dark:bg-[#0b0e14] dark:hover:border-indigo-500/30 dark:hover:bg-[#0e121a]/85 cursor-pointer"
+            className="group relative cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-md dark:border-slate-800 dark:bg-[#0b0e14] dark:hover:border-indigo-500/30 dark:hover:bg-[#0e121a]/85"
         >
             {/* Drag Handle */}
             <div
@@ -677,13 +680,6 @@ export default function Builder({
                         </div>
                     </div>
 
-                    {/* ================= ROADMAP VISUALIZATION ================= */}
-                    <div className="relative mt-8 overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-4 shadow-sm sm:p-6 md:p-8 dark:bg-[#020202]">
-                        <div className="pointer-events-none absolute top-0 left-1/2 h-32 w-[80%] -translate-x-1/2 rounded-full bg-indigo-500/10 blur-[100px]"></div>
-                        <div className="relative z-10 min-w-full overflow-x-auto">
-                            <CourseRoadmap course={course} mentors={mentors} />
-                        </div>
-                    </div>
                     {/* ================= MODALS ================= */}
 
                     {/* Modal: Create Career Group */}
@@ -696,7 +692,6 @@ export default function Builder({
                             className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none"
                             style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
-                            {/* Top accent line */}
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             <div className="space-y-5 p-5 sm:p-6">
