@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Certificate of Achievement</title>
+    <title>Certificate of Recognition</title>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap"
         rel="stylesheet">
 
     <style>
@@ -19,9 +19,10 @@
             margin: 0;
             padding: 0;
             font-family: 'Montserrat', sans-serif;
-            color: #333333;
+            color: #0f294a;
             width: 100%;
             height: 100vh;
+            background-color: #FCF8F2;
         }
 
         .background {
@@ -42,137 +43,164 @@
             z-index: 1;
         }
 
-        .logo-container {
+        /* Semi-transparent center card */
+        .card {
             position: absolute;
-            top: 50px;
-            right: 80px;
-            width: 130px;
+            top: 11%;
+            left: 9%;
+            right: 9%;
+            height: 48%;
+            background: rgba(255, 255, 255, 0.90);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            padding: 20px 40px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .logo-container {
+            margin-bottom: 8px;
+            text-align: center;
+            width: 100%;
         }
 
         .logo-container img {
-            max-width: 100%;
+            width: 90px;
             height: auto;
         }
 
-        .header-container {
-            position: absolute;
-            top: 14%;
-            left: 0;
+        .cert-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f294a;
+            letter-spacing: 5px;
+            margin-top: 5px;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .divider-container {
             width: 100%;
             text-align: center;
+            margin: 8px 0;
         }
 
-        .cert-title {
-            font-family: 'Cinzel', serif;
-            font-size: 26px;
-            color: #1a56a6;
-            letter-spacing: 12px;
-            margin-bottom: 5px;
-            font-weight: 600;
+        .divider-line {
+            display: inline-block;
+            width: 280px;
+            height: 1px;
+            background-color: #cbd5e1;
+            position: relative;
         }
 
-        .cert-subtitle {
-            font-family: 'Cinzel', serif;
-            font-size: 48px;
-            font-weight: 700;
-            color: #1a56a6;
-            letter-spacing: 6px;
+        .divider-accent {
+            position: absolute;
+            top: -2px;
+            left: 120px;
+            width: 40px;
+            height: 5px;
+            background-color: #eab308;
+            border-radius: 2px;
         }
 
         .awarded-to {
-            position: absolute;
-            top: 33%;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 18px;
-            color: #666666;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .name-container {
-            position: absolute;
-            top: 40%;
-            left: 0;
-            width: 100%;
-            text-align: center;
+            font-size: 11px;
+            color: #5D7290;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-top: 12px;
+            text-transform: uppercase;
         }
 
         .name {
             font-family: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', serif;
-            font-size: 85px;
+            font-size: 50px;
             font-weight: 700;
-            color: #1a56a6;
-            line-height: 1;
+            color: #1e3a8a;
+            line-height: 1.2;
             font-style: italic;
+            margin-top: 4px;
+            margin-bottom: 8px;
         }
 
-        .description-container {
-            position: absolute;
-            top: 59%;
-            left: 15%;
-            width: 70%;
-            text-align: center;
-            font-size: 16px;
-            color: #666666;
+        .description {
+            font-size: 14px;
+            color: #475569;
             line-height: 1.6;
+            max-width: 80%;
+            margin: 0 auto;
         }
 
-        .date-container {
-            position: absolute;
-            top: 80%;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 17px;
-            font-weight: 600;
-            color: #444444;
-            letter-spacing: 1px;
-        }
-
+        /* Bottom section with signatures and date */
         .footer {
             width: 100%;
         }
 
         .signature-block-left {
             position: absolute;
-            bottom: 10%;
-            left: 15%;
-            width: 280px;
+            bottom: 12%;
+            left: 12%;
+            width: 240px;
             text-align: center;
         }
 
         .signature-block-right {
             position: absolute;
-            bottom: 10%;
-            right: 15%;
-            width: 280px;
+            bottom: 12%;
+            right: 12%;
+            width: 240px;
+            text-align: center;
+        }
+
+        .date-block-center {
+            position: absolute;
+            bottom: 12%;
+            left: 50%;
+            width: 200px;
+            margin-left: -100px;
             text-align: center;
         }
 
         .signature-line {
             width: 100%;
-            border-top: 1px solid #888888;
-            margin-bottom: 8px;
+            border-top: 1.5px solid #bda88e;
+            margin-top: 4px;
+            margin-bottom: 6px;
         }
 
         .signer-name {
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 20px;
-            font-weight: bold;
-            color: #444444;
-            margin-bottom: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f294a;
+        }
+
+        .signer-id {
+            font-size: 10px;
+            color: #5D7290;
+            margin-top: 1px;
+            margin-bottom: 2px;
         }
 
         .signer-title {
-            font-size: 15px;
-            color: #777777;
+            font-size: 10px;
+            font-weight: 600;
+            color: #64748B;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .date-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f294a;
         }
 
         .signature-img {
-            max-width: 280px;
-            height: 120px;
+            max-width: 180px;
+            height: 65px;
             object-fit: contain;
             margin-bottom: -15px;
             z-index: 2;
@@ -182,57 +210,69 @@
 </head>
 
 <body>
-    <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.png') }}" class="background" alt="Certificate Background">
+    <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.jpg') }}" class="background" alt="Certificate Background">
 
     <div class="certificate-content">
 
-        @if(file_exists(public_path('images/[WithoutBG]SVLogo (2).png')))
-            <div class="logo-container">
-                <img src="{{ public_path('images/[WithoutBG]SVLogo (2).png') }}" alt="SkillVentura Logo">
+        <!-- Semi-transparent Center Card -->
+        <div class="card">
+            @if(file_exists(public_path('images/[WithoutBG]SVLogo (2).png')))
+                <div class="logo-container">
+                    <img src="{{ public_path('images/[WithoutBG]SVLogo (2).png') }}" alt="SkillVentura Logo">
+                </div>
+            @endif
+
+            <div class="cert-title">Certificate of Recognition</div>
+
+            <div class="divider-container">
+                <div class="divider-line">
+                    <div class="divider-accent"></div>
+                </div>
             </div>
-        @endif
 
-        <div class="header-container">
-            <div class="cert-title">CERTIFICATE</div>
-            <div class="cert-subtitle">OF RECOGNITION</div>
-        </div>
+            <div class="awarded-to">This Certificate is proudly awarded to:</div>
 
-        <div class="awarded-to">This Certificate is proudly awarded to:</div>
-
-        <div class="name-container">
             <div class="name">{{ $studentName }}</div>
+
+            <div class="description">
+                This certificate is given to <strong>{{ $studentName }}</strong> for their achievement in <strong>{{ $assignmentTitle }}</strong> and proves that they are competent in their field.
+            </div>
         </div>
 
-        <div class="description-container">
-            This certificate is given to {{ $studentName }}<br>
-            for their achievement in {{ $assignmentTitle }}<br>
-            and proves that they are competent in their field.
-        </div>
-
-        <div class="date-container">
-            {{ $date }}
-        </div>
-
+        <!-- Footer Signatures & Date Section -->
         <div class="footer">
+            <!-- Left Block: Admin / Guild Master -->
             <div class="signature-block-left">
                 @if(isset($adminSignature) && $adminSignature)
                     <img src="{{ $adminSignature }}" class="signature-img" alt="Admin Signature">
                 @else
-                    <div style="height: 120px;"></div>
+                    <div style="height: 50px;"></div>
                 @endif
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $adminName ?? 'Guild Master' }}</div>
+                <div class="signer-id">UID: {{ $studentUid ?? 'N/A' }}</div>
                 <div class="signer-title">Guild Master</div>
             </div>
 
+            <!-- Center Block: Date Issued -->
+            <div class="date-block-center">
+                <div style="height: 50px;"></div>
+                <div class="signature-line"></div>
+                <div class="date-text">{{ $date }}</div>
+                <div class="signer-id" style="visibility: hidden;">Placeholder</div>
+                <div class="signer-title">Date Issued</div>
+            </div>
+
+            <!-- Right Block: Mentor -->
             <div class="signature-block-right">
                 @if(isset($mentorSignature) && $mentorSignature)
                     <img src="{{ $mentorSignature }}" class="signature-img" alt="Mentor Signature">
                 @else
-                    <div style="height: 120px;"></div>
+                    <div style="height: 50px;"></div>
                 @endif
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $mentorName }}</div>
+                <div class="signer-id">CID: {{ $certificateId ?? 'N/A' }}</div>
                 <div class="signer-title">Mentor</div>
             </div>
         </div>

@@ -45,6 +45,9 @@ class StudentSubmissionController extends Controller
         $mentorSignature = $this->getSignatureBase64($mentor?->signature_path);
         $adminSignature = $this->getSignatureBase64($admin?->signature_path);
 
+        $studentUid = sprintf('%010d', hexdec(substr(md5((string) $studentSubmission->student_id), 0, 8)) % 10000000000);
+        $certificateId = strtoupper(substr(md5((string) $studentSubmission->id), 0, 12));
+
         // Generate Certificate
         $pdfData = [
             'studentName' => $studentSubmission->student->name,
@@ -56,6 +59,8 @@ class StudentSubmissionController extends Controller
             'adminName' => $admin->name ?? 'Guild Master',
             'mentorSignature' => $mentorSignature,
             'adminSignature' => $adminSignature,
+            'studentUid' => $studentUid,
+            'certificateId' => $certificateId,
         ];
 
         $pdf = Pdf::loadView('certificate', $pdfData)->setPaper('a4', 'landscape');
