@@ -6,7 +6,7 @@
     <title>Certificate of Recognition</title>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Great+Vibes&family=Montserrat:wght@400;700&display=swap"
         rel="stylesheet">
 
     <style>
@@ -139,7 +139,7 @@
 
         .signature-block-left {
             position: absolute;
-            bottom: 12%;
+            bottom: 11%;
             left: 12%;
             width: 240px;
             text-align: center;
@@ -147,7 +147,7 @@
 
         .signature-block-right {
             position: absolute;
-            bottom: 12%;
+            bottom: 11%;
             right: 12%;
             width: 240px;
             text-align: center;
@@ -155,17 +155,41 @@
 
         .date-block-center {
             position: absolute;
-            bottom: 12%;
+            bottom: 11%;
             left: 50%;
             width: 200px;
             margin-left: -100px;
             text-align: center;
         }
 
+        .signature-box {
+            height: 55px;
+            line-height: 55px;
+            vertical-align: bottom;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .signature-img {
+            max-height: 52px;
+            max-width: 180px;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+
+        .signature-fallback-text {
+            font-family: 'Dancing Script', 'Alex Brush', cursive, serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f294a;
+            display: inline-block;
+            line-height: 50px;
+        }
+
         .signature-line {
             width: 100%;
             border-top: 1.5px solid #bda88e;
-            margin-top: 4px;
+            margin-top: 2px;
             margin-bottom: 6px;
         }
 
@@ -197,20 +221,15 @@
             font-weight: 700;
             color: #0f294a;
         }
-
-        .signature-img {
-            max-width: 180px;
-            height: 65px;
-            object-fit: contain;
-            margin-bottom: -15px;
-            z-index: 2;
-            position: relative;
-        }
     </style>
 </head>
 
 <body>
-    <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.jpg') }}" class="background" alt="Certificate Background">
+    @if(file_exists(public_path('images/Sertifikat Course LMS SkillVentura.png')))
+        <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.png') }}" class="background" alt="Certificate Background">
+    @else
+        <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.jpg') }}" class="background" alt="Certificate Background">
+    @endif
 
     <div class="certificate-content">
 
@@ -243,11 +262,13 @@
         <div class="footer">
             <!-- Left Block: Admin / Guild Master -->
             <div class="signature-block-left">
-                @if(isset($adminSignature) && $adminSignature)
-                    <img src="{{ $adminSignature }}" class="signature-img" alt="Admin Signature">
-                @else
-                    <div style="height: 50px;"></div>
-                @endif
+                <div class="signature-box">
+                    @if(isset($adminSignature) && $adminSignature)
+                        <img src="{{ $adminSignature }}" class="signature-img" alt="Admin Signature">
+                    @else
+                        <div class="signature-fallback-text">{{ $adminName ?? 'Guild Master' }}</div>
+                    @endif
+                </div>
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $adminName ?? 'Guild Master' }}</div>
                 <div class="signer-id">UID: {{ $studentUid ?? 'N/A' }}</div>
@@ -256,7 +277,7 @@
 
             <!-- Center Block: Date Issued -->
             <div class="date-block-center">
-                <div style="height: 50px;"></div>
+                <div class="signature-box"></div>
                 <div class="signature-line"></div>
                 <div class="date-text">{{ $date }}</div>
                 <div class="signer-id" style="visibility: hidden;">Placeholder</div>
@@ -265,11 +286,13 @@
 
             <!-- Right Block: Mentor -->
             <div class="signature-block-right">
-                @if(isset($mentorSignature) && $mentorSignature)
-                    <img src="{{ $mentorSignature }}" class="signature-img" alt="Mentor Signature">
-                @else
-                    <div style="height: 50px;"></div>
-                @endif
+                <div class="signature-box">
+                    @if(isset($mentorSignature) && $mentorSignature)
+                        <img src="{{ $mentorSignature }}" class="signature-img" alt="Mentor Signature">
+                    @else
+                        <div class="signature-fallback-text">{{ $mentorName }}</div>
+                    @endif
+                </div>
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $mentorName }}</div>
                 <div class="signer-id">CID: {{ $certificateId ?? 'N/A' }}</div>

@@ -1,8 +1,38 @@
 import AppLayout from "@/layouts/app-layout";
 import { router } from "@inertiajs/react";
 import { Trash2, Plus, FileText, Video, Image as ImageIcon, ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 export default function ModuleShow({ module }: any) {
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
+
+    const handleDeleteContent = (contentId: string) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Blok Konten',
+            message: 'Apakah Anda yakin ingin menghapus blok konten ini?',
+            confirmText: 'Hapus Konten',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/admin/module-contents/${contentId}`);
+            },
+        });
+    };
 
     const getYoutubeId = (url: string) => {
         const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
@@ -14,14 +44,13 @@ export default function ModuleShow({ module }: any) {
         const url = item.content?.url;
 
         switch (item.type) {
-
             case "text":
                 return (
                     <div className="flex flex-col gap-2">
                         <h3 className="font-bold text-lg text-slate-800 dark:text-white">
                             {item.content.title}
                         </h3>
-                        <p className="text-sm text-slate-650 dark:text-slate-355 leading-relaxed whitespace-pre-wrap">
+                        <p className="text-sm text-slate-655 dark:text-slate-355 leading-relaxed whitespace-pre-wrap">
                             {item.content.description}
                         </p>
                     </div>
@@ -29,63 +58,92 @@ export default function ModuleShow({ module }: any) {
 
             case "image":
                 return (
-                    <div className="flex justify-center bg-black/5 dark:bg-black/60 rounded-xl p-2">
-                        <img
-                            src={url}
-                            className="max-w-full h-auto max-h-96 object-contain rounded-lg"
-                            alt={item.content?.title || "Image content"}
-                        />
+                    <div className="flex flex-col gap-3">
+                        {item.content.title && (
+                            <h3 className="font-bold text-lg text-slate-800 dark:text-white">
+                                {item.content.title}
+                            </h3>
+                        )}
+                        {url && (
+                            <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 max-w-xl">
+                                <img src={url} alt="" className="w-full h-auto object-cover" />
+                            </div>
+                        )}
                     </div>
                 );
 
             case "video":
                 return (
-                    <div className="flex justify-center bg-black/10 dark:bg-black/80 rounded-xl p-2">
-                        <video controls className="max-w-full rounded-lg max-h-96 w-auto">
-                            <source src={url} />
-                        </video>
+                    <div className="flex flex-col gap-3">
+                        {item.content.title && (
+                            <h3 className="font-bold text-lg text-slate-800 dark:text-white">
+                                {item.content.title}
+                            </h3>
+                        )}
+                        {url && (
+                            <video
+                                src={url}
+                                controls
+                                className="w-full max-w-2xl rounded-xl border border-slate-200 dark:border-white/10"
+                            />
+                        )}
                     </div>
                 );
 
             case "youtube":
-                const id = getYoutubeId(url);
+                const ytId = url ? getYoutubeId(url) : null;
                 return (
-                    <div className="w-full bg-black rounded-xl overflow-hidden aspect-video max-w-3xl mx-auto border border-slate-200 dark:border-slate-850">
-                        <iframe
-                            className="w-full h-full"
-                            src={`https://www.youtube.com/embed/${id}`}
-                            allowFullScreen
-                        />
+                    <div className="flex flex-col gap-3">
+                        {item.content.title && (
+                            <h3 className="font-bold text-lg text-slate-800 dark:text-white">
+                                {item.content.title}
+                            </h3>
+                        )}
+                        {ytId ? (
+                            <div className="aspect-video max-w-2xl rounded-xl overflow-hidden border border-slate-200 dark:border-white/10">
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${ytId}`}
+                                    className="w-full h-full"
+                                    allowFullScreen
+                                />
+                            </div>
+                        ) : (
+                            <p className="text-sm text-slate-400">Invalid YouTube URL</p>
+                        )}
+                    </div>
+                );
+
+            case "file":
+                return (
+                    <div className="flex flex-col gap-3">
+                        {item.content.title && (
+                            <h3 className="font-bold text-lg text-slate-800 dark:text-white">
+                                {item.content.title}
+                            </h3>
+                        )}
+                        {url && (
+                            <a
+                                href={url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 text-sm text-[#7C5CFF] hover:underline font-medium"
+                            >
+                                <FileText size={16} />
+                                View Attached File
+                            </a>
+                        )}
                     </div>
                 );
 
             default:
-                return (
-                    <div className="flex items-center gap-2.5 p-3 rounded-lg border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/50 w-fit">
-                        <FileText size={20} className="text-[#3B28F6] dark:text-[#7C5CFF]" />
-                        <a
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-[#3B28F6] dark:text-[#7C5CFF] hover:underline text-sm font-semibold"
-                        >
-                            📄 Download File ({item.content?.name || "Attached File"})
-                        </a>
-                    </div>
-                );
+                return null;
         }
     };
 
     return (
         <AppLayout>
-            <div 
-                className="relative min-h-screen bg-[#f8fafc] dark:bg-[#030712] text-slate-800 dark:text-white px-4 py-8 sm:px-6 lg:px-10 overflow-hidden transition-colors duration-200"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
-            >
-                {/* Subtle top-center ambient glow (visible on dark mode) */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] pointer-events-none select-none z-0 bg-indigo-500/5 dark:bg-indigo-500/5 rounded-full blur-[120px]" />
-
-                <div className="relative z-10 min-w-full mx-auto flex flex-col gap-6">
+            <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#030712] text-slate-800 dark:text-white p-4 sm:p-6 lg:p-8 overflow-hidden">
+                <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-6">
 
                     {/* HEADER */}
                     <header
@@ -188,12 +246,8 @@ export default function ModuleShow({ module }: any) {
 
                                         {/* DELETE */}
                                         <button
-                                            onClick={() => {
-                                                if (confirm("Hapus content ini?")) {
-                                                    router.delete(`/admin/module-contents/${item._id}`);
-                                                }
-                                            }}
-                                            className="flex items-center gap-1.5 text-rose-500 hover:text-rose-600 text-xs font-bold transition"
+                                            onClick={() => handleDeleteContent(item._id)}
+                                            className="flex items-center gap-1.5 text-rose-500 hover:text-rose-600 text-xs font-bold transition cursor-pointer"
                                         >
                                             <Trash2 size={14} />
                                             Delete
@@ -205,6 +259,15 @@ export default function ModuleShow({ module }: any) {
                     </div>
                 </div>
             </div>
+            <ConfirmModal
+                open={confirmModal.open}
+                onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                variant={confirmModal.variant}
+            />
         </AppLayout>
     );
 }

@@ -12,9 +12,7 @@ class LevelBadgeController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Admin/Assets/Badge/Index', [
-            'badges' => LevelBadge::orderBy('order')->get(),
-        ]);
+        return redirect()->route('admin.assets.index');
     }
 
     public function create()
@@ -37,8 +35,8 @@ class LevelBadgeController extends Controller
         LevelBadge::create($data);
 
         return redirect()
-            ->route('admin.assets.badges.index')
-            ->with('success', 'Badge created');
+            ->route('admin.assets.index')
+            ->with('success', 'Badge operation successful');
     }
 
     public function edit($id)
@@ -78,7 +76,7 @@ class LevelBadgeController extends Controller
         $badge->update($data);
 
         return redirect()
-            ->route('admin.assets.badges.index')
+            ->route('admin.assets.index')
             ->with('success', 'Badge updated');
     }
 
@@ -108,7 +106,7 @@ class LevelBadgeController extends Controller
         $badge->delete();
 
         return redirect()
-            ->route('admin.assets.badges.index')
+            ->route('admin.assets.index')
             ->with('success', 'Badge deleted');
     }
 }

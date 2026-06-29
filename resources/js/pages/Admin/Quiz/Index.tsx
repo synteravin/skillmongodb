@@ -1,15 +1,48 @@
 import AppLayout from "@/layouts/app-layout"
 import { router } from "@inertiajs/react"
+import { useState } from "react"
 import { Layers, Edit2, Trash2, HelpCircle, BookOpen } from "lucide-react"
+import ConfirmModal from "@/components/ui/ConfirmModal"
 
 type Quiz = {
     id: string
-    module_name: string
+    module_name?: string
+    path_name?: string
     difficulty: string
     questions_count: number
 }
 
 export default function Index({ quizzes }: { quizzes: Quiz[] }) {
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
+
+    const handleDeleteQuiz = (quiz: Quiz) => {
+        const title = quiz.module_name || quiz.path_name || 'Kuis';
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Quiz',
+            message: `Apakah Anda yakin ingin menghapus kuis untuk "${title}"? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: 'Hapus Quiz',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/admin/quiz/${quiz.id}`);
+            },
+        });
+    };
+
     return (
         <AppLayout>
             <div className="relative min-h-screen bg-[#030712] text-white p-4 sm:p-6 lg:p-8 w-full mx-auto overflow-hidden">
@@ -59,7 +92,7 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
                                     </div>
 
                                     <h2 className="text-base sm:text-lg font-semibold text-white mb-1 line-clamp-2">
-                                        {quiz.module_name}
+                                        {quiz.module_name || quiz.path_name || 'Untitled Quiz'}
                                     </h2>
 
                                     <p className="text-sm text-slate-400 mb-6 flex items-center gap-1.5 font-medium">
@@ -69,19 +102,17 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
 
                                     <div className="mt-auto flex items-center gap-2 pt-4 border-t border-white/5">
                                         <button
+                                            type="button"
                                             onClick={() => router.get(`/admin/quiz/${quiz.id}/edit`)}
-                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white/4 hover:bg-[#7C5CFF]/15 hover:text-[#7C5CFF] text-white rounded-lg text-sm font-medium transition-colors border border-white/8 hover:border-[#7C5CFF]/30"
+                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white/4 hover:bg-[#7C5CFF]/15 hover:text-[#7C5CFF] text-white rounded-lg text-sm font-medium transition-colors border border-white/8 hover:border-[#7C5CFF]/30 cursor-pointer"
                                         >
                                             <Edit2 size={14} />
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => {
-                                                if (confirm("Are you sure you want to delete this quiz? This action cannot be undone.")) {
-                                                    router.delete(`/admin/quiz/${quiz.id}`)
-                                                }
-                                            }}
-                                            className="px-3 py-2 bg-white/4 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 rounded-lg text-sm font-medium transition-colors border border-white/8 hover:border-rose-500/30"
+                                            type="button"
+                                            onClick={() => handleDeleteQuiz(quiz)}
+                                            className="px-3 py-2 bg-white/4 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 rounded-lg text-sm font-medium transition-colors border border-white/8 hover:border-rose-500/30 cursor-pointer"
                                             title="Delete Quiz"
                                         >
                                             <Trash2 size={16} />
@@ -93,6 +124,15 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
                     )}
                 </div>
             </div>
+            <ConfirmModal
+                open={confirmModal.open}
+                onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                variant={confirmModal.variant}
+            />
         </AppLayout>
     )
 }

@@ -33,7 +33,7 @@ export default function Signature() {
                         </h1>
 
                         <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
-                            Draw and save your digital signature. This signature will be used to automatically sign student certificates upon course completion.
+                            Create and manage your digital signature using type, draw, or image upload options. This signature will be used to automatically sign student certificates upon course completion.
                         </p>
                     </div>
                 </div>

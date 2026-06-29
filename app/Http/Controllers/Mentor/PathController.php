@@ -100,15 +100,21 @@ class PathController extends Controller
 
     public function destroy(Path $path)
     {
-        $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) auth()->id())
-            ->pluck('career_group_id')
-            ->toArray();
+        if (! auth()->user()->isAdmin()) {
+            $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) auth()->id())
+                ->pluck('career_group_id')
+                ->map(fn ($id) => (string) $id)
+                ->toArray();
 
-        $hasAccess = CareerGroup::where('course_id', (string) $path->course_id)
-            ->whereIn('_id', $assignedGroupIds)
-            ->exists();
+            $hasAccess = (
+                ($path->career_group_id && in_array((string) $path->career_group_id, $assignedGroupIds)) ||
+                CareerGroup::where('course_id', (string) $path->course_id)
+                    ->whereIn('_id', $assignedGroupIds)
+                    ->exists()
+            );
 
-        abort_unless($hasAccess, 403);
+            abort_unless($hasAccess, 403);
+        }
 
         // Delete associated modules and their contents
         $moduleIds = Module::where('path_id', (string) $path->_id)->pluck('_id')->toArray();

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { router } from "@inertiajs/react"
 import AppLayout from "@/layouts/app-layout"
 import { ArrowLeft, Check, CheckCircle2, Circle, Edit3, HelpCircle, Plus, Trash2, X } from "lucide-react"
+import ConfirmModal from "@/components/ui/ConfirmModal"
 
 /* ================= TYPES ================= */
 
@@ -27,6 +28,21 @@ type Quiz = {
 export default function Edit({ quiz }: { quiz: Quiz }) {
     const [questions, setQuestions] = useState<Question[]>([])
     const [loading, setLoading] = useState(false)
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
 
     /* ================= INIT DATA ================= */
 
@@ -51,8 +67,17 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
         ])
     }
 
-    const removeQuestion = (index: number) => {
-        setQuestions(questions.filter((_, i) => i !== index))
+    const handleRemoveQuestion = (index: number) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Pertanyaan',
+            message: `Apakah Anda yakin ingin menghapus pertanyaan #${index + 1} beserta seluruh opsi jawabannya?`,
+            confirmText: 'Hapus Pertanyaan',
+            variant: 'danger',
+            onConfirm: () => {
+                setQuestions(prev => prev.filter((_, i) => i !== index))
+            },
+        });
     }
 
     const updateQuestion = (index: number, data: Question) => {
@@ -174,7 +199,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                                     index={i}
                                     data={q}
                                     onChange={(data) => updateQuestion(i, data)}
-                                    onDelete={() => removeQuestion(i)}
+                                    onDelete={() => handleRemoveQuestion(i)}
                                 />
                             ))
                         )}
@@ -185,7 +210,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-xl shadow-lg">
                             <button
                                 onClick={addQuestion}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors font-medium text-sm"
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors font-medium text-sm cursor-pointer"
                             >
                                 <Plus size={16} />
                                 Add Another Question
@@ -194,7 +219,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                             <button
                                 onClick={submit}
                                 disabled={loading}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors font-medium text-sm shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors font-medium text-sm shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
                                 {loading ? (
                                     <>
@@ -214,6 +239,15 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                         </div>
                     )}
                 </div>
+                <ConfirmModal
+                    open={confirmModal.open}
+                    onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                    onConfirm={confirmModal.onConfirm}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    variant={confirmModal.variant}
+                />
             </div>
         </AppLayout>
     )
