@@ -14,50 +14,68 @@ class SubmitQuizAction
     public function execute(User $user, Quiz $quiz, array $data): object
     {
         $userId = (string) $user->_id;
-        // 🔒 DOUBLE CHECK (ANTI BYPASS)
-        $exists = QuizResult::where('user_id', $userId)
+
+        // 🔒 CEK ATAU CEK JIKA SUDAH LULUS (ANTI BYPASS)
+        $alreadyPassed = QuizResult::where('user_id', $userId)
             ->where('quiz_id', (string) $quiz->_id)
+            ->where('passed', true)
             ->exists();
 
-        if ($exists) {
-            throw new \Exception('Quiz sudah pernah dikerjakan');
+        if ($alreadyPassed) {
+            throw new \Exception('Quiz ini sudah Anda selesaikan dengan lulus.');
         }
+
         $pathId = (string) $quiz->path_id;
 
         $service = app(QuizService::class);
         $result = $service->submit($user, $quiz, $data['answers']);
 
         $score = (int) $result['score'];
+        $passed = (bool) $result['passed'];
 
-        // 🔥 SIMPAN HASIL
-        QuizResult::create([
-            'user_id' => $userId,
-            'quiz_id' => (string) $quiz->_id,
-            'score' => $score,
-            'answers' => $data['answers'],
-            'passed' => true,
-            'completed_at' => now(),
-        ]);
+        // 🔥 SIMPAN / UPDATE HASIL QUIZ
+        QuizResult::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'quiz_id' => (string) $quiz->_id,
+            ],
+            [
+                'score' => $score,
+                'answers' => $data['answers'],
+                'passed' => $passed,
+                'completed_at' => now(),
+            ]
+        );
 
-        // 🔥 AMBIL / BUAT PROGRESS
-        $progress = UserStat::firstOrCreate([
-            'user_id' => $userId,
-            'course_id' => (string) $quiz->path->course_id,
-        ]);
+        if ($passed) {
+            // 🔥 AMBIL / BUAT PROGRESS
+            $progress = UserStat::firstOrCreate([
+                'user_id' => $userId,
+                'course_id' => (string) $quiz->path->course_id,
+            ]);
 
-        // 🔥 REWARD (HANYA SEKALI)
-        $reward = new RewardService;
+            // 🔥 REWARD HANYA SAAT LULUS (SEKALI SAJA)
+            $reward = new RewardService;
+            $reward->setQuizScore($progress, $pathId, $score);
+            $reward->addExp($progress, $pathId, $score);
+            $reward->addGold($progress, $pathId, (int) floor($score / 2));
 
-        $reward->setQuizScore($progress, $pathId, $score);
-        $reward->addExp($progress, $pathId, $score);
-        $reward->addGold($progress, $pathId, floor($score / 2));
+            return (object) [
+                'score' => $score,
+                'passed' => true,
+                'message' => 'Selamat, Anda lulus quiz!',
+                'exp' => $score,
+                'gold' => (int) floor($score / 2),
+            ];
+        }
 
+        // ⚠️ JIKA GAGAL (SCORE < 75%)
         return (object) [
             'score' => $score,
-            'passed' => true,
-            'message' => 'Quiz selesai',
-            'exp' => $score,
-            'gold' => floor($score / 2),
+            'passed' => false,
+            'message' => 'Nilai Anda belum mencapai batas kelulusan (75%). Silakan coba lagi!',
+            'exp' => 0,
+            'gold' => 0,
         ];
     }
 }
