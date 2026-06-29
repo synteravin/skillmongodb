@@ -536,6 +536,14 @@ export default function Play({ quiz, has_submitted }: any) {
     const [showResult, setShowResult] = useState(false)
     const [finalResult, setFinalResult] = useState<any>(null)
 
+    const handleRetry = () => {
+        setCurrent(0)
+        setAnswers([])
+        setSelected(null)
+        setShowResult(false)
+        setFinalResult(null)
+    }
+
     if (!quiz?.questions?.length) return null
 
     const question = quiz.questions[current]
@@ -685,6 +693,7 @@ export default function Play({ quiz, has_submitted }: any) {
                 open={showResult}
                 result={finalResult}
                 onClose={() => router.visit(`/student/courses/${quiz.course_slug}`)}
+                onRetry={handleRetry}
             />
         </>
     )

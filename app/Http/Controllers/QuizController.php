@@ -30,11 +30,14 @@ class QuizController extends Controller
             abort(403);
         }
 
-        $hasSubmitted = QuizResult::where('user_id', $user->_id)
-            ->where('quiz_id', $quiz->_id)
+        // 🔒 TERKUNCI HANYA JIKA SUDAH LULUS
+        $hasPassed = QuizResult::where('user_id', (string) $user->_id)
+            ->where('quiz_id', (string) $quiz->_id)
+            ->where('passed', true)
             ->exists();
 
         return Inertia::render('Student/Quiz/Play', [
+            'has_submitted' => $hasPassed,
             'quiz' => [
                 'id' => (string) $quiz->_id,
                 'difficulty' => $quiz->difficulty,
@@ -62,20 +65,22 @@ class QuizController extends Controller
 
             $user = auth()->user();
 
-            // 🔒 CEK SUDAH PERNAH SUBMIT
-            $alreadySubmitted = QuizResult::where('user_id', (string) $user->_id)
+            // 🔒 CEK APAKAH SUDAH LULUS (JIKA SUDAH LULUS, TIDAK BISA SUBMIT LAGI)
+            $alreadyPassed = QuizResult::where('user_id', (string) $user->_id)
                 ->where('quiz_id', (string) $quiz->_id)
+                ->where('passed', true)
                 ->exists();
 
-            if ($alreadySubmitted) {
+            if ($alreadyPassed) {
                 return response()->json([
-                    'message' => 'Quiz hanya bisa dikerjakan sekali',
+                    'message' => 'Quiz ini sudah Anda selesaikan dengan lulus.',
                 ], 403);
             }
 
             // lanjut eksekusi
             $result = app(SubmitQuizAction::class)
                 ->execute($user, $quiz, $request->validated());
+
             if ($result->passed) {
                 $progress = UserStat::firstOrCreate([
                     'user_id' => $user->_id,
@@ -100,7 +105,7 @@ class QuizController extends Controller
             return response()->json([
                 'result' => [
                     'score' => (int) $result->score,
-                    'passed' => true,
+                    'passed' => (bool) $result->passed,
                     'exp' => (int) $result->exp,
                     'gold' => (int) $result->gold,
                 ],

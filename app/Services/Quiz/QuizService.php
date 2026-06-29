@@ -14,7 +14,7 @@ class QuizService
             return [
                 'score' => 0,
                 'passed' => false,
-                'passing_score' => (int) ($quiz->passing_score ?? 80),
+                'passing_score' => (int) ($quiz->passing_score ?? 75),
             ];
         }
 
@@ -39,7 +39,7 @@ class QuizService
             }
         }
 
-        $passingScore = (int) ($quiz->passing_score ?? 80);
+        $passingScore = (int) ($quiz->passing_score ?? 75);
         $score = $total > 0 ? (int) round(($correct / $total) * 100) : 0;
         $passed = $score >= $passingScore;
 
