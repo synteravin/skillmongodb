@@ -265,13 +265,10 @@
                 <div class="signature-box">
                     @if(isset($adminSignature) && $adminSignature)
                         <img src="{{ $adminSignature }}" class="signature-img" alt="Admin Signature">
-                    @else
-                        <div class="signature-fallback-text">{{ $adminName ?? 'Guild Master' }}</div>
                     @endif
                 </div>
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $adminName ?? 'Guild Master' }}</div>
-                <div class="signer-id">UID: {{ $studentUid ?? 'N/A' }}</div>
                 <div class="signer-title">Guild Master</div>
             </div>
 
@@ -280,7 +277,6 @@
                 <div class="signature-box"></div>
                 <div class="signature-line"></div>
                 <div class="date-text">{{ $date }}</div>
-                <div class="signer-id" style="visibility: hidden;">Placeholder</div>
                 <div class="signer-title">Date Issued</div>
             </div>
 
@@ -289,13 +285,10 @@
                 <div class="signature-box">
                     @if(isset($mentorSignature) && $mentorSignature)
                         <img src="{{ $mentorSignature }}" class="signature-img" alt="Mentor Signature">
-                    @else
-                        <div class="signature-fallback-text">{{ $mentorName }}</div>
                     @endif
                 </div>
                 <div class="signature-line"></div>
                 <div class="signer-name">{{ $mentorName }}</div>
-                <div class="signer-id">CID: {{ $certificateId ?? 'N/A' }}</div>
                 <div class="signer-title">Mentor</div>
             </div>
         </div>

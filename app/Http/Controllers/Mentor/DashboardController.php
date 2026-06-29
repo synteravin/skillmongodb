@@ -37,15 +37,18 @@ class DashboardController extends Controller
                 ->count();
         });
 
+        $unreadNotifications = $mentor->unreadNotifications()->take(15)->get();
+
         return Inertia::render('Mentor/Dashboard', [
             'mentor' => [
                 'name' => $mentor->name,
+                'username' => $mentor->username ?? strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $mentor->name)),
 
                 'stats' => [
                     'career_groups' => $groups->count(),
                     'students' => $totalStudents,   // ✅ FIX
                     'active' => $activeStudents,    // ✅ FIX
-                    'progress' => 0,
+                    'pending_reviews' => $unreadNotifications->count(),
                 ],
 
                 'careerGroups' => $groups->map(function ($group) {
@@ -70,7 +73,7 @@ class DashboardController extends Controller
                     ];
                 })->values()->all(),
             ],
-            'notifications' => $mentor->unreadNotifications()->take(10)->get()->map(function ($notif) {
+            'notifications' => $unreadNotifications->map(function ($notif) {
                 return [
                     'id' => $notif->id,
                     'data' => $notif->data,
