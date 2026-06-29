@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Rank;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class LeaderboardController extends Controller
 {
     public function index()
     {
-        $users = User::with('userStats')->get();
+        $users = User::with(['userStats', 'character'])->get();
 
         // 🔥 ambil semua rank dari DB (urutan penting)
         $ranks = Rank::orderBy('order')->get();
@@ -56,14 +57,21 @@ class LeaderboardController extends Controller
             $rank = $ranks[$rankIndex] ?? $ranks->last();
 
             /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+            $disk = Storage::disk('s3');
+
+            // 🔥 Strict User Profile Avatar Resolution via S3 Cloud Storage
+            $avatarUrl = null;
+            if (! empty($user->avatar)) {
+                $avatarUrl = str_starts_with($user->avatar, 'http')
+                    ? $user->avatar
+                    : $disk->url($user->avatar);
+            } else {
+                $avatarUrl = asset('images/aizen.webp');
+            }
 
             return [
                 'name' => $user->name,
-
-                'avatar' => $user->avatar
-                    ? (str_starts_with($user->avatar, 'http') ? $user->avatar : $disk->url($user->avatar))
-                    : asset('images/aizen.jpeg'),
+                'avatar' => $avatarUrl,
                 'total_score' => $totalScore,
 
                 'rank' => [
