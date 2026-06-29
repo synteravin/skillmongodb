@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { router, Link } from '@inertiajs/react';
-import { Plus, FolderGit2, PlusCircle, Layers, ArrowLeft } from 'lucide-react';
+import { Plus, FolderGit2, PlusCircle, Layers, ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
 import Modal from '@/components/ui/Modal';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 import {
     DndContext,
@@ -58,7 +59,15 @@ type Mentor = {
     avatar_url?: string | null;
 };
 
-function SortablePathCard({ path }: { path: any }) {
+function SortablePathCard({
+    path,
+    onEdit,
+    onDelete,
+}: {
+    path: any;
+    onEdit?: (p: any) => void;
+    onDelete?: (p: any) => void;
+}) {
     const {
         attributes,
         listeners,
@@ -93,27 +102,55 @@ function SortablePathCard({ path }: { path: any }) {
             onClick={handleCardClick}
             className="group relative cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-md dark:border-slate-800 dark:bg-[#0b0e14] dark:hover:border-indigo-500/30 dark:hover:bg-[#0e121a]/85"
         >
-            {/* Drag Handle */}
-            <div
-                {...attributes}
-                {...listeners}
-                className="dark:hover:bg-slate-850 absolute top-3 right-3 cursor-grab rounded-lg p-1.5 text-slate-400 opacity-100 transition-all duration-200 hover:bg-slate-100 active:cursor-grabbing md:opacity-0 md:group-hover:opacity-100 dark:text-slate-500"
-                title="Tarik untuk memindahkan"
-            >
-                <svg
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4"
+            {/* Drag Handle & Action Buttons */}
+            <div className="absolute top-3 right-3 flex items-center gap-1">
+                {onEdit && (
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(path);
+                        }}
+                        className="rounded-lg p-1 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400 transition-colors"
+                        title="Edit Path Name"
+                    >
+                        <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                )}
+                {onDelete && (
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(path);
+                        }}
+                        className="rounded-lg p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-colors"
+                        title="Delete Path"
+                    >
+                        <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                )}
+                <div
+                    {...attributes}
+                    {...listeners}
+                    className="dark:hover:bg-slate-850 cursor-grab rounded-lg p-1 text-slate-400 opacity-100 transition-all duration-200 hover:bg-slate-100 active:cursor-grabbing md:opacity-0 md:group-hover:opacity-100 dark:text-slate-500"
+                    title="Tarik untuk memindahkan"
                 >
-                    <path
-                        fillRule="evenodd"
-                        d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 14a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM5 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM5 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM5 14a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM15 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM15 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM15 14a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"
-                        clipRule="evenodd"
-                    />
-                </svg>
+                    <svg
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-4 w-4"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 14a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM5 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM5 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM5 14a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM15 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM15 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM15 14a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+                </div>
             </div>
 
-            <div className="mb-3 flex items-center justify-between gap-2.5 pr-8">
+            <div className="mb-3 flex items-center justify-between gap-2.5 pr-20">
                 <Link
                     href={`/admin/paths/${path._id}/modules`}
                     className="text-slate-850 truncate text-xs font-bold transition-colors hover:text-[#3B28F6] hover:underline dark:text-white dark:hover:text-indigo-400"
@@ -159,6 +196,21 @@ export default function Builder({
     const [openCareerPath, setOpenCareerPath] = useState(false);
     const [openAssignMentor, setOpenAssignMentor] = useState(false);
 
+    // Edit Modal States
+    const [editingPath, setEditingPath] = useState<{ _id: string; name: string } | null>(null);
+    const [editingGroup, setEditingGroup] = useState<{ _id: string; name: string } | null>(null);
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        onConfirm: () => {},
+    });
+
     /* ================= FORM STATE ================= */
     const [careerGroupName, setCareerGroupName] = useState('');
     const [basicPathName, setBasicPathName] = useState('');
@@ -166,6 +218,61 @@ export default function Builder({
     const [careerGroupId, setCareerGroupId] = useState<string | null>(null);
     const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
     const [assignedMentorId, setAssignedMentorId] = useState<string>('');
+
+    /* ================= EDIT & DELETE HANDLERS ================= */
+    const handleEditPath = (path: any) => {
+        setEditingPath({ _id: path._id, name: path.name });
+    };
+
+    const handleUpdatePath = () => {
+        if (!editingPath || !editingPath.name.trim()) return;
+        router.put(
+            `/admin/paths/${editingPath._id}`,
+            { name: editingPath.name.trim() },
+            {
+                preserveScroll: true,
+                onSuccess: () => setEditingPath(null),
+            }
+        );
+    };
+
+    const handleDeletePath = (path: any) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Path',
+            message: `Apakah Anda yakin ingin menghapus path "${path.name}"? Seluruh modul di dalamnya juga akan terhapus.`,
+            onConfirm: () => {
+                router.delete(`/admin/paths/${path._id}`, { preserveScroll: true });
+            },
+        });
+    };
+
+    const handleEditGroup = (group: any) => {
+        setEditingGroup({ _id: group._id, name: group.name });
+    };
+
+    const handleUpdateGroup = () => {
+        if (!editingGroup || !editingGroup.name.trim()) return;
+        router.put(
+            `/admin/career-groups/${editingGroup._id}`,
+            { name: editingGroup.name.trim() },
+            {
+                preserveScroll: true,
+                onSuccess: () => setEditingGroup(null),
+            }
+        );
+    };
+
+    const handleDeleteGroup = (group: any) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Career Branch',
+            message: `Apakah Anda yakin ingin menghapus Career Branch "${group.name}"? Seluruh path dan modul di dalamnya juga akan terhapus.`,
+            onConfirm: () => {
+                router.delete(`/admin/career-groups/${group._id}`, { preserveScroll: true });
+            },
+        });
+    };
 
     /* ================= DND CONFIG ================= */
     const sensors = useSensors(
@@ -593,6 +700,20 @@ export default function Builder({
                                                         {/* ACTIONS */}
                                                         <div className="flex items-center gap-2">
                                                             <button
+                                                                onClick={() => handleEditGroup(group)}
+                                                                className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400 transition-colors"
+                                                                title="Edit Branch Name"
+                                                            >
+                                                                <Pencil className="h-3.5 w-3.5" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteGroup(group)}
+                                                                className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-colors"
+                                                                title="Delete Branch"
+                                                            >
+                                                                <Trash2 className="h-3.5 w-3.5" />
+                                                            </button>
+                                                            <button
                                                                 onClick={() =>
                                                                     handleManageMentor(
                                                                         group._id,
@@ -664,6 +785,8 @@ export default function Builder({
                                                                                 path={
                                                                                     path
                                                                                 }
+                                                                                onEdit={handleEditPath}
+                                                                                onDelete={handleDeletePath}
                                                                             />
                                                                         ),
                                                                     )}
@@ -870,6 +993,91 @@ export default function Builder({
                             </div>
                         </div>
                     </Modal>
+
+                    {/* Modal: Edit Path */}
+                    <Modal
+                        open={!!editingPath}
+                        title="Edit Nama Path"
+                        onClose={() => setEditingPath(null)}
+                    >
+                        <div className="space-y-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                            <div>
+                                <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                    Nama Path
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editingPath?.name || ''}
+                                    onChange={(e) => setEditingPath(prev => prev ? { ...prev, name: e.target.value } : null)}
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    placeholder="Contoh: Fundamental PHP"
+                                />
+                            </div>
+                            <div className="h-px bg-slate-100 dark:bg-white/5" />
+                            <div className="flex justify-end gap-2.5">
+                                <button
+                                    onClick={() => setEditingPath(null)}
+                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={handleUpdatePath}
+                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-700 shadow-sm"
+                                >
+                                    Simpan Perubahan
+                                </button>
+                            </div>
+                        </div>
+                    </Modal>
+
+                    {/* Modal: Edit Career Group */}
+                    <Modal
+                        open={!!editingGroup}
+                        title="Edit Career Branch"
+                        onClose={() => setEditingGroup(null)}
+                    >
+                        <div className="space-y-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                            <div>
+                                <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                    Nama Career Branch
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editingGroup?.name || ''}
+                                    onChange={(e) => setEditingGroup(prev => prev ? { ...prev, name: e.target.value } : null)}
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    placeholder="Contoh: Backend Web Development"
+                                />
+                            </div>
+                            <div className="h-px bg-slate-100 dark:bg-white/5" />
+                            <div className="flex justify-end gap-2.5">
+                                <button
+                                    onClick={() => setEditingGroup(null)}
+                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={handleUpdateGroup}
+                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-700 shadow-sm"
+                                >
+                                    Simpan Perubahan
+                                </button>
+                            </div>
+                        </div>
+                    </Modal>
+
+                    {/* Confirm Modal for Delete Actions */}
+                    <ConfirmModal
+                        open={confirmModal.open}
+                        title={confirmModal.title}
+                        message={confirmModal.message}
+                        confirmText="Hapus"
+                        variant="danger"
+                        onConfirm={confirmModal.onConfirm}
+                        onClose={() => setConfirmModal(prev => ({ ...prev, open: false }))}
+                    />
                 </div>
             </div>
         </AppLayout>

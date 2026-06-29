@@ -13,9 +13,7 @@ class CharacterController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Admin/Assets/Characters/Index', [
-            'characters' => Character::latest()->get(),
-        ]);
+        return redirect()->route('admin.assets.index');
     }
 
     public function create()
@@ -58,8 +56,8 @@ class CharacterController extends Controller
         Character::create($data);
 
         return redirect()
-            ->route('admin.assets.characters.index')
-            ->with('success', 'Character created');
+            ->route('admin.assets.index')
+            ->with('success', 'Character operation successful');
     }
 
     public function edit(Character $character)
@@ -99,6 +97,8 @@ class CharacterController extends Controller
             }
 
             $data['avatar'] = $uploader->upload($request->file('avatar'));
+        } else {
+            unset($data['avatar']);
         }
 
         // 🔥 gabungkan guide power
@@ -112,7 +112,7 @@ class CharacterController extends Controller
         $character->update($data);
 
         return redirect()
-            ->route('admin.assets.characters.index')
+            ->route('admin.assets.index')
             ->with('success', 'Character updated');
     }
 
@@ -132,7 +132,7 @@ class CharacterController extends Controller
         $character->delete();
 
         return redirect()
-            ->route('admin.assets.characters.index')
+            ->route('admin.assets.index')
             ->with('success', 'Character deleted');
     }
 }

@@ -34,21 +34,25 @@ class MentorModuleManagementController extends Controller
         return Inertia::render('Mentor/Module/Builder', [
             'group' => [
                 'id' => (string) $group->_id,
+                '_id' => (string) $group->_id,
                 'name' => $group->name,
             ],
 
             'path' => [
                 'id' => (string) $path->_id,
+                '_id' => (string) $path->_id,
                 'name' => $path->name,
                 'description' => $path->description,
 
                 'quiz' => $path->quiz ? [
                     'id' => (string) $path->quiz->_id,
+                    '_id' => (string) $path->quiz->_id,
                 ] : null,
 
                 'modules' => $path->modules->map(function ($module) {
                     return [
                         'id' => (string) $module->_id,
+                        '_id' => (string) $module->_id,
                         'title' => $module->title,
                         'type' => $module->type,
                         'order' => $module->order,
@@ -56,6 +60,7 @@ class MentorModuleManagementController extends Controller
                         'contents' => $module->contents->map(function ($content) {
                             return [
                                 'id' => (string) $content->_id,
+                                '_id' => (string) $content->_id,
                                 'type' => $content->type,
                                 'order' => $content->order,
                                 'content' => $content->content,

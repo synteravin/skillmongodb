@@ -62,10 +62,10 @@ export default function Edit({ badge }: { badge: Badge }) {
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <Link
-                                href="/admin/assets/badges"
+                                href="/admin/assets"
                                 className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
                             >
-                                ← Back to Badges
+                                ← Back to Assets
                             </Link>
                             <h1
                                 className="text-2xl font-bold tracking-tight text-slate-800 dark:text-white"
@@ -196,7 +196,7 @@ export default function Edit({ badge }: { badge: Badge }) {
                         {/* Actions */}
                         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                             <Link
-                                href="/admin/assets/badges"
+                                href="/admin/assets"
                                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
                             >
                                 Cancel

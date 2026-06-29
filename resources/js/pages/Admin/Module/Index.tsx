@@ -1,8 +1,40 @@
 import AppLayout from "@/layouts/app-layout";
 import { router } from "@inertiajs/react";
+import { useState } from "react";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 export default function ModuleIndex({ path }: any) {
     const pathId = path._id?.$oid || path._id || path.id;
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
+
+    const handleDeleteModule = (module: any) => {
+        const moduleId = module._id?.$oid || module._id || module.id;
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Modul',
+            message: `Apakah Anda yakin ingin menghapus modul "${module.title}"?`,
+            confirmText: 'Hapus Modul',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/admin/modules/${moduleId}`);
+            },
+        });
+    };
+
     return (
         <AppLayout>
             <div className="relative min-h-screen bg-[#030712] text-white p-6 overflow-hidden">
@@ -78,11 +110,7 @@ export default function ModuleIndex({ path }: any) {
                                     </button>
 
                                     <button
-                                        onClick={() => {
-                                            if (confirm("Yakin hapus module ini?")) {
-                                                router.delete(`/modules/${module.slug}`);
-                                            }
-                                        }}
+                                        onClick={() => handleDeleteModule(module)}
                                         className="text-rose-400 hover:text-rose-350 text-xs font-semibold transition-colors"
                                     >
                                         Delete
@@ -96,6 +124,15 @@ export default function ModuleIndex({ path }: any) {
 
                 </div>
             </div>
+            <ConfirmModal
+                open={confirmModal.open}
+                onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                variant={confirmModal.variant}
+            />
         </AppLayout>
     );
 }

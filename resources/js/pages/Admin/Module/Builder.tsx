@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { router } from "@inertiajs/react";
 import { ChevronDown, Plus, Layers, Trash2, GripVertical, Type, Image as ImageIcon, Video, FileText, Youtube, X, Check, ArrowLeft } from "lucide-react";
 import AppLayout from "@/layouts/app-layout";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 import {
     DndContext,
@@ -48,6 +49,10 @@ type Path = {
     id?: string;
     name: string;
     modules: Module[];
+    quiz?: {
+        id: string;
+        _id?: string;
+    } | null;
 };
 
 /* ================= ID ================= */
@@ -188,11 +193,12 @@ const SortableContent = ({
 
                         <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mt-2 pt-4 border-t border-slate-150 dark:border-slate-800/80">
                             <button
+                                type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     deleteContent(id, moduleId);
                                 }}
-                                className="flex items-center justify-center gap-1.5 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 px-3 py-2 sm:py-1.5 rounded-lg text-sm font-semibold transition-colors border border-rose-200 dark:border-transparent"
+                                className="flex items-center justify-center gap-1.5 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 px-3 py-2 sm:py-1.5 rounded-lg text-sm font-semibold transition-colors border border-rose-200 dark:border-transparent cursor-pointer"
                             >
                                 <Trash2 size={16} className="sm:w-3.5 sm:h-3.5" />
                                 Delete Content
@@ -330,11 +336,12 @@ const SortableContent = ({
                         </div>
 
                         <button
+                            type="button"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 deleteContent(id, moduleId);
                             }}
-                            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 p-2 rounded-lg"
+                            className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 p-2 rounded-lg cursor-pointer"
                             title="Delete Content"
                         >
                             <Trash2 size={16} />
@@ -358,6 +365,21 @@ export default function ModuleBuilder({ path }: { path: Path }) {
     // Inline state for YouTube input
     const [activeYoutubeModule, setActiveYoutubeModule] = useState<string | null>(null);
     const [youtubeUrl, setYoutubeUrl] = useState("");
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
 
     const rollback = (module: Module, tempId: string) => {
         setModules(prev =>
@@ -583,17 +605,56 @@ export default function ModuleBuilder({ path }: { path: Path }) {
     };
 
     const deleteContent = (id: string, moduleId: string) => {
-        if (!confirm("Are you sure you want to delete this content?")) return;
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Blok Konten',
+            message: 'Apakah Anda yakin ingin menghapus blok konten ini dari modul? Tindakan ini tidak dapat dibatalkan.',
+            confirmText: 'Hapus Konten',
+            variant: 'danger',
+            onConfirm: () => {
+                setModules(prev =>
+                    prev.map(m =>
+                        getId(m) === moduleId
+                            ? { ...m, contents: m.contents.filter(c => getId(c) !== id) }
+                            : m
+                    )
+                );
+                router.delete(`/admin/module-contents/${id}`);
+            },
+        });
+    };
 
-        setModules(prev =>
-            prev.map(m =>
-                getId(m) === moduleId
-                    ? { ...m, contents: m.contents.filter(c => getId(c) !== id) }
-                    : m
-            )
-        );
+    const deleteModule = (module: Module) => {
+        const moduleId = getId(module);
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Modul',
+            message: `Apakah Anda yakin ingin menghapus modul "${module.title}" beserta seluruh konten di dalamnya?`,
+            confirmText: 'Hapus Modul',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/admin/modules/${moduleId}`, {
+                    preserveScroll: true,
+                    onSuccess: () => router.reload({ only: ['path'] }),
+                });
+            },
+        });
+    };
 
-        router.delete(`/admin/module-contents/${id}`);
+    const deleteQuiz = (quizId: string) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Final Quiz',
+            message: 'Apakah Anda yakin ingin menghapus Final Quiz untuk path ini beserta seluruh pertanyaan di dalamnya?',
+            confirmText: 'Hapus Quiz',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/admin/quiz/${quizId}`, {
+                    preserveScroll: true,
+                    onSuccess: () => router.reload({ only: ['path'] }),
+                });
+            },
+        });
     };
 
     const updateContentLocal = useCallback((
@@ -720,13 +781,32 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() => router.get(`/admin/paths/${getId(path)}/quiz/create`)}
-                                className="relative flex items-center gap-3 border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/80 transition-all hover:bg-slate-50 hover:shadow-md hover:shadow-slate-200 active:scale-95 active:shadow-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-neutral-300 dark:shadow-zinc-900 dark:hover:bg-zinc-700 dark:hover:shadow-zinc-900"
-                            >
-                                <span className="h-3.5 w-0.5 bg-indigo-500 shrink-0" />
-                                <span>Manage Final Quiz</span>
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (path.quiz?.id || path.quiz?._id) {
+                                            router.get(`/admin/quiz/${path.quiz.id || path.quiz._id}/edit`);
+                                        } else {
+                                            router.get(`/admin/paths/${getId(path)}/quiz/create`);
+                                        }
+                                    }}
+                                    className="relative flex items-center gap-3 border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/80 transition-all hover:bg-slate-50 hover:shadow-md hover:shadow-slate-200 active:scale-95 active:shadow-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-neutral-300 dark:shadow-zinc-900 dark:hover:bg-zinc-700 dark:hover:shadow-zinc-900 cursor-pointer rounded-lg"
+                                >
+                                    <span className="h-3.5 w-0.5 bg-indigo-500 shrink-0" />
+                                    <span>Manage Final Quiz</span>
+                                </button>
+                                {(path.quiz?.id || path.quiz?._id) && (
+                                    <button
+                                        type="button"
+                                        onClick={() => deleteQuiz((path.quiz!.id || path.quiz!._id)!)}
+                                        className="p-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-lg border border-rose-500/20 transition-colors cursor-pointer"
+                                        title="Delete Final Quiz"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </header>
 
@@ -782,8 +862,21 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                                 {module.contents.length} items
                                             </span>
                                         </div>
-                                        <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-850 text-slate-800 dark:text-white rotate-180' : 'text-slate-400 dark:text-slate-550'}`}>
-                                            <ChevronDown size={20} />
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteModule(module);
+                                                }}
+                                                className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
+                                                title="Delete Module"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                            <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-850 text-slate-800 dark:text-white rotate-180' : 'text-slate-400 dark:text-slate-550'}`}>
+                                                <ChevronDown size={20} />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -855,6 +948,15 @@ export default function ModuleBuilder({ path }: { path: Path }) {
 
                 </div>
             </div>
+            <ConfirmModal
+                open={confirmModal.open}
+                onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                variant={confirmModal.variant}
+            />
         </AppLayout>
     );
 }

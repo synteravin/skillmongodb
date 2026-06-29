@@ -1,6 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { router, Link, useForm } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import {
     Pencil,
     Trash2,
@@ -16,6 +17,8 @@ import {
     Search,
     Loader2,
     Save,
+    GraduationCap,
+    ShieldCheck,
 } from 'lucide-react';
 
 interface User {
@@ -40,14 +43,96 @@ interface PaginatedUsers {
 export default function Index({
     users,
     filters,
+    stats,
 }: {
     users: PaginatedUsers;
     filters?: { search?: string };
+    stats?: { total: number; students: number; mentors: number; admins: number };
 }) {
     const [showModal, setShowModal] = useState(false);
     const [editUser, setEditUser] = useState<User | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
+    const [selectedRole, setSelectedRole] = useState(filters?.role || 'all');
+    const [isSearching, setIsSearching] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
+
+    const isAllSelected =
+        users.data.length > 0 &&
+        users.data.every((u) => selectedIds.includes(u._id));
+
+    const toggleSelectAll = () => {
+        if (isAllSelected) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(users.data.map((u) => u._id));
+        }
+    };
+
+    const toggleSelectOne = (id: string) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter((item) => item !== id));
+        } else {
+            setSelectedIds([...selectedIds, id]);
+        }
+    };
+
+    const handleBulkDelete = () => {
+        if (selectedIds.length === 0) return;
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Massal User',
+            message: `Apakah Anda yakin ingin menghapus ${selectedIds.length} user terpilih? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: 'Hapus Terpilih',
+            variant: 'danger',
+            onConfirm: () => {
+                router.post(
+                    '/admin/users/bulk-delete',
+                    { ids: selectedIds },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => setSelectedIds([]),
+                    },
+                );
+            },
+        });
+    };
+
+    const handleBulkRoleChange = (role: 'admin' | 'mentor' | 'student') => {
+        if (selectedIds.length === 0) return;
+        setConfirmModal({
+            open: true,
+            title: 'Ubah Role Massal',
+            message: `Ubah role ${selectedIds.length} user terpilih menjadi "${role}"?`,
+            confirmText: 'Ubah Role',
+            variant: 'info',
+            onConfirm: () => {
+                router.post(
+                    '/admin/users/bulk-role',
+                    { ids: selectedIds, role },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => setSelectedIds([]),
+                    },
+                );
+            },
+        });
+    };
 
     const { data, setData, post, processing, errors, reset, clearErrors } =
         useForm({
@@ -60,7 +145,7 @@ export default function Index({
             _method: 'post',
         });
 
-    /* ================= HANDLE SEARCH ================= */
+    /* ================= HANDLE SEARCH & FILTER ================= */
     const isFirstRender = useRef(true);
 
     useEffect(() => {
@@ -69,23 +154,40 @@ export default function Index({
             return;
         }
 
+        setIsSearching(true);
         const timeout = setTimeout(() => {
             router.get(
                 '/admin/users',
-                { search: searchQuery },
-                { preserveState: true, preserveScroll: true, replace: true },
+                {
+                    search: searchQuery || undefined,
+                    role: selectedRole !== 'all' ? selectedRole : undefined,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                    onFinish: () => setIsSearching(false),
+                },
             );
         }, 300);
 
         return () => clearTimeout(timeout);
-    }, [searchQuery]);
+    }, [searchQuery, selectedRole]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSearching(true);
         router.get(
             '/admin/users',
-            { search: searchQuery },
-            { preserveState: true, preserveScroll: true },
+            {
+                search: searchQuery || undefined,
+                role: selectedRole !== 'all' ? selectedRole : undefined,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                onFinish: () => setIsSearching(false),
+            },
         );
     };
 
@@ -136,13 +238,16 @@ export default function Index({
     };
 
     const deleteUser = (id: string) => {
-        if (
-            confirm(
-                'Are you sure you want to delete this user? This action cannot be undone.',
-            )
-        ) {
-            router.delete(`/admin/users/${id}`, { preserveScroll: true });
-        }
+        setConfirmModal({
+            open: true,
+            title: 'Hapus User',
+            message: 'Are you sure you want to delete this user? This action cannot be undone.',
+            confirmText: 'Delete User',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/admin/users/${id}`, { preserveScroll: true });
+            },
+        });
     };
 
     // Helper for role badges
@@ -207,15 +312,29 @@ export default function Index({
                             {/* Search */}
                             <form onSubmit={handleSearch} className="relative">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <Search size={14} className="text-slate-400" />
+                                    {isSearching ? (
+                                        <Loader2 size={14} className="animate-spin text-indigo-600 dark:text-indigo-400" />
+                                    ) : (
+                                        <Search size={14} className="text-slate-400" />
+                                    )}
                                 </div>
                                 <input
                                     type="text"
                                     placeholder="Search users..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pr-4 pl-9 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-indigo-300 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40 sm:w-64"
+                                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pr-9 pl-9 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-indigo-300 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40 sm:w-64"
                                 />
+                                {searchQuery && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearchQuery('')}
+                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                        title="Clear search"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                )}
                             </form>
 
                             {/* Add User Button */}
@@ -232,33 +351,68 @@ export default function Index({
 
                 {/* Stats Row */}
                 <section className="grid gap-4 sm:grid-cols-3">
-                    {[
-                        { label: 'Total Users', value: users.total },
-                        {
-                            label: 'Showing',
-                            value: `${users.from ?? 0}–${users.to ?? 0}`,
-                        },
-                        {
-                            label: 'Page',
-                            value: `${users.current_page} / ${users.last_page}`,
-                        },
-                    ].map((s) => (
-                        <div
-                            key={s.label}
-                            className="relative overflow-hidden rounded-xl border border-slate-200 p-6 dark:border-slate-800"
-                        >
-                            <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
-                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                            <div className="relative z-10">
-                                <p className="text-sm font-medium text-slate-500 dark:text-slate-400/60">
-                                    {s.label}
+                    {/* Card 1: Total Users */}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xs">
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                        <div className="relative z-10 flex items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                    Total Users
+                                </span>
+                                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
+                                    {stats?.total ?? users.total}
                                 </p>
-                                <p className="text-2xl font-semibold text-slate-800 dark:text-white tracking-tight mt-1">
-                                    {s.value}
+                                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                    Registered platform accounts
                                 </p>
                             </div>
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40">
+                                <Users size={22} className="stroke-[2.2]" />
+                            </div>
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Card 2: Students */}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xs">
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                        <div className="relative z-10 flex items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                    Students
+                                </span>
+                                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
+                                    {stats?.students ?? 0}
+                                </p>
+                                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                    {stats?.total ? Math.round(((stats.students ?? 0) / stats.total) * 100) : 0}% of total users
+                                </p>
+                            </div>
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                                <GraduationCap size={22} className="stroke-[2.2]" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Card 3: Mentors & Staff */}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xs">
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                        <div className="relative z-10 flex items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                    Mentors & Staff
+                                </span>
+                                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
+                                    {(stats?.mentors ?? 0) + (stats?.admins ?? 0)}
+                                </p>
+                                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                    {stats?.mentors ?? 0} Mentors, {stats?.admins ?? 0} Admins
+                                </p>
+                            </div>
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/40">
+                                <ShieldCheck size={22} className="stroke-[2.2]" />
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 {/* Users Table */}
@@ -266,14 +420,96 @@ export default function Index({
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                    {/* Table Header */}
-                    <div className="relative z-10 flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
-                        <h2 className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase">
-                            All Users
-                        </h2>
-                        <span className="text-xs text-slate-400 dark:text-slate-600">
-                            {users.total} total
-                        </span>
+                    {/* Table Header / Bulk Action Bar */}
+                    <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+                        {selectedIds.length > 0 ? (
+                            <div className="flex flex-wrap items-center justify-between w-full gap-3 bg-indigo-50/70 dark:bg-indigo-950/40 -mx-6 -my-4 px-6 py-3 border-b border-indigo-200 dark:border-indigo-800/60">
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={isAllSelected}
+                                        onChange={toggleSelectAll}
+                                        className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer"
+                                    />
+                                    <span className="text-xs font-semibold text-indigo-900 dark:text-indigo-200">
+                                        {selectedIds.length} User Terpilih
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-900 rounded-lg p-1 border border-indigo-200 dark:border-indigo-800 text-xs font-medium">
+                                        <span className="px-2 text-slate-500 text-[0.7rem] font-semibold uppercase">Ubah Role:</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleBulkRoleChange('student')}
+                                            className="px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                                        >
+                                            Student
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleBulkRoleChange('mentor')}
+                                            className="px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-purple-600 dark:text-purple-400 transition-colors"
+                                        >
+                                            Mentor
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleBulkRoleChange('admin')}
+                                            className="px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-indigo-600 dark:text-indigo-400 transition-colors"
+                                        >
+                                            Admin
+                                        </button>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleBulkDelete}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-semibold hover:bg-rose-700 transition-colors shadow-sm"
+                                    >
+                                        <Trash2 size={13} />
+                                        Hapus Terpilih
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedIds([])}
+                                        className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                        title="Batal Pilih"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/70 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                                {[
+                                    { id: 'all', label: 'All Users', count: stats?.total ?? users.total },
+                                    { id: 'student', label: 'Students', count: stats?.students ?? 0 },
+                                    { id: 'mentor', label: 'Mentors', count: stats?.mentors ?? 0 },
+                                    { id: 'admin', label: 'Admins', count: stats?.admins ?? 0 },
+                                ].map((tab) => (
+                                    <button
+                                        key={tab.id}
+                                        type="button"
+                                        onClick={() => setSelectedRole(tab.id)}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                            selectedRole === tab.id
+                                                ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                                                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        <span>{tab.label}</span>
+                                        <span
+                                            className={`px-1.5 py-0.5 rounded-full text-[10px] tabular-nums ${
+                                                selectedRole === tab.id
+                                                    ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300 font-bold'
+                                                    : 'bg-slate-200/60 text-slate-600 dark:bg-slate-800 dark:text-slate-400 font-medium'
+                                            }`}
+                                        >
+                                            {tab.count}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Desktop Table */}
@@ -281,6 +517,14 @@ export default function Index({
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/30">
+                                    <th className="w-10 px-4 py-3 text-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={isAllSelected}
+                                            onChange={toggleSelectAll}
+                                            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer"
+                                        />
+                                    </th>
                                     <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 dark:text-slate-500 uppercase">
                                         #
                                     </th>
@@ -303,8 +547,20 @@ export default function Index({
                                     users.data.map((user, i) => (
                                         <tr
                                             key={user._id}
-                                            className="border-b border-slate-200 transition-colors hover:bg-slate-50/50 dark:border-slate-800 dark:hover:bg-slate-900/30"
+                                            className={`border-b border-slate-200 transition-colors dark:border-slate-800 ${
+                                                selectedIds.includes(user._id)
+                                                    ? 'bg-indigo-50/40 dark:bg-indigo-950/20'
+                                                    : 'hover:bg-slate-50/50 dark:hover:bg-slate-900/30'
+                                            }`}
                                         >
+                                            <td className="w-10 px-4 py-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.includes(user._id)}
+                                                    onChange={() => toggleSelectOne(user._id)}
+                                                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer"
+                                                />
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <span className="text-sm font-medium text-slate-400 dark:text-slate-600 tabular-nums">
                                                     {(users.from ?? 0) + i}
@@ -368,7 +624,7 @@ export default function Index({
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={5} className="px-6 py-16 text-center">
+                                        <td colSpan={6} className="px-6 py-16 text-center">
                                             <div className="flex flex-col items-center gap-3">
                                                 <div className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
                                                     <Users size={24} className="text-slate-400" />
@@ -403,10 +659,20 @@ export default function Index({
                             users.data.map((user, i) => (
                                 <div
                                     key={user._id}
-                                    className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30"
+                                    className={`flex items-center justify-between gap-3 px-5 py-3.5 transition-colors ${
+                                        selectedIds.includes(user._id)
+                                            ? 'bg-indigo-50/40 dark:bg-indigo-950/20'
+                                            : 'hover:bg-slate-50/50 dark:hover:bg-slate-900/30'
+                                    }`}
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <span className="shrink-0 text-xs font-medium text-slate-400 dark:text-slate-600 tabular-nums w-6">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.includes(user._id)}
+                                            onChange={() => toggleSelectOne(user._id)}
+                                            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer shrink-0"
+                                        />
+                                        <span className="shrink-0 text-xs font-medium text-slate-400 dark:text-slate-600 tabular-nums w-4">
                                             {(users.from ?? 0) + i}
                                         </span>
                                         <img
@@ -786,6 +1052,16 @@ export default function Index({
                         </form>
                     </div>
                 )}
+
+                <ConfirmModal
+                    open={confirmModal.open}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    variant={confirmModal.variant}
+                    onConfirm={confirmModal.onConfirm}
+                    onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                />
             </div>
         </AppLayout>
     );

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Mentor\UpdateMentorProfileAction;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Admin\UserDetailService;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,36 +20,43 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $query = User::query();
+        $filters = $request->only(['search', 'role']);
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+        $users = User::query()
+            ->filter($filters)
+            ->latest()
+            ->paginate(25)
+            ->withQueryString()
+            ->through(function ($user) {
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
+
+                return [
+                    '_id' => (string) $user->_id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'avatar' => $user->avatar
+                        ? $disk->url($user->avatar)
+                        : null,
+                ];
             });
-        }
 
-        $users = $query->latest()->paginate(25)->withQueryString()->through(function ($user) {
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-            $disk = Storage::disk('s3');
-
-            return [
-                '_id' => (string) $user->_id,
-                'name' => $user->name,
-                'username' => $user->username,
-                'email' => $user->email,
-                'role' => $user->role,
-                'avatar' => $user->avatar
-                    ? $disk->url($user->avatar)
-                    : null,
-            ];
-        });
+        $totalUsers = User::count();
+        $studentsCount = User::where('role', 'student')->count();
+        $mentorsCount = User::where('role', 'mentor')->count();
+        $adminsCount = User::where('role', 'admin')->count();
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
-            'filters' => $request->only('search'),
+            'filters' => $filters,
+            'stats' => [
+                'total' => $totalUsers,
+                'students' => $studentsCount,
+                'mentors' => $mentorsCount,
+                'admins' => $adminsCount,
+            ],
         ]);
     }
 
@@ -87,7 +97,7 @@ class UserController extends Controller
         return back();
     }
 
-    public function update(Request $request, User $user, \App\Actions\Mentor\UpdateMentorProfileAction $updateMentorProfileAction)
+    public function update(Request $request, User $user, UpdateMentorProfileAction $updateMentorProfileAction)
     {
         $this->authorize('update', $user);
 
@@ -169,7 +179,7 @@ class UserController extends Controller
         return back();
     }
 
-    public function show(User $user, \App\Services\Admin\UserDetailService $userDetailService)
+    public function show(User $user, UserDetailService $userDetailService)
     {
         $this->authorize('view', $user);
 
@@ -180,7 +190,7 @@ class UserController extends Controller
             $details = $userDetailService->getMentorDetails($user);
         }
 
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $userData = [
             '_id' => (string) $user->_id,
@@ -215,5 +225,41 @@ class UserController extends Controller
         $user->delete();
 
         return back();
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $this->authorize('delete', User::class);
+
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'string'],
+        ]);
+
+        $currentUserId = (string) auth()->id();
+        $targetIds = array_filter($validated['ids'], function ($id) use ($currentUserId) {
+            return (string) $id !== $currentUserId;
+        });
+
+        if (! empty($targetIds)) {
+            User::whereIn('_id', $targetIds)->delete();
+        }
+
+        return back()->with('success', 'Selected users deleted successfully.');
+    }
+
+    public function bulkRole(Request $request)
+    {
+        $this->authorize('update', User::class);
+
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'string'],
+            'role' => ['required', 'in:admin,mentor,student'],
+        ]);
+
+        User::whereIn('_id', $validated['ids'])->update(['role' => $validated['role']]);
+
+        return back()->with('success', 'Selected users role updated successfully.');
     }
 }

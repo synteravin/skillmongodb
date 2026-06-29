@@ -3,6 +3,8 @@ import AppLayout from "@/layouts/app-layout"
 import { Pencil, Trash2, Plus, Image as ImageIcon, ArrowRight, BookOpen, Upload, AlertCircle } from "lucide-react"
 import { useState, useRef } from "react"
 import Modal from "@/components/ui/Modal"
+import ConfirmModal from "@/components/ui/ConfirmModal"
+import AlertModal from "@/components/ui/AlertModal"
 
 type Course = {
     _id: string
@@ -18,6 +20,8 @@ export default function Index({ courses }: { courses: Course[] }) {
     const [editingCourse, setEditingCourse] = useState<Course | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
     const [isDragging, setIsDragging] = useState(false)
+    const [alertMessage, setAlertMessage] = useState<string | null>(null)
+    const [confirmDeleteSlug, setConfirmDeleteSlug] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
@@ -29,7 +33,7 @@ export default function Index({ courses }: { courses: Course[] }) {
 
     function handleFile(file: File) {
         if (!file.type.startsWith('image/')) {
-            alert('Please upload an image file')
+            setAlertMessage('Please upload an image file.')
             return
         }
         setData("thumbnail", file)
@@ -85,8 +89,14 @@ export default function Index({ courses }: { courses: Course[] }) {
     }
 
     function deleteCourse(slug: string) {
-        if (!confirm("Are you sure you want to delete this course? This action cannot be undone.")) return
-        router.delete(`/admin/courses/${slug}`)
+        setConfirmDeleteSlug(slug)
+    }
+
+    function executeDeleteCourse() {
+        if (confirmDeleteSlug) {
+            router.delete(`/admin/courses/${confirmDeleteSlug}`)
+            setConfirmDeleteSlug(null)
+        }
     }
 
     return (
@@ -350,6 +360,22 @@ export default function Index({ courses }: { courses: Course[] }) {
                         </form>
                     </Modal>
 
+                    <ConfirmModal
+                        open={!!confirmDeleteSlug}
+                        title="Delete Course"
+                        message="Are you sure you want to delete this course? This action cannot be undone."
+                        confirmText="Delete Course"
+                        variant="danger"
+                        onConfirm={executeDeleteCourse}
+                        onClose={() => setConfirmDeleteSlug(null)}
+                    />
+
+                    <AlertModal
+                        open={!!alertMessage}
+                        title="File Upload Notice"
+                        message={alertMessage || ''}
+                        onClose={() => setAlertMessage(null)}
+                    />
                 </div>
             </div>
         </AppLayout>

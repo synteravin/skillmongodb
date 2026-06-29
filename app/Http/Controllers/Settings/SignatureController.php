@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,42 +17,64 @@ class SignatureController extends Controller
         return Inertia::render('settings/signature');
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
-        $request->validate([
-            'signature' => 'required|string', // Base64 string
-        ]);
-
         $user = $request->user();
-        $signatureData = $request->input('signature');
+        $signatureData = null;
+        $extension = 'png';
 
-        // Extract base64 content
-        if (preg_match('/^data:image\/(\w+);base64,/', $signatureData, $type)) {
-            $signatureData = substr($signatureData, strpos($signatureData, ',') + 1);
-            $type = strtolower($type[1]); // png, jpg, etc.
+        if ($request->hasFile('signature_file')) {
+            $request->validate([
+                'signature_file' => 'required|image|mimes:png,jpg,jpeg,webp|max:2048',
+            ]);
 
-            if (! in_array($type, ['jpg', 'jpeg', 'png'])) {
-                return back()->withErrors(['signature' => 'Invalid image type.']);
-            }
-
-            $signatureData = base64_decode($signatureData);
-
-            if ($signatureData === false) {
-                return back()->withErrors(['signature' => 'Base64 decode failed.']);
+            $file = $request->file('signature_file');
+            if ($file) {
+                $signatureData = file_get_contents($file->getRealPath());
+                $extension = strtolower($file->getClientOriginalExtension());
+                if ($extension === 'jpeg') {
+                    $extension = 'jpg';
+                }
             }
         } else {
-            return back()->withErrors(['signature' => 'Invalid base64 string.']);
+            $request->validate([
+                'signature' => 'required|string',
+            ]);
+
+            $input = $request->input('signature');
+            if (preg_match('/^data:image\/(\w+);base64,/', $input, $type)) {
+                $rawBase64 = substr($input, strpos($input, ',') + 1);
+                $ext = strtolower($type[1]);
+
+                if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    return back()->withErrors(['signature' => 'Invalid image type.']);
+                }
+
+                $decoded = base64_decode($rawBase64);
+                if ($decoded === false) {
+                    return back()->withErrors(['signature' => 'Base64 decode failed.']);
+                }
+
+                $signatureData = $decoded;
+                $extension = $ext === 'jpeg' ? 'jpg' : $ext;
+            } else {
+                return back()->withErrors(['signature' => 'Invalid base64 format.']);
+            }
         }
 
-        $filename = 'signatures/'.$user->_id.'_'.Str::random(10).'.'.$type;
+        if (! $signatureData) {
+            return back()->withErrors(['signature' => 'No signature content received.']);
+        }
 
-        // Optionally delete old signature if exists
+        $filename = 'signatures/'.$user->_id.'_'.Str::random(10).'.'.$extension;
+
+        // Delete old signature if exists
         if ($user->signature_path && Storage::disk('s3')->exists($user->signature_path)) {
             Storage::disk('s3')->delete($user->signature_path);
         }
 
         Storage::disk('s3')->put($filename, $signatureData, [
-            'visibility' => 'private', // Keep private for security
+            'visibility' => 'private',
         ]);
 
         $user->update([
@@ -61,7 +84,7 @@ class SignatureController extends Controller
         return back()->with('success', 'Signature updated successfully.');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): RedirectResponse
     {
         $user = $request->user();
 

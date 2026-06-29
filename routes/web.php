@@ -106,15 +106,24 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::post('/career-groups', [CourseBuilderController::class, 'storeCareerGroup'])
             ->name('career-groups.store');
+        Route::put('/career-groups/{group}', [CourseBuilderController::class, 'updateCareerGroup'])
+            ->name('career-groups.update');
+        Route::delete('/career-groups/{group}', [CourseBuilderController::class, 'destroyCareerGroup'])
+            ->name('career-groups.destroy');
 
         Route::post('/paths', [CourseBuilderController::class, 'storePath'])
             ->name('paths.store');
-
         Route::put('/paths/reorder', [CourseBuilderController::class, 'reorderPaths'])
             ->name('paths.reorder');
+        Route::put('/paths/{path}', [CourseBuilderController::class, 'updatePath'])
+            ->name('paths.update');
+        Route::delete('/paths/{path}', [CourseBuilderController::class, 'destroyPath'])
+            ->name('paths.destroy');
 
         Route::post('/modules', [CourseBuilderController::class, 'storeModule'])
             ->name('modules.store');
+        Route::delete('/modules/{module}', [CourseBuilderController::class, 'destroyModule'])
+            ->name('modules.destroy');
 
         Route::post('/module-content', [CourseBuilderController::class, 'storeContent'])
             ->name('module-content.store');
@@ -131,6 +140,8 @@ Route::middleware(['auth', 'role:admin'])
 
         /* ---------------- USER ---------------- */
 
+        Route::post('/users/bulk-delete', [UserController::class, 'bulkDestroy'])->name('users.bulk-destroy');
+        Route::post('/users/bulk-role', [UserController::class, 'bulkRole'])->name('users.bulk-role');
         Route::resource('users', UserController::class);
         // Route::post('/admin/users/{user}', [UserController::class, 'update']);
 
@@ -283,6 +294,11 @@ Route::middleware(['auth', 'role:mentor'])
             '/modules',
             [CourseBuilderController::class, 'storeModule']
         )->name('modules.store');
+
+        Route::delete(
+            '/modules/{module}',
+            [CourseBuilderController::class, 'destroyModule']
+        )->name('modules.destroy');
 
         Route::post(
             '/modules/{module}/contents',

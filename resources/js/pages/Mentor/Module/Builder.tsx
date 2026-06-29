@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { router, Link } from "@inertiajs/react";
 import { ChevronDown, Plus, Layers, Trash2, GripVertical, Type, Image as ImageIcon, Video, FileText, Youtube, X, Check, ArrowLeft } from "lucide-react";
 import AppLayout from "@/layouts/app-layout";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 import {
     DndContext,
@@ -369,6 +370,21 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
     // Inline state for YouTube input
     const [activeYoutubeModule, setActiveYoutubeModule] = useState<string | null>(null);
     const [youtubeUrl, setYoutubeUrl] = useState("");
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        confirmText: string;
+        variant: 'danger' | 'info' | 'primary';
+        onConfirm: () => void;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'danger',
+        onConfirm: () => {},
+    });
 
     const rollback = (module: Module, tempId: string) => {
         setModules(prev =>
@@ -594,17 +610,58 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
     };
 
     const deleteContent = (id: string, moduleId: string) => {
-        if (!confirm("Are you sure you want to delete this content?")) return;
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Blok Konten',
+            message: 'Apakah Anda yakin ingin menghapus blok konten ini dari modul? Tindakan ini tidak dapat dibatalkan.',
+            confirmText: 'Hapus Konten',
+            variant: 'danger',
+            onConfirm: () => {
+                setModules(prev =>
+                    prev.map(m =>
+                        getId(m) === moduleId
+                            ? { ...m, contents: m.contents.filter(c => getId(c) !== id) }
+                            : m
+                    )
+                );
+                router.delete(`/mentor/module-contents/${id}`, {
+                    preserveScroll: true,
+                });
+            },
+        });
+    };
 
-        setModules(prev =>
-            prev.map(m =>
-                getId(m) === moduleId
-                    ? { ...m, contents: m.contents.filter(c => getId(c) !== id) }
-                    : m
-            )
-        );
+    const deleteModule = (module: Module) => {
+        const moduleId = getId(module);
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Modul',
+            message: `Apakah Anda yakin ingin menghapus modul "${module.title}" beserta seluruh konten di dalamnya?`,
+            confirmText: 'Hapus Modul',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/mentor/modules/${moduleId}`, {
+                    preserveScroll: true,
+                    onSuccess: () => router.reload({ only: ['path'] }),
+                });
+            },
+        });
+    };
 
-        router.delete(`/mentor/module-contents/${id}`);
+    const deleteQuiz = (quizId: string) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Final Quiz',
+            message: 'Apakah Anda yakin ingin menghapus Final Quiz untuk path ini beserta seluruh pertanyaan di dalamnya?',
+            confirmText: 'Hapus Quiz',
+            variant: 'danger',
+            onConfirm: () => {
+                router.delete(`/mentor/quiz/${quizId}`, {
+                    preserveScroll: true,
+                    onSuccess: () => router.reload({ only: ['path'] }),
+                });
+            },
+        });
     };
 
     const updateContentLocal = useCallback((
@@ -703,20 +760,33 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                             </div>
                         </div>
 
-                        <button
-                            onClick={() => {
-                                if (path.quiz?.id) {
-                                    router.get(`/mentor/quiz/${path.quiz.id}/edit`);
-                                } else {
-                                    router.get(
-                                        `/mentor/career-groups/${group.id}/paths/${getId(path)}/quiz/create`
-                                    );
-                                }
-                            }}
-                            className="group flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
-                        >
-                            <span>🎯 Manage Final Quiz</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (path.quiz?.id) {
+                                        router.get(`/mentor/quiz/${path.quiz.id}/edit`);
+                                    } else {
+                                        router.get(
+                                            `/mentor/career-groups/${group.id}/paths/${getId(path)}/quiz/create`
+                                        );
+                                    }
+                                }}
+                                className="group flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                            >
+                                <span>🎯 Manage Final Quiz</span>
+                            </button>
+                            {path.quiz?.id && (
+                                <button
+                                    type="button"
+                                    onClick={() => deleteQuiz(path.quiz!.id)}
+                                    className="p-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-xl border border-rose-500/20 transition-colors cursor-pointer"
+                                    title="Delete Final Quiz"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -773,8 +843,21 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                                             {module.contents.length} items
                                         </span>
                                     </div>
-                                    <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-white rotate-180' : 'text-slate-450 dark:text-slate-500'}`}>
-                                        <ChevronDown size={20} />
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteModule(module);
+                                            }}
+                                            className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                                            title="Delete Module"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                        <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-white rotate-180' : 'text-slate-450 dark:text-slate-500'}`}>
+                                            <ChevronDown size={20} />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -844,6 +927,15 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
 
                 </div>
             </div>
+            <ConfirmModal
+                open={confirmModal.open}
+                onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                variant={confirmModal.variant}
+            />
         </AppLayout>
     );
 }

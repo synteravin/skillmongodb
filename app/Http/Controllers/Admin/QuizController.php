@@ -27,9 +27,10 @@ class QuizController extends Controller
             'quizzes' => $quizzes->map(function ($quiz) {
                 return [
                     'id' => (string) $quiz->_id,
+                    'module_name' => $quiz->path->name ?? 'Unknown Path',
                     'path_name' => $quiz->path->name ?? 'Unknown Path',
-                    'difficulty' => $quiz->difficulty,
-                    'questions_count' => $quiz->questions->count(),
+                    'difficulty' => $quiz->difficulty ?? 'medium',
+                    'questions_count' => $quiz->questions ? $quiz->questions->count() : 0,
                 ];
             }),
         ]);
@@ -42,8 +43,26 @@ class QuizController extends Controller
     {
         $this->authorize('create', Quiz::class);
 
+        $path->load('quiz.questions.answers');
+
         return Inertia::render('Admin/Quiz/Create', [
             'pathId' => (string) $path->_id,
+            'quiz' => $path->quiz ? [
+                'id' => (string) $path->quiz->_id,
+                'difficulty' => $path->quiz->difficulty,
+                'questions' => $path->quiz->questions->map(function ($q) {
+                    return [
+                        'question_text' => $q->question_text,
+                        'media_url' => $q->media_url,
+                        'answers' => $q->answers->map(function ($a) {
+                            return [
+                                'answer_text' => $a->answer_text,
+                                'is_correct' => $a->is_correct,
+                            ];
+                        }),
+                    ];
+                }),
+            ] : null,
         ]);
     }
 

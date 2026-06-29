@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -9,14 +10,16 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use MongoDB\Laravel\Eloquent\Model;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmailContract
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use Authenticatable, Authorizable, CanResetPassword, HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable;
 
     protected $connection = 'mongodb';
@@ -101,8 +104,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getSignatureUrlAttribute()
     {
         if ($this->signature_path) {
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+            /** @var FilesystemAdapter $disk */
+            $disk = Storage::disk('s3');
             if ($disk->exists($this->signature_path)) {
                 return $disk->temporaryUrl($this->signature_path, now()->addMinutes(30));
             }
@@ -145,7 +148,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function notifications()
     {
-        return $this->morphMany(\App\Models\Notification::class, 'notifiable')->latest();
+        return $this->morphMany(Notification::class, 'notifiable')->latest();
     }
 
     public function readNotifications()
@@ -171,6 +174,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             self::ROLE_MENTOR,
             self::ROLE_STUDENT,
         ];
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($q, $search) {
+            $q->where(function ($sq) use ($search) {
+                $sq->where('name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        })->when($filters['role'] ?? null, function ($q, $role) {
+            if (in_array($role, [self::ROLE_ADMIN, self::ROLE_MENTOR, self::ROLE_STUDENT])) {
+                $q->where('role', $role);
+            }
+        });
     }
 
     public function getRouteKeyName()

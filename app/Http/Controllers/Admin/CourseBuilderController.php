@@ -14,6 +14,7 @@ use App\Http\Requests\Path\StorePathRequest;
 use App\Models\CareerGroup;
 use App\Models\Course;
 use App\Models\LevelBadge;
+use App\Models\Module;
 use App\Models\Path;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -201,5 +202,56 @@ class CourseBuilderController extends Controller
         }
 
         return back()->with('success', 'Paths reordered');
+    }
+
+    public function updateCareerGroup(Request $request, CareerGroup $group)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $group->update(['name' => $data['name']]);
+
+        return back()->with('success', 'Career branch updated');
+    }
+
+    public function destroyCareerGroup(CareerGroup $group)
+    {
+        // Delete child paths and modules
+        foreach ($group->paths as $path) {
+            Module::where('path_id', (string) $path->_id)->delete();
+            $path->delete();
+        }
+
+        $group->delete();
+
+        return back()->with('success', 'Career branch deleted');
+    }
+
+    public function updatePath(Request $request, Path $path)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $path->update(['name' => $data['name']]);
+
+        return back()->with('success', 'Path updated');
+    }
+
+    public function destroyPath(Path $path)
+    {
+        Module::where('path_id', (string) $path->_id)->delete();
+        $path->delete();
+
+        return back()->with('success', 'Path deleted');
+    }
+
+    public function destroyModule(Module $module)
+    {
+        $module->contents()->delete();
+        $module->delete();
+
+        return back()->with('success', 'Module deleted');
     }
 }

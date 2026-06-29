@@ -12,10 +12,20 @@ class ModuleManagementController extends Controller
 {
     public function index(Path $path)
     {
-        $path->load(['modules.contents']);
+        $path->load(['quiz', 'modules.contents']);
 
         return Inertia::render('Admin/Module/Builder', [
-            'path' => $path,
+            'path' => [
+                'id' => (string) $path->_id,
+                '_id' => (string) $path->_id,
+                'name' => $path->name,
+                'description' => $path->description,
+                'quiz' => $path->quiz ? [
+                    'id' => (string) $path->quiz->_id,
+                    '_id' => (string) $path->quiz->_id,
+                ] : null,
+                'modules' => $path->modules,
+            ],
         ]);
     }
 
