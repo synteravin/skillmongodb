@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Module;
 use App\Models\Rank;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -100,6 +103,8 @@ class ProfileController extends Controller
                 'path_name' => $lastModule->path->name ?? 'Unknown Path',
                 'module_name' => $lastModule->title ?? 'Unknown Module',
 
+                'thumbnail' => $lastModule->path->course->thumbnail_url ?? null,
+
                 'level' => 'Level '.$currentLevel,
 
                 'url' => route('student.course.path.module.show', [
@@ -155,8 +160,8 @@ class ProfileController extends Controller
         //         ],
         //     ]
         // ]);
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-        $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
 
         $userAvatar = null;
         if ($user->avatar) {
@@ -167,6 +172,7 @@ class ProfileController extends Controller
         return Inertia::render('Student/Profile', [
             'user' => [
                 'name' => $user->name,
+                'username' => $user->username ?? strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $user->name)),
                 'email' => $user->email, // Added email
 
                 'level' => $currentLevel,
@@ -195,19 +201,22 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(\Illuminate\Http\Request $request)
+    public function update(Request $request)
     {
         $user = auth()->user();
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'name' => 'sometimes|required|string|max:255',
+            'username' => 'sometimes|required|string|max:255|unique:users,username,'.$user->id,
+            'email' => 'sometimes|required|email|max:255|unique:users,email,'.$user->id,
             'avatar' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 's3');
             $validated['avatar'] = $path;
+        } else {
+            unset($validated['avatar']);
         }
 
         $user->update($validated);

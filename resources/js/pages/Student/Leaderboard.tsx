@@ -3,9 +3,11 @@ import React from "react";
 import { Star } from "lucide-react";
 
 type Player = {
+    id?: number;
     name: string;
     avatar?: string | null;
     total_score: number;
+    position?: number;
     rank: {
         name: string;
         image: string;
@@ -15,10 +17,12 @@ type Player = {
 
 export default function Leaderboard({
     leaderboard = [],
+    currentUser = null,
 }: {
     leaderboard: Player[];
+    currentUser?: Player | null;
 }) {
-    const topPlayer = leaderboard[0];
+    const activeUser = currentUser || leaderboard[0];
 
     const getRankIcon = (index: number) => {
         if (index === 0) {
@@ -133,46 +137,49 @@ export default function Leaderboard({
                 {/* MAIN CONTENT AREA */}
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 min-h-0 h-full overflow-hidden">
                     {/* LEFT: RANK VISUAL */}
-                    {topPlayer && (
+                    {activeUser && (
                         <div className="lg:col-span-4 flex flex-col items-center justify-center p-2 sm:p-4 shrink-0">
-                            <div className="flex flex-row lg:flex-col items-center justify-center gap-4 lg:gap-3 text-left lg:text-center w-full">
-                                {/* Rank Image with Rich Multi-Layered Yellow Glow */}
-                                <div className="relative flex items-center justify-center p-4 shrink-0">
-                                    <div className="absolute inset-0 rounded-full bg-yellow-400/30 blur-2xl pointer-events-none" />
-                                    <div className="absolute inset-2 rounded-full bg-yellow-500/20 blur-xl pointer-events-none" />
+                            <div className="flex flex-col items-center justify-center gap-1.5 text-center w-full">
+                                {/* Dynamic Rank Stars (Above Rank Image) */}
+                                <div className="flex items-center gap-1.5 shrink-0 mt-2 sm:mt-4 -mb-1 relative z-20">
+                                    {Array.from({
+                                        length: Math.min(
+                                            Math.max(activeUser.rank?.star ?? 1, 1),
+                                            3
+                                        ),
+                                    }).map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"
+                                        />
+                                    ))}
+                                </div>
 
+                                {/* Rank Image with Sharp Glowing Neon Aura */}
+                                <div className="relative flex items-center justify-center p-1 shrink-0">
                                     <img
-                                        src={topPlayer.rank?.image ?? "/images/default-rank.png"}
-                                        alt={topPlayer.rank?.name ?? "Rank"}
+                                        src={activeUser.rank?.image ?? "/images/default-rank.png"}
+                                        alt={activeUser.rank?.name ?? "Rank"}
                                         className="w-20 h-20 sm:w-32 sm:h-32 md:w-44 md:h-44 lg:w-56 lg:h-56 xl:w-60 xl:h-60 object-contain relative z-10"
                                         style={{
-                                            filter: "drop-shadow(0 0 20px rgba(250, 204, 21, 0.9)) drop-shadow(0 0 35px rgba(234, 179, 8, 0.7)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.95))",
+                                            filter: "drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 6px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 12px rgba(14, 165, 233, 0.8))",
                                         }}
                                     />
                                 </div>
 
                                 {/* Rank Name & Title */}
-                                <div className="flex flex-col items-start lg:items-center">
-                                    <p className="text-[10px] sm:text-xs font-bold text-yellow-600 dark:text-yellow-400 tracking-[0.2em] uppercase font-['Orbitron']">
-                                        CURRENT CHAMPION RANK
+                                <div className="flex flex-col items-center">
+                                    <p className="text-[10px] sm:text-xs font-bold text-sky-600 dark:text-sky-400 tracking-[0.2em] uppercase font-['Orbitron']">
+                                        YOUR CURRENT RANK
                                     </p>
-                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-extrabold font-['Orbitron'] text-slate-800 dark:text-yellow-300 mt-1 drop-shadow-[0_0_12px_rgba(250,204,21,0.5)]">
-                                        {topPlayer.rank?.name || "Grandmaster"}
+                                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-extrabold font-['Orbitron'] text-slate-800 dark:text-sky-300 mt-1 drop-shadow-[0_0_12px_rgba(56,189,248,0.6)]">
+                                        {activeUser.rank?.name || "Unranked"}
                                     </h2>
-                                    {/* Dynamic Rank Stars */}
-                                    <div className="flex items-center gap-1 mt-1.5">
-                                        {Array.from({
-                                            length: Math.min(
-                                                Math.max(topPlayer.rank?.star ?? 1, 1),
-                                                3
-                                            ),
-                                        }).map((_, i) => (
-                                            <Star
-                                                key={i}
-                                                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-yellow-400 fill-yellow-400"
-                                            />
-                                        ))}
-                                    </div>
+                                    {activeUser.position && (
+                                        <span className="inline-block mt-1 px-3 py-0.5 rounded-full bg-sky-500/10 dark:bg-sky-400/15 border border-sky-400/30 text-sky-600 dark:text-sky-300 font-['Orbitron'] font-bold text-xs sm:text-sm shadow-[0_0_10px_rgba(56,189,248,0.2)]">
+                                            PERINGKAT #{activeUser.position}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -181,7 +188,7 @@ export default function Leaderboard({
                     {/* RIGHT: LIST CONTAINER */}
                     <div
                         className={`flex flex-col min-h-0 h-full ${
-                            topPlayer ? "lg:col-span-8" : "lg:col-span-12"
+                            activeUser ? "lg:col-span-8" : "lg:col-span-12"
                         }`}
                     >
                         <div className="bg-white/80 dark:bg-black/60 backdrop-blur-md border border-blue-200 dark:border-blue-500/30 rounded-3xl p-4 sm:p-6 flex-1 shadow-xl dark:shadow-2xl relative overflow-hidden flex flex-col min-h-0 w-full">
@@ -202,74 +209,89 @@ export default function Leaderboard({
                                 </div>
                             ) : (
                                 <div className="flex-1 overflow-y-auto pr-2 -mr-2 mt-3 space-y-3 custom-scrollbar min-h-0">
-                                    {leaderboard.map((player, index) => (
-                                        <div
-                                            key={player.name + index}
-                                            className={`group grid grid-cols-12 items-center p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 ${getRankStyle(
-                                                index
-                                            )}`}
-                                        >
-                                            {/* RANKING IDENTIFIER */}
-                                            <div className="col-span-2 flex justify-center items-center overflow-hidden">
-                                                {getRankIcon(index)}
-                                            </div>
+                                    {leaderboard.map((player, index) => {
+                                        const isCurrentUser = Boolean(
+                                            currentUser &&
+                                            (player.id === currentUser.id || player.name === currentUser.name)
+                                        );
 
-                                            {/* USER INFO */}
-                                            <div className="col-span-7 flex items-center gap-3 sm:gap-4 overflow-hidden pl-4 sm:pl-10">
-                                                <div className="relative shrink-0">
-                                                    <img
-                                                        src={player.avatar || "/images/aizen.webp"}
-                                                        onError={(e) => {
-                                                            const img =
-                                                                e.currentTarget as HTMLImageElement;
-                                                            if (!img.dataset.fallback) {
-                                                                img.dataset.fallback = "true";
-                                                                img.src = "/images/aizen.webp";
-                                                            }
-                                                        }}
-                                                        className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full object-cover border-2 transition-colors duration-300 ${
-                                                            index === 0
-                                                                ? "border-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)]"
-                                                                : index === 1
-                                                                ? "border-slate-300 dark:border-slate-200"
-                                                                : index === 2
-                                                                ? "border-amber-400"
-                                                                : "border-blue-300 dark:border-blue-400/80 group-hover:border-blue-500"
-                                                        }`}
-                                                        alt={player.name}
-                                                    />
+                                        return (
+                                            <div
+                                                key={player.name + index}
+                                                className={`group grid grid-cols-12 items-center p-2.5 sm:p-3 rounded-2xl border transition-all duration-300 ${
+                                                    isCurrentUser
+                                                        ? "border-sky-400 dark:border-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.4)] bg-gradient-to-r from-sky-500/20 via-blue-500/15 to-cyan-500/20 dark:from-sky-500/30 dark:via-blue-900/50 dark:to-cyan-900/40"
+                                                        : getRankStyle(index)
+                                                }`}
+                                            >
+                                                {/* RANKING IDENTIFIER */}
+                                                <div className="col-span-2 flex justify-center items-center overflow-hidden">
+                                                    {getRankIcon(index)}
                                                 </div>
 
-                                                <div className="flex flex-col min-w-0">
-                                                    <span
-                                                        className={`text-xs sm:text-sm md:text-base font-bold truncate font-['Oxanium'] transition-colors ${getRankColor(
-                                                            index
-                                                        )}`}
-                                                    >
-                                                        {player.name}
-                                                    </span>
-                                                    <div className="flex items-center gap-2 min-w-0 mt-0.5">
-                                                        <span className="text-[11px] sm:text-xs text-blue-600 dark:text-cyan-300 font-medium font-['Oxanium'] truncate">
-                                                            {player.rank?.name || "Unranked"}
+                                                {/* USER INFO */}
+                                                <div className="col-span-7 flex items-center gap-3 sm:gap-4 overflow-hidden pl-4 sm:pl-10">
+                                                    <div className="relative shrink-0">
+                                                        <img
+                                                            src={player.avatar || "/images/default-avatar.svg"}
+                                                            onError={(e) => {
+                                                                const img =
+                                                                    e.currentTarget as HTMLImageElement;
+                                                                if (!img.dataset.fallback) {
+                                                                    img.dataset.fallback = "true";
+                                                                    img.src = "/images/default-avatar.svg";
+                                                                }
+                                                            }}
+                                                            className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full object-cover border-2 transition-colors duration-300 ${
+                                                                isCurrentUser
+                                                                    ? "border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)]"
+                                                                    : index === 0
+                                                                    ? "border-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)]"
+                                                                    : index === 1
+                                                                    ? "border-slate-300 dark:border-slate-200"
+                                                                    : index === 2
+                                                                    ? "border-amber-400"
+                                                                    : "border-blue-300 dark:border-blue-400/80 group-hover:border-blue-500"
+                                                            }`}
+                                                            alt={player.name}
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex flex-col min-w-0">
+                                                        <span
+                                                            className={`text-xs sm:text-sm md:text-base font-bold truncate font-['Oxanium'] transition-colors ${
+                                                                isCurrentUser
+                                                                    ? "text-sky-600 dark:text-sky-300 font-extrabold"
+                                                                    : getRankColor(index)
+                                                            }`}
+                                                        >
+                                                            {player.name}
                                                         </span>
+                                                        <div className="flex items-center gap-2 min-w-0 mt-0.5">
+                                                            <span className="text-[11px] sm:text-xs text-blue-600 dark:text-cyan-300 font-medium font-['Oxanium'] truncate">
+                                                                {player.rank?.name || "Unranked"}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            {/* SCORE */}
-                                            <div className="col-span-3 text-right font-['Oxanium']">
-                                                <span
-                                                    className={`text-sm sm:text-base md:text-lg font-black tracking-tight ${
-                                                        index === 0
-                                                            ? "text-yellow-600 dark:text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]"
-                                                            : "text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-200"
-                                                    }`}
-                                                >
-                                                    {player.total_score.toLocaleString()}
-                                                </span>
+                                                {/* SCORE */}
+                                                <div className="col-span-3 text-right font-['Oxanium']">
+                                                    <span
+                                                        className={`text-sm sm:text-base md:text-lg font-black tracking-tight ${
+                                                            isCurrentUser
+                                                                ? "text-sky-600 dark:text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]"
+                                                                : index === 0
+                                                                ? "text-yellow-600 dark:text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]"
+                                                                : "text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-200"
+                                                        }`}
+                                                    >
+                                                        {player.total_score.toLocaleString()}
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>

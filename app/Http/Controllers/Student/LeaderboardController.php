@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Rank;
 use App\Models\User;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -17,7 +18,10 @@ class LeaderboardController extends Controller
         // 🔥 ambil semua rank dari DB (urutan penting)
         $ranks = Rank::orderBy('order')->get();
 
-        $leaderboard = $users->map(function ($user) use ($ranks) {
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+
+        $allLeaderboard = $users->map(function ($user) use ($ranks, $disk) {
 
             $totalScore = 0;
 
@@ -56,9 +60,6 @@ class LeaderboardController extends Controller
 
             $rank = $ranks[$rankIndex] ?? $ranks->last();
 
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-            $disk = Storage::disk('s3');
-
             // 🔥 Strict User Profile Avatar Resolution via S3 Cloud Storage
             $avatarUrl = null;
             if (! empty($user->avatar)) {
@@ -66,10 +67,11 @@ class LeaderboardController extends Controller
                     ? $user->avatar
                     : $disk->url($user->avatar);
             } else {
-                $avatarUrl = asset('images/aizen.webp');
+                $avatarUrl = asset('images/default-avatar.svg');
             }
 
             return [
+                'id' => $user->id,
                 'name' => $user->name,
                 'avatar' => $avatarUrl,
                 'total_score' => $totalScore,
@@ -81,13 +83,24 @@ class LeaderboardController extends Controller
                 ],
             ];
         })
-            ->filter(fn ($u) => $u['total_score'] > 0)
             ->sortByDesc('total_score')
             ->values()
-            ->take(10);
+            ->map(function ($u, $index) {
+                $u['position'] = $index + 1;
+
+                return $u;
+            });
+
+        $currentUser = $allLeaderboard->firstWhere('id', auth()->id());
+
+        $leaderboard = $allLeaderboard
+            ->filter(fn ($u) => $u['total_score'] > 0)
+            ->take(10)
+            ->values();
 
         return Inertia::render('Student/Leaderboard', [
             'leaderboard' => $leaderboard,
+            'currentUser' => $currentUser,
         ]);
     }
 }
