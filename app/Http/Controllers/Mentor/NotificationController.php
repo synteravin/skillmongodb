@@ -12,10 +12,12 @@ class NotificationController extends Controller
         $notification = $request->user()->notifications()->find($id);
 
         if ($notification) {
+            $studentSubmissionId = $notification->data['student_submission_id'] ?? null;
             $notification->markAsRead();
 
-            // Optional: You can redirect directly to the submission if you want,
-            // but for now we just return back
+            if ($studentSubmissionId) {
+                return redirect()->to('/mentor/student-submissions/'.$studentSubmissionId);
+            }
         }
 
         return back();

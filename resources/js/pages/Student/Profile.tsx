@@ -12,6 +12,7 @@ import { useState, useRef } from 'react';
 type Props = {
     user: {
         name: string;
+        username: string;
         email: string;
         level: number;
         avatar: string;
@@ -43,10 +44,9 @@ type Props = {
 };
 
 export default function ProfilePage({ user }: Props) {
-    const [showImage, setShowImage] = useState(false);
-
     const { data, setData, post, processing, errors } = useForm({
         name: user.name,
+        username: user.username || user.name,
         email: user.email,
         avatar: null as File | null,
     });
@@ -127,14 +127,14 @@ export default function ProfilePage({ user }: Props) {
                                     clipPath:
                                         'polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%)',
                                 }}
-                                onClick={() => setShowImage(true)}
+                                onClick={handleAvatarClick}
                             >
                                 <img
                                     src={
                                         data.avatar
                                             ? URL.createObjectURL(data.avatar)
                                             : (user.avatar ??
-                                              '/images/aizen.jpeg')
+                                              '/images/default-avatar.svg')
                                     }
                                     className="h-full w-full object-cover"
                                     alt="avatar"
@@ -379,15 +379,15 @@ export default function ProfilePage({ user }: Props) {
                                     </label>
                                     <input
                                         type="text"
-                                        value={data.name}
+                                        value={data.username}
                                         onChange={(e) =>
-                                            setData('name', e.target.value)
+                                            setData('username', e.target.value)
                                         }
                                         className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
                                     />
-                                    {errors.name && (
+                                    {errors.username && (
                                         <span className="mt-1 text-xs text-red-500">
-                                            {errors.name}
+                                            {errors.username}
                                         </span>
                                     )}
                                 </div>
@@ -440,12 +440,18 @@ export default function ProfilePage({ user }: Props) {
                                 </p>
                                 {user.last_course ? (
                                     <div className="flex items-center gap-2.5 border border-[#3B28F6]/25 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/40 dark:bg-[rgba(0,0,20,0.5)]">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
-                                            <img
-                                                src="/images/romawi.webp"
-                                                className="h-6 w-6 object-contain xl:h-8 xl:w-8"
-                                                alt="Badge"
-                                            />
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
+                                            {user.last_course.thumbnail ? (
+                                                <img
+                                                    src={user.last_course.thumbnail}
+                                                    className="h-full w-full object-cover"
+                                                    alt="Course Thumbnail"
+                                                />
+                                            ) : (
+                                                <svg className="h-5 w-5 text-[#3B28F6] xl:h-6 xl:w-6 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                </svg>
+                                            )}
                                         </div>
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-xs font-bold tracking-wide text-gray-800 md:text-sm xl:text-base dark:text-[#e0e8ff]">
@@ -511,21 +517,6 @@ export default function ProfilePage({ user }: Props) {
                     SYSTEM LOG OUT
                 </button>
             </form>
-
-            {/* MODAL AVATAR */}
-            {showImage && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
-                    onClick={() => setShowImage(false)}
-                >
-                    <img
-                        src={user.avatar ?? '/images/iam.webp'}
-                        onClick={(e) => e.stopPropagation()}
-                        className="max-h-[90%] max-w-[90%] object-contain"
-                        alt="avatar full"
-                    />
-                </div>
-            )}
         </div>
     );
 }
