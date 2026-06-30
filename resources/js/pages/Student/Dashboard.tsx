@@ -12,6 +12,7 @@ interface Character {
 
 interface User {
     name: string;
+    username: string;
     level: number;
     xp: number;
     gold: number;
@@ -508,7 +509,7 @@ function TopBar({
                 >
                     <div className="absolute inset-[8px] md:inset-[10px] overflow-hidden rounded-md">
                         <img
-                            src={user.avatar ?? '/images/aizen.webp'}
+                            src={user.avatar ?? '/images/default-avatar.svg'}
                             className="h-full w-full object-cover"
                         />
                     </div>
@@ -523,9 +524,9 @@ function TopBar({
                     <p
                         className=" text-xs sm:text-sm font-semibold md:text-lg lg:text-2xl truncate max-w-[90px] sm:max-w-[150px] md:max-w-none"
                         style={{ fontFamily: 'Orbitron' }}
-                        title={user.name}
+                        title={user.username || user.name}
                     >
-                        {user.name}
+                        {user.username || user.name}
                     </p>
 
                     <p

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -58,12 +59,13 @@ class DashboardController extends Controller
         // =========================
         // 🔥 RESPONSE
         // =========================
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         return Inertia::render('Student/Dashboard', [
             'user' => [
                 'name' => $user->name,
+                'username' => $user->username ?? strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $user->name)),
                 'email' => $user->email,
                 'role' => $user->role,
 
