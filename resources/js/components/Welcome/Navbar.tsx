@@ -156,7 +156,7 @@ useEffect(() => {
 
                 {/* Mobile Menu Toggle */}
                 <button
-                    className="p-2 text-slate-600 md:hidden"
+                    className="p-2 text-sky-500 dark:text-sky-400 md:hidden"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
                     {mobileMenuOpen ? <X /> : <Menu />}

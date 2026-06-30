@@ -175,46 +175,36 @@ export default function AssetsPage({ stats, ranks = [], characters = [], badges 
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
                     {/* HEADER */}
-                    <header
-                        className="relative overflow-hidden rounded-xl px-6 py-5 bg-white dark:bg-[#0d0f17] border border-slate-200 dark:border-white/8 backdrop-blur-sm shadow-sm dark:shadow-none"
-                        style={{
-                            backgroundImage: `
-                            linear-gradient(rgba(59,40,246,0.07) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(59,40,246,0.07) 1px, transparent 1px)
-                            `,
-                            backgroundSize: '40px 40px',
-                        }}
-                    >
-                        <span className="absolute left-3.5 top-3.5 h-3 w-3 border-l border-t border-indigo-200 dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t border-indigo-200 dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l border-indigo-200 dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute bottom-3.5 right-3.5 h-3 w-3 border-b border-r border-indigo-200 dark:border-[rgba(59,40,246,0.45)]" />
+                    {/* HEADER */}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                        {/* Grid Pattern Motif */}
+                        <div 
+                            className="absolute inset-0 z-0 pointer-events-none"
+                            style={{
+                                backgroundImage: `
+                                    linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
+                                    linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                                `,
+                                backgroundSize: '40px 40px',
+                            }}
+                        />
 
-                        <div className="relative z-10 flex flex-col gap-3">
-                            <div className="inline-flex w-fit items-center gap-1.5 rounded border border-indigo-100 dark:border-[rgba(59,40,246,0.35)] bg-indigo-50 dark:bg-[rgba(59,40,246,0.1)] px-2.5 py-1">
-                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B28F6]" />
-                                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#3b28f6] dark:text-[#7C5CFF]">
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 z-0" />
+
+                        <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="max-w-2xl space-y-3">
+                                <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                     Assets Dashboard
                                 </span>
+                                <h1 className="text-2xl md:text-[28px] font-semibold tracking-tight text-slate-800 dark:text-white leading-snug">
+                                    Assets Management
+                                </h1>
+                                <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
+                                    Click on any category below to inspect and manage game assets directly inline.
+                                </p>
                             </div>
-
-                            <h1
-                                className="m-0 text-3xl font-bold leading-none tracking-tight"
-                                style={{
-                                    background: 'linear-gradient(135deg, #7C5CFF 0%, #3B28F6 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    fontFamily: 'Orbitron, sans-serif',
-                                }}
-                            >
-                                Assets Management
-                            </h1>
-
-                            <p className="m-0 text-[13.5px] text-slate-500 dark:text-slate-400">
-                                Click on any category below to inspect and manage game assets directly inline.
-                            </p>
                         </div>
-                    </header>
+                    </div>
 
                     {/* CATEGORY CARDS (TABS) */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

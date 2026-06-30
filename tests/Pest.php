@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,8 +17,8 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -44,4 +50,22 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+function createUser(array $attributes = []): User
+{
+    $user = new User;
+    $user->forceFill(array_merge([
+        'name' => 'Test User',
+        'email' => strtolower('test-'.Str::random(10).'@example.com'),
+        'email_verified_at' => now(),
+        'password' => Hash::make('password'),
+        'remember_token' => Str::random(10),
+        'two_factor_secret' => null,
+        'two_factor_recovery_codes' => null,
+        'two_factor_confirmed_at' => null,
+    ], $attributes));
+    $user->save();
+
+    return $user;
 }

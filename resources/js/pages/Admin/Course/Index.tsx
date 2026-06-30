@@ -110,64 +110,43 @@ export default function Index({ courses }: { courses: Course[] }) {
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
                     {/* HEADER */}
-                <header
-                        className="relative overflow-hidden rounded-xl px-6 py-5 bg-[#f5f6ff] dark:bg-[#0d0f17]"
-                        style={{
-                            backgroundImage: `
-                                linear-gradient(rgba(59,40,246,0.07) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(59,40,246,0.07) 1px, transparent 1px)
-                            `,
-                            backgroundSize: "40px 40px",
-                        }}
-                    >
-                        {/* Corner brackets */}
-                        <span className="absolute left-3.5 top-3.5 h-3 w-3 border-l border-t dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
-                        <span className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
-                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
-                        <span className="absolute bottom-3.5 right-3.5 h-3 w-3 border-b border-r dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                        {/* Grid Pattern Motif */}
+                        <div 
+                            className="absolute inset-0 z-0 pointer-events-none"
+                            style={{
+                                backgroundImage: `
+                                    linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
+                                    linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                                `,
+                                backgroundSize: '40px 40px',
+                            }}
+                        />
 
-                        <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="flex flex-col gap-2">
-                                {/* Badge */}
-                                <div className="inline-flex w-fit items-center gap-1.5 rounded border px-2.5 py-1
-                                    dark:border-[rgba(59,40,246,0.35)] dark:bg-[rgba(59,40,246,0.1)]
-                                    border-[rgba(59,40,246,0.2)] bg-[rgba(59,40,246,0.06)]"
-                                >
-                                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B28F6]" />
-                                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#3B28F6]">
-                                        Courses
-                                    </span>
-                                </div>
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 z-0" />
 
-                                {/* Title */}
-                                <h1
-                                    className="m-0 text-2xl sm:text-3xl font-bold leading-none tracking-tight"
-                                    style={{
-                                        background: "linear-gradient(135deg, #2a1ce0 0%, #3B28F6 100%)",
-                                        WebkitBackgroundClip: "text",
-                                        WebkitTextFillColor: "transparent",
-                                        backgroundClip: "text",
-                                        fontFamily: "Orbitron, sans-serif",
-                                    }}
-                                >
+                        <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="max-w-2xl space-y-3">
+                                <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
+                                    Courses
+                                </span>
+                                <h1 className="text-2xl md:text-[28px] font-semibold tracking-tight text-slate-800 dark:text-white leading-snug">
                                     Course Management
                                 </h1>
-
-                                {/* Subtitle */}
-                                <p className="m-0 text-xs sm:text-sm dark:text-slate-400/70 text-slate-600/75">
-                                    Manage, organize, and publish your learning content
+                                <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
+                                    Manage, organize, and publish your learning content.
                                 </p>
                             </div>
 
                             <button
                                 onClick={openCreate}
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#3B28F6] hover:bg-[#2a1ce0] text-white text-sm font-semibold shadow-sm transition-all"
+                                className="relative z-10 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#3B28F6] hover:bg-[#2a1ce0] text-white text-sm font-semibold shadow-sm transition-all shrink-0"
                             >
                                 <Plus size={18} />
                                 Create Course
                             </button>
                         </div>
-                    </header>
+                    </div>
 
                     {/* GRID */}
                     {courses.length > 0 ? (
