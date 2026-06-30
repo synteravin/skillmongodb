@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import StudentFundamentalNode from "@/components/Student/roadmap/StudentFundamentalNode";
 import StudentModuleNode from "@/components/Student/roadmap/StudentModuleNode";
 import StudentCareerBranch from "@/components/Student/roadmap/StudentCareerBranch";
@@ -792,6 +792,29 @@ export default function Roadmap({
 
     const { badges } = usePage().props as any;
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [contentHeight, setContentHeight] = useState(0);
+    const [pages, setPages] = useState(1);
+
+    useEffect(() => {
+        const el = contentRef.current;
+        if (!el) return;
+
+        const handleResize = () => {
+            const height = el.offsetHeight || el.scrollHeight;
+            setContentHeight(height);
+            const clientHeight = window.innerHeight;
+            if (clientHeight > 0) {
+                setPages(Math.max(1, Math.ceil(height / clientHeight)));
+            }
+        };
+
+        handleResize();
+        const observer = new ResizeObserver(handleResize);
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div className="h-screen w-full overflow-hidden flex flex-col bg-blue-100/30 dark:bg-[#020202] text-gray-800 dark:text-slate-200 font-sans">
 
@@ -833,88 +856,101 @@ export default function Roadmap({
 
             {/* ================= SCROLLABLE BODY ================= */}
             <div
-                className="flex-1 overflow-y-auto"
+                className="flex-1 overflow-y-auto overflow-x-clip relative"
                 style={{
                     scrollbarWidth: "thin",
                     scrollbarColor: "rgba(99,130,255,0.3) transparent",
                 }}
             >
-                {/* ── MOBILE LAYOUT (< md) — new vertical roadmap flow ── */}
-                <MobileRoadmap
-                    course={course}
-                    safeProgress={safeProgress}
-                    badges={badges ?? []}
-                />
+                {/* Background Glows Container */}
+                <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none z-0" style={{ height: contentHeight }}>
+                    {Array.from({ length: pages }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="absolute pointer-events-none left-1/2 -translate-x-1/2 w-[1800px] max-w-full h-[300px] bg-[#3B82F6] opacity-[0.08] dark:opacity-[0.16] blur-[120px] md:blur-[150px] rounded-full"
+                            style={{ top: `${20 + i * 100}vh` }}
+                        />
+                    ))}
+                </div>
 
-                {/* ── DESKTOP LAYOUT (md+) — original, completely unchanged ── */}
-                <div className="hidden md:block w-full max-w-screen-2xl mx-auto px-4 md:px-8 lg:px-12 2xl:px-16 pb-16">
+                <div ref={contentRef} className="relative z-10">
+                    {/* ── MOBILE LAYOUT (< md) — new vertical roadmap flow ── */}
+                    <MobileRoadmap
+                        course={course}
+                        safeProgress={safeProgress}
+                        badges={badges ?? []}
+                    />
 
-                    {/* FUNDAMENTAL */}
-                    <div className="flex flex-col flex-nowrap items-center w-full mt-4">
-                        {course.basic_paths?.map((path: any) => {
-                            const done   = path.is_completed;
-                            const locked = !path.is_unlocked;
+                    {/* ── DESKTOP LAYOUT (md+) — original, completely unchanged ── */}
+                    <div className="hidden md:block w-full max-w-screen-2xl mx-auto px-4 md:px-8 lg:px-12 2xl:px-16 pb-16">
 
-                            const href =
-                                !locked && path.first_module_id
-                                    ? `/student/learn/${course._id}/${path._id}/${path.first_module_id}`
-                                    : undefined;
+                        {/* FUNDAMENTAL */}
+                        <div className="flex flex-col flex-nowrap items-center w-full mt-4">
+                            {course.basic_paths?.map((path: any) => {
+                                const done   = path.is_completed;
+                                const locked = !path.is_unlocked;
 
-                            return (
-                                <React.Fragment key={path._id}>
-                                    <StudentFundamentalNode
-                                        title={path.name}
-                                        locked={locked}
-                                        done={done}
-                                        thumbnail={path.thumbnail}
-                                        href={href}
-                                    />
-                                    <div className="w-[2px] h-12 bg-blue-500/70 dark:bg-white/80" />
-                                </React.Fragment>
-                            );
-                        })}
-                    </div>
-
-                    {/* CAREER GROUPS */}
-                    {course.career_groups?.length > 0 && (
-                        <div className="w-full flex flex-col sm:flex-row flex-wrap items-start justify-center mt-0 relative z-10 gap-0">
-                            {course.career_groups.map((group: any, idx: number) => {
-                                const isFirst     = idx === 0;
-                                const isLast      = idx === course.career_groups.length - 1;
-                                const hasMultiple = course.career_groups.length > 1;
+                                const href =
+                                    !locked && path.first_module_id
+                                        ? `/student/learn/${course._id}/${path._id}/${path.first_module_id}`
+                                        : undefined;
 
                                 return (
-                                    <div
-                                        key={group._id}
-                                        className="relative flex flex-col items-center flex-1 min-w-[260px] max-w-[340px] 2xl:max-w-[380px]"
-                                    >
-                                        {hasMultiple && (
-                                            <>
-                                                {!isFirst && (
-                                                    <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-blue-500/70 dark:bg-white/80 z-0 hidden sm:block" />
-                                                )}
-                                                {!isLast && (
-                                                    <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-blue-500/70 dark:bg-white/80 z-0 hidden sm:block" />
-                                                )}
-                                            </>
-                                        )}
-
-                                        <div className="w-[2px] h-10 bg-blue-500/70 dark:bg-white/80 z-10 hidden sm:block" />
-
-                                        <StudentCareerBranch
-                                            group={group}
-                                            progress={safeProgress}
-                                            badges={badges}
-                                            courseId={course._id}
-                                            basicCompleted={course.basic_paths.every(
-                                                (p: any) => p.is_completed
-                                            )}
+                                    <React.Fragment key={path._id}>
+                                        <StudentFundamentalNode
+                                            title={path.name}
+                                            locked={locked}
+                                            done={done}
+                                            thumbnail={path.thumbnail}
+                                            href={href}
                                         />
-                                    </div>
+                                        <div className="w-[2px] h-12 bg-blue-500/70 dark:bg-white/80" />
+                                    </React.Fragment>
                                 );
                             })}
                         </div>
-                    )}
+
+                        {/* CAREER GROUPS */}
+                        {course.career_groups?.length > 0 && (
+                            <div className="w-full flex flex-col sm:flex-row flex-wrap items-start justify-center mt-0 relative z-10 gap-0">
+                                {course.career_groups.map((group: any, idx: number) => {
+                                    const isFirst     = idx === 0;
+                                    const isLast      = idx === course.career_groups.length - 1;
+                                    const hasMultiple = course.career_groups.length > 1;
+
+                                    return (
+                                        <div
+                                            key={group._id}
+                                            className="relative flex flex-col items-center flex-1 min-w-[260px] max-w-[340px] 2xl:max-w-[380px]"
+                                        >
+                                            {hasMultiple && (
+                                                <>
+                                                    {!isFirst && (
+                                                        <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-blue-500/70 dark:bg-white/80 z-0 hidden sm:block" />
+                                                    )}
+                                                    {!isLast && (
+                                                        <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-blue-500/70 dark:bg-white/80 z-0 hidden sm:block" />
+                                                    )}
+                                                </>
+                                            )}
+
+                                            <div className="w-[2px] h-10 bg-blue-500/70 dark:bg-white/80 z-10 hidden sm:block" />
+
+                                            <StudentCareerBranch
+                                                group={group}
+                                                progress={safeProgress}
+                                                badges={badges}
+                                                courseId={course._id}
+                                                basicCompleted={course.basic_paths.every(
+                                                    (p: any) => p.is_completed
+                                                )}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
