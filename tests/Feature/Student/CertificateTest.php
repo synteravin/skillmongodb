@@ -22,16 +22,10 @@ class CertificateTest extends TestCase
 
     public function test_authenticated_student_users_with_character_can_visit_the_certificates_page(): void
     {
-        // Create character
-        $character = Character::create([
-            'name' => 'Warrior',
+        $character = Character::first() ?? Character::create([
+            'name' => 'Default Character',
             'avatar' => 'warrior.png',
             'character_type' => ['attack'],
-            'abilities' => [],
-            'guide_power' => [],
-            'personality' => [],
-            'system_bonus' => [],
-            'cosmetic_bonus' => [],
         ]);
 
         // Create student user with character
