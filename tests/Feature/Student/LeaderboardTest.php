@@ -23,15 +23,10 @@ class LeaderboardTest extends TestCase
 
     public function test_authenticated_student_with_character_can_visit_leaderboard_page(): void
     {
-        $character = Character::create([
-            'name' => 'Warrior',
+        $character = Character::first() ?? Character::create([
+            'name' => 'Default Character',
             'avatar' => 'warrior.png',
             'character_type' => ['attack'],
-            'abilities' => [],
-            'guide_power' => [],
-            'personality' => [],
-            'system_bonus' => [],
-            'cosmetic_bonus' => [],
         ]);
 
         $user = User::create([

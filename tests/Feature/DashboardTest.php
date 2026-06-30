@@ -9,10 +9,10 @@ test('guests are redirected to the login page', function () {
 });
 
 test('authenticated users can visit the dashboard', function () {
-    $character = Character::create([
-        'name' => 'Warrior',
-        'avatar' => 'avatars/warrior.png',
-        'backstory' => 'A brave warrior.',
+    $character = Character::first() ?? Character::create([
+        'name' => 'Default Character',
+        'avatar' => 'avatars/default.png',
+        'backstory' => 'Default backstory.',
     ]);
 
     $user = User::factory()->create([
