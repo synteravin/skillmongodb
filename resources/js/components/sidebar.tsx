@@ -145,7 +145,7 @@ export default function Sidebar({
                 {/* Desktop Toggle Button */}
                 <button
                     onClick={() => setSidebarOpen(!isOpen)}
-                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-[#060B1A] text-[#7C5CFF] border border-white/8 shadow-[0_0_10px_rgba(124,92,255,0.15)] transition hover:scale-105 hover:bg-[#7C5CFF]/10 md:flex"
+                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white border border-transparent shadow-[0_0_10px_rgba(14,165,233,0.3)] transition hover:scale-110 hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500 md:flex"
                 >
                     {isOpen ? (
                         <ChevronLeft size={14} />

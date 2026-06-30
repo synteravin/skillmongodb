@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
@@ -19,8 +17,7 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmailContract
 {
-    /** @use HasFactory<UserFactory> */
-    use Authenticatable, Authorizable, CanResetPassword, HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable;
+    use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable;
 
     protected $connection = 'mongodb';
 

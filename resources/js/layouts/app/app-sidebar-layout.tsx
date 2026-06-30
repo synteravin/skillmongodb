@@ -35,7 +35,7 @@ export default function AppSidebarLayout({
                         {/* Hamburger Button with large touch target */}
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 active:scale-95 transition dark:text-slate-400 dark:hover:bg-slate-800"
+                            className="flex h-10 w-10 items-center justify-center rounded-lg text-sky-500 hover:bg-sky-50 dark:text-sky-400 dark:hover:bg-sky-950/20 active:scale-95 transition"
                         >
                             <Menu size={20} />
                         </button>
