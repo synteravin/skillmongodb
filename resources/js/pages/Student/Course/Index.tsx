@@ -108,7 +108,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     key={course._id}
                                     className={`
                                         relative cursor-pointer group flex flex-col rounded-2xl sm:rounded-[28px] overflow-hidden
-                                        border-2 sm:border-4 transition-all duration-500 shadow-[0_18px_45px_rgba(15,23,42,0.06)]
+                                        border transition-all duration-500 shadow-[0_18px_45px_rgba(15,23,42,0.06)]
                                         ${isLocked ? 'bg-slate-100 dark:bg-[#02040f] border-blue-300 dark:border-[#1e3a8a] shadow-[0_0_30px_rgba(15,23,42,0.08)]' : 'bg-white dark:bg-[#061028] border-blue-300 dark:border-[#1e3a8a]'}
                                         ${isLocked && 'pointer-events-none'}
                                         ${
@@ -118,8 +118,8 @@ export default function Index({ courses }: { courses: Course[] }) {
                                                     : isCompleted
                                                     ? 'border-emerald-500 hover:shadow-[0_0_25px_rgba(16,185,129,0.18)]'
                                                     : isUnlocked
-                                                    ? 'border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.14)]'
-                                                    : 'border-amber-300 dark:border-amber-500 hover:shadow-[0_0_25px_rgba(245,158,11,0.12)]'
+                                                    ? 'border-[#FACC15] hover:shadow-[0_0_25px_rgba(250,204,21,0.14)]'
+                                                    : 'border-[#FACC15] dark:border-[#FACC15] hover:shadow-[0_0_25px_rgba(250,204,21,0.12)]'
                                                 : ''
                                         }
                                     `}
@@ -188,13 +188,13 @@ export default function Index({ courses }: { courses: Course[] }) {
                                                         shadow-sm cursor-not-allowed
                                                     `}
                                                     ${!course.status && `
-                                                        border-amber-300 text-amber-500
-                                                        hover:bg-amber-500 hover:text-white
+                                                        border-[#FACC15] text-[#FACC15]
+                                                        hover:bg-[#FACC15] hover:text-white
                                                         dark:hover:text-[#090d19]
                                                     `}
                                                     ${isUnlocked && `
-                                                        border-amber-300 text-amber-500
-                                                        hover:bg-amber-500 hover:text-white
+                                                        border-[#FACC15] text-[#FACC15]
+                                                        hover:bg-[#FACC15] hover:text-white
                                                     `}
                                                 `}
                                             >
@@ -404,7 +404,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                             animate={{ clipPath: "inset(0% 0% 0% 0%)", opacity: 1 }}
                             exit={{ clipPath: "inset(50% 0% 50% 0%)", opacity: 0 }}
                             transition={{ duration: 0.5, ease: "easeInOut" }}
-                            className="relative w-full max-w-2xl border-2 sm:border-[3px] border-[#F0C419] bg-[#020202] rounded shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_30px_rgba(240,196,25,0.15)] md:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(240,196,25,0.25)]"
+                            className="relative w-full max-w-2xl border border-[#FACC15] bg-[#020202] rounded shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_30px_rgba(250,204,21,0.15)] md:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
                         >
                            
                             {/* Header */}
@@ -416,7 +416,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                 {/* ICON */}
                                 <div
                                     className="w-6 h-6 md:w-7 md:h-7 flex items-center justify-center flex-shrink-0"
-                                    style={{ border: "1.5px solid #F0C419", background: "rgba(240,196,25,0.15)" }}
+                                    style={{ border: "1px solid #FACC15", background: "rgba(250,204,21,0.15)" }}
                                 >
                                     <TriangleAlert className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400" />
                                 </div>
@@ -489,16 +489,16 @@ export default function Index({ courses }: { courses: Course[] }) {
                                         className="flex-1 py-2 xs:py-2.5 md:py-3 font-bold tracking-[0.12em] xs:tracking-[0.2em] uppercase text-xs xs:text-sm sm:text-base md:text-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                         style={{
                                             fontFamily: "Oxanium",
-                                            background: processing ? "rgba(240,196,25,0.15)" : "#F0C419",
-                                            border: "1.5px solid #F0C419",
-                                            color: processing ? "#F0C419" : "#020202",
-                                            boxShadow: "0 0 12px rgba(240,196,25,0.25)",
+                                            background: processing ? "rgba(250,204,21,0.15)" : "#FACC15",
+                                            border: "1px solid #FACC15",
+                                            color: processing ? "#FACC15" : "#020202",
+                                            boxShadow: "0 0 12px rgba(250,204,21,0.25)",
                                         }}
                                         onMouseEnter={e => {
-                                            if (!processing) (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 24px rgba(240,196,25,0.65)";
+                                            if (!processing) (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 24px rgba(250,204,21,0.65)";
                                         }}
                                         onMouseLeave={e => {
-                                            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 12px rgba(240,196,25,0.25)";
+                                            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 12px rgba(250,204,21,0.25)";
                                         }}
                                     >
                                         {processing ? "Processing..." : "Confirm >"}
