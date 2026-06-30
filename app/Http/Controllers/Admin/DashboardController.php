@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CareerGroup;
 use App\Models\Course;
+use App\Models\Path;
 use App\Models\StudentSubmission;
 use App\Models\User;
 use App\Models\UserStat;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -50,8 +51,9 @@ class DashboardController extends Controller
                 ],
             ],
             'popularCourses' => $this->getPopularCourses(),
-            'leaderboard' => $this->getLeaderboard(),
-            'latestUsers' => $this->getLatestUsers(),
+            'activityTrends' => $this->getActivityTrends(),
+            'careerBranchDistribution' => $this->getCareerBranchDistribution(),
+            'gamificationStats' => $this->getGamificationStats(),
         ]);
     }
 
@@ -79,52 +81,108 @@ class DashboardController extends Controller
     /**
      * @return array<int, mixed>
      */
-    private function getLeaderboard(): array
+    private function getActivityTrends(): array
     {
-        return UserStat::with('user')
-            ->get()
-            ->filter(fn ($stat) => $stat->user)
-            ->map(function (UserStat $stat) {
-                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-                $disk = Storage::disk('s3');
+        $startDate = now()->subDays(30)->startOfDay();
 
-                return [
-                    '_id' => (string) $stat->user->_id,
-                    'name' => $stat->user->name,
-                    'username' => $stat->user->username,
-                    'avatar_url' => $stat->user->avatar ? $disk->url($stat->user->avatar) : null,
-                    'level' => $stat->current_level,
-                    'exp' => $stat->total_exp,
-                    'rank' => $stat->rank,
-                ];
+        $studentActivity = UserStat::where('updated_at', '>=', $startDate)
+            ->get()
+            ->groupBy(function (UserStat $stat) {
+                return $stat->updated_at ? $stat->updated_at->format('Y-m-d') : '';
             })
-            ->sortByDesc('total_exp')
-            ->take(5)
-            ->values()
-            ->toArray();
+            ->map->count();
+
+        $submissionsCount = StudentSubmission::where('created_at', '>=', $startDate)
+            ->get()
+            ->groupBy(function (StudentSubmission $submission) {
+                return $submission->created_at ? $submission->created_at->format('Y-m-d') : '';
+            })
+            ->map->count();
+
+        $activityTrends = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $dateObj = now()->subDays($i);
+            $dateStr = $dateObj->format('Y-m-d');
+            $label = $dateObj->format('d M');
+            $activityTrends[] = [
+                'date' => $dateStr,
+                'label' => $label,
+                'users' => $studentActivity->get($dateStr, 0),
+                'submissions' => $submissionsCount->get($dateStr, 0),
+            ];
+        }
+
+        return $activityTrends;
     }
 
     /**
      * @return array<int, mixed>
      */
-    private function getLatestUsers(): array
+    private function getCareerBranchDistribution(): array
     {
-        return User::latest()
-            ->take(5)
-            ->get()
-            ->map(function (User $u) {
-                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-                $disk = Storage::disk('s3');
+        $userStats = UserStat::whereNotNull('selected_path_id')->get();
+        $totalStudents = $userStats->count();
 
-                return [
-                    '_id' => (string) $u->_id,
-                    'name' => $u->name,
-                    'email' => $u->email,
-                    'role' => $u->role,
-                    'avatar_url' => $u->avatar ? $disk->url($u->avatar) : null,
-                    'created_at' => $u->created_at->diffForHumans(),
-                ];
-            })
-            ->toArray();
+        if ($totalStudents === 0) {
+            return [];
+        }
+
+        $distribution = [];
+        $grouped = [];
+
+        foreach ($userStats as $stat) {
+            $path = Path::find($stat->selected_path_id);
+            if ($path && $path->career_group_id) {
+                $groupId = (string) $path->career_group_id;
+                $grouped[$groupId] = ($grouped[$groupId] ?? 0) + 1;
+            }
+        }
+
+        foreach ($grouped as $groupId => $count) {
+            $careerGroup = CareerGroup::find($groupId);
+            $distribution[] = [
+                'id' => $groupId,
+                'name' => $careerGroup ? $careerGroup->name : 'Cabang Tidak Dikenal',
+                'count' => $count,
+                'percentage' => round(($count / $totalStudents) * 100, 1),
+            ];
+        }
+
+        usort($distribution, function ($a, $b) {
+            return $b['count'] <=> $a['count'];
+        });
+
+        return $distribution;
+    }
+
+    /**
+     * @return array{total_exp: int, total_gold: int, average_level: float}
+     */
+    private function getGamificationStats(): array
+    {
+        $userStats = UserStat::all();
+        $totalExp = 0;
+        $totalGold = 0;
+        $totalLevels = 0;
+        $count = $userStats->count();
+
+        foreach ($userStats as $stat) {
+            $totalExp += $stat->total_exp;
+            $totalLevels += $stat->current_level;
+
+            $gold = 0;
+            if (is_array($stat->path_stats)) {
+                foreach ($stat->path_stats as $pathStat) {
+                    $gold += $pathStat['gold'] ?? 0;
+                }
+            }
+            $totalGold += max((int) ($stat->gold ?? 0), $gold);
+        }
+
+        return [
+            'total_exp' => $totalExp,
+            'total_gold' => $totalGold,
+            'average_level' => $count > 0 ? round($totalLevels / $count, 1) : 1.0,
+        ];
     }
 }
