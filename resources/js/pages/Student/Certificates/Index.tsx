@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface Certificate {
     id: string;
@@ -16,6 +16,29 @@ interface Props {
 export default function Index({ certificates }: Props) {
     const [printingId, setPrintingId] = useState<string | null>(null);
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [contentHeight, setContentHeight] = useState(0);
+    const [pages, setPages] = useState(1);
+
+    useEffect(() => {
+        const el = contentRef.current;
+        if (!el) return;
+
+        const handleResize = () => {
+            const height = el.offsetHeight || el.scrollHeight;
+            setContentHeight(height);
+            const clientHeight = window.innerHeight;
+            if (clientHeight > 0) {
+                setPages(Math.max(1, Math.ceil(height / clientHeight)));
+            }
+        };
+
+        handleResize();
+        const observer = new ResizeObserver(handleResize);
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
     const handlePrint = (id: string, url: string) => {
         setPrintingId(id);
         setTimeout(() => {
@@ -26,8 +49,18 @@ export default function Index({ certificates }: Props) {
 
     return (
         <div className="h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] dark:from-[#050b18] dark:via-[#0a0f26] dark:to-[#040815] text-slate-800 dark:text-white flex flex-col p-4 sm:p-6 md:p-8 relative overflow-hidden transition-colors duration-500">
+            {/* Background Glows */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" style={{ height: contentHeight }}>
+                {Array.from({ length: pages }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute left-1/2 -translate-x-1/2 w-[1800px] max-w-full h-[300px] bg-[#3B82F6] opacity-[0.08] dark:opacity-[0.16] blur-[120px] md:blur-[150px] rounded-full"
+                        style={{ top: `${20 + i * 100}vh` }}
+                    />
+                ))}
+            </div>
 
-            <div className="w-full mx-auto relative z-10 flex-1 flex flex-col min-h-0">
+            <div ref={contentRef} className="w-full mx-auto relative z-10 flex-1 flex flex-col min-h-0">
 
                 {/* HEADER */}
                 <div className="flex items-center gap-4 sm:gap-6 -mt-7 mb-8 sm:mb-10 md:mb-12 shrink-0">
@@ -89,10 +122,10 @@ export default function Index({ certificates }: Props) {
                         background: "linear-gradient(to right, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)",
                     }}
                 >
-                    <div className="bg-white dark:bg-[#100f0f] rounded-[14px] p-6 sm:p-8 md:p-10 flex-1 flex flex-col min-h-0 transition-colors duration-500">
+                    <div className="bg-white dark:bg-[#0b0d32] rounded-[14px] p-6 sm:p-8 md:p-10 flex-1 flex flex-col min-h-0 transition-colors duration-500">
 
                         {/* HEADER — cuma muncul di lg+, fixed di atas, gak ikut scroll */}
-                        <div className="hidden lg:grid grid-cols-3 items-center mb-2 px-6 text-sm font-bold text-slate-400 dark:text-[#f0f0f0] uppercase tracking-[0.2em] font-['Orbitron'] border-b border-slate-200/60 dark:border-slate-800/60 pb-4 transition-colors duration-500 shrink-0">
+                        <div className="hidden lg:grid grid-cols-3 items-center mb-2 px-6 text-sm font-bold text-slate-600 dark:text-[#f0f0f0] uppercase tracking-[0.2em] font-['Orbitron'] border-b border-slate-200/60 dark:border-slate-800/60 pb-4 transition-colors duration-500 shrink-0">
                             <div className="text-left">ID CERTIFICATE</div>
                             <div className="text-center">NAME COURSE</div>
                             <div className="text-right">ACTIONS</div>
@@ -107,24 +140,24 @@ export default function Index({ certificates }: Props) {
                                 {certificates.map((cert) => (
                                     <div
                                         key={cert.id}
-                                        className="bg-slate-50/60 dark:bg-[#99E4FD]/5 border border-slate-200/70 dark:border-slate-800/60 rounded-xl px-4 sm:px-6 py-4 sm:py-5 transition-all duration-300"
+                                        className="bg-slate-100 dark:bg-[#99E4FD]/5 border border-slate-300 dark:border-slate-800/60 rounded-xl px-4 sm:px-6 py-4 sm:py-5 transition-all duration-300 shadow-sm"
                                     >
                                         {/* ===== MOBILE / TABLET (base sampai < lg): stacked card ===== */}
                                         <div className="flex flex-col gap-3 lg:hidden">
                                             <div>
-                                                <p className="text-[9px] uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-['Orbitron'] mb-1">
+                                                <p className="text-[9px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 font-['Orbitron'] mb-1">
                                                     ID Certificate
                                                 </p>
-                                                <p className="font-['Orbitron'] font-medium text-slate-700 dark:text-slate-200 text-xs sm:text-sm tracking-wider break-all">
+                                                <p className="font-['Orbitron'] font-bold text-slate-900 dark:text-slate-200 text-xs sm:text-sm tracking-wider break-all">
                                                     {cert.certificate_id}
                                                 </p>
                                             </div>
 
                                             <div>
-                                                <p className="text-[9px] uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-['Orbitron'] mb-1">
+                                                <p className="text-[9px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 font-['Orbitron'] mb-1">
                                                     Name Course
                                                 </p>
-                                                <p className="font-['Orbitron'] font-bold text-slate-800 dark:text-slate-100 uppercase text-xs sm:text-sm tracking-wider break-words">
+                                                <p className="font-['Orbitron'] font-extrabold text-slate-950 dark:text-slate-100 uppercase text-xs sm:text-sm tracking-wider break-words">
                                                     {cert.course_name}
                                                 </p>
                                             </div>
@@ -132,7 +165,7 @@ export default function Index({ certificates }: Props) {
                                             <button
                                                 onClick={() => handlePrint(cert.id, cert.certificate_url)}
                                                 disabled={printingId !== null}
-                                                className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto sm:self-end px-3 py-2 rounded-sm cursor-pointer bg-indigo-100 text-indigo-700 dark:bg-[#3B28F6] dark:text-white disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
+                                                className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto sm:self-end px-4 py-2 rounded-md cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-[#3B28F6] dark:text-white dark:hover:bg-[#4c2fff] disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm transition-colors"
                                                 style={{ fontFamily: "'Orbitron', sans-serif" }}
                                             >
                                                 {printingId === cert.id ? (
@@ -151,11 +184,11 @@ export default function Index({ certificates }: Props) {
 
                                         {/* ===== DESKTOP (lg+): grid 3 kolom kayak semula ===== */}
                                         <div className="hidden lg:grid grid-cols-3 items-center">
-                                            <div className="text-left font-['Orbitron'] font-medium text-slate-700 dark:text-slate-200 text-sm tracking-wider break-all pr-4">
+                                            <div className="text-left font-['Orbitron'] font-bold text-slate-900 dark:text-slate-200 text-sm tracking-wider break-all pr-4">
                                                 {cert.certificate_id}
                                             </div>
 
-                                            <div className="text-center font-['Orbitron'] font-bold text-slate-800 dark:text-slate-100 uppercase text-sm tracking-wider break-words px-2">
+                                            <div className="text-center font-['Orbitron'] font-extrabold text-slate-950 dark:text-slate-100 uppercase text-sm tracking-wider break-words px-2">
                                                 {cert.course_name}
                                             </div>
 
@@ -163,7 +196,7 @@ export default function Index({ certificates }: Props) {
                                                 <button
                                                     onClick={() => handlePrint(cert.id, cert.certificate_url)}
                                                     disabled={printingId !== null}
-                                                    className="inline-flex items-center justify-center px-2 py-1 rounded-sm cursor-pointer bg-indigo-100 text-indigo-700 dark:bg-[#3B28F6] dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="inline-flex items-center justify-center px-4 py-1.5 rounded-md cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-[#3B28F6] dark:text-white dark:hover:bg-[#4c2fff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                     style={{ fontFamily: "'Orbitron', sans-serif" }}
                                                 >
                                                     {printingId === cert.id ? (

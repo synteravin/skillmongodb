@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TriangleAlert, X, Lock,BookOpen,MonitorPlay,AlertOctagon  } from 'lucide-react'
 
@@ -18,6 +18,29 @@ export default function Index({ courses }: { courses: Course[] }) {
     const [showDescModal, setShowDescModal] = useState(false)
     const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [processing, setProcessing] = useState(false)
+
+    const contentRef = useRef<HTMLDivElement>(null)
+    const [contentHeight, setContentHeight] = useState(0)
+    const [pages, setPages] = useState(1)
+
+    useEffect(() => {
+        const el = contentRef.current
+        if (!el) return
+
+        const handleResize = () => {
+            const height = el.offsetHeight || el.scrollHeight
+            setContentHeight(height)
+            const clientHeight = window.innerHeight
+            if (clientHeight > 0) {
+                setPages(Math.max(1, Math.ceil(height / clientHeight)))
+            }
+        }
+
+        handleResize()
+        const observer = new ResizeObserver(handleResize)
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [])
 
 
     const handleMulaiBelajar = (course: Course) => {
@@ -95,8 +118,18 @@ export default function Index({ courses }: { courses: Course[] }) {
                     </div>
                 </div>
             </div>
-             <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(99,130,255,0.3) transparent" }}>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-14 p-4 md:p-6">
+             <div className="flex-1 overflow-y-auto overflow-x-clip relative" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(99,130,255,0.3) transparent" }}>
+                 {/* Background Glows Container */}
+                 <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none z-0" style={{ height: contentHeight }}>
+                     {Array.from({ length: pages }).map((_, i) => (
+                         <div
+                             key={i}
+                             className="absolute pointer-events-none left-1/2 -translate-x-1/2 w-[1800px] max-w-full h-[300px] bg-[#3B82F6] opacity-[0.08] dark:opacity-[0.16] blur-[120px] md:blur-[150px] rounded-full"
+                             style={{ top: `${20 + i * 100}vh` }}
+                         />
+                     ))}
+                 </div>
+                 <div ref={contentRef} className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-14 p-4 md:p-6">
                         {courses.map((course) => {
                             const isLocked = course.status === 'locked'
                             const isActive = course.status === 'active'
