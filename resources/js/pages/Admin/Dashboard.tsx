@@ -118,69 +118,36 @@ export default function Dashboard({
             <div className="relative min-h-screen bg-[#f8fafc] px-6 py-4 sm:px-6 lg:px-10 overflow-hidden text-slate-900 dark:bg-[#030712] dark:text-white transition-colors duration-200">
                 <div className="relative z-10 mx-auto max-w-7xl space-y-4 sm:space-y-5">
 
-                    {/* HEADER — keep original premium style */}
-                    <header
-                        className="relative overflow-hidden rounded-xl px-6 py-5 bg-[#f5f6ff] dark:bg-[#0d0f17]"
-                        style={{
-                            backgroundImage: `
-                            linear-gradient(rgba(59,40,246,0.07) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(59,40,246,0.07) 1px, transparent 1px)
-                            `,
-                            backgroundSize: '40px 40px',
-                        }}
-                    >
-                        {/* Corner brackets kept ONLY on the header as originally requested */}
-                        <span className="absolute left-3.5 top-3.5 h-3 w-3 border-l border-t dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
-                        <span className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
-                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
-                        <span className="absolute bottom-3.5 right-3.5 h-3 w-3 border-b border-r dark:border-[rgba(59,40,246,0.45)] border-[rgba(59,40,246,0.2)]" />
+                    {/* Header */}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                        {/* Grid Pattern Motif */}
+                        <div 
+                            className="absolute inset-0 z-0 pointer-events-none"
+                            style={{
+                                backgroundImage: `
+                                    linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
+                                    linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                                `,
+                                backgroundSize: '40px 40px',
+                            }}
+                        />
 
-                        <div className="relative z-10 flex flex-col gap-3">
-                            {/* Badge */}
-                            <div className="inline-flex w-fit items-center gap-1.5 rounded border px-2.5 py-1
-                            dark:border-[rgba(59,40,246,0.35)] dark:bg-[rgba(59,40,246,0.1)]
-                            border-[rgba(59,40,246,0.2)] bg-[rgba(59,40,246,0.06)]"
-                            >
-                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B28F6]" />
-                                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#3B28F6]">
-                                    Dashboard
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 z-0" />
+
+                        <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="max-w-2xl space-y-3">
+                                <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
+                                    Administration
                                 </span>
-                            </div>
-
-                            {/* Title */}
-                            <h1
-                                className="m-0 text-3xl font-bold leading-none tracking-tight"
-                                style={{
-                                    background: 'linear-gradient(135deg, #2a1ce0 0%, #3B28F6 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
-                                    fontFamily: 'Orbitron, sans-serif',
-                                }}
-                            >
-                                Skill Ventura
-                            </h1>
-
-                            {/* Subtitle */}
-                            <div className="flex items-center gap-2.5">
-                                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-semibold
-                                    dark:bg-[rgba(59,40,246,0.2)] bg-[rgba(59,40,246,0.08)] text-[#3B28F6]"
-                                >
-                                    {user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
-                                </div>
-                                <p className="m-0 text-[13.5px] dark:text-slate-400/70 text-slate-600/75">
-                                    Welcome back,{' '}
-                                    <span className="font-medium text-[#3B28F6]">
-                                        {user.name}
-                                    </span>
-                                    <span className="mx-2 inline-block h-[11px] w-px dark:bg-white/10 bg-black/10 align-middle" />
-                                    <span className="text-xs dark:text-slate-400/30 text-slate-500/35 tracking-wide">
-                                        Platform health &amp; activity
-                                    </span>
+                                <h1 className="text-2xl md:text-[28px] font-semibold tracking-tight text-slate-800 dark:text-white leading-snug">
+                                    Skill Ventura Dashboard
+                                </h1>
+                                <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
+                                    Welcome back, <span className="font-semibold text-indigo-500 dark:text-indigo-400">{user.name}</span>! Overview of platform performance, active student statistics, and task submissions.
                                 </p>
                             </div>
                         </div>
-                    </header>
+                    </div>
 
                     {/* KPI CARDS */}
                     <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">

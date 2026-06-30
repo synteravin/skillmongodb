@@ -291,9 +291,20 @@ export default function Index({
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Header */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 md:p-10 dark:border-slate-800">
-                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
-                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                    {/* Grid Pattern Motif */}
+                    <div 
+                        className="absolute inset-0 z-0 pointer-events-none"
+                        style={{
+                            backgroundImage: `
+                                linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                            `,
+                            backgroundSize: '40px 40px',
+                        }}
+                    />
+
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 z-0" />
 
                     <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="max-w-2xl space-y-3">
@@ -340,7 +351,7 @@ export default function Index({
                             {/* Add User Button */}
                             <button
                                 onClick={openCreate}
-                                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-indigo-500/40 dark:hover:text-indigo-400"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#3B28F6] hover:bg-[#2a1ce0] text-white text-sm font-semibold shadow-sm transition-all"
                             >
                                 <Plus size={16} />
                                 Add User
