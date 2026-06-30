@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 test('signature page is displayed for mentors', function () {
-    $user = User::factory()->create(['role' => 'mentor']);
+    $user = createUser(['role' => 'mentor']);
 
     $response = $this
         ->actingAs($user)
@@ -16,7 +15,7 @@ test('signature page is displayed for mentors', function () {
 
 test('signature can be updated with base64 string', function () {
     Storage::fake('s3');
-    $user = User::factory()->create(['role' => 'mentor']);
+    $user = createUser(['role' => 'mentor']);
 
     $base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
@@ -35,7 +34,7 @@ test('signature can be updated with base64 string', function () {
 
 test('signature can be updated with file upload', function () {
     Storage::fake('s3');
-    $user = User::factory()->create(['role' => 'mentor']);
+    $user = createUser(['role' => 'mentor']);
 
     $file = UploadedFile::fake()->image('signature.png', 200, 100);
 
@@ -54,7 +53,7 @@ test('signature can be updated with file upload', function () {
 
 test('signature can be removed', function () {
     Storage::fake('s3');
-    $user = User::factory()->create([
+    $user = createUser([
         'role' => 'mentor',
         'signature_path' => 'signatures/fake.png',
     ]);

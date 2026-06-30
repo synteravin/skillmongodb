@@ -4,18 +4,17 @@ use App\Models\CareerGroup;
 use App\Models\Course;
 use App\Models\MentorCareerGroup;
 use App\Models\Path;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 test('admin can assign a mentor to a career group', function () {
-    $admin = User::factory()->create([
+    $admin = createUser([
         'role' => 'admin',
         'email' => 'admin-'.Str::random(5).'@test.com',
     ]);
-    $mentor = User::factory()->create([
+    $mentor = createUser([
         'role' => 'mentor',
         'email' => 'mentor-'.Str::random(5).'@test.com',
     ]);
@@ -48,11 +47,11 @@ test('admin can assign a mentor to a career group', function () {
 });
 
 test('admin can unassign a mentor from a career group', function () {
-    $admin = User::factory()->create([
+    $admin = createUser([
         'role' => 'admin',
         'email' => 'admin-'.Str::random(5).'@test.com',
     ]);
-    $mentor = User::factory()->create([
+    $mentor = createUser([
         'role' => 'mentor',
         'email' => 'mentor-'.Str::random(5).'@test.com',
     ]);
@@ -93,7 +92,7 @@ test('admin can unassign a mentor from a career group', function () {
 });
 
 test('admin can reorder paths', function () {
-    $admin = User::factory()->create([
+    $admin = createUser([
         'role' => 'admin',
         'email' => 'admin-'.Str::random(5).'@test.com',
     ]);
