@@ -97,6 +97,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/courses/{course}', [CourseController::class, 'destroy'])
             ->name('courses.destroy');
 
+        Route::post('/courses/{course}/publish', [CourseController::class, 'publish'])
+            ->name('courses.publish');
+
         /* ---------------- COURSE BUILDER ---------------- */
 
         Route::get('/courses/{course}', [CourseBuilderController::class, 'show'])
@@ -110,6 +113,8 @@ Route::middleware(['auth', 'role:admin'])
             ->name('career-groups.update');
         Route::delete('/career-groups/{group}', [CourseBuilderController::class, 'destroyCareerGroup'])
             ->name('career-groups.destroy');
+        Route::post('/career-groups/{group}/status', [CourseBuilderController::class, 'updateCareerGroupStatus'])
+            ->name('career-groups.status');
 
         Route::post('/paths', [CourseBuilderController::class, 'storePath'])
             ->name('paths.store');
@@ -225,6 +230,9 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::post('/career-groups/{group}/paths', [PathController::class, 'store'])
             ->name('paths.store');
+
+        Route::post('/career-groups/{group}/status', [PathController::class, 'updateStatus'])
+            ->name('career-groups.status');
 
         Route::put('/paths/reorder', [PathController::class, 'reorder'])
             ->name('paths.reorder');

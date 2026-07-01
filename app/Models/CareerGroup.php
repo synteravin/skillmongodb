@@ -15,8 +15,13 @@ class CareerGroup extends Model
         'name',
         'description',
         'mentor_id',
+        'status',
         'slug',
         'order',
+    ];
+
+    protected $attributes = [
+        'status' => 'draft',
     ];
 
     public function course()

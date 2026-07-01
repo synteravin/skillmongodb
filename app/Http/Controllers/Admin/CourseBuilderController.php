@@ -78,6 +78,7 @@ class CourseBuilderController extends Controller
                 return [
                     '_id' => (string) $group->_id,
                     'name' => $group->name,
+                    'status' => $group->status ?? 'draft',
 
                     'mentor' => $group->mentor ? [
                         '_id' => (string) $group->mentor->_id,
@@ -110,6 +111,7 @@ class CourseBuilderController extends Controller
                 '_id' => (string) $course->_id,
                 'title' => $course->title,
                 'slug' => $course->slug,
+                'status' => $course->status ?? 'draft',
                 'basic_paths' => $basicPaths,
                 'career_groups' => $careerGroups,
 
@@ -253,5 +255,16 @@ class CourseBuilderController extends Controller
         $module->delete();
 
         return back()->with('success', 'Module deleted');
+    }
+
+    public function updateCareerGroupStatus(Request $request, CareerGroup $group)
+    {
+        $data = $request->validate([
+            'status' => ['required', 'string', 'in:draft,completed'],
+        ]);
+
+        $group->update(['status' => $data['status']]);
+
+        return back()->with('success', 'Status branch berhasil diperbarui');
     }
 }
