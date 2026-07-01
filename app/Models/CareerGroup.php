@@ -13,6 +13,7 @@ class CareerGroup extends Model
     protected $fillable = [
         'course_id',
         'name',
+        'description',
         'mentor_id',
         'slug',
         'order',

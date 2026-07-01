@@ -2,6 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { router, Link, useForm } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import AvatarCropper from '@/components/AvatarCropper';
 import {
     Pencil,
     Trash2,
@@ -56,6 +57,7 @@ export default function Index({
     const [selectedRole, setSelectedRole] = useState(filters?.role || 'all');
     const [isSearching, setIsSearching] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [cropSrc, setCropSrc] = useState<string | null>(null);
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
         title: string;
@@ -193,10 +195,19 @@ export default function Index({
 
     /* ================= HANDLE FILE ================= */
     const handleFile = (file: File) => {
-        setData('avatar', file);
+        setCropSrc(URL.createObjectURL(file));
+    };
+
+    const handleCropConfirm = (croppedFile: File) => {
+        setData('avatar', croppedFile);
         const reader = new FileReader();
         reader.onloadend = () => setPreview(reader.result as string);
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(croppedFile);
+        setCropSrc(null);
+    };
+
+    const handleCropCancel = () => {
+        setCropSrc(null);
     };
 
     const openCreate = () => {
@@ -1073,6 +1084,14 @@ export default function Index({
                     onConfirm={confirmModal.onConfirm}
                     onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
                 />
+
+                {cropSrc && (
+                    <AvatarCropper
+                        imageSrc={cropSrc}
+                        onConfirm={handleCropConfirm}
+                        onCancel={handleCropCancel}
+                    />
+                )}
             </div>
         </AppLayout>
     );

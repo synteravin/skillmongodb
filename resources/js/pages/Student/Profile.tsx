@@ -8,6 +8,7 @@ import {
     Loader2,
 } from 'lucide-react';
 import { useState, useRef } from 'react';
+import AvatarCropper from '@/components/AvatarCropper';
 
 type Props = {
     user: {
@@ -53,14 +54,26 @@ export default function ProfilePage({ user }: Props) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const [cropSrc, setCropSrc] = useState<string | null>(null);
+
     const handleAvatarClick = () => {
         fileInputRef.current?.click();
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setData('avatar', e.target.files[0]);
+            setCropSrc(URL.createObjectURL(e.target.files[0]));
+            e.target.value = '';
         }
+    };
+
+    const handleCropConfirm = (croppedFile: File) => {
+        setData('avatar', croppedFile);
+        setCropSrc(null);
+    };
+
+    const handleCropCancel = () => {
+        setCropSrc(null);
     };
 
     const submit = (e: React.FormEvent) => {
@@ -77,6 +90,14 @@ export default function ProfilePage({ user }: Props) {
 
     return (
         <div className="flex min-h-screen w-screen flex-col bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#0c0c14] dark:text-white lg:h-screen lg:overflow-hidden overflow-y-auto">
+            {/* AvatarCropper Modal */}
+            {cropSrc && (
+                <AvatarCropper
+                    imageSrc={cropSrc}
+                    onConfirm={handleCropConfirm}
+                    onCancel={handleCropCancel}
+                />
+            )}
             {/* BG GLOW */}
             <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
                 <div className="h-[400px] w-[700px] rounded-full bg-blue-600 opacity-5 blur-[160px] dark:opacity-10" />

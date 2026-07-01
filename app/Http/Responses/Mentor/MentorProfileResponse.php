@@ -3,6 +3,7 @@
 namespace App\Http\Responses\Mentor;
 
 use App\Models\User;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class MentorProfileResponse
@@ -12,7 +13,7 @@ class MentorProfileResponse
      */
     public static function make(User $mentor, array $statsData = []): array
     {
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         $avatarUrl = null;
@@ -41,9 +42,9 @@ class MentorProfileResponse
             'educations' => is_array($mentor->educations) ? $mentor->educations : [],
 
             // Dynamic Stats & Relational Data
-            'assigned_courses' => $statsData['courses'] ?? [],
+            'career_groups' => $statsData['career_groups'] ?? [],
             'stats' => $statsData['stats'] ?? [
-                'total_courses' => 0,
+                'total_career_groups' => 0,
                 'total_students' => 0,
             ],
         ];
