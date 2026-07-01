@@ -69,8 +69,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
-            'work_experiences' => 'array',
-            'educations' => 'array',
         ];
     }
 
@@ -109,6 +107,24 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
 
         return null;
+    }
+
+    public function getWorkExperiencesAttribute($value): array
+    {
+        if (is_string($value)) {
+            return json_decode($value, true) ?: [];
+        }
+
+        return is_array($value) ? $value : [];
+    }
+
+    public function getEducationsAttribute($value): array
+    {
+        if (is_string($value)) {
+            return json_decode($value, true) ?: [];
+        }
+
+        return is_array($value) ? $value : [];
     }
 
     public function character()

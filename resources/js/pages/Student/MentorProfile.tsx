@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
-import { ArrowLeft, Mail, Linkedin, Copy, Check, Briefcase, GraduationCap, Award } from 'lucide-react';
+import { Mail, Linkedin, Copy, Check, Briefcase, GraduationCap, GitBranch, Rocket } from 'lucide-react';
 import MentorTimeline from '@/components/Mentor/MentorTimeline';
 import MentorEducationList from '@/components/Mentor/MentorEducationList';
+
+interface CareerGroupItem {
+    id: string;
+    name: string;
+    description: string | null;
+    slug: string;
+}
 
 interface Props {
     mentor: {
@@ -12,21 +18,21 @@ interface Props {
         email: string;
         avatar: string | null;
         role: string;
-        
+
         // Profile fields
         profession: string;
         linkedin: string;
         description: string;
         user_experience: string;
-        
+
         // Lists
         work_experiences: any[];
         educations: any[];
-        
-        // Stats
-        assigned_courses: any[];
+
+        // Career Branches
+        career_groups: CareerGroupItem[];
         stats: {
-            total_courses: number;
+            total_career_groups: number;
             total_students: number;
         };
     };
@@ -41,216 +47,219 @@ export default function MentorProfile({ mentor }: Props) {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    return (
-        <div className="min-h-screen w-full bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#020205] dark:text-white pb-16 font-sans relative overflow-x-hidden">
-            {/* GLOW DECORATIVE BLURS */}
-            <div className="pointer-events-none absolute -top-40 left-1/4 h-[350px] w-[500px] rounded-full bg-blue-600/10 blur-[150px] dark:bg-blue-600/5" />
-            <div className="pointer-events-none absolute bottom-10 right-1/4 h-[400px] w-[600px] rounded-full bg-indigo-650/10 blur-[180px] dark:bg-[#3B28F6]/5" />
+    const formatNumber = (num: number): string => {
+        if (num >= 1000) {
+            return (num / 1000).toFixed(0) + 'K+';
+        }
+        return num.toString();
+    };
 
-            {/* ── HEADER NAVIGATION (DIAM) ── */}
-            <div className="flex-shrink-0 w-full pt-1 px-1 relative z-25">
+    return (
+        <div className="min-h-screen w-full bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#020208] dark:text-white pb-16 font-sans relative overflow-x-hidden">
+
+            {/* ── HEADER NAVIGATION (MATCHING SELECT COURSE) ── */}
+            <div className="w-full shrink-0 px-1 pt-0.5 relative z-30">
                 <div
-                    className="relative border-[2px]"
+                    className="relative border-[2px] md:border-[3px] border-transparent"
                     style={{
-                        borderImage: "linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1",
+                        borderImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1',
                     }}
                 >
-                    <div className="py-4 px-4 md:px-8 flex items-center justify-between bg-white dark:bg-[#040812]">
+                    <div className="flex items-center justify-between gap-2 bg-white dark:bg-[#040812] px-3 py-3 md:px-6 md:py-4 relative">
                         <button
                             onClick={() => window.history.back()}
-                            className="border-2 border-blue-800 rounded bg-gray-200 dark:bg-[#0b1021] flex items-center justify-center p-2 hover:bg-blue-900/40 hover:border-blue-600 transition-colors w-10 h-10 md:w-12 md:h-12 shrink-0 cursor-pointer"
+                            className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40 md:h-12 md:w-12 cursor-pointer"
                         >
-                            <ArrowLeft className="h-5 w-5 text-indigo-600 dark:text-indigo-500" />
+                            <svg viewBox="0 0 48 48" className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 dark:text-indigo-500 md:h-9 md:w-9">
+                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                <rect x="8"  y="20" width="4"  height="4" fill="currentColor" />
+                                <rect x="5"  y="20" width="5"  height="4" fill="currentColor" />
+                                <rect x="8"  y="16" width="4"  height="4" fill="currentColor" />
+                                <rect x="8"  y="24" width="4"  height="4" fill="currentColor" />
+                                <rect x="12" y="12" width="4"  height="4" fill="currentColor" />
+                                <rect x="12" y="28" width="4"  height="4" fill="currentColor" />
+                                <rect x="16" y="8"  width="4"  height="4" fill="currentColor" />
+                                <rect x="16" y="32" width="4"  height="4" fill="currentColor" />
+                            </svg>
                         </button>
 
-                        <h1 className="absolute left-0 right-0 text-center text-lg md:text-xl lg:text-2xl font-['Orbitron'] font-bold text-[#1e3a8a] dark:text-white tracking-[0.1em] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] uppercase pointer-events-none">
+                        {/* Title */}
+                        <h1 className="flex-1 text-center text-sm min-[390px]:text-base sm:text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold dark:text-white text-[#1e3a8a] tracking-[0.05em] min-[390px]:tracking-[0.1em] md:tracking-[0.15em] uppercase">
                             Mentor Profile
                         </h1>
 
-                        <div className="w-10 h-10 md:w-12 md:h-12 opacity-0" />
+                        {/* Spacer to center title on mobile */}
+                        <div className="w-10 h-10 shrink-0 md:hidden" />
                     </div>
                 </div>
             </div>
 
-            {/* ── CORE PANEL BODY ── */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 relative z-20">
-                <div className="flex flex-col lg:flex-row gap-8 items-start">
-                    
-                    {/* ================= LEFT PROFILE BOX (BASIC INFO & COURSES) ================= */}
-                    <div className="w-full lg:w-[350px] shrink-0 space-y-6">
-                        
-                        {/* Core Profile Card */}
-                        <div className="relative border-2 border-[#3B28F6] bg-white dark:bg-[#050619] p-6 shadow-lg overflow-hidden">
-                            <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#3B28F6] to-transparent" />
-                            
-                            {/* Avatar (Polygonal) */}
-                            <div className="flex justify-center mb-4">
-                                <div className="relative" style={{ width: '130px', height: '148px' }}>
-                                    <div
-                                        className="h-full w-full overflow-hidden border-2 border-transparent shadow-[0_0_20px_rgba(59,40,246,0.3)]"
-                                        style={{
-                                            clipPath: 'polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={mentor.avatar || `https://ui-avatars.com/api/?name=${mentor.name}&background=3b28f6&color=fff`}
-                                            className="h-full w-full object-cover"
-                                            alt={mentor.name}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+            {/* ── CORE CONTENT BODY ── */}
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 mt-8 relative z-20 space-y-12">
 
-                            {/* Name & Codename */}
-                            <div className="text-center space-y-1.5">
-                                <h2 className="font-['Orbitron'] text-base md:text-lg leading-tight font-black tracking-wide text-gray-900 dark:text-white">
+                {/* ================= PROFILE INFO CARD ================= */}
+                <div className="bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 p-6 md:p-8 rounded-2xl shadow-md dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
+                        {/* Profile Image */}
+                        <div className="relative shrink-0 w-full h-56 sm:w-52 sm:h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 shadow-md">
+                            <img
+                                src={mentor.avatar || `https://ui-avatars.com/api/?name=${mentor.name}&background=3b28f6&color=fff`}
+                                className="absolute inset-0 h-full w-full object-cover"
+                                alt={mentor.name}
+                            />
+                        </div>
+
+                        {/* Profile Details */}
+                        <div className="flex-1 space-y-4">
+                            <div>
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-['Outfit'] tracking-tight text-slate-900 dark:text-white leading-tight">
                                     {mentor.name}
                                 </h2>
-                                <p className="font-['Oxanium'] text-xs font-bold text-[#3B28F6] dark:text-[#00d4ff] uppercase tracking-wider">
-                                    {mentor.profession || 'MENTOR INSTRUCTOR'}
+                                <p className="font-['Outfit'] text-sm md:text-base font-semibold text-indigo-600 dark:text-[#3b4ffa] mt-1">
+                                    {mentor.profession || 'Mentor Instructor'}
                                 </p>
                             </div>
 
-                            <div className="h-px bg-gray-150 dark:bg-slate-800/80 my-5" />
-
-                            {/* Impact Stats Grid */}
-                            <div className="grid grid-cols-2 gap-4 text-center">
-                                <div className="border border-[#3B28F6]/20 bg-[#3B28F6]/[0.02] p-3 rounded dark:border-slate-850 dark:bg-[#02020a]/40">
-                                    <span className="block font-['Orbitron'] text-xl font-black text-yellow-500">
-                                        {mentor.stats.total_courses}
-                                    </span>
-                                    <span className="block text-[8px] font-extrabold tracking-[1.5px] text-gray-400 dark:text-gray-500 uppercase mt-0.5">
-                                        Courses
-                                    </span>
-                                </div>
-                                <div className="border border-[#3B28F6]/20 bg-[#3B28F6]/[0.02] p-3 rounded dark:border-slate-850 dark:bg-[#02020a]/40">
-                                    <span className="block font-['Orbitron'] text-xl font-black text-indigo-500 dark:text-[#00d4ff]">
-                                        {mentor.stats.total_students}
-                                    </span>
-                                    <span className="block text-[8px] font-extrabold tracking-[1.5px] text-gray-400 dark:text-gray-500 uppercase mt-0.5">
-                                        Students
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Mentor Experience Years */}
-                            {mentor.user_experience && (
-                                <div className="mt-5 border border-yellow-500/20 bg-yellow-500/[0.02] p-3 rounded text-center">
-                                    <span className="block text-[8px] font-extrabold tracking-[1.5px] text-yellow-600 dark:text-yellow-400 uppercase">
-                                        Total Mentoring Experience
-                                    </span>
-                                    <span className="block font-['Oxanium'] text-xs font-semibold text-gray-600 dark:text-slate-350 mt-1">
-                                        {mentor.user_experience}
-                                    </span>
-                                </div>
-                            )}
-
-                            <div className="h-px bg-gray-150 dark:bg-slate-800/80 my-5" />
-
-                            {/* Social Buttons */}
-                            <div className="flex flex-col gap-2">
-                                {/* Email copyable button */}
+                           {/* Social / Contact Pills */}
+                            <div className="flex flex-wrap gap-3">
+                                {/* Email Pill */}
                                 <button
                                     onClick={copyEmail}
-                                    className="flex items-center justify-between border border-[#3B28F6]/30 bg-gray-50 hover:bg-[#3B28F6]/5 px-4 py-2 font-['Oxanium'] text-xs font-bold text-gray-700 dark:border-slate-800 dark:bg-slate-900/50 dark:text-gray-300 dark:hover:bg-[#3B28F6]/10 w-full transition-colors cursor-pointer"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 hover:bg-slate-100 dark:bg-white/10 dark:hover:bg-white/15 border border-slate-200 dark:border-white/20 text-xs font-['Outfit'] font-bold text-slate-800 dark:text-white transition cursor-pointer"
                                 >
-                                    <span className="flex items-center gap-2 truncate">
-                                        <Mail size={14} className="text-[#3B28F6] shrink-0" />
-                                        <span className="truncate">{mentor.email}</span>
-                                    </span>
+                                    <Mail size={14} className="text-indigo-600 dark:text-[#7C8BFF] shrink-0" />
+                                    <span className="truncate max-w-[180px] sm:max-w-xs">{mentor.email}</span>
                                     {copied ? (
-                                        <Check size={14} className="text-emerald-500 shrink-0" />
+                                        <Check size={14} className="text-emerald-500 shrink-0 ml-1" />
                                     ) : (
-                                        <Copy size={14} className="text-gray-400 shrink-0" />
+                                        <Copy size={14} className="text-slate-500 dark:text-white/70 shrink-0 ml-1" />
                                     )}
                                 </button>
 
-                                {/* LinkedIn URL Button */}
+                                {/* LinkedIn Pill */}
                                 {mentor.linkedin && (
                                     <a
                                         href={mentor.linkedin}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center justify-center gap-2 bg-[#0077b5] hover:bg-[#006297] text-white px-4 py-2 font-['Orbitron'] text-[10px] font-black tracking-widest uppercase transition-colors"
+                                        className="flex items-center gap-2 pl-1.5 pr-4 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 dark:bg-white/10 dark:hover:bg-white/15 border border-slate-200 dark:border-white/20 text-xs font-['Outfit'] font-bold text-slate-800 dark:text-white transition hover:text-indigo-600 dark:hover:text-[#7C8BFF]"
                                     >
-                                        <Linkedin size={14} />
-                                        LinkedIn Uplink
+                                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#0A66C2] shrink-0">
+                                            <Linkedin size={13} className="text-white" fill="white" />
+                                        </span>
+                                        <span>LinkedIn</span>
                                     </a>
                                 )}
                             </div>
-                        </div>
 
-                        {/* ASSIGNED COURSES */}
-                        <div className="border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#050619]/60 p-5 shadow-sm space-y-4">
-                            <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-[2px] text-[#0070b8] dark:text-[#00d4ff] uppercase">
-                                <Award size={16} />
-                                Managed Courses
-                            </h3>
-                            {mentor.assigned_courses.length === 0 ? (
-                                <p className="text-xs font-medium text-gray-400 dark:text-gray-600 italic">
-                                    No managed courses under guidance.
-                                </p>
-                            ) : (
-                                <div className="space-y-3">
-                                    {mentor.assigned_courses.map((course) => (
-                                        <Link
-                                            key={course.id}
-                                            href={`/student/courses/${course.slug}`}
-                                            className="flex items-center gap-3 border border-slate-100 hover:border-[#3B28F6]/30 bg-slate-50/50 hover:bg-[#3B28F6]/5 p-2 rounded transition-all dark:border-slate-900 dark:bg-slate-950/40 dark:hover:border-slate-800"
-                                        >
-                                            {course.thumbnail_url ? (
-                                                <img
-                                                    src={course.thumbnail_url}
-                                                    alt={course.title}
-                                                    className="w-12 h-12 rounded object-cover border border-slate-200 dark:border-slate-800"
-                                                />
-                                            ) : (
-                                                <div className="w-12 h-12 rounded bg-[#3B28F6]/10 flex items-center justify-center shrink-0 border border-[#3B28F6]/20">
-                                                    <BookOpen size={16} className="text-[#3B28F6]" />
-                                                </div>
-                                            )}
-                                            <span className="font-['Oxanium'] text-xs font-bold text-gray-800 dark:text-slate-350 line-clamp-2">
-                                                {course.title}
-                                            </span>
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* ================= RIGHT WORK & EDUCATION TIMELINE ================= */}
-                    <div className="flex-grow w-full space-y-6">
-                        
-                        {/* Bio / Description */}
-                        <div className="border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#050619]/60 p-5 md:p-6 shadow-sm">
-                            <h3 className="font-['Orbitron'] text-xs font-bold tracking-[2px] text-[#0070b8] dark:text-[#00d4ff] uppercase mb-3">
-                                Operations Biography
-                            </h3>
-                            <p className="text-sm font-medium leading-relaxed text-gray-650 dark:text-slate-350">
+                            {/* Description / Bio */}
+                            <p className="text-xs sm:text-sm font-['Outfit'] text-slate-600 dark:text-white leading-relaxed max-w-4xl font-medium">
                                 {mentor.description || "The instructor hasn't set an operational biography node yet."}
                             </p>
-                        </div>
 
-                        {/* Work Experience Timeline */}
-                        <div className="border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#050619]/60 p-5 md:p-6 shadow-sm space-y-6">
-                            <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-[2px] text-[#0070b8] dark:text-[#00d4ff] uppercase border-b border-gray-150 dark:border-slate-800/80 pb-3">
-                                <Briefcase size={18} />
-                                Professional Timeline (Work Experience)
-                            </h3>
-                            <MentorTimeline workExperiences={mentor.work_experiences} />
-                        </div>
+                        {/* Stats Grid */}
+                        <div className="flex flex-wrap gap-4 pt-2">
+                            {/* Stat 1: Experience */}
+                            <div className="flex flex-col justify-center items-center px-6 py-3 rounded-xl border border-slate-200 dark:border-white/20 bg-slate-50 dark:bg-white/10 min-w-[110px] text-center shadow-xs">
+                                <span className="font-['Outfit'] text-lg md:text-xl font-bold text-slate-900 dark:text-white">
+                                    {mentor.user_experience || '0+'}
+                                </span>
+                                <span className="text-[10px] md:text-xs text-slate-500 dark:text-white/80 font-['Outfit'] font-bold mt-0.5">
+                                    Years Exp.
+                                </span>
+                            </div>
 
-                        {/* Education Milestone List */}
-                        <div className="border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#050619]/60 p-5 md:p-6 shadow-sm space-y-6">
-                            <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-[2px] text-[#0070b8] dark:text-[#00d4ff] uppercase border-b border-gray-150 dark:border-slate-800/80 pb-3">
-                                <GraduationCap size={18} />
-                                Academic Milestones (Education)
-                            </h3>
-                            <MentorEducationList educations={mentor.educations} />
+                            {/* Stat 2: Career Branches */}
+                            <div className="flex flex-col justify-center items-center px-6 py-3 rounded-xl border border-slate-200 dark:border-white/20 bg-slate-50 dark:bg-white/10 min-w-[110px] text-center shadow-xs">
+                                <span className="font-['Outfit'] text-lg md:text-xl font-bold text-slate-900 dark:text-white">
+                                    {mentor.stats.total_career_groups}
+                                </span>
+                                <span className="text-[10px] md:text-xs text-slate-500 dark:text-white/80 font-['Outfit'] font-bold mt-0.5">
+                                    Branches
+                                </span>
+                            </div>
+
+                            {/* Stat 3: Students */}
+                            <div className="flex flex-col justify-center items-center px-6 py-3 rounded-xl border border-slate-200 dark:border-white/20 bg-slate-50 dark:bg-white/10 min-w-[110px] text-center shadow-xs">
+                                <span className="font-['Outfit'] text-lg md:text-xl font-bold text-slate-900 dark:text-white">
+                                    {formatNumber(mentor.stats.total_students)}
+                                </span>
+                                <span className="text-[10px] md:text-xs text-slate-500 dark:text-white/80 font-['Outfit'] font-bold mt-0.5">
+                                    Students
+                                </span>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
+
+                {/* ================= WORK EXPERIENCE ================= */}
+                <div className="space-y-6">
+                    <div className="border-l-4 border-yellow-400 pl-3 md:pl-4">
+                        <h3 className="font-['Orbitron'] text-xl md:text-2xl font-bold tracking-wide text-slate-900 dark:text-white uppercase">
+                            Work Experience
+                        </h3>
+                    </div>
+                    <MentorTimeline workExperiences={mentor.work_experiences} />
+                </div>
+
+                {/* ================= EDUCATION ================= */}
+                <div className="space-y-6">
+                    <div className="border-l-4 border-yellow-400 pl-3 md:pl-4">
+                        <h3 className="font-['Orbitron'] text-xl md:text-2xl font-bold tracking-wide text-slate-900 dark:text-white uppercase">
+                            Education
+                        </h3>
+                    </div>
+                    <MentorEducationList educations={mentor.educations} />
+                </div>
+
+            {/* ================= CAREER BRANCHES ================= */}
+            <div className="space-y-6 ">
+                <div className="border-l-4 border-yellow-400 pl-3 md:pl-4">
+                    <h3 className="font-['Outfit'] text-xl md:text-2xl font-bold text-slate-900  dark:text-white">
+                        Career Branches
+                    </h3>
+                    <p className="mt-1 text-xs font-['Outfit'] text-slate-500 dark:text-indigo-200">
+                        Bidang studi yang diampu oleh mentor ini
+                    </p>
+                </div>
+
+                {mentor.career_groups.length === 0 ? (
+                    <div className="border border-dashed border-slate-200 dark:border-indigo-400/40 bg-slate-50/50 dark:bg-[#1B1F5C]/50 py-12 text-center rounded-xl">
+                        <GitBranch className="mx-auto mb-3 text-slate-300 dark:text-indigo-300" size={28} />
+                        <p className="font-['Outfit'] text-xs font-semibold tracking-wide text-slate-400 dark:text-indigo-200">
+                            No Career Branches Assigned Yet
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {mentor.career_groups.map((group) => (
+                            <div
+                                key={group.id}
+                                className="rounded-xl border border-slate-200 dark:border-indigo-400/30 bg-white dark:bg-[#13174D]/50 p-5 transition-colors hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 hover:shadow-lg dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] "
+                            >
+                                {/* Icon + Title row */}
+                                <div className="flex items-start gap-3 mb-3">
+                                    <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-yellow-400/10 border border-yellow-400/30 dark:border-yellow-400/20">
+                                        <Rocket size={16} className="text-yellow-500 dark:text-yellow-400" />
+                                    </div>
+                                    <h4 className="font-['Outfit'] text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug pt-1">
+                                        {group.name}
+                                    </h4>
+                                </div>
+
+                                {/* Description */}
+                                <p className="font-['Outfit'] text-xs sm:text-sm text-slate-500 dark:text-indigo-100 leading-relaxed line-clamp-3">
+                                    {group.description && group.description.trim() !== ''
+                                        ? group.description
+                                        : 'No description available.'}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
             </div>
         </div>
     );

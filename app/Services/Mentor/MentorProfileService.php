@@ -3,38 +3,33 @@
 namespace App\Services\Mentor;
 
 use App\Models\CareerGroup;
-use App\Models\Course;
 use App\Models\CourseStudent;
 use App\Models\MentorCareerGroup;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class MentorProfileService
 {
     /**
-     * Get all courses assigned to this mentor.
+     * Get all CareerGroups assigned to this mentor.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function assignedCourses(User $mentor)
+    public function assignedCareerGroups(User $mentor)
     {
-        // 1. Courses where mentor is the main course mentor
-        $courseIdsFromMentor = Course::where('mentor_id', $mentor->_id)->pluck('_id')->toArray();
+        // 1. Career groups directly assigned via CareerGroup.mentor_id field
+        $directIds = CareerGroup::where('mentor_id', $mentor->_id)
+            ->pluck('_id')
+            ->toArray();
 
-        // 2. Career groups directly assigned to the mentor in CareerGroup model
-        $courseIdsFromCareerGroupField = CareerGroup::where('mentor_id', $mentor->_id)->pluck('course_id')->toArray();
+        // 2. Career groups assigned via MentorCareerGroup pivot table
+        $pivotIds = MentorCareerGroup::where('mentor_id', $mentor->_id)
+            ->pluck('career_group_id')
+            ->toArray();
 
-        // 3. Career groups assigned via MentorCareerGroup pivot table
-        $careerGroupIds = MentorCareerGroup::where('mentor_id', $mentor->_id)->pluck('career_group_id')->toArray();
-        $courseIdsFromPivot = CareerGroup::whereIn('_id', $careerGroupIds)->pluck('course_id')->toArray();
+        $allIds = array_unique(array_merge($directIds, $pivotIds));
 
-        // Merge all unique course IDs
-        $allCourseIds = array_unique(array_merge(
-            $courseIdsFromMentor,
-            $courseIdsFromCareerGroupField,
-            $courseIdsFromPivot
-        ));
-
-        return Course::whereIn('_id', $allCourseIds)->get();
+        return CareerGroup::whereIn('_id', $allIds)->get();
     }
 
     /**
@@ -42,36 +37,33 @@ class MentorProfileService
      */
     public function totalStudentsCount(User $mentor): int
     {
-        $courses = $this->assignedCourses($mentor);
-        $courseIds = $courses->pluck('_id')->toArray();
+        $careerGroups = $this->assignedCareerGroups($mentor);
+        $careerGroupIds = $careerGroups->pluck('_id')->toArray();
 
-        $careerGroupIds = MentorCareerGroup::where('mentor_id', $mentor->_id)->pluck('career_group_id')->toArray();
-
-        return CourseStudent::where(function ($query) use ($courseIds, $careerGroupIds) {
-            $query->whereIn('course_id', $courseIds)
-                ->orWhereIn('career_group_id', $careerGroupIds);
-        })->distinct('user_id')->count();
+        return CourseStudent::whereIn('career_group_id', $careerGroupIds)
+            ->distinct('user_id')
+            ->count();
     }
 
     /**
-     * Get compile dashboard / detail statistics for a mentor profile.
+     * Compile profile statistics and career branch data for a mentor.
      */
     public function getProfileData(User $mentor): array
     {
-        $courses = $this->assignedCourses($mentor);
+        $careerGroups = $this->assignedCareerGroups($mentor);
         $totalStudents = $this->totalStudentsCount($mentor);
 
         return [
-            'courses' => $courses->map(function ($c) {
+            'career_groups' => $careerGroups->map(function ($group) {
                 return [
-                    'id' => (string) $c->_id,
-                    'title' => $c->title,
-                    'slug' => $c->slug,
-                    'thumbnail_url' => $c->thumbnail_url,
+                    'id' => (string) $group->_id,
+                    'name' => $group->name,
+                    'description' => $group->description ?? null,
+                    'slug' => $group->slug,
                 ];
-            }),
+            })->values()->toArray(),
             'stats' => [
-                'total_courses' => $courses->count(),
+                'total_career_groups' => $careerGroups->count(),
                 'total_students' => $totalStudents,
             ],
         ];

@@ -16,6 +16,12 @@ interface Props {
 }
 
 export default function ProfileFormWorkExperience({ workExperiences, onChange, errors }: Props) {
+    const inputClass =
+        'w-full rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2.5 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-300 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40';
+
+    const labelClass =
+        'mb-1.5 block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase';
+
     const handleAdd = () => {
         const newExp: WorkExperience = {
             jabatan: '',
@@ -43,52 +49,53 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
     };
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-2">
-                <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-[2px] text-[#0070b8] dark:text-[#00d4ff] uppercase">
-                    <Briefcase size={16} />
+        <div className="space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                <h3 className="flex items-center gap-2 text-base font-semibold text-slate-800 dark:text-white">
+                    <Briefcase size={18} className="text-indigo-600 dark:text-indigo-400" />
                     Work Experience History
                 </h3>
                 <button
                     type="button"
                     onClick={handleAdd}
-                    className="flex items-center gap-1 bg-[#3B28F6] hover:bg-indigo-600 px-3 py-1 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white transition-all shadow-[0_0_10px_rgba(59,40,246,0.3)] hover:shadow-[0_0_15px_rgba(59,40,246,0.5)]"
-                    style={{
-                        clipPath: 'polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)',
-                    }}
+                    className="flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 px-3 py-1.5 font-['Outfit'] text-xs font-semibold text-white transition-colors shadow-sm"
                 >
-                    <Plus size={12} strokeWidth={2.5} />
+                    <Plus size={14} strokeWidth={2.5} />
                     ADD RECORD
                 </button>
             </div>
 
             {workExperiences.length === 0 ? (
-                <div className="border border-dashed border-[#3B28F6]/20 bg-gray-50/50 py-8 text-center dark:border-slate-800 dark:bg-[#04040a]/40">
-                    <p className="font-['Orbitron'] text-xs tracking-widest text-gray-400 dark:text-gray-600 uppercase">
-                        No Work Experience Records Uploaded
+                <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10 py-10 text-center">
+                    <Briefcase className="mx-auto h-8 w-8 text-slate-400 dark:text-slate-600 mb-3" />
+                    <p className="font-['Outfit'] text-sm font-medium text-slate-500 dark:text-slate-400">
+                        No work experience records added yet.
+                    </p>
+                    <p className="font-['Outfit'] text-xs text-slate-400 dark:text-slate-600 mt-1">
+                        Click the "Add Record" button to add your work history.
                     </p>
                 </div>
             ) : (
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {workExperiences.map((exp, idx) => (
                         <div
                             key={idx}
-                            className="relative border border-[#3B28F6]/25 bg-white p-4 dark:border-slate-800 dark:bg-[#050619]/90 shadow-sm"
+                            className="relative rounded-xl border border-slate-200 bg-slate-50/30 p-5 dark:border-slate-800 dark:bg-slate-900/20 shadow-sm"
                         >
                             {/* REMOVE BUTTON */}
                             <button
                                 type="button"
                                 onClick={() => handleRemove(idx)}
-                                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                                className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors"
                                 title="Remove Record"
                             >
                                 <Trash2 size={16} />
                             </button>
 
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 pr-6">
+                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4 pr-6">
                                 {/* JABATAN */}
                                 <div className="sm:col-span-2">
-                                    <label className="mb-0.5 block text-[9px] tracking-[1px] font-semibold text-yellow-600 dark:text-yellow-400 uppercase">
+                                    <label className={labelClass}>
                                         Job Position / Title *
                                     </label>
                                     <input
@@ -96,10 +103,11 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
                                         placeholder="e.g. Senior Frontend Engineer"
                                         value={exp.jabatan || ''}
                                         onChange={(e) => handleChange(idx, 'jabatan', e.target.value)}
-                                        className="w-full border border-gray-200 bg-gray-50 px-2 py-1.5 font-['Oxanium'] text-xs text-gray-800 outline-none focus:border-[#3B28F6] dark:border-slate-800 dark:bg-[#020205] dark:text-gray-300"
+                                        className={inputClass}
+                                        required
                                     />
                                     {errors[`work_experiences.${idx}.jabatan`] && (
-                                        <span className="text-[10px] text-rose-500 font-medium">
+                                        <span className="mt-1.5 block text-xs font-medium text-rose-500">
                                             Position is required
                                         </span>
                                     )}
@@ -107,7 +115,7 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
 
                                 {/* PERUSAHAAN */}
                                 <div className="sm:col-span-2">
-                                    <label className="mb-0.5 block text-[9px] tracking-[1px] font-semibold text-yellow-600 dark:text-yellow-400 uppercase">
+                                    <label className={labelClass}>
                                         Company Name *
                                     </label>
                                     <input
@@ -115,10 +123,11 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
                                         placeholder="e.g. Google DeepMind"
                                         value={exp.perusahaan || ''}
                                         onChange={(e) => handleChange(idx, 'perusahaan', e.target.value)}
-                                        className="w-full border border-gray-200 bg-gray-50 px-2 py-1.5 font-['Oxanium'] text-xs text-gray-800 outline-none focus:border-[#3B28F6] dark:border-slate-800 dark:bg-[#020205] dark:text-gray-300"
+                                        className={inputClass}
+                                        required
                                     />
                                     {errors[`work_experiences.${idx}.perusahaan`] && (
-                                        <span className="text-[10px] text-rose-500 font-medium">
+                                        <span className="mt-1.5 block text-xs font-medium text-rose-500">
                                             Company is required
                                         </span>
                                     )}
@@ -126,7 +135,7 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
 
                                 {/* TAHUN MULAI */}
                                 <div>
-                                    <label className="mb-0.5 block text-[9px] tracking-[1px] font-semibold text-yellow-600 dark:text-yellow-400 uppercase">
+                                    <label className={labelClass}>
                                         Start Year *
                                     </label>
                                     <input
@@ -134,10 +143,11 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
                                         placeholder="e.g. 2021"
                                         value={exp.tahun_mulai || ''}
                                         onChange={(e) => handleChange(idx, 'tahun_mulai', e.target.value)}
-                                        className="w-full border border-gray-200 bg-gray-50 px-2 py-1.5 font-['Oxanium'] text-xs text-gray-800 outline-none focus:border-[#3B28F6] dark:border-slate-800 dark:bg-[#020205] dark:text-gray-300"
+                                        className={inputClass}
+                                        required
                                     />
                                     {errors[`work_experiences.${idx}.tahun_mulai`] && (
-                                        <span className="text-[10px] text-rose-500 font-medium">
+                                        <span className="mt-1.5 block text-xs font-medium text-rose-500">
                                             Required
                                         </span>
                                     )}
@@ -145,7 +155,7 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
 
                                 {/* TAHUN SELESAI */}
                                 <div>
-                                    <label className="mb-0.5 block text-[9px] tracking-[1px] font-semibold text-yellow-600 dark:text-yellow-400 uppercase">
+                                    <label className={labelClass}>
                                         End Year
                                     </label>
                                     <input
@@ -153,13 +163,13 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
                                         placeholder="e.g. 2024 or Present"
                                         value={exp.tahun_selesai || ''}
                                         onChange={(e) => handleChange(idx, 'tahun_selesai', e.target.value)}
-                                        className="w-full border border-gray-200 bg-gray-50 px-2 py-1.5 font-['Oxanium'] text-xs text-gray-800 outline-none focus:border-[#3B28F6] dark:border-slate-800 dark:bg-[#020205] dark:text-gray-300"
+                                        className={inputClass}
                                     />
                                 </div>
 
                                 {/* DESKRIPSI */}
                                 <div className="sm:col-span-2 md:col-span-4">
-                                    <label className="mb-0.5 block text-[9px] tracking-[1px] font-semibold text-yellow-600 dark:text-yellow-400 uppercase">
+                                    <label className={labelClass}>
                                         Job Duties & Achievements
                                     </label>
                                     <textarea
@@ -167,7 +177,7 @@ export default function ProfileFormWorkExperience({ workExperiences, onChange, e
                                         placeholder="Briefly describe your key responsibilities and accomplishments..."
                                         value={exp.deskripsi || ''}
                                         onChange={(e) => handleChange(idx, 'deskripsi', e.target.value)}
-                                        className="w-full border border-gray-200 bg-gray-50 px-2 py-1.5 font-['Oxanium'] text-xs text-gray-800 outline-none focus:border-[#3B28F6] dark:border-slate-800 dark:bg-[#020205] dark:text-gray-300 resize-none"
+                                        className={`${inputClass} resize-none`}
                                     />
                                 </div>
                             </div>
