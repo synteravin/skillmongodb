@@ -3,6 +3,7 @@
 namespace App\Actions\Mentor;
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class UpdateMentorProfileAction
@@ -13,7 +14,7 @@ class UpdateMentorProfileAction
     public function execute(User $user, array $data): User
     {
         /* ---------- HANDLES AVATAR S3 UPLOAD ---------- */
-        if (isset($data['avatar']) && $data['avatar'] instanceof \Illuminate\Http\UploadedFile) {
+        if (isset($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
             // Delete old avatar from S3 if exists
             if ($user->avatar) {
                 Storage::disk('s3')->delete($user->avatar);
@@ -39,6 +40,7 @@ class UpdateMentorProfileAction
         // Save work_experiences and educations as arrays
         $user->update([
             'name' => $data['name'],
+            'username' => $data['username'] ?? $user->username,
             'email' => $data['email'],
             'profession' => $data['profession'] ?? null,
             'linkedin' => $data['linkedin'] ?? null,
