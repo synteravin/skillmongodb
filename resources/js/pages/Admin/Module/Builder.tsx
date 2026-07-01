@@ -817,7 +817,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
 
                         <div className="flex-1 w-full relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Layers size={18} className="text-slate-450 dark:text-slate-500" />
+                                <Layers size={18} className="text-slate-400 dark:text-slate-500" />
                             </div>
                             <input
                                 value={newTitle}
@@ -874,7 +874,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                             >
                                                 <Trash2 size={16} />
                                             </button>
-                                            <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-850 text-slate-800 dark:text-white rotate-180' : 'text-slate-400 dark:text-slate-550'}`}>
+                                            <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-850 text-slate-800 dark:text-white rotate-180' : 'text-slate-400 dark:text-slate-500'}`}>
                                                 <ChevronDown size={20} />
                                             </div>
                                         </div>

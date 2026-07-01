@@ -38,6 +38,7 @@ class PathController extends Controller
             'group' => [
                 'id' => (string) $group->_id,
                 'name' => $group->name,
+                'status' => $group->status ?? 'draft',
             ],
             'paths' => $group->paths()
                 ->orderBy('order')
@@ -163,5 +164,18 @@ class PathController extends Controller
         }
 
         return back()->with('success', 'Paths reordered');
+    }
+
+    public function updateStatus(Request $request, CareerGroup $group)
+    {
+        $this->authorize('update', $group);
+
+        $data = $request->validate([
+            'status' => ['required', 'string', 'in:draft,completed'],
+        ]);
+
+        $group->update(['status' => $data['status']]);
+
+        return back()->with('success', 'Status branch berhasil diperbarui');
     }
 }

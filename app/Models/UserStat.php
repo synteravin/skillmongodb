@@ -50,6 +50,6 @@ class UserStat extends Model
 
     public function getCurrentLevelAttribute(): int
     {
-        return max((int) $this->level, floor($this->total_exp / 100) + 1);
+        return max((int) $this->level, floor($this->total_exp / 500) + 1);
     }
 }

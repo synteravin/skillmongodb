@@ -152,4 +152,17 @@ class CourseController extends Controller
 
         return back();
     }
+
+    public function publish(Request $request, Course $course)
+    {
+        $newStatus = $course->status === 'published' ? 'draft' : 'published';
+
+        $course->update([
+            'status' => $newStatus,
+            'published_at' => $newStatus === 'published' ? now() : null,
+            'published_by' => $newStatus === 'published' ? auth()->id() : null,
+        ]);
+
+        return back()->with('success', 'Status course berhasil diubah menjadi '.$newStatus);
+    }
 }

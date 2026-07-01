@@ -148,7 +148,7 @@ const SortableContent = ({
         >
 
             {/* DRAG */}
-            <div {...listeners} {...attributes} className="cursor-grab pt-1 text-slate-450 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors flex flex-col items-center justify-start touch-none">
+            <div {...listeners} {...attributes} className="cursor-grab pt-1 text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors flex flex-col items-center justify-start touch-none">
                 <GripVertical size={20} />
             </div>
 
@@ -185,7 +185,7 @@ const SortableContent = ({
                                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">YouTube URL</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                            <Youtube size={16} className="text-slate-450 dark:text-slate-550" />
+                                            <Youtube size={16} className="text-slate-400 dark:text-slate-500" />
                                         </div>
                                         <input
                                             value={localUrl}
@@ -346,7 +346,7 @@ const SortableContent = ({
                                 e.stopPropagation();
                                 deleteContent(id, moduleId);
                             }}
-                            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 text-rose-500 hover:text-rose-450 hover:bg-rose-500/10 p-2 rounded-lg"
+                            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg"
                             title="Delete Content"
                         >
                             <Trash2 size={16} />
@@ -499,11 +499,11 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
         ) : (
             <div className={`grid grid-cols-2 sm:flex sm:flex-wrap gap-2.5 w-full ${isCentered ? 'justify-center' : ''}`}>
                 {[
-                    { type: 'text', icon: Type, color: 'hover:border-blue-500/50 hover:text-blue-650 dark:hover:text-blue-450 hover:bg-blue-500/5 dark:hover:bg-blue-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
-                    { type: 'image', icon: ImageIcon, color: 'hover:border-emerald-500/50 hover:text-emerald-650 dark:hover:text-emerald-450 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
-                    { type: 'video', icon: Video, color: 'hover:border-purple-500/50 hover:text-purple-650 dark:hover:text-purple-450 hover:bg-purple-500/5 dark:hover:bg-purple-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
-                    { type: 'file', icon: FileText, color: 'hover:border-amber-500/50 hover:text-amber-650 dark:hover:text-amber-450 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
-                    { type: 'youtube', icon: Youtube, color: 'hover:border-red-500/50 hover:text-red-650 dark:hover:text-red-450 hover:bg-red-500/5 dark:hover:bg-red-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' }
+                    { type: 'text', icon: Type, color: 'hover:border-blue-500/50 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-500/5 dark:hover:bg-blue-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'image', icon: ImageIcon, color: 'hover:border-emerald-500/50 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'video', icon: Video, color: 'hover:border-purple-500/50 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-500/5 dark:hover:bg-purple-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'file', icon: FileText, color: 'hover:border-amber-500/50 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' },
+                    { type: 'youtube', icon: Youtube, color: 'hover:border-red-500/50 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/5 dark:hover:bg-red-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80' }
                 ].map(({ type, icon: Icon, color }) => (
                     <button
                         key={type}
@@ -752,7 +752,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                             </div>
 
                             <div className="flex items-center gap-2 mt-2 ml-14">
-                                <span className="text-slate-450 dark:text-slate-500 text-sm">Path:</span>
+                                <span className="text-slate-400 dark:text-slate-500 text-sm">Path:</span>
 
                                 <span className="text-slate-700 dark:text-slate-300 text-sm font-medium px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-inner">
                                     {path.name}
@@ -855,7 +855,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                                         >
                                             <Trash2 size={16} />
                                         </button>
-                                        <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-white rotate-180' : 'text-slate-450 dark:text-slate-500'}`}>
+                                        <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white rotate-180' : 'text-slate-400 dark:text-slate-500'}`}>
                                             <ChevronDown size={20} />
                                         </div>
                                     </div>

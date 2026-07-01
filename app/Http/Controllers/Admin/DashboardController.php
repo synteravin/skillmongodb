@@ -120,24 +120,49 @@ class DashboardController extends Controller
      */
     private function getCareerBranchDistribution(): array
     {
-        $userStats = UserStat::whereNotNull('selected_path_id')->get();
-        $totalStudents = $userStats->count();
+        $userStats = UserStat::all();
+        $grouped = [];
+        $totalStudents = 0;
+
+        foreach ($userStats as $stat) {
+            $counted = false;
+
+            // 1. Check active path
+            if ($stat->selected_path_id) {
+                $path = Path::find($stat->selected_path_id);
+                if ($path && $path->career_group_id) {
+                    $groupId = (string) $path->career_group_id;
+                    $grouped[$groupId] = ($grouped[$groupId] ?? 0) + 1;
+                    $counted = true;
+                }
+            }
+
+            // 2. Check completed groups
+            if (is_array($stat->completed_career_groups)) {
+                foreach ($stat->completed_career_groups as $groupId) {
+                    $groupId = (string) $groupId;
+                    // Avoid double counting if active on the same group
+                    if ($stat->selected_path_id) {
+                        $path = Path::find($stat->selected_path_id);
+                        if ($path && (string) $path->career_group_id === $groupId) {
+                            continue;
+                        }
+                    }
+                    $grouped[$groupId] = ($grouped[$groupId] ?? 0) + 1;
+                    $counted = true;
+                }
+            }
+
+            if ($counted) {
+                $totalStudents++;
+            }
+        }
 
         if ($totalStudents === 0) {
             return [];
         }
 
         $distribution = [];
-        $grouped = [];
-
-        foreach ($userStats as $stat) {
-            $path = Path::find($stat->selected_path_id);
-            if ($path && $path->career_group_id) {
-                $groupId = (string) $path->career_group_id;
-                $grouped[$groupId] = ($grouped[$groupId] ?? 0) + 1;
-            }
-        }
-
         foreach ($grouped as $groupId => $count) {
             $careerGroup = CareerGroup::find($groupId);
             $distribution[] = [

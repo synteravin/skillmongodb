@@ -15,7 +15,7 @@ class CourseService
             ->where('status', CourseStatus::ACTIVE->value)
             ->first();
 
-        return Course::latest()->get()->map(function ($course) use ($user, $activeCourse) {
+        return Course::where('status', 'published')->latest()->get()->map(function ($course) use ($user, $activeCourse) {
 
             $courseStudent = CourseStudent::where('user_id', $user->_id)
                 ->where('course_id', $course->_id)
@@ -40,6 +40,11 @@ class CourseService
 
     public function selectCourse(User $user, string $courseId)
     {
+        $course = Course::findOrFail($courseId);
+        if ($course->status !== 'published') {
+            abort(403, 'Course ini belum dipublikasikan.');
+        }
+
         $existing = CourseStudent::where('user_id', $user->_id)
             ->where('course_id', $courseId)
             ->first();

@@ -1,7 +1,19 @@
 import AppLayout from '@/layouts/app-layout';
 import { useForm, Link, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { Map, Plus, Edit, Trash2, ClipboardList, Layers, ArrowLeft, GripVertical, X, Check, AlertTriangle } from 'lucide-react';
+import {
+    Map,
+    Plus,
+    Edit,
+    Trash2,
+    ClipboardList,
+    Layers,
+    ArrowLeft,
+    GripVertical,
+    X,
+    Check,
+    AlertTriangle,
+} from 'lucide-react';
 import {
     DndContext,
     closestCenter,
@@ -9,13 +21,13 @@ import {
     useSensor,
     useSensors,
     DragEndEvent,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
     SortableContext,
     verticalListSortingStrategy,
     useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Path {
     id: string;
@@ -27,6 +39,7 @@ interface Path {
 interface Group {
     id: string;
     name: string;
+    status?: 'draft' | 'completed';
 }
 
 interface Props {
@@ -45,7 +58,14 @@ interface SortablePathCardProps {
     isFundamental?: boolean;
 }
 
-function SortablePathCard({ path, index, group, onEdit, onDelete, isFundamental = false }: SortablePathCardProps) {
+function SortablePathCard({
+    path,
+    index,
+    group,
+    onEdit,
+    onDelete,
+    isFundamental = false,
+}: SortablePathCardProps) {
     const {
         attributes,
         listeners,
@@ -65,81 +85,79 @@ function SortablePathCard({ path, index, group, onEdit, onDelete, isFundamental 
         <div
             ref={setNodeRef}
             style={style}
-            className="group relative flex flex-col p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/30 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all shadow-sm hover:shadow-md relative overflow-hidden"
+            className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:border-indigo-300 hover:bg-slate-50 hover:shadow-md sm:p-5 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:border-indigo-500/50 dark:hover:bg-slate-900/60"
         >
             {/* Left accent line */}
-            <div className={`absolute top-0 left-0 w-[3px] h-full transition-opacity ${isFundamental ? 'bg-indigo-500' : 'bg-slate-400 dark:bg-slate-500'} opacity-0 group-hover:opacity-100`}></div>
+            <div
+                className={`absolute top-0 left-0 h-full w-[3px] transition-opacity ${isFundamental ? 'bg-indigo-500' : 'bg-slate-400 dark:bg-slate-500'} opacity-0 group-hover:opacity-100`}
+            ></div>
 
             {/* Top content row */}
-            <div className="flex items-start gap-4 w-full">
+            <div className="flex w-full items-start gap-4">
                 {/* Drag Handle */}
                 <div
                     {...attributes}
                     {...listeners}
-                    className="cursor-grab p-1.5 text-slate-400 hover:text-indigo-650 dark:hover:text-indigo-400 transition-colors flex items-center justify-center shrink-0 touch-none mt-1"
+                    className="mt-1 flex shrink-0 cursor-grab touch-none items-center justify-center p-1.5 text-slate-400 transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
                     title="Tarik untuk memindahkan"
                 >
                     <GripVertical size={18} />
                 </div>
 
                 {/* Number Badge */}
-                <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-bold shrink-0 shadow-xs ${
-                    isFundamental 
-                        ? 'border-indigo-100 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-750 dark:text-indigo-300' 
-                        : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-655 dark:text-slate-350'
-                }`}>
+                <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border font-bold shadow-xs ${
+                        isFundamental
+                            ? 'border-indigo-100 bg-indigo-50 text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300'
+                            : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-400'
+                    }`}
+                >
                     {index + 1}
                 </div>
 
                 {/* Text Block */}
-                <div className="flex-1 min-w-0" style={{ display: 'block' }}>
-                    <h3 
-                        className="font-bold leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
-                        style={{ color: '#ffffff', fontSize: '16px', margin: 0, padding: 0 }}
-                    >
+                <div className="min-w-0 flex-1">
+                    <h3 className="text-slate-850 text-sm leading-snug font-bold transition-colors group-hover:text-indigo-600 sm:text-base dark:text-slate-100 dark:group-hover:text-indigo-400">
                         {path.name || 'Nama Path Tidak Tersedia'}
                     </h3>
-                    <p 
-                        className="mt-2 leading-relaxed" 
-                        style={{ color: '#94a3b8', fontSize: '13px', margin: 0, padding: 0 }}
-                    >
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                         {path.description || 'Tidak ada deskripsi.'}
                     </p>
                 </div>
             </div>
 
             {/* Bottom Actions Row */}
-            <div className="flex items-center justify-end gap-2 mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800/60 w-full">
+            <div className="mt-4 flex w-full items-center justify-end gap-2 border-t border-slate-100 pt-3.5 dark:border-slate-800/60">
                 <button
                     type="button"
                     onClick={() => onEdit(path)}
-                    className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
+                    className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                     title="Ubah Nama/Deskripsi"
                 >
-                    <Edit className="w-3.5 h-3.5" />
+                    <Edit className="h-3.5 w-3.5" />
                     <span>Ubah</span>
                 </button>
 
                 <Link
                     href={`/mentor/career-groups/${group.id}/paths/${path.id}/modules`}
-                    className={`inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold rounded-lg border transition-colors ${
-                        isFundamental 
-                            ? 'bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-750 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 hover:text-indigo-900 dark:hover:text-indigo-100 border-indigo-200 dark:border-indigo-900/60' 
-                            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-700'
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors ${
+                        isFundamental
+                            ? 'border-indigo-200 bg-indigo-50/50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-900 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60 dark:hover:text-indigo-100'
+                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
                     }`}
                     title="Edit Detail Materi / Modul"
                 >
-                    <Layers className="w-3.5 h-3.5" />
+                    <Layers className="h-3.5 w-3.5" />
                     <span>Materi</span>
                 </Link>
 
                 <button
                     type="button"
                     onClick={() => onDelete(path)}
-                    className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-rose-50 dark:hover:bg-rose-955/40 hover:text-rose-600 dark:hover:text-rose-450 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                    className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 transition-colors hover:bg-rose-50 hover:text-rose-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-rose-950/20 dark:hover:text-rose-400"
                     title="Hapus Path"
                 >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" />
                     <span>Hapus</span>
                 </button>
             </div>
@@ -147,14 +165,27 @@ function SortablePathCard({ path, index, group, onEdit, onDelete, isFundamental 
     );
 }
 
-
-
 /* ================= MAIN COMPONENT ================= */
 export default function Index({ group, paths, basic_paths = [] }: Props) {
+    const handleToggleStatus = () => {
+        const nextStatus = group.status === 'completed' ? 'draft' : 'completed';
+        router.post(
+            `/mentor/career-groups/${group.id}/status`,
+            {
+                status: nextStatus,
+            },
+            {
+                preserveScroll: true,
+            },
+        );
+    };
+
     const [basicList, setBasicList] = useState<Path[]>(basic_paths);
     const [careerList, setCareerList] = useState<Path[]>(paths);
 
-    const [createModalPhase, setCreateModalPhase] = useState<'basic_fundamental' | 'career_branch' | null>(null);
+    const [createModalPhase, setCreateModalPhase] = useState<
+        'basic_fundamental' | 'career_branch' | null
+    >(null);
     const [editingPath, setEditingPath] = useState<Path | null>(null);
     const [deletingPath, setDeletingPath] = useState<Path | null>(null);
 
@@ -169,8 +200,8 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
-            activationConstraint: { distance: 5 }
-        })
+            activationConstraint: { distance: 5 },
+        }),
     );
 
     // Creation Form
@@ -191,7 +222,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
         createForm.setData({
             name: '',
             description: '',
-            phase: phase
+            phase: phase,
         });
         setCreateModalPhase(phase);
     };
@@ -203,7 +234,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
             onSuccess: () => {
                 setCreateModalPhase(null);
                 createForm.reset();
-            }
+            },
         });
     };
 
@@ -224,7 +255,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
             onSuccess: () => {
                 setEditingPath(null);
                 editForm.reset();
-            }
+            },
         });
     };
 
@@ -235,7 +266,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
             preserveScroll: true,
             onSuccess: () => {
                 setDeletingPath(null);
-            }
+            },
         });
     };
 
@@ -253,14 +284,18 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
         newItems.splice(newIndex, 0, movedItem);
         setBasicList(newItems);
 
-        router.put('/mentor/paths/reorder', {
-            paths: newItems.map((item, i) => ({
-                id: item.id,
-                order: i + 1
-            }))
-        }, {
-            preserveScroll: true
-        });
+        router.put(
+            '/mentor/paths/reorder',
+            {
+                paths: newItems.map((item, i) => ({
+                    id: item.id,
+                    order: i + 1,
+                })),
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleCareerDragEnd = (event: DragEndEvent) => {
@@ -277,93 +312,137 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
         newItems.splice(newIndex, 0, movedItem);
         setCareerList(newItems);
 
-        router.put('/mentor/paths/reorder', {
-            paths: newItems.map((item, i) => ({
-                id: item.id,
-                order: i + 1
-            }))
-        }, {
-            preserveScroll: true
-        });
+        router.put(
+            '/mentor/paths/reorder',
+            {
+                paths: newItems.map((item, i) => ({
+                    id: item.id,
+                    order: i + 1,
+                })),
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     return (
         <AppLayout>
-            <div className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
-
+            <div
+                className="mx-auto w-full space-y-8 p-4 sm:p-6 lg:p-8"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+            >
                 {/* Header Section */}
-                <div className="flex items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+                <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-5 dark:border-slate-800">
                     <div className="flex items-center gap-4">
                         <Link
                             href={`/mentor/dashboard`}
-                            className="p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors shadow-sm"
+                            className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
-                            <ArrowLeft className="w-5 h-5" />
+                            <ArrowLeft className="h-5 w-5" />
                         </Link>
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight text-slate-800 dark:text-white">
                                 Atur Learning Paths
                             </h1>
-                            <p className="text-sm text-slate-550 dark:text-slate-400 mt-1">
-                                Branch Karir: <span className="font-semibold text-indigo-600 dark:text-indigo-400">{group.name}</span>
+                            <p className="mt-1 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                                Branch Karir:{' '}
+                                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+                                    {group.name}
+                                </span>
+                                {group.status === 'completed' ? (
+                                    <span className="inline-flex items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+                                        <Check className="h-3 w-3" />
+                                        Selesai
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1 rounded border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
+                                        <AlertTriangle className="h-3 w-3 animate-pulse" />
+                                        Dalam Penginputan
+                                    </span>
+                                )}
                             </p>
                         </div>
                     </div>
 
-                    <Link
-                        href={`/mentor/career-groups/${group.id}/submissions`}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-sm transition-all font-semibold text-sm active:scale-95"
-                    >
-                        <ClipboardList className="w-4 h-4" />
-                        <span>Kelola Submisi Siswa</span>
-                    </Link>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleToggleStatus}
+                            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold shadow-sm transition-all active:scale-95 ${
+                                group.status === 'completed'
+                                    ? 'bg-amber-600 text-white shadow-amber-500/15 hover:bg-amber-700'
+                                    : 'bg-emerald-600 text-white shadow-emerald-500/15 hover:bg-emerald-700'
+                            }`}
+                        >
+                            {group.status === 'completed' ? (
+                                <>
+                                    <X className="h-4 w-4" />
+                                    <span>Kembalikan ke Draft</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Check className="h-4 w-4" />
+                                    <span>Tandai Selesai Input</span>
+                                </>
+                            )}
+                        </button>
+
+                        <Link
+                            href={`/mentor/career-groups/${group.id}/submissions`}
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:text-slate-900 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
+                        >
+                            <ClipboardList className="h-4 w-4" />
+                            <span>Kelola Submission Siswa</span>
+                        </Link>
+                    </div>
                 </div>
 
                 {/* TWO-COLUMN GRID */}
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-
+                <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12">
                     {/* ================= LEFT COLUMN: Basic Fundamentals ================= */}
                     <div className="lg:col-span-6">
-                        <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col font-outfit min-h-[400px]">
+                        <div className="font-outfit relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             {/* Card Header */}
-                            <div className="relative z-10 p-6 border-b border-slate-200 dark:border-slate-800/60 flex items-center justify-between gap-4">
+                            <div className="relative z-10 flex items-center justify-between gap-4 border-b border-slate-200 p-6 dark:border-slate-800/60">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/40">
-                                        <Layers className="w-5.5 h-5.5" />
+                                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-2.5 text-indigo-600 dark:border-indigo-800/40 dark:bg-indigo-950/60 dark:text-indigo-400">
+                                        <Layers className="h-5.5 w-5.5" />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                            Basic Fundamentals (Open Source)
-                                            <span className="inline-flex items-center justify-center bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800">
-                                                {basicList.length}
-                                            </span>
+                                        <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-white">
+                                            Basic Fundamentals
                                         </h2>
-                                        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
-                                            Materi dasar bersama yang diedit kolaboratif oleh seluruh mentor.
+                                        <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+                                            Materi dasar bersama yang diedit
+                                            kolaboratif oleh seluruh mentor.
                                         </p>
                                     </div>
                                 </div>
 
                                 <button
                                     type="button"
-                                    onClick={() => openCreateModal('basic_fundamental')}
-                                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-550 text-white rounded-lg transition-all shadow-md shadow-indigo-500/10 cursor-pointer active:scale-95"
+                                    onClick={() =>
+                                        openCreateModal('basic_fundamental')
+                                    }
+                                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white shadow-md shadow-indigo-500/10 transition-all hover:bg-indigo-700 active:scale-95"
                                 >
-                                    <Plus className="w-3.5 h-3.5" />
+                                    <Plus className="h-3.5 w-3.5" />
                                     <span>Tambah Path</span>
                                 </button>
                             </div>
 
                             {/* Paths List */}
-                            <div className="relative z-10 p-6 flex-1 flex flex-col min-h-0">
+                            <div className="relative z-10 flex min-h-0 flex-1 flex-col p-6">
                                 {basicList.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center flex-1 min-h-[250px] text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-800/20 p-6">
-                                        <Layers className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-3" />
-                                        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs">
-                                            Tidak ada materi Basic Fundamental yang tersedia. Silakan klik Tambah Path untuk membuatnya.
+                                    <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20">
+                                        <Layers className="mb-3 h-12 w-12 text-slate-300 dark:text-slate-700" />
+                                        <p className="max-w-xs text-sm text-slate-500 dark:text-slate-400">
+                                            Tidak ada materi Basic Fundamental
+                                            yang tersedia. Silakan klik Tambah
+                                            Path untuk membuatnya.
                                         </p>
                                     </div>
                                 ) : (
@@ -374,7 +453,9 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                                     >
                                         <SortableContext
                                             items={basicList.map((p) => p.id)}
-                                            strategy={verticalListSortingStrategy}
+                                            strategy={
+                                                verticalListSortingStrategy
+                                            }
                                         >
                                             <div className="space-y-4">
                                                 {basicList.map((path, idx) => (
@@ -385,7 +466,9 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                                                         group={group}
                                                         isFundamental={true}
                                                         onEdit={openEditModal}
-                                                        onDelete={setDeletingPath}
+                                                        onDelete={
+                                                            setDeletingPath
+                                                        }
                                                     />
                                                 ))}
                                             </div>
@@ -398,46 +481,48 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
                     {/* ================= RIGHT COLUMN: Learning Progression ================= */}
                     <div className="lg:col-span-6">
-                        <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col font-outfit min-h-[400px]">
+                        <div className="font-outfit relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             {/* Card Header */}
-                            <div className="relative z-10 p-6 border-b border-slate-200 dark:border-slate-800/60 flex items-center justify-between gap-4">
+                            <div className="relative z-10 flex items-center justify-between gap-4 border-b border-slate-200 p-6 dark:border-slate-800/60">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                                        <Map className="w-5.5 h-5.5" />
+                                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-600 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-400">
+                                        <Map className="h-5.5 w-5.5" />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                            Progression (Career Branch)
-                                            <span className="inline-flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-655 dark:text-slate-300 text-xs font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
-                                                {careerList.length}
-                                            </span>
+                                        <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-white">
+                                            Career Branch
                                         </h2>
-                                        <p className="text-[11px] text-slate-450 dark:text-slate-500 mt-1">
-                                            Kurikulum berjenjang spesifik untuk branch karir ini.
+                                        <p className="text-slate-450 mt-1 text-[11px] dark:text-slate-500">
+                                            Kurikulum berjenjang spesifik untuk
+                                            branch karir ini.
                                         </p>
                                     </div>
                                 </div>
 
                                 <button
                                     type="button"
-                                    onClick={() => openCreateModal('career_branch')}
-                                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-sm rounded-lg transition-all cursor-pointer active:scale-95"
+                                    onClick={() =>
+                                        openCreateModal('career_branch')
+                                    }
+                                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:text-slate-900 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                                 >
-                                    <Plus className="w-3.5 h-3.5" />
+                                    <Plus className="h-3.5 w-3.5" />
                                     <span>Tambah Path</span>
                                 </button>
                             </div>
 
                             {/* Paths List */}
-                            <div className="relative z-10 p-6 flex-1 flex flex-col min-h-0">
+                            <div className="relative z-10 flex min-h-0 flex-1 flex-col p-6">
                                 {careerList.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center flex-1 min-h-[250px] text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-800/20 p-6">
-                                        <Map className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-3" />
-                                        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs">
-                                            Belum ada learning path untuk branch karir ini. Silakan klik Tambah Path untuk membuatnya.
+                                    <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20">
+                                        <Map className="mb-3 h-12 w-12 text-slate-300 dark:text-slate-700" />
+                                        <p className="max-w-xs text-sm text-slate-500 dark:text-slate-400">
+                                            Belum ada learning path untuk branch
+                                            karir ini. Silakan klik Tambah Path
+                                            untuk membuatnya.
                                         </p>
                                     </div>
                                 ) : (
@@ -448,7 +533,9 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                                     >
                                         <SortableContext
                                             items={careerList.map((p) => p.id)}
-                                            strategy={verticalListSortingStrategy}
+                                            strategy={
+                                                verticalListSortingStrategy
+                                            }
                                         >
                                             <div className="space-y-4">
                                                 {careerList.map((path, idx) => (
@@ -459,7 +546,9 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                                                         group={group}
                                                         isFundamental={false}
                                                         onEdit={openEditModal}
-                                                        onDelete={setDeletingPath}
+                                                        onDelete={
+                                                            setDeletingPath
+                                                        }
                                                     />
                                                 ))}
                                             </div>
@@ -473,76 +562,95 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
                 {/* ================= MODAL: CREATE PATH ================= */}
                 {createModalPhase && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300">
-                        <div className="relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                            
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity duration-300">
+                        <div className="relative w-full max-w-md animate-in rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 zoom-in-95 fade-in dark:border-slate-800 dark:bg-slate-950">
                             {/* Close button */}
                             <button
                                 type="button"
                                 onClick={() => setCreateModalPhase(null)}
-                                className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
+                                className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-900 dark:hover:text-slate-200"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="h-5 w-5" />
                             </button>
 
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className={`p-2.5 rounded-xl border ${createModalPhase === 'basic_fundamental' ? 'bg-indigo-50 border-indigo-200 text-indigo-600 dark:bg-indigo-950/60 dark:border-indigo-900 dark:text-indigo-400' : 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400'}`}>
-                                    <Plus className="w-5 h-5" />
+                            <div className="mb-5 flex items-center gap-3">
+                                <div
+                                    className={`rounded-xl border p-2.5 ${createModalPhase === 'basic_fundamental' ? 'border-indigo-200 bg-indigo-50 text-indigo-600 dark:border-indigo-900 dark:bg-indigo-950/60 dark:text-indigo-400' : 'border-slate-200 bg-slate-100 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'}`}
+                                >
+                                    <Plus className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 dark:text-white">
                                         Tambah Path Baru
                                     </h3>
-                                    <p className="text-xs text-slate-550 dark:text-slate-400 mt-0.5">
-                                        {createModalPhase === 'basic_fundamental' 
-                                            ? 'Membuat materi Basic Fundamental (Course Utama)' 
+                                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                                        {createModalPhase ===
+                                        'basic_fundamental'
+                                            ? 'Membuat materi Basic Fundamental (Course Utama)'
                                             : 'Membuat materi Progression (Career Branch)'}
                                     </p>
                                 </div>
                             </div>
 
-                            <form onSubmit={handleCreatePath} className="space-y-4">
+                            <form
+                                onSubmit={handleCreatePath}
+                                className="space-y-4"
+                            >
                                 <div>
-                                    <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                                    <label className="mb-2 ml-1 block text-[11px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Nama Path
                                     </label>
                                     <input
                                         type="text"
                                         required
                                         value={createForm.data.name}
-                                        onChange={(e) => createForm.setData('name', e.target.value)}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'name',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="Contoh: Pengenalan HTML & CSS"
-                                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm"
+                                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition-all focus:border-transparent focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                                    <label className="mb-2 ml-1 block text-[11px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Deskripsi Singkat
                                     </label>
                                     <textarea
                                         rows={3}
                                         value={createForm.data.description}
-                                        onChange={(e) => createForm.setData('description', e.target.value)}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'description',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="Jelaskan secara ringkas materi yang akan dipelajari..."
-                                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm resize-none"
+                                        className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition-all focus:border-transparent focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100"
                                     />
                                 </div>
 
-                                <div className="flex items-center gap-3 pt-3 border-t border-slate-150 dark:border-slate-800">
+                                <div className="border-slate-150 flex items-center gap-3 border-t pt-3 dark:border-slate-800">
                                     <button
                                         type="button"
-                                        onClick={() => setCreateModalPhase(null)}
-                                        className="flex-1 px-4 py-2.5 text-sm font-semibold border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-xl transition-colors cursor-pointer"
+                                        onClick={() =>
+                                            setCreateModalPhase(null)
+                                        }
+                                        className="flex-1 cursor-pointer rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-900"
                                     >
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={createForm.processing}
-                                        className="flex-1 px-4 py-2.5 text-sm font-semibold bg-indigo-650 hover:bg-indigo-600 text-white rounded-xl transition-all shadow-md shadow-indigo-500/20 disabled:opacity-50 cursor-pointer"
+                                        className="flex-1 cursor-pointer rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-700 disabled:opacity-50"
                                     >
-                                        {createForm.processing ? 'Menyimpan...' : 'Simpan Path'}
+                                        {createForm.processing
+                                            ? 'Menyimpan...'
+                                            : 'Simpan Path'}
                                     </button>
                                 </div>
                             </form>
@@ -552,74 +660,89 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
                 {/* ================= MODAL: EDIT PATH ================= */}
                 {editingPath && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300">
-                        <div className="relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                            
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity duration-300">
+                        <div className="relative w-full max-w-md animate-in rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 zoom-in-95 fade-in dark:border-slate-800 dark:bg-slate-950">
                             {/* Close button */}
                             <button
                                 type="button"
                                 onClick={() => setEditingPath(null)}
-                                className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
+                                className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-900 dark:hover:text-slate-200"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="h-5 w-5" />
                             </button>
 
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400">
-                                    <Edit className="w-5 h-5" />
+                            <div className="mb-5 flex items-center gap-3">
+                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+                                    <Edit className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 dark:text-white">
                                         Ubah Informasi Path
                                     </h3>
-                                    <p className="text-xs text-slate-550 dark:text-slate-400 mt-0.5">
-                                        Perbarui nama dan deskripsi untuk path terpilih.
+                                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                                        Perbarui nama dan deskripsi untuk path
+                                        terpilih.
                                     </p>
                                 </div>
                             </div>
 
-                            <form onSubmit={handleEditPath} className="space-y-4">
+                            <form
+                                onSubmit={handleEditPath}
+                                className="space-y-4"
+                            >
                                 <div>
-                                    <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                                    <label className="mb-2 ml-1 block text-[11px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Nama Path
                                     </label>
                                     <input
                                         type="text"
                                         required
                                         value={editForm.data.name}
-                                        onChange={(e) => editForm.setData('name', e.target.value)}
+                                        onChange={(e) =>
+                                            editForm.setData(
+                                                'name',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="Masukkan nama path..."
-                                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-550 focus:border-transparent transition-all shadow-sm"
+                                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition-all focus:border-transparent focus:ring-2 focus:ring-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-indigo-500"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
+                                    <label className="mb-2 ml-1 block text-[11px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Deskripsi Singkat
                                     </label>
                                     <textarea
                                         rows={3}
                                         value={editForm.data.description}
-                                        onChange={(e) => editForm.setData('description', e.target.value)}
+                                        onChange={(e) =>
+                                            editForm.setData(
+                                                'description',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="Jelaskan secara ringkas materi yang akan dipelajari..."
-                                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-550 focus:border-transparent transition-all shadow-sm resize-none"
+                                        className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition-all focus:border-transparent focus:ring-2 focus:ring-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-indigo-500"
                                     />
                                 </div>
 
-                                <div className="flex items-center gap-3 pt-3 border-t border-slate-150 dark:border-slate-850">
+                                <div className="border-slate-150 dark:border-slate-850 flex items-center gap-3 border-t pt-3">
                                     <button
                                         type="button"
                                         onClick={() => setEditingPath(null)}
-                                        className="flex-1 px-4 py-2.5 text-sm font-semibold border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-xl transition-colors cursor-pointer"
+                                        className="flex-1 cursor-pointer rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-900"
                                     >
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={editForm.processing}
-                                        className="flex-1 px-4 py-2.5 text-sm font-semibold bg-indigo-650 hover:bg-indigo-600 text-white rounded-xl transition-all shadow-md shadow-indigo-500/20 disabled:opacity-50 cursor-pointer"
+                                        className="flex-1 cursor-pointer rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-700 disabled:opacity-50"
                                     >
-                                        {editForm.processing ? 'Menyimpan...' : 'Simpan Perubahan'}
+                                        {editForm.processing
+                                            ? 'Menyimpan...'
+                                            : 'Simpan Perubahan'}
                                     </button>
                                 </div>
                             </form>
@@ -629,35 +752,39 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
                 {/* ================= MODAL: DELETE CONFIRM ================= */}
                 {deletingPath && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300">
-                        <div className="relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                            
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity duration-300">
+                        <div className="relative w-full max-w-md animate-in rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 zoom-in-95 fade-in dark:border-slate-800 dark:bg-slate-950">
                             <div className="flex flex-col items-center text-center">
-                                <div className="p-3.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-500 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 mb-4 animate-bounce">
-                                    <AlertTriangle className="w-8 h-8" />
+                                <div className="mb-4 animate-bounce rounded-full border border-rose-100 bg-rose-50 p-3.5 text-rose-500 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-400">
+                                    <AlertTriangle className="h-8 w-8" />
                                 </div>
-                                
+
                                 <h3 className="text-lg font-bold text-slate-800 dark:text-white">
                                     Hapus Path Pembelajaran?
                                 </h3>
-                                
-                                <p className="text-sm text-slate-550 dark:text-slate-400 mt-2 max-w-xs">
-                                    Apakah Anda yakin ingin menghapus path <span className="font-bold text-slate-800 dark:text-white">"{deletingPath.name}"</span>? Semua modul, konten materi, dan kuis di dalamnya akan dihapus permanen.
+
+                                <p className="mt-2 max-w-xs text-sm text-slate-500 dark:text-slate-400">
+                                    Apakah Anda yakin ingin menghapus path{' '}
+                                    <span className="font-bold text-slate-800 dark:text-white">
+                                        "{deletingPath.name}"
+                                    </span>
+                                    ? Semua modul, konten materi, dan kuis di
+                                    dalamnya akan dihapus permanen.
                                 </p>
                             </div>
 
-                            <div className="flex items-center gap-3 mt-6 pt-4 border-t border-slate-150 dark:border-slate-850">
+                            <div className="border-slate-150 dark:border-slate-850 mt-6 flex items-center gap-3 border-t pt-4">
                                 <button
                                     type="button"
                                     onClick={() => setDeletingPath(null)}
-                                    className="flex-1 px-4 py-2.5 text-sm font-semibold border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-xl transition-colors cursor-pointer"
+                                    className="flex-1 cursor-pointer rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-900"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleDeletePath}
-                                    className="flex-1 px-4 py-2.5 text-sm font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition-all shadow-md shadow-rose-500/20 cursor-pointer"
+                                    className="flex-1 cursor-pointer rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-rose-500/20 transition-all hover:bg-rose-500"
                                 >
                                     Ya, Hapus
                                 </button>
@@ -665,7 +792,6 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                         </div>
                     </div>
                 )}
-
             </div>
         </AppLayout>
     );

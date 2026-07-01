@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Course extends Model
@@ -32,6 +34,10 @@ class Course extends Model
         'published_at' => 'datetime',
     ];
 
+    protected $attributes = [
+        'status' => 'draft',
+    ];
+
     protected $appends = ['thumbnail_url'];
 
     public function getThumbnailUrlAttribute()
@@ -41,8 +47,8 @@ class Course extends Model
                 return $this->thumbnail;
             }
 
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+            /** @var FilesystemAdapter $disk */
+            $disk = Storage::disk('s3');
 
             return $disk->url($this->thumbnail);
         }
