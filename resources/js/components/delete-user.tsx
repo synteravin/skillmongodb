@@ -1,7 +1,6 @@
 import { Form } from '@inertiajs/react';
 import { useRef } from 'react';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,32 +14,42 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Trash2 } from 'lucide-react';
 
 export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="space-y-6">
-            <Heading
-                variant="small"
-                title="Delete account"
-                description="Delete your account and all of its resources"
-            />
-            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-                <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
-                    <p className="font-medium">Warning</p>
-                    <p className="text-sm">
-                        Please proceed with caution, this cannot be undone.
+        <div className="relative overflow-hidden rounded-xl border border-red-200/50 bg-white/50 p-6 shadow-sm dark:border-red-950/30 dark:bg-gradient-to-b dark:from-[#0e0e1a]/40 dark:to-[#090910]/20">
+            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-red-200/40 to-transparent dark:via-red-950/40" />
+
+            <div className="mb-6 flex items-center gap-4 border-b border-red-50/50 pb-5 dark:border-red-950/20">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-red-500 bg-red-500/10 text-red-500 shadow-xs dark:bg-red-500/20">
+                    <Trash2 className="h-5.5 w-5.5" />
+                </div>
+                <div>
+                    <h2 className="text-base font-semibold text-slate-800 dark:text-white">
+                        Delete Account
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400/60">
+                        Permanently delete your account and all associated resources.
                     </p>
                 </div>
+            </div>
+
+            <div className="space-y-4">
+                <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400/70">
+                    Once your account is deleted, all of its resources and data will be permanently lost. This action is irreversible.
+                </p>
 
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button
                             variant="destructive"
                             data-test="delete-user-button"
+                            className="cursor-pointer font-semibold shadow-xs"
                         >
-                            Delete account
+                            Delete Account
                         </Button>
                     </DialogTrigger>
                     <DialogContent>

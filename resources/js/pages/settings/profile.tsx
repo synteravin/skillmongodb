@@ -36,105 +36,108 @@ export default function Profile({
             <h1 className="sr-only">Profile Settings</h1>
 
             <SettingsLayout>
-                <div className="space-y-6">
-                    <Heading
-                        variant="small"
-                        title="Profile information"
-                        description="Update your name and email address"
-                    />
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white/50 p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/40 dark:to-[#090910]/20">
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                    
+                    <div className="mb-6 flex items-center gap-4 border-b border-slate-100 pb-5 dark:border-slate-800/60">
+                        {/* User Initial Circle */}
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-indigo-500 bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xs">
+                            <span className="text-base font-bold uppercase">
+                                {auth.user.name.charAt(0)}
+                            </span>
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold text-slate-800 dark:text-white">
+                                Profile Information
+                            </h2>
+                            <p className="text-xs text-slate-500 dark:text-slate-400/60">
+                                Update your personal details and account email address.
+                            </p>
+                        </div>
+                    </div>
 
                     <Form
                         {...ProfileController.update.form()}
                         options={{
                             preserveScroll: true,
                         }}
-                        className="space-y-6"
+                        className="space-y-5"
                     >
                         {({ processing, recentlySuccessful, errors }) => (
                             <>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
-
+                                    <Label htmlFor="name" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Name</Label>
                                     <Input
                                         id="name"
-                                        className="mt-1 block w-full"
+                                        className="mt-1 block w-full border-slate-200 bg-white/60 dark:border-slate-800 dark:bg-slate-900/60"
                                         defaultValue={auth.user.name}
                                         name="name"
                                         required
                                         autoComplete="name"
                                         placeholder="Full name"
                                     />
-
                                     <InputError
-                                        className="mt-2"
+                                        className="mt-1"
                                         message={errors.name}
                                     />
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
-
+                                    <Label htmlFor="email" className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Email address</Label>
                                     <Input
                                         id="email"
                                         type="email"
-                                        className="mt-1 block w-full"
+                                        className="mt-1 block w-full border-slate-200 bg-white/60 dark:border-slate-800 dark:bg-slate-900/60"
                                         defaultValue={auth.user.email}
                                         name="email"
                                         required
                                         autoComplete="username"
                                         placeholder="Email address"
                                     />
-
                                     <InputError
-                                        className="mt-2"
+                                        className="mt-1"
                                         message={errors.email}
                                     />
                                 </div>
 
-                                {mustVerifyEmail &&
-                                    auth.user.email_verified_at === null && (
-                                        <div>
-                                            <p className="-mt-4 text-sm text-muted-foreground">
-                                                Your email address is
-                                                unverified.{' '}
-                                                <Link
-                                                    href={send()}
-                                                    as="button"
-                                                    className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                                >
-                                                    Click here to resend the
-                                                    verification email.
-                                                </Link>
-                                            </p>
+                                {mustVerifyEmail && auth.user.email_verified_at === null && (
+                                    <div className="rounded-lg border border-amber-500/25 bg-amber-500/5 p-3.5 text-xs text-amber-700 dark:text-amber-450">
+                                        <p className="leading-relaxed">
+                                            Your email address is unverified.{' '}
+                                            <Link
+                                                href={send()}
+                                                as="button"
+                                                className="font-bold underline decoration-amber-500/40 hover:decoration-amber-500 underline-offset-4 transition-colors"
+                                            >
+                                                Click here to resend the verification email.
+                                            </Link>
+                                        </p>
+                                        {status === 'verification-link-sent' && (
+                                            <div className="mt-2 font-bold text-green-600 dark:text-green-400">
+                                                A new verification link has been sent to your email address.
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
-                                            {status ===
-                                                'verification-link-sent' && (
-                                                <div className="mt-2 text-sm font-medium text-green-600">
-                                                    A new verification link has
-                                                    been sent to your email
-                                                    address.
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4 pt-2">
                                     <Button
                                         disabled={processing}
                                         data-test="update-profile-button"
+                                        className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-xs"
                                     >
-                                        Save
+                                        {processing ? 'Saving...' : 'Save Changes'}
                                     </Button>
 
                                     <Transition
                                         show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
+                                        enter="transition ease-in-out duration-300"
+                                        enterFrom="opacity-0 translate-x-1"
+                                        leave="transition ease-in-out duration-300"
+                                        leaveTo="opacity-0 -translate-x-1"
                                     >
-                                        <p className="text-sm text-neutral-600">
-                                            Saved
+                                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-450">
+                                            Saved Successfully
                                         </p>
                                     </Transition>
                                 </div>
