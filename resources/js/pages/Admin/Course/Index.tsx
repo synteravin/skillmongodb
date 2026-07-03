@@ -184,144 +184,65 @@ export default function Index({ courses }: { courses: Course[] }) {
 
                     {/* GRID */}
                     {courses.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {courses.map((course) => (
-                                <div
-                                    key={course._id}
-                                    className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[#3B28F6]/50 hover:shadow-md dark:border-white/8 dark:bg-[#060B1A]/80 dark:hover:border-[#7C5CFF]/50 dark:hover:shadow-lg dark:hover:shadow-[#7C5CFF]/5"
-                                >
-                                    <Link
-                                        href={`/admin/courses/${course.slug}`}
-                                        className="relative block h-48 overflow-hidden bg-slate-100 sm:h-52 dark:bg-white/5"
-                                    >
-                                        {/* Status Badge */}
-                                        <div className="absolute top-3 left-3 z-10">
-                                            {course.status === 'published' ? (
-                                                <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase shadow-sm backdrop-blur-md">
-                                                    <Globe
-                                                        size={10}
-                                                        className="shrink-0"
-                                                    />
-                                                    Published
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-amber-600 dark:text-amber-400 uppercase shadow-sm backdrop-blur-md">
-                                                    <FileText
-                                                        size={10}
-                                                        className="shrink-0"
-                                                    />
-                                                    Draft
-                                                </span>
-                                            )}
-                                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {courses.map((course) => (
+                            <div 
+                                key={course._id} 
+                                className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]  transition-colors duration-200 hover:border-[#3B28F6]/40 dark:hover:border-[#7C5CFF]/40"
+                            >
+                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#3B28F6]/40 dark:via-[#7C5CFF]/40 to-transparent" />
 
-                                        {course.thumbnail_url ||
-                                        course.thumbnail ? (
-                                            <img
-                                                src={
-                                                    course.thumbnail_url ||
-                                                    (course.thumbnail?.startsWith(
-                                                        'http',
-                                                    )
-                                                        ? course.thumbnail
-                                                        : `/storage/${course.thumbnail}`)
-                                                }
-                                                alt={course.title}
-                                                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                            />
-                                        ) : (
-                                            <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-                                                <ImageIcon
-                                                    size={32}
-                                                    className="mb-2 opacity-40"
-                                                />
-                                                <span className="text-xs font-semibold tracking-wider uppercase">
-                                                    No Cover Image
-                                                </span>
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent dark:from-[#030712]" />
+                                <Link href={`/admin/courses/${course.slug}`} className="relative h-48 sm:h-52 overflow-hidden bg-slate-100 dark:bg-white/5 block">
+                                    {course.thumbnail_url || course.thumbnail ? (
+                                        <img src={course.thumbnail_url || (course.thumbnail?.startsWith('http') ? course.thumbnail : `/storage/${course.thumbnail}`)} alt={course.title} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+                                            <ImageIcon size={32} className="mb-2 opacity-40" />
+                                            <span className="text-xs font-medium">No Cover Image</span>
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 dark:from-[#030712] via-transparent to-transparent" />
+                                </Link>
+
+                                <div className="flex flex-col flex-1 p-5">
+                                    <Link href={`/admin/courses/${course.slug}`} className="block mb-2 group-hover:text-[#3B28F6] dark:group-hover:text-[#7C5CFF] transition-colors">
+                                        <h2 className="text-base font-semibold text-slate-800 dark:text-white line-clamp-1 leading-snug" title={course.title}>{course.title}</h2>
                                     </Link>
 
-                                    <div className="flex flex-1 flex-col p-5">
+                                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-6 flex-1 leading-relaxed">
+                                        {course.description || "No description provided."}
+                                    </p>
+
+                                    <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
                                         <Link
                                             href={`/admin/courses/${course.slug}`}
-                                            className="mb-2 block transition-colors group-hover:text-[#3B28F6] dark:group-hover:text-[#7C5CFF]"
+                                            className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#3B28F6] dark:text-[#7C5CFF] hover:text-[#2A1CE0] dark:hover:text-[#8B5CF6] transition-colors"
                                         >
-                                            <h2
-                                                className="line-clamp-1 text-base leading-snug font-bold text-slate-800 dark:text-white"
-                                                title={course.title}
-                                            >
-                                                {course.title}
-                                            </h2>
+                                            Open Builder
+                                            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                                         </Link>
 
-                                        <p className="mb-6 line-clamp-2 flex-1 text-xs leading-relaxed text-slate-500 sm:text-sm dark:text-slate-400">
-                                            {course.description ||
-                                                'No description provided.'}
-                                        </p>
-
-                                        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4 dark:border-white/5">
-                                            <Link
-                                                href={`/admin/courses/${course.slug}`}
-                                                className="flex items-center gap-1.5 text-xs font-semibold text-[#3B28F6] transition-colors hover:text-[#2A1CE0] sm:text-sm dark:text-[#7C5CFF] dark:hover:text-[#8B5CF6]"
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                onClick={() => openEdit(course)}
+                                                className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                                                title="Edit Details"
                                             >
-                                                Details
-                                            </Link>
-
-                                            <div className="flex items-center gap-1">
-                                                <button
-                                                    onClick={() =>
-                                                        handleTogglePublish(
-                                                            course,
-                                                        )
-                                                    }
-                                                    className={`cursor-pointer rounded-lg p-2 transition-colors ${
-                                                        course.status ===
-                                                        'published'
-                                                            ? 'text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-500/10'
-                                                            : 'text-amber-500 hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-amber-500/10'
-                                                    }`}
-                                                    title={
-                                                        course.status ===
-                                                        'published'
-                                                            ? 'Revert to Draft'
-                                                            : 'Publish Course'
-                                                    }
-                                                >
-                                                    {course.status ===
-                                                    'published' ? (
-                                                        <FileText size={15} />
-                                                    ) : (
-                                                        <Globe size={15} />
-                                                    )}
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        openEdit(course)
-                                                    }
-                                                    className="dark:text-slate-555 cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/5 dark:hover:text-white"
-                                                    title="Edit Details"
-                                                >
-                                                    <Pencil size={15} />
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        deleteCourse(
-                                                            course.slug,
-                                                        )
-                                                    }
-                                                    className="hover:text-red-650 dark:text-slate-555 cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10 dark:hover:text-red-400"
-                                                    title="Delete Course"
-                                                >
-                                                    <Trash2 size={15} />
-                                                </button>
-                                            </div>
+                                                <Pencil size={15} />
+                                            </button>
+                                            <button
+                                                onClick={() => deleteCourse(course.slug)}
+                                                className="p-2 rounded-lg text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                                                title="Delete Course"
+                                            >
+                                                <Trash2 size={15} />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
+                    </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white py-24 shadow-sm dark:border-white/8 dark:bg-[#060B1A]/60">
                             <div className="dark:text-slate-400 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-slate-400 shadow-inner dark:bg-white/5">
