@@ -4,6 +4,7 @@ import ProfileFormBasic from '@/components/Mentor/ProfileFormBasic';
 import ProfileFormWorkExperience from '@/components/Mentor/ProfileFormWorkExperience';
 import ProfileFormEducation from '@/components/Mentor/ProfileFormEducation';
 import { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 // Helper to normalize strings
 const normalizeString = (val: any): string => {
@@ -859,9 +860,10 @@ export default function Show({ user, details }: { user: any; details: any }) {
                     <div>
                         <Link
                             href="/admin/users"
-                            className="dark:text-slate-450 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#3B28F6] dark:hover:text-[#8B82FF]"
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                             style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
+                            <ArrowLeft className="h-4 w-4" />
                             Back to Users
                         </Link>
                     </div>
