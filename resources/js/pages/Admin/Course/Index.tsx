@@ -11,6 +11,7 @@ import {
     AlertCircle,
     Globe,
     FileText,
+    Search,
 } from 'lucide-react';
 import { useState, useRef } from 'react';
 import Modal from '@/components/ui/Modal';
@@ -36,6 +37,22 @@ export default function Index({ courses }: { courses: Course[] }) {
     const [confirmDeleteSlug, setConfirmDeleteSlug] = useState<string | null>(
         null,
     );
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState<
+        'all' | 'published' | 'draft'
+    >('all');
+
+    const filteredCourses = courses.filter((course) => {
+        const matchesSearch =
+            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (course.description &&
+                course.description
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()));
+        const matchesStatus =
+            statusFilter === 'all' || course.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { data, setData, post, processing, errors, reset, clearErrors } =
@@ -182,70 +199,207 @@ export default function Index({ courses }: { courses: Course[] }) {
                         </div>
                     </div>
 
+                    {/* FILTERS & SEARCH */}
+                    <div className="flex flex-col gap-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm transition-all duration-200 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-[#0d0f17]">
+                        {/* Tab Filters */}
+                        <div className="scrollbar-none flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+                            {(['all', 'published', 'draft'] as const).map(
+                                (status) => (
+                                    <button
+                                        key={status}
+                                        onClick={() => setStatusFilter(status)}
+                                        className={`cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap capitalize transition-all duration-200 ${
+                                            statusFilter === status
+                                                ? 'bg-[#3B28F6] text-white shadow-sm dark:bg-[#3B28F6]'
+                                                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'
+                                        }`}
+                                    >
+                                        {status === 'all'
+                                            ? 'All Courses'
+                                            : status}
+                                    </button>
+                                ),
+                            )}
+                        </div>
+
+                        {/* Search Input */}
+                        <div className="relative w-full sm:w-80">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search courses..."
+                                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-10 pl-4 text-sm text-slate-900 transition-all outline-none placeholder:text-slate-400 focus:border-[#3B28F6] focus:bg-white dark:border-white/10 dark:bg-white/[0.03] dark:text-white dark:focus:border-[#3B28F6] dark:focus:bg-white/[0.05]"
+                            />
+                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 dark:text-slate-500">
+                                <Search size={16} />
+                            </span>
+                        </div>
+                    </div>
+
                     {/* GRID */}
                     {courses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {courses.map((course) => (
-                            <div 
-                                key={course._id} 
-                                className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]  transition-colors duration-200 hover:border-[#3B28F6]/40 dark:hover:border-[#7C5CFF]/40"
-                            >
-                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#3B28F6]/40 dark:via-[#7C5CFF]/40 to-transparent" />
+                        filteredCourses.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {filteredCourses.map((course) => (
+                                    <div
+                                        key={course._id}
+                                        className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:border-[#3B28F6]/40 hover:shadow-md dark:border-slate-800 dark:bg-[#0d0f17] dark:hover:border-[#3B28F6]/45 dark:hover:shadow-indigo-500/5"
+                                    >
+                                        <div className="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-[#3B28F6]/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                                <Link href={`/admin/courses/${course.slug}`} className="relative h-48 sm:h-52 overflow-hidden bg-slate-100 dark:bg-white/5 block">
-                                    {course.thumbnail_url || course.thumbnail ? (
-                                        <img src={course.thumbnail_url || (course.thumbnail?.startsWith('http') ? course.thumbnail : `/storage/${course.thumbnail}`)} alt={course.title} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-                                            <ImageIcon size={32} className="mb-2 opacity-40" />
-                                            <span className="text-xs font-medium">No Cover Image</span>
+                                        <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-white/5">
+                                            {/* Status Badge */}
+                                            <div className="absolute top-3 right-3 z-10">
+                                                <span
+                                                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur-md ${
+                                                        course.status ===
+                                                        'published'
+                                                            ? 'dark:text-emerald-455 border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20'
+                                                            : 'dark:text-amber-455 border-amber-500/20 bg-amber-500/10 text-amber-600 dark:bg-amber-500/20'
+                                                    }`}
+                                                >
+                                                    <span
+                                                        className={`h-1.5 w-1.5 rounded-full ${
+                                                            course.status ===
+                                                            'published'
+                                                                ? 'animate-pulse bg-emerald-500'
+                                                                : 'bg-amber-500'
+                                                        }`}
+                                                    />
+                                                    {course.status ===
+                                                    'published'
+                                                        ? 'Published'
+                                                        : 'Draft'}
+                                                </span>
+                                            </div>
+
+                                            <Link
+                                                href={`/admin/courses/${course.slug}`}
+                                                className="block h-full w-full"
+                                            >
+                                                {course.thumbnail_url ||
+                                                course.thumbnail ? (
+                                                    <img
+                                                        src={
+                                                            course.thumbnail_url ||
+                                                            (course.thumbnail?.startsWith(
+                                                                'http',
+                                                            )
+                                                                ? course.thumbnail
+                                                                : `/storage/${course.thumbnail}`)
+                                                        }
+                                                        alt={course.title}
+                                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+                                                        <ImageIcon
+                                                            size={28}
+                                                            className="mb-1.5 opacity-40 transition-transform group-hover:scale-105"
+                                                        />
+                                                        <span className="text-[11px] font-medium tracking-wide">
+                                                            No Cover Image
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/35 via-transparent to-transparent dark:from-[#030712]/50" />
+                                            </Link>
                                         </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 dark:from-[#030712] via-transparent to-transparent" />
-                                </Link>
 
-                                <div className="flex flex-col flex-1 p-5">
-                                    <Link href={`/admin/courses/${course.slug}`} className="block mb-2 group-hover:text-[#3B28F6] dark:group-hover:text-[#7C5CFF] transition-colors">
-                                        <h2 className="text-base font-semibold text-slate-800 dark:text-white line-clamp-1 leading-snug" title={course.title}>{course.title}</h2>
-                                    </Link>
-
-                                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-6 flex-1 leading-relaxed">
-                                        {course.description || "No description provided."}
-                                    </p>
-
-                                    <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
-                                        <Link
-                                            href={`/admin/courses/${course.slug}`}
-                                            className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#3B28F6] dark:text-[#7C5CFF] hover:text-[#2A1CE0] dark:hover:text-[#8B5CF6] transition-colors"
-                                        >
-                                            Open Builder
-                                            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-                                        </Link>
-
-                                        <div className="flex items-center gap-1">
-                                            <button
-                                                onClick={() => openEdit(course)}
-                                                className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
-                                                title="Edit Details"
+                                        <div className="flex flex-1 flex-col p-5">
+                                            <Link
+                                                href={`/admin/courses/${course.slug}`}
+                                                className="mb-2 block transition-colors group-hover:text-[#3B28F6] dark:group-hover:text-[#3B28F6]"
                                             >
-                                                <Pencil size={15} />
-                                            </button>
-                                            <button
-                                                onClick={() => deleteCourse(course.slug)}
-                                                className="p-2 rounded-lg text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                                                title="Delete Course"
-                                            >
-                                                <Trash2 size={15} />
-                                            </button>
+                                                <h2
+                                                    className="line-clamp-1 text-base leading-snug font-semibold text-slate-800 dark:text-white"
+                                                    title={course.title}
+                                                >
+                                                    {course.title}
+                                                </h2>
+                                            </Link>
+
+                                            <p className="mb-5 line-clamp-2 flex-1 text-xs leading-relaxed text-slate-500 sm:text-sm dark:text-slate-400">
+                                                {course.description ||
+                                                    'No description provided.'}
+                                            </p>
+
+                                            <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
+                                                <Link
+                                                    href={`/admin/courses/${course.slug}`}
+                                                    className="flex items-center gap-1.5 text-xs font-semibold text-[#3B28F6] transition-colors hover:text-[#2A1CE0] sm:text-sm dark:text-[#3B28F6]"
+                                                >
+                                                    Open
+                                                </Link>
+
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        onClick={() =>
+                                                            handleTogglePublish(
+                                                                course,
+                                                            )
+                                                        }
+                                                        className={`cursor-pointer rounded-lg p-2 transition-colors duration-200 ${
+                                                            course.status ===
+                                                            'published'
+                                                                ? 'text-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-500/10 dark:hover:text-emerald-300'
+                                                                : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-white/5 dark:hover:text-white'
+                                                        }`}
+                                                        title={
+                                                            course.status ===
+                                                            'published'
+                                                                ? 'Set as Draft'
+                                                                : 'Publish Course'
+                                                        }
+                                                    >
+                                                        <Globe size={15} />
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() =>
+                                                            openEdit(course)
+                                                        }
+                                                        className="cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-white/5 dark:hover:text-white"
+                                                        title="Edit Details"
+                                                    >
+                                                        <Pencil size={15} />
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() =>
+                                                            deleteCourse(
+                                                                course.slug,
+                                                            )
+                                                        }
+                                                        className="cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-slate-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                                                        title="Delete Course"
+                                                    >
+                                                        <Trash2 size={15} />
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white py-20 shadow-sm dark:border-white/8 dark:bg-[#060B1A]/60">
+                                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-50 text-slate-400 shadow-inner dark:bg-white/5 dark:text-slate-400">
+                                    <Search size={24} />
+                                </div>
+                                <h3 className="mb-1 text-base font-bold text-slate-800 dark:text-white">
+                                    No courses match filters
+                                </h3>
+                                <p className="max-w-xs text-center text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                    We couldn't find any courses matching your
+                                    search query or selected status filter.
+                                </p>
+                            </div>
+                        )
                     ) : (
                         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white py-24 shadow-sm dark:border-white/8 dark:bg-[#060B1A]/60">
-                            <div className="dark:text-slate-400 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-slate-400 shadow-inner dark:bg-white/5">
+                            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-slate-400 shadow-inner dark:bg-white/5 dark:text-slate-400">
                                 <BookOpen size={32} />
                             </div>
                             <h3 className="mb-2 text-lg font-bold text-slate-800 dark:text-white">
@@ -297,7 +451,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                                     fileInputRef.current.value =
                                                         '';
                                             }}
-                                            className="hover:text-rose-600 dark:hover:text-rose-400 text-xs font-medium text-rose-500 transition-colors"
+                                            className="text-xs font-medium text-rose-500 transition-colors hover:text-rose-600 dark:hover:text-rose-400"
                                         >
                                             Remove
                                         </button>
@@ -358,7 +512,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                 />
 
                                 {errors.thumbnail && (
-                                    <div className="dark:text-rose-400 flex items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-xs text-rose-500">
+                                    <div className="flex items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-xs text-rose-500 dark:text-rose-400">
                                         <AlertCircle size={14} />
                                         <span>{errors.thumbnail}</span>
                                     </div>
@@ -386,7 +540,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                         />
 
                                         {errors.title && (
-                                            <div className="dark:text-rose-400 ml-1 flex items-center gap-1.5 text-xs text-rose-500">
+                                            <div className="ml-1 flex items-center gap-1.5 text-xs text-rose-500 dark:text-rose-400">
                                                 <AlertCircle size={13} />
                                                 <span>{errors.title}</span>
                                             </div>
@@ -412,7 +566,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                         />
 
                                         {errors.description && (
-                                            <div className="dark:text-rose-400 ml-1 flex items-center gap-1.5 text-xs text-rose-500">
+                                            <div className="ml-1 flex items-center gap-1.5 text-xs text-rose-500 dark:text-rose-400">
                                                 <AlertCircle size={13} />
                                                 <span>
                                                     {errors.description}

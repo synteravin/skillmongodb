@@ -200,6 +200,8 @@ export default function Builder({
         open: boolean;
         title: string;
         message: string;
+        confirmText?: string;
+        variant?: 'danger' | 'info' | 'primary';
         onConfirm: () => void;
     }>({
         open: false,
@@ -279,6 +281,8 @@ export default function Builder({
                 open: true,
                 title: 'Konfirmasi Publikasi Course',
                 message: 'Peringatan: Beberapa Career Branch belum ditandai selesai oleh mentornya. Apakah Anda yakin ingin mempublikasikan course ini sekarang?',
+                confirmText: 'Publikasikan',
+                variant: 'primary',
                 onConfirm: () => {
                     router.post(`/admin/courses/${course.slug}/publish`, {}, { preserveScroll: true });
                 }
@@ -290,6 +294,8 @@ export default function Builder({
                 message: course.status === 'published' 
                     ? 'Apakah Anda yakin ingin membatalkan publikasi course ini? Siswa tidak akan dapat melihat course ini lagi.'
                     : 'Apakah Anda yakin ingin mempublikasikan course ini? Course akan langsung terlihat oleh semua siswa.',
+                confirmText: course.status === 'published' ? 'Batalkan Publikasi' : 'Publikasikan',
+                variant: course.status === 'published' ? 'danger' : 'primary',
                 onConfirm: () => {
                     router.post(`/admin/courses/${course.slug}/publish`, {}, { preserveScroll: true });
                 }
@@ -1142,8 +1148,8 @@ export default function Builder({
                         open={confirmModal.open}
                         title={confirmModal.title}
                         message={confirmModal.message}
-                        confirmText="Hapus"
-                        variant="danger"
+                        confirmText={confirmModal.confirmText || "Hapus"}
+                        variant={confirmModal.variant || "danger"}
                         onConfirm={confirmModal.onConfirm}
                         onClose={() => setConfirmModal(prev => ({ ...prev, open: false }))}
                     />
