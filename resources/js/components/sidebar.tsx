@@ -213,9 +213,9 @@ export default function Sidebar({
                 </nav>
 
                 {/* User Section */}
-                <div className="mt-auto border-t border-white/8 p-4 bg-[#030712]/40">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#7C5CFF]/20 text-[#7C5CFF] border border-[#7C5CFF]/30 text-sm font-semibold shadow-[0_0_10px_rgba(124,92,255,0.15)]">
+                <div className={`mt-auto border-t border-white/8 bg-[#030712]/40 transition-all duration-300 ${isOpen ? 'p-4' : 'p-3 flex flex-col items-center'}`}>
+                    <div className={`flex items-center ${isOpen ? 'gap-3 w-full' : 'justify-center'}`}>
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#7C5CFF]/20 text-[#7C5CFF] border border-[#7C5CFF]/30 text-sm font-semibold shadow-[0_0_10px_rgba(124,92,255,0.15)] shrink-0">
                             {props?.auth?.user?.name?.charAt(0)}
                         </div>
 
@@ -231,11 +231,13 @@ export default function Sidebar({
                         )}
                     </div>
 
-                    <div className="mt-4 flex items-center gap-2">
+                    <div className={`mt-4 flex ${isOpen ? 'flex-row w-full gap-2' : 'flex-col gap-2 items-center'}`}>
                         {/* Settings */}
                         <Link
                             href="/settings"
-                            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-white/4 px-3 py-2 text-slate-300 transition hover:bg-white/8 border border-white/8"
+                            className={`flex items-center justify-center gap-2 rounded-lg bg-white/4 text-slate-300 transition hover:bg-white/8 border border-white/8 ${
+                                isOpen ? 'flex-1 px-3 py-2' : 'h-9 w-9 p-0 shrink-0'
+                            }`}
                         >
                             <Settings size={16} />
                             {isOpen && (
@@ -250,7 +252,9 @@ export default function Sidebar({
                             href="/logout"
                             method="post"
                             as="button"
-                            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-rose-500/10 px-3 py-2 text-rose-400 transition hover:bg-rose-500/20 border border-rose-500/20"
+                            className={`flex items-center justify-center gap-2 rounded-lg bg-rose-500/10 text-rose-400 transition hover:bg-rose-500/20 border border-rose-500/20 ${
+                                isOpen ? 'flex-1 px-3 py-2' : 'h-9 w-9 p-0 shrink-0'
+                            }`}
                         >
                             <LogOut size={16} />
                             {isOpen && (

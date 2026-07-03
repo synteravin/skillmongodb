@@ -388,9 +388,7 @@ export default function Index({
                                     Registered platform accounts
                                 </p>
                             </div>
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40">
-                                <Users size={22} className="stroke-[2.2]" />
-                            </div>
+                           
                         </div>
                     </div>
 
@@ -409,9 +407,7 @@ export default function Index({
                                     {stats?.total ? Math.round(((stats.students ?? 0) / stats.total) * 100) : 0}% of total users
                                 </p>
                             </div>
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
-                                <GraduationCap size={22} className="stroke-[2.2]" />
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -430,9 +426,7 @@ export default function Index({
                                     {stats?.mentors ?? 0} Mentors, {stats?.admins ?? 0} Admins
                                 </p>
                             </div>
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/40">
-                                <ShieldCheck size={22} className="stroke-[2.2]" />
-                            </div>
+                            
                         </div>
                     </div>
                 </section>
@@ -717,7 +711,7 @@ export default function Index({
                                     </div>
 
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <RoleBadge role={user.role} />
+                                        
                                         <div className="flex items-center gap-0.5">
                                             <Link
                                                 href={`/admin/users/${user._id}`}
