@@ -110,7 +110,7 @@ export default function Index({ courses }: { courses: Course[] }) {
 
                         {/* Title */}
                         <h1 className="flex-1 text-center text-sm min-[390px]:text-base sm:text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-['Orbitron'] font-bold dark:text-white text-[#1e3a8a] tracking-[0.05em] min-[390px]:tracking-[0.1em] md:tracking-[0.15em] uppercase">
-                            SELECT YOUR COURSE
+                            SELECT YOUR COURSE 
                         </h1>
 
                         {/* Spacer to center title on mobile */}
@@ -120,7 +120,7 @@ export default function Index({ courses }: { courses: Course[] }) {
             </div>
              <div className="flex-1 overflow-y-auto overflow-x-clip relative" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(99,130,255,0.3) transparent" }}>
                  {/* Background Glows Container */}
-                 <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none z-0" style={{ height: contentHeight }}>
+                 <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none z-0" style={{ height: contentHeight, minHeight: '100%' }}>
                      {Array.from({ length: pages }).map((_, i) => (
                          <div
                              key={i}

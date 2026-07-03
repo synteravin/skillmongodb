@@ -50,7 +50,7 @@ export default function Index({ certificates }: Props) {
     return (
         <div className="h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] dark:from-[#050b18] dark:via-[#0a0f26] dark:to-[#040815] text-slate-800 dark:text-white flex flex-col p-4 sm:p-6 md:p-8 relative overflow-hidden transition-colors duration-500">
             {/* Background Glows */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" style={{ height: contentHeight }}>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" style={{ height: contentHeight, minHeight: '100%' }}>
                 {Array.from({ length: pages }).map((_, i) => (
                     <div
                         key={i}
