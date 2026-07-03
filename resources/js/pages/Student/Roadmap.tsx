@@ -863,7 +863,7 @@ export default function Roadmap({
                 }}
             >
                 {/* Background Glows Container */}
-                <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none z-0" style={{ height: contentHeight }}>
+                <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none z-0" style={{ height: contentHeight, minHeight: '100%' }}>
                     {Array.from({ length: pages }).map((_, i) => (
                         <div
                             key={i}
