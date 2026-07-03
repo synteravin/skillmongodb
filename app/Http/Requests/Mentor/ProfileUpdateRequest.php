@@ -40,9 +40,9 @@ class ProfileUpdateRequest extends FormRequest
             : $this->user()->_id;
 
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$userId.',_id'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$userId.',_id'],
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'username' => ['sometimes', 'required', 'string', 'max:255', 'unique:users,username,'.$userId.',_id'],
+            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', 'unique:users,email,'.$userId.',_id'],
             'profession' => ['nullable', 'string', 'max:255'],
             'linkedin' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],

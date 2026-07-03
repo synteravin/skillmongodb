@@ -1,0 +1,13 @@
+- [x] Implementasikan penyaringan pencarian dan status di `resources/js/pages/Admin/Course/Index.tsx`
+- [x] Perbarui desain kartu kursus agar responsif, full-bleed, dan memiliki tata letak premium (tanpa double padding)
+- [x] Hubungkan sistem draft/published dengan badge status visual dan tombol toggle status interaktif
+- [x] Uji fungsionalitas dan format kode dengan Pint (tidak ada file PHP yang dimodifikasi)
+- [x] Tambahkan properti `confirmText` dan `variant` opsional pada state `confirmModal` di `Builder.tsx`
+- [x] Kirim parameter `confirmText` dan `variant` yang sesuai pada fungsi `handlePublishToggle` di `Builder.tsx`
+- [x] Perbarui pemanggilan komponen `<ConfirmModal>` di JSX `Builder.tsx` agar menggunakan properti dinamis
+- [x] Implementasikan `prepareForValidation` di `StorePathRequest.php` untuk otomatis menggabungkan `career_group_id` dari rute
+- [x] Sesuaikan berkas pengujian `PathMentorManagementTest.php` untuk memvalidasi perbaikan backend
+- [x] Jalankan pengujian untuk memverifikasi perbaikan
+- [x] Hapus berkas pengujian `PathMentorManagementTest.php` (dan berkas pengujian lain yang menulis data dummy user/course jika ada)
+- [x] Ubah aturan validasi name, username, dan email menjadi `sometimes` di `ProfileUpdateRequest.php`
+- [x] Sesuaikan logika `UpdateMentorProfileAction.php` untuk hanya memperbarui field yang dikirimkan (partial update)
