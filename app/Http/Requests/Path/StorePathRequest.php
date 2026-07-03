@@ -11,6 +11,18 @@ class StorePathRequest extends FormRequest
         return true; // 🔥 jangan handle auth di sini
     }
 
+    protected function prepareForValidation(): void
+    {
+        $group = $this->route('group');
+
+        if ($group && ! $this->has('career_group_id')) {
+            $groupId = is_object($group) ? (string) $group->_id : (string) $group;
+            $this->merge([
+                'career_group_id' => $groupId,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

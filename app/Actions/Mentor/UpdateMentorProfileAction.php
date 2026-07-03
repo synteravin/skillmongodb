@@ -37,19 +37,21 @@ class UpdateMentorProfileAction
             }
         }
 
-        // Save work_experiences and educations as arrays
-        $user->update([
-            'name' => $data['name'],
-            'username' => $data['username'] ?? $user->username,
-            'email' => $data['email'],
-            'profession' => $data['profession'] ?? null,
-            'linkedin' => $data['linkedin'] ?? null,
-            'description' => $data['description'] ?? null,
-            'user_experience' => $data['user_experience'] ?? null,
-            'work_experiences' => $data['work_experiences'] ?? [],
-            'educations' => $data['educations'] ?? [],
-            'avatar' => $data['avatar'] ?? $user->avatar,
-        ]);
+        // Only update fields that are present in the request data
+        $updateData = array_intersect_key($data, array_flip([
+            'name',
+            'username',
+            'email',
+            'profession',
+            'linkedin',
+            'description',
+            'user_experience',
+            'work_experiences',
+            'educations',
+            'avatar',
+        ]));
+
+        $user->update($updateData);
 
         return $user;
     }
