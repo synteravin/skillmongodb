@@ -14,6 +14,25 @@ use Inertia\Inertia;
 
 class MentorQuizController extends Controller
 {
+    public function index()
+    {
+        $this->authorize('viewAny', Quiz::class);
+
+        $quizzes = Quiz::with(['path', 'questions'])->latest()->get();
+
+        return Inertia::render('Mentor/Quiz/Index', [
+            'quizzes' => $quizzes->map(function ($quiz) {
+                return [
+                    'id' => (string) $quiz->_id,
+                    'module_name' => $quiz->path->name ?? 'Unknown Path',
+                    'path_name' => $quiz->path->name ?? 'Unknown Path',
+                    'difficulty' => $quiz->difficulty ?? 'medium',
+                    'questions_count' => $quiz->questions ? $quiz->questions->count() : 0,
+                ];
+            }),
+        ]);
+    }
+
     public function create(CareerGroup $group, Path $path)
     {
         $this->authorize('create', Quiz::class);

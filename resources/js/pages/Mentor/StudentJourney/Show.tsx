@@ -105,16 +105,17 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
 
             <div className="w-full mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8 max-w-7xl text-slate-800 dark:text-slate-100" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 <div>
-                    <Link
-                        href="/mentor/student-journey"
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800 dark:text-slate-400 dark:hover:text-white mb-2"
-                    >
-                        <ArrowLeft size={16} /> Kembali ke Daftar Siswa
-                    </Link>
+                   <Link
+                    href="/mentor/student-journey"
+                    className="mb-2 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+                >
+                    <ArrowLeft size={16} />
+                    Kembali ke Daftar Siswa
+                </Link>
                 </div>
 
                 {/* TOP HERO CARD - Profil Utama & Ringkasan Gamifikasi */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 shadow-sm sm:p-6 dark:border-slate-800">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-5 shadow-sm shadow-slate-100/50 sm:p-6 dark:border-slate-800">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -165,7 +166,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                             </div>
 
                             {/* Analisis EXP & Level yang Terperinci */}
-                            <div className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-4 md:grid-cols-2 dark:border-slate-800/50 dark:bg-slate-950/40">
+                            <div className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 md:grid-cols-2 dark:border-slate-800/50 dark:bg-slate-950/40">
                                 <div className="flex items-center gap-3">
                                     <div className="rounded-lg bg-indigo-500/10 p-2 text-indigo-600 dark:text-indigo-400">
                                         <Award size={20} />
@@ -237,7 +238,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                         </div>
 
                         {/* Jalur Karir yang Diikuti */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 shadow-sm dark:border-slate-800">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-5 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -250,7 +251,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     {student.careerGroups.map((group) => (
                                         <div
                                             key={group.id}
-                                            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-755 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
+                                            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-755 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
                                         >
                                             <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
                                             {group.name}
@@ -269,7 +270,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                     {/* KOLOM KANAN: Progress Pembelajaran aktual dari DB */}
                     <div className="space-y-6 lg:col-span-2">
                         {/* Riwayat Modul yang Diselesaikan */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -304,14 +305,14 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     {student.completedModulesList.map((mod, idx) => (
                                         <div
                                             key={idx}
-                                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-700 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
+                                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
                                         >
                                             <CheckCircle2 size={14} className="text-emerald-555 dark:text-emerald-450" />
                                             {mod.title}
                                         </div>
                                     ))}
                                     {student.completedModulesList.length === 0 && (
-                                        <p className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-center text-sm text-slate-500 dark:border-slate-800/60 dark:bg-slate-950/30 dark:text-slate-400">
+                                        <p className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500 dark:border-slate-800/60 dark:bg-slate-950/30 dark:text-slate-400">
                                             Belum ada modul yang diselesaikan.
                                         </p>
                                     )}
@@ -320,7 +321,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                         </div>
 
                         {/* Hasil Quiz (Progress Evaluasi) */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-800">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -388,7 +389,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                         </div>
 
                         {/* Riwayat Pengumpulan Tugas (Submissions) */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-800">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -474,7 +475,7 @@ function MetricBox({
     icon: React.ReactNode;
 }) {
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-4 shadow-sm dark:border-slate-800 w-full">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-4 shadow-sm shadow-slate-100/50 dark:border-slate-800 w-full">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
             

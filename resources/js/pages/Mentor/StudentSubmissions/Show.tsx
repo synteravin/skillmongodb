@@ -82,7 +82,7 @@ export default function Show({ studentSubmission }: Props) {
             <div className="w-full mx-auto space-y-6 p-4 sm:p-6 lg:p-8 max-w-7xl text-slate-800 dark:text-slate-100" style={{ fontFamily: "'Outfit', sans-serif" }}>
 
                 {/* BREADCRUMB & HEADER */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -124,7 +124,7 @@ export default function Show({ studentSubmission }: Props) {
                 <div className="space-y-6">
 
                     {/* STUDENT WORK & SUBMISSION ARTIFACTS CARD */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 shadow-sm dark:border-slate-800">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                         <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -223,7 +223,7 @@ export default function Show({ studentSubmission }: Props) {
                                 </div>
 
                                 {studentSubmission.notes && (
-                                    <div className="mt-4 bg-slate-50/60 dark:bg-slate-950/40 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-5 shadow-sm">
+                                    <div className="mt-4 bg-slate-100/35 dark:bg-slate-950/40 border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-5 shadow-sm">
                                         <label className="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">
                                             <MessageSquare className="w-4 h-4 text-slate-400" /> Student's Note
                                         </label>
@@ -237,7 +237,7 @@ export default function Show({ studentSubmission }: Props) {
                     </div>
 
                     {/* EVALUATION & MENTOR FEEDBACK SECTION (MAIN PROMINENT AREA) */}
-                    <div className="relative overflow-hidden rounded-xl border border-indigo-200 dark:border-indigo-900/40 p-6 sm:p-8 shadow-md">
+                    <div className="relative overflow-hidden rounded-xl border border-indigo-200 dark:border-indigo-900/40 p-6 sm:p-8 shadow-md shadow-indigo-150/40 dark:shadow-none">
                         <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-indigo-400 dark:via-indigo-600 to-transparent" />
 

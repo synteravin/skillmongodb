@@ -18,7 +18,7 @@ interface Props {
 
 export default function ProfileFormEducation({ educations, onChange, errors }: Props) {
     const inputClass =
-        'w-full rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2.5 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-300 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40';
+        'w-full rounded-lg border border-slate-200/90 bg-slate-50/85 px-3 py-2.5 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400/80 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40';
 
     const labelClass =
         'mb-1.5 block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase';
@@ -68,7 +68,7 @@ export default function ProfileFormEducation({ educations, onChange, errors }: P
             </div>
 
             {educations.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10 py-10 text-center">
+                <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-100/40 dark:bg-slate-900/10 py-10 text-center">
                     <GraduationCap className="mx-auto h-8 w-8 text-slate-400 dark:text-slate-600 mb-3" />
                     <p className="font-['Outfit'] text-sm font-medium text-slate-500 dark:text-slate-400">
                         No education records added yet.
@@ -82,7 +82,7 @@ export default function ProfileFormEducation({ educations, onChange, errors }: P
                     {educations.map((edu, idx) => (
                         <div
                             key={idx}
-                            className="relative rounded-xl border border-slate-200 bg-slate-50/30 p-5 dark:border-slate-800 dark:bg-slate-900/20 shadow-sm"
+                            className="relative rounded-xl border border-slate-200 bg-slate-100/40 p-5 dark:border-slate-800 dark:bg-slate-900/20 shadow-sm"
                         >
                             {/* REMOVE BUTTON */}
                             <button

@@ -34,7 +34,7 @@ export default function StudentJourneyIndex({ statistics, students }: Props) {
             >
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Header & Stats Container */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm mb-6">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm shadow-slate-100/50 mb-6">
                         {/* Grid Pattern Motif */}
                         <div 
                             className="absolute inset-0 z-0 pointer-events-none"
@@ -63,7 +63,7 @@ export default function StudentJourneyIndex({ statistics, students }: Props) {
                             </div>
 
                             {/* Compact Stats */}
-                            <div className="relative flex overflow-hidden rounded-xl border border-slate-200 bg-white/60 text-sm dark:border-slate-800 dark:bg-slate-900/60 shadow-xs shrink-0 self-start sm:self-center">
+                            <div className="relative flex overflow-hidden rounded-xl border border-slate-200 bg-white/90 text-sm dark:border-slate-800 dark:bg-slate-900/90 shadow-xs shrink-0 self-start sm:self-center">
                                 <div className="border-r border-slate-200 px-4 py-2.5 dark:border-slate-800">
                                     <span className="text-slate-500 dark:text-slate-400/60 font-medium">Total:</span>{' '}
                                     <span className="font-bold text-slate-800 dark:text-white">
@@ -89,7 +89,7 @@ export default function StudentJourneyIndex({ statistics, students }: Props) {
                     </div>
 
                     {/* Compact Table */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                         <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 

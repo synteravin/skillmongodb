@@ -658,13 +658,13 @@ export default function Dashboard({
                                     }}
                                 >
                                     {/* EXP Card */}
-                                    <div className="group flex flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50/30 p-5 transition-all duration-300 hover:border-slate-200 dark:border-white/[0.03] dark:bg-white/[0.01] dark:hover:border-white/10 dark:hover:bg-white/[0.02]">
+                                    <div className="group flex flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50/30 p-5 transition-all duration-300  dark:border-white/[0.03] dark:bg-white/[0.01] ">
                                         <div className="relative mb-3 flex h-16 w-16 shrink-0 items-center justify-center">
-                                            <div className="absolute inset-0 rounded-full bg-amber-500/15 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+                                            <div className="absolute inset-0 rounded-full " />
                                             <img
                                                 src="/images/exp.webp"
                                                 alt="EXP"
-                                                className="relative h-14 w-14 transform object-contain drop-shadow-[0_4px_10px_rgba(245,158,11,0.25)] transition-transform duration-300 group-hover:scale-110"
+                                                className="relative h-14 w-14 transform object-contain "
                                             />
                                         </div>
                                         <span className="mb-1.5 text-[10px] font-bold tracking-[0.15em] text-slate-400 uppercase dark:text-slate-500">
@@ -676,13 +676,13 @@ export default function Dashboard({
                                     </div>
 
                                     {/* Gold Card */}
-                                    <div className="group flex flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50/30 p-5 transition-all duration-300 hover:border-slate-200 dark:border-white/[0.03] dark:bg-white/[0.01] dark:hover:border-white/10 dark:hover:bg-white/[0.02]">
+                                    <div className="group flex flex-col items-center justify-center rounded-2xl border border-slate-100 bg-slate-50/30 p-5 transition-all duration-300  dark:border-white/[0.03] dark:bg-white/[0.01] ">
                                         <div className="relative mb-3 flex h-16 w-16 shrink-0 items-center justify-center">
-                                            <div className="absolute inset-0 rounded-full bg-yellow-500/15 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+                                            <div className="absolute inset-0 rounded-full " />
                                             <img
                                                 src="/images/Gold.webp"
                                                 alt="Gold"
-                                                className="relative h-14 w-14 transform object-contain drop-shadow-[0_4px_10px_rgba(234,179,8,0.25)] transition-transform duration-300 group-hover:scale-110"
+                                                className="relative h-14 w-14 transform object-contain "
                                             />
                                         </div>
                                         <span className="mb-1.5 text-[10px] font-bold tracking-[0.15em] text-slate-400 uppercase dark:text-slate-500">

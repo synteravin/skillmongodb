@@ -31,13 +31,9 @@ export default function MentorEducationList({ educations }: Props) {
             {educations.map((edu, idx) => (
                 <div
                     key={idx}
-                    className="relative overflow-hidden bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 p-5 md:p-6 rounded-xl transition-all duration-300 hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 hover:shadow-lg dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col justify-between"
+                    className="relative overflow-hidden bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 p-5 md:p-6 rounded-xl transition-all duration-300 hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 shadow-sm shadow-slate-100/55 hover:shadow-lg dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col justify-between"
                 >
                     <div>
-                        {/* University Icon Container */}
-                        <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/30 text-indigo-600 dark:text-[#3b4ffa] mb-4">
-                            <GraduationCap size={24} />
-                        </div>
 
                         {/* Title (Degree & Major) */}
                         <h4 className="font-['Orbitron'] text-base font-bold text-slate-900 dark:text-white leading-tight">

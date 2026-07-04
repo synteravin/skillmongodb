@@ -1,6 +1,7 @@
 import { useForm, Link } from '@inertiajs/react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { ArrowLeft } from "lucide-react";
 
 export default function Create() {
     const fileRef = useRef<HTMLInputElement>(null);
@@ -49,9 +50,10 @@ export default function Create() {
             <div>
                 <Link
                     href="/admin/assets"
-                    className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                    className="mb-3 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                 >
-                    ← Back to Assets
+                        <ArrowLeft className="h-4 w-4" />
+                    Back to Assets
                 </Link>
                 <h1
                     className="text-2xl font-bold tracking-tight text-slate-800 dark:text-white"

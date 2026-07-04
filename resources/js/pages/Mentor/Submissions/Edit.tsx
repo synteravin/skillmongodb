@@ -58,7 +58,7 @@ export default function EditSubmission({ submission }: Props) {
 
                 {/* Form Card */}
                     <div className="w-full mx-auto">
-                    <div className="rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden font-outfit">
+                    <div className="rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200/80 dark:border-slate-800 shadow-md shadow-slate-100/50 overflow-hidden font-outfit">
                         {/* Top decorative line */}
                         <div className="relative">
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
@@ -87,7 +87,7 @@ export default function EditSubmission({ submission }: Props) {
                                     value={data.title}
                                     onChange={(e) => setData('title', e.target.value)}
                                     placeholder="Enter submission title..."
-                                    className="w-full bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-slate-600 focus:border-slate-400 dark:focus:border-slate-500 transition-all duration-200 shadow-sm"
+                                    className="w-full bg-slate-50/80 focus:bg-white border border-slate-200/90 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-605 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm"
                                 />
                                 {errors.title && (
                                     <p className="mt-2 text-sm text-rose-500 flex items-center gap-1.5 font-semibold">
@@ -113,7 +113,7 @@ export default function EditSubmission({ submission }: Props) {
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
                                     placeholder="Describe the assignment requirements..."
-                                    className="w-full bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-slate-600 focus:border-slate-400 dark:focus:border-slate-500 transition-all duration-200 shadow-sm resize-none"
+                                    className="w-full bg-slate-50/80 focus:bg-white border border-slate-200/90 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder:text-slate-655 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm resize-none"
                                 />
                                 {errors.description && (
                                     <p className="mt-2 text-sm text-rose-500 flex items-center gap-1.5 font-semibold">
@@ -135,7 +135,7 @@ export default function EditSubmission({ submission }: Props) {
                                         <select
                                             value={data.submission_type}
                                             onChange={(e) => setData('submission_type', e.target.value)}
-                                            className="w-full appearance-none bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-slate-600 focus:border-slate-400 dark:focus:border-slate-500 transition-all duration-200 shadow-sm pr-10"
+                                            className="w-full appearance-none bg-slate-50/80 focus:bg-white border border-slate-200/90 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm pr-10"
                                         >
                                             <option value="file">File Upload Only</option>
                                             <option value="link">URL Link Only</option>
@@ -165,7 +165,7 @@ export default function EditSubmission({ submission }: Props) {
                                         type="datetime-local"
                                         value={data.deadline}
                                         onChange={(e) => setData('deadline', e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-slate-600 focus:border-slate-400 dark:focus:border-slate-500 transition-all duration-200 shadow-sm [color-scheme:light] dark:[color-scheme:dark]"
+                                        className="w-full bg-slate-50/80 focus:bg-white border border-slate-200/90 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm [color-scheme:light] dark:[color-scheme:dark]"
                                     />
                                     {errors.deadline && (
                                         <p className="mt-2 text-sm text-rose-500 flex items-center gap-1.5 font-semibold">
@@ -183,7 +183,7 @@ export default function EditSubmission({ submission }: Props) {
                                     Replace Attachment{' '}
                                     <span className="text-slate-400 dark:text-slate-500 font-normal normal-case tracking-normal">(Optional)</span>
                                 </label>
-                                <div className="flex justify-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700 px-6 py-10 bg-slate-50/50 dark:bg-slate-950/40 hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:border-slate-400 dark:hover:border-slate-600 transition-colors">
+                                <div className="flex justify-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700 px-6 py-10 bg-slate-100/40 dark:bg-slate-950/40 hover:bg-slate-100/70 dark:hover:bg-slate-900/50 hover:border-slate-400 dark:hover:border-slate-600 transition-colors">
                                     <div className="text-center">
                                         <Paperclip className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-500 mb-3" aria-hidden="true" />
                                         <div className="flex text-sm leading-6 text-slate-600 dark:text-slate-400 justify-center">

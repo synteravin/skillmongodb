@@ -129,7 +129,7 @@ export default function Profile({ mentor }: Props) {
                         <div className="space-y-6 lg:col-span-1">
 
                             {/* Avatar Card */}
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 dark:border-slate-800">
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -196,7 +196,7 @@ export default function Profile({ mentor }: Props) {
                             </div>
 
                             {/* Status Card */}
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 dark:border-slate-800">
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -214,7 +214,7 @@ export default function Profile({ mentor }: Props) {
 
                         {/* RIGHT COLUMN: Basic Information */}
                         <div className="lg:col-span-2">
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 dark:border-slate-800">
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -229,7 +229,7 @@ export default function Profile({ mentor }: Props) {
                     {/* FULL-WIDTH CARDS: Work Experience & Education */}
                     <div className="space-y-8 w-full">
                         {/* Work Experience Card */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 dark:border-slate-800">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -243,7 +243,7 @@ export default function Profile({ mentor }: Props) {
                         </div>
 
                         {/* Education Card */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 dark:border-slate-800">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 

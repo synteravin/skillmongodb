@@ -241,9 +241,6 @@ export default function MentorProfile({ mentor }: Props) {
                             >
                                 {/* Icon + Title row */}
                                 <div className="flex items-start gap-3 mb-3">
-                                    <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-yellow-400/10 border border-yellow-400/30 dark:border-yellow-400/20">
-                                        <Rocket size={16} className="text-yellow-500 dark:text-yellow-400" />
-                                    </div>
                                     <h4 className="font-['Outfit'] text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug pt-1">
                                         {group.name}
                                     </h4>
