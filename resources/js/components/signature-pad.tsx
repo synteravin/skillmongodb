@@ -228,34 +228,34 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
 
             {/* Current Signature Display */}
             {currentSignatureUrl && (
-                <div className="p-4 border rounded-xl bg-slate-50 dark:bg-slate-900/50 space-y-3">
+                <div className="p-4 border border-slate-300 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900/50 space-y-3">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        <span className="text-sm font-semibold text-slate-850 dark:text-slate-300">
                             Current Active Signature
                         </span>
-                        <Button type="button" variant="destructive" onClick={() => setShowDeleteConfirm(true)} size="sm" className="gap-1.5 h-8">
+                        <Button type="button" variant="destructive" onClick={() => setShowDeleteConfirm(true)} size="sm" className="gap-1.5 h-8 cursor-pointer">
                             <Trash2 className="w-3.5 h-3.5" />
                             Remove
                         </Button>
                     </div>
-                    <div className="border rounded-lg bg-white dark:bg-slate-950 p-4 inline-flex items-center justify-center min-w-[240px] max-w-md shadow-sm">
+                    <div className="border border-slate-300 dark:border-slate-850 rounded-lg bg-white dark:bg-slate-950 p-4 inline-flex items-center justify-center min-w-[240px] max-w-md shadow-sm">
                         <img
                             src={currentSignatureUrl}
                             alt="Current active signature"
-                            className="max-h-20 object-contain dark:invert-0"
+                            className="max-h-20 object-contain dark:invert"
                         />
                     </div>
                 </div>
             )}
 
             {/* Mode Tabs */}
-            <div className="flex rounded-lg bg-slate-100 dark:bg-slate-800/80 p-1.5 gap-1">
+            <div className="flex rounded-lg bg-slate-100 dark:bg-slate-900/60 p-1 border border-slate-300 dark:border-slate-800/80 gap-1">
                 <button
                     type="button"
                     onClick={() => { setMode('type'); setError(''); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all cursor-pointer ${
                         mode === 'type'
-                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
+                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-800'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                     }`}
                 >
@@ -265,9 +265,9 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                 <button
                     type="button"
                     onClick={() => { setMode('draw'); setError(''); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all cursor-pointer ${
                         mode === 'draw'
-                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
+                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-800'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                     }`}
                 >
@@ -277,9 +277,9 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                 <button
                     type="button"
                     onClick={() => { setMode('upload'); setError(''); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all cursor-pointer ${
                         mode === 'upload'
-                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
+                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-800'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                     }`}
                 >
@@ -292,7 +292,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
             {mode === 'type' && (
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1.5 text-slate-700 dark:text-slate-300">
+                        <label className="block text-sm font-semibold mb-1.5 text-slate-700 dark:text-slate-300">
                             Enter Your Full Name
                         </label>
                         <input
@@ -305,7 +305,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+                        <label className="block text-sm font-semibold mb-2 text-slate-700 dark:text-slate-300">
                             Choose Signature Font Style
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -315,8 +315,8 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                                     onClick={() => setSelectedFont(font.family)}
                                     className={`p-4 rounded-xl border cursor-pointer transition-all flex flex-col items-center justify-center relative ${
                                         selectedFont === font.family
-                                            ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20'
-                                            : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
+                                            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20'
+                                            : 'border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-700'
                                     }`}
                                 >
                                     {selectedFont === font.family && (
@@ -339,7 +339,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     {error && <InputError message={error} className="mt-2" />}
 
                     <div className="flex justify-end">
-                        <Button type="button" onClick={handleSaveType} disabled={saving || !typedName.trim()}>
+                        <Button type="button" onClick={handleSaveType} disabled={saving || !typedName.trim()} className="cursor-pointer">
                             {saving ? 'Saving Signature...' : 'Save Type Signature'}
                         </Button>
                     </div>
@@ -349,7 +349,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
             {mode === 'draw' && (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                             Draw your signature on canvas below
                         </span>
                         <div className="flex items-center gap-2">
@@ -360,7 +360,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                                         key={ink.hex}
                                         type="button"
                                         onClick={() => setPenColor(ink.hex)}
-                                        className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center ${
+                                        className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center cursor-pointer ${
                                             penColor === ink.hex ? 'ring-2 ring-indigo-500 ring-offset-2 scale-110' : 'opacity-80'
                                         }`}
                                         style={{ backgroundColor: ink.hex }}
@@ -371,12 +371,12 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                         </div>
                     </div>
 
-                    <div className="border rounded-xl bg-white dark:bg-slate-950 overflow-hidden shadow-sm touch-none">
+                    <div className="border border-slate-300 dark:border-slate-800 rounded-xl bg-white overflow-hidden shadow-sm touch-none dark:invert">
                         <SignatureCanvas
                             ref={sigPad}
                             penColor={penColor}
                             canvasProps={{
-                                className: 'w-full h-56 cursor-crosshair',
+                                className: 'w-full h-56 cursor-crosshair bg-white',
                             }}
                             onBegin={() => setIsDrawing(true)}
                         />
@@ -390,10 +390,11 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                             variant="outline"
                             onClick={handleClearDraw}
                             disabled={!isDrawing || saving}
+                            className="cursor-pointer"
                         >
                             Clear Canvas
                         </Button>
-                        <Button type="button" onClick={handleSaveDraw} disabled={!isDrawing || saving}>
+                        <Button type="button" onClick={handleSaveDraw} disabled={!isDrawing || saving} className="cursor-pointer">
                             {saving ? 'Saving Signature...' : 'Save Drawn Signature'}
                         </Button>
                     </div>
@@ -402,7 +403,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
 
             {mode === 'upload' && (
                 <div className="space-y-4">
-                    <div className="border-2 border-dashed rounded-xl p-6 text-center border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-100/50 dark:hover:bg-slate-900/60 transition-colors">
+                    <div className="border-2 border-dashed rounded-xl p-6 text-center border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-colors">
                         <input
                             type="file"
                             accept="image/png, image/jpeg, image/webp"
@@ -420,7 +421,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     </div>
 
                     {uploadPreview && (
-                        <div className="p-4 border rounded-xl bg-white dark:bg-slate-900 text-center space-y-2">
+                        <div className="p-4 border border-slate-300 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 text-center space-y-2">
                             <span className="text-xs text-slate-500 block">Selected File Preview:</span>
                             <img src={uploadPreview} alt="Upload preview" className="max-h-24 mx-auto object-contain" />
                             <span className="text-xs font-medium text-slate-700 dark:text-slate-300 block truncate">
@@ -432,7 +433,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     {error && <InputError message={error} className="mt-2" />}
 
                     <div className="flex justify-end">
-                        <Button type="button" onClick={handleSaveUpload} disabled={saving || !uploadFile}>
+                        <Button type="button" onClick={handleSaveUpload} disabled={saving || !uploadFile} className="cursor-pointer">
                             {saving ? 'Uploading Signature...' : 'Save Uploaded Signature'}
                         </Button>
                     </div>

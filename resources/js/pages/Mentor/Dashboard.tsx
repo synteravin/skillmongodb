@@ -72,7 +72,7 @@ export default function Dashboard({ mentor, notifications = [] }: { mentor: Ment
 
                 {/* NOTIFICATIONS / REVIEW CENTER */}
                 {notifications.length > 0 && (
-                    <section className="relative overflow-hidden rounded-xl border border-slate-200 p-6 lg:p-8 dark:border-slate-800">
+                    <section className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 lg:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                         <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -106,7 +106,7 @@ export default function Dashboard({ mentor, notifications = [] }: { mentor: Ment
                                     return (
                                         <div
                                             key={notif.id}
-                                            className="relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/40 p-4 transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/60"
+                                            className="relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-slate-200/70 bg-slate-50/80 p-4 transition-all hover:bg-slate-100/60 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/60 shadow-xs"
                                         >
                                             <div className="relative z-10 flex items-start sm:items-center gap-3.5">
                                                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-semibold text-xs shrink-0 shadow-sm">
@@ -118,7 +118,7 @@ export default function Dashboard({ mentor, notifications = [] }: { mentor: Ment
                                                             {studentName}
                                                         </span>
                                                         {notif.data.career_group_name && (
-                                                            <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                                            <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/50 dark:border-slate-800">
                                                                 {notif.data.career_group_name}
                                                             </span>
                                                         )}
@@ -152,7 +152,7 @@ export default function Dashboard({ mentor, notifications = [] }: { mentor: Ment
                 )}
 
                 {/* CAREER GROUP LIST */}
-                <section className="relative overflow-hidden rounded-xl border border-slate-200 p-6 lg:p-8 dark:border-slate-800">
+                <section className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 lg:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -178,7 +178,7 @@ export default function Dashboard({ mentor, notifications = [] }: { mentor: Ment
                                 {groups.map((group) => (
                                     <div
                                         key={group.id}
-                                        className="relative overflow-hidden flex flex-col justify-between rounded-lg border border-slate-200 bg-slate-50/40 p-6 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/50"
+                                        className="relative overflow-hidden flex flex-col justify-between rounded-lg border border-slate-200 bg-slate-50/80 p-6 transition-colors hover:bg-slate-100/60 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/50 shadow-xs"
                                     >
                                         <div className="relative z-10">
                                             <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">
@@ -230,10 +230,10 @@ function Stat({
     highlight?: boolean;
 }) {
     return (
-        <div className={`relative overflow-hidden rounded-xl border p-6 transition-colors ${
+        <div className={`relative overflow-hidden rounded-xl border p-6 transition-colors shadow-xs shadow-slate-100/80 ${
             highlight
-                ? 'border-amber-500/40 dark:border-amber-500/30 bg-amber-500/[0.02]'
-                : 'border-slate-200 dark:border-slate-800'
+                ? 'border-amber-500/45 dark:border-amber-500/35 bg-amber-500/[0.03]'
+                : 'border-slate-200/80 dark:border-slate-800'
         }`}>
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />

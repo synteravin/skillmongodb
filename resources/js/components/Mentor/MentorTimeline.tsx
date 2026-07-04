@@ -36,7 +36,7 @@ export default function MentorTimeline({ workExperiences }: Props) {
                     <div className="absolute -left-[30px] md:-left-[46px] top-1 flex h-5 w-5 items-center justify-center rounded-full border-4 border-yellow-400 bg-[#3B28F6] dark:bg-white shadow-[0_0_8px_rgba(250,204,21,0.6)] group-hover:scale-110 transition-transform duration-300 z-10" />
 
                     {/* Content Card */}
-                    <div className="bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 shadow-[0_4px_20px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+                    <div className="bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 shadow-sm shadow-slate-100/60 hover:shadow-md dark:shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div>
                                 {/* Position/Job Title */}

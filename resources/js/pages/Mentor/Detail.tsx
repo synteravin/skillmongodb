@@ -21,7 +21,7 @@ type StatCardProps = {
 
 function StatCard({ title, value, icon: Icon }: StatCardProps) {
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 dark:border-slate-800">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 dark:border-slate-800 shadow-sm shadow-slate-100/50">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -60,7 +60,7 @@ function ProgressChart({
     const offset = circumference - (progress / 100) * circumference;
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 p-8 dark:border-slate-800">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -152,10 +152,10 @@ function CareerGroupStats({
     return (
         <button
             onClick={onSelect}
-            className={`relative overflow-hidden rounded-lg border p-6 text-left transition-colors ${
+            className={`relative overflow-hidden rounded-lg border p-6 text-left transition-all shadow-xs ${
                 isSelected
-                    ? 'border-indigo-300 bg-indigo-50/50 dark:border-indigo-500/40 dark:bg-indigo-500/5'
-                    : 'border-slate-200 bg-slate-50/40 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/50'
+                    ? 'border-indigo-350 bg-indigo-50/80 dark:border-indigo-500/40 dark:bg-indigo-500/5 shadow-indigo-100/30 dark:shadow-none'
+                    : 'border-slate-200 bg-slate-50/80 hover:bg-slate-100/60 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/50 hover:shadow-sm'
             }`}
         >
             <div className="relative z-10">
@@ -233,7 +233,7 @@ type StudentTableProps = {
 function StudentTable({ students }: StudentTableProps) {
     if (students.length === 0) {
         return (
-            <div className="relative overflow-hidden rounded-xl border border-slate-200 p-8 text-center dark:border-slate-800">
+            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-8 text-center dark:border-slate-800 shadow-sm shadow-slate-100/50">
                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                 <p className="relative z-10 text-slate-500 dark:text-slate-400/60">
                     No students found
@@ -243,7 +243,7 @@ function StudentTable({ students }: StudentTableProps) {
     }
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm shadow-slate-100/50">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -429,7 +429,7 @@ export default function Detail({
         <AppLayout>
             <div className="w-full space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {/* Header */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 sm:p-8 md:p-10 dark:border-slate-800">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 dark:border-slate-800 shadow-sm shadow-slate-100/50">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 

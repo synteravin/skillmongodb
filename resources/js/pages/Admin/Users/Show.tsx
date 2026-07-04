@@ -821,7 +821,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                     <img
                                         src={details.signature_url}
                                         alt="Mentor Signature"
-                                        className="border-slate-250 mx-auto mb-3.5 h-auto max-w-[240px] rounded-lg border bg-white object-contain p-3 dark:border-slate-700 dark:bg-white/5"
+                                        className="border-slate-250 mx-auto mb-3.5 h-auto max-w-[240px] rounded-lg border bg-white object-contain p-3 dark:border-slate-700 dark:bg-white/5 dark:invert"
                                     />
                                     <p className="text-slate-450 dark:text-slate-450 text-[11px]">
                                         Signature is used for generating valid

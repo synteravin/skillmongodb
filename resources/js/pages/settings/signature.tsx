@@ -19,7 +19,7 @@ export default function Signature() {
 
             <div className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {/* Header Hero Section */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                <div className="relative overflow-hidden rounded-xl border border-slate-300 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
                     {/* Grid Pattern Motif */}
                     <div 
                         className="absolute inset-0 z-0 pointer-events-none"
@@ -52,7 +52,7 @@ export default function Signature() {
                 </div>
 
                 {/* Main Content Area */}
-                <div className="max-w-3xl rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                <div className="max-w-3xl rounded-xl border border-slate-300 bg-white p-6 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                     <SignaturePad currentSignatureUrl={auth.user.signature_url} />
                 </div>
             </div>

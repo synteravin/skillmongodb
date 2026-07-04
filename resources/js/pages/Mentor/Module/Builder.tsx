@@ -144,7 +144,7 @@ const SortableContent = ({
         <div
             ref={setNodeRef}
             style={style}
-            className={`flex gap-3 group bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] backdrop-blur-sm p-3 sm:p-4 rounded-xl transition-all duration-200 border ${isEditing ? 'border-indigo-500 shadow-md shadow-indigo-500/10' : 'border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/30 hover:-translate-y-0.5'}`}
+            className={`flex gap-3 group bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] backdrop-blur-sm p-3 sm:p-4 rounded-xl transition-all duration-200 border ${isEditing ? 'border-indigo-500 shadow-md shadow-indigo-500/10' : 'border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/30 hover:-translate-y-0.5 shadow-xs shadow-slate-100/50 hover:shadow-sm'}`}
         >
 
             {/* DRAG */}
@@ -728,7 +728,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
             <div className="w-full mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
 
                 {/* HEADER */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-800">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -791,7 +791,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                 </div>
 
                 {/* CREATE MODULE */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 shadow-sm dark:border-slate-800">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-5 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -826,7 +826,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                         const isOpen = openModule === moduleId;
 
                         return (
-                            <div key={moduleId} className="relative overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-800 transition-all duration-300">
+                            <div key={moduleId} className="relative overflow-hidden rounded-xl border border-slate-200/80 shadow-sm shadow-slate-100/50 dark:border-slate-800 transition-all duration-300">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -918,7 +918,7 @@ export default function ModuleBuilder({ path, group }: { group: CareerGroup; pat
                     })}
 
                     {modules.length === 0 && (
-                        <div className="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-sm">
+                        <div className="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-sm shadow-slate-100/50">
                             <Layers className="mx-auto text-slate-400 dark:text-slate-500 mb-4" size={48} />
                             <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-1">No Modules Created</h3>
                             <p className="text-slate-500 dark:text-slate-400/60 text-sm">Start building your learning path by creating a module above.</p>

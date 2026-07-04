@@ -85,7 +85,7 @@ function SortablePathCard({
         <div
             ref={setNodeRef}
             style={style}
-            className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:border-indigo-300 hover:bg-slate-50 hover:shadow-md sm:p-5 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:border-indigo-500/50 dark:hover:bg-slate-900/60"
+            className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100/60 transition-all hover:border-indigo-300 hover:bg-slate-50 hover:shadow-md hover:shadow-indigo-900/5 sm:p-5 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:border-indigo-500/50 dark:hover:bg-slate-900/60"
         >
             {/* Left accent line */}
             <div
@@ -333,19 +333,19 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Header Section */}
-                <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-5 dark:border-slate-800">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-start gap-3 sm:items-center sm:gap-4">
                         <Link
                             href={`/mentor/dashboard`}
-                            className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                            className="shrink-0 rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold tracking-tight text-slate-800 dark:text-white">
+                        <div className="min-w-0">
+                            <h1 className="text-xl font-bold tracking-tight text-slate-800 sm:text-2xl dark:text-white">
                                 Atur Learning Paths
                             </h1>
-                            <p className="mt-1 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                                 Branch Karir:{' '}
                                 <span className="font-semibold text-indigo-600 dark:text-indigo-400">
                                     {group.name}
@@ -365,14 +365,10 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                         <button
                             onClick={handleToggleStatus}
-                            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold shadow-sm transition-all active:scale-95 ${
-                                group.status === 'completed'
-                                    ? 'bg-amber-600 text-white shadow-amber-500/15 hover:bg-amber-700'
-                                    : 'bg-emerald-600 text-white shadow-emerald-500/15 hover:bg-emerald-700'
-                            }`}
+                            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-400 hover:text-slate-900 active:scale-95 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                         >
                             {group.status === 'completed' ? (
                                 <>
@@ -389,7 +385,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
                         <Link
                             href={`/mentor/career-groups/${group.id}/submissions`}
-                            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:text-slate-900 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
+                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-400 hover:text-slate-900 active:scale-95 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                         >
                             <ClipboardList className="h-4 w-4" />
                             <span>Kelola Submission Siswa</span>
@@ -401,16 +397,13 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                 <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12">
                     {/* ================= LEFT COLUMN: Basic Fundamentals ================= */}
                     <div className="lg:col-span-6">
-                        <div className="font-outfit relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800">
+                        <div className="font-outfit relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             {/* Card Header */}
                             <div className="relative z-10 flex items-center justify-between gap-4 border-b border-slate-200 p-6 dark:border-slate-800/60">
                                 <div className="flex items-center gap-3">
-                                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-2.5 text-indigo-600 dark:border-indigo-800/40 dark:bg-indigo-950/60 dark:text-indigo-400">
-                                        <Layers className="h-5.5 w-5.5" />
-                                    </div>
                                     <div>
                                         <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-white">
                                             Basic Fundamentals
@@ -437,7 +430,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                             {/* Paths List */}
                             <div className="relative z-10 flex min-h-0 flex-1 flex-col p-6">
                                 {basicList.length === 0 ? (
-                                    <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20">
+                                    <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20">
                                         <Layers className="mb-3 h-12 w-12 text-slate-300 dark:text-slate-700" />
                                         <p className="max-w-xs text-sm text-slate-500 dark:text-slate-400">
                                             Tidak ada materi Basic Fundamental
@@ -481,33 +474,27 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
                     {/* ================= RIGHT COLUMN: Learning Progression ================= */}
                     <div className="lg:col-span-6">
-                        <div className="font-outfit relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200 shadow-sm dark:border-slate-800">
+                        <div className="font-outfit relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             {/* Card Header */}
-                            <div className="relative z-10 flex items-center justify-between gap-4 border-b border-slate-200 p-6 dark:border-slate-800/60">
-                                <div className="flex items-center gap-3">
-                                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-600 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-400">
-                                        <Map className="h-5.5 w-5.5" />
-                                    </div>
-                                    <div>
+                            <div className="relative z-10 flex flex-col gap-4 border-b border-slate-200 p-6 dark:border-slate-800/60 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex items-start gap-3">
+                                    <div className="min-w-0">
                                         <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-white">
                                             Career Branch
                                         </h2>
                                         <p className="text-slate-450 mt-1 text-[11px] dark:text-slate-500">
-                                            Kurikulum berjenjang spesifik untuk
-                                            branch karir ini.
+                                            Kurikulum berjenjang spesifik untuk branch karir ini.
                                         </p>
                                     </div>
                                 </div>
 
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        openCreateModal('career_branch')
-                                    }
-                                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:text-slate-900 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
+                                    onClick={() => openCreateModal('career_branch')}
+                                    className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm transition-colors hover:border-slate-400 hover:text-slate-900 active:scale-95 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                                 >
                                     <Plus className="h-3.5 w-3.5" />
                                     <span>Tambah Path</span>
@@ -517,12 +504,10 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                             {/* Paths List */}
                             <div className="relative z-10 flex min-h-0 flex-1 flex-col p-6">
                                 {careerList.length === 0 ? (
-                                    <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20">
+                                    <div className="flex min-h-[250px] flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20">
                                         <Map className="mb-3 h-12 w-12 text-slate-300 dark:text-slate-700" />
                                         <p className="max-w-xs text-sm text-slate-500 dark:text-slate-400">
-                                            Belum ada learning path untuk branch
-                                            karir ini. Silakan klik Tambah Path
-                                            untuk membuatnya.
+                                            Belum ada learning path untuk branch karir ini. Silakan klik Tambah Path untuk membuatnya.
                                         </p>
                                     </div>
                                 ) : (
@@ -533,9 +518,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                                     >
                                         <SortableContext
                                             items={careerList.map((p) => p.id)}
-                                            strategy={
-                                                verticalListSortingStrategy
-                                            }
+                                            strategy={verticalListSortingStrategy}
                                         >
                                             <div className="space-y-4">
                                                 {careerList.map((path, idx) => (
@@ -546,9 +529,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                                                         group={group}
                                                         isFundamental={false}
                                                         onEdit={openEditModal}
-                                                        onDelete={
-                                                            setDeletingPath
-                                                        }
+                                                        onDelete={setDeletingPath}
                                                     />
                                                 ))}
                                             </div>

@@ -8,7 +8,7 @@ interface Props {
 
 export default function ProfileFormBasic({ data, setData, errors }: Props) {
     const inputClass =
-        'w-full rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2.5 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-300 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40';
+        'w-full rounded-lg border border-slate-200/90 bg-slate-50/85 px-3 py-2.5 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400/80 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40';
 
     const labelClass =
         'mb-1.5 block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase';

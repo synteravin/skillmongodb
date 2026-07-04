@@ -84,7 +84,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                 </div>
 
                 {/* Collapsible Assignment Details Card */}
-                <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 shadow-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
+                <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 shadow-sm shadow-slate-100/50 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                     
                     <button
@@ -134,7 +134,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                 {/* Overview Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     {/* Card: Total Submissions */}
-                    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-5 shadow-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
+                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-100/50 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
                         <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                         <div className="flex items-center justify-between">
                             <div>
@@ -148,7 +148,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                     </div>
 
                     {/* Card: Graded Submissions */}
-                    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-5 shadow-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
+                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-100/50 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
                         <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                         <div className="flex items-center justify-between">
                             <div>
@@ -162,7 +162,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                     </div>
 
                     {/* Card: Completion Rate */}
-                    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-5 shadow-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
+                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-100/50 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40 backdrop-blur-xs">
                         <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                         <div>
                             <div className="flex items-center justify-between mb-2">
@@ -180,7 +180,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                 </div>
 
                 {/* Panel Tabel Tugas Siswa */}
-                <div className="rounded-2xl border border-slate-200 bg-white/70 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] overflow-hidden backdrop-blur-xs">
+                <div className="rounded-2xl border border-slate-200/80 bg-white/75 shadow-sm shadow-slate-100/50 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] overflow-hidden backdrop-blur-xs">
                     
                     {/* Header Kontrol: Tab Filter & Cari */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5 border-b border-slate-100 dark:border-slate-800/60">
@@ -206,7 +206,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                                     <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[9px] font-black ${
                                         activeTab === tab.key
                                             ? 'bg-white/20 text-white'
-                                            : 'bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-450'
+                                            : 'bg-slate-200 text-slate-600 dark:bg-slate-900 dark:text-slate-450'
                                     }`}>
                                         {tab.count}
                                     </span>
@@ -222,7 +222,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                                 placeholder="Search student name..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full md:w-64 pl-9 pr-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900 dark:text-white placeholder-slate-400 transition-all shadow-inner"
+                                className="w-full md:w-64 pl-9 pr-4 py-2 bg-slate-100/40 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900 dark:text-white placeholder-slate-400 transition-all shadow-inner"
                             />
                         </div>
                     </div>
@@ -243,7 +243,7 @@ export default function SubmissionShow({ submission, studentSubmissions }: Props
                                     filteredSubmissions.map((item) => (
                                         <tr
                                             key={item.id}
-                                            className="hover:bg-slate-50/45 dark:hover:bg-slate-900/20 transition-colors group"
+                                            className="hover:bg-slate-100/40 dark:hover:bg-slate-900/20 transition-colors group"
                                         >
                                             {/* Student Profil */}
                                             <td className="px-6 py-4">

@@ -331,6 +331,11 @@ Route::middleware(['auth', 'role:mentor'])
         /* ---------------- FINAL QUIZ ---------------- */
 
         Route::get(
+            '/quiz',
+            [MentorQuizController::class, 'index']
+        )->name('quiz.index');
+
+        Route::get(
             '/career-groups/{group}/paths/{path}/quiz/create',
             [MentorQuizController::class, 'create']
         )->name('quiz.create');

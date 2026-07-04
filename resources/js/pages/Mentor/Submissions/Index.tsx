@@ -44,7 +44,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Hero Header Card */}
-                <div className="relative overflow-hidden rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+                <div className="relative overflow-hidden rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200/80 dark:border-slate-800 shadow-sm shadow-slate-100/50 p-6 sm:p-8">
                     {/* Decorative background icon */}
                     <div className="absolute top-0 right-0 p-10 opacity-5 dark:opacity-10 pointer-events-none select-none">
                     </div>
@@ -84,7 +84,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                 </div>
 
                 {/* Submissions List Card */}
-                <div className="rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                <div className="rounded-xl bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] border border-slate-200/80 dark:border-slate-800 shadow-sm shadow-slate-100/50 overflow-hidden">
                     {/* Card header */}
                     <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-100 dark:border-slate-800">
                         <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
@@ -104,7 +104,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                 {submissions.map((submission) => (
                                     <div
                                         key={submission.id}
-                                        className="group relative flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30 hover:bg-white dark:hover:bg-slate-800/60 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-sm transition-all duration-200"
+                                        className="group relative flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800 bg-slate-50/85 dark:bg-slate-800/30 hover:bg-white dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs hover:shadow-sm transition-all duration-200"
                                     >
                                         {/* Left accent line on hover */}
                                         <div className="absolute top-0 left-0 w-0.5 h-full bg-indigo-500 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
