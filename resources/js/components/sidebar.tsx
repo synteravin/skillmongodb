@@ -14,6 +14,7 @@ import {
     UserCheckIcon,
     User,
     FileSignature,
+    MessageSquare,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -79,6 +80,12 @@ const menu: MenuItem[] = [
         name: 'Signature',
         icon: FileSignature,
         href: '/signature',
+        roles: ['admin', 'mentor'],
+    },
+    {
+        name: 'Forum Diskusi',
+        icon: MessageSquare,
+        href: '/admin/forum', // dynamically overridden below
         roles: ['admin', 'mentor'],
     },
 ];
@@ -186,6 +193,8 @@ export default function Sidebar({
                             const href =
                                 item.name === 'Dashboard'
                                     ? getDashboardRoute()
+                                    : item.name === 'Forum Diskusi'
+                                    ? `/${userRole}/forum`
                                     : item.href;
 
                             const Icon = item.icon;
