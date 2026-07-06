@@ -29,6 +29,7 @@ use App\Http\Controllers\Student\CompletePathController;
 use App\Http\Controllers\Student\CourseController as StudentCourseActionController;
 use App\Http\Controllers\Student\CourseRoadmapController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\Student\ForumController;
 use App\Http\Controllers\Student\LeaderboardController;
 use App\Http\Controllers\Student\LearnController;
 use App\Http\Controllers\Student\MentorProfileController;
@@ -191,9 +192,14 @@ Route::middleware(['auth', 'role:admin'])
         // Route::post('ranks/reorder', [RankController::class, 'reorder'])
         //     ->name('ranks.reorder');
 
-        // Route::get('assets', function () {
-        //     return Inertia::render('Admin/Assets/Index');
-        // })->name('assets');
+        // FORUM
+        Route::get('/forum/{course?}', [App\Http\Controllers\Admin\ForumController::class, 'index'])->name('forum.index');
+        Route::get('/forum/{course}/messages', [App\Http\Controllers\Admin\ForumController::class, 'getMessages'])->name('forum.messages');
+        Route::post('/forum/{course}/messages', [App\Http\Controllers\Admin\ForumController::class, 'store'])->name('forum.messages.store');
+        Route::post('/forum/messages/{message}/reaction', [App\Http\Controllers\Admin\ForumController::class, 'toggleReaction'])->name('forum.messages.reaction');
+        Route::post('/forum/messages/{message}/pin', [App\Http\Controllers\Admin\ForumController::class, 'togglePin'])->name('forum.messages.pin');
+        Route::put('/forum/messages/{message}', [App\Http\Controllers\Admin\ForumController::class, 'update'])->name('forum.messages.update');
+        Route::delete('/forum/messages/{message}', [App\Http\Controllers\Admin\ForumController::class, 'destroy'])->name('forum.messages.destroy');
     });
 /*
 |--------------------------------------------------------------------------
@@ -359,6 +365,15 @@ Route::middleware(['auth', 'role:mentor'])
             '/quiz/{quiz}',
             [MentorQuizController::class, 'destroy']
         )->name('quiz.destroy');
+
+        // FORUM
+        Route::get('/forum/{course?}', [App\Http\Controllers\Mentor\ForumController::class, 'index'])->name('forum.index');
+        Route::get('/forum/{course}/messages', [App\Http\Controllers\Mentor\ForumController::class, 'getMessages'])->name('forum.messages');
+        Route::post('/forum/{course}/messages', [App\Http\Controllers\Mentor\ForumController::class, 'store'])->name('forum.messages.store');
+        Route::post('/forum/messages/{message}/reaction', [App\Http\Controllers\Mentor\ForumController::class, 'toggleReaction'])->name('forum.messages.reaction');
+        Route::post('/forum/messages/{message}/pin', [App\Http\Controllers\Mentor\ForumController::class, 'togglePin'])->name('forum.messages.pin');
+        Route::put('/forum/messages/{message}', [App\Http\Controllers\Mentor\ForumController::class, 'update'])->name('forum.messages.update');
+        Route::delete('/forum/messages/{message}', [App\Http\Controllers\Mentor\ForumController::class, 'destroy'])->name('forum.messages.destroy');
     });
 
 /*
@@ -420,6 +435,24 @@ Route::middleware(['auth', 'role:student', 'has.character'])
             ->name('submissions.show');
         Route::post('/submissions/{submission}/submit', [StudentSubmission::class, 'store'])
             ->name('submissions.store');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| FORUM DISKUSI (Bisa diakses Student, Mentor, Admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])
+    ->prefix('student')
+    ->name('student.')
+    ->group(function () {
+        Route::get('/forum/{course?}', [ForumController::class, 'index'])->name('forum.index');
+        Route::get('/forum/{course}/messages', [ForumController::class, 'getMessages'])->name('forum.messages');
+        Route::post('/forum/{course}/messages', [ForumController::class, 'store'])->name('forum.messages.store');
+        Route::post('/forum/messages/{message}/reaction', [ForumController::class, 'toggleReaction'])->name('forum.messages.reaction');
+        Route::post('/forum/messages/{message}/pin', [ForumController::class, 'togglePin'])->name('forum.messages.pin');
+        Route::put('/forum/messages/{message}', [ForumController::class, 'update'])->name('forum.messages.update');
+        Route::delete('/forum/messages/{message}', [ForumController::class, 'destroy'])->name('forum.messages.destroy');
     });
 
 /*

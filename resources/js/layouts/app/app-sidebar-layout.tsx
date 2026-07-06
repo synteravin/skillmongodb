@@ -20,14 +20,17 @@ export default function AppSidebarLayout({
 
     const { props } = usePage<any>();
 
+    const isForum = typeof window !== 'undefined' && window.location.pathname.includes('/forum');
+
     return (
         <AppShell variant="sidebar">
             <Sidebar isOpen={isOpen} setSidebarOpen={setSidebarOpen} />
             <AppContent
                 variant="sidebar"
-                className={`min-h-screen overflow-x-hidden transition-all duration-300 ml-0 bg-[#f8fafc] dark:bg-background
-        ${isOpen ? 'md:ml-64' : 'md:ml-16'}
-    `}
+                className={`min-h-screen transition-all duration-300 ml-0 bg-[#f8fafc] dark:bg-background
+                    ${isOpen ? 'md:ml-64' : 'md:ml-16'}
+                    ${isForum ? 'h-screen overflow-hidden' : 'overflow-x-hidden'}
+                `}
             >
                 {/* Premium Sticky Mobile Header Navbar */}
                 <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/85 px-4 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/85 md:hidden">
