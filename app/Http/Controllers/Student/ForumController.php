@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseStudent;
 use App\Models\ForumMessage;
+use App\Models\User;
+use App\Services\Admin\UserDetailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,6 +17,62 @@ use Inertia\Response;
 
 class ForumController extends Controller
 {
+    /**
+     * Get user profile details for modal popover on click avatar.
+     */
+    public function userProfile(User $user, UserDetailService $userDetailService): JsonResponse
+    {
+        $user->load(['character']);
+        $disk = Storage::disk('s3');
+
+        $details = [];
+        if ($user->role === 'student') {
+            $details = $userDetailService->getStudentDetails($user);
+        } elseif ($user->role === 'mentor') {
+            $details = $userDetailService->getMentorDetails($user);
+        }
+
+        $coursesTaken = [];
+        if ($user->role === 'student' && isset($details['course_history'])) {
+            $coursesTaken = collect($details['course_history'])->map(function ($ch) {
+                return [
+                    'name' => $ch['course_name'],
+                    'thumbnail' => $ch['thumbnail_url'],
+                ];
+            })->all();
+        } elseif ($user->role === 'mentor' && isset($details['courses'])) {
+            $coursesTaken = collect($details['courses'])->map(function ($c) {
+                return [
+                    'name' => $c['course_name'],
+                    'thumbnail' => $c['thumbnail_url'],
+                ];
+            })->all();
+        }
+
+        $rankName = null;
+        $rankImage = null;
+        if (isset($details['gamification']['rank'])) {
+            $rankName = $details['gamification']['rank']['name'] ?? null;
+            $rankImage = $details['gamification']['rank']['image'] ?? null;
+        }
+
+        return response()->json([
+            'id' => (string) $user->_id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'avatar' => $user->avatar ? $disk->url($user->avatar) : null,
+            'role' => $user->role,
+            'level' => $details['gamification']['level'] ?? 1,
+            'rank_name' => $rankName,
+            'rank_image' => $rankImage,
+            'character_name' => $user->character->name ?? null,
+            'character_avatar' => $user->character->avatar_url ?? null,
+            'linkedin' => $user->linkedin ?? null,
+            'courses' => $coursesTaken,
+            'erp' => $details['gamification']['rank']['total_score'] ?? ($details['gamification']['erp'] ?? 0),
+        ]);
+    }
+
     /**
      * Display the student forum page.
      */

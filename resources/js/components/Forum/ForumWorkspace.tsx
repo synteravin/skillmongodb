@@ -89,6 +89,41 @@ export default function ForumWorkspace({
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+    // Profile Preview Modal states
+    const [profileModalOpen, setProfileModalOpen] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(false);
+    const [selectedProfile, setSelectedProfile] = useState<{
+        id: string;
+        name: string;
+        username: string;
+        avatar: string | null;
+        role: string;
+        level: number;
+        rank_name: string | null;
+        rank_image: string | null;
+        character_name: string | null;
+        character_avatar: string | null;
+        linkedin: string | null;
+        courses: Array<{ name: string; thumbnail: string | null }>;
+        erp: number;
+    } | null>(null);
+
+    const handleShowProfile = (userId: string) => {
+        setProfileLoading(true);
+        setProfileModalOpen(true);
+        fetch(`${basePath}/user/${userId}/profile`)
+            .then((res) => res.json())
+            .then((data) => {
+                setSelectedProfile(data);
+                setProfileLoading(false);
+            })
+            .catch((err) => {
+                console.error('Error fetching user profile:', err);
+                setProfileLoading(false);
+                setProfileModalOpen(false);
+            });
+    };
+
     // Responsive toggle: set true jika di sub-rute course
     const [showChatMobile, setShowChatMobile] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -733,16 +768,14 @@ export default function ForumWorkspace({
                                         >
                                             {/* Avatar */}
                                             {!isSelf && (
-                                                <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#3B28F6]/30 bg-slate-900">
+                                                <div 
+                                                    onClick={() => handleShowProfile(msg.sender.id)}
+                                                    className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#3B28F6]/30 bg-slate-900 cursor-pointer hover:scale-105 transition"
+                                                >
                                                     {msg.sender.avatar ? (
                                                         <img
-                                                            src={
-                                                                msg.sender
-                                                                    .avatar
-                                                            }
-                                                            alt={
-                                                                msg.sender.name
-                                                            }
+                                                            src={msg.sender.avatar}
+                                                            alt={msg.sender.name}
                                                             className="h-full w-full object-cover"
                                                         />
                                                     ) : (
@@ -907,7 +940,11 @@ export default function ForumWorkspace({
                                                     {!isSelf && (
                                                         <div className="mb-1 flex flex-wrap items-center gap-1.5">
                                                             <span
-                                                                className={`font-['Oxanium'] text-xs font-bold ${getNameColor(msg.sender.name)}`}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleShowProfile(msg.sender.id);
+                                                                }}
+                                                                className={`font-['Oxanium'] text-xs font-bold cursor-pointer hover:underline ${getNameColor(msg.sender.name)}`}
                                                             >
                                                                 {
                                                                     msg.sender
@@ -1222,6 +1259,172 @@ export default function ForumWorkspace({
                     setMessageIdToDelete(null);
                 }}
             />
+
+            {/* User Profile Modal */}
+            {profileModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in" onClick={() => {
+                    setProfileModalOpen(false);
+                    setSelectedProfile(null);
+                }}>
+                    <div 
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative w-full max-w-[340px] rounded-3xl border border-[#3b28f6]/30 bg-[#0a0c16]/95 text-white p-5 shadow-[0_0_50px_rgba(59,40,246,0.25)] overflow-hidden backdrop-blur-md"
+                    >
+                        {/* Close button */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setProfileModalOpen(false);
+                                setSelectedProfile(null);
+                            }}
+                            className="absolute top-4 right-4 rounded-full p-1 text-slate-400 hover:bg-slate-800/50 hover:text-white transition z-10"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+
+                        {profileLoading ? (
+                            <div className="flex flex-col items-center justify-center py-12">
+                                <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#facc15] border-t-transparent"></div>
+                                <p className="text-xs text-slate-400 mt-4 font-['Oxanium']">Memuat profil...</p>
+                            </div>
+                        ) : selectedProfile ? (
+                            <div className="flex flex-col">
+                                {/* Top Section: Two columns (Avatar & Level) */}
+                                <div className="grid grid-cols-[120px_1fr] gap-4 items-center mb-5">
+                                    {/* Left: Square avatar with slightly rounded corners */}
+                                    <div className="aspect-square w-full rounded-2xl overflow-hidden border border-[#3b28f6]/20 bg-slate-900 shadow-[0_4px_20px_rgba(59,40,246,0.15)] relative">
+                                        {selectedProfile.avatar ? (
+                                            <img src={selectedProfile.avatar} alt={selectedProfile.name} className="h-full w-full object-cover" />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center bg-indigo-950/40">
+                                                <UserIcon className="h-10 w-10 text-indigo-400" />
+                                            </div>
+                                        )}
+                                        {/* Role Badge */}
+                                        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-black/80 text-[#facc15] border border-[#facc15]/30 font-['Oxanium']">
+                                            {selectedProfile.role}
+                                        </div>
+                                    </div>
+
+                                    {/* Right: Username & Level Circle */}
+                                    <div className="flex flex-col items-center justify-center">
+                                        <h3 className="font-['Oxanium'] text-sm font-bold text-white text-center leading-tight truncate w-full mb-3" title={selectedProfile.name}>
+                                            {selectedProfile.name}
+                                        </h3>
+                                        
+                                        {/* Circle Level */}
+                                        <div className="w-18 h-18 rounded-full border-4 border-indigo-700/80 shadow-[0_0_15px_rgba(59,40,246,0.5)] flex flex-col items-center justify-center bg-black/60 relative">
+                                            <span className="font-['Orbitron'] text-xl font-black text-white">
+                                                {selectedProfile.level}
+                                            </span>
+                                            {/* Subtitle label */}
+                                            <span className="text-[7px] font-bold tracking-widest text-[#facc15] uppercase font-['Oxanium'] -mt-0.5">LEVEL</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Divider */}
+                                <div className="w-full border-t border-[#3b28f6]/10 mb-4"></div>
+
+                                {/* Content Rows */}
+                                <div className="flex flex-col gap-3.5">
+                                    {/* Row 1: ERP & Rank Badge */}
+                                    <div className="rounded-2xl bg-[#0e1122]/80 border border-[#3b28f6]/10 px-4 py-3 flex items-center justify-between shadow-inner">
+                                        <div className="flex flex-col">
+                                            <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">ERP</span>
+                                            <span className="font-['Orbitron'] text-xs font-black text-indigo-400 mt-0.5">
+                                                {selectedProfile.erp.toLocaleString()} pts
+                                            </span>
+                                        </div>
+                                        {selectedProfile.rank_image ? (
+                                            <div className="flex items-center gap-2 bg-black/40 py-1 px-2.5 rounded-xl border border-[#3b28f6]/10">
+                                                <img src={selectedProfile.rank_image} alt={selectedProfile.rank_name ?? ''} className="h-5 w-5 object-contain" />
+                                                <span className="font-['Oxanium'] text-[10px] font-bold text-slate-200">
+                                                    {selectedProfile.rank_name}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <span className="font-['Oxanium'] text-[10px] font-bold text-slate-500 bg-black/20 py-1 px-2.5 rounded-xl">Unranked</span>
+                                        )}
+                                    </div>
+
+                                    {/* Row 2: Completed Course */}
+                                    <div className="rounded-2xl bg-[#0e1122]/80 border border-[#3b28f6]/10 px-4 py-3 flex flex-col shadow-inner">
+                                        <div className="flex items-center justify-between w-full mb-2">
+                                            <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">Completed Course</span>
+                                            <div className="flex items-center gap-1">
+                                                <span className="font-['Orbitron'] text-xs font-black text-[#facc15]">
+                                                    {selectedProfile.courses.length}
+                                                </span>
+                                                <svg className="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Horizontal list of courses thumbnails/icons */}
+                                        {selectedProfile.courses && selectedProfile.courses.length > 0 ? (
+                                            <div className="flex gap-2.5 overflow-x-auto py-1 custom-scrollbar scrollbar-none">
+                                                {selectedProfile.courses.map((course, idx) => (
+                                                    <div key={idx} className="h-7 w-7 rounded-lg overflow-hidden border border-[#3b28f6]/20 bg-black shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.4)]" title={course.name}>
+                                                        {course.thumbnail ? (
+                                                            <img src={course.thumbnail} alt={course.name} className="h-full w-full object-cover" />
+                                                        ) : (
+                                                            <div className="flex h-full w-full items-center justify-center bg-indigo-950/40 text-[9px] font-bold text-indigo-400 font-['Oxanium']">
+                                                                {course.name.substring(0, 2).toUpperCase()}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-[10px] italic text-slate-500 font-['Oxanium']">Belum mengikuti kelas apa pun.</p>
+                                        )}
+                                    </div>
+
+                                    {/* Row 3: Social Handle */}
+                                    <div className="rounded-2xl bg-[#0e1122]/80 border border-[#3b28f6]/10 px-4 py-2.5 flex items-center justify-between shadow-inner">
+                                        <span className="font-['Oxanium'] text-xs font-semibold text-slate-300 truncate max-w-[200px]">
+                                            {selectedProfile.linkedin ? (
+                                                (() => {
+                                                    try {
+                                                        const url = selectedProfile.linkedin.replace(/\/$/, '');
+                                                        const parts = url.split('/');
+                                                        const handle = parts[parts.length - 1];
+                                                        return handle ? `@${handle}` : `@${selectedProfile.username}`;
+                                                    } catch {
+                                                        return `@${selectedProfile.username}`;
+                                                    }
+                                                })()
+                                            ) : (
+                                                `@${selectedProfile.username}`
+                                            )}
+                                        </span>
+                                        {selectedProfile.linkedin ? (
+                                            <a
+                                                href={selectedProfile.linkedin}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="h-8 w-8 rounded-xl bg-gradient-to-tr from-[#3b28f6] to-[#0077b5] flex items-center justify-center text-white shadow-[0_0_10px_rgba(0,119,181,0.4)] hover:scale-105 active:scale-95 transition duration-300 border border-[#3b28f6]/30"
+                                            >
+                                                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                                </svg>
+                                            </a>
+                                        ) : (
+                                            <div className="h-8 w-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 cursor-not-allowed">
+                                                <svg className="h-4 w-4 fill-current opacity-40" viewBox="0 0 24 24">
+                                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

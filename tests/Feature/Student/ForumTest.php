@@ -405,4 +405,27 @@ class ForumTest extends TestCase
 
         $this->assertNotNull(ForumMessage::find($msg->_id));
     }
+
+    public function test_student_can_retrieve_user_profile(): void
+    {
+        $this->actingAs($this->student);
+
+        $response = $this->getJson("/student/forum/user/{$this->student->_id}/profile");
+
+        $response->assertOk()
+            ->assertJsonStructure([
+                'id',
+                'name',
+                'username',
+                'avatar',
+                'role',
+                'level',
+                'rank_name',
+                'rank_image',
+                'character_name',
+                'character_avatar',
+                'linkedin',
+                'courses',
+            ]);
+    }
 }

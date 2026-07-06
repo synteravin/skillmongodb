@@ -193,6 +193,7 @@ Route::middleware(['auth', 'role:admin'])
         //     ->name('ranks.reorder');
 
         // FORUM
+        Route::get('/forum/user/{user}/profile', [App\Http\Controllers\Admin\ForumController::class, 'userProfile'])->name('forum.user.profile');
         Route::get('/forum/{course?}', [App\Http\Controllers\Admin\ForumController::class, 'index'])->name('forum.index');
         Route::get('/forum/{course}/messages', [App\Http\Controllers\Admin\ForumController::class, 'getMessages'])->name('forum.messages');
         Route::post('/forum/{course}/messages', [App\Http\Controllers\Admin\ForumController::class, 'store'])->name('forum.messages.store');
@@ -367,6 +368,7 @@ Route::middleware(['auth', 'role:mentor'])
         )->name('quiz.destroy');
 
         // FORUM
+        Route::get('/forum/user/{user}/profile', [App\Http\Controllers\Mentor\ForumController::class, 'userProfile'])->name('forum.user.profile');
         Route::get('/forum/{course?}', [App\Http\Controllers\Mentor\ForumController::class, 'index'])->name('forum.index');
         Route::get('/forum/{course}/messages', [App\Http\Controllers\Mentor\ForumController::class, 'getMessages'])->name('forum.messages');
         Route::post('/forum/{course}/messages', [App\Http\Controllers\Mentor\ForumController::class, 'store'])->name('forum.messages.store');
@@ -446,6 +448,7 @@ Route::middleware(['auth'])
     ->prefix('student')
     ->name('student.')
     ->group(function () {
+        Route::get('/forum/user/{user}/profile', [ForumController::class, 'userProfile'])->name('forum.user.profile');
         Route::get('/forum/{course?}', [ForumController::class, 'index'])->name('forum.index');
         Route::get('/forum/{course}/messages', [ForumController::class, 'getMessages'])->name('forum.messages');
         Route::post('/forum/{course}/messages', [ForumController::class, 'store'])->name('forum.messages.store');

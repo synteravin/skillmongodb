@@ -17,6 +17,7 @@ type Props = {
         email: string;
         level: number;
         avatar: string;
+        linkedin?: string;
 
         exp_min: number;
         exp: number;
@@ -50,6 +51,7 @@ export default function ProfilePage({ user }: Props) {
         username: user.username || user.name,
         email: user.email,
         avatar: null as File | null,
+        linkedin: user.linkedin || '',
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -435,12 +437,22 @@ export default function ProfilePage({ user }: Props) {
 
                                 <div className="flex flex-col">
                                     <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
-                                        SOCIAL UPLINK
+                                        LINKEDIN
                                     </label>
                                     <input
-                                        placeholder=""
+                                        type="text"
+                                        value={data.linkedin}
+                                        onChange={(e) =>
+                                            setData('linkedin', e.target.value)
+                                        }
+                                        placeholder="https://linkedin.com/in/username"
                                         className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
                                     />
+                                    {errors.linkedin && (
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {errors.linkedin}
+                                        </span>
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col">
