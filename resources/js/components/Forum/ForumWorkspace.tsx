@@ -1262,13 +1262,13 @@ export default function ForumWorkspace({
 
             {/* User Profile Modal */}
             {profileModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in" onClick={() => {
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in" onClick={() => {
                     setProfileModalOpen(false);
                     setSelectedProfile(null);
                 }}>
                     <div 
                         onClick={(e) => e.stopPropagation()}
-                        className="relative w-full max-w-[340px] rounded-3xl border border-[#3b28f6]/30 bg-[#0a0c16]/95 text-white p-5 shadow-[0_0_50px_rgba(59,40,246,0.25)] overflow-hidden backdrop-blur-md"
+                        className="relative w-full max-w-[340px] rounded-3xl border border-[#3b28f6]/30 bg-black/40 text-white p-5 shadow-[0_0_50px_rgba(59,40,246,0.25)] overflow-hidden backdrop-blur-sm"
                     >
                         {/* Close button */}
                         <button
@@ -1329,7 +1329,7 @@ export default function ForumWorkspace({
                                 {/* Content Rows */}
                                 <div className="flex flex-col gap-3.5">
                                     {/* Row 1: ERP & Rank Badge */}
-                                    <div className="rounded-2xl bg-[#0e1122]/80 border border-[#3b28f6]/10 px-4 py-3 flex items-center justify-between shadow-inner">
+                                        <div className="rounded-2xl bg-black/30 border border-[#3b28f6]/10 px-4 py-3 flex items-center justify-between shadow-inner">
                                         <div className="flex flex-col">
                                             <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">ERP</span>
                                             <span className="font-['Orbitron'] text-xs font-black text-indigo-400 mt-0.5">
@@ -1349,7 +1349,7 @@ export default function ForumWorkspace({
                                     </div>
 
                                     {/* Row 2: Completed Course */}
-                                    <div className="rounded-2xl bg-[#0e1122]/80 border border-[#3b28f6]/10 px-4 py-3 flex flex-col shadow-inner">
+                                    <div className="rounded-2xl bg-black/30 border border-[#3b28f6]/10 px-4 py-3 flex flex-col shadow-inner">
                                         <div className="flex items-center justify-between w-full mb-2">
                                             <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">Completed Course</span>
                                             <div className="flex items-center gap-1">
@@ -1383,7 +1383,7 @@ export default function ForumWorkspace({
                                     </div>
 
                                     {/* Row 3: Social Handle */}
-                                    <div className="rounded-2xl bg-[#0e1122]/80 border border-[#3b28f6]/10 px-4 py-2.5 flex items-center justify-between shadow-inner">
+                                    <div className="rounded-2xl bg-black/30 border border-[#3b28f6]/10 px-4 py-2.5 flex items-center justify-between shadow-inner">
                                         <span className="font-['Oxanium'] text-xs font-semibold text-slate-300 truncate max-w-[200px]">
                                             {selectedProfile.linkedin ? (
                                                 (() => {
