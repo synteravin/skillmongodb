@@ -35,7 +35,7 @@ export default function CreateSubmission({ group }: Props) {
                 <div className="flex items-center gap-4 mb-6">
                     <Link
                         href={`/mentor/career-groups/${group.id}/submissions`}
-                        className="p-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors shadow-sm"
+                        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
@@ -50,9 +50,8 @@ export default function CreateSubmission({ group }: Props) {
                 </div>
 
         <div className="mx-auto w-full">
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-md shadow-slate-100/50 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] font-outfit">
-                                {/* Top decorative line */}
-                            
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-md shadow-slate-100/50 dark:shadow-none bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] font-outfit">
+                                
 
                                 <form onSubmit={submit} className="p-6 sm:p-8 md:p-10 space-y-8 relative z-10">
 
@@ -75,7 +74,7 @@ export default function CreateSubmission({ group }: Props) {
                                             type="text"
                                             value={data.title}
                                             onChange={(e) => setData('title', e.target.value)}
-                                            className="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 focus:bg-white text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-605 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm px-4 py-3.5"
+                                            className="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-sm px-4 py-3.5"
                                             placeholder="e.g. Final Project: E-commerce Dashboard"
                                             autoFocus
                                         />
@@ -102,7 +101,7 @@ export default function CreateSubmission({ group }: Props) {
                                             rows={5}
                                             value={data.description}
                                             onChange={(e) => setData('description', e.target.value)}
-                                            className="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 focus:bg-white text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm px-4 py-3.5 resize-none"
+                                            className="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-sm px-4 py-3.5 resize-none"
                                             placeholder="Describe the task requirements, instructions, and grading criteria..."
                                         />
                                         {errors.description && (
@@ -124,7 +123,7 @@ export default function CreateSubmission({ group }: Props) {
                                                 <select
                                                     value={data.submission_type}
                                                     onChange={(e) => setData('submission_type', e.target.value)}
-                                                    className="w-full appearance-none rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 focus:bg-white text-slate-900 dark:text-slate-100 px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm"
+                                                    className="w-full appearance-none rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-sm"
                                                 >
                                                     <option value="file">File Upload Only</option>
                                                     <option value="link">URL Link Only</option>
@@ -152,7 +151,7 @@ export default function CreateSubmission({ group }: Props) {
                                                 type="datetime-local"
                                                 value={data.deadline}
                                                 onChange={(e) => setData('deadline', e.target.value)}
-                                                className="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 focus:bg-white text-slate-900 dark:text-slate-100 px-4 py-3 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm [color-scheme:light] dark:[color-scheme:dark]"
+                                                className="w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 px-4 py-3 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-sm [color-scheme:light] dark:[color-scheme:dark]"
                                             />
                                             {errors.deadline && (
                                                 <p className="mt-2 text-sm text-rose-500 flex items-center gap-1.5 font-semibold">
@@ -188,7 +187,7 @@ export default function CreateSubmission({ group }: Props) {
                                                     </label>
                                                     <p className="pl-1">or drag and drop</p>
                                                 </div>
-                                                <p className="text-xs leading-5 text-slate-500 mt-1">
+                                                <p className="text-xs leading-5 text-slate-500 dark:text-slate-400 mt-1">
                                                     {data.attachment ? data.attachment.name : 'PDF, DOCX, ZIP up to 10MB'}
                                                 </p>
                                             </div>
@@ -211,7 +210,7 @@ export default function CreateSubmission({ group }: Props) {
                                         <button
                                             type="submit"
                                             disabled={processing}
-                                            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                                            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             <Save className="w-5 h-5" />
                                             {processing ? 'Saving...' : 'Save as Draft'}

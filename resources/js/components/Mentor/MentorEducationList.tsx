@@ -18,8 +18,8 @@ export default function MentorEducationList({ educations }: Props) {
     if (!educations || educations.length === 0) {
         return (
             <div className="border-2 border-dashed border-slate-200 dark:border-[#3B28F6]/20 bg-slate-50/50 dark:bg-[#04040a]/40 py-10 text-center rounded-xl p-6">
-                <GraduationCap className="mx-auto mb-2 text-slate-400 dark:text-gray-650 animate-pulse" size={24} />
-                <p className="font-['Orbitron'] text-xs tracking-widest text-slate-450 dark:text-gray-500 uppercase">
+                <GraduationCap className="mx-auto mb-2 text-slate-400 dark:text-slate-500 animate-pulse" size={24} />
+                <p className="font-['Orbitron'] text-xs tracking-widest text-slate-400 dark:text-slate-500 uppercase">
                     No Academic Credentials Logged
                 </p>
             </div>
@@ -31,7 +31,7 @@ export default function MentorEducationList({ educations }: Props) {
             {educations.map((edu, idx) => (
                 <div
                     key={idx}
-                    className="relative overflow-hidden bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 p-5 md:p-6 rounded-xl transition-all duration-300 hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 shadow-sm shadow-slate-100/55 hover:shadow-lg dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col justify-between"
+                    className="relative overflow-hidden bg-white dark:bg-[#13174D]/50 border border-slate-200 dark:border-[#3B28F6]/20 p-5 md:p-6 rounded-xl transition-colors duration-300 hover:border-indigo-500/50 dark:hover:border-[#3B28F6]/50 shadow-sm hover:shadow-lg dark:shadow-none dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.35)] flex flex-col justify-between"
                 >
                     <div>
 
@@ -53,11 +53,11 @@ export default function MentorEducationList({ educations }: Props) {
 
                     {/* Specialization / Jurusan */}
                     {edu.spesialisasi && (
-                        <div className="mt-4 border-t border-slate-150 dark:border-slate-800/80 pt-3">
+                        <div className="mt-4 border-t border-slate-200 dark:border-slate-800/80 pt-3">
                             <span className="block text-[8px] font-bold tracking-[1.5px] text-slate-400 dark:text-slate-500 uppercase">
                                 Specialization
                             </span>
-                            <span className="font-['Oxanium'] text-xs font-medium text-slate-650 dark:text-slate-350 mt-0.5 block">
+                            <span className="font-['Oxanium'] text-xs font-medium text-slate-600 dark:text-slate-300 mt-0.5 block">
                                 {edu.spesialisasi}
                             </span>
                         </div>
