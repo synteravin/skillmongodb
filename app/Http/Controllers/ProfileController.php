@@ -190,6 +190,8 @@ class ProfileController extends Controller
                 // 🔥 TAMBAHKAN INI (untuk progress star)
                 'total_score' => $totalScore,
 
+                'linkedin' => $user->linkedin ?? '',
+
                 'last_course' => $lastCourseData,
 
                 'progress' => [
@@ -210,6 +212,7 @@ class ProfileController extends Controller
             'username' => 'sometimes|required|string|max:255|unique:users,username,'.$user->id,
             'email' => 'sometimes|required|email|max:255|unique:users,email,'.$user->id,
             'avatar' => 'nullable|image|max:2048',
+            'linkedin' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('avatar')) {
