@@ -6,6 +6,7 @@ use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class QuestService
 {
@@ -82,6 +83,31 @@ class QuestService
                 ];
             });
 
+        $disk = Storage::disk('s3');
+        $resolvedImages = array_map(function ($img) use ($disk) {
+            return [
+                'name' => $img['name'] ?? 'image.jpg',
+                'url' => $disk->url($img['path']),
+            ];
+        }, $quest->images ?? []);
+
+        $resolvedFiles = array_map(function ($file) use ($disk) {
+            return [
+                'name' => $file['name'] ?? 'file.dat',
+                'url' => $disk->url($file['path']),
+                'size' => $file['size'] ?? 0,
+            ];
+        }, $quest->files ?? []);
+
+        $resolvedSubmissionFile = null;
+        if ($quest->submission_file) {
+            $resolvedSubmissionFile = [
+                'name' => $quest->submission_file['name'] ?? 'deliverable.zip',
+                'url' => $disk->url($quest->submission_file['path']),
+                'size' => $quest->submission_file['size'] ?? 0,
+            ];
+        }
+
         return [
             'quest' => [
                 '_id' => (string) $quest->_id,
@@ -108,6 +134,9 @@ class QuestService
                 'revision_note' => $quest->revision_note,
                 'rating' => $quest->rating,
                 'rating_comment' => $quest->rating_comment,
+                'images' => $resolvedImages,
+                'files' => $resolvedFiles,
+                'submission_file' => $resolvedSubmissionFile,
             ],
             'bids' => $bids,
         ];
@@ -126,6 +155,8 @@ class QuestService
             'deadline' => now()->parse($data['deadline']),
             'status' => 'open',
             'creator_id' => $creator->_id,
+            'images' => $data['images'] ?? [],
+            'files' => $data['files'] ?? [],
         ]);
     }
 
@@ -169,5 +200,67 @@ class QuestService
             'status' => 'ongoing',
             'worker_id' => $acceptedBid->student_id,
         ]);
+    }
+
+    /**
+     * Get quest history (taken / bidded / completed) for a student.
+     */
+    public function getStudentQuestHistory(User $user)
+    {
+        $bids = QuestBid::where('student_id', (string) $user->_id)->get();
+        $biddedQuestIds = $bids->pluck('quest_id')->toArray();
+
+        $quests = Quest::with('creator')
+            ->where(function ($query) use ($user, $biddedQuestIds) {
+                $query->where('worker_id', (string) $user->_id)
+                    ->orWhereIn('_id', $biddedQuestIds);
+            })
+            ->latest()
+            ->get();
+
+        return $quests->map(function ($quest) use ($user, $bids) {
+            $myBid = $bids->firstWhere('quest_id', (string) $quest->_id);
+
+            $submissionFile = null;
+            if ($quest->submission_file) {
+                $subFile = $quest->submission_file;
+                $submissionFile = [
+                    'name' => $subFile['name'] ?? 'project.zip',
+                    'size' => $subFile['size'] ?? 0,
+                    'url' => isset($subFile['path']) ? Storage::disk('s3')->temporaryUrl($subFile['path'], now()->addMinutes(30)) : null,
+                ];
+            }
+
+            return [
+                '_id' => (string) $quest->_id,
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_salary' => $quest->min_salary,
+                'max_salary' => $quest->max_salary,
+                'deadline' => $quest->deadline?->toISOString(),
+                'status' => $quest->status,
+                'creator' => [
+                    'name' => $quest->creator?->name ?? 'Unknown User',
+                    'role' => $quest->creator?->role ?? 'unknown',
+                ],
+                'worker_id' => $quest->worker_id,
+                'is_worker' => $quest->worker_id === (string) $user->_id,
+                'my_bid' => $myBid ? [
+                    'bid_amount' => $myBid->bid_amount,
+                    'status' => $myBid->status,
+                    'proposal' => $myBid->proposal,
+                    'cv' => $myBid->cv,
+                    'portfolio' => $myBid->portfolio,
+                ] : null,
+                'submission_link' => $quest->submission_link,
+                'submission_note' => $quest->submission_note,
+                'submission_file' => $submissionFile,
+                'submitted_at' => $quest->submitted_at?->toISOString(),
+                'completed_at' => $quest->completed_at?->toISOString(),
+                'rating' => $quest->rating,
+                'rating_comment' => $quest->rating_comment,
+                'revision_note' => $quest->revision_note,
+            ];
+        });
     }
 }

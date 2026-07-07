@@ -12,6 +12,7 @@ use App\Models\UserStat;
 use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class QuestController extends Controller
@@ -27,9 +28,11 @@ class QuestController extends Controller
         $status = $request->input('status');
 
         $quests = $this->questService->listQuests($search, $status);
+        $historyQuests = $this->questService->getStudentQuestHistory($request->user());
 
         return Inertia::render('Student/Quests/Index', [
             'quests' => $quests,
+            'historyQuests' => $historyQuests,
             'filters' => [
                 'search' => $search,
                 'status' => $status,
@@ -50,9 +53,41 @@ class QuestController extends Controller
      */
     public function store(StoreQuestRequest $request)
     {
+        $data = $request->validated();
+
+        $images = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                if ($image->isValid()) {
+                    $path = $image->store('quests/images', 's3');
+                    $images[] = [
+                        'path' => $path,
+                        'name' => $image->getClientOriginalName(),
+                    ];
+                }
+            }
+        }
+
+        $files = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                if ($file->isValid()) {
+                    $path = $file->store('quests/files', 's3');
+                    $files[] = [
+                        'path' => $path,
+                        'name' => $file->getClientOriginalName(),
+                        'size' => $file->getSize(),
+                    ];
+                }
+            }
+        }
+
+        $data['images'] = $images;
+        $data['files'] = $files;
+
         $quest = $this->questService->createQuest(
             $request->user(),
-            $request->validated()
+            $data
         );
 
         return redirect()->route('student.quests.show', $quest->_id)
@@ -162,14 +197,38 @@ class QuestController extends Controller
         }
 
         $request->validate([
-            'submission_link' => 'required|url',
+            'submission_file' => 'required|file|mimes:zip|max:51200',
+            'submission_link' => 'nullable|url',
             'submission_note' => 'nullable|string|max:1000',
         ], [
-            'submission_link.required' => 'Link hasil pekerjaan wajib diisi.',
+            'submission_file.required' => 'Berkas pekerjaan (ZIP) wajib diunggah.',
+            'submission_file.file' => 'Berkas pengiriman harus berupa file valid.',
+            'submission_file.mimes' => 'Berkas pengiriman harus berformat ZIP.',
+            'submission_file.max' => 'Ukuran berkas pengiriman maksimal adalah 50MB.',
             'submission_link.url' => 'Format link harus berupa URL valid.',
         ]);
 
+        $submissionFile = null;
+        if ($request->hasFile('submission_file')) {
+            // Delete old ZIP if exists
+            if ($quest->submission_file && isset($quest->submission_file['path'])) {
+                Storage::disk('s3')->delete($quest->submission_file['path']);
+            }
+
+            $file = $request->file('submission_file');
+            $originalName = $file->getClientOriginalName();
+            $path = $file->store('quests/deliverables', 's3');
+            $size = $file->getSize();
+
+            $submissionFile = [
+                'name' => $originalName,
+                'path' => $path,
+                'size' => $size,
+            ];
+        }
+
         $quest->update([
+            'submission_file' => $submissionFile,
             'submission_link' => $request->submission_link,
             'submission_note' => $request->submission_note,
             'submitted_at' => now(),
@@ -177,7 +236,7 @@ class QuestController extends Controller
         ]);
 
         return redirect()->route('student.quests.show', $quest->_id)
-            ->with('success', 'Hasil pekerjaan berhasil dikirim dan menunggu tinjauan!');
+            ->with('success', 'Hasil pekerjaan (ZIP) berhasil dikirim dan menunggu tinjauan!');
     }
 
     public function approveWork(Request $request, Quest $quest)
@@ -223,11 +282,25 @@ class QuestController extends Controller
                 'gold' => 0,
                 'erp' => 0,
                 'level' => 1,
+                'path_stats' => [],
             ]);
 
-            $progress->increment('exp', 250);
-            $progress->increment('gold', 150);
-            $progress->increment('erp', 100);
+            $pathStats = $progress->path_stats ?? [];
+            if (is_string($pathStats)) {
+                $pathStats = json_decode($pathStats, true) ?: [];
+            } else {
+                $pathStats = (array) $pathStats;
+            }
+
+            $questKey = (string) $quest->_id;
+            $pathStats[$questKey] = [
+                'exp' => 250,
+                'gold' => 150,
+                'quiz_score' => 100,
+            ];
+
+            $progress->path_stats = $pathStats;
+            $progress->save();
         }
 
         return redirect()->route('student.quests.show', $quest->_id)

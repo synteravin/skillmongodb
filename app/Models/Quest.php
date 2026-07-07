@@ -26,6 +26,9 @@ class Quest extends Model
         'revision_note',
         'rating',
         'rating_comment',
+        'images',
+        'files',
+        'submission_file',
     ];
 
     protected function casts(): array
@@ -40,6 +43,9 @@ class Quest extends Model
             'submitted_at' => 'datetime',
             'completed_at' => 'datetime',
             'rating' => 'integer',
+            'images' => 'array',
+            'files' => 'array',
+            'submission_file' => 'array',
         ];
     }
 

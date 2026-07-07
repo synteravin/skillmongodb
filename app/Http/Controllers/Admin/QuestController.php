@@ -10,6 +10,7 @@ use App\Models\QuestMessage;
 use App\Models\UserStat;
 use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class QuestController extends Controller
@@ -90,6 +91,31 @@ class QuestController extends Controller
                 ];
             });
 
+        $disk = Storage::disk('s3');
+        $resolvedImages = array_map(function ($img) use ($disk) {
+            return [
+                'name' => $img['name'] ?? 'image.jpg',
+                'url' => $disk->url($img['path']),
+            ];
+        }, $quest->images ?? []);
+
+        $resolvedFiles = array_map(function ($file) use ($disk) {
+            return [
+                'name' => $file['name'] ?? 'file.dat',
+                'url' => $disk->url($file['path']),
+                'size' => $file['size'] ?? 0,
+            ];
+        }, $quest->files ?? []);
+
+        $resolvedSubmissionFile = null;
+        if ($quest->submission_file) {
+            $resolvedSubmissionFile = [
+                'name' => $quest->submission_file['name'] ?? 'deliverable.zip',
+                'url' => $disk->url($quest->submission_file['path']),
+                'size' => $quest->submission_file['size'] ?? 0,
+            ];
+        }
+
         return Inertia::render('Admin/Quests/Show', [
             'quest' => [
                 '_id' => (string) $quest->_id,
@@ -115,6 +141,9 @@ class QuestController extends Controller
                 'revision_note' => $quest->revision_note,
                 'rating' => $quest->rating,
                 'rating_comment' => $quest->rating_comment,
+                'images' => $resolvedImages,
+                'files' => $resolvedFiles,
+                'submission_file' => $resolvedSubmissionFile,
             ],
             'bids' => $bids,
         ]);
@@ -217,11 +246,25 @@ class QuestController extends Controller
                 'gold' => 0,
                 'erp' => 0,
                 'level' => 1,
+                'path_stats' => [],
             ]);
 
-            $progress->increment('exp', 250);
-            $progress->increment('gold', 150);
-            $progress->increment('erp', 100);
+            $pathStats = $progress->path_stats ?? [];
+            if (is_string($pathStats)) {
+                $pathStats = json_decode($pathStats, true) ?: [];
+            } else {
+                $pathStats = (array) $pathStats;
+            }
+
+            $questKey = (string) $quest->_id;
+            $pathStats[$questKey] = [
+                'exp' => 250,
+                'gold' => 150,
+                'quiz_score' => 100,
+            ];
+
+            $progress->path_stats = $pathStats;
+            $progress->save();
         }
 
         return redirect()->route('admin.quests.show', $quest->_id)

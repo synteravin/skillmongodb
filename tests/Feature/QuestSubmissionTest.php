@@ -7,6 +7,8 @@ use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
 use App\Models\UserStat;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class QuestSubmissionTest extends TestCase
@@ -38,6 +40,8 @@ class QuestSubmissionTest extends TestCase
 
     public function test_chosen_worker_can_submit_work(): void
     {
+        Storage::fake('s3');
+
         $creator = $this->createStudent('Creator');
         $worker = $this->createStudent('Worker');
 
@@ -52,8 +56,11 @@ class QuestSubmissionTest extends TestCase
             'worker_id' => (string) $worker->_id,
         ]);
 
+        $zipFile = UploadedFile::fake()->create('project.zip', 500, 'application/zip');
+
         $response = $this->actingAs($worker)
             ->post("/student/quests/{$quest->_id}/submit", [
+                'submission_file' => $zipFile,
                 'submission_link' => 'https://github.com/my-project',
                 'submission_note' => 'I have finished the portfolio project.',
             ]);
@@ -66,6 +73,10 @@ class QuestSubmissionTest extends TestCase
         $this->assertEquals('https://github.com/my-project', $quest->submission_link);
         $this->assertEquals('I have finished the portfolio project.', $quest->submission_note);
         $this->assertNotNull($quest->submitted_at);
+
+        $this->assertNotNull($quest->submission_file);
+        $this->assertEquals('project.zip', $quest->submission_file['name']);
+        Storage::disk('s3')->assertExists($quest->submission_file['path']);
     }
 
     public function test_creator_can_approve_work_and_worker_gets_rewards(): void
@@ -108,9 +119,11 @@ class QuestSubmissionTest extends TestCase
             ->first();
 
         $this->assertNotNull($stat);
-        $this->assertEquals(250, $stat->exp);
-        $this->assertEquals(150, $stat->gold);
-        $this->assertEquals(100, $stat->erp);
+        $pathStats = $stat->path_stats;
+        $questKey = (string) $quest->_id;
+        $this->assertEquals(250, $pathStats[$questKey]['exp']);
+        $this->assertEquals(150, $pathStats[$questKey]['gold']);
+        $this->assertEquals(100, $pathStats[$questKey]['quiz_score']);
     }
 
     public function test_creator_can_reject_work_and_request_revision(): void
@@ -163,8 +176,10 @@ class QuestSubmissionTest extends TestCase
         ]);
 
         // Try submitting as other
+        $zipFile = UploadedFile::fake()->create('project.zip', 500, 'application/zip');
         $response1 = $this->actingAs($other)
             ->post("/student/quests/{$quest->_id}/submit", [
+                'submission_file' => $zipFile,
                 'submission_link' => 'https://github.com/my-project',
             ]);
         $response1->assertStatus(403);
@@ -261,6 +276,18 @@ class QuestSubmissionTest extends TestCase
         $this->assertEquals('completed', $quest->status);
         $this->assertEquals(4, $quest->rating);
         $this->assertEquals('Approved by Admin.', $quest->rating_comment);
+
+        // Check gamification rewards
+        $stat = UserStat::where('user_id', (string) $worker->_id)
+            ->where('course_id', 'quest_rewards')
+            ->first();
+
+        $this->assertNotNull($stat);
+        $pathStats = $stat->path_stats;
+        $questKey = (string) $quest->_id;
+        $this->assertEquals(250, $pathStats[$questKey]['exp']);
+        $this->assertEquals(150, $pathStats[$questKey]['gold']);
+        $this->assertEquals(100, $pathStats[$questKey]['quiz_score']);
     }
 
     public function test_admin_can_reject_work_via_admin_url(): void
@@ -299,5 +326,42 @@ class QuestSubmissionTest extends TestCase
         $quest->refresh();
         $this->assertEquals('ongoing', $quest->status);
         $this->assertEquals('Footer missing.', $quest->revision_note);
+    }
+
+    public function test_student_can_create_quest_with_attachments(): void
+    {
+        Storage::fake('s3');
+
+        $creator = $this->createStudent('Creator');
+
+        $image = UploadedFile::fake()->image('screenshot.jpg');
+        $document = UploadedFile::fake()->create('specs.pdf', 500, 'application/pdf');
+
+        $response = $this->actingAs($creator)
+            ->post('/student/quests', [
+                'title' => 'Quest with attachments',
+                'description' => 'Detailed description here',
+                'min_salary' => 1000,
+                'max_salary' => 2000,
+                'deadline' => now()->addDays(2)->toDateString(),
+                'images' => [$image],
+                'files' => [$document],
+            ]);
+
+        $response->assertRedirect();
+
+        $quest = Quest::first();
+        $this->assertNotNull($quest);
+        $this->assertEquals('Quest with attachments', $quest->title);
+
+        $this->assertCount(1, $quest->images);
+        $this->assertCount(1, $quest->files);
+
+        $this->assertEquals('screenshot.jpg', $quest->images[0]['name']);
+        $this->assertEquals('specs.pdf', $quest->files[0]['name']);
+
+        // Assert file exists on S3
+        Storage::disk('s3')->assertExists($quest->images[0]['path']);
+        Storage::disk('s3')->assertExists($quest->files[0]['path']);
     }
 }
