@@ -1,6 +1,6 @@
 import { useForm, Link } from "@inertiajs/react";
 import React from "react";
-import { ArrowLeft, Save, Briefcase, DollarSign, Calendar, FileText } from "lucide-react";
+import { ArrowLeft, Save, Briefcase, DollarSign, Calendar, FileText, Image as ImageIcon, Plus, Trash2, Paperclip, FileArchive, AlertCircle } from "lucide-react";
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -9,7 +9,96 @@ export default function Create() {
         min_salary: "",
         max_salary: "",
         deadline: "",
+        images: [] as File[],
+        files: [] as File[],
     });
+
+    const [clientErrors, setClientErrors] = React.useState<{ images?: string; files?: string }>({});
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const selected = Array.from(e.target.files);
+        const validImages: File[] = [];
+        let errorMsg = "";
+
+        selected.forEach((file) => {
+            if (file.size > 2 * 1024 * 1024) {
+                errorMsg = `Gambar "${file.name}" melebihi batas 2MB.`;
+            } else if (!file.type.startsWith("image/")) {
+                errorMsg = `Berkas "${file.name}" harus berupa gambar.`;
+            } else {
+                validImages.push(file);
+            }
+        });
+
+        if (errorMsg) {
+            setClientErrors((prev) => ({ ...prev, images: errorMsg }));
+        } else {
+            setClientErrors((prev) => ({ ...prev, images: undefined }));
+        }
+
+        if (validImages.length > 0) {
+            setData("images", [...data.images, ...validImages]);
+        }
+        e.target.value = "";
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const selected = Array.from(e.target.files);
+        const validFiles: File[] = [];
+        let errorMsg = "";
+        const allowedExtensions = ["pdf", "doc", "docx", "xls", "xlsx", "zip"];
+
+        selected.forEach((file) => {
+            const ext = file.name.split(".").pop()?.toLowerCase();
+            if (file.size > 10 * 1024 * 1024) {
+                errorMsg = `Berkas "${file.name}" melebihi batas 10MB.`;
+            } else if (!ext || !allowedExtensions.includes(ext)) {
+                errorMsg = `Ekstensi berkas "${file.name}" tidak diizinkan. Gunakan PDF, Word, Excel, atau ZIP.`;
+            } else {
+                validFiles.push(file);
+            }
+        });
+
+        if (errorMsg) {
+            setClientErrors((prev) => ({ ...prev, files: errorMsg }));
+        } else {
+            setClientErrors((prev) => ({ ...prev, files: undefined }));
+        }
+
+        if (validFiles.length > 0) {
+            setData("files", [...data.files, ...validFiles]);
+        }
+        e.target.value = "";
+    };
+
+    const removeImage = (index: number) => {
+        const updated = [...data.images];
+        updated.splice(index, 1);
+        setData("images", updated);
+    };
+
+    const removeFile = (index: number) => {
+        const updated = [...data.files];
+        updated.splice(index, 1);
+        setData("files", updated);
+    };
+
+    const formatBytes = (bytes: number) => {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const dm = 2;
+        const sizes = ["Bytes", "KB", "MB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    };
+
+    const getFileIcon = (fileName: string) => {
+        const ext = fileName.split(".").pop()?.toLowerCase();
+        if (ext === "zip") return <FileArchive className="w-5 h-5 text-amber-500" />;
+        return <FileText className="w-5 h-5 text-indigo-500" />;
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -164,6 +253,132 @@ export default function Create() {
                             />
                             {errors.deadline && (
                                 <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.deadline}</p>
+                            )}
+                        </div>
+
+                        {/* Gambar Quest */}
+                        <div className="space-y-3">
+                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
+                                <ImageIcon className="w-4 h-4 text-purple-500" />
+                                Gambar Pendukung (Maks. 2MB per gambar)
+                            </label>
+                            
+                            {/* Selected Images Grid */}
+                            {data.images.length > 0 && (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-3">
+                                    {data.images.map((file, index) => (
+                                        <div key={index} className="relative group rounded-xl overflow-hidden border border-blue-200/50 dark:border-blue-500/20 bg-slate-100/55 dark:bg-[#0c122c]/50 p-2 flex flex-col items-center">
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                alt={file.name}
+                                                className="w-full h-24 object-cover rounded-lg"
+                                            />
+                                            <span className="text-[10px] mt-1 text-slate-500 dark:text-slate-400 truncate w-full text-center font-['Oxanium']">
+                                                {file.name}
+                                            </span>
+                                            <span className="text-[9px] text-slate-400 font-['Oxanium'] font-semibold">
+                                                {formatBytes(file.size)}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeImage(index)}
+                                                className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-90 transition-all hover:scale-105 cursor-pointer"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="relative">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleImageChange}
+                                    id="quest-images-input"
+                                    className="hidden"
+                                />
+                                <label
+                                    htmlFor="quest-images-input"
+                                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-blue-300 dark:border-blue-500/30 hover:border-purple-500 dark:hover:border-purple-400 bg-slate-50/50 dark:bg-[#080d24]/30 text-slate-600 dark:text-blue-200 cursor-pointer font-['Oxanium'] font-semibold text-xs sm:text-sm transition-all duration-300"
+                                >
+                                    <Plus className="w-4 h-4 text-purple-500" />
+                                    Pilih / Unggah Gambar
+                                </label>
+                            </div>
+
+                            {clientErrors.images && (
+                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium'] flex items-center gap-1">
+                                    <AlertCircle className="w-3.5 h-3.5" /> {clientErrors.images}
+                                </p>
+                            )}
+                            {errors.images && (
+                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.images}</p>
+                            )}
+                        </div>
+
+                        {/* File Pendukung */}
+                        <div className="space-y-3">
+                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
+                                <Paperclip className="w-4 h-4 text-purple-500" />
+                                Dokumen Pendukung (PDF, Word, Excel, ZIP)
+                            </label>
+
+                            {/* Selected Files List */}
+                            {data.files.length > 0 && (
+                                <div className="space-y-2 mb-3">
+                                    {data.files.map((file, index) => (
+                                        <div key={index} className="flex items-center justify-between p-3 rounded-xl border border-blue-200/50 dark:border-blue-500/20 bg-slate-100/55 dark:bg-[#0c122c]/50">
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                {getFileIcon(file.name)}
+                                                <div className="min-w-0">
+                                                    <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate font-['Oxanium']">
+                                                        {file.name}
+                                                    </p>
+                                                    <p className="text-[10px] text-slate-400 font-['Oxanium'] font-semibold">
+                                                        {formatBytes(file.size)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeFile(index)}
+                                                className="text-red-500 hover:text-red-600 p-1.5 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="relative">
+                                <input
+                                    type="file"
+                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.zip"
+                                    multiple
+                                    onChange={handleFileChange}
+                                    id="quest-files-input"
+                                    className="hidden"
+                                />
+                                <label
+                                    htmlFor="quest-files-input"
+                                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-blue-300 dark:border-blue-500/30 hover:border-purple-500 dark:hover:border-purple-400 bg-slate-50/50 dark:bg-[#080d24]/30 text-slate-600 dark:text-blue-200 cursor-pointer font-['Oxanium'] font-semibold text-xs sm:text-sm transition-all duration-300"
+                                >
+                                    <Plus className="w-4 h-4 text-purple-500" />
+                                    Pilih / Unggah File
+                                </label>
+                            </div>
+
+                            {clientErrors.files && (
+                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium'] flex items-center gap-1">
+                                    <AlertCircle className="w-3.5 h-3.5" /> {clientErrors.files}
+                                </p>
+                            )}
+                            {errors.files && (
+                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.files}</p>
                             )}
                         </div>
 

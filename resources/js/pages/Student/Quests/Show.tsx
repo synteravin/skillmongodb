@@ -1,7 +1,8 @@
 import { useForm, Link, router, usePage } from "@inertiajs/react";
 import React, { useState } from "react";
-import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User, Star } from "lucide-react";
+import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User, Star, Paperclip, Download, Image as ImageIcon, FileArchive } from "lucide-react";
 import QuestChatPanel from "@/components/Quest/QuestChatPanel";
+import ConfirmModal from "@/components/ConfirmModal";
 
 interface Quest {
     _id: string;
@@ -28,6 +29,9 @@ interface Quest {
     revision_note?: string | null;
     rating?: number | null;
     rating_comment?: string | null;
+    images?: Array<{ name: string; url: string }>;
+    files?: Array<{ name: string; url: string; size: number }>;
+    submission_file?: { name: string; url: string; size: number } | null;
 }
 
 interface Bid {
@@ -60,6 +64,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const { props } = usePage<any>();
     const currentUser = props.auth?.user;
     const [selectedChatBid, setSelectedChatBid] = useState<{ id: string; name: string } | null>(null);
+    const [previewImage, setPreviewImage] = useState<{ url: string; name: string } | null>(null);
+    const [acceptBidId, setAcceptBidId] = useState<string | null>(null);
     const { data, setData, post, processing, errors, reset } = useForm({
         bid_amount: "",
         cv: "",
@@ -75,12 +81,15 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     };
 
     const handleAcceptBid = (bidId: string) => {
-        if (confirm("Apakah Anda yakin ingin memilih pekerja ini? Tindakan ini akan menutup bidding quest.")) {
-            post(`/student/quests/${quest._id}/accept-bid/${bidId}`);
-        }
+        setAcceptBidId(bidId);
     };
 
-    const submissionForm = useForm({
+    const submissionForm = useForm<{
+        submission_file: File | null;
+        submission_link: string;
+        submission_note: string;
+    }>({
+        submission_file: null,
         submission_link: "",
         submission_note: "",
     });
@@ -127,6 +136,15 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             currency: "IDR",
             minimumFractionDigits: 0,
         }).format(num);
+    };
+
+    const formatBytes = (bytes: number) => {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const dm = 2;
+        const sizes = ["Bytes", "KB", "MB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     };
 
     const formatDate = (dateStr: string) => {
@@ -239,6 +257,108 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 {quest.description}
                             </div>
                         </div>
+
+                        {/* Lampiran Quest (Gambar & File) */}
+                        {((quest.images && quest.images.length > 0) || (quest.files && quest.files.length > 0)) && (
+                            <div className="space-y-4 mb-6 border-t border-slate-100 dark:border-blue-500/10 pt-5">
+                                <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider">
+                                    Lampiran Pekerjaan
+                                </h3>
+
+                                {/* Images Gallery */}
+                                {quest.images && quest.images.length > 0 && (
+                                    <div className="space-y-2">
+                                        <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold font-['Oxanium']">
+                                            Gambar Pendukung
+                                        </span>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            {quest.images.map((img, index) => (
+                                                <div key={index} className="relative group rounded-xl overflow-hidden border border-blue-200/40 dark:border-blue-500/10 bg-slate-50/50 dark:bg-black/20 p-1">
+                                                    <img
+                                                        src={img.url}
+                                                        alt={img.name}
+                                                        onClick={() => setPreviewImage(img)}
+                                                        className="w-full h-24 object-cover rounded-lg cursor-pointer transition-transform hover:scale-[1.02]"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto">
+                                                        <button
+                                                            onClick={() => setPreviewImage(img)}
+                                                            className="p-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors cursor-pointer"
+                                                            title="Detail Gambar"
+                                                        >
+                                                            <ImageIcon className="w-4 h-4" />
+                                                        </button>
+                                                        <a
+                                                            href={img.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="p-1.5 bg-[#3B28F6] hover:bg-[#2a1ce0] text-white rounded-lg transition-colors cursor-pointer"
+                                                            title="Unduh di Tab Baru"
+                                                        >
+                                                            <Download className="w-4 h-4" />
+                                                        </a>
+                                                    </div>
+                                                    <span className="block text-[9px] text-slate-500 dark:text-slate-400 truncate text-center mt-1 px-1 font-['Oxanium']">
+                                                        {img.name}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Files List */}
+                                {quest.files && quest.files.length > 0 && (
+                                    <div className="space-y-2">
+                                        <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold font-['Oxanium']">
+                                            Dokumen Pendukung
+                                        </span>
+                                        <div className="space-y-2">
+                                            {quest.files.map((file, index) => {
+                                                const ext = file.name.split(".").pop()?.toLowerCase();
+                                                const isZip = ext === "zip";
+                                                const formatBytes = (bytes: number) => {
+                                                    if (bytes === 0) return "0 Bytes";
+                                                    const k = 1024;
+                                                    const dm = 2;
+                                                    const sizes = ["Bytes", "KB", "MB"];
+                                                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                                                    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+                                                };
+                                                return (
+                                                    <div key={index} className="flex items-center justify-between p-3 rounded-xl border border-blue-200/40 dark:border-blue-500/10 bg-slate-50/50 dark:bg-black/20">
+                                                        <div className="flex items-center gap-3 min-w-0">
+                                                            {isZip ? (
+                                                                <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
+                                                            ) : (
+                                                                <FileText className="w-5 h-5 text-indigo-500 shrink-0" />
+                                                            )}
+                                                            <div className="min-w-0 font-['Oxanium']">
+                                                                <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
+                                                                    {file.name}
+                                                                </p>
+                                                                <p className="text-[10px] text-slate-400">
+                                                                    {formatBytes(file.size)}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <a
+                                                            href={file.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center justify-center p-1.5 text-indigo-500 hover:text-indigo-600 hover:bg-indigo-500/10 rounded-lg transition-colors cursor-pointer"
+                                                            title="Unduh berkas di Tab Baru"
+                                                        >
+                                                            <Download className="w-4.5 h-4.5" />
+                                                        </a>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-['Oxanium'] border-t border-slate-100 dark:border-blue-500/10 pt-5">
                             <div className="flex items-center gap-3 bg-slate-50/50 dark:bg-[#0c122c]/20 p-3 rounded-xl border border-blue-200/30 dark:border-blue-500/10">
@@ -564,15 +684,39 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                                                 <form onSubmit={handleWorkSubmit} className="space-y-4 font-['Oxanium']">
                                                     <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
-                                                        Anda telah dipilih untuk menyelesaikan pekerjaan ini! Silakan kerjakan dan kirimkan link hasil pekerjaan Anda di bawah ini jika telah selesai.
+                                                        Anda telah dipilih untuk menyelesaikan pekerjaan ini! Silakan kerjakan dan kirimkan berkas hasil pekerjaan Anda berupa berkas **ZIP (maks 50MB)** serta tautan pendukung (opsional).
                                                     </p>
+
+                                                    {/* ZIP Deliverable File Input */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200 flex items-center gap-1.5">
+                                                            <FileArchive className="w-4 h-4 text-amber-500" />
+                                                            Berkas Pekerjaan Utama (ZIP) <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <input
+                                                            type="file"
+                                                            accept=".zip"
+                                                            required
+                                                            onChange={(e) => {
+                                                                const files = e.target.files;
+                                                                if (files && files.length > 0) {
+                                                                    submissionForm.setData("submission_file", files[0]);
+                                                                }
+                                                            }}
+                                                            className="w-full px-3 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-800 dark:text-white"
+                                                        />
+                                                        {submissionForm.errors.submission_file && (
+                                                            <p className="text-xs text-red-500 font-semibold">{submissionForm.errors.submission_file}</p>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Optional Link Input */}
                                                     <div className="space-y-1.5">
                                                         <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200">
-                                                            Link Hasil Pekerjaan (URL)
+                                                            Tautan Repositori / Demo Pendukung (Opsional)
                                                         </label>
                                                         <input
                                                             type="url"
-                                                            required
                                                             placeholder="https://github.com/username/project"
                                                             value={submissionForm.data.submission_link}
                                                             onChange={(e) => submissionForm.setData("submission_link", e.target.value)}
@@ -582,6 +726,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                             <p className="text-xs text-red-500 font-semibold">{submissionForm.errors.submission_link}</p>
                                                         )}
                                                     </div>
+
                                                     <div className="space-y-1.5">
                                                         <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200">
                                                             Catatan Tambahan
@@ -597,6 +742,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                             <p className="text-xs text-red-500 font-semibold">{submissionForm.errors.submission_note}</p>
                                                         )}
                                                     </div>
+
                                                     <button
                                                         type="submit"
                                                         disabled={submissionForm.processing}
@@ -618,13 +764,44 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         Hasil pekerjaan Anda telah dikirimkan. Pembuat quest akan meninjau hasil pekerjaan Anda.
                                                     </p>
                                                 </div>
-                                                <div className="space-y-2 text-xs">
-                                                    <div>
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Link Pekerjaan</strong>
-                                                        <a href={quest.submission_link || undefined} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
-                                                            {quest.submission_link}
-                                                        </a>
-                                                    </div>
+                                                <div className="space-y-3 text-xs">
+                                                    {quest.submission_file && (
+                                                        <div className="space-y-1">
+                                                            <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Berkas Pekerjaan Utama (ZIP)</strong>
+                                                            <div className="flex items-center justify-between p-2.5 rounded-xl border border-amber-200/40 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-950/10">
+                                                                <div className="flex items-center gap-2.5 min-w-0">
+                                                                    <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
+                                                                    <div className="min-w-0 font-['Oxanium']">
+                                                                        <p className="text-xs font-semibold text-slate-750 dark:text-slate-200 truncate">
+                                                                            {quest.submission_file.name}
+                                                                        </p>
+                                                                        <p className="text-[10px] text-slate-400">
+                                                                            {formatBytes(quest.submission_file.size)}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <a
+                                                                    href={quest.submission_file.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="flex items-center justify-center p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                                                                    title="Unduh ZIP di Tab Baru"
+                                                                >
+                                                                    <Download className="w-4.5 h-4.5" />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {quest.submission_link && (
+                                                        <div>
+                                                            <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Link Pekerjaan Pendukung</strong>
+                                                            <a href={quest.submission_link} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
+                                                                {quest.submission_link}
+                                                            </a>
+                                                        </div>
+                                                    )}
+
                                                     {quest.submission_note && (
                                                         <div>
                                                             <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Catatan Anda</strong>
@@ -726,12 +903,43 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 </div>
                                                 
                                                 <div className="space-y-3 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-blue-200/20 dark:border-blue-500/5">
-                                                    <div>
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Link Hasil Pekerjaan</strong>
-                                                        <a href={quest.submission_link || undefined} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
-                                                            {quest.submission_link}
-                                                        </a>
-                                                    </div>
+                                                    {quest.submission_file && (
+                                                        <div className="space-y-1">
+                                                            <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Berkas Pekerjaan Utama (ZIP)</strong>
+                                                            <div className="flex items-center justify-between p-2.5 rounded-xl border border-amber-200/40 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-950/10">
+                                                                <div className="flex items-center gap-2.5 min-w-0">
+                                                                    <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
+                                                                    <div className="min-w-0 font-['Oxanium']">
+                                                                        <p className="text-xs font-semibold text-slate-750 dark:text-slate-200 truncate">
+                                                                            {quest.submission_file.name}
+                                                                        </p>
+                                                                        <p className="text-[10px] text-slate-400">
+                                                                            {formatBytes(quest.submission_file.size)}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <a
+                                                                    href={quest.submission_file.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="flex items-center justify-center p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                                                                    title="Unduh ZIP di Tab Baru"
+                                                                >
+                                                                    <Download className="w-4.5 h-4.5" />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {quest.submission_link && (
+                                                        <div>
+                                                            <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Link Hasil Pekerjaan</strong>
+                                                            <a href={quest.submission_link} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
+                                                                {quest.submission_link}
+                                                            </a>
+                                                        </div>
+                                                    )}
+
                                                     {quest.submission_note && (
                                                         <div>
                                                             <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Catatan Pekerja</strong>
@@ -911,12 +1119,42 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 )}
 
                                                 <div className="space-y-3 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-blue-200/20 dark:border-blue-500/5">
-                                                    <div>
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Tautan Pekerjaan</strong>
-                                                        <a href={quest.submission_link || undefined} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
-                                                            {quest.submission_link}
-                                                        </a>
-                                                    </div>
+                                                    {quest.submission_file && (
+                                                        <div className="space-y-1">
+                                                            <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Berkas Pekerjaan Utama (ZIP)</strong>
+                                                            <div className="flex items-center justify-between p-2.5 rounded-xl border border-amber-200/40 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-950/10">
+                                                                <div className="flex items-center gap-2.5 min-w-0">
+                                                                    <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
+                                                                    <div className="min-w-0 font-['Oxanium']">
+                                                                        <p className="text-xs font-semibold text-slate-755 dark:text-slate-200 truncate">
+                                                                            {quest.submission_file.name}
+                                                                        </p>
+                                                                        <p className="text-[10px] text-slate-400">
+                                                                            {formatBytes(quest.submission_file.size)}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <a
+                                                                    href={quest.submission_file.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="flex items-center justify-center p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                                                                    title="Unduh ZIP di Tab Baru"
+                                                                >
+                                                                    <Download className="w-4.5 h-4.5" />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {quest.submission_link && (
+                                                        <div>
+                                                            <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Tautan Pekerjaan</strong>
+                                                            <a href={quest.submission_link} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
+                                                                {quest.submission_link}
+                                                            </a>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
@@ -945,6 +1183,58 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                     }}
                 />
             )}
+
+            {/* Image Preview Modal */}
+            {previewImage && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    {/* Backdrop */}
+                    <div
+                        onClick={() => setPreviewImage(null)}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-md transition-all cursor-pointer"
+                    />
+                    
+                    {/* Modal Content */}
+                    <div className="relative max-w-4xl w-full max-h-[85vh] bg-slate-900/90 dark:bg-slate-950/95 border border-white/10 rounded-2xl p-4 flex flex-col items-center shadow-2xl z-10 overflow-hidden font-['Oxanium']">
+                        {/* Header */}
+                        <div className="w-full flex justify-between items-center pb-2 mb-3 border-b border-white/10">
+                            <span className="text-sm font-bold text-white truncate max-w-xs sm:max-w-md">
+                                {previewImage.name}
+                            </span>
+                            <button
+                                onClick={() => setPreviewImage(null)}
+                                className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        
+                        {/* Image body */}
+                        <div className="w-full flex-1 flex items-center justify-center min-h-0">
+                            <img
+                                src={previewImage.url}
+                                alt={previewImage.name}
+                                className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-md"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirm Modal Pilih Pekerja */}
+            <ConfirmModal
+                open={!!acceptBidId}
+                title="Pilih Pekerja"
+                message="Apakah Anda yakin ingin memilih pekerja ini? Tindakan ini akan menutup bidding quest."
+                confirmText="Pilih Pekerja"
+                cancelText="Batal"
+                variant="primary"
+                onConfirm={() => {
+                    if (acceptBidId) {
+                        post(`/student/quests/${quest._id}/accept-bid/${acceptBidId}`);
+                    }
+                }}
+                onClose={() => setAcceptBidId(null)}
+            />
         </div>
     );
 }
