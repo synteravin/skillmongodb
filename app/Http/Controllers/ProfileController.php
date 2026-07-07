@@ -41,30 +41,34 @@ class ProfileController extends Controller
 
             $selectedPathId = $stat->selected_path_id;
 
-            if (! $stat->path_stats) {
-                continue;
-            }
+            $statExp = 0;
+            $statGold = 0;
 
-            // ✅ NORMALIZE MONGO
-            $pathStats = $stat->path_stats;
+            if ($stat->path_stats) {
+                // ✅ NORMALIZE MONGO
+                $pathStats = $stat->path_stats;
 
-            if (is_string($pathStats)) {
-                $pathStats = json_decode($pathStats, true);
-            } elseif (is_object($pathStats)) {
-                $pathStats = json_decode(json_encode($pathStats), true);
-            }
+                if (is_string($pathStats)) {
+                    $pathStats = json_decode($pathStats, true);
+                } elseif (is_object($pathStats)) {
+                    $pathStats = json_decode(json_encode($pathStats), true);
+                }
 
-            foreach ($pathStats as $value) {
-                $item = (array) $value;
+                foreach ($pathStats as $value) {
+                    $item = (array) $value;
 
-                $totalExp += $item['exp'] ?? 0;
-                $totalGold += $item['gold'] ?? 0;
+                    $statExp += $item['exp'] ?? 0;
+                    $statGold += $item['gold'] ?? 0;
 
-                if (isset($item['quiz_score'])) {
-                    $totalScore += $item['quiz_score'];
-                    $totalQuiz++;
+                    if (isset($item['quiz_score'])) {
+                        $totalScore += $item['quiz_score'];
+                        $totalQuiz++;
+                    }
                 }
             }
+
+            $totalExp += max((int) ($stat->exp ?? 0), $statExp);
+            $totalGold += max((int) ($stat->gold ?? 0), $statGold);
         }
 
         // ========================

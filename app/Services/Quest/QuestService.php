@@ -1,0 +1,173 @@
+<?php
+
+namespace App\Services\Quest;
+
+use App\Models\Quest;
+use App\Models\QuestBid;
+use App\Models\QuestMessage;
+use App\Models\User;
+
+class QuestService
+{
+    /**
+     * Get list of quests with filters.
+     */
+    public function listQuests(?string $search = null, ?string $status = null)
+    {
+        $query = Quest::with('creator');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->latest()->get()->map(function ($quest) {
+            return [
+                '_id' => (string) $quest->_id,
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_salary' => $quest->min_salary,
+                'max_salary' => $quest->max_salary,
+                'deadline' => $quest->deadline->toISOString(),
+                'status' => $quest->status,
+                'creator' => [
+                    'name' => $quest->creator?->name ?? 'Unknown User',
+                    'role' => $quest->creator?->role ?? 'unknown',
+                ],
+                'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
+            ];
+        });
+    }
+
+    /**
+     * Get detailed quest by ID.
+     */
+    public function getQuestDetails(string $id, ?User $currentUser = null)
+    {
+        $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
+
+        $bids = QuestBid::with('student')
+            ->where('quest_id', $id)
+            ->latest()
+            ->get()
+            ->map(function ($bid) use ($currentUser) {
+                $unreadCount = 0;
+                if ($currentUser) {
+                    $unreadCount = QuestMessage::where('quest_bid_id', $bid->_id)
+                        ->where('sender_id', '!=', $currentUser->_id)
+                        ->where('read_by', '!=', $currentUser->_id)
+                        ->count();
+                }
+
+                return [
+                    '_id' => (string) $bid->_id,
+                    'bid_amount' => $bid->bid_amount,
+                    'cv' => $bid->cv,
+                    'portfolio' => $bid->portfolio,
+                    'proposal' => $bid->proposal,
+                    'status' => $bid->status,
+                    'created_at' => $bid->created_at->toISOString(),
+                    'student' => [
+                        '_id' => (string) ($bid->student?->_id ?? ''),
+                        'name' => $bid->student?->name ?? 'Deleted User',
+                        'email' => $bid->student?->email ?? '',
+                    ],
+                    'unread_messages_count' => $unreadCount,
+                ];
+            });
+
+        return [
+            'quest' => [
+                '_id' => (string) $quest->_id,
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_salary' => $quest->min_salary,
+                'max_salary' => $quest->max_salary,
+                'deadline' => $quest->deadline->toISOString(),
+                'status' => $quest->status,
+                'creator_id' => $quest->creator_id,
+                'creator' => [
+                    'name' => $quest->creator?->name ?? 'Unknown User',
+                    'role' => $quest->creator?->role ?? 'unknown',
+                ],
+                'worker' => $quest->worker ? [
+                    'name' => $quest->worker->name,
+                    'email' => $quest->worker->email,
+                ] : null,
+                'worker_id' => $quest->worker_id,
+                'submission_link' => $quest->submission_link,
+                'submission_note' => $quest->submission_note,
+                'submitted_at' => $quest->submitted_at ? $quest->submitted_at->toISOString() : null,
+                'completed_at' => $quest->completed_at ? $quest->completed_at->toISOString() : null,
+                'revision_note' => $quest->revision_note,
+                'rating' => $quest->rating,
+                'rating_comment' => $quest->rating_comment,
+            ],
+            'bids' => $bids,
+        ];
+    }
+
+    /**
+     * Create a new Quest.
+     */
+    public function createQuest(User $creator, array $data): Quest
+    {
+        return Quest::create([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'min_salary' => (int) $data['min_salary'],
+            'max_salary' => (int) $data['max_salary'],
+            'deadline' => now()->parse($data['deadline']),
+            'status' => 'open',
+            'creator_id' => $creator->_id,
+        ]);
+    }
+
+    /**
+     * Submit a bid/application for a quest.
+     */
+    public function placeBid(User $student, Quest $quest, array $data): QuestBid
+    {
+        return QuestBid::create([
+            'quest_id' => $quest->_id,
+            'student_id' => $student->_id,
+            'bid_amount' => (int) $data['bid_amount'],
+            'cv' => $data['cv'],
+            'portfolio' => $data['portfolio'],
+            'proposal' => $data['proposal'],
+            'status' => 'pending',
+        ]);
+    }
+
+    /**
+     * Accept a bid on a quest (and reject all other bids).
+     */
+    public function acceptBid(User $creator, Quest $quest, string $bidId): void
+    {
+        $acceptedBid = QuestBid::findOrFail($bidId);
+
+        if ($acceptedBid->quest_id !== $quest->_id) {
+            abort(400, 'Bid tidak cocok dengan Quest ini.');
+        }
+
+        // Accept the chosen bid
+        $acceptedBid->update(['status' => 'accepted']);
+
+        // Reject all other bids for this quest
+        QuestBid::where('quest_id', $quest->_id)
+            ->where('_id', '!=', $bidId)
+            ->update(['status' => 'rejected']);
+
+        // Update quest worker and status
+        $quest->update([
+            'status' => 'ongoing',
+            'worker_id' => $acceptedBid->student_id,
+        ]);
+    }
+}

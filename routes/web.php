@@ -22,6 +22,7 @@ use App\Http\Controllers\Mentor\StudentSubmissionController as MentorStudentSubm
 use App\Http\Controllers\Mentor\SubmissionController;
 use App\Http\Controllers\ModuleContentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuestMessageController;
 use App\Http\Controllers\Student\CareerController;
 use App\Http\Controllers\Student\CertificateController;
 use App\Http\Controllers\Student\CompleteModuleController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\Student\ForumController;
 use App\Http\Controllers\Student\LeaderboardController;
 use App\Http\Controllers\Student\LearnController;
 use App\Http\Controllers\Student\MentorProfileController;
+use App\Http\Controllers\Student\QuestController;
 use App\Http\Controllers\Student\SelectCharacterController;
 use App\Http\Controllers\Student\SelectPathController;
 use App\Http\Controllers\Student\StudentCourseController;
@@ -201,6 +203,17 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/forum/messages/{message}/pin', [App\Http\Controllers\Admin\ForumController::class, 'togglePin'])->name('forum.messages.pin');
         Route::put('/forum/messages/{message}', [App\Http\Controllers\Admin\ForumController::class, 'update'])->name('forum.messages.update');
         Route::delete('/forum/messages/{message}', [App\Http\Controllers\Admin\ForumController::class, 'destroy'])->name('forum.messages.destroy');
+
+        // ADMIN QUEST CRUD
+        Route::get('/quests', [App\Http\Controllers\Admin\QuestController::class, 'index'])->name('quests.index');
+        Route::post('/quests', [App\Http\Controllers\Admin\QuestController::class, 'store'])->name('quests.store');
+        Route::get('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'show'])->name('quests.show');
+        Route::put('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'update'])->name('quests.update');
+        Route::delete('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'destroy'])->name('quests.destroy');
+        Route::delete('/quests/{quest}/bids/{bid}', [App\Http\Controllers\Admin\QuestController::class, 'destroyBid'])->name('quests.bids.destroy');
+        Route::post('/quests/{quest}/accept-bid/{bid}', [App\Http\Controllers\Admin\QuestController::class, 'acceptBid'])->name('quests.accept-bid');
+        Route::post('/quests/{quest}/approve', [App\Http\Controllers\Admin\QuestController::class, 'approveWork'])->name('quests.approve-work');
+        Route::post('/quests/{quest}/reject', [App\Http\Controllers\Admin\QuestController::class, 'rejectWork'])->name('quests.reject-work');
     });
 /*
 |--------------------------------------------------------------------------
@@ -441,6 +454,26 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 
 /*
 |--------------------------------------------------------------------------
+| QUEST SYSTEM (FREELANCE)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:student,admin', 'has.character'])
+    ->prefix('student')
+    ->name('student.')
+    ->group(function () {
+        Route::get('/quests', [QuestController::class, 'index'])->name('quests.index');
+        Route::get('/quests/create', [QuestController::class, 'create'])->name('quests.create');
+        Route::post('/quests', [QuestController::class, 'store'])->name('quests.store');
+        Route::get('/quests/{quest}', [QuestController::class, 'show'])->name('quests.show');
+        Route::post('/quests/{quest}/bid', [QuestController::class, 'storeBid'])->name('quests.store-bid');
+        Route::post('/quests/{quest}/accept-bid/{bid}', [QuestController::class, 'acceptBid'])->name('quests.accept-bid');
+        Route::post('/quests/{quest}/submit', [QuestController::class, 'submitWork'])->name('quests.submit-work');
+        Route::post('/quests/{quest}/approve', [QuestController::class, 'approveWork'])->name('quests.approve-work');
+        Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | FORUM DISKUSI (Bisa diakses Student, Mentor, Admin)
 |--------------------------------------------------------------------------
 */
@@ -494,5 +527,15 @@ Route::get('/', function () {
 
 Route::get('/auth/google', [SocialController::class, 'redirect']);
 Route::get('/auth/google/callback', [SocialController::class, 'callback']);
+
+/*
+|--------------------------------------------------------------------------
+| QUEST CHAT / COMMUNICATION
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/quests/bids/{bid}/messages', [QuestMessageController::class, 'getMessages'])->name('quests.bids.messages');
+    Route::post('/quests/bids/{bid}/messages', [QuestMessageController::class, 'store'])->name('quests.bids.messages.store');
+});
 
 require __DIR__.'/settings.php';

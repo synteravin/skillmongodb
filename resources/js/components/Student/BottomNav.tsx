@@ -3,7 +3,7 @@ import { Link } from "@inertiajs/react";
 export default function BottomNav() {
   const menus = [
     { label: "MY COURSE", href: "/student/course" },
-    { label: "MINI BATTLE", href: "#" },
+    { label: "QUEST", href: "/student/quests" },
     { label: "TIER LIST", href: "/student/leaderboard" },
     { label: "CERTIFICATE", href: "/student/certificates" },
     { label: "FORUM", href: "/student/forum" },

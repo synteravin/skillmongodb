@@ -26,26 +26,29 @@ class DashboardController extends Controller
         // 🔥 LOOP USER STATS (1x saja)
         // =========================
         foreach ($user->userStats as $stat) {
+            $statExp = 0;
+            $statGold = 0;
 
-            if (! $stat->path_stats) {
-                continue;
+            if ($stat->path_stats) {
+                $pathStats = $stat->path_stats;
+
+                // Normalize Mongo
+                if (is_string($pathStats)) {
+                    $pathStats = json_decode($pathStats, true);
+                } elseif (is_object($pathStats)) {
+                    $pathStats = json_decode(json_encode($pathStats), true);
+                }
+
+                foreach ($pathStats as $value) {
+                    $item = (array) $value;
+
+                    $statExp += $item['exp'] ?? 0;
+                    $statGold += $item['gold'] ?? 0;
+                }
             }
 
-            $pathStats = $stat->path_stats;
-
-            // Normalize Mongo
-            if (is_string($pathStats)) {
-                $pathStats = json_decode($pathStats, true);
-            } elseif (is_object($pathStats)) {
-                $pathStats = json_decode(json_encode($pathStats), true);
-            }
-
-            foreach ($pathStats as $value) {
-                $item = (array) $value;
-
-                $totalExp += $item['exp'] ?? 0;
-                $totalGold += $item['gold'] ?? 0;
-            }
+            $totalExp += max((int) ($stat->exp ?? 0), $statExp);
+            $totalGold += max((int) ($stat->gold ?? 0), $statGold);
         }
 
         // =========================

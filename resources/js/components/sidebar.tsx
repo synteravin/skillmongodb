@@ -15,6 +15,7 @@ import {
     User,
     FileSignature,
     MessageSquare,
+    Briefcase,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -25,7 +26,7 @@ type Role = 'admin' | 'mentor' | 'student';
 
 type MenuItem = {
     name: string;
-    icon: React.ComponentType<{ size?: number }>;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
     href: string;
     roles: Role[];
 };
@@ -74,6 +75,12 @@ const menu: MenuItem[] = [
         name: 'Assets',
         icon: Box,
         href: '/admin/assets',
+        roles: ['admin'],
+    },
+    {
+        name: 'Quests',
+        icon: Briefcase,
+        href: '/admin/quests',
         roles: ['admin'],
     },
     {
@@ -145,14 +152,14 @@ export default function Sidebar({
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-white/8 bg-[#060B1A] transition-all duration-300 ease-in-out w-64 rounded-r-xl md:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col rounded-r-xl border-r border-white/8 bg-[#060B1A] transition-all duration-300 ease-in-out md:translate-x-0 ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } ${isOpen ? 'md:w-64' : 'md:w-16'}`}
             >
                 {/* Desktop Toggle Button */}
                 <button
                     onClick={() => setSidebarOpen(!isOpen)}
-                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white border border-transparent shadow-[0_0_10px_rgba(14,165,233,0.3)] transition hover:scale-110 hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500 md:flex"
+                    className="absolute top-4 -right-3 hidden h-7 w-7 items-center justify-center rounded-full border border-transparent bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.3)] transition hover:scale-110 hover:bg-sky-600 md:flex dark:bg-sky-600 dark:hover:bg-sky-500"
                 >
                     {isOpen ? (
                         <ChevronLeft size={14} />
@@ -163,22 +170,20 @@ export default function Sidebar({
 
                 {/* Brand with Mobile Close Button */}
                 {isOpen && (
-                    <div className="flex items-start justify-between px-6 py-6 border-b border-white/5">
+                    <div className="flex items-start justify-between border-b border-white/5 px-6 py-6">
                         <div>
                             <h1 className="text-lg font-bold tracking-tight text-white select-none">
                                 Skill
-                                <span className="text-[#7C5CFF]">
-                                    Ventura
-                                </span>
+                                <span className="text-[#7C5CFF]">Ventura</span>
                             </h1>
-                            <p className="mt-1 text-[11px] text-slate-400 tracking-wide">
+                            <p className="mt-1 text-[11px] tracking-wide text-slate-400">
                                 Learning Management System
                             </p>
                         </div>
                         {/* Mobile Close Button inside Drawer */}
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white/4 active:scale-95 transition md:hidden"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/4 active:scale-95 md:hidden"
                         >
                             <X size={18} />
                         </button>
@@ -194,8 +199,8 @@ export default function Sidebar({
                                 item.name === 'Dashboard'
                                     ? getDashboardRoute()
                                     : item.name === 'Forum Diskusi'
-                                    ? `/${userRole}/forum`
-                                    : item.href;
+                                      ? `/${userRole}/forum`
+                                      : item.href;
 
                             const Icon = item.icon;
                             const active = isActiveRoute(href);
@@ -204,17 +209,24 @@ export default function Sidebar({
                                 <Link
                                     key={item.name}
                                     href={href}
-                                    className={`group relative flex items-center gap-3 py-2.5 px-3 text-sm font-medium transition-all duration-200 border-l-[3px] ${
+                                    className={`group relative flex items-center gap-3 border-l-[3px] px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                                         active
-                                            ? 'bg-[#7C5CFF]/15 text-white border-[#7C5CFF] shadow-[inset_0_0_12px_rgba(124,92,255,0.08)] rounded-r-lg'
-                                            : 'text-slate-400 border-transparent hover:bg-white/4 hover:text-white rounded-lg'
+                                            ? 'rounded-r-lg border-[#7C5CFF] bg-[#7C5CFF]/15 text-white shadow-[inset_0_0_12px_rgba(124,92,255,0.08)]'
+                                            : 'rounded-lg border-transparent text-slate-400 hover:bg-white/4 hover:text-white'
                                     }`}
                                     onClick={() =>
                                         window.innerWidth < 768 &&
                                         setSidebarOpen(false)
                                     }
                                 >
-                                    <Icon size={18} className={active ? 'text-[#7C5CFF]' : 'text-slate-400 group-hover:text-white transition-colors'} />
+                                    <Icon
+                                        size={18}
+                                        className={
+                                            active
+                                                ? 'text-[#7C5CFF]'
+                                                : 'text-slate-400 transition-colors group-hover:text-white'
+                                        }
+                                    />
                                     {isOpen && <span>{item.name}</span>}
                                 </Link>
                             );
@@ -222,30 +234,38 @@ export default function Sidebar({
                 </nav>
 
                 {/* User Section */}
-                <div className={`mt-auto border-t border-white/8 bg-[#030712]/40 transition-all duration-300 ${isOpen ? 'p-4' : 'p-3 flex flex-col items-center'}`}>
-                    <div className={`flex items-center ${isOpen ? 'gap-3 w-full' : 'justify-center'}`}>
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#7C5CFF]/20 text-[#7C5CFF] border border-[#7C5CFF]/30 text-sm font-semibold shadow-[0_0_10px_rgba(124,92,255,0.15)] shrink-0">
+                <div
+                    className={`mt-auto border-t border-white/8 bg-[#030712]/40 transition-all duration-300 ${isOpen ? 'p-4' : 'flex flex-col items-center p-3'}`}
+                >
+                    <div
+                        className={`flex items-center ${isOpen ? 'w-full gap-3' : 'justify-center'}`}
+                    >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7C5CFF]/30 bg-[#7C5CFF]/20 text-sm font-semibold text-[#7C5CFF] shadow-[0_0_10px_rgba(124,92,255,0.15)]">
                             {props?.auth?.user?.name?.charAt(0)}
                         </div>
 
                         {isOpen && (
-                            <div className="flex flex-col min-w-0">
-                                <span className="text-sm font-medium text-white truncate">
+                            <div className="flex min-w-0 flex-col">
+                                <span className="truncate text-sm font-medium text-white">
                                     {props?.auth?.user?.name}
                                 </span>
-                                <span className="text-[11px] text-slate-400 truncate">
+                                <span className="truncate text-[11px] text-slate-400">
                                     {props?.auth?.user?.email}
                                 </span>
                             </div>
                         )}
                     </div>
 
-                    <div className={`mt-4 flex ${isOpen ? 'flex-row w-full gap-2' : 'flex-col gap-2 items-center'}`}>
+                    <div
+                        className={`mt-4 flex ${isOpen ? 'w-full flex-row gap-2' : 'flex-col items-center gap-2'}`}
+                    >
                         {/* Settings */}
                         <Link
                             href="/settings"
-                            className={`flex items-center justify-center gap-2 rounded-lg bg-white/4 text-slate-300 transition hover:bg-white/8 border border-white/8 ${
-                                isOpen ? 'flex-1 px-3 py-2' : 'h-9 w-9 p-0 shrink-0'
+                            className={`flex items-center justify-center gap-2 rounded-lg border border-white/8 bg-white/4 text-slate-300 transition hover:bg-white/8 ${
+                                isOpen
+                                    ? 'flex-1 px-3 py-2'
+                                    : 'h-9 w-9 shrink-0 p-0'
                             }`}
                         >
                             <Settings size={16} />
@@ -261,8 +281,10 @@ export default function Sidebar({
                             href="/logout"
                             method="post"
                             as="button"
-                            className={`flex items-center justify-center gap-2 rounded-lg bg-rose-500/10 text-rose-400 transition hover:bg-rose-500/20 border border-rose-500/20 ${
-                                isOpen ? 'flex-1 px-3 py-2' : 'h-9 w-9 p-0 shrink-0'
+                            className={`flex items-center justify-center gap-2 rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-400 transition hover:bg-rose-500/20 ${
+                                isOpen
+                                    ? 'flex-1 px-3 py-2'
+                                    : 'h-9 w-9 shrink-0 p-0'
                             }`}
                         >
                             <LogOut size={16} />
@@ -277,7 +299,7 @@ export default function Sidebar({
 
                 {/* Footer */}
                 {isOpen && (
-                    <div className="border-t border-white/8 px-5 py-4 text-[10px] text-slate-500 tracking-wider uppercase font-semibold">
+                    <div className="border-t border-white/8 px-5 py-4 text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
                         © {new Date().getFullYear()} SkillVentura
                     </div>
                 )}
