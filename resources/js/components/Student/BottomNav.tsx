@@ -6,7 +6,7 @@ export default function BottomNav() {
     { label: "MINI BATTLE", href: "#" },
     { label: "TIER LIST", href: "/student/leaderboard" },
     { label: "CERTIFICATE", href: "/student/certificates" },
-    { label: "FORUM", href: "#" },
+    { label: "FORUM", href: "/student/forum" },
   ];
 
   return (
