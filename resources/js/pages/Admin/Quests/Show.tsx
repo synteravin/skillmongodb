@@ -115,6 +115,29 @@ export default function Show({ quest, bids }: Props) {
         });
     };
 
+    const [showRejectPostForm, setShowRejectPostForm] = useState(false);
+    const [showApprovePostConfirm, setShowApprovePostConfirm] = useState(false);
+
+    const rejectPostForm = useForm({
+        rejection_note: '',
+    });
+
+    const handleApprovePost = () => {
+        router.post(`/admin/quests/${quest._id}/approve-post`, {}, {
+            onSuccess: () => setShowApprovePostConfirm(false),
+        });
+    };
+
+    const handleRejectPost = (e: React.FormEvent) => {
+        e.preventDefault();
+        rejectPostForm.post(`/admin/quests/${quest._id}/reject-post`, {
+            onSuccess: () => {
+                setShowRejectPostForm(false);
+                rejectPostForm.reset();
+            },
+        });
+    };
+
     const handleAcceptBid = (bidId: string) => {
         setAcceptBidId(bidId);
     };
@@ -185,17 +208,33 @@ export default function Show({ quest, bids }: Props) {
                                 className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold tracking-wider uppercase ${
                                     quest.status === 'open'
                                         ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400'
+                                        : quest.status === 'draft'
+                                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
+                                        : quest.status === 'rejected'
+                                        ? 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400'
                                         : quest.status === 'ongoing'
-                                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
-                                          : 'bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400'
+                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
+                                        : quest.status === 'approved'
+                                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400'
+                                        : quest.status === 'submitted'
+                                        ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-400'
+                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400'
                                 }`}
                             >
                                 Status:{' '}
                                 {quest.status === 'open'
                                     ? 'Tersedia'
+                                    : quest.status === 'draft'
+                                    ? 'Draft / Menunggu Persetujuan'
+                                    : quest.status === 'rejected'
+                                    ? 'Ditolak'
                                     : quest.status === 'ongoing'
-                                      ? 'Berjalan'
-                                      : 'Selesai'}
+                                    ? 'Berjalan'
+                                    : quest.status === 'approved'
+                                    ? 'Disetujui'
+                                    : quest.status === 'submitted'
+                                    ? 'Ditinjau'
+                                    : 'Selesai'}
                             </span>
                         </div>
                     </div>
@@ -493,6 +532,54 @@ export default function Show({ quest, bids }: Props) {
 
                         {/* RIGHT COLUMN: QUEST DETAILS (lg:col-span-5) */}
                         <div className="space-y-6 lg:sticky lg:top-8 lg:col-span-5">
+                            {quest.status === 'draft' && (
+                                <div className="space-y-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-6 shadow-sm dark:bg-amber-950/10">
+                                    <div className="border-b border-amber-500/10 pb-3">
+                                        <span className="inline-block text-[0.6rem] font-bold tracking-[0.2em] text-amber-600 uppercase dark:text-amber-400">
+                                            Moderasi Posting Quest
+                                        </span>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-amber-300">
+                                            Persetujuan Quest Baru
+                                        </h3>
+                                    </div>
+                                    <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                        Quest ini dikirim oleh <strong>{quest.creator.name}</strong> dan membutuhkan persetujuan Anda sebelum dipublikasikan ke papan quest publik.
+                                    </p>
+
+                                    <div className="flex flex-col gap-2 pt-2">
+                                        <button
+                                            onClick={() => setShowApprovePostConfirm(true)}
+                                            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-sm text-center"
+                                        >
+                                            Setujui & Publikasikan
+                                        </button>
+                                        <button
+                                            onClick={() => setShowRejectPostForm(true)}
+                                            className="w-full py-2 bg-red-600 hover:bg-red-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-sm text-center"
+                                        >
+                                            Tolak Quest
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {quest.status === 'rejected' && (
+                                <div className="space-y-3 rounded-xl border border-red-500/20 bg-red-500/5 p-6 shadow-sm dark:bg-red-950/10">
+                                    <span className="inline-block text-[0.6rem] font-bold tracking-[0.2em] text-red-600 uppercase dark:text-red-400">
+                                        Quest Ditolak
+                                    </span>
+                                    <h3 className="text-base font-bold text-red-600 dark:text-red-400">
+                                        Status: Ditolak
+                                    </h3>
+                                    {quest.rejection_note && (
+                                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl space-y-1">
+                                            <span className="block text-[9px] font-bold uppercase tracking-wider text-red-500">Catatan Penolakan Anda:</span>
+                                            <p className="text-xs text-slate-650 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{quest.rejection_note}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="space-y-6 rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-[#0d1117]">
                                 <div className="border-b border-slate-100 pb-4 dark:border-slate-800">
                                     <span className="mb-1 inline-block text-[0.6rem] font-bold tracking-[0.2em] text-indigo-500 uppercase dark:text-indigo-400">
@@ -668,19 +755,41 @@ export default function Show({ quest, bids }: Props) {
                                 {/* Active Worker Info */}
                                 {quest.worker && (
                                     <div className="space-y-4">
-                                        <div className="flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-                                            <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
-                                            <div>
-                                                <span className="block text-[10px] font-semibold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
-                                                    Pekerja Terpilih
-                                                </span>
-                                                <span className="mt-0.5 block font-bold text-slate-900 dark:text-white">
-                                                    {quest.worker.name}
-                                                </span>
-                                                <span className="block text-xs text-slate-400">
-                                                    ({quest.worker.email})
-                                                </span>
+                                        <div className="flex items-start justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                                            <div className="flex items-start gap-3">
+                                                <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                                                <div>
+                                                    <span className="block text-[10px] font-semibold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+                                                        Pekerja Terpilih
+                                                    </span>
+                                                    <span className="mt-0.5 block font-bold text-slate-900 dark:text-white">
+                                                        {quest.worker.name}
+                                                    </span>
+                                                    <span className="block text-xs text-slate-400">
+                                                        ({quest.worker.email})
+                                                    </span>
+                                                </div>
                                             </div>
+                                            {(() => {
+                                                const acceptedBid = bids.find(b => b.status === "accepted" || b.student_id === quest.worker_id);
+                                                if (acceptedBid) {
+                                                    return (
+                                                        <button
+                                                            onClick={() => setSelectedChatBid({ id: acceptedBid._id, name: quest.worker.name })}
+                                                            className="px-2.5 py-1 rounded-lg text-[10px] font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-colors cursor-pointer flex items-center gap-1 relative shrink-0"
+                                                        >
+                                                            <MessageSquare size={10} />
+                                                            Chat
+                                                            {acceptedBid.unread_messages_count > 0 && (
+                                                                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
+                                                                    {acceptedBid.unread_messages_count}
+                                                                </span>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
                                         </div>
 
                                         {quest.status === 'ongoing' && (
@@ -693,6 +802,19 @@ export default function Show({ quest, bids }: Props) {
                                                 )}
                                                 <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center text-xs text-blue-600 dark:text-blue-400 font-bold tracking-wider">
                                                     DALAM PROSES PENGERJAAN
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {quest.status === 'approved' && (
+                                            <div className="space-y-3">
+                                                <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center flex flex-col gap-1.5 font-['Oxanium']">
+                                                    <span className="block text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                                        Disetujui & Menunggu Berkas Final
+                                                    </span>
+                                                    <p className="text-[11px] text-slate-400">
+                                                        Pekerjaan ini telah disetujui. Menunggu pekerja mengunggah berkas ZIP final untuk menyelesaikan quest secara resmi.
+                                                    </p>
                                                 </div>
                                             </div>
                                         )}
@@ -1049,6 +1171,72 @@ export default function Show({ quest, bids }: Props) {
                 }}
                 onClose={() => setDeleteBidId(null)}
             />
+
+            {/* Confirm Modal Approve Post */}
+            <ConfirmModal
+                open={showApprovePostConfirm}
+                title="Setujui Quest"
+                message="Apakah Anda yakin ingin menyetujui dan mempublikasikan quest ini ke papan quest publik?"
+                confirmText="Setujui"
+                cancelText="Batal"
+                variant="primary"
+                onConfirm={handleApprovePost}
+                onClose={() => setShowApprovePostConfirm(false)}
+            />
+
+            {/* Reject Post Modal */}
+            {showRejectPostForm && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div
+                        onClick={() => setShowRejectPostForm(false)}
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+                    />
+                    <div className="relative max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl z-10 font-['Oxanium']">
+                        <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-red-400 tracking-wider mb-2">
+                            Tolak Quest
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            Berikan umpan balik atau alasan penolakan agar pembuat quest tahu apa yang harus diperbaiki.
+                        </p>
+
+                        <form onSubmit={handleRejectPost} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">
+                                    Catatan Penolakan <span className="text-red-500">*</span>
+                                </label>
+                                <textarea
+                                    required
+                                    placeholder="Tulis alasan penolakan quest disini..."
+                                    rows={4}
+                                    value={rejectPostForm.data.rejection_note}
+                                    onChange={(e) => rejectPostForm.setData('rejection_note', e.target.value)}
+                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-red-500 text-xs text-slate-800 dark:text-white"
+                                />
+                                {rejectPostForm.errors.rejection_note && (
+                                    <p className="text-xs text-red-500 font-semibold">{rejectPostForm.errors.rejection_note}</p>
+                                )}
+                            </div>
+
+                            <div className="flex gap-2 justify-end pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowRejectPostForm(false)}
+                                    className="px-4 py-2 rounded-xl text-xs font-semibold uppercase bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={rejectPostForm.processing}
+                                    className="px-4 py-2 rounded-xl text-xs font-semibold uppercase bg-red-650 hover:bg-red-750 text-white transition-all cursor-pointer disabled:opacity-50"
+                                >
+                                    {rejectPostForm.processing ? 'Mengirim...' : 'Tolak Quest'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </AppLayout>
     );
 }

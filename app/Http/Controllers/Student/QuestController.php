@@ -91,7 +91,7 @@ class QuestController extends Controller
         );
 
         return redirect()->route('student.quests.show', $quest->_id)
-            ->with('success', 'Quest berhasil dipublikasikan!');
+            ->with('success', 'Quest berhasil dikirim dan menunggu persetujuan admin!');
     }
 
     /**
@@ -103,6 +103,12 @@ class QuestController extends Controller
         $details = $this->questService->getQuestDetails($id, $user);
 
         $quest = Quest::findOrFail($id);
+
+        if (in_array($quest->status, ['draft', 'rejected'])) {
+            if ($quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
+                abort(403, 'Anda tidak memiliki akses untuk melihat quest yang belum disetujui.');
+            }
+        }
 
         // Check if user has already placed a bid
         $myBid = null;
@@ -197,18 +203,24 @@ class QuestController extends Controller
         }
 
         $request->validate([
-            'submission_file' => 'required|file|mimes:zip|max:51200',
-            'submission_link' => 'nullable|url',
+            'submission_file' => 'nullable|file|mimes:zip|max:51200',
+            'submission_link' => 'required|url',
             'submission_note' => 'nullable|string|max:1000',
         ], [
-            'submission_file.required' => 'Berkas pekerjaan (ZIP) wajib diunggah.',
             'submission_file.file' => 'Berkas pengiriman harus berupa file valid.',
             'submission_file.mimes' => 'Berkas pengiriman harus berformat ZIP.',
             'submission_file.max' => 'Ukuran berkas pengiriman maksimal adalah 50MB.',
+            'submission_link.required' => 'Link hasil pekerjaan wajib diisi untuk peninjauan.',
             'submission_link.url' => 'Format link harus berupa URL valid.',
         ]);
 
-        $submissionFile = null;
+        $updateData = [
+            'submission_link' => $request->submission_link,
+            'submission_note' => $request->submission_note,
+            'submitted_at' => now(),
+            'status' => 'submitted',
+        ];
+
         if ($request->hasFile('submission_file')) {
             // Delete old ZIP if exists
             if ($quest->submission_file && isset($quest->submission_file['path'])) {
@@ -220,23 +232,17 @@ class QuestController extends Controller
             $path = $file->store('quests/deliverables', 's3');
             $size = $file->getSize();
 
-            $submissionFile = [
+            $updateData['submission_file'] = [
                 'name' => $originalName,
                 'path' => $path,
                 'size' => $size,
             ];
         }
 
-        $quest->update([
-            'submission_file' => $submissionFile,
-            'submission_link' => $request->submission_link,
-            'submission_note' => $request->submission_note,
-            'submitted_at' => now(),
-            'status' => 'submitted',
-        ]);
+        $quest->update($updateData);
 
         return redirect()->route('student.quests.show', $quest->_id)
-            ->with('success', 'Hasil pekerjaan (ZIP) berhasil dikirim dan menunggu tinjauan!');
+            ->with('success', 'Hasil pekerjaan berhasil dikirim dan menunggu tinjauan!');
     }
 
     public function approveWork(Request $request, Quest $quest)
@@ -262,12 +268,136 @@ class QuestController extends Controller
             'rating.max' => 'Rating maksimal 5 bintang.',
         ]);
 
-        $quest->update([
-            'completed_at' => now(),
-            'status' => 'completed',
+        $hasFile = $quest->submission_file && isset($quest->submission_file['path']);
+        $newStatus = $hasFile ? 'completed' : 'approved';
+
+        $updateData = [
+            'status' => $newStatus,
             'rating' => (int) $request->rating,
             'rating_comment' => $request->rating_comment,
             'revision_note' => null, // clear any past revision note
+        ];
+
+        if ($hasFile) {
+            $updateData['completed_at'] = now();
+        }
+
+        $quest->update($updateData);
+
+        // Award gamification rewards to worker (Student) only if completed
+        if ($hasFile && $quest->worker_id) {
+            $progress = UserStat::firstOrCreate([
+                'user_id' => $quest->worker_id,
+                'course_id' => 'quest_rewards',
+            ], [
+                'completed_modules' => [],
+                'completed_paths' => [],
+                'exp' => 0,
+                'gold' => 0,
+                'erp' => 0,
+                'level' => 1,
+                'path_stats' => [],
+            ]);
+
+            $pathStats = $progress->path_stats ?? [];
+            if (is_string($pathStats)) {
+                $pathStats = json_decode($pathStats, true) ?: [];
+            } else {
+                $pathStats = (array) $pathStats;
+            }
+
+            $questKey = (string) $quest->_id;
+            $pathStats[$questKey] = [
+                'exp' => 250,
+                'gold' => 150,
+                'quiz_score' => 100,
+            ];
+
+            $progress->path_stats = $pathStats;
+            $progress->save();
+        }
+
+        $msg = $hasFile
+            ? 'Pekerjaan disetujui! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.'
+            : 'Pekerjaan disetujui! Status menjadi disetujui, menunggu pekerja mengunggah berkas ZIP final untuk menyelesaikan quest.';
+
+        return redirect()->route('student.quests.show', $quest->_id)
+            ->with($hasFile ? 'success' : 'warning', $msg);
+    }
+
+    /**
+     * Reject submission and request revision.
+     */
+    public function rejectWork(Request $request, Quest $quest)
+    {
+        $user = $request->user();
+
+        // Must be creator or admin
+        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Hanya pembuat quest atau admin yang dapat meminta revisi.');
+        }
+
+        if ($quest->status !== 'submitted') {
+            abort(400, 'Quest harus dalam status menunggu tinjauan.');
+        }
+
+        $request->validate([
+            'revision_note' => 'required|string|max:1000',
+        ], [
+            'revision_note.required' => 'Catatan revisi/feedback wajib diisi agar pekerja tahu apa yang perlu diperbaiki.',
+        ]);
+
+        $quest->update([
+            'status' => 'ongoing',
+            'revision_note' => $request->revision_note,
+        ]);
+
+        return redirect()->route('student.quests.show', $quest->_id)
+            ->with('warning', 'Pekerjaan ditolak dan revisi diminta dari pekerja.');
+    }
+
+    /**
+     * Submit final ZIP deliverable for an approved quest.
+     */
+    public function submitFinalZIP(Request $request, Quest $quest)
+    {
+        $user = $request->user();
+
+        // Must be the chosen worker
+        if ($quest->worker_id !== $user->_id) {
+            abort(403, 'Hanya pekerja terpilih yang dapat mengunggah berkas final.');
+        }
+
+        // Must be approved status
+        if ($quest->status !== 'approved') {
+            abort(400, 'Berkas ZIP final hanya dapat diunggah setelah pekerjaan disetujui.');
+        }
+
+        $request->validate([
+            'submission_file' => 'required|file|mimes:zip|max:51200',
+        ], [
+            'submission_file.required' => 'Berkas ZIP final wajib diunggah.',
+            'submission_file.file' => 'Berkas pengiriman harus berupa file valid.',
+            'submission_file.mimes' => 'Berkas pengiriman harus berformat ZIP.',
+            'submission_file.max' => 'Ukuran berkas pengiriman maksimal adalah 50MB.',
+        ]);
+
+        // Upload ZIP to S3
+        $file = $request->file('submission_file');
+        $originalName = $file->getClientOriginalName();
+        $path = $file->store('quests/deliverables', 's3');
+        $size = $file->getSize();
+
+        $submissionFile = [
+            'name' => $originalName,
+            'path' => $path,
+            'size' => $size,
+        ];
+
+        $quest->update([
+            'submission_file' => $submissionFile,
+            'completed_at' => now(),
+            'status' => 'completed',
         ]);
 
         // Award gamification rewards to worker (Student)
@@ -304,37 +434,6 @@ class QuestController extends Controller
         }
 
         return redirect()->route('student.quests.show', $quest->_id)
-            ->with('success', 'Pekerjaan disetujui! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.');
-    }
-
-    /**
-     * Reject submission and request revision.
-     */
-    public function rejectWork(Request $request, Quest $quest)
-    {
-        $user = $request->user();
-
-        // Must be creator or admin
-        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
-            abort(403, 'Hanya pembuat quest atau admin yang dapat meminta revisi.');
-        }
-
-        if ($quest->status !== 'submitted') {
-            abort(400, 'Quest harus dalam status menunggu tinjauan.');
-        }
-
-        $request->validate([
-            'revision_note' => 'required|string|max:1000',
-        ], [
-            'revision_note.required' => 'Catatan revisi/feedback wajib diisi agar pekerja tahu apa yang perlu diperbaiki.',
-        ]);
-
-        $quest->update([
-            'status' => 'ongoing',
-            'revision_note' => $request->revision_note,
-        ]);
-
-        return redirect()->route('student.quests.show', $quest->_id)
-            ->with('warning', 'Pekerjaan ditolak dan revisi diminta dari pekerja.');
+            ->with('success', 'Berkas final berhasil diunggah! Quest selesai dan hadiah telah ditambahkan ke profil Anda.');
     }
 }

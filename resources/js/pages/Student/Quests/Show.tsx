@@ -1,6 +1,6 @@
 import { useForm, Link, router, usePage } from "@inertiajs/react";
 import React, { useState } from "react";
-import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User, Star, Paperclip, Download, Image as ImageIcon, FileArchive } from "lucide-react";
+import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User, Star, Paperclip, Download, Image as ImageIcon, FileArchive, CheckCircle2, MessageSquare } from "lucide-react";
 import QuestChatPanel from "@/components/Quest/QuestChatPanel";
 import ConfirmModal from "@/components/ConfirmModal";
 
@@ -93,6 +93,19 @@ export default function Show({ quest, bids, myBid, can }: Props) {
         submission_link: "",
         submission_note: "",
     });
+
+    const finalZipForm = useForm<{
+        submission_file: File | null;
+    }>({
+        submission_file: null,
+    });
+
+    const handleFinalZipSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        finalZipForm.post(`/student/quests/${quest._id}/submit-final-zip`, {
+            onSuccess: () => finalZipForm.reset(),
+        });
+    };
 
     const handleWorkSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -216,6 +229,36 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* LEFT COLUMN: QUEST DETAILS */}
                     <div className="lg:col-span-7 bg-white/70 dark:bg-blue-950/20 backdrop-blur-md rounded-2xl border border-blue-200 dark:border-blue-500/30 p-6 shadow-md transition-all duration-300">
+                        {quest.status === 'draft' && (
+                            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 space-y-1 font-['Oxanium']">
+                                <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-amber-600 dark:text-amber-400">
+                                    ⏳ Menunggu Persetujuan Admin
+                                </span>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Quest Anda telah berhasil disimpan sebagai draft dan sedang menunggu tinjauan/persetujuan dari admin sebelum dipublikasikan ke publik.
+                                </p>
+                            </div>
+                        )}
+
+                        {quest.status === 'rejected' && (
+                            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 space-y-2 font-['Oxanium']">
+                                <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-red-650 dark:text-red-400">
+                                    ❌ Quest Ditolak Oleh Admin
+                                </span>
+                                <p className="text-xs text-slate-650 dark:text-slate-350 leading-relaxed">
+                                    Quest ini ditolak karena belum memenuhi kriteria yang ditentukan. Silakan buat quest baru dengan memperhatikan umpan balik di bawah.
+                                </p>
+                                {quest.rejection_note && (
+                                    <div className="p-3 bg-red-500/5 dark:bg-red-955/20 rounded-lg border border-red-500/10">
+                                        <strong className="block text-[10px] text-red-550 dark:text-red-400 uppercase tracking-wider">Alasan Penolakan:</strong>
+                                        <p className="text-xs text-slate-600 dark:text-slate-350 whitespace-pre-wrap leading-relaxed mt-1">
+                                            {quest.rejection_note}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         <div className="flex items-start justify-between gap-4 mb-4">
                             <h2 className="text-xl sm:text-2xl font-black font-['Oxanium'] tracking-tight text-slate-900 dark:text-white leading-tight">
                                 {quest.title}
@@ -224,12 +267,32 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider font-['Orbitron'] shrink-0 ${
                                     quest.status === "open"
                                         ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400 border border-green-200 dark:border-green-800/40"
+                                        : quest.status === "draft"
+                                        ? "bg-amber-105 text-amber-700 dark:bg-amber-955/40 dark:text-amber-400 border border-amber-205 dark:border-amber-800/40"
+                                        : quest.status === "rejected"
+                                        ? "bg-red-105 text-red-700 dark:bg-red-955/40 dark:text-red-400 border border-red-205 dark:border-red-800/40"
                                         : quest.status === "ongoing"
-                                        ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40"
+                                        ? "bg-blue-105 text-blue-700 dark:bg-blue-955/40 dark:text-blue-400 border border-blue-205 dark:border-blue-800/40"
+                                        : quest.status === "approved"
+                                        ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/40"
+                                        : quest.status === "submitted"
+                                        ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40"
                                         : "bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400 border border-slate-200 dark:border-slate-800/40"
                                 }`}
                             >
-                                {quest.status === "open" ? "Tersedia" : quest.status === "ongoing" ? "Berjalan" : "Selesai"}
+                                {quest.status === "open"
+                                    ? "Tersedia"
+                                    : quest.status === "draft"
+                                    ? "Draft / Menunggu Persetujuan"
+                                    : quest.status === "rejected"
+                                    ? "Ditolak"
+                                    : quest.status === "ongoing"
+                                    ? "Berjalan"
+                                    : quest.status === "approved"
+                                    ? "Disetujui"
+                                    : quest.status === "submitted"
+                                    ? "Ditinjau"
+                                    : "Selesai"}
                             </span>
                         </div>
 
@@ -665,8 +728,22 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 {currentUser?.id === quest.worker_id ? (
                                     /* WORKER WORKFLOW */
                                     <div className="bg-white/70 dark:bg-blue-950/20 backdrop-blur-md rounded-2xl border border-blue-200 dark:border-blue-500/30 p-6 shadow-md transition-all duration-300">
-                                        <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider mb-4">
-                                            Pekerjaan Anda
+                                        <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider mb-4 flex items-center justify-between">
+                                            <span>Pekerjaan Anda</span>
+                                            {myBid && (
+                                                <button
+                                                    onClick={() => setSelectedChatBid({ id: myBid._id, name: quest.creator.name })}
+                                                    className="px-3 py-1 rounded-lg text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-350 cursor-pointer flex items-center gap-1.5 relative"
+                                                >
+                                                    <MessageSquare size={12} />
+                                                    Chat
+                                                    {myBid.unread_messages_count > 0 && (
+                                                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
+                                                            {myBid.unread_messages_count}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            )}
                                         </h3>
                                         
                                         {quest.status === "ongoing" && (
@@ -684,19 +761,18 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                                                 <form onSubmit={handleWorkSubmit} className="space-y-4 font-['Oxanium']">
                                                     <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
-                                                        Anda telah dipilih untuk menyelesaikan pekerjaan ini! Silakan kerjakan dan kirimkan berkas hasil pekerjaan Anda berupa berkas **ZIP (maks 50MB)** serta tautan pendukung (opsional).
+                                                        Anda telah dipilih untuk menyelesaikan pekerjaan ini! Silakan cantumkan tautan pekerjaan Anda (wajib) dan berkas pekerjaan awal ZIP (opsional) untuk ditinjau oleh pembuat quest.
                                                     </p>
 
                                                     {/* ZIP Deliverable File Input */}
                                                     <div className="space-y-1.5">
                                                         <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200 flex items-center gap-1.5">
                                                             <FileArchive className="w-4 h-4 text-amber-500" />
-                                                            Berkas Pekerjaan Utama (ZIP) <span className="text-red-500">*</span>
+                                                            Berkas Pekerjaan Utama (ZIP) <span className="text-slate-400 font-normal">(Opsional)</span>
                                                         </label>
                                                         <input
                                                             type="file"
                                                             accept=".zip"
-                                                            required
                                                             onChange={(e) => {
                                                                 const files = e.target.files;
                                                                 if (files && files.length > 0) {
@@ -710,14 +786,15 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         )}
                                                     </div>
 
-                                                    {/* Optional Link Input */}
+                                                    {/* Required Link Input */}
                                                     <div className="space-y-1.5">
                                                         <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200">
-                                                            Tautan Repositori / Demo Pendukung (Opsional)
+                                                            Tautan Repositori / Demo Hasil Pekerjaan <span className="text-red-500">*</span>
                                                         </label>
                                                         <input
                                                             type="url"
                                                             placeholder="https://github.com/username/project"
+                                                            required
                                                             value={submissionForm.data.submission_link}
                                                             onChange={(e) => submissionForm.setData("submission_link", e.target.value)}
                                                             className="w-full px-3.5 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-800 dark:text-white"
@@ -749,6 +826,52 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         className="w-full py-2.5 rounded-xl text-white font-semibold uppercase tracking-wider text-xs bg-[#3B28F6] hover:bg-[#2a1ce0] disabled:opacity-50 transition-all cursor-pointer"
                                                     >
                                                         {submissionForm.processing ? "Mengirim..." : "Kirim Hasil Pekerjaan"}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        )}
+
+                                        {quest.status === "approved" && (
+                                            <div className="space-y-4 font-['Oxanium']">
+                                                <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex flex-col gap-2 text-center">
+                                                    <CheckCircle2 className="w-8 h-8 text-indigo-500 mx-auto" />
+                                                    <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-indigo-600 dark:text-indigo-400">
+                                                        Pekerjaan Disetujui!
+                                                    </span>
+                                                    <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
+                                                        Hasil pekerjaan Anda telah disetujui secara resmi oleh pembuat quest. Silakan unggah berkas final (.zip) proyek Anda di bawah ini untuk menyelesaikan quest secara resmi dan mengklaim hadiah.
+                                                    </p>
+                                                </div>
+
+                                                <form onSubmit={handleFinalZipSubmit} className="space-y-4">
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200 flex items-center gap-1.5">
+                                                            <FileArchive className="w-4 h-4 text-amber-500" />
+                                                            Upload Berkas Proyek Final (ZIP) <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <input
+                                                            type="file"
+                                                            accept=".zip"
+                                                            required
+                                                            onChange={(e) => {
+                                                                const files = e.target.files;
+                                                                if (files && files.length > 0) {
+                                                                    finalZipForm.setData("submission_file", files[0]);
+                                                                }
+                                                            }}
+                                                            className="w-full px-3 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-800 dark:text-white"
+                                                        />
+                                                        {finalZipForm.errors.submission_file && (
+                                                            <p className="text-xs text-red-500 font-semibold">{finalZipForm.errors.submission_file}</p>
+                                                        )}
+                                                    </div>
+
+                                                    <button
+                                                        type="submit"
+                                                        disabled={finalZipForm.processing}
+                                                        className="w-full py-2.5 rounded-xl text-white font-semibold uppercase tracking-wider text-xs bg-indigo-600 hover:bg-indigo-750 disabled:opacity-50 transition-all cursor-pointer"
+                                                    >
+                                                        {finalZipForm.processing ? "Mengirim..." : "Kirim Berkas Final & Klaim Hadiah"}
                                                     </button>
                                                 </form>
                                             </div>
@@ -866,9 +989,31 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 ) : (currentUser?.id === quest.creator_id || currentUser?.role === "admin") ? (
                                     /* CREATOR / ADMIN WORKFLOW */
                                     <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-blue-200 dark:border-blue-500/30 p-6 shadow-md transition-all duration-300 space-y-4">
-                                        <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider">
-                                            Status Pekerjaan
-                                        </h3>
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider">
+                                                Status Pekerjaan
+                                            </h3>
+                                            {(() => {
+                                                const acceptedBid = bids.find(b => b.status === "accepted" || b.student_id === quest.worker_id);
+                                                if (acceptedBid && quest.worker) {
+                                                    return (
+                                                        <button
+                                                            onClick={() => setSelectedChatBid({ id: acceptedBid._id, name: quest.worker.name })}
+                                                            className="px-3 py-1 rounded-lg text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-350 cursor-pointer flex items-center gap-1.5 relative shrink-0"
+                                                        >
+                                                            <MessageSquare size={12} />
+                                                            Chat Pekerja
+                                                            {acceptedBid.unread_messages_count > 0 && (
+                                                                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
+                                                                    {acceptedBid.unread_messages_count}
+                                                                </span>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
+                                        </div>
                                         
                                         {quest.status === "ongoing" && (
                                             <div className="space-y-4 font-['Oxanium']">
@@ -887,6 +1032,19 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 )}
                                                 <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center text-xs text-blue-600 dark:text-blue-400 font-bold font-['Orbitron']">
                                                     DALAM PROSES PENGERJAAN
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {quest.status === "approved" && (
+                                            <div className="space-y-4 font-['Oxanium']">
+                                                <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center flex flex-col gap-1.5">
+                                                    <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-indigo-600 dark:text-indigo-400">
+                                                        Disetujui & Menunggu Berkas Final
+                                                    </span>
+                                                    <p className="text-[11px] text-slate-400">
+                                                        Anda telah menyetujui pekerjaan ini. Menunggu pekerja (<strong>{quest.worker?.name}</strong>) mengunggah berkas ZIP final proyek mereka untuk menyelesaikan quest ini secara resmi.
+                                                    </p>
                                                 </div>
                                             </div>
                                         )}

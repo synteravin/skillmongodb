@@ -227,15 +227,23 @@ class QuestController extends Controller
             'rating.max' => 'Rating maksimal 5 bintang.',
         ]);
 
-        $quest->update([
-            'completed_at' => now(),
-            'status' => 'completed',
+        $hasFile = $quest->submission_file && isset($quest->submission_file['path']);
+        $newStatus = $hasFile ? 'completed' : 'approved';
+
+        $updateData = [
+            'status' => $newStatus,
             'rating' => (int) $request->rating,
             'rating_comment' => $request->rating_comment,
             'revision_note' => null,
-        ]);
+        ];
 
-        if ($quest->worker_id) {
+        if ($hasFile) {
+            $updateData['completed_at'] = now();
+        }
+
+        $quest->update($updateData);
+
+        if ($hasFile && $quest->worker_id) {
             $progress = UserStat::firstOrCreate([
                 'user_id' => $quest->worker_id,
                 'course_id' => 'quest_rewards',
@@ -267,8 +275,12 @@ class QuestController extends Controller
             $progress->save();
         }
 
+        $msg = $hasFile
+            ? 'Pekerjaaan disetujui oleh Admin! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.'
+            : 'Pekerjaaan disetujui oleh Admin! Status menjadi disetujui, menunggu pekerja mengunggah berkas ZIP final untuk menyelesaikan quest.';
+
         return redirect()->route('admin.quests.show', $quest->_id)
-            ->with('success', 'Pekerjaaan disetujui oleh Admin! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.');
+            ->with($hasFile ? 'success' : 'warning', $msg);
     }
 
     public function rejectWork(Request $request, string $questId)
@@ -292,5 +304,51 @@ class QuestController extends Controller
 
         return redirect()->route('admin.quests.show', $quest->_id)
             ->with('warning', 'Pekerjaan ditolak oleh Admin dan revisi diminta dari pekerja.');
+    }
+
+    /**
+     * Approve a quest post, publishing it to the public quest board.
+     */
+    public function approvePost(Request $request, string $questId)
+    {
+        $quest = Quest::findOrFail($questId);
+
+        if ($quest->status !== 'draft') {
+            abort(400, 'Hanya quest berstatus draft yang dapat disetujui.');
+        }
+
+        $quest->update([
+            'status' => 'open',
+            'rejection_note' => null,
+        ]);
+
+        return redirect()->route('admin.quests.show', $quest->_id)
+            ->with('success', 'Quest berhasil disetujui dan dipublikasikan!');
+    }
+
+    /**
+     * Reject a quest post, giving feedback to the creator.
+     */
+    public function rejectPost(Request $request, string $questId)
+    {
+        $quest = Quest::findOrFail($questId);
+
+        if ($quest->status !== 'draft') {
+            abort(400, 'Hanya quest berstatus draft yang dapat ditolak.');
+        }
+
+        $request->validate([
+            'rejection_note' => 'required|string|max:1000',
+        ], [
+            'rejection_note.required' => 'Catatan penolakan wajib diisi.',
+        ]);
+
+        $quest->update([
+            'status' => 'rejected',
+            'rejection_note' => $request->rejection_note,
+        ]);
+
+        return redirect()->route('admin.quests.show', $quest->_id)
+            ->with('warning', 'Quest ditolak dan catatan penolakan telah dikirimkan ke pembuat.');
     }
 }

@@ -43,7 +43,7 @@ export default function Index({ quests }: Props) {
     const [editingQuest, setEditingQuest] = useState<Quest | null>(null);
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'ongoing' | 'completed'>('all');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'open' | 'rejected' | 'ongoing' | 'completed'>('all');
 
     const filteredQuests = quests.filter((quest) => {
         const matchesSearch =
@@ -198,7 +198,7 @@ export default function Index({ quests }: Props) {
                         </div>
 
                         <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-                            {['all', 'open', 'ongoing', 'completed'].map((statusOption) => (
+                            {['all', 'draft', 'open', 'rejected', 'ongoing', 'completed'].map((statusOption) => (
                                 <button
                                     key={statusOption}
                                     type="button"
@@ -209,7 +209,17 @@ export default function Index({ quests }: Props) {
                                             : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100"
                                     }`}
                                 >
-                                    {statusOption === 'all' ? "Semua" : statusOption === 'open' ? "Tersedia" : statusOption === 'ongoing' ? "Berjalan" : "Selesai"}
+                                    {statusOption === 'all'
+                                        ? "Semua"
+                                        : statusOption === 'draft'
+                                        ? "Draft"
+                                        : statusOption === 'open'
+                                        ? "Tersedia"
+                                        : statusOption === 'rejected'
+                                        ? "Ditolak"
+                                        : statusOption === 'ongoing'
+                                        ? "Berjalan"
+                                        : "Selesai"}
                                 </button>
                             ))}
                         </div>
@@ -266,12 +276,24 @@ export default function Index({ quests }: Props) {
                                                         className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                                                             quest.status === "open"
                                                                 ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400"
+                                                                : quest.status === "draft"
+                                                                ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+                                                                : quest.status === "rejected"
+                                                                ? "bg-red-105 text-red-700 dark:bg-red-955/40 dark:text-red-400"
                                                                 : quest.status === "ongoing"
                                                                 ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400"
                                                                 : "bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400"
                                                         }`}
                                                     >
-                                                        {quest.status === "open" ? "Tersedia" : quest.status === "ongoing" ? "Berjalan" : "Selesai"}
+                                                        {quest.status === "open"
+                                                            ? "Tersedia"
+                                                            : quest.status === "draft"
+                                                            ? "Draft / Pending"
+                                                            : quest.status === "rejected"
+                                                            ? "Ditolak"
+                                                            : quest.status === "ongoing"
+                                                            ? "Berjalan"
+                                                            : "Selesai"}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
