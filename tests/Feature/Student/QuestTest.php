@@ -83,7 +83,7 @@ class QuestTest extends TestCase
         $this->assertNotNull($quest);
         $response->assertRedirect(route('student.quests.show', $quest->_id));
 
-        $this->assertEquals('open', $quest->status);
+        $this->assertEquals('draft', $quest->status);
         $this->assertEquals($student->_id, $quest->creator_id);
     }
 
@@ -166,5 +166,82 @@ class QuestTest extends TestCase
         $this->assertEquals($bidder1->_id, $quest->worker_id);
         $this->assertEquals('accepted', $bid1->status);
         $this->assertEquals('rejected', $bid2->status);
+    }
+
+    public function test_admin_can_approve_draft_quest(): void
+    {
+        $student = $this->createStudent('Student Creator');
+        $admin = $this->createAdmin();
+
+        $quest = Quest::create([
+            'title' => 'Student Draft Quest',
+            'description' => 'A draft quest',
+            'min_salary' => 1000,
+            'max_salary' => 2000,
+            'deadline' => now()->addDays(5)->toIso8601String(),
+            'status' => 'draft',
+            'creator_id' => (string) $student->_id,
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->post("/admin/quests/{$quest->_id}/approve-post");
+
+        $response->assertRedirect(route('admin.quests.show', $quest->_id));
+        $response->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('open', $quest->status);
+    }
+
+    public function test_admin_can_reject_draft_quest_with_rejection_note(): void
+    {
+        $student = $this->createStudent('Student Creator');
+        $admin = $this->createAdmin();
+
+        $quest = Quest::create([
+            'title' => 'Student Draft Quest',
+            'description' => 'A draft quest',
+            'min_salary' => 1000,
+            'max_salary' => 2000,
+            'deadline' => now()->addDays(5)->toIso8601String(),
+            'status' => 'draft',
+            'creator_id' => (string) $student->_id,
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->post("/admin/quests/{$quest->_id}/reject-post", [
+                'rejection_note' => 'Please provide a clearer description.',
+            ]);
+
+        $response->assertRedirect(route('admin.quests.show', $quest->_id));
+        $response->assertSessionHas('warning');
+
+        $quest->refresh();
+        $this->assertEquals('rejected', $quest->status);
+        $this->assertEquals('Please provide a clearer description.', $quest->rejection_note);
+    }
+
+    public function test_other_students_cannot_view_draft_or_rejected_quest(): void
+    {
+        $creator = $this->createStudent('Creator Student');
+        $otherStudent = $this->createStudent('Other Student');
+
+        $quest = Quest::create([
+            'title' => 'Draft Quest',
+            'description' => 'A draft quest',
+            'min_salary' => 1000,
+            'max_salary' => 2000,
+            'deadline' => now()->addDays(5)->toIso8601String(),
+            'status' => 'draft',
+            'creator_id' => (string) $creator->_id,
+        ]);
+
+        // Creator can view their own draft quest
+        $response = $this->actingAs($creator)->get("/student/quests/{$quest->_id}");
+        $response->assertOk();
+
+        // Other student cannot view creator's draft quest
+        $response = $this->actingAs($otherStudent)->get("/student/quests/{$quest->_id}");
+        $response->assertStatus(403);
     }
 }

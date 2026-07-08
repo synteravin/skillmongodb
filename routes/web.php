@@ -214,6 +214,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/quests/{quest}/accept-bid/{bid}', [App\Http\Controllers\Admin\QuestController::class, 'acceptBid'])->name('quests.accept-bid');
         Route::post('/quests/{quest}/approve', [App\Http\Controllers\Admin\QuestController::class, 'approveWork'])->name('quests.approve-work');
         Route::post('/quests/{quest}/reject', [App\Http\Controllers\Admin\QuestController::class, 'rejectWork'])->name('quests.reject-work');
+        Route::post('/quests/{quest}/approve-post', [App\Http\Controllers\Admin\QuestController::class, 'approvePost'])->name('quests.approve-post');
+        Route::post('/quests/{quest}/reject-post', [App\Http\Controllers\Admin\QuestController::class, 'rejectPost'])->name('quests.reject-post');
     });
 /*
 |--------------------------------------------------------------------------
@@ -468,6 +470,7 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/bid', [QuestController::class, 'storeBid'])->name('quests.store-bid');
         Route::post('/quests/{quest}/accept-bid/{bid}', [QuestController::class, 'acceptBid'])->name('quests.accept-bid');
         Route::post('/quests/{quest}/submit', [QuestController::class, 'submitWork'])->name('quests.submit-work');
+        Route::post('/quests/{quest}/submit-final-zip', [QuestController::class, 'submitFinalZIP'])->name('quests.submit-final-zip');
         Route::post('/quests/{quest}/approve', [QuestController::class, 'approveWork'])->name('quests.approve-work');
         Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
     });

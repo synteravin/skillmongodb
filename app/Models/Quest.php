@@ -29,6 +29,7 @@ class Quest extends Model
         'images',
         'files',
         'submission_file',
+        'rejection_note',
     ];
 
     protected function casts(): array
@@ -46,6 +47,7 @@ class Quest extends Model
             'images' => 'array',
             'files' => 'array',
             'submission_file' => 'array',
+            'rejection_note' => 'string',
         ];
     }
 

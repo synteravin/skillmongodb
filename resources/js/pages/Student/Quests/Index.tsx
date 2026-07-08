@@ -31,6 +31,11 @@ interface HistoryQuest {
     };
     worker_id?: string;
     is_worker: boolean;
+    is_creator: boolean;
+    worker?: {
+        name: string;
+        email: string;
+    } | null;
     my_bid?: {
         bid_amount: number;
         status: string;
@@ -346,7 +351,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                     <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
                                     <p className="font-bold text-sm">Belum Ada Riwayat Quest</p>
                                     <p className="text-xs mt-1 text-slate-500 max-w-[280px] mx-auto leading-relaxed">
-                                        Anda belum mengambil quest atau mengajukan bid pekerjaan apapun saat ini.
+                                        Anda belum membuat quest, mengambil quest, atau mengajukan bid pekerjaan apapun saat ini.
                                     </p>
                                 </div>
                             ) : (
@@ -371,15 +376,21 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                         <span className={`px-2 py-0.5 rounded text-[9px] font-bold font-['Orbitron'] uppercase tracking-wider ${
                                                             item.status === 'completed'
                                                                 ? 'bg-green-500/10 text-green-500 border border-green-500/20'
+                                                                : item.status === 'approved'
+                                                                ? 'bg-indigo-500/10 text-indigo-500 border border-indigo-500/20'
                                                                 : item.status === 'submitted'
                                                                 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
                                                                 : item.status === 'ongoing'
                                                                 ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
                                                                 : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
                                                         }`}>
-                                                            {item.status === 'completed' ? 'Selesai' : item.status === 'submitted' ? 'Ditinjau' : item.status === 'ongoing' ? 'Berjalan' : 'Bidding'}
+                                                            {item.status === 'completed' ? 'Selesai' : item.status === 'approved' ? 'Disetujui' : item.status === 'submitted' ? 'Ditinjau' : item.status === 'ongoing' ? 'Berjalan' : 'Bidding'}
                                                         </span>
-                                                        {item.is_worker ? (
+                                                        {item.is_creator ? (
+                                                            <span className="px-2 py-0.5 rounded text-[9px] font-bold font-['Orbitron'] uppercase tracking-wider bg-purple-500/10 text-purple-500 border border-purple-500/20">
+                                                                Pembuat
+                                                            </span>
+                                                        ) : item.is_worker ? (
                                                             <span className="px-2 py-0.5 rounded text-[9px] font-bold font-['Orbitron'] uppercase tracking-wider bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
                                                                 Pekerja
                                                             </span>
@@ -393,12 +404,20 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                         {item.title}
                                                     </h3>
                                                     <p className="text-[10px] text-slate-400">
-                                                        Pembuat: {item.creator.name}
+                                                        {item.is_creator
+                                                            ? (item.worker ? `Pekerja: ${item.worker.name}` : "Belum Ada Pekerja")
+                                                            : `Pembuat: ${item.creator.name}`
+                                                        }
                                                     </p>
                                                 </div>
                                                 <div className="shrink-0 flex items-center gap-1.5">
                                                     <span className="text-[11px] font-bold font-['Orbitron'] text-purple-650 dark:text-purple-400">
-                                                        {item.my_bid ? formatCurrency(item.my_bid.bid_amount) : formatCurrency(item.min_salary)}
+                                                        {item.is_creator
+                                                            ? `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
+                                                            : item.my_bid
+                                                            ? formatCurrency(item.my_bid.bid_amount)
+                                                            : formatCurrency(item.min_salary)
+                                                        }
                                                     </span>
                                                     <svg
                                                         className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${
@@ -493,7 +512,9 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                     {/* Revision Notes if ongoing */}
                                                     {item.status === 'ongoing' && item.revision_note && (
                                                         <div className="p-3 bg-red-500/5 dark:bg-red-500/10 border border-red-500/20 rounded-xl space-y-1">
-                                                            <span className="block text-[9px] font-bold uppercase tracking-wider text-red-500">Minta Revisi Dari Pembuat:</span>
+                                                            <span className="block text-[9px] font-bold uppercase tracking-wider text-red-500">
+                                                                {item.is_creator ? "Feedback Revisi Anda:" : "Minta Revisi Dari Pembuat:"}
+                                                            </span>
                                                             <p className="text-[11px] text-slate-700 dark:text-slate-350 leading-relaxed whitespace-pre-wrap">
                                                                 {item.revision_note}
                                                             </p>
@@ -501,9 +522,11 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                     )}
 
                                                     {/* Work Submission Details */}
-                                                    {(item.status === 'submitted' || item.status === 'completed') && (
+                                                    {(item.status === 'submitted' || item.status === 'approved' || item.status === 'completed') && (
                                                         <div className="space-y-3 border-t border-blue-200/30 dark:border-blue-500/5 pt-3">
-                                                            <h4 className="font-bold text-[10px] text-slate-400 uppercase tracking-wider">Hasil Pekerjaan yang Dikirim</h4>
+                                                            <h4 className="font-bold text-[10px] text-slate-400 uppercase tracking-wider">
+                                                                {item.is_creator ? "Hasil Pekerjaan Pekerja" : "Hasil Pekerjaan yang Dikirim"}
+                                                            </h4>
                                                             
                                                             {item.submission_file && (
                                                                 <div className="space-y-1">
@@ -556,7 +579,9 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                     {/* Rating, Review Comment, and Gamification Rewards for Completed */}
                                                     {item.status === 'completed' && (
                                                         <div className="space-y-3 border-t border-blue-200/30 dark:border-blue-500/5 pt-3">
-                                                            <h4 className="font-bold text-[10px] text-slate-400 uppercase tracking-wider">Hasil Ulasan & Hadiah</h4>
+                                                            <h4 className="font-bold text-[10px] text-slate-400 uppercase tracking-wider">
+                                                                {item.is_creator ? "Hasil Ulasan & Hadiah Pekerja" : "Hasil Ulasan & Hadiah"}
+                                                            </h4>
                                                             
                                                             {item.rating && (
                                                                 <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 dark:bg-black/10 border border-slate-100 dark:border-blue-500/5">
@@ -582,15 +607,15 @@ export default function Index({ quests, historyQuests, filters }: Props) {
 
                                                             <div className="grid grid-cols-3 gap-2 text-center font-['Orbitron'] text-[10px] font-bold pt-1">
                                                                 <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 flex flex-col gap-0.5">
-                                                                    <span className="text-[9px] text-slate-400 font-sans">EXP</span>
+                                                                    <span className="text-[9px] text-slate-400 font-sans">EXP {item.is_creator ? "(Pekerja)" : ""}</span>
                                                                     <span>+250 EXP</span>
                                                                 </div>
                                                                 <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex flex-col gap-0.5">
-                                                                    <span className="text-[9px] text-slate-400 font-sans">Gold</span>
+                                                                    <span className="text-[9px] text-slate-400 font-sans">Gold {item.is_creator ? "(Pekerja)" : ""}</span>
                                                                     <span>+150 Gold</span>
                                                                 </div>
                                                                 <div className="p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 flex flex-col gap-0.5">
-                                                                    <span className="text-[9px] text-slate-400 font-sans">ERP (Quiz)</span>
+                                                                    <span className="text-[9px] text-slate-400 font-sans">ERP (Quiz) {item.is_creator ? "(Pekerja)" : ""}</span>
                                                                     <span>+100 ERP</span>
                                                                 </div>
                                                             </div>

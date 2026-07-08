@@ -93,6 +93,11 @@ class QuestSubmissionTest extends TestCase
             'status' => 'submitted',
             'creator_id' => (string) $creator->_id,
             'worker_id' => (string) $worker->_id,
+            'submission_file' => [
+                'name' => 'project.zip',
+                'path' => 'quests/deliverables/test.zip',
+                'size' => 1234,
+            ],
             'submission_link' => 'https://github.com/my-project',
             'submission_note' => 'Done.',
             'submitted_at' => now(),
@@ -258,6 +263,11 @@ class QuestSubmissionTest extends TestCase
             'status' => 'submitted',
             'creator_id' => (string) $creator->_id,
             'worker_id' => (string) $worker->_id,
+            'submission_file' => [
+                'name' => 'project.zip',
+                'path' => 'quests/deliverables/test.zip',
+                'size' => 1234,
+            ],
             'submission_link' => 'https://github.com/my-project',
             'submission_note' => 'Done.',
             'submitted_at' => now(),
@@ -363,5 +373,85 @@ class QuestSubmissionTest extends TestCase
         // Assert file exists on S3
         Storage::disk('s3')->assertExists($quest->images[0]['path']);
         Storage::disk('s3')->assertExists($quest->files[0]['path']);
+    }
+
+    public function test_two_step_approval_and_final_zip_submission(): void
+    {
+        Storage::fake('s3');
+
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Freelance Web Design',
+            'description' => 'Create web portfolio',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5)->toIso8601String(),
+            'status' => 'ongoing',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+        ]);
+
+        // 1. Worker submits work with only repository link (no ZIP)
+        $response1 = $this->actingAs($worker)
+            ->post("/student/quests/{$quest->_id}/submit", [
+                'submission_link' => 'https://github.com/my-project',
+                'submission_note' => 'Link is ready for review.',
+            ]);
+
+        $response1->assertRedirect();
+        $response1->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('submitted', $quest->status);
+        $this->assertNull($quest->submission_file);
+
+        // 2. Creator approves, transitioning to approved (pending ZIP)
+        $response2 = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/approve", [
+                'rating' => 4,
+                'rating_comment' => 'Link looks good! Please send final ZIP.',
+            ]);
+
+        $response2->assertRedirect();
+        $response2->assertSessionHas('warning'); // warning stands for pending final zip
+
+        $quest->refresh();
+        $this->assertEquals('approved', $quest->status);
+        $this->assertEquals(4, $quest->rating);
+        $this->assertNull($quest->completed_at);
+
+        // Verify rewards NOT yet given
+        $stat = UserStat::where('user_id', (string) $worker->_id)
+            ->where('course_id', 'quest_rewards')
+            ->first();
+        $this->assertNull($stat);
+
+        // 3. Worker uploads final ZIP deliverable
+        $zipFile = UploadedFile::fake()->create('final.zip', 500, 'application/zip');
+        $response3 = $this->actingAs($worker)
+            ->post("/student/quests/{$quest->_id}/submit-final-zip", [
+                'submission_file' => $zipFile,
+            ]);
+
+        $response3->assertRedirect();
+        $response3->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('completed', $quest->status);
+        $this->assertNotNull($quest->completed_at);
+        $this->assertNotNull($quest->submission_file);
+        $this->assertEquals('final.zip', $quest->submission_file['name']);
+        Storage::disk('s3')->assertExists($quest->submission_file['path']);
+
+        // Verify rewards ARE now given
+        $statAfter = UserStat::where('user_id', (string) $worker->_id)
+            ->where('course_id', 'quest_rewards')
+            ->first();
+        $this->assertNotNull($statAfter);
+        $this->assertEquals(250, $statAfter->path_stats[(string) $quest->_id]['exp']);
+        $this->assertEquals(150, $statAfter->path_stats[(string) $quest->_id]['gold']);
+        $this->assertEquals(100, $statAfter->path_stats[(string) $quest->_id]['quiz_score']);
     }
 }

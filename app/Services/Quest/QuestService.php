@@ -15,7 +15,8 @@ class QuestService
      */
     public function listQuests(?string $search = null, ?string $status = null)
     {
-        $query = Quest::with('creator');
+        $query = Quest::with('creator')
+            ->whereNotIn('status', ['draft', 'rejected']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -132,6 +133,7 @@ class QuestService
                 'submitted_at' => $quest->submitted_at ? $quest->submitted_at->toISOString() : null,
                 'completed_at' => $quest->completed_at ? $quest->completed_at->toISOString() : null,
                 'revision_note' => $quest->revision_note,
+                'rejection_note' => $quest->rejection_note,
                 'rating' => $quest->rating,
                 'rating_comment' => $quest->rating_comment,
                 'images' => $resolvedImages,
@@ -147,13 +149,15 @@ class QuestService
      */
     public function createQuest(User $creator, array $data): Quest
     {
+        $status = $creator->isAdmin() ? 'open' : 'draft';
+
         return Quest::create([
             'title' => $data['title'],
             'description' => $data['description'],
             'min_salary' => (int) $data['min_salary'],
             'max_salary' => (int) $data['max_salary'],
             'deadline' => now()->parse($data['deadline']),
-            'status' => 'open',
+            'status' => $status,
             'creator_id' => $creator->_id,
             'images' => $data['images'] ?? [],
             'files' => $data['files'] ?? [],
@@ -210,9 +214,10 @@ class QuestService
         $bids = QuestBid::where('student_id', (string) $user->_id)->get();
         $biddedQuestIds = $bids->pluck('quest_id')->toArray();
 
-        $quests = Quest::with('creator')
+        $quests = Quest::with(['creator', 'worker'])
             ->where(function ($query) use ($user, $biddedQuestIds) {
                 $query->where('worker_id', (string) $user->_id)
+                    ->orWhere('creator_id', (string) $user->_id)
                     ->orWhereIn('_id', $biddedQuestIds);
             })
             ->latest()
@@ -243,8 +248,13 @@ class QuestService
                     'name' => $quest->creator?->name ?? 'Unknown User',
                     'role' => $quest->creator?->role ?? 'unknown',
                 ],
+                'worker' => $quest->worker ? [
+                    'name' => $quest->worker->name,
+                    'email' => $quest->worker->email,
+                ] : null,
                 'worker_id' => $quest->worker_id,
                 'is_worker' => $quest->worker_id === (string) $user->_id,
+                'is_creator' => $quest->creator_id === (string) $user->_id,
                 'my_bid' => $myBid ? [
                     'bid_amount' => $myBid->bid_amount,
                     'status' => $myBid->status,
@@ -260,6 +270,7 @@ class QuestService
                 'rating' => $quest->rating,
                 'rating_comment' => $quest->rating_comment,
                 'revision_note' => $quest->revision_note,
+                'rejection_note' => $quest->rejection_note,
             ];
         });
     }
