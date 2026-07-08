@@ -1,6 +1,6 @@
 import { useForm, Link, router, usePage } from "@inertiajs/react";
 import React, { useState } from "react";
-import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User, Star, Paperclip, Download, Image as ImageIcon, FileArchive, CheckCircle2, MessageSquare } from "lucide-react";
+import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User, Star, Paperclip, Download, Image as ImageIcon, FileArchive, CheckCircle2, MessageSquare, Eye, EyeOff } from "lucide-react";
 import QuestChatPanel from "@/components/Quest/QuestChatPanel";
 import ConfirmModal from "@/components/ConfirmModal";
 
@@ -27,6 +27,7 @@ interface Quest {
     submitted_at?: string | null;
     completed_at?: string | null;
     revision_note?: string | null;
+    rejection_note?: string | null;
     rating?: number | null;
     rating_comment?: string | null;
     images?: Array<{ name: string; url: string }>;
@@ -66,6 +67,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const [selectedChatBid, setSelectedChatBid] = useState<{ id: string; name: string } | null>(null);
     const [previewImage, setPreviewImage] = useState<{ url: string; name: string } | null>(null);
     const [acceptBidId, setAcceptBidId] = useState<string | null>(null);
+    const [shortlistedBidIds, setShortlistedBidIds] = useState<string[]>([]);
+    const [archivedBidIds, setArchivedBidIds] = useState<string[]>([]);
     const { data, setData, post, processing, errors, reset } = useForm({
         bid_amount: "",
         cv: "",
@@ -259,6 +262,64 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </div>
                         )}
 
+                        {/* Stepper Progress Timeline */}
+                        {quest.status !== 'draft' && quest.status !== 'rejected' && (
+                            <div className="mb-6 pb-6 border-b border-blue-200/40 dark:border-blue-500/10 font-['Orbitron'] text-[9px] sm:text-[10px] font-bold tracking-wider">
+                                <div className="flex items-center justify-between relative">
+                                    {/* Line connector */}
+                                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 dark:bg-slate-800 z-0" />
+                                    <div 
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-indigo-500 z-0 transition-all duration-500" 
+                                        style={{
+                                            width: quest.status === 'open' ? '0%'
+                                                : quest.status === 'ongoing' ? '25%'
+                                                : quest.status === 'submitted' ? '50%'
+                                                : quest.status === 'approved' ? '75%'
+                                                : '100%'
+                                        }}
+                                    />
+
+                                    {/* Steps */}
+                                    {[
+                                        { key: 'open', label: 'Bidding' },
+                                        { key: 'ongoing', label: 'Pengerjaan' },
+                                        { key: 'submitted', label: 'Tinjauan' },
+                                        { key: 'approved', label: 'Disetujui' },
+                                        { key: 'completed', label: 'Selesai' }
+                                    ].map((step, idx) => {
+                                        const statuses = ['open', 'ongoing', 'submitted', 'approved', 'completed'];
+                                        const currentIdx = statuses.indexOf(quest.status);
+                                        const stepIdx = statuses.indexOf(step.key);
+                                        const isCompleted = stepIdx < currentIdx || quest.status === 'completed';
+                                        const isActive = quest.status === step.key;
+
+                                        return (
+                                            <div key={step.key} className="flex flex-col items-center z-10 relative">
+                                                <div 
+                                                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                                                        isCompleted
+                                                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-[0_0_10px_rgba(99,102,241,0.5)]'
+                                                            : isActive
+                                                            ? 'bg-purple-600 border-purple-500 text-white shadow-[0_0_10px_rgba(168,85,247,0.5)]'
+                                                            : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-400'
+                                                    }`}
+                                                >
+                                                    {isCompleted ? '✓' : idx + 1}
+                                                </div>
+                                                <span 
+                                                    className={`mt-1.5 text-[8px] sm:text-[9px] uppercase tracking-widest ${
+                                                        isActive || isCompleted ? 'text-indigo-600 dark:text-purple-300 font-extrabold' : 'text-slate-400'
+                                                    }`}
+                                                >
+                                                    {step.label}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
                         <div className="flex items-start justify-between gap-4 mb-4">
                             <h2 className="text-xl sm:text-2xl font-black font-['Oxanium'] tracking-tight text-slate-900 dark:text-white leading-tight">
                                 {quest.title}
@@ -268,11 +329,11 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     quest.status === "open"
                                         ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400 border border-green-200 dark:border-green-800/40"
                                         : quest.status === "draft"
-                                        ? "bg-amber-105 text-amber-700 dark:bg-amber-955/40 dark:text-amber-400 border border-amber-205 dark:border-amber-800/40"
+                                        ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40"
                                         : quest.status === "rejected"
-                                        ? "bg-red-105 text-red-700 dark:bg-red-955/40 dark:text-red-400 border border-red-205 dark:border-red-800/40"
+                                        ? "bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-800/40"
                                         : quest.status === "ongoing"
-                                        ? "bg-blue-105 text-blue-700 dark:bg-blue-955/40 dark:text-blue-400 border border-blue-205 dark:border-blue-800/40"
+                                        ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40"
                                         : quest.status === "approved"
                                         ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/40"
                                         : quest.status === "submitted"
@@ -445,6 +506,27 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </div>
                         </div>
 
+                        {/* HADIAH QUEST */}
+                        <div className="mt-6 p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 dark:bg-purple-950/10 space-y-3 font-['Oxanium']">
+                            <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-purple-600 dark:text-purple-400">
+                                🎁 Hadiah Penyelesaian Quest
+                            </span>
+                            <div className="grid grid-cols-3 gap-3 text-center text-xs font-bold">
+                                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 flex flex-col items-center gap-1 shadow-sm">
+                                    <span className="text-[10px] text-slate-400 font-semibold font-['Oxanium']">EXP</span>
+                                    <span className="text-sm font-black font-['Orbitron']">+250</span>
+                                </div>
+                                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex flex-col items-center gap-1 shadow-sm">
+                                    <span className="text-[10px] text-slate-400 font-semibold font-['Oxanium']">GOLD</span>
+                                    <span className="text-sm font-black font-['Orbitron']">+150</span>
+                                </div>
+                                <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 flex flex-col items-center gap-1 shadow-sm">
+                                    <span className="text-[10px] text-slate-400 font-semibold font-['Oxanium']">ERP</span>
+                                    <span className="text-sm font-black font-['Orbitron']">+100</span>
+                                </div>
+                            </div>
+                        </div>
+
                         {quest.worker && (
                             <div className="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center gap-3 font-['Oxanium']">
                                 <Check className="w-6 h-6 text-green-500 shrink-0" />
@@ -477,82 +559,150 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                             <p>Belum ada penawaran masuk.</p>
                                         </div>
                                     ) : (
-                                        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
-                                            {bids.map((bid) => (
-                                                <div
-                                                    key={bid._id}
-                                                    className={`p-4 rounded-xl border flex flex-col justify-between gap-3 transition-all duration-300 ${
-                                                        bid.status === "accepted"
-                                                            ? "bg-green-500/10 border-green-500/30"
-                                                            : bid.status === "rejected"
-                                                            ? "bg-slate-100/50 dark:bg-slate-900/40 border-slate-200/50 dark:border-slate-800/40 opacity-60"
-                                                            : "bg-slate-50/50 dark:bg-[#0c122c]/40 border-blue-200/40 dark:border-blue-500/10 hover:border-purple-500/50"
-                                                    }`}
-                                                >
-                                                    <div className="font-['Oxanium']">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="font-extrabold text-sm text-slate-800 dark:text-white">
-                                                                {bid.student.name}
-                                                            </span>
-                                                            <span className="font-black text-purple-600 dark:text-purple-300 text-sm">
-                                                                {formatCurrency(bid.bid_amount)}
-                                                            </span>
-                                                        </div>
+                                        (() => {
+                                            const sortedBids = [...bids].sort((a, b) => {
+                                                const aShort = shortlistedBidIds.includes(a._id) ? 1 : 0;
+                                                const bShort = shortlistedBidIds.includes(b._id) ? 1 : 0;
+                                                const aArch = archivedBidIds.includes(a._id) ? 1 : 0;
+                                                const bArch = archivedBidIds.includes(b._id) ? 1 : 0;
+                                                if (aShort !== bShort) return bShort - aShort;
+                                                return aArch - bArch;
+                                            });
 
-                                                        <div className="text-xs text-slate-500 dark:text-slate-300 mb-3 space-y-1 bg-white/50 dark:bg-black/20 p-2.5 rounded-lg border border-slate-100 dark:border-blue-500/5">
-                                                            <p className="line-clamp-4">
-                                                                <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Proposal</strong>
-                                                                {bid.proposal}
-                                                            </p>
-                                                            <p className="truncate mt-1.5">
-                                                                <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">CV</strong>
-                                                                {bid.cv}
-                                                            </p>
-                                                            <p className="truncate mt-1.5">
-                                                                <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Portofolio</strong>
-                                                                {bid.portfolio}
-                                                            </p>
-                                                        </div>
+                                            return (
+                                                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                                                    {sortedBids.map((bid) => {
+                                                        const isShortlisted = shortlistedBidIds.includes(bid._id);
+                                                        const isArchived = archivedBidIds.includes(bid._id);
 
-                                                        <span className="text-[10px] text-slate-400">
-                                                            Diajukan pada {formatDate(bid.created_at)}
-                                                        </span>
-                                                    </div>
-
-                                                    <div className="flex gap-2 w-full">
-                                                        {quest.status === "open" && bid.status === "pending" && (
-                                                            <button
-                                                                onClick={() => handleAcceptBid(bid._id)}
-                                                                className="flex-1 py-1.5 rounded-lg text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-green-600 hover:bg-green-700 shadow-sm transition-all duration-300 cursor-pointer"
+                                                        return (
+                                                            <div
+                                                                key={bid._id}
+                                                                className={`p-4 rounded-xl border flex flex-col justify-between gap-3 transition-all duration-300 relative ${
+                                                                    bid.status === "accepted"
+                                                                        ? "bg-green-500/10 border-green-500/30"
+                                                                        : bid.status === "rejected"
+                                                                        ? "bg-slate-100/50 dark:bg-slate-900/40 border-slate-200/50 dark:border-slate-800/40 opacity-65"
+                                                                        : isShortlisted
+                                                                        ? "bg-purple-500/10 border-purple-500/40 shadow-[0_0_12px_rgba(124,58,237,0.15)]"
+                                                                        : isArchived
+                                                                        ? "bg-slate-100/30 dark:bg-slate-900/10 border-slate-200/30 dark:border-slate-800/20 opacity-30"
+                                                                        : "bg-slate-50/50 dark:bg-[#0c122c]/40 border-blue-200/40 dark:border-blue-500/10 hover:border-purple-500/50"
+                                                                }`}
                                                             >
-                                                                Terima
-                                                            </button>
-                                                        )}
-                                                        <button
-                                                            onClick={() => setSelectedChatBid({ id: bid._id, name: bid.student.name })}
-                                                            className="flex-1 py-1.5 rounded-lg text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all duration-300 cursor-pointer relative"
-                                                        >
-                                                            Chat
-                                                            {bid.unread_messages_count > 0 && (
-                                                                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
-                                                                    {bid.unread_messages_count}
-                                                                </span>
-                                                            )}
-                                                        </button>
-                                                    </div>
-                                                    {bid.status === "accepted" && (
-                                                        <span className="block text-center text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-green-600 dark:text-green-400 py-1 bg-green-500/10 border border-green-500/20 rounded-lg">
-                                                            Pekerja Terpilih
-                                                        </span>
-                                                    )}
-                                                    {bid.status === "rejected" && (
-                                                        <span className="block text-center text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-slate-400 py-1 bg-slate-500/5 border border-slate-500/10 rounded-lg">
-                                                            Ditolak
-                                                        </span>
-                                                    )}
+                                                                <div className="font-['Oxanium']">
+                                                                    <div className="flex items-start justify-between mb-2">
+                                                                        <div className="min-w-0 flex-1">
+                                                                            <span className="font-extrabold text-sm text-slate-800 dark:text-white block truncate">
+                                                                                {bid.student.name}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                                                                            <span className="font-black text-purple-600 dark:text-purple-300 text-xs sm:text-sm mr-1">
+                                                                                {formatCurrency(bid.bid_amount)}
+                                                                            </span>
+                                                                            {bid.status === "pending" && (
+                                                                                <>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => {
+                                                                                            if (isShortlisted) {
+                                                                                                setShortlistedBidIds(prev => prev.filter(id => id !== bid._id));
+                                                                                            } else {
+                                                                                                setShortlistedBidIds(prev => [...prev, bid._id]);
+                                                                                                setArchivedBidIds(prev => prev.filter(id => id !== bid._id));
+                                                                                            }
+                                                                                        }}
+                                                                                        className={`p-1 rounded-lg border transition-colors cursor-pointer ${
+                                                                                            isShortlisted
+                                                                                                ? "bg-amber-500/10 border-amber-400 text-amber-500 hover:bg-amber-500/20"
+                                                                                                : "bg-slate-100/50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400 hover:text-amber-500 hover:bg-amber-500/10"
+                                                                                        }`}
+                                                                                        title={isShortlisted ? "Batal Unggul" : "Shortlist (Unggulan)"}
+                                                                                    >
+                                                                                        <Star size={11} className={isShortlisted ? "fill-amber-500 text-amber-500" : ""} />
+                                                                                    </button>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => {
+                                                                                            if (isArchived) {
+                                                                                                setArchivedBidIds(prev => prev.filter(id => id !== bid._id));
+                                                                                            } else {
+                                                                                                setArchivedBidIds(prev => [...prev, bid._id]);
+                                                                                                setShortlistedBidIds(prev => prev.filter(id => id !== bid._id));
+                                                                                            }
+                                                                                        }}
+                                                                                        className={`p-1 rounded-lg border transition-colors cursor-pointer ${
+                                                                                            isArchived
+                                                                                                ? "bg-slate-500/15 border-slate-550 text-slate-600 dark:text-slate-400 hover:bg-slate-500/25"
+                                                                                                : "bg-slate-100/50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400 hover:text-slate-600 hover:bg-slate-500/10"
+                                                                                        }`}
+                                                                                        title={isArchived ? "Tampilkan Kembali" : "Arsipkan Penawaran"}
+                                                                                    >
+                                                                                        {isArchived ? <Eye size={11} /> : <EyeOff size={11} />}
+                                                                                    </button>
+                                                                                </>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="text-xs text-slate-500 dark:text-slate-300 mb-3 space-y-1 bg-white/50 dark:bg-black/20 p-2.5 rounded-lg border border-slate-100 dark:border-blue-500/5">
+                                                                        <p className="line-clamp-4">
+                                                                            <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Proposal</strong>
+                                                                            {bid.proposal}
+                                                                        </p>
+                                                                        <p className="truncate mt-1.5">
+                                                                            <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">CV</strong>
+                                                                            {bid.cv}
+                                                                        </p>
+                                                                        <p className="truncate mt-1.5">
+                                                                            <strong className="block text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Portofolio</strong>
+                                                                            {bid.portfolio}
+                                                                        </p>
+                                                                    </div>
+
+                                                                    <span className="text-[10px] text-slate-400">
+                                                                        Diajukan pada {formatDate(bid.created_at)}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div className="flex gap-2 w-full">
+                                                                    {quest.status === "open" && bid.status === "pending" && (
+                                                                        <button
+                                                                            onClick={() => handleAcceptBid(bid._id)}
+                                                                            className="flex-1 py-1.5 rounded-lg text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-green-600 hover:bg-green-700 shadow-sm transition-all duration-300 cursor-pointer"
+                                                                        >
+                                                                            Terima
+                                                                        </button>
+                                                                    )}
+                                                                    <button
+                                                                        onClick={() => setSelectedChatBid({ id: bid._id, name: bid.student.name })}
+                                                                        className="flex-1 py-1.5 rounded-lg text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all duration-300 cursor-pointer relative"
+                                                                    >
+                                                                        Chat
+                                                                        {bid.unread_messages_count > 0 && (
+                                                                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
+                                                                                {bid.unread_messages_count}
+                                                                            </span>
+                                                                        )}
+                                                                    </button>
+                                                                </div>
+                                                                {bid.status === "accepted" && (
+                                                                    <span className="block text-center text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-green-600 dark:text-green-400 py-1 bg-green-500/10 border border-green-500/20 rounded-lg">
+                                                                        Pekerja Terpilih
+                                                                    </span>
+                                                                )}
+                                                                {bid.status === "rejected" && (
+                                                                    <span className="block text-center text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-slate-400 py-1 bg-slate-500/5 border border-slate-500/10 rounded-lg">
+                                                                        Ditolak
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
-                                            ))}
-                                        </div>
+                                            );
+                                        })()
                                     )}
                                 </div>
                             ) : (
@@ -645,8 +795,13 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                     placeholder={`Range: ${quest.min_salary} - ${quest.max_salary}`}
                                                     value={data.bid_amount}
                                                     onChange={(e) => setData("bid_amount", e.target.value)}
-                                                    className="w-full px-3.5 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 transition-colors"
+                                                    className="w-full px-3.5 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 transition-colors font-['Orbitron'] text-xs font-bold"
                                                 />
+                                                {data.bid_amount && (Number(data.bid_amount) < quest.min_salary || Number(data.bid_amount) > quest.max_salary) && (
+                                                    <p className="text-[9px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider mt-1 flex items-center gap-1 font-['Orbitron']">
+                                                        ⚠️ Di luar budget ({formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)})
+                                                    </p>
+                                                )}
                                                 {errors.bid_amount && (
                                                     <p className="text-xs text-red-500 font-semibold">{errors.bid_amount}</p>
                                                 )}
@@ -764,13 +919,15 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         Anda telah dipilih untuk menyelesaikan pekerjaan ini! Silakan cantumkan tautan pekerjaan Anda (wajib) dan berkas pekerjaan awal ZIP (opsional) untuk ditinjau oleh pembuat quest.
                                                     </p>
 
-                                                    {/* ZIP Deliverable File Input */}
-                                                    <div className="space-y-1.5">
+                                                    {/* ZIP Deliverable File Input with Drag-and-Drop */}
+                                                    <div className="space-y-2">
                                                         <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200 flex items-center gap-1.5">
                                                             <FileArchive className="w-4 h-4 text-amber-500" />
                                                             Berkas Pekerjaan Utama (ZIP) <span className="text-slate-400 font-normal">(Opsional)</span>
                                                         </label>
+                                                        
                                                         <input
+                                                            id="submission-file-input"
                                                             type="file"
                                                             accept=".zip"
                                                             onChange={(e) => {
@@ -779,8 +936,71 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                                     submissionForm.setData("submission_file", files[0]);
                                                                 }
                                                             }}
-                                                            className="w-full px-3 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-800 dark:text-white"
+                                                            className="hidden"
                                                         />
+
+                                                        {submissionForm.data.submission_file ? (
+                                                            <div className="flex items-center justify-between p-3.5 rounded-xl border border-purple-500/30 bg-purple-500/5 font-['Oxanium']">
+                                                                <div className="flex items-center gap-3 min-w-0">
+                                                                    <FileArchive className="w-6 h-6 text-purple-500 shrink-0" />
+                                                                    <div className="min-w-0">
+                                                                        <p className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">
+                                                                            {submissionForm.data.submission_file.name}
+                                                                        </p>
+                                                                        <p className="text-[10px] text-slate-400">
+                                                                            {(submissionForm.data.submission_file.size / 1024 / 1024).toFixed(2)} MB
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => submissionForm.setData("submission_file", null)}
+                                                                    className="px-2 py-1 rounded-lg text-[10px] font-bold font-['Orbitron'] uppercase tracking-wider text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer shrink-0"
+                                                                >
+                                                                    Hapus
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <div
+                                                                onClick={() => document.getElementById("submission-file-input")?.click()}
+                                                                onDragOver={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.currentTarget.classList.add("border-purple-500", "bg-purple-500/5");
+                                                                }}
+                                                                onDragLeave={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.currentTarget.classList.remove("border-purple-500", "bg-purple-500/5");
+                                                                }}
+                                                                onDrop={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.currentTarget.classList.remove("border-purple-500", "bg-purple-500/5");
+                                                                    const files = e.dataTransfer.files;
+                                                                    if (files && files.length > 0 && files[0].name.endsWith(".zip")) {
+                                                                        submissionForm.setData("submission_file", files[0]);
+                                                                    }
+                                                                }}
+                                                                className="border-2 border-dashed border-slate-200 dark:border-blue-500/20 hover:border-purple-500 dark:hover:border-purple-400 rounded-xl p-5 text-center cursor-pointer transition-all duration-300 bg-slate-50/50 dark:bg-[#0c122c]/20 flex flex-col items-center justify-center gap-1.5"
+                                                            >
+                                                                <FileArchive className="w-8 h-8 text-slate-400 dark:text-blue-500/40" />
+                                                                <span className="text-xs font-bold text-slate-600 dark:text-blue-300">Seret & lepas berkas ZIP</span>
+                                                                <span className="text-[10px] text-slate-400">atau klik untuk memilih berkas</span>
+                                                            </div>
+                                                        )}
+
+                                                        {submissionForm.progress && (
+                                                            <div className="space-y-1">
+                                                                <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                                                    <div 
+                                                                        className="bg-purple-600 h-1.5 rounded-full transition-all duration-300 animate-pulse"
+                                                                        style={{ width: `${submissionForm.progress.percentage}%` }}
+                                                                    />
+                                                                </div>
+                                                                <span className="block text-[8px] font-bold text-slate-400 uppercase tracking-widest text-right font-['Orbitron']">
+                                                                    Mengunggah: {submissionForm.progress.percentage}%
+                                                                </span>
+                                                            </div>
+                                                        )}
+
                                                         {submissionForm.errors.submission_file && (
                                                             <p className="text-xs text-red-500 font-semibold">{submissionForm.errors.submission_file}</p>
                                                         )}
@@ -844,23 +1064,87 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 </div>
 
                                                 <form onSubmit={handleFinalZipSubmit} className="space-y-4">
-                                                    <div className="space-y-1.5">
+                                                    <div className="space-y-2">
                                                         <label className="text-xs font-bold uppercase text-slate-600 dark:text-blue-200 flex items-center gap-1.5">
                                                             <FileArchive className="w-4 h-4 text-amber-500" />
                                                             Upload Berkas Proyek Final (ZIP) <span className="text-red-500">*</span>
                                                         </label>
+
                                                         <input
+                                                            id="final-zip-file-input"
                                                             type="file"
                                                             accept=".zip"
-                                                            required
                                                             onChange={(e) => {
                                                                 const files = e.target.files;
                                                                 if (files && files.length > 0) {
                                                                     finalZipForm.setData("submission_file", files[0]);
                                                                 }
                                                             }}
-                                                            className="w-full px-3 py-2 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-800 dark:text-white"
+                                                            className="hidden"
                                                         />
+
+                                                        {finalZipForm.data.submission_file ? (
+                                                            <div className="flex items-center justify-between p-3.5 rounded-xl border border-indigo-500/30 bg-indigo-500/5 font-['Oxanium']">
+                                                                <div className="flex items-center gap-3 min-w-0">
+                                                                    <FileArchive className="w-6 h-6 text-indigo-500 shrink-0" />
+                                                                    <div className="min-w-0">
+                                                                        <p className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">
+                                                                            {finalZipForm.data.submission_file.name}
+                                                                        </p>
+                                                                        <p className="text-[10px] text-slate-400">
+                                                                            {(finalZipForm.data.submission_file.size / 1024 / 1024).toFixed(2)} MB
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => finalZipForm.setData("submission_file", null)}
+                                                                    className="px-2 py-1 rounded-lg text-[10px] font-bold font-['Orbitron'] uppercase tracking-wider text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer shrink-0"
+                                                                >
+                                                                    Hapus
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <div
+                                                                onClick={() => document.getElementById("final-zip-file-input")?.click()}
+                                                                onDragOver={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.currentTarget.classList.add("border-indigo-500", "bg-indigo-500/5");
+                                                                }}
+                                                                onDragLeave={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.currentTarget.classList.remove("border-indigo-500", "bg-indigo-500/5");
+                                                                }}
+                                                                onDrop={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.currentTarget.classList.remove("border-indigo-500", "bg-indigo-500/5");
+                                                                    const files = e.dataTransfer.files;
+                                                                    if (files && files.length > 0 && files[0].name.endsWith(".zip")) {
+                                                                        finalZipForm.setData("submission_file", files[0]);
+                                                                    }
+                                                                }}
+                                                                className="border-2 border-dashed border-slate-200 dark:border-blue-500/20 hover:border-indigo-500 dark:hover:border-indigo-400 rounded-xl p-5 text-center cursor-pointer transition-all duration-300 bg-slate-50/50 dark:bg-[#0c122c]/20 flex flex-col items-center justify-center gap-1.5"
+                                                            >
+                                                                <FileArchive className="w-8 h-8 text-slate-400 dark:text-blue-500/40" />
+                                                                <span className="text-xs font-bold text-slate-600 dark:text-blue-300">Seret & lepas berkas ZIP Final</span>
+                                                                <span className="text-[10px] text-slate-400">atau klik untuk memilih berkas</span>
+                                                            </div>
+                                                        )}
+
+                                                        {finalZipForm.progress && (
+                                                            <div className="space-y-1">
+                                                                <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                                                    <div 
+                                                                        className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300 animate-pulse"
+                                                                        style={{ width: `${finalZipForm.progress.percentage}%` }}
+                                                                    />
+                                                                </div>
+                                                                <span className="block text-[8px] font-bold text-slate-400 uppercase tracking-widest text-right font-['Orbitron']">
+                                                                    Mengunggah: {finalZipForm.progress.percentage}%
+                                                                </span>
+                                                            </div>
+                                                        )}
+
                                                         {finalZipForm.errors.submission_file && (
                                                             <p className="text-xs text-red-500 font-semibold">{finalZipForm.errors.submission_file}</p>
                                                         )}

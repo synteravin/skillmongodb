@@ -69,8 +69,19 @@ interface Props {
 export default function Index({ quests, historyQuests, filters }: Props) {
     const [search, setSearch] = useState(filters.search || "");
     const [status, setStatus] = useState(filters.status || "");
+    const [sortBy, setSortBy] = useState<"latest" | "highest_salary" | "closest_deadline">("latest");
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
+
+    const sortedQuests = [...quests].sort((a, b) => {
+        if (sortBy === "highest_salary") {
+            return b.max_salary - a.max_salary;
+        }
+        if (sortBy === "closest_deadline") {
+            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+        }
+        return 0;
+    });
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -208,6 +219,19 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                             <Search className="absolute left-3.5 top-3.5 text-slate-400 dark:text-blue-300/60 w-5 h-5" />
                         </div>
 
+                        {/* Sort Selector */}
+                        <div className="w-full md:w-48 font-['Oxanium']">
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value as any)}
+                                className="w-full px-3.5 py-2.5 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-blue-200 cursor-pointer"
+                            >
+                                <option value="latest" className="bg-white dark:bg-[#080d26]">Urutan: Terbaru</option>
+                                <option value="highest_salary" className="bg-white dark:bg-[#080d26]">Urutan: Gaji Tertinggi</option>
+                                <option value="closest_deadline" className="bg-white dark:bg-[#080d26]">Urutan: Deadline Terdekat</option>
+                            </select>
+                        </div>
+
                         <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 scrollbar-thin">
                             {["", "open", "ongoing", "completed"].map((statusOption) => (
                                 <button
@@ -228,7 +252,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                 </div>
 
                 {/* QUEST LIST */}
-                {quests.length === 0 ? (
+                {sortedQuests.length === 0 ? (
                     <div className="flex-1 flex flex-col items-center justify-center py-20 bg-white/40 dark:bg-blue-950/10 backdrop-blur-sm rounded-3xl border border-blue-200/50 dark:border-blue-500/10 text-center font-['Oxanium']">
                         <Briefcase className="w-16 h-16 text-slate-300 dark:text-blue-900/60 mb-4 animate-pulse" />
                         <p className="text-lg font-semibold text-slate-600 dark:text-blue-200">Tidak ada quest yang ditemukan</p>
@@ -236,7 +260,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
-                        {quests.map((quest) => (
+                        {sortedQuests.map((quest) => (
                             <div
                                 key={quest._id}
                                 className="group relative bg-white/70 dark:bg-blue-950/30 backdrop-blur-md border border-blue-200 dark:border-blue-500/20 hover:border-purple-400 dark:hover:border-purple-500/50 rounded-2xl p-5 shadow-sm hover:shadow-[0_0_20px_rgba(124,58,237,0.15)] flex flex-col justify-between transition-all duration-300 transform hover:scale-[1.015]"
