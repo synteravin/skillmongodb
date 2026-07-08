@@ -48,6 +48,7 @@ interface Quest {
     submitted_at?: string | null;
     completed_at?: string | null;
     revision_note?: string | null;
+    rejection_note?: string | null;
     rating?: number | null;
     rating_comment?: string | null;
     images?: Array<{ name: string; url: string }>;
@@ -701,6 +702,27 @@ export default function Show({ quest, bids }: Props) {
                                     </div>
                                 )}
 
+                                 {/* Hadiah Quest */}
+                                 <div className="space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800 font-['Oxanium']">
+                                     <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                         Hadiah Penyelesaian
+                                     </span>
+                                     <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
+                                         <div className="py-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 flex flex-col items-center">
+                                             <span className="text-[8px] text-slate-400 font-semibold">EXP</span>
+                                             <span className="font-['Orbitron']">+250</span>
+                                         </div>
+                                         <div className="py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex flex-col items-center">
+                                             <span className="text-[8px] text-slate-400 font-semibold">GOLD</span>
+                                             <span className="font-['Orbitron']">+150</span>
+                                         </div>
+                                         <div className="py-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 flex flex-col items-center">
+                                             <span className="text-[8px] text-slate-400 font-semibold">ERP</span>
+                                             <span className="font-['Orbitron']">+100</span>
+                                         </div>
+                                     </div>
+                                 </div>
+
                                 {/* Quick Details Grid */}
                                 <div className="space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800">
                                     <div className="flex items-center gap-3">
@@ -771,11 +793,11 @@ export default function Show({ quest, bids }: Props) {
                                                 </div>
                                             </div>
                                             {(() => {
-                                                const acceptedBid = bids.find(b => b.status === "accepted" || b.student_id === quest.worker_id);
+                                                const acceptedBid = bids.find(b => b.status === "accepted" || b.student._id === quest.worker_id);
                                                 if (acceptedBid) {
                                                     return (
                                                         <button
-                                                            onClick={() => setSelectedChatBid({ id: acceptedBid._id, name: quest.worker.name })}
+                                                            onClick={() => setSelectedChatBid({ id: acceptedBid._id, name: quest.worker?.name ?? "" })}
                                                             className="px-2.5 py-1 rounded-lg text-[10px] font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-colors cursor-pointer flex items-center gap-1 relative shrink-0"
                                                         >
                                                             <MessageSquare size={10} />
