@@ -484,6 +484,7 @@ Route::middleware(['auth'])
     ->prefix('student')
     ->name('student.')
     ->group(function () {
+        Route::get('/forum/attachment/download', [ForumController::class, 'downloadAttachment'])->name('forum.attachment.download');
         Route::get('/forum/user/{user}/profile', [ForumController::class, 'userProfile'])->name('forum.user.profile');
         Route::get('/forum/{course?}', [ForumController::class, 'index'])->name('forum.index');
         Route::get('/forum/{course}/messages', [ForumController::class, 'getMessages'])->name('forum.messages');
