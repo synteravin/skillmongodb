@@ -1,6 +1,23 @@
 import { useForm, Link } from "@inertiajs/react";
-import React from "react";
-import { ArrowLeft, Save, Briefcase, DollarSign, Calendar, FileText, Image as ImageIcon, Plus, Trash2, Paperclip, FileArchive, AlertCircle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+    ArrowLeft,
+    Save,
+    Briefcase,
+    DollarSign,
+    Calendar,
+    FileText,
+    Image as ImageIcon,
+    Plus,
+    Trash2,
+    Paperclip,
+    FileArchive,
+    AlertCircle,
+    Award,
+    Sparkles,
+    CheckCircle,
+    Info
+} from "lucide-react";
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -13,7 +30,39 @@ export default function Create() {
         files: [] as File[],
     });
 
-    const [clientErrors, setClientErrors] = React.useState<{ images?: string; files?: string }>({});
+    const [clientErrors, setClientErrors] = useState<{ images?: string; files?: string }>({});
+
+    // Dynamic RPG rewards estimator states
+    const [rewards, setRewards] = useState({ exp: 100, gold: 50, erp: 20, rank: "Bronze" });
+
+    // Calculate rewards dynamically when budget changes
+    useEffect(() => {
+        const minVal = parseFloat(data.min_salary) || 0;
+        const maxVal = parseFloat(data.max_salary) || 0;
+        const avgBudget = (minVal + maxVal) / 2;
+
+        // EXP calculation: 100 base + 1 EXP per 10k IDR budget, max 1000
+        const exp = Math.min(1000, Math.max(100, Math.round(100 + avgBudget * 0.0001)));
+        
+        // Gold calculation: 50 base + 1 Gold per 20k IDR max budget, max 500
+        const gold = Math.min(500, Math.max(50, Math.round(50 + maxVal * 0.00005)));
+        
+        // ERP calculation: 20 base + 1 ERP per 50k IDR avg budget, max 200
+        const erp = Math.min(200, Math.max(20, Math.round(20 + avgBudget * 0.00002)));
+
+        let rank = "Bronze";
+        if (maxVal >= 10000000) {
+            rank = "Mythic";
+        } else if (maxVal >= 5000000) {
+            rank = "Diamond";
+        } else if (maxVal >= 2500000) {
+            rank = "Gold";
+        } else if (maxVal >= 1000000) {
+            rank = "Silver";
+        }
+
+        setRewards({ exp, gold, erp, rank });
+    }, [data.min_salary, data.max_salary]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
@@ -106,303 +155,351 @@ export default function Create() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#eff6ff] to-[#e2e8f0] dark:from-[#050816] dark:via-[#0b1026] dark:to-[#050816] text-slate-800 dark:text-white flex flex-col p-3 sm:p-6 md:p-8 relative overflow-x-hidden transition-colors duration-500">
-            {/* Ambient Glows */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-                <div className="absolute top-[-10%] left-[-10%] w-72 h-72 sm:w-96 sm:h-96 bg-blue-500/20 dark:bg-blue-600/15 rounded-full blur-[100px] sm:blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 sm:w-96 sm:h-96 bg-purple-500/20 dark:bg-purple-600/15 rounded-full blur-[100px] sm:blur-[120px]" />
-            </div>
+        <div 
+            className="min-h-screen bg-slate-50 dark:bg-[#060813] text-slate-800 dark:text-white flex flex-col p-3 sm:p-6 md:p-8 relative overflow-x-hidden transition-colors duration-205"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+            {/* Ambient top-center glow */}
+            <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none" />
 
-            <div className="w-full max-w-2xl mx-auto relative z-10 flex-1 flex flex-col min-h-0">
+            <div className="w-full max-w-6xl mx-auto relative z-10 flex-1 flex flex-col min-h-0 space-y-6">
+                
                 {/* HEADER */}
-                <div className="flex items-center gap-3 sm:gap-6 -mt-3 sm:-mt-6 mb-6 md:mb-8 shrink-0">
-                    <div className="relative group cursor-pointer shrink-0">
-                        <svg
-                            className="w-[80px] h-[36px] sm:w-[110px] sm:h-[49px] md:w-[125px] md:h-[55px] overflow-visible"
-                            viewBox="0 0 110 46"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <defs>
-                                <linearGradient id="back_border_grad_lb" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stopColor="#3B28F6" />
-                                    <stop offset="100%" stopColor="#FACC15" />
-                                </linearGradient>
-                            </defs>
-                            <path
-                                d="M 3,3 H 127 L 97,47 H 3 Z"
-                                className="fill-blue-50/60 dark:fill-[#080e28]/40 transition-colors"
-                                stroke="url(#back_border_grad_lb)"
-                                strokeWidth="2"
-                                strokeLinejoin="miter"
-                                style={{ filter: "drop-shadow(0 0 3px rgba(59, 130, 246, 0.35))" }}
-                            />
-                        </svg>
-
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-5">
+                    <div className="space-y-1">
                         <Link
                             href="/student/quests"
-                            className="absolute inset-0 flex items-center justify-center text-[#1e3a8a] dark:text-blue-200"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-650 dark:text-slate-400 dark:hover:text-indigo-400 font-['Orbitron']"
                         >
-                            <svg
-                                className="w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12"
-                                viewBox="0 0 44 44"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M 6 17 L 13 10 M 6 17 L 13 24" />
-                                <path d="M 9 17 H 36 C 42 19 43 30 32 30 H 15" />
-                            </svg>
+                            <ArrowLeft size={14} />
+                            Kembali ke Quest Board
                         </Link>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-['Oxanium'] flex items-center gap-2">
+                            <Sparkles className="w-6 h-6 text-indigo-500 animate-pulse" />
+                            POSTING QUEST BARU
+                        </h2>
                     </div>
-
-                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-[0.05em] sm:tracking-[0.1em] uppercase font-['Orbitron'] text-[#1e3a8a] dark:text-[#F0F0F0] transition-colors duration-500">
-                        POST QUEST
-                    </h1>
                 </div>
 
-                {/* FORM CARD */}
-                <div className="bg-white/70 dark:bg-blue-950/20 backdrop-blur-md rounded-2xl border border-blue-200 dark:border-blue-500/30 p-6 shadow-md transition-all duration-300">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Title */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                <Briefcase className="w-4 h-4 text-purple-500" />
-                                Judul Pekerjaan
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Contoh: Membuat Landing Page Landing Page Next.js"
-                                value={data.title}
-                                onChange={(e) => setData("title", e.target.value)}
-                                className="w-full px-4 py-2.5 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 font-['Oxanium'] transition-colors"
-                            />
-                            {errors.title && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.title}</p>
-                            )}
-                        </div>
+                {/* TWO-COLUMN FORM LAYOUT */}
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    {/* LEFT COLUMN: Main Form details (lg:col-span-8) */}
+                    <div className="space-y-6 lg:col-span-8">
+                        
+                        {/* Card 1: Informasi Utama */}
+                        <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md space-y-5 transition-all duration-300">
+                            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                                <Briefcase className="w-5 h-5 text-indigo-500" />
+                                <h3 className="text-xs font-black uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider">
+                                    Informasi Utama Pekerjaan
+                                </h3>
+                            </div>
 
-                        {/* Description */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                <FileText className="w-4 h-4 text-purple-500" />
-                                Detail Pekerjaan
-                            </label>
-                            <textarea
-                                placeholder="Jelaskan kebutuhan pekerjaan secara detail, spesifikasi teknis, dan apa yang diharapkan dari pelamar..."
-                                rows={6}
-                                value={data.description}
-                                onChange={(e) => setData("description", e.target.value)}
-                                className="w-full px-4 py-2.5 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 font-['Oxanium'] transition-colors"
-                            />
-                            {errors.description && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.description}</p>
-                            )}
-                        </div>
-
-                        {/* Salary Range */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Job Title */}
                             <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                    <DollarSign className="w-4 h-4 text-purple-500" />
-                                    Gaji Minimal (Rupiah)
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Judul Quest / Pekerjaan <span className="text-red-500">*</span>
                                 </label>
                                 <input
-                                    type="number"
-                                    placeholder="Contoh: 1000000"
-                                    value={data.min_salary}
-                                    onChange={(e) => setData("min_salary", e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 font-['Oxanium'] transition-colors"
+                                    type="text"
+                                    required
+                                    placeholder="Contoh: Membuat Landing Page Next.js dengan Tailwind CSS"
+                                    value={data.title}
+                                    onChange={(e) => setData("title", e.target.value)}
+                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs sm:text-sm text-slate-805 dark:text-white font-['Oxanium'] transition-colors"
                                 />
-                                {errors.min_salary && (
-                                    <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.min_salary}</p>
+                                {errors.title && (
+                                    <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.title}</p>
                                 )}
                             </div>
 
+                            {/* Job Description */}
                             <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                    <DollarSign className="w-4 h-4 text-purple-500" />
-                                    Gaji Maksimal (Rupiah)
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Detail Kebutuhan Pekerjaan <span className="text-red-500">*</span>
                                 </label>
-                                <input
-                                    type="number"
-                                    placeholder="Contoh: 3000000"
-                                    value={data.max_salary}
-                                    onChange={(e) => setData("max_salary", e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 font-['Oxanium'] transition-colors"
+                                <textarea
+                                    required
+                                    placeholder="Jelaskan secara rinci spesifikasi pekerjaan, teknologi yang digunakan, serta kriteria hasil pengerjaan (output) yang diharapkan..."
+                                    rows={8}
+                                    value={data.description}
+                                    onChange={(e) => setData("description", e.target.value)}
+                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs sm:text-sm text-slate-805 dark:text-white font-['Oxanium'] leading-relaxed transition-colors"
                                 />
-                                {errors.max_salary && (
-                                    <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.max_salary}</p>
+                                {errors.description && (
+                                    <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.description}</p>
                                 )}
                             </div>
                         </div>
 
-                        {/* Deadline */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                <Calendar className="w-4 h-4 text-purple-500" />
-                                Tenggat Waktu (Deadline)
-                            </label>
-                            <input
-                                type="date"
-                                value={data.deadline}
-                                onChange={(e) => setData("deadline", e.target.value)}
-                                className="w-full px-4 py-2.5 bg-slate-100/50 dark:bg-[#0c122c]/50 border border-blue-200 dark:border-blue-500/20 rounded-xl focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 font-['Oxanium'] transition-colors"
-                            />
-                            {errors.deadline && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.deadline}</p>
-                            )}
-                        </div>
-
-                        {/* Gambar Quest */}
-                        <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                <ImageIcon className="w-4 h-4 text-purple-500" />
-                                Gambar Pendukung (Maks. 2MB per gambar)
-                            </label>
-                            
-                            {/* Selected Images Grid */}
-                            {data.images.length > 0 && (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-3">
-                                    {data.images.map((file, index) => (
-                                        <div key={index} className="relative group rounded-xl overflow-hidden border border-blue-200/50 dark:border-blue-500/20 bg-slate-100/55 dark:bg-[#0c122c]/50 p-2 flex flex-col items-center">
-                                            <img
-                                                src={URL.createObjectURL(file)}
-                                                alt={file.name}
-                                                className="w-full h-24 object-cover rounded-lg"
-                                            />
-                                            <span className="text-[10px] mt-1 text-slate-500 dark:text-slate-400 truncate w-full text-center font-['Oxanium']">
-                                                {file.name}
-                                            </span>
-                                            <span className="text-[9px] text-slate-400 font-['Oxanium'] font-semibold">
-                                                {formatBytes(file.size)}
-                                            </span>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(index)}
-                                                className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-90 transition-all hover:scale-105 cursor-pointer"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <div className="relative">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={handleImageChange}
-                                    id="quest-images-input"
-                                    className="hidden"
-                                />
-                                <label
-                                    htmlFor="quest-images-input"
-                                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-blue-300 dark:border-blue-500/30 hover:border-purple-500 dark:hover:border-purple-400 bg-slate-50/50 dark:bg-[#080d24]/30 text-slate-600 dark:text-blue-200 cursor-pointer font-['Oxanium'] font-semibold text-xs sm:text-sm transition-all duration-300"
-                                >
-                                    <Plus className="w-4 h-4 text-purple-500" />
-                                    Pilih / Unggah Gambar
-                                </label>
+                        {/* Card 2: Berkas Pendukung & Lampiran */}
+                        <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md space-y-5 transition-all duration-300">
+                            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                                <Paperclip className="w-5 h-5 text-indigo-500" />
+                                <h3 className="text-xs font-black uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider">
+                                    Berkas & Lampiran Pendukung
+                                </h3>
                             </div>
 
-                            {clientErrors.images && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium'] flex items-center gap-1">
-                                    <AlertCircle className="w-3.5 h-3.5" /> {clientErrors.images}
-                                </p>
-                            )}
-                            {errors.images && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.images}</p>
-                            )}
-                        </div>
+                            {/* Image Uploader */}
+                            <div className="space-y-3 font-['Oxanium']">
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Unggah Gambar (Maks. 2MB per gambar)
+                                </label>
 
-                        {/* File Pendukung */}
-                        <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-blue-200">
-                                <Paperclip className="w-4 h-4 text-purple-500" />
-                                Dokumen Pendukung (PDF, Word, Excel, ZIP)
-                            </label>
-
-                            {/* Selected Files List */}
-                            {data.files.length > 0 && (
-                                <div className="space-y-2 mb-3">
-                                    {data.files.map((file, index) => (
-                                        <div key={index} className="flex items-center justify-between p-3 rounded-xl border border-blue-200/50 dark:border-blue-500/20 bg-slate-100/55 dark:bg-[#0c122c]/50">
-                                            <div className="flex items-center gap-3 min-w-0">
-                                                {getFileIcon(file.name)}
-                                                <div className="min-w-0">
-                                                    <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate font-['Oxanium']">
-                                                        {file.name}
-                                                    </p>
-                                                    <p className="text-[10px] text-slate-400 font-['Oxanium'] font-semibold">
-                                                        {formatBytes(file.size)}
-                                                    </p>
-                                                </div>
+                                {/* Image Preview Grid */}
+                                {data.images.length > 0 && (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 mb-3">
+                                        {data.images.map((file, index) => (
+                                            <div key={index} className="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-black/20 p-1 flex flex-col items-center">
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt={file.name}
+                                                    className="w-full h-20 object-cover rounded-lg"
+                                                />
+                                                <span className="text-[9px] mt-1 text-slate-500 dark:text-slate-400 truncate w-full text-center px-1">
+                                                    {file.name}
+                                                </span>
+                                                <span className="text-[8px] text-slate-400">
+                                                    {formatBytes(file.size)}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeImage(index)}
+                                                    className="absolute top-2 right-2 bg-red-650 hover:bg-red-700 text-white p-1 rounded-full opacity-90 transition-all hover:scale-105 cursor-pointer"
+                                                >
+                                                    <Trash2 className="w-3 h-3" />
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeFile(index)}
-                                                className="text-red-500 hover:text-red-600 p-1.5 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                        ))}
+                                    </div>
+                                )}
 
-                            <div className="relative">
-                                <input
-                                    type="file"
-                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.zip"
-                                    multiple
-                                    onChange={handleFileChange}
-                                    id="quest-files-input"
-                                    className="hidden"
-                                />
-                                <label
-                                    htmlFor="quest-files-input"
-                                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-blue-300 dark:border-blue-500/30 hover:border-purple-500 dark:hover:border-purple-400 bg-slate-50/50 dark:bg-[#080d24]/30 text-slate-600 dark:text-blue-200 cursor-pointer font-['Oxanium'] font-semibold text-xs sm:text-sm transition-all duration-300"
-                                >
-                                    <Plus className="w-4 h-4 text-purple-500" />
-                                    Pilih / Unggah File
-                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleImageChange}
+                                        id="quest-images-input"
+                                        className="hidden"
+                                    />
+                                    <label
+                                        htmlFor="quest-images-input"
+                                        className="flex flex-col items-center justify-center gap-1.5 px-4 py-5 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500/50 bg-slate-50/50 dark:bg-black/15 text-slate-500 dark:text-slate-400 cursor-pointer text-xs transition-all duration-300"
+                                    >
+                                        <ImageIcon className="w-5 h-5 text-indigo-500 animate-bounce" />
+                                        <span className="font-bold text-slate-700 dark:text-slate-350">Seret atau pilih gambar Anda</span>
+                                        <span className="text-[10px] text-slate-400">Format JPEG, PNG, WEBP</span>
+                                    </label>
+                                </div>
+
+                                {clientErrors.images && (
+                                    <p className="text-xs text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {clientErrors.images}
+                                    </p>
+                                )}
+                                {errors.images && (
+                                    <p className="text-xs text-red-500 font-semibold mt-1">{errors.images}</p>
+                                )}
                             </div>
 
-                            {clientErrors.files && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium'] flex items-center gap-1">
-                                    <AlertCircle className="w-3.5 h-3.5" /> {clientErrors.files}
-                                </p>
-                            )}
-                            {errors.files && (
-                                <p className="text-xs text-red-500 font-semibold mt-1 font-['Oxanium']">{errors.files}</p>
-                            )}
+                            {/* Document Uploader */}
+                            <div className="space-y-3 font-['Oxanium'] border-t border-slate-100 dark:border-slate-800/60 pt-4">
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Dokumen Penunjang (PDF, Word, Excel, ZIP - Maks. 10MB)
+                                </label>
+
+                                {/* Selected Documents List */}
+                                {data.files.length > 0 && (
+                                    <div className="space-y-2 mb-3">
+                                        {data.files.map((file, index) => (
+                                            <div key={index} className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-black/20">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    {getFileIcon(file.name)}
+                                                    <div className="min-w-0">
+                                                        <p className="text-xs font-semibold text-slate-705 dark:text-slate-200 truncate">
+                                                            {file.name}
+                                                        </p>
+                                                        <p className="text-[10px] text-slate-400">
+                                                            {formatBytes(file.size)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeFile(index)}
+                                                    className="text-red-500 hover:text-red-650 p-1.5 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.zip"
+                                        multiple
+                                        onChange={handleFileChange}
+                                        id="quest-files-input"
+                                        className="hidden"
+                                    />
+                                    <label
+                                        htmlFor="quest-files-input"
+                                        className="flex flex-col items-center justify-center gap-1.5 px-4 py-5 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500/50 bg-slate-50/50 dark:bg-black/15 text-slate-500 dark:text-slate-400 cursor-pointer text-xs transition-all duration-300"
+                                    >
+                                        <FileArchive className="w-5 h-5 text-indigo-500 animate-bounce" />
+                                        <span className="font-bold text-slate-700 dark:text-slate-350">Seret atau pilih dokumen tugas</span>
+                                        <span className="text-[10px] text-slate-400">Format PDF, DOC, DOCX, XLS, XLSX, ZIP</span>
+                                    </label>
+                                </div>
+
+                                {clientErrors.files && (
+                                    <p className="text-xs text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {clientErrors.files}
+                                    </p>
+                                )}
+                                {errors.files && (
+                                    <p className="text-xs text-red-500 font-semibold mt-1">{errors.files}</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* RIGHT COLUMN: Budget, deadline & Live Estimation widgets (lg:col-span-4) */}
+                    <div className="space-y-6 lg:col-span-4">
+                        
+                        {/* Card 3: Financial settings & Deadline */}
+                        <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md space-y-4 font-['Oxanium']">
+                            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                                <DollarSign className="w-5 h-5 text-indigo-500" />
+                                <h3 className="text-xs font-black uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider">
+                                    Anggaran & Deadline
+                                </h3>
+                            </div>
+
+                            {/* Min Budget */}
+                            <div className="space-y-1.5">
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Gaji Minimal (IDR) <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-3 text-xs font-bold text-slate-400">Rp</span>
+                                    <input
+                                        type="number"
+                                        required
+                                        placeholder="Contoh: 500000"
+                                        value={data.min_salary}
+                                        onChange={(e) => setData("min_salary", e.target.value)}
+                                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs font-bold text-slate-800 dark:text-white"
+                                    />
+                                </div>
+                                {errors.min_salary && (
+                                    <p className="text-xs text-red-500 font-semibold mt-0.5">{errors.min_salary}</p>
+                                )}
+                            </div>
+
+                            {/* Max Budget */}
+                            <div className="space-y-1.5">
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Gaji Maksimal (IDR) <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-3 text-xs font-bold text-slate-400">Rp</span>
+                                    <input
+                                        type="number"
+                                        required
+                                        placeholder="Contoh: 1500000"
+                                        value={data.max_salary}
+                                        onChange={(e) => setData("max_salary", e.target.value)}
+                                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs font-bold text-slate-800 dark:text-white"
+                                    />
+                                </div>
+                                {errors.max_salary && (
+                                    <p className="text-xs text-red-500 font-semibold mt-0.5">{errors.max_salary}</p>
+                                )}
+                            </div>
+
+                            {/* Deadline */}
+                            <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/40">
+                                <label className="block text-[10px] font-bold uppercase text-slate-400 tracking-wider font-['Orbitron']">
+                                    Tenggat Waktu <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="date"
+                                        required
+                                        value={data.deadline}
+                                        onChange={(e) => setData("deadline", e.target.value)}
+                                        className="w-full px-3 py-2.5 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs font-bold text-slate-800 dark:text-white cursor-pointer"
+                                    />
+                                </div>
+                                {errors.deadline && (
+                                    <p className="text-xs text-red-500 font-semibold mt-0.5">{errors.deadline}</p>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Submit Buttons */}
-                        <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-blue-500/10">
+                        {/* Card 4: RPG Rewards Estimator */}
+                        <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md space-y-4 font-['Orbitron']">
+                            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Award className="w-5 h-5 text-purple-500 animate-pulse" />
+                                    <h3 className="text-xs font-black uppercase text-slate-700 dark:text-blue-200 tracking-wider">
+                                        Quest Rewards Estimator
+                                    </h3>
+                                </div>
+                                <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-650 dark:text-purple-305 border border-purple-500/20">
+                                    Rank: {rewards.rank}
+                                </span>
+                            </div>
+
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-sans leading-relaxed">
+                                <Info className="w-3.5 h-3.5 text-indigo-500 inline mr-1 -mt-0.5" />
+                                Hadiah RPG akan otomatis dikalkulasikan berdasarkan anggaran quest Anda dan akan ditambahkan ke akun pekerja saat tugas disetujui.
+                            </p>
+
+                            <div className="grid grid-cols-3 gap-2.5 text-center text-xs font-bold font-['Orbitron'] pt-1">
+                                <div className="py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 flex flex-col items-center hover:scale-[1.03] transition-transform">
+                                    <Award className="w-4 h-4 text-purple-500 mb-1" />
+                                    <span className="text-[8px] text-slate-400 font-semibold font-sans">EXP</span>
+                                    <span className="text-[11px] font-black">+{rewards.exp}</span>
+                                </div>
+                                <div className="py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex flex-col items-center hover:scale-[1.03] transition-transform">
+                                    <Award className="w-4 h-4 text-amber-500 mb-1" />
+                                    <span className="text-[8px] text-slate-400 font-semibold font-sans">GOLD</span>
+                                    <span className="text-[11px] font-black">+{rewards.gold}</span>
+                                </div>
+                                <div className="py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-305 flex flex-col items-center hover:scale-[1.03] transition-transform">
+                                    <Award className="w-4 h-4 text-indigo-500 mb-1" />
+                                    <span className="text-[8px] text-slate-400 font-semibold font-sans">ERP</span>
+                                    <span className="text-[11px] font-black">+{rewards.erp}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex gap-3 pt-2">
                             <Link
                                 href="/student/quests"
-                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-blue-200 dark:border-blue-500/20 font-semibold font-['Oxanium'] uppercase tracking-wider text-xs sm:text-sm text-slate-600 dark:text-blue-200 bg-slate-100/50 dark:bg-[#0c122c]/40 hover:bg-slate-200/50 dark:hover:bg-blue-900/10 transition-all duration-300"
+                                className="flex-1 py-3 border border-slate-200 dark:border-slate-800 text-center rounded-xl text-xs font-black uppercase font-['Orbitron'] tracking-wider text-slate-600 dark:text-slate-400 bg-slate-100/50 dark:bg-blue-950/20 hover:bg-slate-200/50 dark:hover:bg-blue-900/10 transition-colors"
                             >
-                                <ArrowLeft className="w-4 h-4" />
                                 Batal
                             </Link>
-
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-white font-semibold font-['Oxanium'] uppercase tracking-wider text-xs sm:text-sm bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.4)] disabled:opacity-50 transition-all duration-300 transform hover:scale-[1.02]"
+                                className="flex-1 py-3 rounded-xl text-xs font-black uppercase font-['Orbitron'] tracking-wider text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-[0_0_15px_rgba(99,102,241,0.4)] disabled:opacity-50 transition-all duration-300 transform active:scale-[0.98] cursor-pointer text-center"
                             >
-                                <Save className="w-4 h-4" />
-                                {processing ? "Menyimpan..." : "Publikasikan"}
+                                {processing ? "Mengirim..." : "Publikasikan"}
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     );
