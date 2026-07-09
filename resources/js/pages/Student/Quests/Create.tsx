@@ -19,12 +19,12 @@ import {
     Info
 } from "lucide-react";
 
-export default function Create() {
-    const { data, setData, post, processing, errors } = useForm({
-        title: "",
-        description: "",
-        min_salary: "",
-        max_salary: "",
+export default function Create({ template }: { template?: any }) {
+    const { data, setData, post, processing, errors, transform } = useForm({
+        title: template?.title ?? "",
+        description: template?.description ?? "",
+        min_salary: template?.min_salary ? String(template.min_salary) : "",
+        max_salary: template?.max_salary ? String(template.max_salary) : "",
         deadline: "",
         images: [] as File[],
         files: [] as File[],
@@ -151,6 +151,10 @@ export default function Create() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        transform((data) => ({
+            ...data,
+            deadline: data.deadline ? new Date(data.deadline).toISOString() : '',
+        }));
         post("/student/quests");
     };
 
@@ -431,7 +435,7 @@ export default function Create() {
                                 </label>
                                 <div className="relative">
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         required
                                         value={data.deadline}
                                         onChange={(e) => setData("deadline", e.target.value)}

@@ -30,6 +30,7 @@ class Quest extends Model
         'files',
         'submission_file',
         'rejection_note',
+        'revisions',
     ];
 
     protected function casts(): array
@@ -48,6 +49,7 @@ class Quest extends Model
             'files' => 'array',
             'submission_file' => 'array',
             'rejection_note' => 'string',
+            'revisions' => 'array',
         ];
     }
 

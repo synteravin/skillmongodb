@@ -139,11 +139,17 @@ export default function Index({ quests }: Props) {
     };
 
     const formatDate = (dateStr: string) => {
-        return new Date(dateStr).toLocaleDateString("id-ID", {
+        const d = new Date(dateStr);
+        const datePart = d.toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
         });
+        const timePart = d.toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return `${datePart} pukul ${timePart}`;
     };
 
     return (
@@ -304,6 +310,8 @@ export default function Index({ quests }: Props) {
                                                                 ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
                                                                 : quest.status === "rejected"
                                                                 ? "bg-red-105 text-red-700 dark:bg-red-955/40 dark:text-red-400"
+                                                                : quest.status === "expired"
+                                                                ? "bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400"
                                                                 : quest.status === "ongoing"
                                                                 ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400"
                                                                 : "bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400"
@@ -315,6 +323,8 @@ export default function Index({ quests }: Props) {
                                                             ? "Draft / Pending"
                                                             : quest.status === "rejected"
                                                             ? "Ditolak"
+                                                            : quest.status === "expired"
+                                                            ? "Kadaluarsa"
                                                             : quest.status === "ongoing"
                                                             ? "Berjalan"
                                                             : "Selesai"}

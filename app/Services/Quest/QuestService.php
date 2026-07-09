@@ -2,10 +2,12 @@
 
 namespace App\Services\Quest;
 
+use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use App\Models\User;
+use App\Models\UserStat;
 use Illuminate\Support\Facades\Storage;
 
 class QuestService
@@ -15,6 +17,52 @@ class QuestService
      */
     public function listQuests(?string $search = null, ?string $status = null)
     {
+        // On-the-fly expiration check
+        $expiredQuests = Quest::where('status', 'ongoing')
+            ->where('deadline', '<', now())
+            ->get();
+
+        foreach ($expiredQuests as $eq) {
+            $eq->status = 'expired';
+            $wId = $eq->worker_id;
+            $eq->worker_id = null;
+            $eq->save();
+
+            if ($wId) {
+                $progress = UserStat::where('user_id', $wId)->first();
+                if ($progress) {
+                    $progress->erp = max(0, ($progress->erp ?? 0) - 10);
+                    $progress->save();
+                }
+
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => $wId,
+                    'data' => [
+                        'quest_id' => $eq->_id,
+                        'title' => $eq->title,
+                        'message' => "Quest '{$eq->title}' telah kadaluarsa karena melewati tenggat waktu. Reputasi ERP Anda berkurang -10.",
+                        'type' => 'quest_expired_worker',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+
+            if ($eq->creator_id) {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => $eq->creator_id,
+                    'data' => [
+                        'quest_id' => $eq->_id,
+                        'title' => $eq->title,
+                        'message' => "Quest '{$eq->title}' telah kadaluarsa karena melewati tenggat waktu dan pekerja dilepaskan.",
+                        'type' => 'quest_expired_creator',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+        }
+
         $query = Quest::with('creator')
             ->whereNotIn('status', ['draft', 'rejected']);
 
@@ -53,6 +101,49 @@ class QuestService
     public function getQuestDetails(string $id, ?User $currentUser = null)
     {
         $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
+
+        if ($quest->status === 'ongoing' && $quest->deadline < now()) {
+            $quest->status = 'expired';
+            $workerId = $quest->worker_id;
+            $quest->worker_id = null;
+            $quest->save();
+
+            if ($workerId) {
+                $progress = UserStat::where('user_id', $workerId)->first();
+                if ($progress) {
+                    $progress->erp = max(0, ($progress->erp ?? 0) - 10);
+                    $progress->save();
+                }
+
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => $workerId,
+                    'data' => [
+                        'quest_id' => $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena melewati tenggat waktu. Reputasi ERP Anda berkurang -10.",
+                        'type' => 'quest_expired_worker',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+
+            if ($quest->creator_id) {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => $quest->creator_id,
+                    'data' => [
+                        'quest_id' => $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena melewati tenggat waktu dan pekerja dilepaskan.",
+                        'type' => 'quest_expired_creator',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+
+            $quest->load('worker');
+        }
 
         $bids = QuestBid::with('student')
             ->where('quest_id', $id)
@@ -133,6 +224,7 @@ class QuestService
                 'submitted_at' => $quest->submitted_at ? $quest->submitted_at->toISOString() : null,
                 'completed_at' => $quest->completed_at ? $quest->completed_at->toISOString() : null,
                 'revision_note' => $quest->revision_note,
+                'revisions' => $quest->revisions ?? [],
                 'rejection_note' => $quest->rejection_note,
                 'rating' => $quest->rating,
                 'rating_comment' => $quest->rating_comment,

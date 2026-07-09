@@ -18,7 +18,7 @@ class StoreQuestRequest extends FormRequest
             'description' => ['required', 'string'],
             'min_salary' => ['required', 'integer', 'min:0'],
             'max_salary' => ['required', 'integer', 'gte:min_salary'],
-            'deadline' => ['required', 'date', 'after_or_equal:today'],
+            'deadline' => ['required', 'date', 'after:now'],
             'images' => ['nullable', 'array'],
             'images.*' => ['file', 'image', 'max:2048'],
             'files' => ['nullable', 'array'],
@@ -30,7 +30,7 @@ class StoreQuestRequest extends FormRequest
     {
         return [
             'max_salary.gte' => 'Gaji maksimal harus lebih besar atau sama dengan gaji minimal.',
-            'deadline.after_or_equal' => 'Tenggat waktu harus hari ini atau hari esok.',
+            'deadline.after' => 'Tenggat waktu harus berupa tanggal dan waktu di masa depan.',
             'images.*.max' => 'Setiap gambar tidak boleh lebih dari 2MB.',
             'images.*.image' => 'Setiap berkas gambar harus berupa format gambar valid.',
             'files.*.mimes' => 'Format file pendukung harus berupa PDF, Word, Excel, atau ZIP.',

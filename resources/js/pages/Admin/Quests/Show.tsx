@@ -30,6 +30,13 @@ import React, { useState } from 'react';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
 import ConfirmModal from '@/components/ConfirmModal';
 
+interface RevisionEntry {
+    note: string;
+    created_at: string;
+    author_id: string;
+    author_name: string;
+}
+
 interface Quest {
     _id: string;
     title: string;
@@ -52,6 +59,7 @@ interface Quest {
     submitted_at?: string | null;
     completed_at?: string | null;
     revision_note?: string | null;
+    revisions?: Array<RevisionEntry>;
     rejection_note?: string | null;
     rating?: number | null;
     rating_comment?: string | null;
@@ -59,6 +67,115 @@ interface Quest {
     files?: Array<{ name: string; url: string; size: number }>;
     submission_file?: { name: string; url: string; size: number } | null;
 }
+
+const RevisionHistory = ({ quest, viewType }: { quest: Quest; viewType: "creator_ongoing" | "creator_submitted" | "worker_ongoing" | "worker_submitted" | "admin_submitted" | "admin_ongoing" }) => {
+    if (!quest.revisions || quest.revisions.length === 0) {
+        if (!quest.revision_note) {
+            return null;
+        }
+        
+        let label = "Instruksi/Catatan Revisi:";
+        if (viewType === "creator_ongoing") {
+            label = "Instruksi Revisi dari Anda:";
+        } else if (viewType === "creator_submitted") {
+            label = "Catatan Revisi Sebelumnya:";
+        } else if (viewType === "worker_ongoing") {
+            label = "Permintaan Revisi Pemilik:";
+        } else if (viewType === "worker_submitted") {
+            label = "Permintaan Revisi Sebelumnya:";
+        } else if (viewType === "admin_submitted") {
+            label = "Catatan Revisi Sebelumnya:";
+        } else if (viewType === "admin_ongoing") {
+            label = "Menunggu Revisi Pekerja:";
+        }
+
+        return (
+            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1 font-['Oxanium']">
+                <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-600 dark:text-red-400">
+                    ⚠️ {label}
+                </span>
+                <p className="text-xs text-slate-650 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                    "{quest.revision_note}"
+                </p>
+            </div>
+        );
+    }
+
+    const latestRevision = quest.revisions[quest.revisions.length - 1];
+    let mainLabel = "Instruksi Revisi Terakhir:";
+    if (viewType === "creator_ongoing") {
+        mainLabel = "Instruksi Revisi Terakhir dari Anda:";
+    } else if (viewType === "creator_submitted") {
+        mainLabel = "Catatan/Permintaan Revisi Sebelumnya:";
+    } else if (viewType === "worker_ongoing") {
+        mainLabel = "Permintaan Revisi Pemilik:";
+    } else if (viewType === "worker_submitted") {
+        mainLabel = "Permintaan Revisi Sebelumnya:";
+    } else if (viewType === "admin_submitted") {
+        mainLabel = "Catatan/Permintaan Revisi Sebelumnya:";
+    } else if (viewType === "admin_ongoing") {
+        mainLabel = "Menunggu Revisi Pekerja (Terakhir):";
+    }
+
+    return (
+        <div className="space-y-3 font-['Oxanium']">
+            {/* Latest Revision */}
+            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1">
+                <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-650 dark:text-red-450">
+                    ⚠️ {mainLabel}
+                </span>
+                <p className="text-xs text-slate-600 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                    "{latestRevision.note}"
+                </p>
+                <div className="text-[9px] text-slate-455 dark:text-slate-500 flex items-center gap-1 mt-1 font-sans">
+                    <span>Oleh {latestRevision.author_name} • </span>
+                    <span>
+                        {new Date(latestRevision.created_at).toLocaleString("id-ID", {
+                            dateStyle: "medium",
+                            timeStyle: "short"
+                        })}
+                    </span>
+                </div>
+            </div>
+
+            {/* Previous Revisions */}
+            {quest.revisions.length > 1 && (
+                <div className="border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50/20 dark:bg-black/10">
+                    <details className="group">
+                        <summary className="flex items-center justify-between px-3.5 py-2 text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white cursor-pointer select-none">
+                            <span>Lihat Riwayat Revisi Sebelumnya ({quest.revisions.length - 1})</span>
+                            <span className="transition-transform group-open:rotate-180 text-[8px] tracking-normal font-sans">▼</span>
+                        </summary>
+                        <div className="px-3.5 pb-3 space-y-3 border-t border-slate-200/60 dark:border-slate-800/60 pt-3 max-h-[220px] overflow-y-auto">
+                            {quest.revisions.slice(0, -1).reverse().map((rev, idx) => {
+                                const revNum = quest.revisions!.length - 1 - idx;
+                                return (
+                                    <div key={idx} className="p-3 rounded-lg bg-slate-100/30 dark:bg-black/20 border border-slate-200/50 dark:border-slate-800/50 space-y-1">
+                                        <div className="flex items-center justify-between text-[9px] font-bold font-['Orbitron'] text-slate-500 dark:text-slate-400">
+                                            <span>REVISI #{revNum}</span>
+                                            <span className="font-normal font-sans text-slate-450 dark:text-slate-550">
+                                                {new Date(rev.created_at).toLocaleString("id-ID", {
+                                                    dateStyle: "medium",
+                                                    timeStyle: "short"
+                                                })}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-slate-600 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                                            "{rev.note}"
+                                        </p>
+                                        <div className="text-[9px] text-slate-450 dark:text-slate-550 font-sans">
+                                            Diminta oleh: <span className="font-semibold text-slate-500 dark:text-slate-450">{rev.author_name}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </details>
+                </div>
+            )}
+        </div>
+    );
+};
 
 interface Bid {
     _id: string;
@@ -172,11 +289,17 @@ export default function Show({ quest, bids }: Props) {
     };
 
     const formatDate = (dateStr: string) => {
-        return new Date(dateStr).toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
+        const d = new Date(dateStr);
+        const datePart = d.toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
         });
+        const timePart = d.toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return `${datePart} pukul ${timePart}`;
     };
 
     // Calculate Average Bid
@@ -225,6 +348,8 @@ export default function Show({ quest, bids }: Props) {
                                         ? 'bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-400'
                                         : quest.status === 'rejected'
                                         ? 'bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-400'
+                                        : quest.status === 'expired'
+                                        ? 'bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-400'
                                         : quest.status === 'ongoing'
                                         ? 'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400'
                                         : quest.status === 'approved'
@@ -240,6 +365,8 @@ export default function Show({ quest, bids }: Props) {
                                     ? 'Menunggu Review'
                                     : quest.status === 'rejected'
                                     ? 'Ditolak'
+                                    : quest.status === 'expired'
+                                    ? 'Kadaluarsa'
                                     : quest.status === 'ongoing'
                                     ? 'Pengerjaan'
                                     : quest.status === 'approved'
@@ -348,6 +475,20 @@ export default function Show({ quest, bids }: Props) {
                                             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{quest.rejection_note}</p>
                                         </div>
                                     )}
+                                </div>
+                            )}
+
+                            {quest.status === 'expired' && (
+                                <div className="space-y-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-6 shadow-md dark:bg-red-955/10 font-['Oxanium']">
+                                    <span className="inline-block text-[10px] font-bold tracking-widest text-red-600 uppercase dark:text-red-400 font-['Orbitron']">
+                                        🚨 Quest Kadaluarsa (Expired)
+                                    </span>
+                                    <h3 className="text-sm font-bold text-red-600 dark:text-red-400">
+                                        Tenggat Waktu Terlewati
+                                    </h3>
+                                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                                        Tenggat waktu pengerjaan proyek ini telah berakhir sebelum pekerja berhasil menyelesaikan tugasnya. Pekerja lama dibebaskan dan penalti reputasi ERP telah diberlakukan secara otomatis oleh sistem.
+                                    </p>
                                 </div>
                             )}
 
@@ -630,12 +771,7 @@ export default function Show({ quest, bids }: Props) {
                                             <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
                                                 Status quest ini adalah <strong>Dalam Pengerjaan</strong>. Pekerja saat ini sedang menyelesaikan deskripsi tugas.
                                             </p>
-                                            {quest.revision_note && (
-                                                <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1">
-                                                    <span className="block text-[10px] font-bold text-red-500 uppercase tracking-wider">⚠️ Menunggu Revisi Pekerja</span>
-                                                    <p className="text-xs text-slate-600 dark:text-slate-300 italic">"{quest.revision_note}"</p>
-                                                </div>
-                                            )}
+                                            <RevisionHistory quest={quest} viewType="admin_ongoing" />
                                         </div>
                                     )}
 
@@ -660,6 +796,8 @@ export default function Show({ quest, bids }: Props) {
                                                     Pekerja telah selesai melakukan penyerahan tugas awal. Silakan review hasil pekerjaannya di bawah ini.
                                                 </p>
                                             </div>
+
+                                            <RevisionHistory quest={quest} viewType="admin_submitted" />
 
                                             <div className="space-y-3.5 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80">
                                                 {quest.submission_file && (

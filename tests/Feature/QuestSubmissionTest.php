@@ -454,4 +454,53 @@ class QuestSubmissionTest extends TestCase
         $this->assertEquals(150, $statAfter->path_stats[(string) $quest->_id]['gold']);
         $this->assertEquals(100, $statAfter->path_stats[(string) $quest->_id]['quiz_score']);
     }
+
+    public function test_multiple_rejections_preserve_complete_revision_history(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Freelance Web Design',
+            'description' => 'Create web portfolio',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5)->toIso8601String(),
+            'status' => 'submitted',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+        ]);
+
+        // First rejection
+        $response1 = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/reject", [
+                'revision_note' => 'Please fix the footer.',
+            ]);
+        $response1->assertRedirect();
+
+        $quest->refresh();
+        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('Please fix the footer.', $quest->revision_note);
+        $this->assertCount(1, $quest->revisions);
+        $this->assertEquals('Please fix the footer.', $quest->revisions[0]['note']);
+        $this->assertEquals($creator->name, $quest->revisions[0]['author_name']);
+
+        // Worker submits again
+        $quest->update(['status' => 'submitted']);
+
+        // Second rejection
+        $response2 = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/reject", [
+                'revision_note' => 'Header is still broken.',
+            ]);
+        $response2->assertRedirect();
+
+        $quest->refresh();
+        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('Header is still broken.', $quest->revision_note);
+        $this->assertCount(2, $quest->revisions);
+        $this->assertEquals('Please fix the footer.', $quest->revisions[0]['note']);
+        $this->assertEquals('Header is still broken.', $quest->revisions[1]['note']);
+        $this->assertEquals($creator->name, $quest->revisions[1]['author_name']);
+    }
 }
