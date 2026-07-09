@@ -297,9 +297,19 @@ class QuestController extends Controller
             'revision_note.required' => 'Catatan revisi/feedback wajib diisi agar pekerja tahu apa yang perlu diperbaiki.',
         ]);
 
+        $user = $request->user();
+        $revisions = $quest->revisions ?? [];
+        $revisions[] = [
+            'note' => $request->revision_note,
+            'created_at' => now()->toIso8601String(),
+            'author_id' => (string) $user->_id,
+            'author_name' => $user->name,
+        ];
+
         $quest->update([
             'status' => 'ongoing',
             'revision_note' => $request->revision_note,
+            'revisions' => $revisions,
         ]);
 
         return redirect()->route('admin.quests.show', $quest->_id)

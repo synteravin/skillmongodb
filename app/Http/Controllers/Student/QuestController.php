@@ -43,9 +43,26 @@ class QuestController extends Controller
     /**
      * Show the form for creating a new quest.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('Student/Quests/Create');
+        $template = null;
+        $templateId = $request->query('template_id');
+
+        if ($templateId) {
+            $tq = Quest::find($templateId);
+            if ($tq && ($tq->creator_id === (string) auth()->id() || auth()->user()->isAdmin())) {
+                $template = [
+                    'title' => $tq->title,
+                    'description' => $tq->description,
+                    'min_salary' => $tq->min_salary,
+                    'max_salary' => $tq->max_salary,
+                ];
+            }
+        }
+
+        return Inertia::render('Student/Quests/Create', [
+            'template' => $template,
+        ]);
     }
 
     /**
@@ -347,9 +364,18 @@ class QuestController extends Controller
             'revision_note.required' => 'Catatan revisi/feedback wajib diisi agar pekerja tahu apa yang perlu diperbaiki.',
         ]);
 
+        $revisions = $quest->revisions ?? [];
+        $revisions[] = [
+            'note' => $request->revision_note,
+            'created_at' => now()->toIso8601String(),
+            'author_id' => (string) $user->_id,
+            'author_name' => $user->name,
+        ];
+
         $quest->update([
             'status' => 'ongoing',
             'revision_note' => $request->revision_note,
+            'revisions' => $revisions,
         ]);
 
         return redirect()->route('student.quests.show', $quest->_id)

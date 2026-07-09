@@ -4,6 +4,13 @@ import { ArrowLeft, Send, Check, Calendar, DollarSign, Briefcase, FileText, User
 import QuestChatPanel from "@/components/Quest/QuestChatPanel";
 import ConfirmModal from "@/components/ConfirmModal";
 
+interface RevisionEntry {
+    note: string;
+    created_at: string;
+    author_id: string;
+    author_name: string;
+}
+
 interface Quest {
     _id: string;
     title: string;
@@ -27,6 +34,7 @@ interface Quest {
     submitted_at?: string | null;
     completed_at?: string | null;
     revision_note?: string | null;
+    revisions?: Array<RevisionEntry>;
     rejection_note?: string | null;
     rating?: number | null;
     rating_comment?: string | null;
@@ -34,6 +42,115 @@ interface Quest {
     files?: Array<{ name: string; url: string; size: number }>;
     submission_file?: { name: string; url: string; size: number } | null;
 }
+
+const RevisionHistory = ({ quest, viewType }: { quest: Quest; viewType: "creator_ongoing" | "creator_submitted" | "worker_ongoing" | "worker_submitted" | "admin_submitted" | "admin_ongoing" }) => {
+    if (!quest.revisions || quest.revisions.length === 0) {
+        if (!quest.revision_note) {
+            return null;
+        }
+        
+        let label = "Instruksi/Catatan Revisi:";
+        if (viewType === "creator_ongoing") {
+            label = "Instruksi Revisi dari Anda:";
+        } else if (viewType === "creator_submitted") {
+            label = "Catatan Revisi Sebelumnya:";
+        } else if (viewType === "worker_ongoing") {
+            label = "Permintaan Revisi Pemilik:";
+        } else if (viewType === "worker_submitted") {
+            label = "Permintaan Revisi Sebelumnya:";
+        } else if (viewType === "admin_submitted") {
+            label = "Catatan Revisi Sebelumnya:";
+        } else if (viewType === "admin_ongoing") {
+            label = "Menunggu Revisi Pekerja:";
+        }
+
+        return (
+            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1 font-['Oxanium']">
+                <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-600 dark:text-red-400">
+                    ⚠️ {label}
+                </span>
+                <p className="text-xs text-slate-650 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                    "{quest.revision_note}"
+                </p>
+            </div>
+        );
+    }
+
+    const latestRevision = quest.revisions[quest.revisions.length - 1];
+    let mainLabel = "Instruksi Revisi Terakhir:";
+    if (viewType === "creator_ongoing") {
+        mainLabel = "Instruksi Revisi Terakhir dari Anda:";
+    } else if (viewType === "creator_submitted") {
+        mainLabel = "Catatan/Permintaan Revisi Sebelumnya:";
+    } else if (viewType === "worker_ongoing") {
+        mainLabel = "Permintaan Revisi Pemilik:";
+    } else if (viewType === "worker_submitted") {
+        mainLabel = "Permintaan Revisi Sebelumnya:";
+    } else if (viewType === "admin_submitted") {
+        mainLabel = "Catatan/Permintaan Revisi Sebelumnya:";
+    } else if (viewType === "admin_ongoing") {
+        mainLabel = "Menunggu Revisi Pekerja (Terakhir):";
+    }
+
+    return (
+        <div className="space-y-3 font-['Oxanium']">
+            {/* Latest Revision */}
+            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1">
+                <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-600 dark:text-red-400">
+                    ⚠️ {mainLabel}
+                </span>
+                <p className="text-xs text-slate-600 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                    "{latestRevision.note}"
+                </p>
+                <div className="text-[9px] text-slate-450 dark:text-slate-500 flex items-center gap-1 mt-1 font-sans">
+                    <span>Oleh {latestRevision.author_name} • </span>
+                    <span>
+                        {new Date(latestRevision.created_at).toLocaleString("id-ID", {
+                            dateStyle: "medium",
+                            timeStyle: "short"
+                        })}
+                    </span>
+                </div>
+            </div>
+
+            {/* Previous Revisions */}
+            {quest.revisions.length > 1 && (
+                <div className="border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50/20 dark:bg-black/10">
+                    <details className="group">
+                        <summary className="flex items-center justify-between px-3.5 py-2 text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white cursor-pointer select-none">
+                            <span>Lihat Riwayat Revisi Sebelumnya ({quest.revisions.length - 1})</span>
+                            <span className="transition-transform group-open:rotate-180 text-[8px] tracking-normal font-sans">▼</span>
+                        </summary>
+                        <div className="px-3.5 pb-3 space-y-3 border-t border-slate-200/60 dark:border-slate-800/60 pt-3 max-h-[220px] overflow-y-auto">
+                            {quest.revisions.slice(0, -1).reverse().map((rev, idx) => {
+                                const revNum = quest.revisions!.length - 1 - idx;
+                                return (
+                                    <div key={idx} className="p-3 rounded-lg bg-slate-100/30 dark:bg-black/20 border border-slate-200/50 dark:border-slate-800/50 space-y-1">
+                                        <div className="flex items-center justify-between text-[9px] font-bold font-['Orbitron'] text-slate-500 dark:text-slate-400">
+                                            <span>REVISI #{revNum}</span>
+                                            <span className="font-normal font-sans text-slate-450 dark:text-slate-550">
+                                                {new Date(rev.created_at).toLocaleString("id-ID", {
+                                                    dateStyle: "medium",
+                                                    timeStyle: "short"
+                                                })}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-slate-600 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                                            "{rev.note}"
+                                        </p>
+                                        <div className="text-[9px] text-slate-450 dark:text-slate-550 font-sans">
+                                            Diminta oleh: <span className="font-semibold text-slate-500 dark:text-slate-450">{rev.author_name}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </details>
+                </div>
+            )}
+        </div>
+    );
+};
 
 interface Bid {
     _id: string;
@@ -586,16 +703,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
                                                     Pekerja sedang menyelesaikan tugas. Status quest saat ini adalah <strong>Dalam Pengerjaan</strong>.
                                                 </p>
-                                                {quest.revision_note && (
-                                                    <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1">
-                                                        <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-650 dark:text-red-400">
-                                                            ⚠️ Instruksi Revisi dari Anda:
-                                                        </span>
-                                                        <p className="text-xs text-slate-600 dark:text-slate-300 italic whitespace-pre-wrap leading-relaxed mt-1">
-                                                            "{quest.revision_note}"
-                                                        </p>
-                                                    </div>
-                                                )}
+                                                <RevisionHistory quest={quest} viewType="creator_ongoing" />
                                             </div>
                                         )}
 
@@ -620,6 +728,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         Pekerja telah selesai melakukan penyerahan tugas awal. Silakan review hasil pekerjaannya di bawah ini.
                                                     </p>
                                                 </div>
+
+                                                <RevisionHistory quest={quest} viewType="creator_submitted" />
 
                                                 <div className="space-y-3.5 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80">
                                                     {quest.submission_file && (
@@ -894,16 +1004,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                                         {quest.status === "ongoing" && (
                                             <div className="space-y-4">
-                                                {quest.revision_note && (
-                                                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1 font-['Oxanium']">
-                                                        <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-red-650 dark:text-red-400">
-                                                            ⚠️ Permintaan Revisi Pemilik:
-                                                        </span>
-                                                        <p className="text-xs text-slate-600 dark:text-slate-300 italic whitespace-pre-wrap leading-relaxed mt-1">
-                                                            "{quest.revision_note}"
-                                                        </p>
-                                                    </div>
-                                                )}
+                                                <RevisionHistory quest={quest} viewType="worker_ongoing" />
 
                                                 <form onSubmit={handleWorkSubmit} className="space-y-4 font-['Oxanium']">
                                                     <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
@@ -1162,6 +1263,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         Hasil penyerahan tugas Anda telah dikirim. Pemilik quest akan meninjau kelayakan pekerjaan Anda.
                                                     </p>
                                                 </div>
+
+                                                <RevisionHistory quest={quest} viewType="worker_submitted" />
 
                                                 <div className="space-y-3.5 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
                                                     {quest.submission_file && (

@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMongo - Master SRS & Architecture Specification</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@400;600;800&family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js (Markdown Parser) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Mermaid.js (Diagram Renderer) -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-dark: #0f172a;
+            --text-light: #475569;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Action Bar */
+        .action-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--primary);
+            letter-spacing: 0.1em;
+        }
+
+        .btn-print {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-print:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 100px auto 60px auto;
+            background-color: white;
+            padding: 48px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Markdown Styling overrides */
+        #content {
+            font-size: 1rem;
+        }
+
+        #content h1 {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 800;
+            color: #1e1b4b;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 12px;
+            margin-top: 40px;
+            page-break-before: always;
+        }
+
+        #content h1:first-child {
+            page-break-before: avoid;
+            margin-top: 0;
+        }
+
+        #content h2 {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            color: #312e81;
+            margin-top: 32px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        #content h3 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: #4338ca;
+            margin-top: 24px;
+        }
+
+        #content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        #content th, #content td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        #content th {
+            background-color: #f1f5f9;
+            font-weight: 800;
+        }
+
+        #content tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+
+        #content pre {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        #content code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f1f5f9;
+            color: #c084fc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        #content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.9em;
+        }
+
+        #content blockquote {
+            border-left: 4px solid var(--primary);
+            margin: 20px 0;
+            padding: 8px 16px;
+            background-color: #e0e7ff/20;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 28px 0;
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Print optimization stylesheet */
+        @media print {
+            .action-bar {
+                display: none !important;
+            }
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+            #content h1 {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="action-bar">
+        <div class="logo">SKILLMONGO SRS</div>
+        <button class="btn-print" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Cetak PDF
+        </button>
+    </div>
+
+    <div class="container">
+        <div id="content">Memuat spesifikasi dokumen...</div>
+    </div>
+
+    <script>
+        // Embed the escaped markdown
+        const rawMarkdown = `
+
+---
+
+# Spesifikasi Kebutuhan Perangkat Lunak (Software Requirements Specification - SRS)
+## Nama Proyek: Platform SkillMongo (Gamified LMS & Freelance Quest Board)
+**Standar Kepatuhan: IEEE Std 830-1998 / ISO/IEC/IEEE 29148:2018**
+*Lokasi Dokumen: docs/srs/srs_master_specification.md*
+
+---
+
+## 1. PENDAHULUAN (INTRODUCTION)
+
+### 1.1 Tujuan (Purpose)
+Dokumen spesifikasi ini menetapkan spesifikasi kebutuhan perangkat lunak (SRS) menyeluruh untuk platform **SkillMongo**. Dokumen ini dirancang sebagai rujukan utama (single source of truth) untuk memandu pengembang, arsitek sistem, penjamin mutu (QA), dan pemangku kepentingan dalam melakukan perancangan, pengembangan, serta pengujian sistem.
+
+### 1.2 Ruang Lingkup (Scope)
+Platform SkillMongo mengintegrasikan sistem manajemen pembelajaran tergamifikasi (*Gamified LMS*) dengan papan lowongan kerja lepas (*Freelance Quest Board*). Platform ini dirancang untuk:
+*   Mendorong minat belajar siswa melalui peta jalan visual tergamifikasi.
+*   Mengukur kognitif siswa secara adil melalui pengerjaan tugas proyek dan kuis.
+*   Memasilitasi siswa memperoleh pengalaman dunia kerja profesional melalui pengerjaan quest freelance yang terproteksi oleh sistem escrow aman.
+*   Memberikan imbalan (reward) RPG (EXP, Gold, ERP) atas pencapaian prestasi akademik dan kerja.
+
+### 1.3 Definisi, Akronim, & Singkatan
+*   **LMS (Learning Management System)**: Perangkat lunak untuk kurasi, distribusi, dan pelacakan progress pembelajaran digital.
+*   **Escrow**: Mekanisme penahanan saldo/koin finansial pihak ketiga yang dirilis hanya ketika kondisi spesifikasi penyerahan ZIP final terpenuhi.
+*   **EXP (Experience Points)**: Metrik poin kemajuan akademik siswa.
+*   **Gold**: Mata uang virtual game untuk ekosistem mikroekonomi RPG platform.
+*   **ERP (Enterprise Readiness Points)**: Metrik reputasi kesiapan industri kerja kognitif siswa.
+*   **Passkeys (WebAuthn)**: Mekanisme login tanpa kata sandi menggunakan kredensial biometrik lokal.
+*   **NFR (Non-Functional Requirements)**: Parameter kualitas layanan perangkat lunak non-fungsional.
+*   **RTM (Requirements Traceability Matrix)**: Tabel pemetaan keterpelusuran kebutuhan.
+
+### 1.4 Rujukan (References)
+1.  **IEEE Std 830-1998**: *IEEE Recommended Practice for Software Requirements Specifications*.
+2.  **ISO/IEC/IEEE 29148:2018**: *Systems and software engineering — Life cycle processes — Requirements engineering*.
+3.  **W3C Web Authentication (WebAuthn)**: *API for accessing Credential Management API*.
+
+### 1.5 Organisasi Dokumen (Document Organization)
+Dokumen ini disusun sebagai berikut:
+*   **Seksi 1**: Pendahuluan dokumen, cakupan sistem, dan dokumen rujukan.
+*   **Seksi 2**: Gambaran umum perspektif produk, ringkasan fungsi, batasan rancangan, serta asumsi sistem.
+*   **Seksi 3**: Antarmuka eksternal dan Kebutuhan Fungsional detail dengan format deklaratif ("Sistem harus...").
+*   **Seksi 4**: Kamus Data Bisnis Logis konseptual (menghindari representasi database fisik NoSQL).
+*   **Seksi 5**: Matriks Verifikasi dan Keterpelusuran Kebutuhan (RTM).
+
+---
+
+## 2. DESKRIPSI UMUM (OVERALL DESCRIPTION)
+
+### 2.1 Perspektif Produk (Product Perspective)
+SkillMongo beroperasi sebagai platform mandiri yang mengonsolidasikan kurikulum akademik sekolah/LMS dengan pasar micro-freelance kerja. Sistem berkomunikasi dengan cloud storage untuk manajemen berkas statis dan biometrik browser lokal untuk keamanan.
+
+### 2.2 Ringkasan Fungsi Produk (Product Functions Summary)
+*   **Fungsi Autentikasi**: Menyediakan login/daftar aman tradisional, verifikasi email, TOTP 2FA, dan biometrik tanpa password (Passkeys).
+*   **Fungsi Akademik (LMS)**: Menyajikan roadmap interaktif, modul ajar, pengiriman tugas, dan pengerjaan kuis kognitif berdurasi.
+*   **Fungsi Gamifikasi (RPG)**: Mengakumulasikan EXP, Gold, dan ERP serta menghitung kenaikan level, peringkat reputasi, dan pemberian lencana badges.
+*   **Fungsi Pasar Quest (Freelance)**: Memasilitasi transaksi quest (bidding, chat room pelamar, escrow review, zip submission).
+*   **Fungsi Kolaborasi**: Menyediakan wadah forum diskusi per kelas dengan fitur reaction emotikon dan pin pesan penting.
+
+### 2.3 Karakteristik Pengguna (User Classes & Characteristics)
+*   **Siswa (Student)**: Pembelajar dan pekerja lepas. Membutuhkan antarmuka yang ramah pengguna, gamifikasi interaktif, dan kejelasan alur quest.
+*   **Mentor**: Pendidik dan kurator. Membutuhkan antarmuka manajemen kuis, penilaian tugas yang cepat, dan akses status kemajuan siswa.
+*   **Administrator**: Pengawas sistem. Membutuhkan kontrol penuh atas audit pengguna, moderasi quest board, dan konfigurasi master data RPG.
+
+### 2.4 Batasan Desain & Implementasi (Design & Implementation Constraints)
+Daftar tumpukan teknologi berikut menjadi batasan fisik implementasi sistem:
+*   **Bahasa Pemrograman**: Kode backend wajib ditulis menggunakan PHP 8.4, dan frontend wajib menggunakan TypeScript.
+*   **Framework**: Backend berbasis Laravel 12 dan frontend menggunakan React 19 SPA (Single Page Application) yang dijembatani oleh Inertia.js v2.
+*   **Basis Data**: Menggunakan penyimpanan basis data berorientasi dokumen NoSQL (MongoDB) dengan driver Eloquent Laravel.
+*   **Konektivitas Cloud**: Penyimpanan ZIP tugas akhir dan aset visual wajib dikelola melalui AWS S3 Storage API.
+
+### 2.5 Asumsi & Ketergantungan (Assumptions & Dependencies)
+*   **Asumsi**: Siswa memiliki perangkat komputer dengan kamera atau sensor sidik jari pendukung autentikasi biometrik jika ingin mengaktifkan Passkeys.
+*   **Ketergantungan**: Konektivitas server cloud AWS S3 dan koneksi internet yang stabil agar unggahan file ZIP tidak terputus di tengah jalan.
+
+---
+
+## 3. KEBUTUHAN SPESIFIK (SPECIFIC REQUIREMENTS)
+
+### 3.1 Antarmuka Eksternal (External Interface Requirements)
+
+#### 3.1.1 Antarmuka Pengguna (User Interfaces)
+*   Antarmuka wajib mendukung transisi Light dan Dark Mode yang konsisten tanpa adanya elemen tombol yang tidak terbaca di kedua mode tersebut.
+*   Resolusi minimum layar ponsel pintar yang didukung adalah 320px lebar (mobile responsive) hingga maksimal 1920px lebar (desktop widescreen).
+
+#### 3.1.2 Antarmuka Perangkat Lunak (Software Interfaces)
+*   **WebAuthn API**: Berinteraksi dengan browser klien untuk verifikasi kredensial biometrik sidik jari/wajah.
+*   **AWS S3 API**: Mengelola penyimpanan zip file tugas akhir secara terenkripsi dan privat.
+
+#### 3.1.3 Antarmuka Komunikasi (Communications Interfaces)
+*   Komunikasi jaringan wajib menggunakan protokol enkripsi HTTPS (port 443) untuk seluruh transmisi data API.
+*   Pengiriman email notifikasi dan OTP 2FA menggunakan protokol SMTP terenkripsi (SSL/TLS).
+
+### 3.2 Kebutuhan Fungsional (Functional Requirements)
+
+#### 3.2.1 Autentikasi & Keamanan Akun
+*   **REQ-F-AUT-001**: Sistem harus memproses login tradisional menggunakan pencocokan email dan hash sandi Bcrypt.
+*   **REQ-F-AUT-002**: Sistem harus memblokir akses pengguna yang belum menyelesaikan verifikasi email setelah melakukan pendaftaran.
+*   **REQ-F-AUT-003**: Sistem harus menyediakan opsi autentikasi biometrik tanpa sandi (Passkeys) berbasis protokol WebAuthn menggunakan enkripsi sidik jari/pemindaian wajah lokal.
+*   **REQ-F-AUT-004**: Sistem harus mewajibkan input kode verifikasi OTP 6-digit (TOTP) jika pengguna telah mengaktifkan perlindungan Autentikasi Dua-Faktor (2FA).
+
+#### 3.2.2 Peta Jalan & Modul Belajar (LMS)
+*   **REQ-F-LMS-001**: Sistem harus menyajikan Roadmap petualangan visual interaktif yang memetakan jalur kemajuan belajar kursus siswa.
+*   **REQ-F-LMS-002**: Sistem harus mengunci akses ke modul ajar berikutnya sampai seluruh modul prasyarat sebelumnya dinyatakan selesai dikerjakan oleh siswa.
+*   **REQ-F-LMS-003**: Sistem harus memungkinkan siswa menandai suatu modul ajar telah selesai dikerjakan untuk memperbarui status progress belajar.
+
+#### 3.2.3 Penilaian Kognitif (Quiz & Submissions)
+*   **REQ-F-EVL-001**: Sistem harus mengacak urutan soal kuis pilihan ganda saat siswa memulai evaluasi kuis akhir jalur belajar.
+*   **REQ-F-EVL-002**: Sistem harus membatasi durasi pengerjaan kuis menggunakan *countdown timer* otomatis.
+*   **REQ-F-EVL-003**: Sistem harus mencatat hasil akurasi skor kuis pilihan ganda siswa secara instan setelah tombol kirim jawaban ditekan.
+*   **REQ-F-EVL-004**: Sistem harus memungkinkan siswa mengunggah tautan dan catatan proyek untuk dievaluasi secara manual oleh Mentor.
+*   **REQ-F-EVL-005**: Sistem harus memasilitasi Mentor untuk memberikan penilaian angka (grade) dan catatan perbaikan (*feedback*) terhadap tugas proyek manual siswa.
+
+#### 3.2.4 Ekosistem Gamifikasi RPG
+*   **REQ-F-RPG-001**: Sistem harus mengakumulasikan EXP, Gold, dan ERP ke statistik karakter siswa setelah menyelesaikan materi modul, kuis, atau tugas proyek.
+*   **REQ-F-RPG-002**: Sistem harus menghitung tingkat level karakter siswa secara dinamis menggunakan rumus matematis kurva kenaikan level:
+    $$\\text{Level} = \\lfloor 0.1 \\times \\sqrt{\\text{EXP}} \\rfloor + 1$$
+*   **REQ-F-RPG-003**: Peningkatan level siswa berdasarkan rumus REQ-F-RPG-002 harus memicu pembukaan penghargaan lencana prestasi (*badges*) profil siswa secara otomatis.
+*   **REQ-F-RPG-004**: Sistem harus menyajikan papan peringkat peringkat global (*Leaderboard*) yang mengurutkan akumulasi total EXP siswa dari yang tertinggi ke terendah.
+
+#### 3.2.5 Pasar Kerja & Sistem Escrow ZIP
+*   **REQ-F-ESC-001**: Sistem harus memasilitasi siswa/admin memposting lowongan quest dengan batas nominal anggaran minimal-maksimal dan tanggal tenggat waktu.
+*   **REQ-F-ESC-002**: Sistem harus mengunci saldo anggaran reward quest saat pembuat quest menunjuk pekerja terpilih (\`acceptBid\`) dan mengubah status quest menjadi \`ongoing\`.
+*   **REQ-F-ESC-003**: Sistem harus mewajibkan pekerja mengirimkan tautan demonstrasi fungsional (demo link) terlebih dahulu untuk dinilai kelayakan kerjanya sebelum dapat mengunggah kode sumber final.
+*   **REQ-F-ESC-004**: Sistem harus mewajibkan pembuat quest memberikan penilaian ulasan bintang (1-5) dan ulasan tertulis terhadap kelayakan demo pekerja, yang akan mengubah status quest menjadi \`approved\`.
+*   **REQ-F-ESC-005**: Sistem harus mendeteksi bahwa berkas pengumpulan proyek final wajib berupa kompresi berkas berekstensi \`.zip\` dengan status *locked* (tidak dapat diubah setelah terunggah).
+*   **REQ-F-ESC-006**: Sistem harus mencairkan dana koin/emas RPG dan mendistribusikan EXP serta ERP ke status profil pekerja segera setelah berkas ZIP proyek final berhasil diunggah secara penuh (status \`completed\`).
+*   **REQ-F-ESC-007**: Sistem harus menyediakan panel chat room persisten otomatis antara pekerja aktif dengan pembuat quest untuk koordinasi pengerjaan.
+*   **REQ-F-ESC-008**: Sistem harus mewajibkan setiap quest baru yang dibuat masuk ke status \`draft\` untuk ditinjau, disetujui, atau ditolak oleh Administrator sebelum dapat diakses publik.
+
+#### 3.2.6 Forum Diskusi Sosial
+*   **REQ-F-FRM-001**: Sistem harus menyediakan forum diskusi terisolasi per mata kuliah bagi siswa untuk berinteraksi.
+*   **REQ-F-FRM-002**: Sistem harus memungkinkan pengguna menyematkan pesan penting (*pin message*) di bagian atas daftar obrolan forum.
+*   **REQ-F-FRM-003**: Sistem harus memungkinkan pengguna menambahkan atau menghapus reaksi emotikon (emojis) pada kiriman pesan forum.
+
+### 3.3 Kebutuhan Non-Fungsional (Non-Functional Requirements - NFR)
+
+#### 3.3.1 Kebutuhan Performa (Performance)
+*   **NFR-P-001**: Sistem harus membatasi ukuran berkas ZIP penyerahan tugas final maksimal sebesar **50 Megabytes (MB)**.
+*   **NFR-P-002**: Sistem harus menerapkan *Upload Timeout* maksimal 120 detik untuk mencegah kemacetan server jika kecepatan internet pengunggah lambat.
+*   **NFR-P-003**: Waktu respon server untuk memuat halaman Papan Quest (Quest Board) tidak boleh melebihi latensi **2 detik** dalam kondisi beban puncak operasional.
+
+#### 3.3.2 Kebutuhan Keamanan (Security)
+*   **NFR-S-001**: Sistem harus mengunci akun pengguna (Account Lockout Policy) selama 15 menit setelah terjadi kegagalan login sebanyak 5 kali berturut-turut.
+*   **NFR-S-002**: Sistem harus mengenkripsi seluruh data sensitif di database, termasuk kunci pemulihan 2FA (*recovery codes*) menggunakan standar enkripsi AES-256-CBC.
+*   **NFR-S-003**: Sistem harus mematuhi regulasi privasi data lokal dengan mewajibkan penghapusan dokumen log chat quest secara permanen jika akun pengguna ditutup secara resmi.
+
+---
+
+## 4. KAMUS DATA BISNIS LOGIS (LOGICAL BUSINESS DATA DICTIONARY)
+
+Kamus data logis di bawah menyajikan definisi konseptual entitas tanpa membatasi implementasi tipe data sintaks database fisik:
+
+### 4.1 Entitas: Pengguna (User)
+*   **Nama Tampilan**: Pengguna sistem.
+*   **Deskripsi**: Informasi dasar identitas aktor platform.
+*   **Atribut Logis**:
+    *   \`ID Pengguna\`: String alfanumerik unik pengenal pengguna.
+    *   \`Nama Lengkap\`: Teks huruf alfabet nama resmi pengguna.
+    *   \`Email\`: Format alamat email valid (e.g. user@domain.com).
+    *   \`Peran\`: Kategori akses terbatas (\`Siswa\`, \`Mentor\`, atau \`Administrator\`).
+
+### 4.2 Entitas: Kemajuan RPG (RPG Progress)
+*   **Nama Tampilan**: Progres & Statistik Karakter Siswa.
+*   **Deskripsi**: Status gamifikasi RPG yang melekat pada karakter siswa.
+*   **Atribut Logis**:
+    *   \`Tingkat Level\`: Bilangan bulat positif penanda level (rentang: 1 - 100).
+    *   \`Poin EXP\`: Akumulasi angka kemajuan akademik (rentang: >= 0, unit: Poin).
+    *   \` RPG Gold\`: Saldo mata uang virtual game untuk belanja aset RPG (rentang: >= 0, unit: Koin Gold).
+    *   \`Poin ERP\`: Skor indeks kesiapan industri kognitif (rentang: 0 - 100, unit: Poin).
+    *   \`Jalur Belajar Aktif\`: Pengenal jalur belajar yang saat ini diikuti oleh siswa.
+
+### 4.3 Entitas: Lowongan Pekerjaan (Quest)
+*   **Nama Tampilan**: Lowongan Quest Freelance.
+*   **Deskripsi**: Proyek freelance yang diposting oleh siswa atau admin.
+*   **Atribut Logis**:
+    *   \`Judul Quest\`: Nama ringkas proyek (panjang: 5 - 150 karakter).
+    *   \`Deskripsi Pekerjaan\`: Deskripsi rincian spesifikasi tugas (panjang: >= 20 karakter).
+    *   \`Gaji Minimum\`: Batas bawah upah koin yang ditawarkan (unit: Rupiah / Gold, rentang: >= 0).
+    *   \`Gaji Maksimum\`: Batas atas upah koin yang ditawarkan (unit: Rupiah / Gold, rentang: >= Gaji Minimum).
+    *   \`Tenggat Waktu\`: Tanggal batas akhir pengumpulan proyek (format: tanggal di masa depan).
+    *   \`Status Transaksi\`: Tahapan siklus escrow (\`Draft\`, \`Rejected\`, \`Open\`, \`Ongoing\`, \`Submitted\`, \`Approved\`, \`Completed\`).
+
+### 4.4 Entitas: Penawaran (Quest Bid)
+*   **Nama Tampilan**: Proposal Penawaran Kerja.
+*   **Deskripsi**: Pengajuan lamaran penawaran quest dari pelamar.
+*   **Atribut Logis**:
+    *   \`Nominal Tawar\`: Harga jasa yang diajukan oleh pelamar (unit: Rupiah, rentang: >= 0).
+    *   \`Tautan CV\`: URL akses dokumen CV pelamar.
+    *   \`Tautan Portofolio\`: URL akses galeri portofolio pelamar.
+    *   \`Pernyataan Proposal\`: Teks ulasan taktis lamaran kerja pelamar.
+    *   \`Status Lamaran\`: Kondisi lamaran (\`Menunggu\`, \`Diterima\`, atau \`Ditolak\`).
+
+---
+
+## 5. MATRIKS VERIFIKASI & KETERLACAKAN KEBUTUHAN (VERIFICATION & TRACEABILITY MATRIX)
+
+Setiap kebutuhan fungsional (REQ) dan non-fungsional (NFR) diverifikasi menggunakan salah satu dari 4 metode pengujian standar berikut:
+*   **Testing (T)**: Pengujian otomatis menggunakan skrip pengujian (unit/feature tests).
+*   **Demonstration (D)**: Demonstrasi interaksi UI/UX secara visual di layar.
+*   **Analysis (A)**: Analisis log atau formula matematis (misal: verifikasi level RPG).
+*   **Inspection (I)**: Inspeksi konfigurasi file, kode gaya pemrograman, atau izin akses berkas.
+
+| Req ID | Deskripsi Kebutuhan | Metode Verifikasi | Kode Pengujian Otomatis (tests/Feature/) |
+| :--- | :--- | :--- | :--- |
+| **REQ-F-AUT-003** | Login Biometrik Passkeys (WebAuthn) | \`D\`, \`I\` | Verifikasi manual antarmuka biometrik di browser. |
+| **REQ-F-LMS-002** | Penguncian Roadmap Modul Prasyarat | \`T\`, \`D\` | \`QuestTest.php\` (Has character & modules check). |
+| **REQ-F-EVL-003** | Pencatatan Akurasi Skor Kuis MCQ | \`T\` | \`QuestTest.php\` (Quiz submit & score test). |
+| **REQ-F-RPG-002** | Rumus Kenaikan Level RPG Dinamis | \`T\`, \`A\` | \`UserStat.php\` (Getter method verification). |
+| **REQ-F-ESC-004** | Ulasan Rating & Persetujuan Escrow | \`T\`, \`D\` | \`QuestSubmissionTest.php::two step approval\`. |
+| **REQ-F-ESC-005** | Validasi Kompresi ZIP Tugas Final | \`T\` | \`QuestSubmissionTest.php::zip format constraint\`. |
+| **REQ-F-ESC-006** | Pencairan Rewards Escrow & ZIP | \`T\` | \`QuestSubmissionTest.php::payout on zip success\`. |
+| **NFR-P-001** | Batasan Ukuran ZIP Maksimal 50MB | \`T\`, \`I\` | \`QuestSubmissionTest.php\` (File size validation check). |
+| **NFR-S-001** | Kunci Akun 15 Menit Gagal Login 5x | \`T\` | \`AuthLockoutTest.php\` (Lockout verification). |
+
+---
+
+## 6. PENUTUP & PEMELIHARAAN DOKUMEN
+Dokumen Master SRS ini menjadi panduan absolut dalam pengembangan sistem SkillMongo. Setiap penambahan fitur baru harus memperbarui dokumen spesifikasi ini terlebih dahulu untuk menjaga konsistensi arsitektur dan penjaminan kualitas produk secara berkelanjutan.
+
+
+---
+
+
+
+Diagram-diagram di bawah menyajikan pemodelan visual lengkap untuk **SkillMongo**, termasuk Entity-Relationship Diagram (ERD), Use Case Diagram, Class Diagram, dan Sequence Diagram alur bisnis krusial.
+
+---
+
+## 1. Entity-Relationship Diagram (ERD)
+
+Diagram di bawah menunjukkan hubungan antara koleksi MongoDB (diperlakukan sebagai entitas relasional melalui Eloquent ORM).
+
+\`\`\`mermaid
+erDiagram
+    USERS ||--|| USER_STATS : "has stats"
+    USERS ||--|| CHARACTERS : "has character template"
+    USERS ||--o{ STUDENT_SUBMISSIONS : "submits tasks"
+    USERS ||--o{ QUESTS : "creates quests"
+    USERS ||--o{ QUEST_BIDS : "places bids"
+    USERS ||--o{ FORUM_MESSAGES : "posts messages"
+    
+    COURSES ||--o{ CAREER_GROUPS : "contains groups"
+    COURSES ||--o{ FORUM_MESSAGES : "hosts forum"
+    
+    CAREER_GROUPS ||--o{ PATHS : "contains paths"
+    CAREER_GROUPS ||--o{ MENTOR_CAREER_GROUPS : "has assigned mentors"
+    
+    PATHS ||--o{ MODULES : "contains modules"
+    PATHS ||--o{ SUBMISSIONS : "defines tasks"
+    PATHS ||--|| QUIZZES : "has final quiz"
+    
+    MODULES ||--o{ MODULE_CONTENTS : "has contents"
+    
+    QUIZZES ||--o{ QUIZ_QUESTIONS : "has questions"
+    QUIZ_QUESTIONS ||--o{ QUIZ_ANSWERS : "has options"
+    QUIZZES ||--o{ QUIZ_RESULTS : "tracks scores"
+    
+    SUBMISSIONS ||--o{ STUDENT_SUBMISSIONS : "receives uploads"
+    
+    QUESTS ||--o{ QUEST_BIDS : "has bids"
+    QUESTS ||--o{ QUEST_MESSAGES : "has chat history"
+    QUEST_BIDS ||--|| USERS : "placed by student"
+\`\`\`
+
+---
+
+## 2. Use Case Diagram
+
+Diagram ini mendefinisikan hak aksi (Use Cases) untuk masing-masing tipe aktor (Student, Mentor, Admin) di dalam ekosistem platform.
+
+\`\`\`mermaid
+graph TB
+    subgraph Aktor Utama
+        S["Siswa (Student)"]
+        M["Mentor"]
+        A["Admin"]
+    end
+
+    subgraph Modul Autentikasi & RPG
+        UC_SelectChar["Pilih Karakter Awal"]
+        UC_Auth["Login / Registrasi / 2FA"]
+    end
+
+    subgraph Modul LMS & Belajar
+        UC_ViewRoadmap["Lihat Peta Belajar / Roadmap"]
+        UC_CompleteModule["Selesaikan Modul Konten"]
+        UC_SubmitQuiz["Kerjakan Kuis MCQ"]
+        UC_SubmitTask["Kirim Tugas Proyek"]
+    end
+
+    subgraph Modul Freelance Quest
+        UC_PostQuest["Posting Quest Baru (Draft)"]
+        UC_BidQuest["Bidding Quest (Kirim Proposal)"]
+        UC_ChatQuest["Chat Koordinasi Pekerjaan"]
+        UC_SubmitFinalZIP["Kirim ZIP Proyek Final"]
+        UC_ApproveWork["Approve Hasil & Rilis Rewards"]
+    end
+
+    subgraph Modul Kurasi & Moderasi
+        UC_ManageCourse["Kelola Kursus & Peta Belajar"]
+        UC_GradeTask["Koreksi & Grade Tugas Siswa"]
+        UC_ModQuest["Moderasi Post Quest (Approve/Reject)"]
+        UC_ManageUsers["Kelola Pengguna & Hak Akses"]
+    end
+
+    S --> UC_Auth
+    S --> UC_SelectChar
+    S --> UC_ViewRoadmap
+    S --> UC_CompleteModule
+    S --> UC_SubmitQuiz
+    S --> UC_SubmitTask
+    S --> UC_PostQuest
+    S --> UC_BidQuest
+    S --> UC_ChatQuest
+    S --> UC_SubmitFinalZIP
+
+    M --> UC_Auth
+    M --> UC_GradeTask
+    M --> UC_ManageCourse
+
+    A --> UC_Auth
+    A --> UC_ModQuest
+    A --> UC_ManageUsers
+    A --> UC_ManageCourse
+    A --> UC_ApproveWork
+\`\`\`
+
+---
+
+## 3. Sequence Diagrams (Alur Bisnis Utama)
+
+### A. Alur Siklus Escrow ZIP & Pembayaran Quest
+Diagram ini mendemonstrasikan proses sejak penunjukan pekerja, pengerjaan, persetujuan awal (rating), pengunggahan ZIP final, hingga rilis koin RPG ke statistik pekerja.
+
+\`\`\`mermaid
+sequenceDiagram
+    autonumber
+    actor SiswaPekerja as Pekerja (Siswa)
+    actor SiswaPembuat as Pembuat Quest (Siswa)
+    participant QC as QuestController
+    participant DB as Database (MongoDB)
+    participant US as UserStat (Pekerja)
+
+    SiswaPembuat->>QC: acceptBid(questId, bidId)
+    QC->>DB: Update Quest (status = 'ongoing', worker_id = StudentID)
+    DB-->>QC: Sukses
+    QC-->>SiswaPembuat: Quest Berjalan (Ongoing)
+    
+    Note over SiswaPekerja, SiswaPembuat: Tahap Pengerjaan & Diskusi via Chat
+    
+    SiswaPekerja->>QC: submitWork(questId, submissionLink, note)
+    QC->>DB: Simpan Link & Ulasan (status = 'submitted')
+    DB-->>QC: Sukses
+    QC-->>SiswaPekerja: Tugas Terkirim
+    
+    SiswaPembuat->>QC: approveWork(questId, rating, comment)
+    QC->>DB: Simpan Rating & Persetujuan Awal (status = 'approved')
+    DB-->>QC: Sukses
+    QC-->>SiswaPembuat: Ulasan Terkirim, Status 'approved'
+    
+    SiswaPekerja->>QC: submitFinalZIP(questId, zipFile)
+    QC->>DB: Unggah File ZIP Final (status = 'completed')
+    QC->>US: Distribusikan EXP, Gold, & ERP
+    US->>DB: Simpan Statistik Baru (Stat Update)
+    DB-->>QC: Sukses
+    QC-->>SiswaPekerja: Quest Selesai, Rewards Diterima
+\`\`\`
+
+### B. Alur Pengiriman & Moderasi Quest Baru oleh Admin
+Diagram ini memetakan proses verifikasi quest sebelum dipublikasikan ke Papan Lowongan publik.
+
+\`\`\`mermaid
+sequenceDiagram
+    autonumber
+    actor Siswa as Pembuat Quest (Siswa)
+    participant QC as QuestController (Student)
+    actor Admin as Admin (Moderator)
+    participant AQC as QuestController (Admin)
+    participant DB as Database (MongoDB)
+
+    Siswa->>QC: store(title, description, budget, deadline)
+    QC->>DB: Simpan Quest (status = 'draft')
+    DB-->>QC: Sukses
+    QC-->>Siswa: Quest Dikirim, Menunggu Moderasi
+
+    Note over Admin: Admin memeriksa daftar draft quest di Dashboard
+    
+    alt Kasus A: Quest Disetujui
+        Admin->>AQC: approvePost(questId)
+        AQC->>DB: Update Quest (status = 'open')
+        DB-->>AQC: Sukses
+        AQC-->>Admin: Quest Ditayangkan Publik
+    else Kasus B: Quest Ditolak
+        Admin->>AQC: rejectPost(questId, rejectionNote)
+        AQC->>DB: Update Quest (status = 'rejected', rejection_note)
+        DB-->>AQC: Sukses
+        AQC-->>Admin: Notifikasi Penolakan Tersimpan
+    end
+\`\`\`
+
+### C. Alur Kuis Kognitif & Level-Up Karakter RPG
+Diagram ini memetakan proses ketika Siswa menyelesaikan kuis di LMS dan mendapatkan akumulasi EXP yang memicu Level-Up secara dinamis.
+
+\`\`\`mermaid
+sequenceDiagram
+    autonumber
+    actor Siswa as Siswa (Player)
+    participant QuizC as QuizController
+    participant UserStat as UserStat (Model)
+    participant DB as Database (MongoDB)
+
+    Siswa->>QuizC: submit(quizId, answers[])
+    QuizC->>DB: Periksa Kunci Jawaban
+    DB-->>QuizC: Hitung Nilai Kelulusan
+    
+    alt Nilai Lulus (Passing Grade Tercapai)
+        QuizC->>DB: Ambil UserStat Aktif
+        DB-->>QuizC: UserStat data (Level 1, EXP 450)
+        QuizC->>UserStat: Tambah +100 EXP & Poin ERP
+        
+        Note over UserStat: Rumus Level-Up dipicu dinamis:<br/>floor((450 + 100) / 500) + 1 = Level 2
+        
+        UserStat->>DB: Simpan Data Baru (Level = 2, EXP = 550)
+        DB-->>QuizC: Sukses
+        QuizC-->>Siswa: Nilai Kuis (Lulus), Naik ke Level 2!
+    else Nilai Gagal
+        QuizC-->>Siswa: Nilai Kuis (Gagal), Silakan Coba Lagi
+    end
+\`\`\`
+
+---
+
+## 4. Class Diagram (UML)
+
+Diagram kelas ini menyajikan hubungan antara pengontrol utama (Controllers) dengan model-model data inti di backend.
+
+\`\`\`mermaid
+classDiagram
+    class User {
+        +string _id
+        +string name
+        +string email
+        +string role
+        +userStat() Relation
+        +quests() Relation
+    }
+    
+    class UserStat {
+        +string _id
+        +string user_id
+        +int level
+        +int exp
+        +int gold
+        +int erp
+        +getTotalExpAttribute() int
+        +getCurrentLevelAttribute() int
+    }
+    
+    class Quest {
+        +string _id
+        +string title
+        +string status
+        +double min_salary
+        +double max_salary
+        +creator() Relation
+        +worker() Relation
+        +bids() Relation
+    }
+    
+    class QuestBid {
+        +string _id
+        +string quest_id
+        +string student_id
+        +double bid_amount
+        +string status
+        +student() Relation
+    }
+    
+    class Course {
+        +string _id
+        +string title
+        +string status
+        +careerGroups() Relation
+    }
+    
+    class Path {
+        +string _id
+        +string career_group_id
+        +string title
+        +modules() Relation
+        +quiz() Relation
+    }
+
+    User "1" -- "1" UserStat : "has"
+    User "1" -- "many" Quest : "creates / works on"
+    Quest "1" -- "many" QuestBid : "receives"
+    QuestBid "many" -- "1" User : "submitted by"
+    Course "1" -- "many" Path : "maps to learning paths"
+\`\`\`
+
+---
+
+## 5. Ringkasan Desain Sistem
+
+Seluruh diagram UML dan ERD di atas memetakan dengan tepat struktur database NoSQL MongoDB yang diimplementasikan melalui model relasional Eloquent di Laravel. Dengan pemodelan status quest dan kalkulator kenaikan level dinamis, integritas data sistem SkillMongo dipastikan solid dan terstruktur dengan rapi untuk kemudahan pemeliharaan jangka panjang.
+
+
+---
+
+
+**Perspektif: Enterprise Systems Architect & Senior Product Manager**
+
+Laporan ini menyajikan analisis kritis menyeluruh terhadap spesifikasi sistem (**SRS**) dan implementasi teknis platform **SkillMongo** dari standar industri rekayasa perangkat lunak modern.
+
+---
+
+## 1. Evaluasi Arsitektur Data & Skalabilitas (MongoDB & Eloquent)
+
+### Desain Skema Dokumen (NoSQL MongoDB)
+Penggunaan MongoDB sebagai database utama di platform LMS Gamifikasi sangat tepat karena struktur datanya yang semi-terstruktur. Data progress belajar siswa (\`user_stats\`) yang menyimpan daftar modul selesai (\`completed_modules\`) dan sub-statistik jalur (\`path_stats\`) disimpan dalam bentuk *embedded arrays*.
+
+*   **Keuntungan Industri**: 
+    *   **Performa Baca Instan**: Tidak membutuhkan operasi \`JOIN\` SQL yang berat untuk memuat progress belajar siswa. Seluruh data RPG (EXP, Level, Gold, progress modul) dimuat dalam satu query dokumen tunggal.
+    *   **Fleksibilitas Atribut Karakter**: Atribut RPG baru dapat ditambahkan tanpa perlu migrasi skema tabel (schema-less structure) yang berpotensi menyebabkan downtime.
+*   **Risiko & Mitigasi Transaksional**:
+    *   *Gencatan Keadaan Konsistensi (Consistency Gap)*: Pada alur penyelesaian quest (\`submitFinalZip\`), sistem melakukan pembaruan status quest sekaligus pendistribusikan reward (EXP/Gold/ERP) ke koleksi \`user_stats\`. 
+    *   *Rekomendasi Industri*: Karena MongoDB secara bawaan adalah sistem non-relasional, penulisan multi-dokumen ini wajib menggunakan fitur **MongoDB Transactions** (\`DB::transaction\`) untuk memastikan kegagalan penulisan di salah satu dokumen memicu rollback otomatis, mencegah eksploitasi penggandaan koin (double-spending vulnerability).
+
+---
+
+## 2. Analisis Loop Gamifikasi (Gamification Engine & Octalysis)
+
+Sistem gamifikasi SkillMongo memenuhi beberapa pilar utama dalam **Octalysis Framework** (Kerangka Desain Gamifikasi Kelas Dunia):
+
+\`\`\`
+       OCTALYSIS PILLARS IN SKILLMONGO
+       
+    [1. Epic Meaning & Calling]  ──> Pemilihan Karakter Awal (Avatar & Kelas)
+    [2. Development & Accomplish] ──> Roadmap Visual, Level-Up (EXP), Badges
+    [3. Empowerment of Creativity]──> Bidding Penawaran & Kustomisasi Proposal
+    [4. Ownership & Possession]   ──> Akumulasi RPG Gold & Koleksi Sertifikat
+    [5. Social Influence]         ──> Leaderboard Peringkat & Forum Diskusi
+\`\`\`
+
+*   **Development & Accomplishment (Drive 2)**: Visualisasi roadmap peta jalan kursus memberikan dorongan motivasi penyelesaian materi secara visual (*progress bar effect*). Kenaikan level dengan rumus dinamis fixed-threshold 500 EXP memberikan feedback pencapaian yang terprediksi.
+*   **Empowerment of Creativity & Feedback (Drive 3)**: Alur Bidding Quest memicu siswa bertindak proaktif merumuskan strategi harga penawaran (\`bid_amount\`) dan proposal taktis.
+*   **Social Influence & Relatedness (Drive 5)**: Leaderboard global memicu dorongan kompetitif yang sehat antar-siswa untuk mempertahankan keunggulan EXP mereka di sistem.
+
+---
+
+## 3. Evaluasi Keamanan Alur Escrow ZIP (Freelance Quest Board)
+
+Alur verifikasi dua tahap pada pasar freelance merupakan inovasi proses bisnis yang sangat aman dari ancaman *payment default* (pekerja tidak dibayar) atau *low-quality delivery* (pekerja mengirim berkas kosong).
+
+### Mekanisme Proteksi Escrow:
+1.  **Penguncian Anggaran**: Saat pembuat quest menyetujui bid pelamar (\`acceptBid\`), anggaran quest dikunci di sistem (status \`ongoing\`).
+2.  **Tahap Review Fungsional (Submitted)**: Pekerja hanya mengirimkan tautan demonstrasi (tautan demo aktif) dan catatan ulasan untuk diuji kelayakannya. Pekerja tidak diizinkan mengirim berkas sumber (source code) terlebih dahulu, mencegah pembuat quest mengambil kode lalu membatalkan pembayaran sepihak.
+3.  **Rating & Feedback Lock (Approved)**: Setelah hasil uji kelayakan disetujui, pembuat quest mengisi penilaian ulasan bintang (1-5) dan rating kinerja. Status quest berubah menjadi \`approved\`, di mana sistem mengunci komitmen pembayaran.
+4.  **ZIP Final Hand-off (Completed)**: Pekerja mengunggah berkas sumber proyek final dalam bentuk ZIP. Pengunggahan file ZIP memicu penutupan quest otomatis (\`completed\`) dan pencairan dana RPG secara waktu nyata.
+
+---
+
+## 4. Analisis State Machine & Edge Cases (Quest System)
+
+Meskipun status transaksi quest telah terstruktur rapi, analisis sistem industri menemukan beberapa *Edge Cases* (kasus batas) yang belum tercover penuh dalam rancangan SRS saat ini:
+
+### Matriks Analisis Kasus Batas:
+| Skenario Kasus Batas | Dampak Sistem | Rekomendasi Mitigasi SRS |
+| :--- | :--- | :--- |
+| **Pekerja Tidak Aktif (Stale Worker)** | Quest terkunci pada status \`ongoing\` selamanya. Anggaran pembuat tertahan di sistem. | Tambahkan fitur **Quest Expiry / SLA Timeout**. Jika tenggat waktu terlewati 48 jam dan pekerja tidak mengumpulkan tugas awal, pembuat quest berhak melakukan pembatalan sepihak (*Cancel Quest*). |
+| **Perselisihan Hasil (Disputes)** | Pekerja mengklaim hasil kerja sudah sesuai, namun Pembuat quest menolak berkali-kali tanpa dasar yang jelas. | Tambahkan peran **Admin Moderator Mediator**. Jika terjadi penolakan revisi lebih dari 3 kali, tombol "Ajukan Banding" muncul bagi pekerja untuk menunjuk Admin sebagai penengah. |
+| **Bids Tanpa Batas Waktu** | Siswa mengajukan bid dan proposal tetap melayang aktif meskipun quest telah ditutup. | Tambahkan fitur kadaluarsa bid otomatis (*auto-archive pending bids*) saat quest berganti status ke \`ongoing\`. |
+
+---
+
+## 5. Kesimpulan & Rekomendasi Optimasi Skala Industri
+
+Sistem **SkillMongo** memiliki dasar SRS yang sangat kuat dan siap untuk produksi skala menengah. Untuk meningkatkan skalabilitasnya ke standar *Enterprise Software*:
+
+1.  **Database Indexing**: Wajib menambahkan indeks majemuk (compound indexes) pada koleksi MongoDB:
+    *   \`quests\`: indeks pada \`[status, creator_id]\` untuk memperepat query filter board.
+    *   \`quest_messages\`: indeks pada \`[bid_id, created_at]\` untuk optimalisasi performa chat panel.
+2.  **Transactional Integrity**: Terapkan implementasi Laravel DB transaction fungsional pada relasi penambahan saldo/points dengan penutupan berkas ZIP quest.
+3.  **Real-time Event Broadcasting**: Untuk meningkatkan kenyamanan obrolan (Quest Chat), integrasikan Laravel Reverb atau Pusher agar komunikasi antara pekerja dan pembuat terjadi secara real-time tanpa perlu pemuatan ulang manual (polling).
+
+
+---
+
+
+*Lokasi Dokumen: docs/srs/srs_api_and_database.md*
+
+Dokumen ini melengkapi Master SRS dengan menyajikan spesifikasi teknis **Kontrak API** (endpoints) dan **Kamus Data (Database Schema Dictionary)** untuk koleksi MongoDB yang digunakan dalam SkillMongo.
+
+---
+
+## 1. Spesifikasi Kontrak API Utama (API Endpoints)
+
+Seluruh request dan response menggunakan format **JSON** (kecuali upload file yang menggunakan \`multipart/form-data\`).
+
+### A. Modul Freelance Quest (Escrow & Bidding)
+
+#### 1. Membuat Quest Baru
+*   **Endpoint**: \`POST /student/quests\`
+*   **Payload (multipart/form-data)**:
+    \`\`\`json
+    {
+      "title": "string (min: 5)",
+      "description": "string (min: 20)",
+      "min_salary": "numeric (min: 0)",
+      "max_salary": "numeric (>= min_salary)",
+      "deadline": "date (Y-m-d, must be after today)",
+      "images": "file[] (optional, max: 2MB per file)",
+      "files": "file[] (optional, pdf/doc/docx/xls/xlsx/zip, max: 10MB per file)"
+    }
+    \`\`\`
+*   **Response (302 Redirect / Inertia)**:
+    Mengarahkan kembali ke \`/student/quests\` dengan flash session message \`success\` jika berhasil.
+
+#### 2. Mengajukan Penawaran (Place Bid)
+*   **Endpoint**: \`POST /student/quests/{quest}/bid\`
+*   **Payload (application/json)**:
+    \`\`\`json
+    {
+      "bid_amount": "numeric (required)",
+      "cv": "string (url, required)",
+      "portfolio": "string (url, required)",
+      "proposal": "string (min: 10, required)"
+    }
+    \`\`\`
+
+#### 3. Mengirimkan Pekerjaan Awal (Ulasan Kelayakan)
+*   **Endpoint**: \`POST /student/quests/{quest}/submit\`
+*   **Payload (application/json)**:
+    \`\`\`json
+    {
+      "submission_link": "string (url, required)",
+      "submission_note": "string (optional)"
+    }
+    \`\`\`
+
+#### 4. Menyetujui Ulasan Pengerjaan Awal (Approve Work)
+*   **Endpoint**: \`POST /student/quests/{quest}/approve\`
+*   **Payload (application/json)**:
+    \`\`\`json
+    {
+      "rating": "integer (1-5, required)",
+      "rating_comment": "string (optional)"
+    }
+    \`\`\`
+
+#### 5. Mengirimkan ZIP Final (Tutup Escrow & Cairkan Dana)
+*   **Endpoint**: \`POST /student/quests/{quest}/submit-final-zip\`
+*   **Payload (multipart/form-data)**:
+    \`\`\`json
+    {
+      "submission_file": "file (zip required, max: 20MB)"
+    }
+    \`\`\`
+
+---
+
+### B. Modul Komunikasi (Quest & Forum Chat)
+
+#### 1. Mengirim Pesan Chat Quest (Koordinasi Pelamar)
+*   **Endpoint**: \`POST /quests/bids/{bid}/messages\`
+*   **Payload (application/json)**:
+    \`\`\`json
+    {
+      "message": "string (required)"
+    }
+    \`\`\`
+
+#### 2. Mengirim Pesan Forum Kursus
+*   **Endpoint**: \`POST /student/forum/{course}/messages\`
+*   **Payload (application/json)**:
+    \`\`\`json
+    {
+      "message": "string (required)"
+    }
+    \`\`\`
+
+---
+
+## 2. Kamus Data Koleksi MongoDB (Database Dictionary)
+
+### A. Koleksi: \`users\`
+Menyimpan informasi kredensial login dan profil otoritas pengguna.
+
+| Field Name | Type | Key | Description |
+| :--- | :--- | :--- | :--- |
+| \`_id\` | ObjectId | Primary Key | Identifier unik dokumen pengguna. |
+| \`name\` | String | - | Nama lengkap pengguna. |
+| \`email\` | String | Unique | Alamat email terverifikasi. |
+| \`password\` | String | - | Hash sandi Bcrypt. |
+| \`role\` | String | - | Peran user: \`student\`, \`mentor\`, atau \`admin\`. |
+| \`two_factor_secret\` | String | - | Kode rahasia terenkripsi TOTP 2FA. |
+| \`two_factor_recovery_codes\` | Array (String) | - | Kode cadangan pemulihan 2FA. |
+| \`remember_token\` | String | - | Token session log-in tetap aktif. |
+
+### B. Koleksi: \`user_stats\`
+Menyimpan poin reputasi RPG dan progress petualangan belajar siswa.
+
+| Field Name | Type | Key | Description |
+| :--- | :--- | :--- | :--- |
+| \`_id\` | ObjectId | Primary Key | Identifier unik statistik pengguna. |
+| \`user_id\` | String | Foreign Key | Kunci relasi ke koleksi \`users\`. |
+| \`selected_path_id\`| String | Foreign Key | Kunci relasi ke sub-jalur belajar aktif (\`paths\`). |
+| \`level\` | Integer | - | Tingkatan level saat ini (default: 1). |
+| \`exp\` | Integer | - | Jumlah poin pengalaman (default: 0). |
+| \`gold\` | Integer | - | Jumlah koin emas RPG (default: 0). |
+| \`erp\` | Integer | - | Skor Enterprise Readiness Points (default: 0). |
+| \`completed_modules\`| Array (String) | - | Daftar ID modul pelajaran yang telah diselesaikan. |
+| \`path_stats\` | Object (JSON) | - | Statistik terperinci per-jalur karir (exp, gold, quiz_score). |
+
+### C. Koleksi: \`quests\`
+Mengelola transaksi lowongan pengerjaan proyek freelance berbasis escrow.
+
+| Field Name | Type | Key | Description |
+| :--- | :--- | :--- | :--- |
+| \`_id\` | ObjectId | Primary Key | Identifier unik quest. |
+| \`title\` | String | - | Judul tugas pekerjaan. |
+| \`description\` | String | - | Detail spesifikasi quest. |
+| \`min_salary\` | Integer | - | Gaji minimum (dalam IDR). |
+| \`max_salary\` | Integer | - | Gaji maksimum (dalam IDR). |
+| \`deadline\` | Date | - | Batas waktu pengerjaan. |
+| \`status\` | String | - | Siklus quest: \`draft\`, \`rejected\`, \`open\`, \`ongoing\`, \`submitted\`, \`approved\`, \`completed\`. |
+| \`creator_id\` | String | Foreign Key | Pembuat quest (relasi ke \`users\`). |
+| \`worker_id\` | String | Foreign Key | Pekerja terpilih (relasi ke \`users\`). |
+| \`rejection_note\` | String | - | Catatan penolakan moderasi oleh admin. |
+| \`revision_note\` | String | - | Catatan permintaan revisi oleh pembuat quest. |
+| \`submission_link\` | String | - | Tautan demo pengerjaan awal dari pekerja. |
+| \`submission_file\` | Object (JSON) | - | metadata file ZIP final (\`name\`, \`path\`, \`size\`). |
+
+### D. Koleksi: \`quest_bids\`
+Mengelola proposal lamaran pengerjaan quest dari siswa.
+
+| Field Name | Type | Key | Description |
+| :--- | :--- | :--- | :--- |
+| \`_id\` | ObjectId | Primary Key | Identifier unik penawaran bid. |
+| \`quest_id\` | String | Foreign Key | Relasi ke koleksi \`quests\`. |
+| \`student_id\` | String | Foreign Key | Relasi ke koleksi \`users\` (pelamar). |
+| \`bid_amount\` | Double | - | Nominal harga penawaran pelamar. |
+| \`cv\` | String | - | Tautan unduh CV pelamar. |
+| \`portfolio\` | String | - | Tautan unduh portofolio kerja. |
+| \`proposal\` | String | - | Deskripsi taktis ulasan lamaran. |
+| \`status\` | String | - | Status lamaran: \`pending\`, \`accepted\`, atau \`rejected\`. |
+
+---
+
+## 3. Kesimpulan Kamus Data
+Rancangan kamus data dan API contract di atas menjamin bahwa integrasi data antara database MongoDB NoSQL dan lapisan frontend React Inertia.js berjalan secara konsisten, aman, dan mematuhi skema validasi tipe data yang ketat.
+
+
+---
+
+
+
+Laporan ini memetakan implementasi teknis saat ini pada proyek **SkillMongo** terhadap kerangka standar spesifikasi kebutuhan perangkat lunak (SRS) untuk platform *Gamified Learning & Freelance Quest*.
+
+---
+
+## 1. Modul Autentikasi & Pemilihan Karakter (Authentication & Character Module)
+
+### Deskripsi Kebutuhan (SRS)
+*   **Keamanan Akun**: Proses login, pendaftaran, pemulihan sandi, verifikasi email, autentikasi dua-faktor (2FA), dan dukungan passkeys (WebAuthn).
+*   **Inisiasi Akun**: Siswa yang baru mendaftar wajib memilih kelas karakter/avatar RPG (role-playing) sebelum dapat mengakses dashboard utama.
+*   **Statistik RPG Awal**: Pemilihan karakter memicu pembentukan statistik awal (Level 1, Gold, EXP, ERP) untuk gamifikasi.
+
+### Pemetaan Teknis & Kepatuhan
+| Kebutuhan Fungsional | Berkas Implementasi Utama | Status | Catatan Teknis |
+| :--- | :--- | :--- | :--- |
+| **Registrasi & Login** | \`app/Actions/Fortify/\` | \`COMPLIANT\` | Menggunakan Laravel Fortify untuk backend auth yang aman secara out-of-the-box. |
+| **Sistem Passkeys (WebAuthn)** | \`resources/js/pages/auth/webauthn-*.js\` | \`COMPLIANT\` | Mendukung login berbasis biometrik modern. |
+| **Autentikasi Dua Faktor (2FA)** | \`resources/js/pages/settings/two-factor.tsx\` | \`COMPLIANT\` | Antarmuka QR code dan pemulihan kode TOTP. |
+| **Pemilihan Karakter** | [SelectCharacterController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/SelectCharacterController.php) | \`COMPLIANT\` | Rute \`select-character\` mengikat data karakter awal siswa ke model \`Character.php\` dan \`UserStat.php\`. |
+
+---
+
+## 2. Modul Kurikulum & Peta Belajar (LMS & Roadmaps)
+
+### Deskripsi Kebutuhan (SRS)
+*   **Hirarki Materi**: Jalur Karir (Career Paths) ➔ Grup Karir (Career Groups) ➔ Kursus (Courses) ➔ Modul (Modules) ➔ Konten (Module Content/Lessons).
+*   **Roadmap Interaktif**: Peta petualangan visual untuk memandu siswa menyelesaikan materi secara bertahap.
+*   **Pemilihan Jalur**: Siswa dapat memilih jalur karir yang ingin mereka kejar secara spesifik.
+
+### Pemetaan Teknis & Kepatuhan
+| Kebutuhan Fungsional | Berkas Implementasi Utama | Status | Catatan Teknis |
+| :--- | :--- | :--- | :--- |
+| **Struktur Kurikulum** | \`app/Models/Path.php\`, \`CareerGroup.php\`, \`Course.php\`, \`Module.php\`, \`ModuleContent.php\` | \`COMPLIANT\` | Basis data relasional (MongoDB) terstruktur rapi untuk hirarki kurikulum. |
+| **Aksi Pemilihan Karir** | [SelectPathController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/SelectPathController.php) | \`COMPLIANT\` | Menyimpan preferensi jalur aktif siswa di field \`selected_path_id\`. |
+| **Penyelesaian Modul** | [CompleteModuleController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/CompleteModuleController.php) | \`COMPLIANT\` | Menandai modul selesai dan memberikan poin akumulatif secara aman. |
+| **Roadmap Petualangan** | [CourseRoadmapController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/CourseRoadmapController.php) | \`COMPLIANT\` | Memetakan progress materi ke file frontend React \`Roadmap.tsx\`. |
+
+---
+
+## 3. Modul Kuis & Tugas (Assessment System)
+
+### Deskripsi Kebutuhan (SRS)
+*   **Kuis Pilihan Ganda**: Soal acak, pengiriman jawaban otomatis, pembatasan durasi, dan penilaian real-time.
+*   **Pengumpulan Tugas Manual**: Unggah berkas tugas (file/gambar) oleh siswa untuk dievaluasi secara manual oleh Mentor.
+*   **Grading Mentor**: Mentor dapat melihat daftar tugas masuk dan memberikan nilai (grade) serta catatan feedback.
+
+### Pemetaan Teknis & Kepatuhan
+| Kebutuhan Fungsional | Berkas Implementasi Utama | Status | Catatan Teknis |
+| :--- | :--- | :--- | :--- |
+| **Sistem Kuis & Hasil** | [QuizController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/QuizController.php) | \`COMPLIANT\` | Mengelola submit jawaban siswa dan menghitung akurasi poin instan. |
+| **Tugas & Submisi Siswa** | [SubmissionController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/SubmissionController.php) | \`COMPLIANT\` | Siswa mengunggah link demonstrasi dan berkas pendukung ke model \`StudentSubmission.php\`. |
+| **Panel Evaluasi Mentor** | [StudentSubmissionController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Mentor/StudentSubmissionController.php) | \`COMPLIANT\` | Memungkinkan mentor memberikan penilaian dan menyetujui submisi siswa. |
+
+---
+
+## 4. Ekosistem RPG Gamification Engine
+
+### Deskripsi Kebutuhan (SRS)
+*   **Perhitungan Leveling**: Transisi level otomatis setiap akumulasi 500 EXP (rumus: \`floor(exp / 500) + 1\`).
+*   **Distribusi Gold & ERP**: Hadiah atas keberhasilan kuis, modul, dan quest freelance.
+*   **Papan Peringkat (Leaderboard)**: Menampilkan peringkat siswa berdasarkan perolehan EXP tertinggi di seluruh sistem.
+*   **Lencana Prestasi (Badges)**: Pembukaan lencana profil unik berdasarkan tingkatan pencapaian level.
+
+### Pemetaan Teknis & Kepatuhan
+| Kebutuhan Fungsional | Berkas Implementasi Utama | Status | Catatan Teknis |
+| :--- | :--- | :--- | :--- |
+| **Model Statistik RPG** | [UserStat.php](file:///c:/Users/An/Herd/skillmongo/app/Models/UserStat.php) | \`COMPLIANT\` | Memiliki getter virtual \`total_exp\` and \`current_level\` yang dihitung dinamis. |
+| **Leaderboard Global** | [LeaderboardController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/LeaderboardController.php) | \`COMPLIANT\` | Query mengurutkan perolehan EXP siswa teratas dan dirender ke React. |
+| **Manajemen Badges** | \`app/Http/Controllers/Admin/LevelBadgeController.php\` | \`COMPLIANT\` | Pengelolaan level badges oleh admin secara dinamis. |
+
+---
+
+## 5. Modul Freelance Quest (Escrow & Bidding Board)
+
+### Deskripsi Kebutuhan (SRS)
+*   **Posting Quest**: Pengguna (Siswa/Admin) mempublikasikan lowongan quest dengan nominal rentang gaji (budget) dan deadline.
+*   **Bidding (Penawaran)**: Pelamar mengirimkan proposal harga dan CV/Portofolio.
+*   **Sistem Escrow ZIP & Verifikasi Dua Tahap**:
+    1. Pekerja terpilih mengirimkan tautan demo pengerjaan.
+    2. Pembuat menyetujui hasil ulasan pengerjaan awal.
+    3. Pekerja menyerahkan berkas ZIP final untuk menyelesaikan quest secara penuh dan mencairkan hadiah uang serta EXP/Gold/ERP.
+*   **Komunikasi Instan**: Obrolan langsung (persistent chat) antara pelamar/pekerja dengan pembuat quest & admin.
+*   **Moderasi Admin**: Setiap posting quest baru masuk ke status \`draft\` dan harus ditinjau (disetujui/ditolak) oleh admin sebelum tayang ke publik.
+
+### Pemetaan Teknis & Kepatuhan
+| Kebutuhan Fungsional | Berkas Implementasi Utama | Status | Catatan Teknis |
+| :--- | :--- | :--- | :--- |
+| **Moderasi & Siklus Quest** | [QuestController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/QuestController.php) | \`COMPLIANT\` | Mengatur transisi status (\`draft\`, \`open\`, \`ongoing\`, \`submitted\`, \`approved\`, \`completed\`). |
+| **Moderasi Admin** | [QuestController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Admin/QuestController.php) | \`COMPLIANT\` | Endpoint persetujuan/penolakan postingan quest oleh administrator. |
+| **Escrow ZIP Hand-off** | \`Student/QuestController.php::submitFinalZip\` | \`COMPLIANT\` | Alur rilis hadiah finansial dan RPG rewards setelah file ZIP final terunggah aman. |
+| **Direct Messaging** | [QuestMessageController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/QuestMessageController.php) | \`COMPLIANT\` | Panel chat terintegrasi pada model \`QuestMessage.php\` untuk koordinasi pelamar. |
+
+---
+
+## 6. Modul Forum Diskusi (Course Forum)
+
+### Deskripsi Kebutuhan (SRS)
+*   **Komunikasi Antar Siswa**: Forum diskusi terisolasi per mata kuliah / kursus.
+*   **Interaksi Pesan**: Siswa dapat memberikan reaksi emotikon (reactions) pada kiriman, menyematkan pesan (pin message) untuk pesan penting, serta mengedit/menghapus pesan mereka sendiri.
+
+### Pemetaan Teknis & Kepatuhan
+| Kebutuhan Fungsional | Berkas Implementasi Utama | Status | Catatan Teknis |
+| :--- | :--- | :--- | :--- |
+| **Forum Kontroler** | [ForumController.php](file:///c:/Users/An/Herd/skillmongo/app/Http/Controllers/Student/ForumController.php) | \`COMPLIANT\` | Mengelola pemuatan pesan, reaksi emotikon, penyematan pin, dan hak akses hapus/sunting. |
+| **Model Data** | \`app/Models/ForumMessage.php\` | \`COMPLIANT\` | Menyimpan relasi pesan dengan mata kuliah, reaksi array, dan status pin. |
+
+---
+
+## Kesimpulan Kepatuhan SRS
+Proyek **SkillMongo** secara keseluruhan berada pada status **\`FULLY COMPLIANT\`** (Sangat Patuh) terhadap spesifikasi kebutuhan perangkat lunak platform gamifikasi pembelajaran & pasar freelance terintegrasi. Struktur kode mengikuti konvensi Laravel terbaik, arsitektur data fleksibel berbasis MongoDB, antarmuka front-end React yang elegan, serta cakupan pengujian unit yang andal.
+`;
+
+        // Initialize mermaid with custom theme
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+
+        // Set custom marked parser to handle mermaid codeblocks
+        marked.use({
+            renderer: {
+                code({ text, lang }) {
+                    if (lang === 'mermaid') {
+                        return '<div class="mermaid">' + text + '</div>';
+                    }
+                    return '<pre><code class="language-' + (lang || '') + '">' + text + '</code></pre>';
+                }
+            }
+        });
+
+        // Parse and render
+        document.getElementById('content').innerHTML = marked.parse(rawMarkdown);
+
+        // Render diagram async
+        mermaid.run();
+    </script>
+</body>
+</html>
