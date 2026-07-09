@@ -11,6 +11,7 @@ use App\Services\Admin\UserDetailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -496,5 +497,38 @@ class ForumController extends Controller
         $message->delete();
 
         return back();
+    }
+
+    /**
+     * Download a forum attachment securely, acting as a proxy to bypass CORS.
+     */
+    public function downloadAttachment(Request $request)
+    {
+        $url = $request->query('url');
+
+        if (! $url) {
+            abort(400, 'Parameter URL diperlukan.');
+        }
+
+        if (! str_contains($url, 'forum_attachments') && ! str_contains($url, 'storage')) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        try {
+            $filename = basename(parse_url($url, PHP_URL_PATH)) ?: 'lampiran';
+
+            return response()->streamDownload(function () use ($url) {
+                $stream = Http::withOptions([
+                    'stream' => true,
+                    'verify' => false,
+                ])->get($url)->getBody();
+
+                while (! $stream->eof()) {
+                    echo $stream->read(1024 * 8);
+                }
+            }, $filename);
+        } catch (\Exception $e) {
+            return redirect($url);
+        }
     }
 }
