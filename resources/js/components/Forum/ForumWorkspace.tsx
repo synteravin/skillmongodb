@@ -682,7 +682,7 @@ export default function ForumWorkspace({
                 {selectedCourse ? (
                     <>
                         {/* Header Chat */}
-                        <div className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-[#3B28F6]/20 bg-[#05060f] px-6 py-4.5">
+                        <div className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-[#3B28F6]/20 bg-[#05060f] px-4 py-3 md:px-6 md:py-4.5">
                             <div className="flex items-center gap-3">
                                 <button
                                     type="button"
@@ -694,7 +694,7 @@ export default function ForumWorkspace({
                                 >
                                     <ArrowLeft className="h-4 w-4" />
                                 </button>
-                                <div className="h-10 w-10 overflow-hidden rounded-xl border border-[#3B28F6]/40 bg-slate-900">
+                                <div className="h-9 w-9 md:h-10 md:w-10 overflow-hidden rounded-xl border border-[#3B28F6]/40 bg-slate-900">
                                     {selectedCourse.thumbnail ? (
                                         <img
                                             src={selectedCourse.thumbnail}
@@ -741,7 +741,7 @@ export default function ForumWorkspace({
                         </div>
 
                         {/* Feed Chat Area */}
-                        <div className="flex-1 space-y-4 overflow-y-auto bg-gradient-to-b from-[#020202] to-[#05060f] p-6">
+                        <div className="flex-1 space-y-4 overflow-y-auto bg-gradient-to-b from-[#020202] to-[#05060f] p-3 md:p-6">
                             {localMessages.length === 0 ? (
                                 <div className="flex h-full flex-col items-center justify-center text-slate-500">
                                     <p className="text-sm">
@@ -764,7 +764,7 @@ export default function ForumWorkspace({
                                                 messageRefs.current[msg.id] =
                                                     el;
                                             }}
-                                            className={`group relative flex max-w-[90%] gap-3 rounded-2xl transition lg:max-w-[70%] ${isSelf ? 'ml-auto flex-row-reverse' : 'mr-auto'} ${Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''}`}
+                                            className={`group relative flex max-w-[92%] sm:max-w-[85%] md:max-w-[70%] lg:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition ${isSelf ? 'ml-auto flex-row-reverse' : 'mr-auto'} ${Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''}`}
                                         >
                                             {/* Avatar */}
                                             {!isSelf && (
@@ -1069,7 +1069,7 @@ export default function ForumWorkspace({
                         {/* Input Row Container */}
                         <form
                             onSubmit={handleSendMessage}
-                            className="relative flex shrink-0 flex-col gap-3.5 border-t border-[#3B28F6]/20 bg-[#05060f] px-6 py-4"
+                            className="relative flex shrink-0 flex-col gap-2 md:gap-3.5 border-t border-[#3B28F6]/20 bg-[#05060f] px-3 py-3 md:px-6 md:py-4"
                         >
                             {/* Quoted Message Preview */}
                             {replyingTo && (
@@ -1144,7 +1144,7 @@ export default function ForumWorkspace({
                             )}
 
                             {/* Input Fields Row */}
-                            <div className="flex w-full items-center gap-3">
+                             <div className="flex w-full items-center gap-2 md:gap-3">
                                 {/* Upload Button */}
                                 {!editingMessage && (
                                     <>
@@ -1214,7 +1214,7 @@ export default function ForumWorkspace({
                                         setData('message', e.target.value)
                                     }
                                     disabled={processing}
-                                    className="flex-1 rounded-xl border border-[#3B28F6]/30 bg-black/80 px-4 py-2.5 text-xs text-white placeholder-slate-500 transition outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15] disabled:opacity-50"
+                                    className="flex-1 rounded-xl border border-[#3B28F6]/30 bg-black/80 px-3 py-2 md:px-4 md:py-2.5 text-xs text-white placeholder-slate-500 transition outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15] disabled:opacity-50"
                                 />
 
                                 {/* Send Button */}
@@ -1227,7 +1227,7 @@ export default function ForumWorkspace({
                                     }
                                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-[#3B28F6] to-[#4F46E5] text-white shadow-md transition duration-300 hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-30"
                                 >
-                                    <Send className="h-4 w-4" />
+                                    
                                 </button>
                             </div>
                         </form>

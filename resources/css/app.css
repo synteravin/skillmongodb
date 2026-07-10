@@ -187,9 +187,27 @@ html {
     transform: translateY(-4px) scale(1.015);
   }
 }
-
 .breathe {
   animation: breathe 3s ease-in-out infinite;
+}
+
+/* Thin Scrollbar for Textarea Input */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 
