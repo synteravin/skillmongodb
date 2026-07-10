@@ -31,7 +31,7 @@ export default function ChatHeader({
                             setShowChatMobile(false);
                             router.visit(basePath);
                         }}
-                        className="mr-1 rounded-xl border border-[#facc15]/80 bg-black/60 p-2 text-[#facc15] transition duration-300 hover:border-[#facc15] hover:bg-black/80 active:scale-95 lg:hidden"
+                        className="mr-1 rounded-xl border border-[#facc15]/80 bg-black/60 p-2 text-[#facc15] transition duration-300 hover:border-[#facc15] hover:bg-black/80 active:scale-95 md:hidden"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </button>

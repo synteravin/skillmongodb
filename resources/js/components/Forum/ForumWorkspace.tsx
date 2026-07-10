@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import ConfirmModal from '@/components/ConfirmModal';
 import { useAppearance } from '@/hooks/use-appearance';
 
@@ -226,7 +226,7 @@ export default function ForumWorkspace({
                             message: '',
                         }));
                     },
-                    onError: (errors) => {
+                    onError: (errors: any) => {
                         console.error('Gagal mengedit pesan:', errors);
                     },
                 }
@@ -387,7 +387,7 @@ export default function ForumWorkspace({
                 setActiveMenuMessageId(null);
                 setMessageIdToDelete(null);
             },
-            onError: (errors) => {
+            onError: (errors: any) => {
                 console.error('Gagal menghapus pesan:', errors);
             },
         });
@@ -447,8 +447,10 @@ export default function ForumWorkspace({
 
             {/* Area Chat Utama */}
             <div
+
                 className={`flex flex-1 flex-col bg-[#121212] animate-fade-in min-w-0 ${
                     showChatMobile ? 'flex' : 'hidden lg:flex'
+
                 }`}
             >
                 {selectedCourse ? (
