@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Quest\FileDisputeRequest;
 use App\Http\Requests\Quest\StoreQuestBidRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
-use App\Models\UserStat;
 use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -238,6 +238,7 @@ class QuestController extends Controller
             'status' => 'submitted',
         ];
 
+        $submissionFile = null;
         if ($request->hasFile('submission_file')) {
             // Delete old ZIP if exists
             if ($quest->submission_file && isset($quest->submission_file['path'])) {
@@ -249,12 +250,28 @@ class QuestController extends Controller
             $path = $file->store('quests/deliverables', 's3');
             $size = $file->getSize();
 
-            $updateData['submission_file'] = [
+            $submissionFile = [
                 'name' => $originalName,
                 'path' => $path,
                 'size' => $size,
             ];
+            $updateData['submission_file'] = $submissionFile;
+        } else {
+            // Retain old submission file if no new file is uploaded
+            $submissionFile = $quest->submission_file;
         }
+
+        $history = $quest->submission_history ?? [];
+        $nextVersion = count($history) + 1;
+        $history[] = [
+            'version' => $nextVersion,
+            'submitted_at' => now()->toIso8601String(),
+            'submission_link' => $request->submission_link,
+            'submission_note' => $request->submission_note,
+            'submission_file' => $submissionFile,
+        ];
+
+        $updateData['submission_history'] = $history;
 
         $quest->update($updateData);
 
@@ -303,35 +320,7 @@ class QuestController extends Controller
 
         // Award gamification rewards to worker (Student) only if completed
         if ($hasFile && $quest->worker_id) {
-            $progress = UserStat::firstOrCreate([
-                'user_id' => $quest->worker_id,
-                'course_id' => 'quest_rewards',
-            ], [
-                'completed_modules' => [],
-                'completed_paths' => [],
-                'exp' => 0,
-                'gold' => 0,
-                'erp' => 0,
-                'level' => 1,
-                'path_stats' => [],
-            ]);
-
-            $pathStats = $progress->path_stats ?? [];
-            if (is_string($pathStats)) {
-                $pathStats = json_decode($pathStats, true) ?: [];
-            } else {
-                $pathStats = (array) $pathStats;
-            }
-
-            $questKey = (string) $quest->_id;
-            $pathStats[$questKey] = [
-                'exp' => 250,
-                'gold' => 150,
-                'quiz_score' => 100,
-            ];
-
-            $progress->path_stats = $pathStats;
-            $progress->save();
+            $this->questService->awardQuestRewards($quest, $quest->worker_id);
         }
 
         $msg = $hasFile
@@ -420,46 +409,48 @@ class QuestController extends Controller
             'size' => $size,
         ];
 
+        $history = $quest->submission_history ?? [];
+        $nextVersion = count($history) + 1;
+        $history[] = [
+            'version' => $nextVersion,
+            'submitted_at' => now()->toIso8601String(),
+            'submission_link' => $quest->submission_link,
+            'submission_note' => 'Final ZIP Deliverable Uploaded',
+            'submission_file' => $submissionFile,
+        ];
+
         $quest->update([
             'submission_file' => $submissionFile,
             'completed_at' => now(),
             'status' => 'completed',
+            'submission_history' => $history,
         ]);
 
         // Award gamification rewards to worker (Student)
         if ($quest->worker_id) {
-            $progress = UserStat::firstOrCreate([
-                'user_id' => $quest->worker_id,
-                'course_id' => 'quest_rewards',
-            ], [
-                'completed_modules' => [],
-                'completed_paths' => [],
-                'exp' => 0,
-                'gold' => 0,
-                'erp' => 0,
-                'level' => 1,
-                'path_stats' => [],
-            ]);
-
-            $pathStats = $progress->path_stats ?? [];
-            if (is_string($pathStats)) {
-                $pathStats = json_decode($pathStats, true) ?: [];
-            } else {
-                $pathStats = (array) $pathStats;
-            }
-
-            $questKey = (string) $quest->_id;
-            $pathStats[$questKey] = [
-                'exp' => 250,
-                'gold' => 150,
-                'quiz_score' => 100,
-            ];
-
-            $progress->path_stats = $pathStats;
-            $progress->save();
+            $this->questService->awardQuestRewards($quest, $quest->worker_id);
         }
 
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Berkas final berhasil diunggah! Quest selesai dan hadiah telah ditambahkan ke profil Anda.');
+    }
+
+    /**
+     * File a dispute.
+     */
+    public function fileDispute(FileDisputeRequest $request, string $questId)
+    {
+        $quest = Quest::findOrFail($questId);
+        $user = $request->user();
+
+        // Check authorization (must be creator or worker)
+        if ($quest->worker_id !== $user->_id && $quest->creator_id !== $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Anda tidak memiliki hak untuk mengajukan dispute pada quest ini.');
+        }
+
+        $this->questService->fileDispute($quest, $user, $request->reason);
+
+        return redirect()->route('student.quests.show', $quest->_id)
+            ->with('success', 'Banding (dispute) berhasil diajukan! Menunggu peninjauan arbitrase oleh Admin.');
     }
 }

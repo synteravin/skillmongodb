@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Quest\ResolveArbitrationRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
 use App\Models\Quest;
 use App\Models\QuestBid;
+use App\Models\QuestFlag;
 use App\Models\QuestMessage;
-use App\Models\UserStat;
+use App\Models\QuestTransaction;
 use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -116,6 +118,37 @@ class QuestController extends Controller
             ];
         }
 
+        $resolvedSubmissionHistory = array_map(function ($sub) use ($disk) {
+            return [
+                'version' => $sub['version'] ?? 1,
+                'submitted_at' => $sub['submitted_at'] ?? null,
+                'submission_link' => $sub['submission_link'] ?? null,
+                'submission_note' => $sub['submission_note'] ?? null,
+                'submission_file' => isset($sub['submission_file']['path']) ? [
+                    'name' => $sub['submission_file']['name'] ?? 'deliverable.zip',
+                    'url' => $disk->url($sub['submission_file']['path']),
+                    'size' => $sub['submission_file']['size'] ?? 0,
+                ] : null,
+            ];
+        }, $quest->submission_history ?? []);
+
+        $transactions = QuestTransaction::with('user')
+            ->where('quest_id', $id)
+            ->latest()
+            ->get()
+            ->map(function ($t) {
+                return [
+                    '_id' => (string) $t->_id,
+                    'amount' => $t->amount,
+                    'type' => $t->type,
+                    'description' => $t->description,
+                    'created_at' => $t->created_at->toISOString(),
+                    'user' => $t->user ? [
+                        'name' => $t->user->name,
+                    ] : null,
+                ];
+            });
+
         return Inertia::render('Admin/Quests/Show', [
             'quest' => [
                 '_id' => (string) $quest->_id,
@@ -144,8 +177,13 @@ class QuestController extends Controller
                 'images' => $resolvedImages,
                 'files' => $resolvedFiles,
                 'submission_file' => $resolvedSubmissionFile,
+                'tier' => $quest->tier ?? 'C',
+                'custom_rewards' => $quest->custom_rewards,
+                'dispute' => $quest->dispute,
+                'submission_history' => $resolvedSubmissionHistory,
             ],
             'bids' => $bids,
+            'transactions' => $transactions,
         ]);
     }
 
@@ -209,7 +247,7 @@ class QuestController extends Controller
             ->with('success', 'Pekerja berhasil dipilih oleh Admin!');
     }
 
-    public function approveWork(Request $request, string $questId)
+    public function approveWork(Request $request, string $questId, QuestService $questService)
     {
         $quest = Quest::findOrFail($questId);
 
@@ -244,35 +282,7 @@ class QuestController extends Controller
         $quest->update($updateData);
 
         if ($hasFile && $quest->worker_id) {
-            $progress = UserStat::firstOrCreate([
-                'user_id' => $quest->worker_id,
-                'course_id' => 'quest_rewards',
-            ], [
-                'completed_modules' => [],
-                'completed_paths' => [],
-                'exp' => 0,
-                'gold' => 0,
-                'erp' => 0,
-                'level' => 1,
-                'path_stats' => [],
-            ]);
-
-            $pathStats = $progress->path_stats ?? [];
-            if (is_string($pathStats)) {
-                $pathStats = json_decode($pathStats, true) ?: [];
-            } else {
-                $pathStats = (array) $pathStats;
-            }
-
-            $questKey = (string) $quest->_id;
-            $pathStats[$questKey] = [
-                'exp' => 250,
-                'gold' => 150,
-                'quiz_score' => 100,
-            ];
-
-            $progress->path_stats = $pathStats;
-            $progress->save();
+            $questService->awardQuestRewards($quest, $quest->worker_id);
         }
 
         $msg = $hasFile
@@ -360,5 +370,150 @@ class QuestController extends Controller
 
         return redirect()->route('admin.quests.show', $quest->_id)
             ->with('warning', 'Quest ditolak dan catatan penolakan telah dikirimkan ke pembuat.');
+    }
+
+    /**
+     * Resolve arbitration for disputed quests.
+     */
+    public function arbitrate(ResolveArbitrationRequest $request, string $questId, QuestService $questService)
+    {
+        $quest = Quest::findOrFail($questId);
+
+        $ruling = $request->ruling;
+        if ($ruling === 'refund') {
+            $ruling = 'refund_creator';
+        } elseif ($ruling === 'pay_worker') {
+            $ruling = 'release_payout';
+        }
+
+        $questService->resolveArbitration($quest, $ruling, $request->note, $request->split_percentage);
+
+        return redirect()->route('admin.quests.show', $quest->_id)
+            ->with('success', 'Arbitrase berhasil diselesaikan oleh Admin!');
+    }
+
+    /**
+     * Force cancel a quest and refund escrow.
+     */
+    public function forceCancel(Request $request, string $questId, QuestService $questService)
+    {
+        $quest = Quest::findOrFail($questId);
+
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        if ($acceptedBid && in_array($quest->status, ['ongoing', 'submitted', 'disputed', 'approved'])) {
+            $bidAmount = (int) $acceptedBid->bid_amount;
+            $questService->recordTransaction($quest->_id, $quest->creator_id, $bidAmount, 'refund_escrow', "Escrow refund due to admin force cancellation of quest: {$quest->title}");
+        }
+
+        $quest->update([
+            'status' => 'cancelled',
+            'completed_at' => now(),
+        ]);
+
+        return redirect()->route('admin.quests.show', $quest->_id)
+            ->with('success', 'Quest berhasil dibatalkan secara paksa oleh Admin!');
+    }
+
+    /**
+     * Extend quest deadline.
+     */
+    public function extendDeadline(Request $request, string $questId)
+    {
+        $quest = Quest::findOrFail($questId);
+
+        $request->validate([
+            'deadline' => ['required', 'date', 'after:now'],
+        ], [
+            'deadline.required' => 'Tanggal deadline wajib diisi.',
+            'deadline.after' => 'Tanggal deadline harus berupa tanggal di masa depan.',
+        ]);
+
+        $quest->update([
+            'deadline' => now()->parse($request->deadline),
+        ]);
+
+        return redirect()->route('admin.quests.show', $quest->_id)
+            ->with('success', 'Tenggat waktu pengerjaan berhasil diperpanjang!');
+    }
+
+    /**
+     * Reopen bidding for a quest.
+     */
+    public function reopenBidding(Request $request, string $questId, QuestService $questService)
+    {
+        $quest = Quest::findOrFail($questId);
+
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        if ($acceptedBid) {
+            $bidAmount = (int) $acceptedBid->bid_amount;
+            $questService->recordTransaction($quest->_id, $quest->creator_id, $bidAmount, 'refund_escrow', "Escrow refund due to admin re-opening bidding for quest: {$quest->title}");
+            $acceptedBid->update(['status' => 'rejected']);
+        }
+
+        $quest->update([
+            'status' => 'open',
+            'worker_id' => null,
+            'submission_link' => null,
+            'submission_note' => null,
+            'submitted_at' => null,
+            'completed_at' => null,
+            'revision_note' => null,
+            'submission_file' => null,
+        ]);
+
+        return redirect()->route('admin.quests.show', $quest->_id)
+            ->with('success', 'Bidding quest berhasil dibuka kembali oleh Admin!');
+    }
+
+    /**
+     * View moderation flag queue.
+     */
+    public function flagQueue(Request $request)
+    {
+        $flags = QuestFlag::with(['reporter', 'reportedUser', 'quest'])->latest()->get()->map(function ($flag) {
+            return [
+                '_id' => (string) $flag->_id,
+                'reason' => $flag->reason,
+                'details' => $flag->details,
+                'status' => $flag->status,
+                'action_taken' => $flag->action_taken,
+                'created_at' => $flag->created_at->toISOString(),
+                'reporter' => $flag->reporter ? [
+                    'name' => $flag->reporter->name,
+                    'email' => $flag->reporter->email,
+                ] : null,
+                'reported_user' => $flag->reportedUser ? [
+                    'name' => $flag->reportedUser->name,
+                ] : null,
+                'quest' => $flag->quest ? [
+                    '_id' => (string) $flag->quest->_id,
+                    'title' => $flag->quest->title,
+                ] : null,
+            ];
+        });
+
+        return Inertia::render('Admin/Quests/Flags', [
+            'flags' => $flags,
+        ]);
+    }
+
+    /**
+     * Resolve flag in queue.
+     */
+    public function resolveFlag(Request $request, string $flagId)
+    {
+        $flag = QuestFlag::findOrFail($flagId);
+
+        $request->validate([
+            'action_taken' => ['required', 'string', 'max:255'],
+        ]);
+
+        $flag->update([
+            'status' => 'resolved',
+            'action_taken' => $request->action_taken,
+        ]);
+
+        return redirect()->route('admin.quests.flags')
+            ->with('success', 'Laporan moderasi berhasil diselesaikan!');
     }
 }

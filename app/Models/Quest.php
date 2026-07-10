@@ -31,6 +31,10 @@ class Quest extends Model
         'submission_file',
         'rejection_note',
         'revisions',
+        'tier',
+        'custom_rewards',
+        'dispute',
+        'submission_history',
     ];
 
     protected function casts(): array
@@ -50,6 +54,10 @@ class Quest extends Model
             'submission_file' => 'array',
             'rejection_note' => 'string',
             'revisions' => 'array',
+            'tier' => 'string',
+            'custom_rewards' => 'array',
+            'dispute' => 'array',
+            'submission_history' => 'array',
         ];
     }
 

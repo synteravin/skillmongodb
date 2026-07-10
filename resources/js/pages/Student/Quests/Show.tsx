@@ -41,6 +41,25 @@ interface Quest {
     images?: Array<{ name: string; url: string }>;
     files?: Array<{ name: string; url: string; size: number }>;
     submission_file?: { name: string; url: string; size: number } | null;
+    tier?: string;
+    custom_rewards?: { exp?: number; gold?: number } | null;
+    dispute?: {
+        status?: string;
+        reason?: string;
+        ruled_at?: string;
+        ruling?: string;
+        note?: string;
+        split_percentage?: number;
+        filer_id?: string;
+        filer_name?: string;
+    } | null;
+    submission_history?: Array<{
+        version: number;
+        submitted_at: string;
+        submission_link?: string | null;
+        submission_note?: string | null;
+        submission_file?: { name: string; url: string; size: number } | null;
+    }>;
 }
 
 const RevisionHistory = ({ quest, viewType }: { quest: Quest; viewType: "creator_ongoing" | "creator_submitted" | "worker_ongoing" | "worker_submitted" | "admin_submitted" | "admin_ongoing" }) => {
@@ -267,6 +286,22 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             onSuccess: () => {
                 setShowRejectForm(false);
                 reviewForm.reset();
+            },
+        });
+    };
+
+    const [showDisputeModal, setShowDisputeModal] = useState(false);
+
+    const disputeForm = useForm({
+        reason: "",
+    });
+
+    const handleDisputeSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        disputeForm.post(`/student/quests/${quest._id}/dispute`, {
+            onSuccess: () => {
+                setShowDisputeModal(false);
+                disputeForm.reset();
             },
         });
     };
@@ -653,6 +688,33 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         {/* TAB 2: PROJECT MANAGEMENT */}
                         {activeTab === 'project' && (
                             <div className="space-y-6">
+                                {/* DISPUTE STATUS ALERT */}
+                                {quest.dispute && (
+                                    <div className={`p-4 rounded-xl border font-['Oxanium'] flex gap-3 ${
+                                        quest.status === 'disputed'
+                                            ? 'bg-red-500/10 border-red-500/20 text-red-650 dark:text-red-400'
+                                            : 'bg-green-500/10 border-green-500/20 text-green-600 dark:text-green-400'
+                                    }`}>
+                                        <ShieldAlert className="w-5 h-5 shrink-0 text-red-500" />
+                                        <div className="space-y-1 text-xs">
+                                            <span className="block font-bold uppercase font-['Orbitron'] tracking-wider">
+                                                {quest.status === 'disputed' ? 'Quest Ditangguhkan (Dispute Diajukan)' : 'Arbitrase Sengketa Selesai'}
+                                            </span>
+                                            <p className="leading-relaxed text-slate-500 dark:text-slate-350">
+                                                {quest.status === 'disputed'
+                                                    ? `Dispute diajukan oleh ${quest.dispute.filer_name} dengan alasan: "${quest.dispute.reason}". Dana escrow ditangguhkan sementara menunggu keputusan arbitrase admin.`
+                                                    : `Perselisihan telah diselesaikan oleh Admin dengan putusan: ${
+                                                        quest.dispute.ruling === 'refund'
+                                                            ? 'Pengembalian dana (refund) penuh kepada pembuat quest.'
+                                                            : quest.dispute.ruling === 'pay_worker'
+                                                            ? 'Pembayaran penuh diserahkan kepada pekerja.'
+                                                            : `Bagi hasil (${quest.dispute.split_percentage}% untuk pekerja).`
+                                                    } Catatan: "${quest.dispute.note}".`
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
                                 
                                 {isCreator ? (
                                     /* 1. CREATOR WORKFLOW PANEL */
@@ -1531,6 +1593,72 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         )}
                                     </div>
                                 )}
+
+                                {/* VERSION CONTROL HISTORY */}
+                                {quest.submission_history && quest.submission_history.length > 0 && (
+                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-4 font-['Oxanium']">
+                                        <h3 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider border-b border-slate-100 dark:border-slate-800 pb-3">
+                                            Riwayat Penyerahan Berkas (Version Control)
+                                        </h3>
+                                        <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                                            {quest.submission_history.map((historyItem) => (
+                                                <div key={historyItem.version} className="p-3 rounded-xl border border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-black/10 flex items-center justify-between gap-4">
+                                                    <div className="space-y-1 min-w-0">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded font-['Orbitron']">
+                                                                v{historyItem.version}
+                                                            </span>
+                                                            <span className="text-[10px] text-slate-400">
+                                                                {historyItem.submitted_at ? formatDate(historyItem.submitted_at) : ''}
+                                                            </span>
+                                                        </div>
+                                                        {historyItem.submission_note && (
+                                                            <p className="text-xs text-slate-650 dark:text-slate-350 truncate">
+                                                                {historyItem.submission_note}
+                                                            </p>
+                                                        )}
+                                                        {historyItem.submission_link && (
+                                                            <a href={historyItem.submission_link} target="_blank" rel="noopener noreferrer" className="text-[11px] text-indigo-500 hover:underline truncate block">
+                                                                {historyItem.submission_link}
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                    {historyItem.submission_file && (
+                                                        <a
+                                                            href={historyItem.submission_file.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center justify-center p-2 text-indigo-500 hover:text-indigo-700 hover:bg-indigo-500/10 rounded-lg transition-colors cursor-pointer shrink-0"
+                                                            title={`Unduh versi ${historyItem.version}`}
+                                                        >
+                                                            <Download className="w-4 h-4" />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* DISPUTE SYSTEM CARD */}
+                                {(isCreator || isWorker) && ['ongoing', 'submitted', 'approved'].includes(quest.status) && (
+                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-4 font-['Oxanium']">
+                                        <h3 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                                            <ShieldAlert size={15} className="text-amber-505 animate-pulse" />
+                                            Pusat Bantuan & Penyelesaian Sengketa
+                                        </h3>
+                                        <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed font-medium">
+                                            Apakah ada kendala besar, ketidaksesuaian deliverables, atau wanprestasi dari pihak lawan? Anda dapat mengajukan banding agar Admin masuk sebagai mediator (arbitrase).
+                                        </p>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowDisputeModal(true)}
+                                            className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-amber-600 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all cursor-pointer text-center"
+                                        >
+                                            Ajukan Banding (Dispute)
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -1858,6 +1986,60 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                 }}
                 onClose={() => setAcceptBidId(null)}
             />
+            {/* Dispute Modal */}
+            {showDisputeModal && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div
+                        onClick={() => setShowDisputeModal(false)}
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+                    />
+                    <div className="relative max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl z-10 font-['Oxanium']">
+                        <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-amber-400 tracking-wider mb-2 flex items-center gap-2">
+                            <ShieldAlert className="text-amber-500" />
+                            Ajukan Dispute / Banding
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            Jelaskan kendala atau dasar perselisihan yang Anda alami. Laporan ini akan dipelajari oleh Admin untuk dilakukan arbitrase.
+                        </p>
+
+                        <form onSubmit={handleDisputeSubmit} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">
+                                    Alasan & Kronologi Banding <span className="text-red-500">*</span>
+                                </label>
+                                <textarea
+                                    required
+                                    placeholder="Tuliskan detail kronologi dan alasan mengapa Anda mengajukan dispute..."
+                                    rows={4}
+                                    value={disputeForm.data.reason}
+                                    onChange={(e) => disputeForm.setData('reason', e.target.value)}
+                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-amber-500 text-xs text-slate-800 dark:text-white"
+                                />
+                                {disputeForm.errors.reason && (
+                                    <p className="text-xs text-red-500 font-semibold">{disputeForm.errors.reason}</p>
+                                )}
+                            </div>
+
+                            <div className="flex gap-2 justify-end pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowDisputeModal(false)}
+                                    className="px-4 py-2 rounded-xl text-xs font-semibold uppercase bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={disputeForm.processing}
+                                    className="px-4 py-2 rounded-xl text-xs font-semibold uppercase bg-amber-600 hover:bg-amber-700 text-white transition-all cursor-pointer disabled:opacity-50 font-['Orbitron']"
+                                >
+                                    {disputeForm.processing ? 'Mengirim...' : 'Kirim Laporan'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
