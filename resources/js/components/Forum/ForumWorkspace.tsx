@@ -1,128 +1,80 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Head, Link, router, useForm } from '@inertiajs/react';
-import {
-    ArrowLeft,
-    Send,
-    Smile,
-    Search,
-    User as UserIcon,
-    MoreVertical,
-    Pin,
-    CornerUpLeft,
-    X,
-    Heart,
-    Plus,
-    Pencil,
-    Trash2,
-} from 'lucide-react';
+import { router, useForm } from '@inertiajs/react';
+import { ArrowLeft, Pin, User as UserIcon } from 'lucide-react';
 import ConfirmModal from '@/components/ConfirmModal';
+import { useAppearance } from '@/hooks/use-appearance';
 
-interface Sender {
-    id: string;
-    name: string;
-    avatar: string | null;
-    role: string;
-}
+// Import Types
+import {
+    Sender,
+    Message,
+    PinnedMessage,
+    CourseGroup,
+    SelectedCourse,
+    User,
+    SelectedProfile,
+} from './types';
 
-interface Message {
-    id: string;
-    message: string;
-    attachments: string[];
-    created_at: string;
-    is_pinned: boolean;
-    parent: {
-        id: string;
-        message: string;
-        sender_name: string;
-    } | null;
-    reactions: Array<{
-        user_id: string;
-        user_name: string;
-        emoji: string;
-    }>;
-    sender: Sender;
-}
+// Import Subcomponents
+import ForumSidebar from './ForumSidebar';
+import MessageBubble from './MessageBubble';
+import MessageInput from './MessageInput';
+import UserProfileModal from './UserProfileModal';
+import ImagePreviewModal from './ImagePreviewModal';
 
-interface CourseList {
-    id: string;
-    title: string;
-    slug: string;
-    thumbnail: string | null;
-    last_message: {
-        sender_name: string;
-        message: string;
-        created_at: string;
-    } | null;
-}
-
-interface SelectedCourse {
-    id: string;
-    title: string;
-    slug: string;
-    thumbnail: string | null;
-}
-
-interface Props {
-    courses: CourseList[];
+interface ForumWorkspaceProps {
+    courses: CourseGroup[];
     selectedCourse: SelectedCourse | null;
     messages: Message[];
-    pinnedMessages: Array<{ id: string; message: string; sender_name: string }>;
+    pinnedMessages: PinnedMessage[];
     auth: {
-        user: {
-            id: string;
-            name: string;
-            email: string;
-            role: string;
-        };
+        user: User;
     };
 }
 
+const formatHeaderDate = (isoString: string) => {
+    try {
+        const date = new Date(isoString);
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        if (date.toDateString() === today.toDateString()) {
+            return 'Hari Ini';
+        } else if (date.toDateString() === yesterday.toDateString()) {
+            return 'Kemarin';
+        } else {
+            return date.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit',
+            });
+        }
+    } catch {
+        return '';
+    }
+};
+
+const quickReactions = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+
 export default function ForumWorkspace({
-    courses,
+    courses = [],
     selectedCourse,
-    messages,
-    pinnedMessages,
+    messages = [],
+    pinnedMessages = [],
     auth,
-}: Props) {
+}: ForumWorkspaceProps) {
+    const currentUser = auth.user;
+    const currentUserId = currentUser.id || currentUser._id || '';
+    const isMentorOrAdmin =
+        currentUser.role === 'mentor' || currentUser.role === 'admin';
+
+    const { resolvedAppearance } = useAppearance();
+    const isDark = resolvedAppearance === 'dark';
+
     const [localMessages, setLocalMessages] = useState<Message[]>(messages);
     const [searchQuery, setSearchQuery] = useState('');
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-    // Profile Preview Modal states
-    const [profileModalOpen, setProfileModalOpen] = useState(false);
-    const [profileLoading, setProfileLoading] = useState(false);
-    const [selectedProfile, setSelectedProfile] = useState<{
-        id: string;
-        name: string;
-        username: string;
-        avatar: string | null;
-        role: string;
-        level: number;
-        rank_name: string | null;
-        rank_image: string | null;
-        character_name: string | null;
-        character_avatar: string | null;
-        linkedin: string | null;
-        courses: Array<{ name: string; thumbnail: string | null }>;
-        erp: number;
-    } | null>(null);
-
-    const handleShowProfile = (userId: string) => {
-        setProfileLoading(true);
-        setProfileModalOpen(true);
-        fetch(`${basePath}/user/${userId}/profile`)
-            .then((res) => res.json())
-            .then((data) => {
-                setSelectedProfile(data);
-                setProfileLoading(false);
-            })
-            .catch((err) => {
-                console.error('Error fetching user profile:', err);
-                setProfileLoading(false);
-                setProfileModalOpen(false);
-            });
-    };
 
     // Responsive toggle: set true jika di sub-rute course
     const [showChatMobile, setShowChatMobile] = useState(() => {
@@ -130,7 +82,7 @@ export default function ForumWorkspace({
             const pathParts = window.location.pathname
                 .split('/')
                 .filter(Boolean);
-            return pathParts.length > 2;
+            return pathParts.length > 2 && pathParts[2] !== '';
         }
         return false;
     });
@@ -138,32 +90,33 @@ export default function ForumWorkspace({
     // Premium states
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
     const [editingMessage, setEditingMessage] = useState<Message | null>(null);
-    const [activeMenuMessageId, setActiveMenuMessageId] = useState<
-        string | null
-    >(null);
-    const [showReactionPickerId, setShowReactionPickerId] = useState<
-        string | null
-    >(null);
+    const [activeMenuMessageId, setActiveMenuMessageId] = useState<string | null>(null);
+    const [showReactionPickerId, setShowReactionPickerId] = useState<string | null>(null);
+
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(
-        null,
-    );
+    const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
+
+    // User Profile Modal states
+    const [profileModalOpen, setProfileModalOpen] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(false);
+    const [selectedProfile, setSelectedProfile] = useState<SelectedProfile | null>(null);
+
+    // Lightbox image preview state
+    const [previewImage, setPreviewImage] = useState<{ url: string; msg: Message } | null>(null);
 
     const chatEndRef = useRef<HTMLDivElement | null>(null);
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const emojiPickerRef = useRef<HTMLDivElement | null>(null);
     const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-    // Dynamic base route path
-    const basePath = `/${auth.user.role}/forum`;
+    // Dynamic base route path & dashboard route
+    const basePath = `/${currentUser.role}/forum`;
 
     const getDashboardRoute = () => {
-        if (auth.user.role === 'admin') return '/admin/dashboard';
-        if (auth.user.role === 'mentor') return '/mentor/dashboard';
+        if (currentUser.role === 'admin') return '/admin/dashboard';
+        if (currentUser.role === 'mentor') return '/mentor/dashboard';
         return '/student/dashboard';
     };
 
-    // Form data
+    // Form Inertia
     const { data, setData, post, processing, reset } = useForm<{
         message: string;
         attachment: File | null;
@@ -178,8 +131,11 @@ export default function ForumWorkspace({
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    // Update list pesan lokal saat kursus berubah
     useEffect(() => {
         setLocalMessages(messages);
+        setReplyingTo(null);
+        setEditingMessage(null);
         setTimeout(scrollToBottom, 100);
     }, [messages]);
 
@@ -189,23 +145,25 @@ export default function ForumWorkspace({
 
         let isMounted = true;
         const interval = setInterval(() => {
-            const lastId =
-                localMessages.length > 0
-                    ? localMessages[localMessages.length - 1].id
-                    : '';
-            fetch(
-                `${basePath}/${selectedCourse.slug}/messages?after_id=${lastId}`,
-            )
-                .then((res) => res.json())
-                .then((newMessages: Message[]) => {
-                    if (isMounted && newMessages.length > 0) {
+            const lastMsg = localMessages[localMessages.length - 1];
+            const lastId = lastMsg ? lastMsg.id : '';
+
+            fetch(`${basePath}/${selectedCourse.slug}/messages?after_id=${lastId}`)
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.json();
+                    }
+                    throw new Error('Gagal memuat pesan baru');
+                })
+                .then((newMsgs: Message[]) => {
+                    if (isMounted && newMsgs && newMsgs.length > 0) {
                         setLocalMessages((prev) => {
-                            const prevIds = new Set(prev.map((m) => m.id));
-                            const uniqueNew = newMessages.filter(
-                                (m) => !prevIds.has(m.id),
+                            const existingIds = new Set(prev.map((m) => m.id));
+                            const filteredNew = newMsgs.filter(
+                                (m) => !existingIds.has(m.id)
                             );
-                            if (uniqueNew.length === 0) return prev;
-                            const merged = [...prev, ...uniqueNew];
+                            if (filteredNew.length === 0) return prev;
+                            const merged = [...prev, ...filteredNew];
                             setTimeout(scrollToBottom, 50);
                             return merged;
                         });
@@ -224,12 +182,6 @@ export default function ForumWorkspace({
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (
-                emojiPickerRef.current &&
-                !emojiPickerRef.current.contains(event.target as Node)
-            ) {
-                setShowEmojiPicker(false);
-            }
-            if (
                 activeMenuMessageId &&
                 !(event.target as Element).closest('.message-action-menu')
             ) {
@@ -243,16 +195,16 @@ export default function ForumWorkspace({
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
-        return () =>
+        return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, [activeMenuMessageId, showReactionPickerId]);
 
-    const filteredCourses = courses.filter((c) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    const handleSendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
+    // Handle kirim pesan
+    const handleSendMessage = (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
+        }
         if (!selectedCourse || processing) return;
         if (!data.message.trim() && !data.attachment) return;
 
@@ -267,12 +219,15 @@ export default function ForumWorkspace({
                     preserveState: true,
                     onSuccess: () => {
                         setEditingMessage(null);
-                        setData((prev) => ({ ...prev, message: '' }));
+                        setData((prev) => ({
+                            ...prev,
+                            message: '',
+                        }));
                     },
                     onError: (errors) => {
                         console.error('Gagal mengedit pesan:', errors);
                     },
-                },
+                }
             );
             return;
         }
@@ -292,124 +247,37 @@ export default function ForumWorkspace({
         });
     };
 
+    // Fungsi scroll ke pesan spesifik (misal dari kutipan atau pesan tersemat)
     const scrollToMessage = (msgId: string) => {
         const el = messageRefs.current[msgId];
         if (el) {
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('bg-[#3B28F6]/10', 'ring-2', 'ring-[#3B28F6]/50');
-            setTimeout(() => {
-                el.classList.remove(
-                    'bg-[#3B28F6]/10',
-                    'ring-2',
-                    'ring-[#3B28F6]/50',
+            const bubble = el.querySelector('.chat-bubble-body');
+            if (bubble) {
+                bubble.classList.add(
+                    'ring-4',
+                    'ring-[#facc15]/70',
+                    'scale-[1.02]'
                 );
-            }, 2000);
+                setTimeout(() => {
+                    bubble.classList.remove(
+                        'ring-4',
+                        'ring-[#facc15]/70',
+                        'scale-[1.02]'
+                    );
+                }, 1500);
+            }
         }
     };
 
-    const quickReactions = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
-    const emojis = [
-        '😀',
-        '😃',
-        '😄',
-        '😁',
-        '😆',
-        '😅',
-        '😂',
-        '🤣',
-        '😊',
-        '😇',
-        '🙂',
-        '🙃',
-        '😉',
-        '😌',
-        '😍',
-        '🥰',
-        '😘',
-        '😗',
-        '😙',
-        '😚',
-        '😋',
-        '😛',
-        '😝',
-        '😜',
-        '🤪',
-        '🧐',
-        '😎',
-        '🤩',
-        '🥳',
-        '😏',
-        '😒',
-        '😞',
-        '😔',
-        '😟',
-        '😕',
-        '🙁',
-        '☹️',
-        '😣',
-        '😖',
-        '😫',
-        '😩',
-        '🥺',
-        '😢',
-        '😭',
-        '😤',
-        '😠',
-        '😡',
-        '🤬',
-        '👋',
-        '🤚',
-        '🖐️',
-        '✋',
-        '🖖',
-        '👌',
-        '🤌',
-        '🤏',
-        '✌️',
-        '🤞',
-        '🤟',
-        '🤘',
-        '🤙',
-        '👈',
-        '👉',
-        '👆',
-        '🖕',
-        '👇',
-        '👍',
-        '👎',
-        '✊',
-        '👊',
-        '🤛',
-        '🤜',
-        '👏',
-        '🙌',
-        '👐',
-        '🤲',
-        '🤝',
-        '🙏',
-        '✍️',
-        '💅',
-        '🤳',
-        '💪',
-        '🔥',
-        '✨',
-        '🎈',
-        '🎉',
-        '❤️',
-    ];
-
-    const addEmoji = (emoji: string) => {
-        setData('message', data.message + emoji);
-        setShowEmojiPicker(false);
-    };
-
+    // API reaksi emoji (Optimistik + Inertia)
     const handleToggleReaction = (messageId: string, emoji: string) => {
         setLocalMessages((prev) =>
             prev.map((m) => {
                 if (m.id === messageId) {
                     const reactions = [...(m.reactions || [])];
                     const foundIndex = reactions.findIndex(
-                        (r) => r.user_id === auth.user.id,
+                        (r) => r.user_id === currentUserId
                     );
                     if (foundIndex !== -1) {
                         if (reactions[foundIndex].emoji === emoji) {
@@ -422,15 +290,15 @@ export default function ForumWorkspace({
                         }
                     } else {
                         reactions.push({
-                            user_id: auth.user.id,
-                            user_name: auth.user.name,
+                            user_id: currentUserId,
+                            user_name: currentUser.name,
                             emoji: emoji,
                         });
                     }
                     return { ...m, reactions };
                 }
                 return m;
-            }),
+            })
         );
         setActiveMenuMessageId(null);
 
@@ -441,10 +309,11 @@ export default function ForumWorkspace({
                 preserveState: true,
                 preserveScroll: true,
                 only: ['messages'],
-            },
+            }
         );
     };
 
+    // API sematkan (pin) pesan (Optimistik + Inertia)
     const handleTogglePin = (messageId: string) => {
         setLocalMessages((prev) =>
             prev.map((m) => {
@@ -452,7 +321,7 @@ export default function ForumWorkspace({
                     return { ...m, is_pinned: !m.is_pinned };
                 }
                 return m;
-            }),
+            })
         );
         setActiveMenuMessageId(null);
 
@@ -463,31 +332,43 @@ export default function ForumWorkspace({
                 preserveState: true,
                 preserveScroll: true,
                 only: ['messages', 'pinnedMessages'],
-            },
+            }
         );
     };
 
     const handleReplyTo = (msg: Message) => {
         setReplyingTo(msg);
-        setData((prev) => ({ ...prev, parent_id: msg.id }));
+        setData((prev) => ({
+            ...prev,
+            parent_id: msg.id,
+        }));
         setActiveMenuMessageId(null);
     };
 
     const cancelReply = () => {
         setReplyingTo(null);
-        setData((prev) => ({ ...prev, parent_id: null }));
+        setData((prev) => ({
+            ...prev,
+            parent_id: null,
+        }));
     };
 
     const handleStartEdit = (msg: Message) => {
         setEditingMessage(msg);
-        setData((prev) => ({ ...prev, message: msg.message }));
+        setData((prev) => ({
+            ...prev,
+            message: msg.message || '',
+        }));
         setReplyingTo(null);
         setActiveMenuMessageId(null);
     };
 
     const cancelEdit = () => {
         setEditingMessage(null);
-        setData((prev) => ({ ...prev, message: '' }));
+        setData((prev) => ({
+            ...prev,
+            message: '',
+        }));
     };
 
     const handleDeleteMessage = (messageId: string) => {
@@ -510,123 +391,93 @@ export default function ForumWorkspace({
         });
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setData('attachment', file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const removeImage = () => {
-        setData('attachment', null);
-        setImagePreview(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    };
-
-    const formatTime = (isoString: string) => {
-        try {
-            const date = new Date(isoString);
-            return date.toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
+    const handleShowProfile = (userId: string) => {
+        setProfileLoading(true);
+        setProfileModalOpen(true);
+        fetch(`${basePath}/user/${userId}/profile`)
+            .then((res) => res.json())
+            .then((data) => {
+                setSelectedProfile(data);
+                setProfileLoading(false);
+            })
+            .catch((err) => {
+                console.error('Error fetching user profile:', err);
+                setProfileLoading(false);
+                setProfileModalOpen(false);
             });
-        } catch {
-            return '';
-        }
     };
 
     const groupReactions = (reactionsList: Message['reactions']) => {
-        const grouped: { [emoji: string]: number } = {};
+        const groups: {
+            [key: string]: {
+                count: number;
+                users: string[];
+                hasReacted: boolean;
+            };
+        } = {};
         (reactionsList || []).forEach((r) => {
-            grouped[r.emoji] = (grouped[r.emoji] || 0) + 1;
+            if (!groups[r.emoji]) {
+                groups[r.emoji] = { count: 0, users: [], hasReacted: false };
+            }
+            groups[r.emoji].count += 1;
+            groups[r.emoji].users.push(r.user_name);
+            if (r.user_id === currentUserId) {
+                groups[r.emoji].hasReacted = true;
+            }
         });
-        return grouped;
-    };
-
-    const getNameColor = (name: string) => {
-        const colors = [
-            'text-[#3B28F6] dark:text-indigo-400',
-            'text-emerald-400',
-            'text-violet-400',
-            'text-sky-400',
-            'text-pink-400',
-            'text-[#facc15]',
-        ];
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) {
-            hash = name.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const index = Math.abs(hash) % colors.length;
-        return colors[index];
+        return groups;
     };
 
     return (
-        <div className="flex h-full w-full overflow-hidden rounded-2xl border border-[#3B28F6]/20 bg-[#020202] text-white shadow-lg">
-            {/* ── SIDEBAR CHANNEL (KIRI) ── */}
+        <div className="flex h-full w-full overflow-hidden rounded-2xl border border-[#3B28F6]/20 bg-[#121212] text-white shadow-lg">
+            {/* Sidebar Kiri */}
+            <ForumSidebar
+                courses={courses}
+                selectedCourse={selectedCourse}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                showChatMobile={showChatMobile}
+                setShowChatMobile={setShowChatMobile}
+                basePath={basePath}
+                dashboardRoute={getDashboardRoute()}
+                role={currentUser.role}
+            />
+
+            {/* Area Chat Utama */}
             <div
-                className={`flex w-full shrink-0 flex-col border-r border-[#3B28F6]/20 bg-[#05060f] lg:w-[280px] xl:w-[320px] ${showChatMobile ? 'hidden lg:flex' : 'flex'}`}
+                className={`flex flex-1 flex-col bg-[#121212] ${
+                    showChatMobile ? 'flex' : 'hidden md:flex'
+                }`}
             >
-                {/* Header Back & Search */}
-                <div className="border-b border-[#3B28F6]/20 p-4">
-                    <div className="mb-4 flex items-center gap-4">
-                        <h1 className="bg-gradient-to-r from-white via-slate-200 to-[#facc15] bg-clip-text font-['Orbitron'] text-sm font-bold tracking-wider text-transparent">
-                            FORUM GROUP
-                        </h1>
-                    </div>
+                {selectedCourse ? (
+                    <>
+                        {/* Header Chat */}
+                        <div
+                            className="p-[1px] shrink-0 z-10"
+                            style={{
+                                background:
+                                    'linear-gradient(to bottom, #3B28F6 0%, #7c3aed 50%, #facc15 100%)',
+                            }}
+                        >
+                            <div className="flex items-center justify-between bg-[#121212] px-4 py-3 md:px-6 md:py-4.5">
+                                <div className="flex items-center gap-3">
+                                    {/* Tombol Back Mobile */}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowChatMobile(false);
+                                            router.visit(basePath);
+                                        }}
+                                        className="mr-1 rounded-xl border border-[#facc15]/80 bg-black/60 p-2 text-[#facc15] transition hover:border-[#facc15] active:scale-95 md:hidden"
+                                    >
+                                        <ArrowLeft className="h-4 w-4" />
+                                    </button>
 
-                    <div className="relative">
-                        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Cari grup diskusi..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full rounded-xl border border-[#3B28F6]/30 bg-black/80 py-2.5 pr-4 pl-10 text-xs text-white placeholder-slate-500 transition outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15]"
-                        />
-                    </div>
-                </div>
-
-                {/* Course List */}
-                <div className="scrollbar-thin scrollbar-thumb-indigo-900 scrollbar-track-transparent flex-1 overflow-y-auto">
-                    {filteredCourses.length === 0 ? (
-                        <div className="text-slate-550 flex flex-col items-center justify-center p-8 text-center">
-                            <p className="text-xs">
-                                Tidak ada grup forum yang ditemukan.
-                            </p>
-                        </div>
-                    ) : (
-                        filteredCourses.map((group) => {
-                            const isActive = selectedCourse?.id === group.id;
-                            return (
-                                <div
-                                    key={group.id}
-                                    onClick={() => {
-                                        setShowChatMobile(true);
-                                        if (!isActive) {
-                                            router.visit(
-                                                `${basePath}/${group.slug}`,
-                                            );
-                                        }
-                                    }}
-                                    className={`flex cursor-pointer items-center gap-3 border-b border-[#3B28F6]/10 px-4 py-4.5 transition-all duration-300 ${
-                                        isActive
-                                            ? 'border-l-4 border-l-[#facc15] bg-gradient-to-r from-[#3B28F6]/25 to-transparent'
-                                            : 'hover:bg-[#1D215D]/10'
-                                    }`}
-                                >
-                                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-[#3B28F6]/30 bg-slate-900">
-                                        {group.thumbnail ? (
+                                    <div className="h-9 w-9 md:h-10 md:w-10 overflow-hidden rounded-xl border border-[#3B28F6]/40 bg-slate-900">
+                                        {selectedCourse.thumbnail ? (
                                             <img
-                                                src={group.thumbnail}
-                                                alt={group.title}
+                                                src={selectedCourse.thumbnail}
+                                                alt={selectedCourse.title}
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
@@ -635,617 +486,140 @@ export default function ForumWorkspace({
                                             </div>
                                         )}
                                     </div>
-                                    <div className="min-w-0 flex-1">
-                                        <div className="mb-1 flex items-center justify-between">
-                                            <h3 className="truncate font-['Oxanium'] text-xs leading-none font-semibold text-white">
-                                                {group.title}
-                                            </h3>
-                                            {group.last_message && (
-                                                <span className="ml-2 text-[9px] whitespace-nowrap text-slate-500">
-                                                    {formatTime(
-                                                        group.last_message
-                                                            .created_at,
-                                                    )}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="truncate text-[11px] text-slate-400">
-                                            {group.last_message ? (
-                                                <>
-                                                    <span className="font-semibold text-slate-300">
-                                                        {
-                                                            group.last_message
-                                                                .sender_name
-                                                        }
-                                                        :
-                                                    </span>{' '}
-                                                    {group.last_message.message}
-                                                </>
-                                            ) : (
-                                                <span className="text-slate-600 italic">
-                                                    Belum ada pesan
-                                                </span>
-                                            )}
-                                        </div>
+                                    <div>
+                                        <h2 className="font-['Orbitron'] text-sm font-bold tracking-wide text-white md:text-base">
+                                            {selectedCourse.title}
+                                        </h2>
+                                        <p className="text-[10px] text-[#facc15]">
+                                            Diskusi Kelas Aktif
+                                        </p>
                                     </div>
                                 </div>
-                            );
-                        })
-                    )}
-                </div>
-            </div>
-
-            {/* ── AREA CHAT FEED (KANAN) ── */}
-            <div
-                className={`flex flex-1 flex-col bg-[#020202] ${!showChatMobile ? 'hidden lg:flex' : 'flex'}`}
-            >
-                {selectedCourse ? (
-                    <>
-                        {/* Header Chat */}
-                        <div className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-[#3B28F6]/20 bg-[#05060f] px-4 py-3 md:px-6 md:py-4.5">
-                            <div className="flex items-center gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setShowChatMobile(false);
-                                        router.visit(basePath);
-                                    }}
-                                    className="mr-1 rounded-xl border border-[#facc15]/80 bg-black/60 p-2 text-[#facc15] transition hover:border-[#facc15] active:scale-95 lg:hidden"
-                                >
-                                    <ArrowLeft className="h-4 w-4" />
-                                </button>
-                                <div className="h-9 w-9 md:h-10 md:w-10 overflow-hidden rounded-xl border border-[#3B28F6]/40 bg-slate-900">
-                                    {selectedCourse.thumbnail ? (
-                                        <img
-                                            src={selectedCourse.thumbnail}
-                                            alt={selectedCourse.title}
-                                            className="h-full w-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center bg-indigo-950">
-                                            <UserIcon className="h-5 w-5 text-indigo-400" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <h2 className="font-['Oxanium'] text-sm leading-none font-bold text-white">
-                                        {selectedCourse.title}
-                                    </h2>
-                                    <p className="mt-1 flex items-center gap-1 text-[10px] leading-none font-semibold text-emerald-400">
-                                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>
-                                        Diskusi Aktif
-                                    </p>
-                                </div>
                             </div>
-
-                            {/* Pinned Messages Board */}
-                            {pinnedMessages.length > 0 && (
-                                <div className="hidden max-w-sm items-center gap-2 rounded-xl border border-[#facc15]/30 bg-[#facc15]/5 px-3 py-1.5 text-xs text-[#facc15] md:flex">
-                                    <Pin className="h-3.5 w-3.5 shrink-0 rotate-45 text-[#facc15]" />
-                                    <span className="shrink-0 font-bold">
-                                        Pinned:
-                                    </span>
-                                    <span
-                                        onClick={() =>
-                                            scrollToMessage(
-                                                pinnedMessages[0].id,
-                                            )
-                                        }
-                                        className="cursor-pointer truncate font-medium hover:underline"
-                                    >
-                                        "{pinnedMessages[0].message}" (
-                                        {pinnedMessages[0].sender_name})
-                                    </span>
-                                </div>
-                            )}
                         </div>
 
+                        {/* Sticky Bar Pinned Messages */}
+                        {pinnedMessages.length > 0 && (
+                            <div className="z-10 flex shrink-0 items-center justify-between border-b border-[#facc15]/20 bg-[#121212] px-4 py-2 md:px-6 md:py-2.5 font-['Oxanium'] text-xs text-slate-300">
+                                <div
+                                    className="flex flex-1 cursor-pointer items-center gap-2 truncate hover:text-white"
+                                    onClick={() =>
+                                        scrollToMessage(
+                                            pinnedMessages[
+                                                pinnedMessages.length - 1
+                                            ].id
+                                        )
+                                    }
+                                >
+                                    <Pin className="h-3.5 w-3.5 shrink-0 rotate-45 text-[#facc15]" />
+                                    <span className="shrink-0 font-bold text-[#facc15]">
+                                        Sematkan:
+                                    </span>
+                                    <span className="truncate italic">
+                                        "{pinnedMessages[pinnedMessages.length - 1].message}"
+                                    </span>
+                                </div>
+                                <span className="ml-4 shrink-0 font-['Orbitron'] text-[10px] text-slate-500">
+                                    Oleh {pinnedMessages[pinnedMessages.length - 1].sender_name}
+                                </span>
+                            </div>
+                        )}
+
                         {/* Feed Chat Area */}
-                        <div className="flex-1 space-y-4 overflow-y-auto bg-gradient-to-b from-[#020202] to-[#05060f] p-3 md:p-6">
+                        <div className="bg-radial-gradient flex-1 overflow-y-auto from-indigo-950/5 via-transparent to-transparent px-3 py-4 md:px-6 md:py-6">
                             {localMessages.length === 0 ? (
-                                <div className="flex h-full flex-col items-center justify-center text-slate-500">
+                                <div className="flex h-full flex-col items-center justify-center text-center text-slate-500">
                                     <p className="text-sm">
-                                        Belum ada percakapan. Mulai obrolan
-                                        pertama Anda!
+                                        Belum ada percakapan. Mulai obrolan pertama Anda!
                                     </p>
                                 </div>
                             ) : (
-                                localMessages.map((msg) => {
-                                    const isSelf =
-                                        msg.sender.id === auth.user.id;
-                                    const reactionsGrouped = groupReactions(
-                                        msg.reactions,
-                                    );
+                                localMessages.map((msg, index) => {
+                                    const isConsecutive = (() => {
+                                        if (index === 0) return false;
+                                        const prevMsg = localMessages[index - 1];
+                                        if (prevMsg.sender.role === 'system') return false;
+                                        if (prevMsg.sender.id !== msg.sender.id) return false;
+                                        try {
+                                            const timeDiff =
+                                                new Date(msg.created_at).getTime() -
+                                                new Date(prevMsg.created_at).getTime();
+                                            if (timeDiff > 5 * 60 * 1000) return false;
+                                        } catch (e) {}
+                                        return true;
+                                    })();
+
+                                    const showDateDivider =
+                                        index === 0 ||
+                                        new Date(
+                                            localMessages[index - 1].created_at
+                                        ).toDateString() !==
+                                            new Date(msg.created_at).toDateString();
 
                                     return (
-                                        <div
-                                            key={msg.id}
-                                            ref={(el) => {
-                                                messageRefs.current[msg.id] =
-                                                    el;
-                                            }}
-                                            className={`group relative flex max-w-[92%] sm:max-w-[85%] md:max-w-[70%] lg:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition ${isSelf ? 'ml-auto flex-row-reverse' : 'mr-auto'} ${Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''}`}
-                                        >
-                                            {/* Avatar */}
-                                            {!isSelf && (
-                                                <div 
-                                                    onClick={() => handleShowProfile(msg.sender.id)}
-                                                    className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#3B28F6]/30 bg-slate-900 cursor-pointer hover:scale-105 transition"
-                                                >
-                                                    {msg.sender.avatar ? (
-                                                        <img
-                                                            src={msg.sender.avatar}
-                                                            alt={msg.sender.name}
-                                                            className="h-full w-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <UserIcon className="h-5 w-5 text-indigo-400" />
-                                                    )}
+                                        <React.Fragment key={msg.id}>
+                                            {showDateDivider && (
+                                                <div className="my-4 flex justify-center">
+                                                    <span className="rounded-md border border-[#3B28F6]/10 bg-slate-950/80 px-3 py-1 font-['Orbitron'] text-[10px] font-bold tracking-wider text-[#facc15] uppercase">
+                                                        {formatHeaderDate(msg.created_at)}
+                                                    </span>
                                                 </div>
                                             )}
 
-                                            {/* Bubble Container */}
-                                            <div className="relative flex flex-col">
-                                                {/* Popover Menu */}
-                                                {activeMenuMessageId ===
-                                                    msg.id && (
-                                                    <div
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
-                                                        }
-                                                        className={`message-action-menu absolute bottom-full z-30 mb-2 flex flex-col rounded-xl border border-[#3B28F6]/50 bg-black/90 p-1.5 shadow-2xl backdrop-blur-md transition ${
-                                                            isSelf
-                                                                ? 'right-0'
-                                                                : 'left-0'
-                                                        }`}
-                                                        style={{
-                                                            minWidth: '180px',
-                                                        }}
-                                                    >
-                                                        {/* Quick Reactions */}
-                                                        <div className="mb-1.5 flex items-center justify-between gap-1 border-b border-[#3B28F6]/20 px-1 pb-1.5">
-                                                            {quickReactions.map(
-                                                                (emoji) => (
-                                                                    <button
-                                                                        key={
-                                                                            emoji
-                                                                        }
-                                                                        type="button"
-                                                                        onClick={() =>
-                                                                            handleToggleReaction(
-                                                                                msg.id,
-                                                                                emoji,
-                                                                            )
-                                                                        }
-                                                                        className="px-1 py-0.5 text-base transition hover:scale-125 active:scale-95"
-                                                                    >
-                                                                        {emoji}
-                                                                    </button>
-                                                                ),
-                                                            )}
-                                                        </div>
-
-                                                        {/* Actions */}
-                                                        <div className="flex flex-col text-xs text-slate-200">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleReplyTo(
-                                                                        msg,
-                                                                    )
-                                                                }
-                                                                className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left hover:bg-[#3B28F6]/20"
-                                                            >
-                                                                <CornerUpLeft className="h-3.5 w-3.5" />{' '}
-                                                                Balas
-                                                            </button>
-
-                                                            {isSelf && (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() =>
-                                                                        handleStartEdit(
-                                                                            msg,
-                                                                        )
-                                                                    }
-                                                                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left hover:bg-[#3B28F6]/20"
-                                                                >
-                                                                    <Pencil className="h-3.5 w-3.5" />{' '}
-                                                                    Edit
-                                                                </button>
-                                                            )}
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleTogglePin(
-                                                                        msg.id,
-                                                                    )
-                                                                }
-                                                                className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left hover:bg-[#3B28F6]/20"
-                                                            >
-                                                                <Pin className="h-3.5 w-3.5" />
-                                                                {msg.is_pinned
-                                                                    ? 'Lepas Semat'
-                                                                    : 'Sematkan'}
-                                                            </button>
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleDeleteMessage(
-                                                                        msg.id,
-                                                                    )
-                                                                }
-                                                                className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-red-400 hover:bg-red-500/10"
-                                                            >
-                                                                <Trash2 className="h-3.5 w-3.5" />{' '}
-                                                                Hapus
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Bubble Body */}
-                                                <div
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setActiveMenuMessageId(
-                                                            activeMenuMessageId ===
-                                                                msg.id
-                                                                ? null
-                                                                : msg.id,
-                                                        );
-                                                    }}
-                                                    className={`relative flex cursor-pointer flex-col rounded-2xl border px-4 py-3 transition select-none active:scale-[0.99] ${
-                                                        isSelf
-                                                            ? 'rounded-tr-none border-[#3B28F6]/40 bg-[#3B28F6]/20 text-white shadow-[0_0_15px_rgba(59,40,246,0.15)]'
-                                                            : 'rounded-tl-none border-[#3b28f6]/10 bg-[#0b0f19] text-slate-100'
-                                                    } ${msg.is_pinned ? 'ring-1 ring-[#facc15]/50' : ''} ${Object.keys(reactionsGrouped).length > 0 ? 'pb-5.5' : ''}`}
-                                                >
-                                                    {/* Quoted Message */}
-                                                    {msg.parent && (
-                                                        <div
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                scrollToMessage(
-                                                                    msg.parent!
-                                                                        .id,
-                                                                );
-                                                            }}
-                                                            className={`mb-2 cursor-pointer rounded-r-lg border-l-3 px-3 py-1.5 text-left transition ${
-                                                                isSelf
-                                                                    ? 'border-white/50 bg-white/10 hover:bg-white/20'
-                                                                    : 'border-[#3B28F6] bg-black/45 hover:bg-black/60'
-                                                            }`}
-                                                        >
-                                                            <p
-                                                                className={`text-[10px] font-bold ${isSelf ? 'text-white' : 'text-[#facc15]'}`}
-                                                            >
-                                                                {
-                                                                    msg.parent
-                                                                        .sender_name
-                                                                }
-                                                            </p>
-                                                            <p className="truncate text-[11px] text-slate-300">
-                                                                {
-                                                                    msg.parent
-                                                                        .message
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    )}
-
-                                                    {/* Sender Details */}
-                                                    {!isSelf && (
-                                                        <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                                                            <span
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleShowProfile(msg.sender.id);
-                                                                }}
-                                                                className={`font-['Oxanium'] text-xs font-bold cursor-pointer hover:underline ${getNameColor(msg.sender.name)}`}
-                                                            >
-                                                                {
-                                                                    msg.sender
-                                                                        .name
-                                                                }
-                                                            </span>
-                                                            {msg.sender.role ===
-                                                                'admin' && (
-                                                                <span className="rounded border border-rose-500/30 bg-rose-500/20 px-1 py-0.5 text-[8px] font-bold tracking-wider text-rose-400 uppercase">
-                                                                    Admin
-                                                                </span>
-                                                            )}
-                                                            {msg.sender.role ===
-                                                                'mentor' && (
-                                                                <span className="rounded border border-emerald-500/30 bg-emerald-500/20 px-1 py-0.5 text-[8px] font-bold tracking-wider text-emerald-400 uppercase">
-                                                                    Mentor
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    )}
-
-                                                    {/* Attachment Image */}
-                                                    {msg.attachments &&
-                                                        msg.attachments.length >
-                                                            0 && (
-                                                            <div className="mb-2 max-w-full overflow-hidden rounded-lg border border-[#3B28F6]/20 bg-black/40">
-                                                                {msg.attachments.map(
-                                                                    (
-                                                                        url,
-                                                                        i,
-                                                                    ) => (
-                                                                        <img
-                                                                            key={
-                                                                                i
-                                                                            }
-                                                                            src={
-                                                                                url
-                                                                            }
-                                                                            alt="Lampiran"
-                                                                            className="max-h-[200px] w-full object-cover"
-                                                                        />
-                                                                    ),
-                                                                )}
-                                                            </div>
-                                                        )}
-
-                                                    {/* Text Message */}
-                                                    {msg.message && (
-                                                        <p className="text-xs leading-relaxed break-words whitespace-pre-wrap">
-                                                            {msg.message}
-                                                        </p>
-                                                    )}
-
-                                                    {/* Time & Pinned Indicator */}
-                                                    <div
-                                                        className={`mt-2.5 flex items-center justify-end gap-1 text-[9px] ${isSelf ? 'text-white/60' : 'text-slate-500'}`}
-                                                    >
-                                                        {msg.is_pinned && (
-                                                            <Pin className="h-2.5 w-2.5 rotate-45 text-[#facc15]" />
-                                                        )}
-                                                        <span>
-                                                            {formatTime(
-                                                                msg.created_at,
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Floating Reactions */}
-                                                {Object.keys(reactionsGrouped)
-                                                    .length > 0 && (
-                                                    <div
-                                                        className={`absolute -bottom-2 z-10 flex cursor-pointer items-center gap-1 rounded-full border border-[#3B28F6]/30 bg-black px-2 py-0.5 text-xs shadow-md transition select-none hover:scale-105 ${
-                                                            isSelf
-                                                                ? 'right-2'
-                                                                : 'left-2'
-                                                        }`}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setShowReactionPickerId(
-                                                                showReactionPickerId ===
-                                                                    msg.id
-                                                                    ? null
-                                                                    : msg.id,
-                                                            );
-                                                        }}
-                                                    >
-                                                        {Object.keys(
-                                                            reactionsGrouped,
-                                                        )
-                                                            .slice(0, 3)
-                                                            .map((emoji) => (
-                                                                <span
-                                                                    key={emoji}
-                                                                >
-                                                                    {emoji}
-                                                                </span>
-                                                            ))}
-                                                        {Object.keys(
-                                                            reactionsGrouped,
-                                                        ).length > 1 && (
-                                                            <span className="ml-0.5 text-[9px] font-bold text-[#facc15]">
-                                                                {Object.values(
-                                                                    reactionsGrouped,
-                                                                ).reduce(
-                                                                    (a, b) =>
-                                                                        a + b,
-                                                                    0,
-                                                                )}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
+                                            <MessageBubble
+                                                msg={msg}
+                                                currentUserId={currentUserId}
+                                                isMentorOrAdmin={isMentorOrAdmin}
+                                                isDark={isDark}
+                                                isConsecutive={isConsecutive}
+                                                activeMenuMessageId={activeMenuMessageId}
+                                                setActiveMenuMessageId={setActiveMenuMessageId}
+                                                showReactionPickerId={showReactionPickerId}
+                                                setShowReactionPickerId={setShowReactionPickerId}
+                                                handleToggleReaction={handleToggleReaction}
+                                                handleReplyTo={handleReplyTo}
+                                                handleStartEdit={handleStartEdit}
+                                                handleTogglePin={handleTogglePin}
+                                                handleDeleteMessage={handleDeleteMessage}
+                                                handleShowProfile={handleShowProfile}
+                                                setPreviewImage={setPreviewImage}
+                                                scrollToMessage={scrollToMessage}
+                                                quickReactions={quickReactions}
+                                            />
+                                        </React.Fragment>
                                     );
                                 })
                             )}
                             <div ref={chatEndRef} />
                         </div>
 
-                        {/* Input Row Container */}
-                        <form
+                        {/* Input Row Form */}
+                        <MessageInput
+                            data={data}
+                            setData={setData}
+                            processing={processing}
                             onSubmit={handleSendMessage}
-                            className="relative flex shrink-0 flex-col gap-2 md:gap-3.5 border-t border-[#3B28F6]/20 bg-[#05060f] px-3 py-3 md:px-6 md:py-4"
-                        >
-                            {/* Quoted Message Preview */}
-                            {replyingTo && (
-                                <div className="flex w-full items-center justify-between rounded-xl border-l-4 border-[#3B28F6] bg-black/60 px-4 py-3 text-xs shadow-inner">
-                                    <div className="truncate pr-4 text-left">
-                                        <p className="mb-0.5 font-bold text-[#facc15]">
-                                            {replyingTo.sender.name}
-                                        </p>
-                                        <p className="truncate text-[11px] text-slate-400">
-                                            {replyingTo.message ??
-                                                '[Lampiran Gambar]'}
-                                        </p>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={cancelReply}
-                                        className="rounded-full p-1 text-slate-400 transition hover:bg-slate-800 hover:text-slate-200 active:scale-90"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* Editing Message Preview */}
-                            {editingMessage && (
-                                <div className="flex w-full items-center justify-between rounded-xl border-l-4 border-[#facc15] bg-[#facc15]/5 px-4 py-3 text-xs shadow-inner">
-                                    <div className="truncate pr-4 text-left">
-                                        <p className="mb-0.5 font-bold text-[#facc15]">
-                                            Mengedit pesan Anda
-                                        </p>
-                                        <p className="truncate text-[11px] text-slate-400">
-                                            {editingMessage.message}
-                                        </p>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={cancelEdit}
-                                        className="rounded-full p-1 text-slate-400 transition hover:bg-slate-800 hover:text-slate-200 active:scale-90"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* Upload Image Preview */}
-                            {imagePreview && (
-                                <div className="flex w-full items-center justify-between rounded-xl border border-[#3B28F6]/20 bg-black/60 p-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-14 w-14 overflow-hidden rounded-lg border border-[#3B28F6]/30 bg-slate-900">
-                                            <img
-                                                src={imagePreview}
-                                                className="h-full w-full object-cover"
-                                            />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-slate-200">
-                                                Siap dikirim
-                                            </p>
-                                            <p className="text-[10px] text-slate-400">
-                                                Lampiran gambar
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={removeImage}
-                                        className="rounded-lg border border-[#3B28F6]/30 bg-black px-3 py-1.5 text-xs text-rose-400 transition hover:bg-[#3B28F6]/10 active:scale-95"
-                                    >
-                                        Batal
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* Input Fields Row */}
-                             <div className="flex w-full items-center gap-2 md:gap-3">
-                                {/* Upload Button */}
-                                {!editingMessage && (
-                                    <>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                fileInputRef.current?.click()
-                                            }
-                                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#3B28F6]/30 bg-black/60 text-slate-400 transition hover:border-[#facc15] hover:text-[#facc15] active:scale-95"
-                                        >
-                                            <Plus className="h-5 w-5" />
-                                        </button>
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            onChange={handleFileChange}
-                                            accept="image/*"
-                                            className="hidden"
-                                        />
-                                    </>
-                                )}
-
-                                {/* Emoji Button */}
-                                <div
-                                    className="relative flex"
-                                    ref={emojiPickerRef}
-                                >
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setShowEmojiPicker(!showEmojiPicker)
-                                        }
-                                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#3B28F6]/30 bg-black/60 text-slate-400 transition hover:border-[#facc15] hover:text-[#facc15] active:scale-95"
-                                    >
-                                        <Smile className="h-5 w-5" />
-                                    </button>
-
-                                    {showEmojiPicker && (
-                                        <div className="absolute bottom-full left-0 z-50 mb-3 flex flex-col rounded-xl border border-[#3B28F6]/50 bg-black p-3 shadow-2xl backdrop-blur-md">
-                                            <p className="mb-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                                Emoji Picker
-                                            </p>
-                                            <div className="grid h-[160px] w-[240px] grid-cols-8 gap-1 overflow-y-auto">
-                                                {emojis.map((emoji) => (
-                                                    <button
-                                                        key={emoji}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            addEmoji(emoji)
-                                                        }
-                                                        className="flex h-7 w-7 items-center justify-center rounded text-base transition hover:bg-[#3B28F6]/20 active:scale-95"
-                                                    >
-                                                        {emoji}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Text Input */}
-                                <input
-                                    type="text"
-                                    placeholder="Ketik pesan..."
-                                    value={data.message}
-                                    onChange={(e) =>
-                                        setData('message', e.target.value)
-                                    }
-                                    disabled={processing}
-                                    className="flex-1 rounded-xl border border-[#3B28F6]/30 bg-black/80 px-3 py-2 md:px-4 md:py-2.5 text-xs text-white placeholder-slate-500 transition outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15] disabled:opacity-50"
-                                />
-
-                                {/* Send Button */}
-                                <button
-                                    type="submit"
-                                    disabled={
-                                        processing ||
-                                        (!data.message.trim() &&
-                                            !data.attachment)
-                                    }
-                                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-[#3B28F6] to-[#4F46E5] text-white shadow-md transition duration-300 hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-30"
-                                >
-                                    
-                                </button>
-                            </div>
-                        </form>
+                            replyingTo={replyingTo}
+                            onCancelReply={cancelReply}
+                            editingMessage={editingMessage}
+                            onCancelEdit={cancelEdit}
+                            imagePreview={imagePreview}
+                            setImagePreview={setImagePreview}
+                        />
                     </>
                 ) : (
-                    <div className="text-slate-550 flex h-full flex-col items-center justify-center p-8 text-center">
-                        <h3 className="mb-1 font-['Oxanium'] text-sm font-bold text-slate-300">
+                    <div className="flex h-full flex-col items-center justify-center p-8 text-center text-slate-500">
+                        <h3 className="mb-1 font-['Orbitron'] text-base font-bold text-slate-400">
                             Pilih Obrolan Forum
                         </h3>
                         <p className="max-w-[280px] text-xs text-slate-500">
-                            Pilih salah satu grup kursus untuk melihat riwayat
-                            diskusi di dalam sistem.
+                            Grup chat akan ditampilkan berdasarkan daftar kelas/kursus yang Anda ikuti.
                         </p>
                     </div>
                 )}
             </div>
 
-            {/* ConfirmModal for Delete */}
+            {/* ConfirmModal for delete */}
             <ConfirmModal
                 open={deleteModalOpen}
                 title="Hapus Pesan"
@@ -1261,170 +635,31 @@ export default function ForumWorkspace({
             />
 
             {/* User Profile Modal */}
-            {profileModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in" onClick={() => {
+            <UserProfileModal
+                open={profileModalOpen}
+                loading={profileLoading}
+                profile={selectedProfile}
+                onClose={() => {
                     setProfileModalOpen(false);
                     setSelectedProfile(null);
-                }}>
-                    <div 
-                        onClick={(e) => e.stopPropagation()}
-                        className="relative w-full max-w-[340px] rounded-3xl border border-[#3b28f6]/30 bg-black/40 text-white p-5 shadow-[0_0_50px_rgba(59,40,246,0.25)] overflow-hidden backdrop-blur-sm"
-                    >
-                        {/* Close button */}
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setProfileModalOpen(false);
-                                setSelectedProfile(null);
-                            }}
-                            className="absolute top-4 right-4 rounded-full p-1 text-slate-400 hover:bg-slate-800/50 hover:text-white transition z-10"
-                        >
-                            <X className="h-4 w-4" />
-                        </button>
+                }}
+            />
 
-                        {profileLoading ? (
-                            <div className="flex flex-col items-center justify-center py-12">
-                                <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#facc15] border-t-transparent"></div>
-                                <p className="text-xs text-slate-400 mt-4 font-['Oxanium']">Memuat profil...</p>
-                            </div>
-                        ) : selectedProfile ? (
-                            <div className="flex flex-col">
-                                {/* Top Section: Two columns (Avatar & Level) */}
-                                <div className="grid grid-cols-[120px_1fr] gap-4 items-center mb-5">
-                                    {/* Left: Square avatar with slightly rounded corners */}
-                                    <div className="aspect-square w-full rounded-2xl overflow-hidden border border-[#3b28f6]/20 bg-slate-900 shadow-[0_4px_20px_rgba(59,40,246,0.15)] relative">
-                                        {selectedProfile.avatar ? (
-                                            <img src={selectedProfile.avatar} alt={selectedProfile.name} className="h-full w-full object-cover" />
-                                        ) : (
-                                            <div className="flex h-full w-full items-center justify-center bg-indigo-950/40">
-                                                <UserIcon className="h-10 w-10 text-indigo-400" />
-                                            </div>
-                                        )}
-                                        {/* Role Badge */}
-                                        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-black/80 text-[#facc15] border border-[#facc15]/30 font-['Oxanium']">
-                                            {selectedProfile.role}
-                                        </div>
-                                    </div>
-
-                                    {/* Right: Username & Level Circle */}
-                                    <div className="flex flex-col items-center justify-center">
-                                        <h3 className="font-['Oxanium'] text-sm font-bold text-white text-center leading-tight truncate w-full mb-3" title={selectedProfile.name}>
-                                            {selectedProfile.name}
-                                        </h3>
-                                        
-                                        {/* Circle Level */}
-                                        <div className="w-18 h-18 rounded-full border-4 border-indigo-700/80 shadow-[0_0_15px_rgba(59,40,246,0.5)] flex flex-col items-center justify-center bg-black/60 relative">
-                                            <span className="font-['Orbitron'] text-xl font-black text-white">
-                                                {selectedProfile.level}
-                                            </span>
-                                            {/* Subtitle label */}
-                                            <span className="text-[7px] font-bold tracking-widest text-[#facc15] uppercase font-['Oxanium'] -mt-0.5">LEVEL</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Divider */}
-                                <div className="w-full border-t border-[#3b28f6]/10 mb-4"></div>
-
-                                {/* Content Rows */}
-                                <div className="flex flex-col gap-3.5">
-                                    {/* Row 1: ERP & Rank Badge */}
-                                        <div className="rounded-2xl bg-black/30 border border-[#3b28f6]/10 px-4 py-3 flex items-center justify-between shadow-inner">
-                                        <div className="flex flex-col">
-                                            <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">ERP</span>
-                                            <span className="font-['Orbitron'] text-xs font-black text-indigo-400 mt-0.5">
-                                                {selectedProfile.erp.toLocaleString()} pts
-                                            </span>
-                                        </div>
-                                        {selectedProfile.rank_image ? (
-                                            <div className="flex items-center gap-2 bg-black/40 py-1 px-2.5 rounded-xl border border-[#3b28f6]/10">
-                                                <img src={selectedProfile.rank_image} alt={selectedProfile.rank_name ?? ''} className="h-5 w-5 object-contain" />
-                                                <span className="font-['Oxanium'] text-[10px] font-bold text-slate-200">
-                                                    {selectedProfile.rank_name}
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <span className="font-['Oxanium'] text-[10px] font-bold text-slate-500 bg-black/20 py-1 px-2.5 rounded-xl">Unranked</span>
-                                        )}
-                                    </div>
-
-                                    {/* Row 2: Completed Course */}
-                                    <div className="rounded-2xl bg-black/30 border border-[#3b28f6]/10 px-4 py-3 flex flex-col shadow-inner">
-                                        <div className="flex items-center justify-between w-full mb-2">
-                                            <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">Completed Course</span>
-                                            <div className="flex items-center gap-1">
-                                                <span className="font-['Orbitron'] text-xs font-black text-[#facc15]">
-                                                    {selectedProfile.courses.length}
-                                                </span>
-                                                <svg className="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Horizontal list of courses thumbnails/icons */}
-                                        {selectedProfile.courses && selectedProfile.courses.length > 0 ? (
-                                            <div className="flex gap-2.5 overflow-x-auto py-1 custom-scrollbar scrollbar-none">
-                                                {selectedProfile.courses.map((course, idx) => (
-                                                    <div key={idx} className="h-7 w-7 rounded-lg overflow-hidden border border-[#3b28f6]/20 bg-black shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.4)]" title={course.name}>
-                                                        {course.thumbnail ? (
-                                                            <img src={course.thumbnail} alt={course.name} className="h-full w-full object-cover" />
-                                                        ) : (
-                                                            <div className="flex h-full w-full items-center justify-center bg-indigo-950/40 text-[9px] font-bold text-indigo-400 font-['Oxanium']">
-                                                                {course.name.substring(0, 2).toUpperCase()}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p className="text-[10px] italic text-slate-500 font-['Oxanium']">Belum mengikuti kelas apa pun.</p>
-                                        )}
-                                    </div>
-
-                                    {/* Row 3: Social Handle */}
-                                    <div className="rounded-2xl bg-black/30 border border-[#3b28f6]/10 px-4 py-2.5 flex items-center justify-between shadow-inner">
-                                        <span className="font-['Oxanium'] text-xs font-semibold text-slate-300 truncate max-w-[200px]">
-                                            {selectedProfile.linkedin ? (
-                                                (() => {
-                                                    try {
-                                                        const url = selectedProfile.linkedin.replace(/\/$/, '');
-                                                        const parts = url.split('/');
-                                                        const handle = parts[parts.length - 1];
-                                                        return handle ? `@${handle}` : `@${selectedProfile.username}`;
-                                                    } catch {
-                                                        return `@${selectedProfile.username}`;
-                                                    }
-                                                })()
-                                            ) : (
-                                                `@${selectedProfile.username}`
-                                            )}
-                                        </span>
-                                        {selectedProfile.linkedin ? (
-                                            <a
-                                                href={selectedProfile.linkedin}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="h-8 w-8 rounded-xl bg-gradient-to-tr from-[#3b28f6] to-[#0077b5] flex items-center justify-center text-white shadow-[0_0_10px_rgba(0,119,181,0.4)] hover:scale-105 active:scale-95 transition duration-300 border border-[#3b28f6]/30"
-                                            >
-                                                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
-                                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                                                </svg>
-                                            </a>
-                                        ) : (
-                                            <div className="h-8 w-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 cursor-not-allowed">
-                                                <svg className="h-4 w-4 fill-current opacity-40" viewBox="0 0 24 24">
-                                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                                                </svg>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
-            )}
+            {/* Image Preview Lightbox Modal */}
+            <ImagePreviewModal
+                previewImage={previewImage}
+                onClose={() => setPreviewImage(null)}
+                messages={localMessages}
+                currentUserId={currentUserId}
+                isMentorOrAdmin={isMentorOrAdmin}
+                handleToggleReaction={handleToggleReaction}
+                handleReplyTo={handleReplyTo}
+                handleStartEdit={handleStartEdit}
+                handleTogglePin={handleTogglePin}
+                handleDeleteMessage={handleDeleteMessage}
+                quickReactions={quickReactions}
+                groupReactions={groupReactions}
+            />
         </div>
     );
 }
