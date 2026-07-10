@@ -45,8 +45,8 @@ export default function ForumSidebar({
 
     return (
         <div
-            className={`flex w-full shrink-0 flex-col border-r border-[#3B28F6]/20 bg-[#121212] animate-fade-in lg:w-[320px] xl:w-[380px] ${
-                showChatMobile ? 'hidden lg:flex' : 'flex'
+            className={`flex w-full shrink-0 flex-col border-r border-[#3B28F6]/20 bg-[#121212] animate-fade-in md:w-[280px] lg:w-[320px] xl:w-[380px] ${
+                showChatMobile ? 'hidden md:flex' : 'flex'
             }`}
         >
             {/* Header Sidebar: Tombol Back & Kolom Pencarian */}
@@ -155,7 +155,7 @@ export default function ForumSidebar({
                                 }`}
                             >
                                 {/* Avatar Kursus */}
-                                <div className="relative h-10 w-10 lg:h-12 lg:w-12 shrink-0 overflow-hidden rounded-xl border border-white bg-slate-900">
+                                <div className="relative h-10 w-10 md:h-11 lg:h-12 md:w-11 lg:w-12 shrink-0 overflow-hidden rounded-xl border border-white bg-slate-900">
                                     {group.thumbnail ? (
                                         <img
                                             src={group.thumbnail}
