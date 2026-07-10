@@ -116,11 +116,11 @@ export default function MessageInput({
             {/* Pratinjau Balasan Pesan (Quoted Preview Box) */}
             {replyingTo && (
                 <div className="flex w-full items-center justify-between rounded-xl border border-white/20 border-l-4 border-l-[#3B28F6] bg-transparent px-4 py-3 text-xs shadow-inner">
-                    <div className="truncate pr-4 text-left">
-                        <p className="mb-0.5 font-['Oxanium'] font-bold text-[#facc15]">
+                    <div className="min-w-0 flex-1 pr-4 text-left">
+                        <p className="mb-0.5 font-['Oxanium'] font-bold text-[#facc15] truncate">
                             {replyingTo.sender.name}
                         </p>
-                        <p className="truncate font-['Oxanium'] text-[11px] text-slate-400">
+                        <p className="line-clamp-2 break-words font-['Oxanium'] text-[11px] text-slate-400">
                             {replyingTo.message ?? '[Lampiran Gambar]'}
                         </p>
                     </div>
@@ -193,9 +193,9 @@ export default function MessageInput({
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white transition hover:bg-white/10 active:scale-95"
+                            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white transition hover:bg-white/10 active:scale-95"
                         >
-                            <Plus className="h-5 w-5" />
+                            <Plus className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                         </button>
                         <input
                             type="file"
@@ -212,13 +212,13 @@ export default function MessageInput({
                     <button
                         type="button"
                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white transition hover:bg-white/10 active:scale-95"
+                        className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white transition hover:bg-white/10 active:scale-95"
                     >
-                        <Smile className="h-5 w-5" />
+                        <Smile className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                     </button>
 
                     {showEmojiPicker && (
-                        <div className="absolute bottom-full left-0 z-50 mb-3 flex flex-col rounded-xl border border-[#3B28F6]/50 bg-black p-3 shadow-2xl backdrop-blur-md">
+                        <div className="absolute bottom-full left-0 z-50 mb-3 flex flex-col rounded-xl border border-[#3B28F6]/50 bg-black p-3 shadow-2xl backdrop-blur-md animate-scale-up">
                             <p className="mb-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                 Emoji Picker
                             </p>
@@ -254,9 +254,9 @@ export default function MessageInput({
                     }}
                     disabled={processing}
                     rows={1}
-                    className="flex-1 resize-none rounded-xl border border-white bg-black/80 px-3 py-2 md:px-4 md:py-2.5 text-sm text-white placeholder-slate-500 transition outline-none focus:border-white focus:ring-1 focus:ring-white focus:shadow-[0_0_8px_rgba(255,255,255,0.15)] disabled:opacity-50 overflow-y-auto thin-scrollbar"
+                    className="flex-1 resize-none rounded-xl border border-white bg-black/80 px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 transition outline-none focus:border-white focus:ring-1 focus:ring-white focus:shadow-[0_0_8px_rgba(255,255,255,0.15)] disabled:opacity-50 overflow-y-auto thin-scrollbar"
                     style={{
-                        minHeight: '40px',
+                        minHeight: '36px',
                         maxHeight: '150px',
                     }}
                 />
@@ -268,9 +268,9 @@ export default function MessageInput({
                         processing ||
                         (!data.message.trim() && !data.attachment)
                     }
-                    className="group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30"
+                    className="group relative flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30"
                 >
-                    <SendHorizontal className="h-5 w-5" />
+                    <SendHorizontal className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                 </button>
             </div>
         </form>

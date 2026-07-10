@@ -21,6 +21,7 @@ interface MessageBubbleProps {
     setPreviewImage: (preview: { url: string; msg: Message } | null) => void;
     scrollToMessage: (msgId: string) => void;
     quickReactions: string[];
+    domRef?: React.Ref<HTMLDivElement>;
 }
 
 const getNameColor = (senderId: string) => {
@@ -82,6 +83,7 @@ export default function MessageBubble({
     setPreviewImage,
     scrollToMessage,
     quickReactions,
+    domRef,
 }: MessageBubbleProps) {
     const isSelf = msg.sender.id === currentUserId;
     const isSystem = msg.sender.role === 'system';
@@ -122,8 +124,9 @@ export default function MessageBubble({
 
     return (
         <div
-            className={`group relative flex max-w-[92%] sm:max-w-[85%] md:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition-all duration-500 ${
-                isSelf ? 'ml-auto flex-row-reverse' : 'mr-auto'
+            ref={domRef}
+            className={`group relative flex max-w-[78%] sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition-all duration-500 animate-fade-in-slide-up ${
+                isSelf ? 'self-end ml-auto flex-row-reverse w-fit' : 'self-start mr-auto w-fit'
             } ${isConsecutive ? 'mt-1' : 'mt-4'} ${
                 Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''
             }`}
@@ -157,7 +160,7 @@ export default function MessageBubble({
                 {activeMenuMessageId === msg.id && (
                     <div
                         onClick={(e) => e.stopPropagation()} // Mencegah tertutupnya menu
-                        className={`message-action-menu absolute bottom-full z-30 mb-2 flex scale-100 flex-col rounded-xl border border-[#3B28F6]/40 bg-[#05060f]/95 p-2 shadow-2xl backdrop-blur-md transition-all ${
+                        className={`message-action-menu absolute bottom-full z-30 mb-2 flex scale-100 flex-col rounded-xl border border-[#3B28F6]/40 bg-[#05060f]/95 p-2 shadow-2xl backdrop-blur-md transition-all animate-scale-up ${
                             isSelf ? 'right-0' : 'left-0'
                         }`}
                         style={{
@@ -326,7 +329,7 @@ export default function MessageBubble({
                                     e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
                                     scrollToMessage(msg.parent!.id);
                                 }}
-                                className={`mb-2.5 cursor-pointer bg-slate-900 text-left transition hover:bg-slate-950 ${
+                                className={`mb-2.5 max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] cursor-pointer bg-slate-900 text-left transition hover:bg-slate-950 ${
                                     isFullBorder
                                         ? 'border border-[#3B28F6] rounded px-3 py-1.5'
                                         : 'border border-[#3B28F6] rounded-xs py-1 pl-3'
@@ -338,7 +341,7 @@ export default function MessageBubble({
                                 >
                                     {msg.parent.sender_name}
                                 </p>
-                                <p className="truncate font-['Oxanium'] text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                <p className="line-clamp-2 break-words font-['Oxanium'] text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                                     {msg.parent.message}
                                 </p>
                             </div>
