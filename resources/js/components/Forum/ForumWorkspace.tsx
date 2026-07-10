@@ -431,7 +431,7 @@ export default function ForumWorkspace({
     };
 
     return (
-        <div className="flex h-full w-full overflow-hidden sm:rounded-2xl sm:border sm:border-[#3B28F6]/20 bg-[#121212] text-white sm:shadow-lg">
+        <div className="flex h-full w-full overflow-hidden sm:rounded-2xl sm:border sm:border-[#3B28F6]/20 bg-[#121212] text-white sm:shadow-lg min-w-0">
             {/* Sidebar Kiri */}
             <ForumSidebar
                 courses={courses}
@@ -447,7 +447,7 @@ export default function ForumWorkspace({
 
             {/* Area Chat Utama */}
             <div
-                className={`flex flex-1 flex-col bg-[#121212] animate-fade-in ${
+                className={`flex flex-1 flex-col bg-[#121212] animate-fade-in min-w-0 ${
                     showChatMobile ? 'flex' : 'hidden lg:flex'
                 }`}
             >

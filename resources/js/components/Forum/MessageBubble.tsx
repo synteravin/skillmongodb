@@ -125,7 +125,7 @@ export default function MessageBubble({
     return (
         <div
             ref={domRef}
-            className={`group relative flex max-w-[78%] sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition-all duration-500 animate-fade-in-slide-up ${
+            className={`group relative flex max-w-[78%] sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition-all duration-500 animate-fade-in-slide-up min-w-0 ${
                 isSelf ? 'self-end ml-auto flex-row-reverse w-fit' : 'self-start mr-auto w-fit'
             } ${isConsecutive ? 'mt-1' : 'mt-4'} ${
                 Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''
@@ -155,7 +155,7 @@ export default function MessageBubble({
                 ))}
 
             {/* Balon Chat Container */}
-            <div className="relative flex flex-col">
+            <div className="relative flex flex-col min-w-0">
                 {/* ── MENU PILIHAN (Klik Bubble Chat) ── */}
                 {activeMenuMessageId === msg.id && (
                     <div
@@ -239,7 +239,7 @@ export default function MessageBubble({
                             '--bubble-bg': isDark ? '#0b0f19' : '#f8fafc',
                         } as React.CSSProperties
                     }
-                    className={`chat-bubble-body relative flex cursor-pointer flex-col rounded-[3px] border bg-slate-550 pt-2 pr-[51px] pb-2 pl-[12px] text-slate-800 transition duration-200 select-none active:scale-[0.99] dark:bg-[#0b0f19] dark:text-slate-100 ${
+                    className={`chat-bubble-body relative flex cursor-pointer flex-col rounded-[3px] border bg-slate-550 pt-2 pr-[51px] pb-2 pl-[12px] text-slate-800 transition duration-200 select-none active:scale-[0.99] dark:bg-[#0b0f19] dark:text-slate-100 min-w-0 ${
                         isSelf
                             ? `border-[#facc15] bg-[#facc15]/5 shadow-[0_0_8px_rgba(250,204,21,0.15)] ${
                                   isConsecutive ? '' : 'rounded-tr-none'
