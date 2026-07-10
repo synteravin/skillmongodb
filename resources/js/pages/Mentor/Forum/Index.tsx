@@ -1,57 +1,19 @@
+import React from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import ForumWorkspace from '@/components/Forum/ForumWorkspace';
-
-interface Sender {
-    id: string;
-    name: string;
-    avatar: string | null;
-    role: string;
-}
-
-interface Message {
-    id: string;
-    message: string;
-    attachments: string[];
-    created_at: string;
-    is_pinned: boolean;
-    parent: {
-        id: string;
-        message: string;
-        sender_name: string;
-    } | null;
-    reactions: Array<{
-        user_id: string;
-        user_name: string;
-        emoji: string;
-    }>;
-    sender: Sender;
-}
-
-interface CourseList {
-    id: string;
-    title: string;
-    slug: string;
-    thumbnail: string | null;
-    last_message: {
-        sender_name: string;
-        message: string;
-        created_at: string;
-    } | null;
-}
-
-interface SelectedCourse {
-    id: string;
-    title: string;
-    slug: string;
-    thumbnail: string | null;
-}
+import {
+    CourseGroup,
+    Message,
+    PinnedMessage,
+    SelectedCourse,
+} from '@/components/Forum/types';
 
 interface Props {
-    courses: CourseList[];
+    courses: CourseGroup[];
     selectedCourse: SelectedCourse | null;
     messages: Message[];
-    pinnedMessages: Array<{ id: string; message: string; sender_name: string }>;
+    pinnedMessages: PinnedMessage[];
     auth: {
         user: {
             id: string;
