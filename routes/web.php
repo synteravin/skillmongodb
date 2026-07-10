@@ -216,6 +216,12 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/quests/{quest}/reject', [App\Http\Controllers\Admin\QuestController::class, 'rejectWork'])->name('quests.reject-work');
         Route::post('/quests/{quest}/approve-post', [App\Http\Controllers\Admin\QuestController::class, 'approvePost'])->name('quests.approve-post');
         Route::post('/quests/{quest}/reject-post', [App\Http\Controllers\Admin\QuestController::class, 'rejectPost'])->name('quests.reject-post');
+        Route::post('/quests/{quest}/arbitrate', [App\Http\Controllers\Admin\QuestController::class, 'arbitrate'])->name('quests.arbitrate');
+        Route::post('/quests/{quest}/force-cancel', [App\Http\Controllers\Admin\QuestController::class, 'forceCancel'])->name('quests.force-cancel');
+        Route::post('/quests/{quest}/extend-deadline', [App\Http\Controllers\Admin\QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
+        Route::post('/quests/{quest}/reopen-bidding', [App\Http\Controllers\Admin\QuestController::class, 'reopenBidding'])->name('quests.reopen-bidding');
+        Route::get('/quests-flags', [App\Http\Controllers\Admin\QuestController::class, 'flagQueue'])->name('quests.flags');
+        Route::post('/quests-flags/{flag}/resolve', [App\Http\Controllers\Admin\QuestController::class, 'resolveFlag'])->name('quests.flags.resolve');
     });
 /*
 |--------------------------------------------------------------------------
@@ -473,6 +479,7 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/submit-final-zip', [QuestController::class, 'submitFinalZIP'])->name('quests.submit-final-zip');
         Route::post('/quests/{quest}/approve', [QuestController::class, 'approveWork'])->name('quests.approve-work');
         Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
+        Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
     });
 
 /*

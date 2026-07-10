@@ -6,6 +6,7 @@ use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
+use App\Models\QuestTransaction;
 use App\Models\User;
 use App\Models\UserStat;
 use Illuminate\Support\Facades\Storage;
@@ -200,6 +201,20 @@ class QuestService
             ];
         }
 
+        $resolvedSubmissionHistory = array_map(function ($sub) use ($disk) {
+            return [
+                'version' => $sub['version'] ?? 1,
+                'submitted_at' => $sub['submitted_at'] ?? null,
+                'submission_link' => $sub['submission_link'] ?? null,
+                'submission_note' => $sub['submission_note'] ?? null,
+                'submission_file' => isset($sub['submission_file']['path']) ? [
+                    'name' => $sub['submission_file']['name'] ?? 'deliverable.zip',
+                    'url' => $disk->url($sub['submission_file']['path']),
+                    'size' => $sub['submission_file']['size'] ?? 0,
+                ] : null,
+            ];
+        }, $quest->submission_history ?? []);
+
         return [
             'quest' => [
                 '_id' => (string) $quest->_id,
@@ -231,6 +246,10 @@ class QuestService
                 'images' => $resolvedImages,
                 'files' => $resolvedFiles,
                 'submission_file' => $resolvedSubmissionFile,
+                'tier' => $quest->tier ?? 'C',
+                'custom_rewards' => $quest->custom_rewards,
+                'dispute' => $quest->dispute,
+                'submission_history' => $resolvedSubmissionHistory,
             ],
             'bids' => $bids,
         ];
@@ -253,6 +272,9 @@ class QuestService
             'creator_id' => $creator->_id,
             'images' => $data['images'] ?? [],
             'files' => $data['files'] ?? [],
+            'tier' => $data['tier'] ?? 'C',
+            'custom_rewards' => $data['custom_rewards'] ?? null,
+            'submission_history' => [],
         ]);
     }
 
@@ -296,6 +318,302 @@ class QuestService
             'status' => 'ongoing',
             'worker_id' => $acceptedBid->student_id,
         ]);
+
+        // Record hold_escrow transaction from creator
+        $bidAmount = (int) $acceptedBid->bid_amount;
+        $this->recordTransaction($quest->_id, $quest->creator_id, -$bidAmount, 'hold_escrow', "Escrow holding for bid accept on quest: {$quest->title}");
+    }
+
+    /**
+     * Get calculated/custom rewards based on tier or user overrides.
+     */
+    public function getRewardsForQuest(Quest $quest): array
+    {
+        if ($quest->custom_rewards) {
+            return [
+                'exp' => (int) ($quest->custom_rewards['exp'] ?? 250),
+                'gold' => (int) ($quest->custom_rewards['gold'] ?? 150),
+                'erp' => (int) ($quest->custom_rewards['erp'] ?? 100),
+            ];
+        }
+
+        // Default reward mapping based on Tier
+        $rewards = [
+            'D' => ['exp' => 100, 'gold' => 50, 'erp' => 20],
+            'C' => ['exp' => 250, 'gold' => 150, 'erp' => 100],
+            'B' => ['exp' => 500, 'gold' => 300, 'erp' => 100],
+            'A' => ['exp' => 1000, 'gold' => 600, 'erp' => 200],
+            'S' => ['exp' => 2500, 'gold' => 1500, 'erp' => 500],
+        ];
+
+        $tier = $quest->tier ?? 'C';
+
+        return $rewards[$tier] ?? $rewards['C'];
+    }
+
+    /**
+     * Award gamification rewards to worker.
+     */
+    public function awardQuestRewards(Quest $quest, string $workerId): void
+    {
+        $progress = UserStat::firstOrCreate([
+            'user_id' => $workerId,
+            'course_id' => 'quest_rewards',
+        ], [
+            'completed_modules' => [],
+            'completed_paths' => [],
+            'exp' => 0,
+            'gold' => 0,
+            'erp' => 0,
+            'level' => 1,
+            'path_stats' => [],
+        ]);
+
+        $rewards = $this->getRewardsForQuest($quest);
+
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        if ($acceptedBid) {
+            $rewards['gold'] = (int) $acceptedBid->bid_amount;
+        }
+
+        $pathStats = $progress->path_stats ?? [];
+        if (is_string($pathStats)) {
+            $pathStats = json_decode($pathStats, true) ?: [];
+        } else {
+            $pathStats = (array) $pathStats;
+        }
+
+        $questKey = (string) $quest->_id;
+        $pathStats[$questKey] = [
+            'exp' => $rewards['exp'],
+            'gold' => $rewards['gold'],
+            'quiz_score' => $rewards['erp'], // quiz_score represents ERP
+        ];
+
+        $progress->path_stats = $pathStats;
+
+        $progress->exp = (int) ($progress->exp ?? 0) + $rewards['exp'];
+        $progress->gold = (int) ($progress->gold ?? 0) + $rewards['gold'];
+        $progress->erp = (int) ($progress->erp ?? 0) + $rewards['erp'];
+        $progress->level = (int) max(($progress->level ?? 1), floor($progress->exp / 500) + 1);
+
+        $progress->save();
+
+        // Record Gold transaction: release_payout to worker
+        $this->recordTransaction($quest->_id, $workerId, $rewards['gold'], 'release_payout', "Escrow payout release for quest completion: {$quest->title}");
+    }
+
+    /**
+     * File a dispute for the quest.
+     */
+    public function fileDispute(Quest $quest, User $user, string $reason): void
+    {
+        if (! in_array($quest->status, ['submitted', 'ongoing'])) {
+            abort(400, 'Quest tidak dalam status aktif atau peninjauan untuk diajukan dispute.');
+        }
+
+        $quest->update([
+            'status' => 'disputed',
+            'dispute' => [
+                'disputed_at' => now()->toIso8601String(),
+                'disputer_id' => $user->_id,
+                'reason' => $reason,
+                'status' => 'pending',
+                'resolved_at' => null,
+                'ruling_note' => null,
+            ],
+        ]);
+
+        if ($quest->creator_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->creator_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Perselisihan (dispute) telah diajukan pada quest '{$quest->title}' oleh {$user->name}. Status ditangguhkan menunggu keputusan Admin.",
+                    'type' => 'quest_disputed',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
+        if ($quest->worker_id && $quest->worker_id !== $user->_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->worker_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Perselisihan (dispute) telah diajukan pada quest '{$quest->title}' oleh {$user->name}. Status ditangguhkan menunggu keputusan Admin.",
+                    'type' => 'quest_disputed',
+                ],
+                'read_at' => null,
+            ]);
+        }
+    }
+
+    /**
+     * Resolve arbitration for the quest.
+     */
+    public function resolveArbitration(Quest $quest, string $ruling, ?string $note, ?int $splitPercentage = null): void
+    {
+        if ($quest->status !== 'disputed') {
+            abort(400, 'Hanya quest berstatus disputed yang dapat diarbiatrase.');
+        }
+
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        $bidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : (int) $quest->max_salary;
+
+        $dispute = $quest->dispute ?? [];
+        $dispute['status'] = 'resolved_'.$ruling;
+        $dispute['ruling_note'] = $note;
+        $dispute['resolved_at'] = now()->toIso8601String();
+        if ($ruling === 'split') {
+            $dispute['split_percentage'] = (int) $splitPercentage;
+        }
+
+        if ($ruling === 'release_payout') {
+            $quest->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+                'dispute' => $dispute,
+            ]);
+
+            if ($quest->worker_id) {
+                $this->awardQuestRewards($quest, $quest->worker_id);
+            }
+        } elseif ($ruling === 'refund_creator') {
+            $quest->update([
+                'status' => 'cancelled',
+                'completed_at' => now(),
+                'dispute' => $dispute,
+            ]);
+
+            if ($quest->creator_id) {
+                $this->recordTransaction($quest->_id, $quest->creator_id, $bidAmount, 'refund_escrow', 'Escrow refund to creator via admin arbitration ruling: refund_creator');
+            }
+        } elseif ($ruling === 'split') {
+            $splitPercentage = (int) $splitPercentage;
+            $workerShare = (int) round(($bidAmount * $splitPercentage) / 100);
+            $creatorShare = $bidAmount - $workerShare;
+
+            $quest->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+                'dispute' => $dispute,
+            ]);
+
+            if ($quest->worker_id) {
+                $progress = UserStat::firstOrCreate([
+                    'user_id' => $quest->worker_id,
+                    'course_id' => 'quest_rewards',
+                ], [
+                    'completed_modules' => [],
+                    'completed_paths' => [],
+                    'exp' => 0,
+                    'gold' => 0,
+                    'erp' => 0,
+                    'level' => 1,
+                    'path_stats' => [],
+                ]);
+
+                $rewards = $this->getRewardsForQuest($quest);
+                $partialExp = (int) round(($rewards['exp'] * $splitPercentage) / 100);
+                $partialErp = (int) round(($rewards['erp'] * $splitPercentage) / 100);
+
+                $pathStats = $progress->path_stats ?? [];
+                if (is_string($pathStats)) {
+                    $pathStats = json_decode($pathStats, true) ?: [];
+                } else {
+                    $pathStats = (array) $pathStats;
+                }
+
+                $questKey = (string) $quest->_id;
+                $pathStats[$questKey] = [
+                    'exp' => $partialExp,
+                    'gold' => $workerShare,
+                    'quiz_score' => $partialErp,
+                ];
+
+                $progress->path_stats = $pathStats;
+                $progress->exp = (int) ($progress->exp ?? 0) + $partialExp;
+                $progress->gold = (int) ($progress->gold ?? 0) + $workerShare;
+                $progress->erp = (int) ($progress->erp ?? 0) + $partialErp;
+                $progress->level = (int) max(($progress->level ?? 1), floor($progress->exp / 500) + 1);
+                $progress->save();
+
+                $this->recordTransaction($quest->_id, $quest->worker_id, $workerShare, 'release_payout', "Split payout release (Share: {$splitPercentage}%) for quest: {$quest->title}");
+            }
+
+            if ($quest->creator_id) {
+                $this->recordTransaction($quest->_id, $quest->creator_id, $creatorShare, 'refund_escrow', 'Split payout refund to creator (Share: '.(100 - $splitPercentage)."%) for quest: {$quest->title}");
+            }
+        }
+
+        if ($quest->creator_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->creator_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Arbitrase quest '{$quest->title}' telah diputuskan oleh Admin: ".strtoupper(str_replace('_', ' ', $ruling)).'.',
+                    'type' => 'quest_arbitrated',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
+        if ($quest->worker_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->worker_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Arbitrase quest '{$quest->title}' telah diputuskan oleh Admin: ".strtoupper(str_replace('_', ' ', $ruling)).'.',
+                    'type' => 'quest_arbitrated',
+                ],
+                'read_at' => null,
+            ]);
+        }
+    }
+
+    /**
+     * Record a transaction and adjust the target user's Gold balance.
+     */
+    public function recordTransaction(string $questId, string $userId, int $amount, string $type, string $description): QuestTransaction
+    {
+        $transaction = QuestTransaction::create([
+            'quest_id' => $questId,
+            'user_id' => $userId,
+            'amount' => $amount,
+            'type' => $type,
+            'description' => $description,
+        ]);
+
+        $user = User::find($userId);
+        if ($user) {
+            $userStat = UserStat::firstOrCreate([
+                'user_id' => $userId,
+                'course_id' => 'quest_rewards',
+            ], [
+                'completed_modules' => [],
+                'completed_paths' => [],
+                'exp' => 0,
+                'gold' => 0,
+                'erp' => 0,
+                'level' => 1,
+                'path_stats' => [],
+            ]);
+
+            $currentGold = (int) ($userStat->gold ?? 0);
+            $userStat->gold = max(0, $currentGold + $amount);
+            $userStat->save();
+        }
+
+        return $transaction;
     }
 
     /**

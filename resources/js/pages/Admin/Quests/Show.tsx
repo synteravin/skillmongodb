@@ -62,10 +62,28 @@ interface Quest {
     revisions?: Array<RevisionEntry>;
     rejection_note?: string | null;
     rating?: number | null;
-    rating_comment?: string | null;
     images?: Array<{ name: string; url: string }>;
     files?: Array<{ name: string; url: string; size: number }>;
     submission_file?: { name: string; url: string; size: number } | null;
+    tier?: string;
+    custom_rewards?: { exp?: number; gold?: number } | null;
+    dispute?: {
+        status?: string;
+        reason?: string;
+        ruled_at?: string;
+        ruling?: string;
+        note?: string;
+        split_percentage?: number;
+        filer_id?: string;
+        filer_name?: string;
+    } | null;
+    submission_history?: Array<{
+        version: number;
+        submitted_at: string;
+        submission_link?: string | null;
+        submission_note?: string | null;
+        submission_file?: { name: string; url: string; size: number } | null;
+    }>;
 }
 
 const RevisionHistory = ({ quest, viewType }: { quest: Quest; viewType: "creator_ongoing" | "creator_submitted" | "worker_ongoing" | "worker_submitted" | "admin_submitted" | "admin_ongoing" }) => {
@@ -193,12 +211,24 @@ interface Bid {
     unread_messages_count: number;
 }
 
+interface Transaction {
+    _id: string;
+    amount: number;
+    type: string;
+    description: string;
+    created_at: string;
+    user?: {
+        name: string;
+    } | null;
+}
+
 interface Props {
     quest: Quest;
     bids: Bid[];
+    transactions?: Transaction[];
 }
 
-export default function Show({ quest, bids }: Props) {
+export default function Show({ quest, bids, transactions = [] }: Props) {
     const [selectedChatBid, setSelectedChatBid] = useState<{ id: string; name: string } | null>(null);
     const [previewImage, setPreviewImage] = useState<{ url: string; name: string } | null>(null);
     const [acceptBidId, setAcceptBidId] = useState<string | null>(null);
@@ -209,7 +239,7 @@ export default function Show({ quest, bids }: Props) {
     const currentUserId = props.auth?.user?._id;
 
     // Define active tab
-    const [activeTab, setActiveTab] = useState<'detail' | 'project' | 'bids'>('detail');
+    const [activeTab, setActiveTab] = useState<'detail' | 'project' | 'bids' | 'arbitration'>('detail');
 
     const approveForm = useForm({
         rating: 5,
@@ -219,6 +249,46 @@ export default function Show({ quest, bids }: Props) {
     const rejectForm = useForm({
         revision_note: '',
     });
+
+    const arbitrateForm = useForm({
+        ruling: 'refund' as 'refund' | 'pay_worker' | 'split',
+        split_percentage: 50,
+        note: '',
+    });
+
+    const extendDeadlineForm = useForm({
+        deadline: '',
+    });
+
+    const handleArbitrate = (e: React.FormEvent) => {
+        e.preventDefault();
+        arbitrateForm.post(`/admin/quests/${quest._id}/arbitrate`, {
+            onSuccess: () => {
+                arbitrateForm.reset();
+            },
+        });
+    };
+
+    const handleExtendDeadline = (e: React.FormEvent) => {
+        e.preventDefault();
+        extendDeadlineForm.post(`/admin/quests/${quest._id}/extend-deadline`, {
+            onSuccess: () => {
+                extendDeadlineForm.reset();
+            },
+        });
+    };
+
+    const handleForceCancel = () => {
+        if (confirm('Apakah Anda yakin ingin membatalkan quest ini secara paksa? Uang escrow akan dikembalikan penuh ke pembuat quest.')) {
+            router.post(`/admin/quests/${quest._id}/force-cancel`);
+        }
+    };
+
+    const handleReopenBidding = () => {
+        if (confirm('Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan uang escrow dikembalikan ke pembuat quest.')) {
+            router.post(`/admin/quests/${quest._id}/reopen-bidding`);
+        }
+    };
 
     const handleApproveWork = (e: React.FormEvent) => {
         e.preventDefault();
@@ -600,6 +670,23 @@ export default function Show({ quest, bids }: Props) {
                                         Pelamar ({bids.length})
                                     </span>
                                     {activeTab === 'bids' && (
+                                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                                    )}
+                                </button>
+
+                                <button
+                                    onClick={() => setActiveTab('arbitration')}
+                                    className={`pb-3 relative transition-colors cursor-pointer ${
+                                        activeTab === 'arbitration'
+                                            ? 'text-indigo-600 dark:text-indigo-400 font-extrabold'
+                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-1.5 font-['Orbitron']">
+                                        <ShieldAlert size={14} />
+                                        Arbitrase & Kontrol
+                                    </span>
+                                    {activeTab === 'arbitration' && (
                                         <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
                                     )}
                                 </button>
@@ -1158,6 +1245,311 @@ export default function Show({ quest, bids }: Props) {
                                             ))}
                                         </div>
                                     )}
+                                </div>
+                            )}
+
+                            {/* TAB 4: ARBITRATION & CONTROL */}
+                            {activeTab === 'arbitration' && (
+                                <div className="space-y-6">
+                                    {/* Action Control Panel */}
+                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-6">
+                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                                            <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider flex items-center gap-2">
+                                                <TrendingUp size={16} className="text-indigo-500" />
+                                                Pusat Kontrol Administratif
+                                            </h3>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-['Oxanium']">
+                                            {/* Extend Deadline Form */}
+                                            <form onSubmit={handleExtendDeadline} className="space-y-4 bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                                                <h4 className="text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-slate-300">
+                                                    Perpanjang Tenggat Waktu
+                                                </h4>
+                                                <p className="text-[11px] text-slate-400">
+                                                    Ubah batas akhir pengiriman untuk memberikan waktu tambahan kepada pekerja.
+                                                </p>
+                                                <div className="space-y-2">
+                                                    <input
+                                                        type="datetime-local"
+                                                        value={extendDeadlineForm.data.deadline}
+                                                        onChange={(e) => extendDeadlineForm.setData('deadline', e.target.value)}
+                                                        className="w-full px-3 py-2 bg-white dark:bg-[#0c122c] border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs text-slate-850 dark:text-white"
+                                                    />
+                                                    {extendDeadlineForm.errors.deadline && (
+                                                        <p className="text-xs text-red-500 font-semibold">{extendDeadlineForm.errors.deadline}</p>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    type="submit"
+                                                    disabled={extendDeadlineForm.processing}
+                                                    className="w-full py-2 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition-colors cursor-pointer"
+                                                >
+                                                    {extendDeadlineForm.processing ? 'Memperbarui...' : 'Perpanjang Deadline'}
+                                                </button>
+                                            </form>
+
+                                            {/* Quick Recovery Actions */}
+                                            <div className="space-y-4 bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50 flex flex-col justify-between">
+                                                <div>
+                                                    <h4 className="text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-slate-300">
+                                                        Tindakan Pemulihan Cepat
+                                                    </h4>
+                                                    <p className="text-[11px] text-slate-400 mt-1">
+                                                        Gunakan opsi di bawah ini jika terjadi kemacetan pengerjaan atau perselisihan sepihak.
+                                                    </p>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-2 pt-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleReopenBidding}
+                                                        className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-amber-600 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all cursor-pointer text-center"
+                                                    >
+                                                        Buka Kembali Bidding
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleForceCancel}
+                                                        className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-red-600 dark:text-red-300 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all cursor-pointer text-center"
+                                                    >
+                                                        Batalkan Quest & Refund Escrow
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Dispute & Arbitration Panel */}
+                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-6">
+                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                                            <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider flex items-center gap-2">
+                                                <ShieldAlert size={16} className="text-red-500" />
+                                                Arbitrase Penyelidikan & Sengketa
+                                            </h3>
+                                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                                                quest.status === 'disputed' 
+                                                    ? 'bg-red-500/10 border border-red-500/20 text-red-650 dark:text-red-405 animate-pulse'
+                                                    : quest.dispute?.status === 'resolved'
+                                                    ? 'bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400'
+                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                                            }`}>
+                                                {quest.status === 'disputed' ? 'Dispute Aktif' : quest.dispute?.status === 'resolved' ? 'Selesai' : 'Tidak Ada Sengketa'}
+                                            </span>
+                                        </div>
+
+                                        {quest.dispute ? (
+                                            <div className="space-y-6 font-['Oxanium']">
+                                                <div className="p-4 rounded-xl bg-red-500/5 dark:bg-red-950/10 border border-red-200/20 dark:border-red-500/10 space-y-2">
+                                                    <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                                        <span>Diajukan oleh: <strong className="text-slate-700 dark:text-white">{quest.dispute.filer_name}</strong></span>
+                                                        <span>Tanggal: {quest.dispute.ruled_at ? formatDate(quest.dispute.ruled_at) : 'Baru saja'}</span>
+                                                    </div>
+                                                    <p className="text-xs text-slate-600 dark:text-red-300 italic bg-white/40 dark:bg-black/10 p-3 rounded-lg border border-slate-100 dark:border-red-500/5">
+                                                        "{quest.dispute.reason}"
+                                                    </p>
+                                                </div>
+
+                                                {quest.dispute.status === 'resolved' ? (
+                                                    <div className="p-4 rounded-xl bg-green-500/5 dark:bg-green-950/10 border border-green-200/20 dark:border-green-500/10 space-y-3">
+                                                        <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-green-600 dark:text-green-400">
+                                                            Keputusan Arbitrase Admin
+                                                        </h4>
+                                                        <div className="grid grid-cols-2 gap-4 text-xs">
+                                                            <div>
+                                                                <span className="block text-slate-400 text-[10px] uppercase font-bold">Ruling</span>
+                                                                <span className="font-bold text-slate-800 dark:text-white uppercase">
+                                                                    {quest.dispute.ruling === 'refund' && 'Refund Penuh Ke Pembuat'}
+                                                                    {quest.dispute.ruling === 'pay_worker' && 'Bayar Penuh Ke Pekerja'}
+                                                                    {quest.dispute.ruling === 'split' && `Bagi Hasil (${quest.dispute.split_percentage}% Pekerja)`}
+                                                                </span>
+                                                            </div>
+                                                            {quest.dispute.split_percentage !== undefined && (
+                                                                <div>
+                                                                    <span className="block text-slate-400 text-[10px] uppercase font-bold">Split Persentase</span>
+                                                                    <span className="font-bold text-slate-800 dark:text-white">
+                                                                        {quest.dispute.split_percentage}% Pekerja / {100 - (quest.dispute.split_percentage ?? 0)}% Pembuat
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="pt-2 border-t border-green-500/10 text-xs">
+                                                            <span className="block text-slate-400 text-[10px] uppercase font-bold mb-1">Catatan Keputusan</span>
+                                                            <p className="text-slate-600 dark:text-green-300 italic font-medium">"{quest.dispute.note}"</p>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <form onSubmit={handleArbitrate} className="space-y-4 bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                                                        <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-slate-350 tracking-wider">
+                                                            Formulir Penyelesaian Sengketa (Verdict)
+                                                        </h4>
+
+                                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                            <label className={`p-3 rounded-xl border text-center cursor-pointer transition-all ${
+                                                                arbitrateForm.data.ruling === 'refund'
+                                                                    ? 'bg-red-500/10 border-red-500 text-red-650 dark:text-red-300 font-bold shadow-sm'
+                                                                    : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-500'
+                                                            }`}>
+                                                                <input
+                                                                    type="radio"
+                                                                    name="ruling"
+                                                                    value="refund"
+                                                                    checked={arbitrateForm.data.ruling === 'refund'}
+                                                                    onChange={() => arbitrateForm.setData('ruling', 'refund')}
+                                                                    className="sr-only"
+                                                                />
+                                                                <span className="block text-xs font-['Orbitron'] uppercase">Refund Pembuat</span>
+                                                                <span className="text-[10px] text-slate-400 block mt-0.5">100% dana ke pembuat</span>
+                                                            </label>
+
+                                                            <label className={`p-3 rounded-xl border text-center cursor-pointer transition-all ${
+                                                                arbitrateForm.data.ruling === 'pay_worker'
+                                                                    ? 'bg-green-500/10 border-green-500 text-green-600 dark:text-green-300 font-bold shadow-sm'
+                                                                    : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-500'
+                                                            }`}>
+                                                                <input
+                                                                    type="radio"
+                                                                    name="ruling"
+                                                                    value="pay_worker"
+                                                                    checked={arbitrateForm.data.ruling === 'pay_worker'}
+                                                                    onChange={() => arbitrateForm.setData('ruling', 'pay_worker')}
+                                                                    className="sr-only"
+                                                                />
+                                                                <span className="block text-xs font-['Orbitron'] uppercase">Bayar Pekerja</span>
+                                                                <span className="text-[10px] text-slate-400 block mt-0.5">100% dana ke pekerja</span>
+                                                            </label>
+
+                                                            <label className={`p-3 rounded-xl border text-center cursor-pointer transition-all ${
+                                                                arbitrateForm.data.ruling === 'split'
+                                                                    ? 'bg-indigo-500/10 border-indigo-500 text-indigo-600 dark:text-indigo-300 font-bold shadow-sm'
+                                                                    : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-500'
+                                                            }`}>
+                                                                <input
+                                                                    type="radio"
+                                                                    name="ruling"
+                                                                    value="split"
+                                                                    checked={arbitrateForm.data.ruling === 'split'}
+                                                                    onChange={() => arbitrateForm.setData('ruling', 'split')}
+                                                                    className="sr-only"
+                                                                />
+                                                                <span className="block text-xs font-['Orbitron'] uppercase">Bagi Hasil</span>
+                                                                <span className="text-[10px] text-slate-400 block mt-0.5">Bagi dengan rasio custom</span>
+                                                            </label>
+                                                        </div>
+
+                                                        {arbitrateForm.data.ruling === 'split' && (
+                                                            <div className="space-y-1.5 animate-fadeIn">
+                                                                <label className="text-[10px] font-bold uppercase text-slate-400">
+                                                                    Persentase untuk Pekerja (%) <span className="text-red-500">*</span>
+                                                                </label>
+                                                                <input
+                                                                    type="number"
+                                                                    min="1"
+                                                                    max="99"
+                                                                    value={arbitrateForm.data.split_percentage}
+                                                                    onChange={(e) => arbitrateForm.setData('split_percentage', parseInt(e.target.value) || 50)}
+                                                                    className="w-full px-3 py-2 bg-white dark:bg-[#0c122c] border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs text-slate-800 dark:text-white font-['Orbitron']"
+                                                                />
+                                                                <span className="text-[10px] text-slate-400 block mt-0.5">
+                                                                    Sisa ({100 - arbitrateForm.data.split_percentage}%) akan dikembalikan kepada pembuat quest.
+                                                                </span>
+                                                                {arbitrateForm.errors.split_percentage && (
+                                                                    <p className="text-xs text-red-500 font-semibold">{arbitrateForm.errors.split_percentage}</p>
+                                                                )}
+                                                            </div>
+                                                        )}
+
+                                                        <div className="space-y-1.5">
+                                                            <label className="text-[10px] font-bold uppercase text-slate-400">
+                                                                Catatan Keputusan / Alasan Arbitrase <span className="text-red-500">*</span>
+                                                            </label>
+                                                            <textarea
+                                                                required
+                                                                placeholder="Berikan penjelasan atau dasar dari keputusan arbitrase Anda..."
+                                                                rows={3}
+                                                                value={arbitrateForm.data.note}
+                                                                onChange={(e) => arbitrateForm.setData('note', e.target.value)}
+                                                                className="w-full px-3 py-2 bg-white dark:bg-[#0c122c] border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs text-slate-800 dark:text-white"
+                                                            />
+                                                            {arbitrateForm.errors.note && (
+                                                                <p className="text-xs text-red-500 font-semibold">{arbitrateForm.errors.note}</p>
+                                                            )}
+                                                        </div>
+
+                                                        <button
+                                                            type="submit"
+                                                            disabled={arbitrateForm.processing}
+                                                            className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-red-650 hover:bg-red-750 disabled:opacity-50 transition-all cursor-pointer shadow-lg"
+                                                        >
+                                                            {arbitrateForm.processing ? 'Memproses Keputusan...' : 'Kirim Verdict Arbitrase'}
+                                                        </button>
+                                                    </form>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="py-8 text-center text-slate-400 dark:text-blue-300/30 font-['Oxanium'] bg-slate-50/50 dark:bg-black/10 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                <ShieldAlert className="w-8 h-8 mx-auto mb-2 opacity-40 text-slate-400" />
+                                                <p className="text-xs uppercase font-['Orbitron'] font-bold">Tidak Ada Sengketa Aktif</p>
+                                                <p className="text-[10px] text-slate-500">Quest ini berjalan dengan normal dan tidak berada dalam status banding/dispute.</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Quest Transaction Ledger */}
+                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-5">
+                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                                            <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider flex items-center gap-2">
+                                                <FolderGit size={16} className="text-purple-500" />
+                                                Buku Besar Transaksi Koin Gold (Quest Ledger)
+                                            </h3>
+                                            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300">
+                                                {transactions.length} Transaksi
+                                            </span>
+                                        </div>
+
+                                        {transactions.length === 0 ? (
+                                            <div className="py-8 text-center text-slate-400 dark:text-blue-300/30 font-['Oxanium']">
+                                                <p className="text-xs uppercase font-['Orbitron'] font-bold">Belum Ada Catatan Transaksi</p>
+                                                <p className="text-[10px] text-slate-500">Belum ada transaksi dana/escrow koin Gold yang tercatat pada quest ini.</p>
+                                            </div>
+                                        ) : (
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full text-left border-collapse font-['Oxanium'] text-xs">
+                                                    <thead>
+                                                        <tr className="border-b border-slate-100 dark:border-slate-800/80 text-[10px] font-bold uppercase text-slate-400">
+                                                            <th className="py-2.5">Tanggal</th>
+                                                            <th className="py-2.5">Tipe</th>
+                                                            <th className="py-2.5">Pihak Terkait</th>
+                                                            <th className="py-2.5">Jumlah</th>
+                                                            <th className="py-2.5">Deskripsi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                                        {transactions.map((t) => (
+                                                            <tr key={t._id} className="hover:bg-slate-50/50 dark:hover:bg-black/10">
+                                                                <td className="py-2.5 text-slate-500 dark:text-slate-400 font-semibold">{formatDate(t.created_at)}</td>
+                                                                <td className="py-2.5 font-bold uppercase text-[10px]">
+                                                                    <span className={`px-2 py-0.5 rounded ${
+                                                                        t.type.includes('escrow')
+                                                                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20'
+                                                                            : t.type === 'pay_worker'
+                                                                            ? 'bg-green-500/10 text-green-600 dark:text-green-300 border border-green-500/20'
+                                                                            : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20'
+                                                                    }`}>
+                                                                        {t.type}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="py-2.5 font-semibold text-slate-700 dark:text-slate-350">{t.user?.name ?? 'Sistem / Escrow'}</td>
+                                                                <td className="py-2.5 font-black text-amber-500 font-['Orbitron']">
+                                                                    {t.amount > 0 ? `+${t.amount}` : t.amount} G
+                                                                </td>
+                                                                <td className="py-2.5 text-slate-500 dark:text-slate-450 italic">{t.description}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </div>
