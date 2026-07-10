@@ -24,7 +24,7 @@ export default function UserProfileModal({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-[340px] overflow-hidden rounded-3xl border border-[#3b28f6]/30 bg-black/40 p-5 text-white shadow-[0_0_50px_rgba(59,40,246,0.25)] backdrop-blur-sm"
+                className="relative w-full max-w-[340px] overflow-hidden rounded-3xl border border-[#3b28f6]/30 bg-black/40 p-5 text-white shadow-[0_0_50px_rgba(59,40,246,0.25)] backdrop-blur-sm animate-scale-up"
             >
                 {/* Close button */}
                 <button

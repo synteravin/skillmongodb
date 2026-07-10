@@ -46,7 +46,7 @@ export default function ForumIndex({
                 }`}
             />
 
-            <div className="flex h-dvh w-screen overflow-hidden bg-[#121212] text-white">
+            <div className="flex h-dvh w-full overflow-hidden bg-[#121212] text-white">
                 <ForumWorkspace
                     courses={courses}
                     selectedCourse={selectedCourse}
