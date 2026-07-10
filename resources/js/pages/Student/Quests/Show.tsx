@@ -324,11 +324,17 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     };
 
     const formatDate = (dateStr: string) => {
-        return new Date(dateStr).toLocaleDateString("id-ID", {
+        const d = new Date(dateStr);
+        const datePart = d.toLocaleDateString("id-ID", {
             year: "numeric",
             month: "long",
             day: "numeric",
         });
+        const timePart = d.toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return `${datePart} pukul ${timePart}`;
     };
 
     // Calculate days remaining
@@ -704,9 +710,9 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 {quest.status === 'disputed'
                                                     ? `Dispute diajukan oleh ${quest.dispute.filer_name} dengan alasan: "${quest.dispute.reason}". Dana escrow ditangguhkan sementara menunggu keputusan arbitrase admin.`
                                                     : `Perselisihan telah diselesaikan oleh Admin dengan putusan: ${
-                                                        quest.dispute.ruling === 'refund'
+                                                        ['refund', 'refund_creator'].includes(quest.dispute.ruling ?? '')
                                                             ? 'Pengembalian dana (refund) penuh kepada pembuat quest.'
-                                                            : quest.dispute.ruling === 'pay_worker'
+                                                            : ['pay_worker', 'release_payout'].includes(quest.dispute.ruling ?? '')
                                                             ? 'Pembayaran penuh diserahkan kepada pekerja.'
                                                             : `Bagi hasil (${quest.dispute.split_percentage}% untuk pekerja).`
                                                     } Catatan: "${quest.dispute.note}".`

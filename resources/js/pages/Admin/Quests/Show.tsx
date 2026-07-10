@@ -62,6 +62,7 @@ interface Quest {
     revisions?: Array<RevisionEntry>;
     rejection_note?: string | null;
     rating?: number | null;
+    rating_comment?: string | null;
     images?: Array<{ name: string; url: string }>;
     files?: Array<{ name: string; url: string; size: number }>;
     submission_file?: { name: string; url: string; size: number } | null;
@@ -271,6 +272,16 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleExtendDeadline = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        const utcDeadline = extendDeadlineForm.data.deadline 
+            ? new Date(extendDeadlineForm.data.deadline).toISOString() 
+            : '';
+
+        extendDeadlineForm.transform((data) => ({
+            ...data,
+            deadline: utcDeadline,
+        }));
+
         extendDeadlineForm.post(`/admin/quests/${quest._id}/extend-deadline`, {
             onSuccess: () => {
                 extendDeadlineForm.reset();
@@ -1329,11 +1340,11 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                             <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
                                                 quest.status === 'disputed' 
                                                     ? 'bg-red-500/10 border border-red-500/20 text-red-650 dark:text-red-405 animate-pulse'
-                                                    : quest.dispute?.status === 'resolved'
+                                                    : quest.dispute?.status?.startsWith('resolved')
                                                     ? 'bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400'
                                                     : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                                             }`}>
-                                                {quest.status === 'disputed' ? 'Dispute Aktif' : quest.dispute?.status === 'resolved' ? 'Selesai' : 'Tidak Ada Sengketa'}
+                                                {quest.status === 'disputed' ? 'Dispute Aktif' : quest.dispute?.status?.startsWith('resolved') ? 'Selesai' : 'Tidak Ada Sengketa'}
                                             </span>
                                         </div>
 
@@ -1344,12 +1355,12 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                         <span>Diajukan oleh: <strong className="text-slate-700 dark:text-white">{quest.dispute.filer_name}</strong></span>
                                                         <span>Tanggal: {quest.dispute.ruled_at ? formatDate(quest.dispute.ruled_at) : 'Baru saja'}</span>
                                                     </div>
-                                                    <p className="text-xs text-slate-600 dark:text-red-300 italic bg-white/40 dark:bg-black/10 p-3 rounded-lg border border-slate-100 dark:border-red-500/5">
+                                                    <p className="text-xs text-slate-650 dark:text-red-305 italic bg-white/40 dark:bg-black/10 p-3 rounded-lg border border-slate-100 dark:border-red-500/5">
                                                         "{quest.dispute.reason}"
                                                     </p>
                                                 </div>
 
-                                                {quest.dispute.status === 'resolved' ? (
+                                                {quest.dispute.status?.startsWith('resolved') ? (
                                                     <div className="p-4 rounded-xl bg-green-500/5 dark:bg-green-950/10 border border-green-200/20 dark:border-green-500/10 space-y-3">
                                                         <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-green-600 dark:text-green-400">
                                                             Keputusan Arbitrase Admin
@@ -1358,8 +1369,8 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                             <div>
                                                                 <span className="block text-slate-400 text-[10px] uppercase font-bold">Ruling</span>
                                                                 <span className="font-bold text-slate-800 dark:text-white uppercase">
-                                                                    {quest.dispute.ruling === 'refund' && 'Refund Penuh Ke Pembuat'}
-                                                                    {quest.dispute.ruling === 'pay_worker' && 'Bayar Penuh Ke Pekerja'}
+                                                                    {['refund', 'refund_creator'].includes(quest.dispute.ruling ?? '') && 'Refund Penuh Ke Pembuat'}
+                                                                    {['pay_worker', 'release_payout'].includes(quest.dispute.ruling ?? '') && 'Bayar Penuh Ke Pekerja'}
                                                                     {quest.dispute.ruling === 'split' && `Bagi Hasil (${quest.dispute.split_percentage}% Pekerja)`}
                                                                 </span>
                                                             </div>
@@ -1528,16 +1539,19 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                             <tr key={t._id} className="hover:bg-slate-50/50 dark:hover:bg-black/10">
                                                                 <td className="py-2.5 text-slate-500 dark:text-slate-400 font-semibold">{formatDate(t.created_at)}</td>
                                                                 <td className="py-2.5 font-bold uppercase text-[10px]">
-                                                                    <span className={`px-2 py-0.5 rounded ${
-                                                                        t.type.includes('escrow')
-                                                                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20'
-                                                                            : t.type === 'pay_worker'
-                                                                            ? 'bg-green-500/10 text-green-600 dark:text-green-300 border border-green-500/20'
-                                                                            : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20'
-                                                                    }`}>
-                                                                        {t.type}
-                                                                    </span>
-                                                                </td>
+                                                                     <span className={`px-2 py-0.5 rounded ${
+                                                                         t.type === 'hold_escrow'
+                                                                             ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20'
+                                                                             : t.type === 'release_payout'
+                                                                             ? 'bg-green-500/10 text-green-600 dark:text-green-350 border border-green-500/20'
+                                                                             : 'bg-indigo-500/10 text-indigo-650 dark:text-indigo-350 border border-indigo-500/20'
+                                                                     }`}>
+                                                                         {t.type === 'hold_escrow' && 'Hold Escrow'}
+                                                                         {t.type === 'release_payout' && 'Release Payout'}
+                                                                         {t.type === 'refund_escrow' && 'Refund Escrow'}
+                                                                         {!['hold_escrow', 'release_payout', 'refund_escrow'].includes(t.type) && t.type}
+                                                                     </span>
+                                                                 </td>
                                                                 <td className="py-2.5 font-semibold text-slate-700 dark:text-slate-350">{t.user?.name ?? 'Sistem / Escrow'}</td>
                                                                 <td className="py-2.5 font-black text-amber-500 font-['Orbitron']">
                                                                     {t.amount > 0 ? `+${t.amount}` : t.amount} G
