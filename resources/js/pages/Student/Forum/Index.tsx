@@ -16,6 +16,7 @@ import {
     Pencil,
     Trash2,
     Download,
+    SendHorizontal,
 } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -37,6 +38,7 @@ interface Message {
         id: string;
         message: string;
         sender_name: string;
+        sender_id?: string;
     } | null;
     reactions: Array<{
         user_id: string;
@@ -173,6 +175,7 @@ export default function ForumIndex({
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const emojiPickerRef = useRef<HTMLDivElement | null>(null);
     const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     // Form Inertia untuk posting pesan baru
     const { data, setData, post, processing, reset } = useForm<{
@@ -184,6 +187,14 @@ export default function ForumIndex({
         attachment: null,
         parent_id: null,
     });
+
+    // Auto-resize textarea when text content changes
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+        }
+    }, [data.message]);
 
     const scrollToBottom = () => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -268,8 +279,10 @@ export default function ForumIndex({
     );
 
     // Handle kirim pesan
-    const handleSendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
+        if (e) {
+            e.preventDefault();
+        }
         if (!selectedCourse || processing) return;
         if (!data.message.trim() && !data.attachment) return;
 
@@ -598,7 +611,7 @@ export default function ForumIndex({
                 title={`Forum - ${selectedCourse ? selectedCourse.title : 'Diskusi'}`}
             />
 
-            <div className="flex h-screen w-screen overflow-hidden bg-[#121212] text-white">
+            <div className="flex h-dvh w-screen overflow-hidden bg-[#121212] text-white">
                 {/* ── SIDEBAR KIRI ── */}
                 <div
                     className={`flex w-full shrink-0 flex-col border-r border-[#3B28F6]/20 bg-[#121212] md:w-[350px] lg:w-[400px] ${showChatMobile ? 'hidden md:flex' : 'flex'}`}
@@ -791,7 +804,7 @@ export default function ForumIndex({
                                             'linear-gradient(to bottom, #3B28F6 0%, #7c3aed 50%, #facc15 100%)',
                                     }}
                                 >
-                                    <div className="flex items-center justify-between bg-[#121212] px-6 py-4.5">
+                                    <div className="flex items-center justify-between bg-[#121212] px-4 py-3 md:px-6 md:py-4.5">
                                         <div className="flex items-center gap-3">
                                             {/* Tombol Back Mobile */}
                                             <button
@@ -804,7 +817,7 @@ export default function ForumIndex({
                                                 <ArrowLeft className="h-4 w-4" />
                                             </button>
 
-                                            <div className="h-10 w-10 overflow-hidden rounded-xl border border-[#3B28F6]/40 bg-slate-900">
+                                            <div className="h-9 w-9 md:h-10 md:w-10 overflow-hidden rounded-xl border border-[#3B28F6]/40 bg-slate-900">
                                                 {selectedCourse.thumbnail ? (
                                                     <img
                                                         src={
@@ -836,7 +849,7 @@ export default function ForumIndex({
 
                             {/* Sticky Bar untuk Pesan Tersemat (Pinned Messages) */}
                             {pinnedMessages.length > 0 && (
-                                <div className="z-10 flex shrink-0 items-center justify-between border-b border-[#facc15]/20 bg-[#121212] px-6 py-2.5 font-['Oxanium'] text-xs text-slate-300">
+                                <div className="z-10 flex shrink-0 items-center justify-between border-b border-[#facc15]/20 bg-[#121212] px-4 py-2 md:px-6 md:py-2.5 font-['Oxanium'] text-xs text-slate-300">
                                     <div
                                         className="flex flex-1 cursor-pointer items-center gap-2 truncate hover:text-white"
                                         onClick={() =>
@@ -873,7 +886,7 @@ export default function ForumIndex({
                             )}
 
                             {/* Feed Diskusi / Chat Area */}
-                            <div className="bg-radial-gradient flex-1 overflow-y-auto from-indigo-950/5 via-transparent to-transparent px-6 py-6">
+                            <div className="bg-radial-gradient flex-1 overflow-y-auto from-indigo-950/5 via-transparent to-transparent px-3 py-4 md:px-6 md:py-6">
                                 {localMessages.length === 0 ? (
                                     <div className="flex h-full flex-col items-center justify-center text-center text-slate-500">
                                         <div className="mb-2 rounded-full bg-slate-900/50 p-4">
@@ -967,7 +980,7 @@ export default function ForumIndex({
                                                             msg.id
                                                         ] = el;
                                                     }}
-                                                    className={`group relative flex max-w-[85%] gap-3 rounded-2xl transition-all duration-500 md:max-w-[70%] ${isSelf ? 'ml-auto flex-row-reverse' : 'mr-auto'} ${isConsecutive ? 'mt-1' : index === 0 ? 'mt-0' : 'mt-4'} ${Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''}`}
+                                                    className={`group relative flex max-w-[92%] sm:max-w-[85%] md:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition-all duration-500 ${isSelf ? 'ml-auto flex-row-reverse' : 'mr-auto'} ${isConsecutive ? 'mt-1' : index === 0 ? 'mt-0' : 'mt-4'} ${Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''}`}
                                                 >
                                                     {/* Avatar Pengirim */}
                                                     {!isSelf &&
@@ -980,7 +993,7 @@ export default function ForumIndex({
                                                                             .id,
                                                                     )
                                                                 }
-                                                                className="h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-[#3B28F6] bg-slate-900 transition hover:scale-105"
+                                                                className="h-9 w-9 md:h-11 md:w-11 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-[#3B28F6] bg-slate-900 transition hover:scale-105"
                                                             >
                                                                 {msg.sender
                                                                     .avatar ? (
@@ -1004,7 +1017,7 @@ export default function ForumIndex({
                                                                 )}
                                                             </div>
                                                         ) : (
-                                                            <div className="w-11 shrink-0" />
+                                                            <div className="w-9 md:w-11 shrink-0" />
                                                         ))}
 
                                                     {/* Balon Chat Container */}
@@ -1097,17 +1110,17 @@ export default function ForumIndex({
                                                         } ${msg.is_pinned ? 'ring-1 ring-[#facc15]/50' : ''} ${Object.keys(reactionsGrouped).length > 0 ? 'pb-5.5' : ''}`}
                                                     >
                                                         {/* Top Right Badges Container */}
-                                                        <div className="pointer-events-none absolute top-1.5 right-1.5 z-10 flex items-center gap-1 select-none">
+                                                        <div className="pointer-events-none absolute top-1 right-1 z-10 flex items-center gap-1 select-none">
                                                             {msg.is_pinned && (
                                                                 <Pin className="h-3 w-3 rotate-45 text-[#facc15]" />
                                                             )}
                                                             {!isSelf && !isConsecutive && msg.sender.role === 'admin' && (
-                                                                <span className="rounded-sm border border-rose-500/30 bg-rose-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-rose-400 uppercase">
+                                                                <span className="rounded-xs border border-rose-500/30 bg-rose-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-rose-400 uppercase">
                                                                     Admin
                                                                 </span>
                                                             )}
                                                             {!isSelf && !isConsecutive && msg.sender.role === 'mentor' && (
-                                                                <span className="rounded-sm border border-emerald-500/30 bg-emerald-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-emerald-400 uppercase">
+                                                                <span className="rounded-xs border border-emerald-500/30 bg-emerald-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-emerald-400 uppercase">
                                                                     Mentor
                                                                 </span>
                                                             )}
@@ -1162,28 +1175,34 @@ export default function ForumIndex({
                                                         )}
 
                                                         {/* Render Kutipan Pesan (Jika Balasan) */}
-                                                        {msg.parent && (
-                                                            <div
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
-                                                                    scrollToMessage(msg.parent!.id);
-                                                                }}
-                                                                className={`mt-[-8px] mr-[-55px] mb-3 ml-[-14px] cursor-pointer border-l-[3px] border-[#3B28F6] bg-transparent py-1.5 pr-[55px] pl-[11px] text-left transition hover:bg-white/5 ${
-                                                                    isConsecutive
-                                                                        ? 'rounded-t-[6px]'
-                                                                        : isSelf
-                                                                            ? 'rounded-tl-[6px] rounded-tr-none'
-                                                                            : 'rounded-tl-none rounded-tr-[6px]'
-                                                                }`}
-                                                            >
-                                                                <p className="font-['Oxanium'] text-[11px] font-extrabold text-[#3B28F6] dark:text-[#facc15] tracking-wide">
-                                                                    {msg.parent.sender_name}
-                                                                </p>
-                                                                <p className="truncate font-['Oxanium'] text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                                                                    {msg.parent.message}
-                                                                </p>
-                                                            </div>
-                                                        )}
+                                                         {msg.parent && (() => {
+                                                             const parentSenderId = msg.parent!.sender_id;
+                                                             const nameColor = parentSenderId ? getNameColor(parentSenderId) : '#3B28F6';
+                                                             const isFullBorder = isSelf;
+                                                             return (
+                                                                 <div
+                                                                     onClick={(e) => {
+                                                                         e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
+                                                                         scrollToMessage(msg.parent!.id);
+                                                                     }}
+                                                                     className={`mb-2.5 cursor-pointer bg-slate-900 text-left transition hover:bg-slate-950 ${
+                                                                         isFullBorder
+                                                                             ? 'border border-[#3B28F6] rounded px-3 py-1.5'
+                                                                             : 'border border-[#3B28F6] rounded-xs py-1 pl-3'
+                                                                     }`}
+                                                                 >
+                                                                     <p
+                                                                         className="font-['Oxanium'] text-[11px] font-extrabold tracking-wide"
+                                                                         style={{ color: nameColor }}
+                                                                     >
+                                                                         {msg.parent.sender_name}
+                                                                     </p>
+                                                                     <p className="truncate font-['Oxanium'] text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                                                         {msg.parent.message}
+                                                                     </p>
+                                                                 </div>
+                                                             );
+                                                         })()}
 
                                                         {/* Gambar Lampiran */}
                                                         {msg.attachments && msg.attachments.length > 0 && (
@@ -1260,7 +1279,7 @@ export default function ForumIndex({
                             {/* Baris Input & Kontrol Pengiriman (Konsolidasi Ala WhatsApp) */}
                             <form
                                 onSubmit={handleSendMessage}
-                                className="relative flex shrink-0 flex-col gap-3.5 border-t border-white/20 bg-[#121212] px-6 py-4"
+                                className="relative flex shrink-0 flex-col gap-2 md:gap-3.5 border-t border-white/20 bg-[#121212] px-3 py-3 md:px-6 md:py-4"
                             >
                                 {/* Pratinjau Balasan Pesan (Quoted Preview Box) */}
                                 {replyingTo && (
@@ -1335,7 +1354,7 @@ export default function ForumIndex({
                                 )}
 
                                 {/* Input Row */}
-                                <div className="flex w-full items-center gap-3">
+                                <div className="flex w-full items-center gap-2 md:gap-3">
                                     {/* Tombol Lampirkan File Gambar */}
                                     {!editingMessage && (
                                         <>
@@ -1394,16 +1413,35 @@ export default function ForumIndex({
                                     </div>
 
                                     {/* Kotak Teks Input Pesan */}
-                                    <input
-                                        type="text"
-                                        placeholder="Ketik pesan..."
-                                        value={data.message}
-                                        onChange={(e) =>
-                                            setData('message', e.target.value)
-                                        }
-                                        disabled={processing}
-                                        className="flex-1 rounded-xl border border-white bg-black/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 transition outline-none focus:border-white focus:ring-1 focus:ring-white focus:shadow-[0_0_8px_rgba(255,255,255,0.15)] disabled:opacity-50"
-                                    />
+                                     <textarea
+                                         ref={textareaRef}
+                                         placeholder="Ketik pesan..."
+                                         value={data.message}
+                                         onChange={(e) =>
+                                             setData('message', e.target.value)
+                                         }
+                                         onKeyDown={(e) => {
+                                             if (
+                                                 e.key === 'Enter' &&
+                                                 !e.shiftKey
+                                             ) {
+                                                 e.preventDefault();
+                                                 if (
+                                                     data.message.trim() ||
+                                                     data.attachment
+                                                 ) {
+                                                     handleSendMessage(e as any);
+                                                 }
+                                             }
+                                         }}
+                                         disabled={processing}
+                                         rows={1}
+                                         className="flex-1 resize-none rounded-xl border border-white bg-black/80 px-3 py-2 md:px-4 md:py-2.5 text-sm text-white placeholder-slate-500 transition outline-none focus:border-white focus:ring-1 focus:ring-white focus:shadow-[0_0_8px_rgba(255,255,255,0.15)] disabled:opacity-50 overflow-y-auto thin-scrollbar"
+                                         style={{
+                                             minHeight: '40px',
+                                             maxHeight: '150px',
+                                         }}
+                                     />
 
                                     {/* Tombol Kirim */}
                                     <button
@@ -1413,9 +1451,9 @@ export default function ForumIndex({
                                             (!data.message.trim() &&
                                                 !data.attachment)
                                         }
-                                        className="group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white transition duration-300 hover:-translate-y-0.5 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30"
+                                        className="group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white bg-black/60 text-white hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30"
                                     >
-                                        <Send className="h-5 w-5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                        <SendHorizontal className="h-5 w-5" />
                                     </button>
                                 </div>
                             </form>
@@ -1432,6 +1470,7 @@ export default function ForumIndex({
                         </div>
                     )}
                 </div>
+                
                 <ConfirmModal
                     open={deleteModalOpen}
                     title="Hapus Pesan"

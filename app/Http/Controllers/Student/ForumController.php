@@ -187,6 +187,7 @@ class ForumController extends Controller
                         'id' => (string) $msg->parent->_id,
                         'message' => $msg->parent->message ?? ($msg->parent->attachments ? '[Gambar]' : ''),
                         'sender_name' => $msg->parent->sender ? $msg->parent->sender->name : 'Sistem',
+                        'sender_id' => $msg->parent->sender ? (string) $msg->parent->sender->_id : null,
                     ];
                 }
 
@@ -276,6 +277,7 @@ class ForumController extends Controller
                     'id' => (string) $msg->parent->_id,
                     'message' => $msg->parent->message ?? ($msg->parent->attachments ? '[Gambar]' : ''),
                     'sender_name' => $msg->parent->sender ? $msg->parent->sender->name : 'Sistem',
+                    'sender_id' => $msg->parent->sender ? (string) $msg->parent->sender->_id : null,
                 ];
             }
 
@@ -361,6 +363,7 @@ class ForumController extends Controller
                     'id' => (string) $msg->parent->_id,
                     'message' => $msg->parent->message ?? ($msg->parent->attachments ? '[Gambar]' : ''),
                     'sender_name' => $msg->parent->sender ? $msg->parent->sender->name : 'Sistem',
+                    'sender_id' => $msg->parent->sender ? (string) $msg->parent->sender->_id : null,
                 ];
             }
 
