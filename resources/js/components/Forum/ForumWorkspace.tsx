@@ -119,7 +119,7 @@ export default function ForumWorkspace({
     };
 
     // Form Inertia
-    const { data, setData, post, processing, reset } = useForm<{
+    const { data, setData, post, processing, reset, errors } = useForm<{
         message: string;
         attachment: File | null;
         parent_id: string | null;
@@ -315,7 +315,8 @@ export default function ForumWorkspace({
         );
     };
 
-    // API sematkan (pin) pesan (Optimistik + Inertia)
+    // API 
+    //  (pin) pesan (Optimistik + Inertia)
     const handleTogglePin = (messageId: string) => {
         setLocalMessages((prev) =>
             prev.map((m) => {
@@ -431,7 +432,13 @@ export default function ForumWorkspace({
     };
 
     return (
-        <div className="flex h-full w-full overflow-hidden sm:rounded-2xl sm:border sm:border-[#3B28F6]/20 bg-[#121212] text-white sm:shadow-lg min-w-0">
+        <div
+            className={`flex h-full w-full overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#121212] dark:text-white min-w-0 ${
+                isMentorOrAdmin
+                    ? 'sm:rounded-2xl sm:border sm:border-slate-200 dark:border-[#3B28F6]/20 sm:shadow-sm dark:sm:shadow-lg'
+                    : ''
+            }`}
+        >
             {/* Sidebar Kiri */}
             <ForumSidebar
                 courses={courses}
@@ -443,12 +450,13 @@ export default function ForumWorkspace({
                 basePath={basePath}
                 dashboardRoute={getDashboardRoute()}
                 role={currentUser.role}
+                isDark={isDark}
             />
 
             {/* Area Chat Utama */}
             <div
 
-                className={`flex flex-1 flex-col bg-[#121212] animate-fade-in min-w-0 ${
+                className={`flex flex-1 flex-col bg-[#f8fafc] dark:bg-[#0f0e0e] transition-colors duration-300 animate-fade-in min-w-0 ${
                     showChatMobile ? 'flex' : 'hidden lg:flex'
 
                 }`}
@@ -495,9 +503,10 @@ export default function ForumWorkspace({
 
                                     return (
                                         <React.Fragment key={msg.id}>
+                                          
                                             {showDateDivider && (
                                                 <div className="my-4 flex justify-center">
-                                                    <span className="rounded-md border border-[#3B28F6]/10 bg-slate-950/80 px-3 py-1 font-['Orbitron'] text-[10px] font-bold tracking-wider text-[#facc15] uppercase animate-fade-in">
+                                                    <span className="rounded-xs border border-slate-200 bg-slate-200/60 dark:border-[#3B28F6]/10 dark:bg-black/40 px-3 py-1 font-['Oxanium'] text-[10px] font-bold tracking-wider text-slate-700 dark:text-[#facc15] uppercase animate-fade-in">
                                                         {formatHeaderDate(msg.created_at)}
                                                     </span>
                                                 </div>
@@ -545,6 +554,7 @@ export default function ForumWorkspace({
                             onCancelEdit={cancelEdit}
                             imagePreview={imagePreview}
                             setImagePreview={setImagePreview}
+                            errors={errors}
                         />
                     </>
                 ) : (

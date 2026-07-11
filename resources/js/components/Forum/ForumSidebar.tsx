@@ -13,6 +13,7 @@ interface ForumSidebarProps {
     basePath: string;
     dashboardRoute: string;
     role: string;
+    isDark?: boolean;
 }
 
 const formatTime = (isoString: string) => {
@@ -38,19 +39,22 @@ export default function ForumSidebar({
     basePath,
     dashboardRoute,
     role,
+    isDark = false,
 }: ForumSidebarProps) {
+    const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+
     const filteredCourses = courses.filter((c) =>
         c.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
         <div
-            className={`flex w-full shrink-0 flex-col border-r border-[#3B28F6]/20 bg-[#121212] animate-fade-in md:w-[280px] lg:w-[320px] xl:w-[380px] ${
+            className={`flex w-full shrink-0 flex-col border-r border-slate-200 bg-white transition-colors duration-300 dark:border-[#3B28F6]/20 dark:bg-[#0f0e0e] animate-fade-in md:w-[280px] lg:w-[320px] xl:w-[380px] ${
                 showChatMobile ? 'hidden md:flex' : 'flex'
             }`}
         >
             {/* Header Sidebar: Tombol Back & Kolom Pencarian */}
-            <div className="border-b border-[#3B28F6]/20 p-4">
+            <div className="border-b border-slate-200 dark:border-[#3B28F6]/20 p-4">
                 <div className="mb-4 flex items-center gap-3 sm:gap-6">
                     {/* Tombol Back Futuristik */}
                     <div className="group relative shrink-0 cursor-pointer">
@@ -103,9 +107,10 @@ export default function ForumSidebar({
                         </Link>
                     </div>
 
-                    <h1 className="text-md font-['Orbitron'] font-extrabold tracking-[0.05em] whitespace-nowrap text-[#1e3a8a] uppercase transition-colors duration-500 sm:text-xl sm:tracking-[0.1em] md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-lg dark:text-[#F0F0F0]">
-                        Forum Group
-                    </h1>
+                   <h1 className="font-['Orbitron'] font-extrabold tracking-[0.05em] whitespace-nowrap text-[#1e3a8a] 
+                uppercase transition-colors duration-500 sm:text-xl sm:tracking-[0.1em] md:text-[13px] lg:text-[17px] xl:text-xl 2xl:text-lg dark:text-[#F0F0F0]">
+                    Forum Group
+                </h1>
                 </div>
 
                 {/* Input Pencarian */}
@@ -116,13 +121,24 @@ export default function ForumSidebar({
                         placeholder="Cari grup diskusi..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full rounded-xl border-[1px] border-transparent bg-transparent py-2.5 pr-4 pl-10 text-sm text-white placeholder-slate-500 transition outline-none focus:ring-1 focus:ring-[#facc15]"
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
+                        className="w-full rounded-xl border border-transparent bg-slate-50 py-2.5 pr-4 pl-10 text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 outline-none dark:bg-transparent dark:text-white dark:placeholder-slate-500"
                         style={{
-                            backgroundImage:
-                                'linear-gradient(#121212, #121212), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
+                            borderStyle: 'solid',
+                            borderWidth: isSearchFocused ? '2px' : '1px',
+                            borderColor: 'transparent',
+                            backgroundImage: isDark
+                                ? 'linear-gradient(#0f0e0e, #0f0e0e), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)'
+                                : 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                             backgroundOrigin: 'border-box',
                             backgroundClip: 'padding-box, border-box',
                             backgroundColor: 'transparent',
+                            boxShadow: isSearchFocused
+                                ? (isDark 
+                                    ? '0 0 10px rgba(59, 40, 246, 0.25), 0 0 5px rgba(250, 204, 21, 0.15)' 
+                                    : '0 0 10px rgba(59, 40, 246, 0.15), 0 0 5px rgba(250, 204, 21, 0.05)')
+                                : 'none',
                         }}
                     />
                 </div>
@@ -148,14 +164,14 @@ export default function ForumSidebar({
                                         router.visit(`${basePath}/${group.slug}`);
                                     }
                                 }}
-                                className={`flex cursor-pointer items-center gap-2.5 sm:gap-3 rounded-lg border-1 border-white px-3 sm:px-4 py-2.5 sm:py-3 transition-colors duration-200 ${
+                                className={`flex cursor-pointer items-center gap-2.5 sm:gap-3 rounded-lg border px-3 sm:px-4 py-2.5 sm:py-3 transition-colors duration-200 ${
                                     isActive
-                                        ? 'bg-[#3B28F6]/15'
-                                        : 'bg-[#121212] hover:bg-white/5'
+                                        ? 'bg-indigo-50/80 border-indigo-200/80 dark:bg-slate-600/40 dark:border-[#3B28F6]/30'
+                                        : 'bg-slate-50 hover:bg-slate-100 border-slate-100 dark:bg-[#292929] dark:hover:bg-white/5 dark:border-transparent'
                                 }`}
                             >
                                 {/* Avatar Kursus */}
-                                <div className="relative h-10 w-10 md:h-11 lg:h-12 md:w-11 lg:w-12 shrink-0 overflow-hidden rounded-xl border border-white bg-slate-900">
+                                <div className="relative h-10 w-10 md:h-11 lg:h-12 md:w-11 lg:w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-white/10 bg-slate-900">
                                     {group.thumbnail ? (
                                         <img
                                             src={group.thumbnail}
@@ -172,7 +188,7 @@ export default function ForumSidebar({
                                 {/* Info & Cuplikan Chat */}
                                 <div className="min-w-0 flex-1">
                                     <div className="mb-1 flex items-center justify-between">
-                                        <h3 className="truncate font-['Oxanium'] text-sm leading-none font-semibold text-white">
+                                        <h3 className="truncate font-['Oxanium'] text-sm leading-none font-semibold text-slate-800 dark:text-white">
                                             {group.title}
                                         </h3>
                                         {group.last_message && (
@@ -183,17 +199,17 @@ export default function ForumSidebar({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="truncate text-xs text-slate-400">
+                                    <div className="truncate text-xs text-slate-500 dark:text-slate-400">
                                         {group.last_message ? (
                                             <>
-                                                <span className="font-semibold text-slate-300">
+                                                <span className="font-semibold text-slate-700 dark:text-slate-300">
                                                     {group.last_message.sender_name}
                                                     :
                                                 </span>{' '}
                                                 {group.last_message.message}
                                             </>
                                         ) : (
-                                            <span className="text-slate-600 italic">
+                                            <span className="text-slate-400 dark:text-slate-600 italic">
                                                 Belum ada pesan
                                             </span>
                                         )}
