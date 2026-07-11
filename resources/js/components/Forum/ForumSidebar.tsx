@@ -157,19 +157,19 @@ export default function ForumSidebar({
                         const isActive = selectedCourse?.id === group.id;
                         return (
                             <div
-                                    key={group.id}
-                                    onClick={() => {
-                                        setShowChatMobile(true);
-                                        if (!isActive) {
-                                            router.visit(`${basePath}/${group.slug}`);
-                                        }
-                                    }}
-                                    className={`flex cursor-pointer items-center gap-2.5 sm:gap-3 md:gap-1.5 lg:gap-2.5 rounded-lg border px-3 sm:px-4 md:px-2 lg:px-3 py-2.5 sm:py-3 md:py-2 lg:py-2.5 transition-colors duration-200 ${
+                                key={group.id}
+                                onClick={() => {
+                                    setShowChatMobile(true);
+                                    if (!isActive) {
+                                        router.visit(`${basePath}/${group.slug}`);
+                                    }
+                                }}
+                                className={`flex cursor-pointer items-center gap-2.5 sm:gap-3 rounded-lg border px-3 sm:px-4 py-2.5 sm:py-3 transition-colors duration-200 ${
                                     isActive
-                                        ? 'bg-indigo-50/80 border-indigo-200/80 dark:bg-slate-600/40 dark:border-[#3B28F6]/30'
-                                        : 'bg-transparent border-transparent hover:bg-slate-100/50 dark:bg-transparent dark:border-transparent dark:hover:bg-white/5'
+                                        ? 'bg-slate-200 border-slate-600 dark:bg-slate-700/50 dark:border-white'
+                                        : 'bg-white border-slate-300 hover:bg-slate-100/70 dark:bg-transparent dark:border-white/60 dark:hover:bg-slate-700/30'
                                 }`}
-                                >
+                            >
                                 {/* Avatar Kursus */}
                                 <div className="relative h-10 w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-white/10 bg-slate-900">
                                     {group.thumbnail ? (
