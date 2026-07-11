@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, User as UserIcon } from 'lucide-react';
 import { SelectedProfile } from './types';
 
@@ -15,28 +15,41 @@ export default function UserProfileModal({
     profile,
     onClose,
 }: UserProfileModalProps) {
+    const [isCoursesExpanded, setIsCoursesExpanded] = useState(false);
+
     if (!open) return null;
 
     return (
-        <div
-            className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            onClick={onClose}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Background Overlay (Sibling layout to prevent nested blur rendering bugs on mobile) */}
+            <div
+                className="animate-fade-in absolute inset-0 bg-black/60 backdrop-blur-xs"
+                onClick={onClose}
+            />
+
+            {/* Modal Container */}
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-[340px] overflow-hidden rounded-3xl border border-[#3b28f6]/30 bg-black/40 p-5 text-white shadow-[0_0_50px_rgba(59,40,246,0.25)] backdrop-blur-sm animate-scale-up"
+                className="relative w-full max-w-[360px] xs:max-w-[390px] sm:max-w-[430px] overflow-hidden rounded-[24px] border border-[#3B28F6] bg-white/20 dark:bg-black/20 text-slate-800 dark:text-white shadow-[0_8px_32px_0_rgba(59,40,246,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] backdrop-blur-md transition-all duration-300 animate-scale-up antialiased"
+                style={{
+                    transform: 'translate3d(0,0,0)',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale',
+                }}
             >
                 {/* Close button */}
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 rounded-full p-1 text-slate-400 transition hover:bg-slate-800/50 hover:text-white"
+                    className="absolute top-2.5 right-2.5 z-20 rounded-full p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition bg-white/10 dark:bg-black/30 hover:bg-white/20 dark:hover:bg-slate-800/40"
                 >
-                    <X className="h-4 w-4" />
+                    <X className="h-3.5 w-3.5" />
                 </button>
 
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center py-12">
+                    <div className="flex flex-col items-center justify-center py-16 px-6">
                         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#facc15] border-t-transparent"></div>
                         <p className="mt-4 font-['Oxanium'] text-xs text-slate-400">
                             Memuat profil...
@@ -44,94 +57,80 @@ export default function UserProfileModal({
                     </div>
                 ) : profile ? (
                     <div className="flex flex-col">
-                        {/* Top Section: Two columns (Avatar & Level) */}
-                        <div className="mb-5 grid grid-cols-[120px_1fr] items-center gap-4">
-                            {/* Left: Square avatar with slightly rounded corners */}
-                            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-[#3b28f6]/20 bg-slate-900 shadow-[0_4px_20px_rgba(59,40,246,0.15)]">
+                        {/* Top Section: Split Layout (Avatar & Username/Level) */}
+                        <div className="grid grid-cols-[140px_1fr] sm:grid-cols-[165px_1fr]">
+                            {/* Left: Square avatar matching top-left rounding */}
+                            <div className="relative aspect-square w-full bg-slate-100/10 dark:bg-[#0c0c1e]/10 overflow-hidden">
                                 {profile.avatar ? (
                                     <img
                                         src={profile.avatar}
                                         alt={profile.name}
-                                        className="h-full w-full object-cover"
+                                        className="h-full w-full object-cover rounded-tl-[22px]"
                                     />
                                 ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-indigo-950/40">
+                                    <div className="flex h-full w-full items-center justify-center bg-indigo-950/10 rounded-tl-[22px]">
                                         <UserIcon className="h-10 w-10 text-indigo-400" />
                                     </div>
                                 )}
                                 {/* Role Badge */}
-                                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full border border-[#facc15]/30 bg-black/80 px-2 py-0.5 font-['Oxanium'] text-[8px] font-bold tracking-wider text-[#facc15] uppercase">
+                                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full border border-[#facc15]/30 bg-black/80 px-2 py-0.5 font-['Oxanium'] text-[8px] font-bold tracking-wider text-[#facc15] uppercase whitespace-nowrap">
                                     {profile.role}
                                 </div>
                             </div>
 
                             {/* Right: Username & Level Circle */}
-                            <div className="flex flex-col items-center justify-center">
+                            <div className="flex flex-col items-center justify-center p-3 sm:p-4 text-center select-none">
                                 <h3
-                                    className="mb-3 w-full truncate text-center font-['Oxanium'] text-sm leading-tight font-bold text-white"
+                                    className="mb-3 w-full truncate font-['Orbitron'] text-sm sm:text-base font-bold tracking-wider text-slate-800 dark:text-white"
                                     title={profile.name}
                                 >
                                     {profile.name}
                                 </h3>
 
                                 {/* Circle Level */}
-                                <div className="relative flex h-18 w-18 flex-col items-center justify-center rounded-full border-4 border-indigo-700/80 bg-black/60 shadow-[0_0_15px_rgba(59,40,246,0.5)]">
-                                    <span className="font-['Orbitron'] text-xl font-black text-white">
+                                <div className="relative flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full border-[3px] border-[#3B28F6] bg-white/10 dark:bg-black/30 backdrop-blur-xs shadow-[0_0_8px_rgba(161,98,7,0.6)] dark:shadow-[0_0_8px_rgba(234,179,8,0.4)]">
+                                    <span className="font-['Orbitron'] text-lg sm:text-xl font-black italic text-slate-800 dark:text-white">
                                         {profile.level}
-                                    </span>
-                                    {/* Subtitle label */}
-                                    <span className="-mt-0.5 font-['Oxanium'] text-[7px] font-bold tracking-widest text-[#facc15] uppercase">
-                                        LEVEL
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Divider */}
-                        <div className="mb-4 w-full border-t border-[#3b28f6]/10"></div>
-
                         {/* Content Rows */}
-                        <div className="flex flex-col gap-3.5">
+                        <div className="flex flex-col gap-3 px-0 pb-0 pt-3 bg-transparent">
                             {/* Row 1: ERP & Rank Badge */}
-                            <div className="flex items-center justify-between rounded-2xl border border-[#3b28f6]/10 bg-black/30 px-4 py-3 shadow-inner">
-                                <div className="flex flex-col">
-                                    <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">
-                                        ERP
-                                    </span>
-                                    <span className="mt-0.5 font-['Orbitron'] text-xs font-black text-indigo-400">
-                                        {profile.erp.toLocaleString()} pts
-                                    </span>
-                                </div>
+                            <div className="flex items-center justify-between w-full rounded-none border-y border-[#99E4FD]/15 bg-[#99E4FD]/08 px-5 py-3.5 backdrop-blur-xs shadow-xs transition duration-200 hover:bg-[#99E4FD]/12">
+                                <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-600 dark:text-[#99E4FD]/80 uppercase">
+                                    ERP
+                                </span>
                                 {profile.rank_image ? (
-                                    <div className="flex items-center gap-2 rounded-xl border border-[#3b28f6]/10 bg-black/40 px-2.5 py-1">
-                                        <img
-                                            src={profile.rank_image}
-                                            alt={profile.rank_name ?? ''}
-                                            className="h-5 w-5 object-contain"
-                                        />
-                                        <span className="font-['Oxanium'] text-[10px] font-bold text-slate-200">
-                                            {profile.rank_name}
-                                        </span>
-                                    </div>
+                                    <img
+                                        src={profile.rank_image}
+                                        alt={profile.rank_name ?? 'Rank'}
+                                        className="h-7 w-7 object-contain"
+                                    />
                                 ) : (
-                                    <span className="rounded-xl bg-black/20 px-2.5 py-1 font-['Oxanium'] text-[10px] font-bold text-slate-500">
+                                    <span className="font-['Oxanium'] text-[10px] font-bold text-slate-500 dark:text-slate-400">
                                         Unranked
                                     </span>
                                 )}
                             </div>
 
                             {/* Row 2: Completed Course */}
-                            <div className="flex flex-col rounded-2xl border border-[#3b28f6]/10 bg-black/30 px-4 py-3 shadow-inner">
-                                <div className="mb-2 flex w-full items-center justify-between">
-                                    <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-400">
+                            <div className="flex flex-col w-full rounded-none border-y border-[#99E4FD]/15 bg-[#99E4FD]/08 px-5 py-3.5 backdrop-blur-xs shadow-xs transition duration-200 hover:bg-[#99E4FD]/12">
+                                <div
+                                    onClick={() => setIsCoursesExpanded(!isCoursesExpanded)}
+                                    className="flex cursor-pointer items-center justify-between w-full select-none"
+                                >
+                                    <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-655 dark:text-[#99E4FD]/80">
                                         Completed Course
                                     </span>
-                                    <div className="flex items-center gap-1">
-                                        <span className="font-['Orbitron'] text-xs font-black text-[#facc15]">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="font-['Orbitron'] text-xs font-black text-[#3B28F6] dark:text-[#99E4FD]">
                                             {profile.courses.length}
                                         </span>
                                         <svg
-                                            className="h-3.5 w-3.5 text-slate-400"
+                                            className={`h-3.5 w-3.5 text-slate-400 dark:text-[#99E4FD]/60 transition-transform duration-200 ${isCoursesExpanded ? 'rotate-90' : ''}`}
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -146,41 +145,42 @@ export default function UserProfileModal({
                                     </div>
                                 </div>
 
-                                {/* Horizontal list of courses thumbnails/icons */}
-                                {profile.courses && profile.courses.length > 0 ? (
-                                    <div className="custom-scrollbar scrollbar-none flex gap-2.5 overflow-x-auto py-1">
-                                        {profile.courses.map((course, idx) => (
-                                            <div
-                                                key={idx}
-                                                className="h-7 w-7 shrink-0 overflow-hidden rounded-lg border border-[#3b28f6]/20 bg-black shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                                                title={course.name}
-                                            >
-                                                {course.thumbnail ? (
-                                                    <img
-                                                        src={course.thumbnail}
-                                                        alt={course.name}
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="flex h-full w-full items-center justify-center bg-indigo-950/40 font-['Oxanium'] text-[9px] font-bold text-indigo-400">
-                                                        {course.name
-                                                            .substring(0, 2)
-                                                            .toUpperCase()}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+                                {isCoursesExpanded && (
+                                    <div className="mt-3 flex flex-wrap gap-2 pt-2.5 border-t border-slate-250/20 dark:border-[#99E4FD]/20 animate-fade-in">
+                                        {profile.courses && profile.courses.length > 0 ? (
+                                            profile.courses.map((course, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="h-7 w-7 shrink-0 overflow-hidden rounded-xs border border-slate-200 bg-slate-100 shadow-xs dark:border-[#3b28f6]/20 dark:bg-black"
+                                                    title={course.name}
+                                                >
+                                                    {course.thumbnail ? (
+                                                        <img
+                                                            src={course.thumbnail}
+                                                            alt={course.name}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex h-full w-full items-center justify-center bg-indigo-950/40 font-['Oxanium'] text-[9px] font-bold text-indigo-400">
+                                                            {course.name
+                                                                .substring(0, 2)
+                                                                .toUpperCase()}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="font-['Oxanium'] text-[10px] text-slate-500 italic">
+                                                Belum mengikuti kelas apa pun.
+                                            </p>
+                                        )}
                                     </div>
-                                ) : (
-                                    <p className="font-['Oxanium'] text-[10px] text-slate-500 italic">
-                                        Belum mengikuti kelas apa pun.
-                                    </p>
                                 )}
                             </div>
 
-                            {/* Row 3: Social Handle */}
-                            <div className="flex items-center justify-between rounded-2xl border border-[#3b28f6]/10 bg-black/30 px-4 py-2.5 shadow-inner">
-                                <span className="max-w-[200px] truncate font-['Oxanium'] text-xs font-semibold text-slate-300">
+                            {/* Row 3: LinkedIn Handle */}
+                            <div className="flex items-center justify-between w-full rounded-b-[22px] border-t border-[#99E4FD]/15 bg-[#99E4FD]/08 px-5 py-3.5 backdrop-blur-xs shadow-xs transition duration-200 hover:bg-[#99E4FD]/12">
+                                <span className="max-w-[200px] truncate font-['Oxanium'] text-xs font-semibold text-slate-655 dark:text-[#99E4FD]/80">
                                     {profile.linkedin
                                         ? (() => {
                                               try {
@@ -201,7 +201,7 @@ export default function UserProfileModal({
                                         href={profile.linkedin}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex h-8 w-8 items-center justify-center rounded-xl border border-[#3b28f6]/30 bg-gradient-to-tr from-[#3b28f6] to-[#0077b5] text-white shadow-[0_0_10px_rgba(0,119,181,0.4)] transition duration-300 hover:scale-105 active:scale-95"
+                                        className="flex h-7 w-7 items-center justify-center rounded-md bg-[#0077b5] text-white hover:scale-105 transition-transform"
                                     >
                                         <svg
                                             className="h-4 w-4 fill-current"
@@ -211,7 +211,7 @@ export default function UserProfileModal({
                                         </svg>
                                     </a>
                                 ) : (
-                                    <div className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-600">
+                                    <div className="flex h-7 w-7 cursor-not-allowed items-center justify-center rounded-md bg-slate-200/50 text-slate-400 dark:bg-slate-800/40 dark:text-slate-600">
                                         <svg
                                             className="h-4 w-4 fill-current opacity-40"
                                             viewBox="0 0 24 24"

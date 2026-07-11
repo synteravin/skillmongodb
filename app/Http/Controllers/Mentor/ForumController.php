@@ -276,7 +276,7 @@ class ForumController extends Controller
         $user = $request->user();
 
         $request->validate([
-            'message' => 'required_without:attachment|nullable|string|max:1000',
+            'message' => 'required_without:attachment|nullable|string|max:10000',
             'attachment' => 'nullable|image|max:5120',
             'parent_id' => 'nullable|string',
         ]);

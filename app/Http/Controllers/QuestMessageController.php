@@ -88,7 +88,7 @@ class QuestMessageController extends Controller
         }
 
         $request->validate([
-            'message' => 'required|string|max:1000',
+            'message' => 'required|string|max:10000',
         ]);
 
         $msg = QuestMessage::create([

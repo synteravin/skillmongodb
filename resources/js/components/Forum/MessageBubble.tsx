@@ -91,7 +91,7 @@ export default function MessageBubble({
     if (isSystem) {
         return (
             <div className="my-2 flex justify-center">
-                <span className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 font-['Oxanium'] text-[10px] text-slate-500">
+                <span className="rounded-full border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900/80 px-3 py-1 font-['Oxanium'] text-[10px] text-slate-650 dark:text-slate-500">
                     {msg.message}
                 </span>
             </div>
@@ -160,7 +160,7 @@ export default function MessageBubble({
                 {activeMenuMessageId === msg.id && (
                     <div
                         onClick={(e) => e.stopPropagation()} // Mencegah tertutupnya menu
-                        className={`message-action-menu absolute bottom-full z-30 mb-2 flex scale-100 flex-col rounded-xl border border-[#3B28F6]/40 bg-[#05060f]/95 p-2 shadow-2xl backdrop-blur-md transition-all animate-scale-up ${
+                        className={`message-action-menu absolute bottom-full z-30 mb-2 flex scale-100 flex-col rounded-xl border border-slate-200 bg-white/95 text-slate-800 p-2 shadow-2xl backdrop-blur-md transition-all animate-scale-up dark:border-[#3B28F6]/40 dark:bg-[#05060f]/95 dark:text-slate-200 ${
                             isSelf ? 'right-0' : 'left-0'
                         }`}
                         style={{
@@ -168,7 +168,7 @@ export default function MessageBubble({
                         }}
                     >
                         {/* Quick Reaction Bar */}
-                        <div className="mb-2 flex items-center justify-between gap-1 border-b border-[#3B28F6]/20 pb-2">
+                        <div className="mb-2 flex items-center justify-between gap-1 border-b border-slate-150 dark:border-[#3B28F6]/20 pb-2">
                             {quickReactions.map((emoji) => (
                                 <button
                                     key={emoji}
@@ -188,7 +188,7 @@ export default function MessageBubble({
                             <button
                                 type="button"
                                 onClick={() => handleReplyTo(msg)}
-                                className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-slate-300 hover:bg-[#1D215D]/40 hover:text-white"
+                                className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#1D215D]/40 dark:hover:text-white"
                             >
                                 <CornerUpLeft className="h-3.5 w-3.5" /> Balas
                             </button>
@@ -197,7 +197,7 @@ export default function MessageBubble({
                                 <button
                                     type="button"
                                     onClick={() => handleStartEdit(msg)}
-                                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-slate-300 hover:bg-[#1D215D]/40 hover:text-white"
+                                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#1D215D]/40 dark:hover:text-white"
                                 >
                                     <Pencil className="h-3.5 w-3.5" /> Edit
                                 </button>
@@ -207,7 +207,7 @@ export default function MessageBubble({
                                 <button
                                     type="button"
                                     onClick={() => handleTogglePin(msg.id)}
-                                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-slate-300 hover:bg-[#1D215D]/40 hover:text-white"
+                                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#1D215D]/40 dark:hover:text-white"
                                 >
                                     <Pin className="h-3.5 w-3.5" />
                                     {msg.is_pinned ? 'Lepas Semat' : 'Sematkan'}
@@ -218,7 +218,7 @@ export default function MessageBubble({
                                 <button
                                     type="button"
                                     onClick={() => handleDeleteMessage(msg.id)}
-                                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                                    className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-red-600 hover:bg-red-500/10 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-300"
                                 >
                                     <Trash2 className="h-3.5 w-3.5" /> Hapus
                                 </button>
@@ -226,7 +226,6 @@ export default function MessageBubble({
                         </div>
                     </div>
                 )}
-
                 <div
                     onClick={(e) => {
                         e.stopPropagation();
@@ -236,33 +235,37 @@ export default function MessageBubble({
                     }}
                     style={
                         {
-                            '--bubble-bg': isDark ? '#0b0f19' : '#f8fafc',
+                            '--bubble-bg': isDark
+                                ? '#0b0f19'
+                                : isSelf
+                                ? '#fefce8'
+                                : '#eef2ff',
                         } as React.CSSProperties
                     }
-                    className={`chat-bubble-body relative flex cursor-pointer flex-col rounded-[3px] border bg-slate-550 pt-2 pr-[51px] pb-2 pl-[12px] text-slate-800 transition duration-200 select-none active:scale-[0.99] dark:bg-[#0b0f19] dark:text-slate-100 min-w-0 ${
+                    className={`chat-bubble-body relative flex cursor-pointer flex-col rounded-[3px] border pt-2 pr-[51px] pb-2 pl-[12px] text-slate-800 transition duration-200 select-none active:scale-[0.99] dark:bg-[#0b0f19] dark:text-slate-100 min-w-0 ${
                         isSelf
-                            ? `border-[#facc15] bg-[#facc15]/5 shadow-[0_0_8px_rgba(250,204,21,0.15)] ${
+                            ? `border-amber-355 bg-[#fefce8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#facc15] dark:bg-[#facc15]/5 dark:shadow-[0_0_8px_rgba(250,204,21,0.15)] ${
                                   isConsecutive ? '' : 'rounded-tr-none'
                               }`
-                            : `border-[#3B28F6] bg-[#3B28F6]/5 shadow-[0_0_8px_rgba(59,40,246,0.15)] ${
+                            : `border-indigo-200 bg-[#eef2ff] shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#3B28F6] dark:bg-[#3B28F6]/5 dark:shadow-[0_0_8px_rgba(59,40,246,0.15)] ${
                                   isConsecutive ? '' : 'rounded-tl-none'
                               }`
-                    } ${msg.is_pinned ? 'ring-1 ring-[#facc15]/50' : ''} ${
+                    } ${msg.is_pinned ? 'ring-1 ring-amber-400 dark:ring-[#facc15]/50' : ''} ${
                         Object.keys(reactionsGrouped).length > 0 ? 'pb-5.5' : ''
                     }`}
                 >
                     {/* Top Right Badges Container */}
                     <div className="pointer-events-none absolute top-1 right-1 z-10 flex items-center gap-1 select-none">
                         {msg.is_pinned && (
-                            <Pin className="h-3 w-3 rotate-45 text-[#facc15]" />
+                            <Pin className="h-3 w-3 rotate-45 text-[#facc15] dark:text-[#facc15]" />
                         )}
                         {!isSelf && !isConsecutive && msg.sender.role === 'admin' && (
-                            <span className="rounded-xs border border-rose-500/30 bg-rose-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-rose-400 uppercase">
+                            <span className="rounded-xs border border-rose-500/30 bg-rose-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-rose-500 dark:text-rose-400 uppercase">
                                 Admin
                             </span>
                         )}
                         {!isSelf && !isConsecutive && msg.sender.role === 'mentor' && (
-                            <span className="rounded-xs border border-emerald-500/30 bg-emerald-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-emerald-400 uppercase">
+                            <span className="rounded-xs border border-emerald-500/30 bg-emerald-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">
                                 Mentor
                             </span>
                         )}
@@ -277,7 +280,7 @@ export default function MessageBubble({
                                     transform: 'rotate(-45deg)',
                                     borderWidth: '0 1px 1px 0',
                                     borderStyle: 'solid',
-                                    borderColor: '#facc15',
+                                    borderColor: isDark ? '#facc15' : '#fcd34d',
                                     borderRadius: '0 0 1px 0',
                                     background:
                                         'linear-gradient(-45deg, var(--bubble-bg) 51%, transparent 0)',
@@ -290,7 +293,7 @@ export default function MessageBubble({
                                     transform: 'rotate(-45deg)',
                                     borderWidth: '1px 0 0 1px',
                                     borderStyle: 'solid',
-                                    borderColor: '#3B28F6',
+                                    borderColor: isDark ? '#3B28F6' : '#c7d2fe',
                                     borderRadius: '2px 0 0 0',
                                     background:
                                         'linear-gradient(-45deg, transparent 48%, var(--bubble-bg) 0)',
@@ -329,10 +332,10 @@ export default function MessageBubble({
                                     e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
                                     scrollToMessage(msg.parent!.id);
                                 }}
-                                className={`mb-2.5 max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] cursor-pointer bg-slate-900 text-left transition hover:bg-slate-950 ${
+                                className={`mb-2.5 max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] cursor-pointer bg-slate-100/90 hover:bg-slate-200/90 dark:bg-slate-900 dark:hover:bg-slate-950 text-left transition ${
                                     isFullBorder
-                                        ? 'border border-[#3B28F6] rounded px-3 py-1.5'
-                                        : 'border border-[#3B28F6] rounded-xs py-1 pl-3'
+                                        ? 'border border-indigo-200 dark:border-[#3B28F6] rounded px-3 py-1.5'
+                                        : 'border border-indigo-200 dark:border-[#3B28F6] rounded-xs py-1 pl-3'
                                 }`}
                             >
                                 <p
@@ -350,7 +353,7 @@ export default function MessageBubble({
 
                     {/* Gambar Lampiran */}
                     {msg.attachments && msg.attachments.length > 0 && (
-                        <div className="mb-2 max-w-full overflow-hidden rounded-lg border border-[#3B28F6]/20 bg-black/40">
+                        <div className="mb-2 max-w-full overflow-hidden rounded-lg border border-slate-200 dark:border-[#3B28F6]/20 bg-black/5 dark:bg-black/40">
                             {msg.attachments.map((url, i) => (
                                 <img
                                     key={i}
@@ -368,13 +371,13 @@ export default function MessageBubble({
 
                     {/* Teks Pesan */}
                     {msg.message && (
-                        <p className="font-['Oxanium'] text-xs leading-relaxed break-words whitespace-pre-wrap text-slate-800 select-text md:text-sm dark:text-slate-100">
+                        <p className="font-['Oxanium'] text-xs leading-relaxed break-words whitespace-pre-wrap text-slate-800 dark:text-slate-100 select-text md:text-sm">
                             {msg.message}
                         </p>
                     )}
 
                     {/* Waktu Kirim */}
-                    <span className="absolute right-2.5 bottom-1.5 text-[9px] text-slate-400 uppercase select-none dark:text-slate-500">
+                    <span className="absolute right-2.5 bottom-1.5 text-[9px] text-slate-500 uppercase select-none dark:text-slate-500">
                         {formatTime(msg.created_at)}
                     </span>
 
@@ -395,10 +398,10 @@ export default function MessageBubble({
                                             handleToggleReaction(msg.id, emoji);
                                         }}
                                         title={data.users.join(', ')}
-                                        className={`flex items-center gap-0.5 rounded-full px-1.5 py-[3px] text-[11px] leading-none shadow-md shadow-black/30 transition-transform active:scale-90 ${
+                                        className={`flex items-center gap-0.5 rounded-full px-1.5 py-[3px] text-[11px] leading-none shadow-sm dark:shadow-md transition-transform active:scale-90 ${
                                             data.hasReacted
-                                                ? 'border border-slate-800 bg-[#1f2c34]'
-                                                : 'bg-slate-800 hover:bg-slate-700'
+                                                ? 'border border-indigo-300 bg-indigo-50 dark:border-slate-800 dark:bg-[#1f2c34]'
+                                                : 'border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-350'
                                         }`}
                                     >
                                         <span className="text-[13px]">{emoji}</span>
@@ -406,8 +409,8 @@ export default function MessageBubble({
                                             <span
                                                 className={`font-semibold ${
                                                     data.hasReacted
-                                                        ? 'text-[#3B28F6]'
-                                                        : 'text-slate-300'
+                                                        ? 'text-indigo-600 dark:text-indigo-400'
+                                                        : 'text-slate-500 dark:text-slate-300'
                                                 }`}
                                             >
                                                 {data.count}
