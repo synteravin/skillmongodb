@@ -433,11 +433,7 @@ export default function ForumWorkspace({
 
     return (
         <div
-            className={`flex h-full w-full overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#121212] dark:text-white min-w-0 ${
-                isMentorOrAdmin
-                    ? 'sm:rounded-2xl sm:border sm:border-slate-200 dark:border-[#3B28F6]/20 sm:shadow-sm dark:sm:shadow-lg'
-                    : ''
-            }`}
+            className="flex h-full w-full overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#121212] dark:text-white min-w-0"
         >
             {/* Sidebar Kiri */}
             <ForumSidebar
@@ -467,6 +463,7 @@ export default function ForumWorkspace({
                             selectedCourse={selectedCourse}
                             basePath={basePath}
                             setShowChatMobile={setShowChatMobile}
+                            role={currentUser.role}
                         />
 
                         <PinnedMessageBar
@@ -475,7 +472,11 @@ export default function ForumWorkspace({
                         />
 
                         {/* Feed Chat Area */}
-                        <div className="flex flex-col bg-radial-gradient flex-1 overflow-y-auto from-indigo-950/5 via-transparent to-transparent px-3 py-4 md:px-4 md:py-5 lg:px-6 lg:py-6">
+                        <div className={`flex flex-col bg-radial-gradient flex-1 overflow-y-auto overflow-x-hidden from-indigo-950/5 via-transparent to-transparent px-3 py-3 ${
+                            isMentorOrAdmin 
+                                ? 'md:px-3 md:py-3 lg:px-4 lg:py-4 xl:px-4 xl:py-4 wa-scrollbar' 
+                                : 'md:px-4 md:py-5 lg:px-6 lg:py-6'
+                        }`}>
                             {localMessages.length === 0 ? (
                                 <EmptyState type="no-messages" />
                             ) : (
@@ -506,7 +507,11 @@ export default function ForumWorkspace({
                                           
                                             {showDateDivider && (
                                                 <div className="my-4 flex justify-center">
-                                                    <span className="rounded-xs border border-slate-200 bg-slate-200/60 dark:border-[#3B28F6]/10 dark:bg-black/40 px-3 py-1 font-['Oxanium'] text-[10px] font-bold tracking-wider text-slate-700 dark:text-[#facc15] uppercase animate-fade-in">
+                                                    <span className={`rounded-xs border border-slate-200 bg-slate-200/60 px-3 py-1 font-['Oxanium'] text-[10px] font-bold tracking-wider text-slate-700 uppercase animate-fade-in ${
+                                                        isMentorOrAdmin
+                                                            ? 'dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400'
+                                                            : 'dark:border-[#3B28F6]/10 dark:bg-black/40 dark:text-[#facc15]'
+                                                    }`}>
                                                         {formatHeaderDate(msg.created_at)}
                                                     </span>
                                                 </div>
@@ -555,6 +560,7 @@ export default function ForumWorkspace({
                             imagePreview={imagePreview}
                             setImagePreview={setImagePreview}
                             errors={errors}
+                            isMentorOrAdmin={isMentorOrAdmin}
                         />
                     </>
                 ) : (

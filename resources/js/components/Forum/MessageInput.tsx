@@ -18,6 +18,7 @@ interface MessageInputProps {
     imagePreview: string | null;
     setImagePreview: (preview: string | null) => void;
     errors?: Record<string, string>;
+    isMentorOrAdmin?: boolean;
 }
 
 const emojis = [
@@ -47,6 +48,7 @@ export default function MessageInput({
     imagePreview,
     setImagePreview,
     errors = {},
+    isMentorOrAdmin = false,
 }: MessageInputProps) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -113,7 +115,11 @@ export default function MessageInput({
 return (
     <form
         onSubmit={handleFormSubmit}
-        className="relative flex shrink-0 flex-col gap-2 md:gap-3.5 border-t border-slate-200 bg-white dark:border-white/20 dark:bg-[#0f0e0e] transition-colors duration-300 px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:px-6 md:py-4"
+        className={`relative flex shrink-0 flex-col gap-2 transition-colors duration-300 ${
+            isMentorOrAdmin
+                ? 'border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0f0e0e] px-3 py-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))] md:px-4 md:py-3'
+                : 'border-t border-slate-200 bg-white dark:border-white/20 dark:bg-[#0f0e0e] px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:px-6 md:py-4 gap-2 md:gap-3.5'
+        }`}
     >
         {/* Pratinjau Balasan Pesan (Quoted Preview Box) */}
         {replyingTo && (
@@ -196,9 +202,13 @@ return (
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:border-white dark:bg-black/60 dark:text-white dark:hover:bg-white/10 active:scale-95"
+                            className={
+                                isMentorOrAdmin
+                                    ? 'flex h-8.5 w-8.5 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition active:scale-90 border-0'
+                                    : 'flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:border-white dark:bg-black/60 dark:text-white dark:hover:bg-white/10 active:scale-95'
+                            }
                         >
-                            <Plus className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+                            <Plus className={isMentorOrAdmin ? 'h-4.5 w-4.5 text-slate-500 dark:text-slate-400' : 'h-[18px] w-[18px] sm:h-5 sm:w-5'} />
                         </button>
                         <input
                             type="file"
@@ -215,9 +225,13 @@ return (
                     <button
                         type="button"
                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:border-white dark:bg-black/60 dark:text-white dark:hover:bg-white/10 active:scale-95"
+                        className={
+                            isMentorOrAdmin
+                                ? 'flex h-8.5 w-8.5 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition active:scale-90 border-0'
+                                : 'flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:border-white dark:bg-black/60 dark:text-white dark:hover:bg-white/10 active:scale-95'
+                        }
                     >
-                        <Smile className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+                        <Smile className={isMentorOrAdmin ? 'h-4.5 w-4.5 text-slate-500 dark:text-slate-400' : 'h-[18px] w-[18px] sm:h-5 sm:w-5'} />
                     </button>
 
                     {showEmojiPicker && (
@@ -257,7 +271,11 @@ return (
                     }}
                     disabled={processing}
                     rows={1}
-                    className="min-h-[36px] max-h-[100px] flex-1 resize-none overflow-y-auto thin-scrollbar rounded-md border border-slate-300 bg-slate-50 px-3 pt-1 pb-3 text-base text-slate-800 placeholder-slate-400 outline-none transition-all duration-150 focus:border-[#3B28F6] focus:bg-white dark:border-white/30 dark:bg-black dark:text-white dark:placeholder-white/30 dark:focus:border-white disabled:opacity-50 sm:px-3.5 sm:pt-1.5 sm:pb-3.5 sm:text-sm md:max-h-[150px] md:px-4 md:pt-2 md:pb-4"
+                    className={
+                        isMentorOrAdmin
+                            ? 'min-h-[34px] max-h-[100px] flex-1 resize-none overflow-y-auto thin-scrollbar rounded-xl border border-slate-200 bg-slate-100/90 text-slate-800 placeholder-slate-400 outline-none transition-all duration-150 focus:bg-white focus:border-indigo-400 dark:border-slate-800/80 dark:bg-slate-900/90 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-700 disabled:opacity-50 md:max-h-[150px] px-3.5 pt-1.5 pb-2 text-sm md:px-3 md:pt-1.5 md:pb-2.5 md:text-xs'
+                            : 'min-h-[36px] max-h-[100px] flex-1 resize-none overflow-y-auto thin-scrollbar rounded-md border border-slate-300 bg-slate-50 px-3 pt-1 pb-3 text-base text-slate-800 placeholder-slate-400 outline-none transition-all duration-150 focus:border-[#3B28F6] focus:bg-white dark:border-white/30 dark:bg-black dark:text-white dark:placeholder-white/30 dark:focus:border-white disabled:opacity-50 sm:px-3.5 sm:pt-1.5 sm:pb-3.5 sm:text-sm md:max-h-[150px] md:px-4 md:pt-2 md:pb-4'
+                    }
                 />
 
                 {/* Tombol Kirim */}
@@ -268,24 +286,23 @@ return (
                         (!data.message.trim() && !data.attachment) ||
                         data.message.length > 10000
                     }
-                    className="group relative flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-md border border-[#3B28F6]/30 bg-indigo-600 text-white transition-all duration-150 hover:bg-indigo-700 hover:border-indigo-700 dark:border-white/30 dark:bg-black dark:text-white dark:hover:border-white dark:hover:bg-white dark:hover:text-black active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+                    className={
+                        isMentorOrAdmin
+                            ? 'group relative flex h-8.5 w-8.5 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-[#3B28F6] hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 active:scale-95 transition-all duration-150 disabled:pointer-events-none disabled:opacity-30 border-0'
+                            : 'group relative flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-md border border-[#3B28F6]/30 bg-indigo-600 text-white transition-all duration-150 hover:bg-indigo-700 hover:border-indigo-700 dark:border-white/30 dark:bg-black dark:text-white dark:hover:border-white dark:hover:bg-white dark:hover:text-black active:scale-95 disabled:pointer-events-none disabled:opacity-30'
+                    }
                 >
-                    <SendHorizontal className="h-[18px] w-[18px] sm:h-5 sm:w-5 transition-transform duration-150 group-hover:translate-x-0.5" />
+                    <SendHorizontal className={isMentorOrAdmin ? 'h-4 w-4 text-white' : 'h-[18px] w-[18px] sm:h-5 sm:w-5 transition-transform duration-150 group-hover:translate-x-0.5'} />
                 </button>
             </div>
 
             {/* Status & Validation Error Row */}
-            {(errors?.message || errors?.attachment || data.message.length > 0) && (
+            {(errors?.message || errors?.attachment) && (
                 <div className="flex items-start justify-between px-1 text-xs select-none">
                     <div className="flex-1 text-red-500 font-medium">
                         {errors?.message && <span className="block animate-fade-in">⚠️ {errors.message}</span>}
                         {errors?.attachment && <span className="block animate-fade-in">⚠️ {errors.attachment}</span>}
                     </div>
-                    {data.message.length > 0 && (
-                        <span className={`text-[10px] font-['Oxanium'] font-semibold ml-auto pl-2 whitespace-nowrap self-center ${data.message.length > 10000 ? 'text-red-500 font-bold animate-pulse' : 'text-slate-400 dark:text-slate-500'}`}>
-                            {data.message.length.toLocaleString()} / 10.000
-                        </span>
-                    )}
                 </div>
             )}
         </div>
