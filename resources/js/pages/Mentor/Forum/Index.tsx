@@ -39,8 +39,8 @@ export default function Index({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Forum Diskusi" />
-            <div className="flex h-[calc(100dvh_-_3.5rem)] flex-1 flex-col space-y-4 overflow-hidden p-4 md:h-full md:p-6">
-                <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl">
+            <div className="flex h-[calc(100dvh_-_3.5rem)] flex-1 flex-col overflow-hidden p-0 md:h-full">
+                <div className="relative min-h-0 flex-1 overflow-hidden">
                     <ForumWorkspace
                         courses={courses}
                         selectedCourse={selectedCourse}

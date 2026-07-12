@@ -247,3 +247,61 @@ html {
 .animate-scale-up {
   animation: scaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* WhatsApp Bubble Arrows */
+.wa-bubble-arrow {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: 0;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+}
+.wa-bubble-arrow::after {
+  content: "";
+  position: absolute;
+  border: 0 solid transparent;
+  width: 15px;
+  height: 30px;
+}
+
+.wa-bubble-arrow-left {
+  left: -15px;
+  top: -1px;
+}
+.wa-bubble-arrow-left::after {
+  border-top: 9px solid var(--bubble-bg);
+  border-radius: 0 20px 0;
+  transform: rotate(145deg);
+}
+
+.wa-bubble-arrow-right {
+  right: -14px;
+  top: -1px;
+}
+.wa-bubble-arrow-right::after {
+  border-top: 9px solid var(--bubble-bg);
+  border-radius: 0 20px 0;
+  transform: rotate(45deg) scaleY(-1);
+}
+
+/* Premium Minimalist Scrollbar for Mentor/Admin Forum */
+.wa-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 0px;
+}
+.wa-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wa-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+.wa-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+.wa-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}

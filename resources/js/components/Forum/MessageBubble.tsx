@@ -125,9 +125,17 @@ export default function MessageBubble({
     return (
         <div
             ref={domRef}
-            className={`group relative flex max-w-[78%] sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] gap-2 md:gap-3 rounded-2xl transition-all duration-500 animate-fade-in-slide-up min-w-0 ${
+            className={`group relative flex max-w-[78%] sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] rounded-2xl transition-all duration-500 animate-fade-in-slide-up min-w-0 ${
+                isMentorOrAdmin 
+                    ? 'gap-3.5 md:gap-4 lg:gap-4.5' 
+                    : 'gap-2 md:gap-3'
+            } ${
                 isSelf ? 'self-end ml-auto flex-row-reverse w-fit' : 'self-start mr-auto w-fit'
-            } ${isConsecutive ? 'mt-1' : 'mt-4'} ${
+            } ${
+                isConsecutive 
+                    ? 'mt-1' 
+                    : (isMentorOrAdmin ? 'mt-2.5 md:mt-2 lg:mt-2.5' : 'mt-4')
+            } ${
                 Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''
             }`}
         >
@@ -136,7 +144,11 @@ export default function MessageBubble({
                 (!isConsecutive ? (
                     <div
                         onClick={() => handleShowProfile(msg.sender.id)}
-                        className="h-9 w-9 md:h-11 md:w-11 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-[#3B28F6] bg-slate-900 transition hover:scale-105"
+                        className={`shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-[#3B28F6] bg-slate-900 transition hover:scale-105 ${
+                            isMentorOrAdmin
+                                ? 'h-8 w-8 md:h-8 md:w-8 lg:h-9 lg:w-9'
+                                : 'h-9 w-9 md:h-11 md:w-11'
+                        }`}
                     >
                         {msg.sender.avatar ? (
                             <img
@@ -151,7 +163,7 @@ export default function MessageBubble({
                         )}
                     </div>
                 ) : (
-                    <div className="w-9 md:w-11 shrink-0" />
+                    <div className={`${isMentorOrAdmin ? 'w-8 md:w-8 lg:w-9' : 'w-9 md:w-11'} shrink-0`} />
                 ))}
 
             {/* Balon Chat Container */}
@@ -235,22 +247,28 @@ export default function MessageBubble({
                     }}
                     style={
                         {
-                            '--bubble-bg': isDark
-                                ? '#0b0f19'
-                                : isSelf
-                                ? '#fefce8'
-                                : '#eef2ff',
+                            '--bubble-bg': isMentorOrAdmin
+                                ? (isDark
+                                    ? (isSelf ? '#232d3f' : '#1e293b')
+                                    : (isSelf ? '#e0e7ff' : '#ffffff'))
+                                : (isDark
+                                    ? '#0b0f19'
+                                    : (isSelf ? '#fefce8' : '#eef2ff')),
                         } as React.CSSProperties
                     }
-                    className={`chat-bubble-body relative flex cursor-pointer flex-col rounded-[3px] border pt-2 pr-[51px] pb-2 pl-[12px] text-slate-800 transition duration-200 select-none active:scale-[0.99] dark:bg-[#0b0f19] dark:text-slate-100 min-w-0 ${
-                        isSelf
-                            ? `border-amber-355 bg-[#fefce8] shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#facc15] dark:bg-[#facc15]/5 dark:shadow-[0_0_8px_rgba(250,204,21,0.15)] ${
-                                  isConsecutive ? '' : 'rounded-tr-none'
-                              }`
-                            : `border-indigo-200 bg-[#eef2ff] shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#3B28F6] dark:bg-[#3B28F6]/5 dark:shadow-[0_0_8px_rgba(59,40,246,0.15)] ${
-                                  isConsecutive ? '' : 'rounded-tl-none'
-                              }`
-                    } ${msg.is_pinned ? 'ring-1 ring-amber-400 dark:ring-[#facc15]/50' : ''} ${
+                    className={`chat-bubble-body relative flex cursor-pointer flex-col transition duration-200 select-none active:scale-[0.99] min-w-0 ${
+                        isMentorOrAdmin 
+                            ? 'pt-1.5 pr-[48px] pb-1.5 pl-[10px]' 
+                            : 'pt-2 pr-[51px] pb-2 pl-[12px]'
+                    } ${
+                        isMentorOrAdmin
+                            ? (isSelf
+                                ? `border border-[#c7d2fe] bg-[#e0e7ff] text-[#1e1b4b] dark:text-[#f1f5f9] shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] dark:border-[#3b4b61] dark:bg-[#232d3f] rounded-[8px] ${isConsecutive ? '' : 'rounded-tr-none'}`
+                                : `border border-slate-200 bg-[#ffffff] text-slate-800 dark:text-[#f1f5f9] shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] dark:border-[#334155] dark:bg-[#1e293b] rounded-[8px] ${isConsecutive ? '' : 'rounded-tl-none'}`)
+                            : (isSelf
+                                ? `border border-amber-355 bg-[#fefce8] text-slate-800 dark:text-slate-100 shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#facc15] dark:bg-[#facc15]/5 dark:shadow-[0_0_8px_rgba(250,204,21,0.15)] rounded-[3px] ${isConsecutive ? '' : 'rounded-tr-none'}`
+                                : `border border-indigo-200 bg-[#eef2ff] text-slate-800 dark:text-slate-100 shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#3B28F6] dark:bg-[#3B28F6]/5 dark:shadow-[0_0_8px_rgba(59,40,246,0.15)] rounded-[3px] ${isConsecutive ? '' : 'rounded-tl-none'}`)
+                    } ${msg.is_pinned ? (isMentorOrAdmin ? 'ring-1 ring-slate-400 dark:ring-slate-500' : 'ring-1 ring-amber-400 dark:ring-[#facc15]/50') : ''} ${
                         Object.keys(reactionsGrouped).length > 0 ? 'pb-5.5' : ''
                     }`}
                 >
@@ -273,32 +291,40 @@ export default function MessageBubble({
 
                     {/* Arrow Ekor Balon Chat */}
                     {!isConsecutive &&
-                        (isSelf ? (
-                            <div
-                                className="pointer-events-none absolute top-[12px] right-[-5px] z-10 h-[10px] w-[10px] select-none"
-                                style={{
-                                    transform: 'rotate(-45deg)',
-                                    borderWidth: '0 1px 1px 0',
-                                    borderStyle: 'solid',
-                                    borderColor: isDark ? '#facc15' : '#fcd34d',
-                                    borderRadius: '0 0 1px 0',
-                                    background:
-                                        'linear-gradient(-45deg, var(--bubble-bg) 51%, transparent 0)',
-                                }}
-                            />
+                        (isMentorOrAdmin ? (
+                            isSelf ? (
+                                <div className="wa-bubble-arrow wa-bubble-arrow-right" />
+                            ) : (
+                                <div className="wa-bubble-arrow wa-bubble-arrow-left" />
+                            )
                         ) : (
-                            <div
-                                className="pointer-events-none absolute top-[12px] left-[-6px] z-10 h-[10px] w-[10px] select-none"
-                                style={{
-                                    transform: 'rotate(-45deg)',
-                                    borderWidth: '1px 0 0 1px',
-                                    borderStyle: 'solid',
-                                    borderColor: isDark ? '#3B28F6' : '#c7d2fe',
-                                    borderRadius: '2px 0 0 0',
-                                    background:
-                                        'linear-gradient(-45deg, transparent 48%, var(--bubble-bg) 0)',
-                                }}
-                            />
+                            isSelf ? (
+                                <div
+                                    className="pointer-events-none absolute top-[12px] right-[-5px] z-10 h-[10px] w-[10px] select-none"
+                                    style={{
+                                        transform: 'rotate(-45deg)',
+                                        borderWidth: '0 1px 1px 0',
+                                        borderStyle: 'solid',
+                                        borderColor: isDark ? '#facc15' : '#fcd34d',
+                                        borderRadius: '0 0 1px 0',
+                                        background:
+                                            'linear-gradient(-45deg, var(--bubble-bg) 51%, transparent 0)',
+                                    }}
+                                />
+                            ) : (
+                                <div
+                                    className="pointer-events-none absolute top-[12px] left-[-6px] z-10 h-[10px] w-[10px] select-none"
+                                    style={{
+                                        transform: 'rotate(-45deg)',
+                                        borderWidth: '1px 0 0 1px',
+                                        borderStyle: 'solid',
+                                        borderColor: isDark ? '#3B28F6' : '#c7d2fe',
+                                        borderRadius: '2px 0 0 0',
+                                        background:
+                                            'linear-gradient(-45deg, transparent 48%, var(--bubble-bg) 0)',
+                                    }}
+                                />
+                            )
                         ))}
 
                     {/* Nama & Peran Pengirim */}
@@ -371,7 +397,11 @@ export default function MessageBubble({
 
                     {/* Teks Pesan */}
                     {msg.message && (
-                        <p className="font-['Oxanium'] text-xs leading-relaxed break-words whitespace-pre-wrap text-slate-800 dark:text-slate-100 select-text md:text-sm">
+                        <p className={`font-['Oxanium'] leading-relaxed break-words whitespace-pre-wrap text-slate-800 dark:text-slate-100 select-text text-xs ${
+                            isMentorOrAdmin 
+                                ? 'md:text-[13px] lg:text-[13px] xl:text-[13px]' 
+                                : 'md:text-sm'
+                        }`}>
                             {msg.message}
                         </p>
                     )}
