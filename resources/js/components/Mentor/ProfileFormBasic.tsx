@@ -15,16 +15,14 @@ export default function ProfileFormBasic({ data, setData, errors }: Props) {
 
     return (
         <div className="space-y-6">
-            <span className="block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase">
+            <span className="block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                 Basic Information
             </span>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 {/* NAME */}
                 <div>
-                    <label className={labelClass}>
-                        Full Name
-                    </label>
+                    <label className={labelClass}>Full Name</label>
                     <input
                         type="text"
                         value={data.name}
@@ -42,9 +40,7 @@ export default function ProfileFormBasic({ data, setData, errors }: Props) {
 
                 {/* EMAIL */}
                 <div>
-                    <label className={labelClass}>
-                        Email Address
-                    </label>
+                    <label className={labelClass}>Email Address</label>
                     <input
                         type="email"
                         value={data.email}
@@ -62,9 +58,7 @@ export default function ProfileFormBasic({ data, setData, errors }: Props) {
 
                 {/* PROFESSION */}
                 <div>
-                    <label className={labelClass}>
-                        Profession / Title
-                    </label>
+                    <label className={labelClass}>Profession / Title</label>
                     <input
                         type="text"
                         placeholder="e.g. Senior Fullstack Engineer"
@@ -81,9 +75,7 @@ export default function ProfileFormBasic({ data, setData, errors }: Props) {
 
                 {/* LINKEDIN */}
                 <div>
-                    <label className={labelClass}>
-                        LinkedIn Profile
-                    </label>
+                    <label className={labelClass}>LinkedIn Profile</label>
                     <input
                         type="url"
                         placeholder="https://linkedin.com/in/username"
@@ -100,14 +92,14 @@ export default function ProfileFormBasic({ data, setData, errors }: Props) {
 
                 {/* USER EXPERIENCE */}
                 <div className="sm:col-span-2">
-                    <label className={labelClass}>
-                        Years of Experience
-                    </label>
+                    <label className={labelClass}>Years of Experience</label>
                     <input
                         type="text"
                         placeholder="e.g. 8+ Years in Web Development & Software Architecture"
                         value={data.user_experience}
-                        onChange={(e) => setData('user_experience', e.target.value)}
+                        onChange={(e) =>
+                            setData('user_experience', e.target.value)
+                        }
                         className={inputClass}
                     />
                     {errors.user_experience && (

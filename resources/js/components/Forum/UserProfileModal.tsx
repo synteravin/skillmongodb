@@ -30,7 +30,7 @@ export default function UserProfileModal({
             {/* Modal Container */}
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-[360px] xs:max-w-[390px] sm:max-w-[430px] overflow-hidden rounded-[24px] border border-[#3B28F6] bg-white/20 dark:bg-black/20 text-slate-800 dark:text-white shadow-[0_8px_32px_0_rgba(59,40,246,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] backdrop-blur-md transition-all duration-300 animate-scale-up antialiased"
+                className="xs:max-w-[390px] animate-scale-up relative w-full max-w-[360px] overflow-hidden rounded-[24px] border border-[#3B28F6] bg-white/20 text-slate-800 antialiased shadow-[0_8px_32px_0_rgba(59,40,246,0.1)] backdrop-blur-md transition-all duration-300 sm:max-w-[430px] dark:bg-black/20 dark:text-white dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]"
                 style={{
                     transform: 'translate3d(0,0,0)',
                     backfaceVisibility: 'hidden',
@@ -43,13 +43,13 @@ export default function UserProfileModal({
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute top-2.5 right-2.5 z-20 rounded-full p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition bg-white/10 dark:bg-black/30 hover:bg-white/20 dark:hover:bg-slate-800/40"
+                    className="absolute top-2.5 right-2.5 z-20 rounded-full bg-white/10 p-1.5 text-slate-400 transition hover:bg-white/20 hover:text-slate-700 dark:bg-black/30 dark:hover:bg-slate-800/40 dark:hover:text-white"
                 >
                     <X className="h-3.5 w-3.5" />
                 </button>
 
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center py-16 px-6">
+                    <div className="flex flex-col items-center justify-center px-6 py-16">
                         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#facc15] border-t-transparent"></div>
                         <p className="mt-4 font-['Oxanium'] text-xs text-slate-400">
                             Memuat profil...
@@ -60,36 +60,36 @@ export default function UserProfileModal({
                         {/* Top Section: Split Layout (Avatar & Username/Level) */}
                         <div className="grid grid-cols-[140px_1fr] sm:grid-cols-[165px_1fr]">
                             {/* Left: Square avatar matching top-left rounding */}
-                            <div className="relative aspect-square w-full bg-slate-100/10 dark:bg-[#0c0c1e]/10 overflow-hidden">
+                            <div className="relative aspect-square w-full overflow-hidden bg-slate-100/10 dark:bg-[#0c0c1e]/10">
                                 {profile.avatar ? (
                                     <img
                                         src={profile.avatar}
                                         alt={profile.name}
-                                        className="h-full w-full object-cover rounded-tl-[22px]"
+                                        className="h-full w-full rounded-tl-[22px] object-cover"
                                     />
                                 ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-indigo-950/10 rounded-tl-[22px]">
+                                    <div className="flex h-full w-full items-center justify-center rounded-tl-[22px] bg-indigo-950/10">
                                         <UserIcon className="h-10 w-10 text-indigo-400" />
                                     </div>
                                 )}
                                 {/* Role Badge */}
-                                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full border border-[#facc15]/30 bg-black/80 px-2 py-0.5 font-['Oxanium'] text-[8px] font-bold tracking-wider text-[#facc15] uppercase whitespace-nowrap">
+                                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full border border-[#facc15]/30 bg-black/80 px-2 py-0.5 font-['Oxanium'] text-[8px] font-bold tracking-wider whitespace-nowrap text-[#facc15] uppercase">
                                     {profile.role}
                                 </div>
                             </div>
 
                             {/* Right: Username & Level Circle */}
-                            <div className="flex flex-col items-center justify-center p-3 sm:p-4 text-center select-none">
+                            <div className="flex flex-col items-center justify-center p-3 text-center select-none sm:p-4">
                                 <h3
-                                    className="mb-3 w-full truncate font-['Orbitron'] text-sm sm:text-base font-bold tracking-wider text-slate-800 dark:text-white"
+                                    className="mb-3 w-full truncate font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 sm:text-base dark:text-white"
                                     title={profile.name}
                                 >
                                     {profile.name}
                                 </h3>
 
                                 {/* Circle Level */}
-                                <div className="relative flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full border-[3px] border-[#3B28F6] bg-white/10 dark:bg-black/30 backdrop-blur-xs shadow-[0_0_8px_rgba(161,98,7,0.6)] dark:shadow-[0_0_8px_rgba(234,179,8,0.4)]">
-                                    <span className="font-['Orbitron'] text-lg sm:text-xl font-black italic text-slate-800 dark:text-white">
+                                <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-[#3B28F6] bg-white/10 shadow-[0_0_8px_rgba(161,98,7,0.6)] backdrop-blur-xs sm:h-18 sm:w-18 dark:bg-black/30 dark:shadow-[0_0_8px_rgba(234,179,8,0.4)]">
+                                    <span className="font-['Orbitron'] text-lg font-black text-slate-800 italic sm:text-xl dark:text-white">
                                         {profile.level}
                                     </span>
                                 </div>
@@ -97,10 +97,10 @@ export default function UserProfileModal({
                         </div>
 
                         {/* Content Rows */}
-                        <div className="flex flex-col gap-3 px-0 pb-0 pt-3 bg-transparent">
+                        <div className="flex flex-col gap-3 bg-transparent px-0 pt-3 pb-0">
                             {/* Row 1: ERP & Rank Badge */}
-                            <div className="flex items-center justify-between w-full rounded-none border-y border-[#99E4FD]/15 bg-[#99E4FD]/08 px-5 py-3.5 backdrop-blur-xs shadow-xs transition duration-200 hover:bg-[#99E4FD]/12">
-                                <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-600 dark:text-[#99E4FD]/80 uppercase">
+                            <div className="bg-[#99E4FD]/08 flex w-full items-center justify-between rounded-none border-y border-[#99E4FD]/15 px-5 py-3.5 shadow-xs backdrop-blur-xs transition duration-200 hover:bg-[#99E4FD]/12">
+                                <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-[#99E4FD]/80">
                                     ERP
                                 </span>
                                 {profile.rank_image ? (
@@ -117,12 +117,14 @@ export default function UserProfileModal({
                             </div>
 
                             {/* Row 2: Completed Course */}
-                            <div className="flex flex-col w-full rounded-none border-y border-[#99E4FD]/15 bg-[#99E4FD]/08 px-5 py-3.5 backdrop-blur-xs shadow-xs transition duration-200 hover:bg-[#99E4FD]/12">
+                            <div className="bg-[#99E4FD]/08 flex w-full flex-col rounded-none border-y border-[#99E4FD]/15 px-5 py-3.5 shadow-xs backdrop-blur-xs transition duration-200 hover:bg-[#99E4FD]/12">
                                 <div
-                                    onClick={() => setIsCoursesExpanded(!isCoursesExpanded)}
-                                    className="flex cursor-pointer items-center justify-between w-full select-none"
+                                    onClick={() =>
+                                        setIsCoursesExpanded(!isCoursesExpanded)
+                                    }
+                                    className="flex w-full cursor-pointer items-center justify-between select-none"
                                 >
-                                    <span className="font-['Oxanium'] text-xs font-bold tracking-wider text-slate-655 dark:text-[#99E4FD]/80">
+                                    <span className="text-slate-655 font-['Oxanium'] text-xs font-bold tracking-wider dark:text-[#99E4FD]/80">
                                         Completed Course
                                     </span>
                                     <div className="flex items-center gap-1.5">
@@ -130,7 +132,7 @@ export default function UserProfileModal({
                                             {profile.courses.length}
                                         </span>
                                         <svg
-                                            className={`h-3.5 w-3.5 text-slate-400 dark:text-[#99E4FD]/60 transition-transform duration-200 ${isCoursesExpanded ? 'rotate-90' : ''}`}
+                                            className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 dark:text-[#99E4FD]/60 ${isCoursesExpanded ? 'rotate-90' : ''}`}
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -146,29 +148,39 @@ export default function UserProfileModal({
                                 </div>
 
                                 {isCoursesExpanded && (
-                                    <div className="mt-3 flex flex-wrap gap-2 pt-2.5 border-t border-slate-250/20 dark:border-[#99E4FD]/20 animate-fade-in">
-                                        {profile.courses && profile.courses.length > 0 ? (
-                                            profile.courses.map((course, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className="h-7 w-7 shrink-0 overflow-hidden rounded-xs border border-slate-200 bg-slate-100 shadow-xs dark:border-[#3b28f6]/20 dark:bg-black"
-                                                    title={course.name}
-                                                >
-                                                    {course.thumbnail ? (
-                                                        <img
-                                                            src={course.thumbnail}
-                                                            alt={course.name}
-                                                            className="h-full w-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="flex h-full w-full items-center justify-center bg-indigo-950/40 font-['Oxanium'] text-[9px] font-bold text-indigo-400">
-                                                            {course.name
-                                                                .substring(0, 2)
-                                                                .toUpperCase()}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            ))
+                                    <div className="border-slate-250/20 animate-fade-in mt-3 flex flex-wrap gap-2 border-t pt-2.5 dark:border-[#99E4FD]/20">
+                                        {profile.courses &&
+                                        profile.courses.length > 0 ? (
+                                            profile.courses.map(
+                                                (course, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="h-7 w-7 shrink-0 overflow-hidden rounded-xs border border-slate-200 bg-slate-100 shadow-xs dark:border-[#3b28f6]/20 dark:bg-black"
+                                                        title={course.name}
+                                                    >
+                                                        {course.thumbnail ? (
+                                                            <img
+                                                                src={
+                                                                    course.thumbnail
+                                                                }
+                                                                alt={
+                                                                    course.name
+                                                                }
+                                                                className="h-full w-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex h-full w-full items-center justify-center bg-indigo-950/40 font-['Oxanium'] text-[9px] font-bold text-indigo-400">
+                                                                {course.name
+                                                                    .substring(
+                                                                        0,
+                                                                        2,
+                                                                    )
+                                                                    .toUpperCase()}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ),
+                                            )
                                         ) : (
                                             <p className="font-['Oxanium'] text-[10px] text-slate-500 italic">
                                                 Belum mengikuti kelas apa pun.
@@ -179,14 +191,19 @@ export default function UserProfileModal({
                             </div>
 
                             {/* Row 3: LinkedIn Handle */}
-                            <div className="flex items-center justify-between w-full rounded-b-[22px] border-t border-[#99E4FD]/15 bg-[#99E4FD]/08 px-5 py-3.5 backdrop-blur-xs shadow-xs transition duration-200 hover:bg-[#99E4FD]/12">
-                                <span className="max-w-[200px] truncate font-['Oxanium'] text-xs font-semibold text-slate-655 dark:text-[#99E4FD]/80">
+                            <div className="bg-[#99E4FD]/08 flex w-full items-center justify-between rounded-b-[22px] border-t border-[#99E4FD]/15 px-5 py-3.5 shadow-xs backdrop-blur-xs transition duration-200 hover:bg-[#99E4FD]/12">
+                                <span className="text-slate-655 max-w-[200px] truncate font-['Oxanium'] text-xs font-semibold dark:text-[#99E4FD]/80">
                                     {profile.linkedin
                                         ? (() => {
                                               try {
-                                                  const url = profile.linkedin.replace(/\/$/, '');
+                                                  const url =
+                                                      profile.linkedin.replace(
+                                                          /\/$/,
+                                                          '',
+                                                      );
                                                   const parts = url.split('/');
-                                                  const handle = parts[parts.length - 1];
+                                                  const handle =
+                                                      parts[parts.length - 1];
                                                   return handle
                                                       ? `@${handle}`
                                                       : `@${profile.username}`;
@@ -201,7 +218,7 @@ export default function UserProfileModal({
                                         href={profile.linkedin}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex h-7 w-7 items-center justify-center rounded-md bg-[#0077b5] text-white hover:scale-105 transition-transform"
+                                        className="flex h-7 w-7 items-center justify-center rounded-md bg-[#0077b5] text-white transition-transform hover:scale-105"
                                     >
                                         <svg
                                             className="h-4 w-4 fill-current"

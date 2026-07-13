@@ -51,7 +51,7 @@ export default function ImagePreviewModal({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative flex max-h-[92vh] w-full max-w-3xl flex-col animate-scale-up"
+                className="animate-scale-up relative flex max-h-[92vh] w-full max-w-3xl flex-col"
             >
                 {/* Top bar - ikon polos, tanpa background box */}
                 <div className="flex items-center justify-between px-1 pb-3">

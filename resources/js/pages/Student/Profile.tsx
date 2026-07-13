@@ -91,7 +91,7 @@ export default function ProfilePage({ user }: Props) {
     const starProgress = ((user.total_score % 500) / 500) * 100;
 
     return (
-        <div className="flex min-h-screen w-screen flex-col bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#0c0c14] dark:text-white lg:h-screen lg:overflow-hidden overflow-y-auto">
+        <div className="flex min-h-screen w-screen flex-col overflow-y-auto bg-[#f0f2fa] text-gray-900 transition-colors duration-300 lg:h-screen lg:overflow-hidden dark:bg-[#0c0c14] dark:text-white">
             {/* AvatarCropper Modal */}
             {cropSrc && (
                 <AvatarCropper
@@ -138,7 +138,7 @@ export default function ProfilePage({ user }: Props) {
                 {/* ══════════ LEFT PANEL ══════════ */}
                 <div className="flex w-full shrink-0 flex-col gap-3 sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px]">
                     {/* PROFILE CARD */}
-                    <div className="flex min-h-[320px] md:h-[320px] shrink-0 h-auto flex-col items-center border-2 border-[#3B28F6]/60 bg-white p-4 text-center shadow-[0_4px_20px_rgba(59,40,246,0.07)] md:p-5 pb-4 dark:bg-[#050619] dark:shadow-none">
+                    <div className="flex h-auto min-h-[320px] shrink-0 flex-col items-center border-2 border-[#3B28F6]/60 bg-white p-4 pb-4 text-center shadow-[0_4px_20px_rgba(59,40,246,0.07)] md:h-[320px] md:p-5 dark:bg-[#050619] dark:shadow-none">
                         {/* AVATAR */}
                         <div
                             className="relative mb-3 shrink-0"
@@ -230,7 +230,7 @@ export default function ProfilePage({ user }: Props) {
                     <button
                         type="button"
                         onClick={() => router.post('/logout')}
-                        className="mt-auto hidden sm:flex w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                        className="mt-auto hidden w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] sm:flex dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
                     >
                         <Power size={16} strokeWidth={3} />
                         SYSTEM LOG OUT
@@ -240,11 +240,11 @@ export default function ProfilePage({ user }: Props) {
                 {/* ══════════ RIGHT PANEL ══════════ */}
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
                     {/* MASTERY LEVEL */}
-                    <div className="shrink-0 border-2 border-[#3B28F6] bg-white p-3 sm:p-4 shadow-[0_2px_16px_rgba(59,40,246,0.07)] dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
+                    <div className="shrink-0 border-2 border-[#3B28F6] bg-white p-3 shadow-[0_2px_16px_rgba(59,40,246,0.07)] sm:p-4 dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
                         <div className="flex items-center gap-3 sm:gap-4">
                             {/* CIRCLE */}
                             <div
-                                className="flex h-[48px] w-[48px] sm:h-[58px] sm:w-[58px] shrink-0 items-center justify-center rounded-full border-[3px] sm:border-[4px] border-[#3B28F6] font-['Orbitron'] text-xl sm:text-2xl font-black text-gray-900 dark:text-white"
+                                className="flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full border-[3px] border-[#3B28F6] font-['Orbitron'] text-xl font-black text-gray-900 sm:h-[58px] sm:w-[58px] sm:border-[4px] sm:text-2xl dark:text-white"
                                 style={{
                                     boxShadow:
                                         '0 0 18px rgba(59,40,246,0.3), inset 0 0 12px rgba(59,40,246,0.08)',
@@ -255,7 +255,7 @@ export default function ProfilePage({ user }: Props) {
 
                             <div className="min-w-0 flex-1">
                                 <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                                    <p className="font-['Orbitron'] text-sm sm:text-base md:text-lg leading-none font-bold tracking-wider sm:tracking-widest text-gray-900 xl:text-xl dark:text-gray-100">
+                                    <p className="font-['Orbitron'] text-sm leading-none font-bold tracking-wider text-gray-900 sm:text-base sm:tracking-widest md:text-lg xl:text-xl dark:text-gray-100">
                                         MASTERY LEVEL
                                     </p>
                                     <span className="shrink-0 font-['Orbitron'] text-xs text-yellow-500 dark:text-yellow-400">
@@ -288,7 +288,7 @@ export default function ProfilePage({ user }: Props) {
                     </div>
 
                     {/* OPERATOR DATA */}
-                    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border-2 border-[#3B28F6] bg-white p-3 sm:p-4 md:p-5 shadow-[0_2px_16px_rgba(59,40,246,0.07)] dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
+                    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border-2 border-[#3B28F6] bg-white p-3 shadow-[0_2px_16px_rgba(59,40,246,0.07)] sm:p-4 md:p-5 dark:bg-[#090915] dark:shadow-[0_0_20px_rgba(59,40,246,0.12)]">
                         {/* top glow line */}
                         <div
                             className="absolute top-0 right-0 left-0 h-px"
@@ -305,7 +305,7 @@ export default function ProfilePage({ user }: Props) {
                         </h3>
 
                         {/* CONTENT BODY */}
-                        <div className="flex flex-1 flex-col justify-between gap-3 overflow-visible lg:overflow-hidden pr-1 md:pr-0 xl:gap-2">
+                        <div className="flex flex-1 flex-col justify-between gap-3 overflow-visible pr-1 md:pr-0 lg:overflow-hidden xl:gap-2">
                             {/* RANK CARD */}
                             <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/25 bg-[#3B28F6]/[0.04] p-2.5 md:p-3 xl:p-6 dark:border-[#3B28F6]/60 dark:bg-[#3B28F6]/5">
                                 <div className="h-[48px] w-[48px] shrink-0 md:h-[50px] md:w-[50px] xl:h-[56px] xl:w-[56px]">
@@ -342,7 +342,7 @@ export default function ProfilePage({ user }: Props) {
                                 {/* RANK INFO */}
                                 <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
                                     <div className="flex items-center justify-between gap-2">
-                                        <div className="flex flex-col min-w-0">
+                                        <div className="flex min-w-0 flex-col">
                                             <p className="mb-0.5 text-[8px] leading-none font-bold tracking-[2px] text-[#3B28F6]/60 uppercase dark:text-blue-500/80">
                                                 CURRENT RANK
                                             </p>
@@ -364,7 +364,7 @@ export default function ProfilePage({ user }: Props) {
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col items-end shrink-0 text-right">
+                                        <div className="flex shrink-0 flex-col items-end text-right">
                                             <div className="font-['Orbitron'] text-[10px] font-bold text-yellow-500 sm:text-xs dark:text-yellow-400">
                                                 {Math.floor(
                                                     user.total_score % 500,
@@ -476,13 +476,26 @@ export default function ProfilePage({ user }: Props) {
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
                                             {user.last_course.thumbnail ? (
                                                 <img
-                                                    src={user.last_course.thumbnail}
+                                                    src={
+                                                        user.last_course
+                                                            .thumbnail
+                                                    }
                                                     className="h-full w-full object-cover"
                                                     alt="Course Thumbnail"
                                                 />
                                             ) : (
-                                                <svg className="h-5 w-5 text-[#3B28F6] xl:h-6 xl:w-6 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                <svg
+                                                    className="h-5 w-5 text-[#3B28F6] xl:h-6 xl:w-6 dark:text-blue-400"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                                    />
                                                 </svg>
                                             )}
                                         </div>
@@ -501,7 +514,7 @@ export default function ProfilePage({ user }: Props) {
                                         </div>
                                         <Link
                                             href={user.last_course?.url || '#'}
-                                            className="shrink-0 bg-[#3B28F6] px-3 py-1.5 font-['Orbitron'] text-[9px] sm:text-[10px] font-bold tracking-wide text-white transition-all hover:opacity-90 md:text-xs xl:px-6 xl:py-2 dark:bg-yellow-400 dark:text-black"
+                                            className="shrink-0 bg-[#3B28F6] px-3 py-1.5 font-['Orbitron'] text-[9px] font-bold tracking-wide text-white transition-all hover:opacity-90 sm:text-[10px] md:text-xs xl:px-6 xl:py-2 dark:bg-yellow-400 dark:text-black"
                                         >
                                             RESUME
                                         </Link>
@@ -544,7 +557,7 @@ export default function ProfilePage({ user }: Props) {
                 <button
                     type="button"
                     onClick={() => router.post('/logout')}
-                    className="flex sm:hidden w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                    className="flex w-full items-center justify-center gap-2 border-2 border-[#3B28F6] bg-white py-2.5 font-['Orbitron'] text-sm font-bold text-red-500 transition hover:text-red-400 hover:shadow-[0_0_12px_rgba(239,68,68,0.2)] sm:hidden dark:bg-[#050619] dark:hover:shadow-[0_0_12px_rgba(239,68,68,0.3)]"
                 >
                     <Power size={16} strokeWidth={3} />
                     SYSTEM LOG OUT

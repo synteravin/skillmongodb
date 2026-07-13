@@ -103,15 +103,18 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
         <AppLayout>
             <Head title={`Detail Siswa: ${student.name}`} />
 
-            <div className="w-full mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8 max-w-7xl text-slate-800 dark:text-slate-100" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <div
+                className="mx-auto w-full max-w-7xl space-y-6 p-4 text-slate-800 sm:space-y-8 sm:p-6 lg:p-8 dark:text-slate-100"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+            >
                 <div>
-                   <Link
-                    href="/mentor/student-journey"
-                    className="mb-2 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-                >
-                    <ArrowLeft size={16} />
-                    Kembali ke Daftar Siswa
-                </Link>
+                    <Link
+                        href="/mentor/student-journey"
+                        className="mb-2 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+                    >
+                        <ArrowLeft size={16} />
+                        Kembali ke Daftar Siswa
+                    </Link>
                 </div>
 
                 {/* TOP HERO CARD - Profil Utama & Ringkasan Gamifikasi */}
@@ -135,16 +138,21 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
                                         <span
                                             className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
-                                                student.status.toLowerCase() === 'active'
-                                                    ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 ring-inset dark:bg-emerald-500/10 dark:text-emerald-450'
+                                                student.status.toLowerCase() ===
+                                                'active'
+                                                    ? 'dark:text-emerald-450 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 ring-inset dark:bg-emerald-500/10'
                                                     : 'bg-slate-100 text-slate-700 ring-1 ring-slate-500/10 ring-inset dark:bg-slate-800 dark:text-slate-400'
                                             }`}
                                         >
                                             {student.status}
                                         </span>
-                                        <span className="flex items-center gap-1 text-xs font-medium text-slate-550 dark:text-slate-400">
+                                        <span className="text-slate-550 flex items-center gap-1 text-xs font-medium dark:text-slate-400">
                                             <Clock size={12} /> Aktif:{' '}
-                                            {student.lastActivity ? formatDate(student.lastActivity) : 'Tidak pernah'}
+                                            {student.lastActivity
+                                                ? formatDate(
+                                                      student.lastActivity,
+                                                  )
+                                                : 'Tidak pernah'}
                                         </span>
                                     </div>
                                     <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
@@ -152,15 +160,17 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     </h1>
                                     <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
                                         Kelas Karakter:{' '}
-                                        {student.character?.name || 'Belum memilih kelas'}
+                                        {student.character?.name ||
+                                            'Belum memilih kelas'}
                                     </p>
                                 </div>
                                 <div className="flex flex-col items-center sm:items-end">
-                                    <span className="text-xs font-medium text-slate-500 dark:text-slate-450">
+                                    <span className="dark:text-slate-450 text-xs font-medium text-slate-500">
                                         Total Modul Diselesaikan
                                     </span>
                                     <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
-                                        {student.completedModules}/{student.totalModules}
+                                        {student.completedModules}/
+                                        {student.totalModules}
                                     </span>
                                 </div>
                             </div>
@@ -188,13 +198,15 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                     <div className="flex-1">
                                         <div className="mb-1 flex items-center justify-between">
                                             <p className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
-                                                Progress Level (Total: {student.totalExp} XP)
+                                                Progress Level (Total:{' '}
+                                                {student.totalExp} XP)
                                             </p>
                                             <span className="text-xs font-bold text-orange-600 dark:text-orange-400">
-                                                {student.currentExp} / {student.expMax}
+                                                {student.currentExp} /{' '}
+                                                {student.expMax}
                                             </span>
                                         </div>
-                                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-850">
+                                        <div className="dark:bg-slate-850 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
                                             <div
                                                 className="h-full rounded-full bg-orange-500 transition-all duration-1000 ease-out"
                                                 style={{
@@ -218,22 +230,42 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                             <MetricBox
                                 title="Rata-rata Nilai"
                                 value={student.averageScore}
-                                icon={<Star size={18} className="text-amber-500" />}
+                                icon={
+                                    <Star
+                                        size={18}
+                                        className="text-amber-500"
+                                    />
+                                }
                             />
                             <MetricBox
                                 title="Nilai Tertinggi"
                                 value={student.highestScore}
-                                icon={<Award size={18} className="text-emerald-550" />}
+                                icon={
+                                    <Award
+                                        size={18}
+                                        className="text-emerald-550"
+                                    />
+                                }
                             />
                             <MetricBox
                                 title="Nilai Terendah"
                                 value={student.lowestScore}
-                                icon={<BarChart3 size={18} className="text-rose-500" />}
+                                icon={
+                                    <BarChart3
+                                        size={18}
+                                        className="text-rose-500"
+                                    />
+                                }
                             />
                             <MetricBox
                                 title="Total Tugas"
                                 value={student.totalSubmissions}
-                                icon={<ShieldCheck size={18} className="text-indigo-500" />}
+                                icon={
+                                    <ShieldCheck
+                                        size={18}
+                                        className="text-indigo-500"
+                                    />
+                                }
                             />
                         </div>
 
@@ -244,14 +276,17 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
 
                             <div className="relative z-10">
                                 <h3 className="mb-4 flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-                                    <Layers3 size={18} className="text-slate-400 dark:text-slate-500" />
+                                    <Layers3
+                                        size={18}
+                                        className="text-slate-400 dark:text-slate-500"
+                                    />
                                     Jalur Karir Aktif
                                 </h3>
                                 <div className="flex flex-col gap-2">
                                     {student.careerGroups.map((group) => (
                                         <div
                                             key={group.id}
-                                            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-755 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
+                                            className="text-slate-755 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
                                         >
                                             <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
                                             {group.name}
@@ -277,20 +312,22 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                             <div className="relative z-10">
                                 <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-650 dark:text-indigo-400">
+                                        <div className="text-indigo-650 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10 dark:text-indigo-400">
                                             <Target size={20} />
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                                                 Modul Diselesaikan
                                             </h3>
-                                            <p className="text-xs font-medium text-slate-550 dark:text-slate-400">
-                                                {student.completedModules} dari {student.totalModules} modul ({student.progressPercent}%)
+                                            <p className="text-slate-550 text-xs font-medium dark:text-slate-400">
+                                                {student.completedModules} dari{' '}
+                                                {student.totalModules} modul (
+                                                {student.progressPercent}%)
                                             </p>
                                         </div>
                                     </div>
                                     <div className="w-full sm:w-48">
-                                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-850">
+                                        <div className="dark:bg-slate-850 h-2 w-full overflow-hidden rounded-full bg-slate-100">
                                             <div
                                                 className="h-full rounded-full bg-indigo-500 transition-all duration-1000 ease-out"
                                                 style={{
@@ -302,16 +339,22 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                 </div>
 
                                 <div className="mt-6 flex flex-wrap gap-2">
-                                    {student.completedModulesList.map((mod, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
-                                        >
-                                            <CheckCircle2 size={14} className="text-emerald-555 dark:text-emerald-450" />
-                                            {mod.title}
-                                        </div>
-                                    ))}
-                                    {student.completedModulesList.length === 0 && (
+                                    {student.completedModulesList.map(
+                                        (mod, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300"
+                                            >
+                                                <CheckCircle2
+                                                    size={14}
+                                                    className="text-emerald-555 dark:text-emerald-450"
+                                                />
+                                                {mod.title}
+                                            </div>
+                                        ),
+                                    )}
+                                    {student.completedModulesList.length ===
+                                        0 && (
                                         <p className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500 dark:border-slate-800/60 dark:bg-slate-950/30 dark:text-slate-400">
                                             Belum ada modul yang diselesaikan.
                                         </p>
@@ -326,9 +369,12 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             <div className="relative z-10">
-                                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-5 py-4 bg-slate-50/50 dark:bg-slate-950/20">
+                                <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-5 py-4 dark:border-slate-800/60 dark:bg-slate-950/20">
                                     <h3 className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-                                        <Flame size={18} className="text-orange-500" />
+                                        <Flame
+                                            size={18}
+                                            className="text-orange-500"
+                                        />
                                         Hasil Evaluasi (Quiz)
                                     </h3>
                                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
@@ -344,9 +390,15 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                             <div className="flex items-start gap-4">
                                                 <div className="mt-0.5 text-slate-400 dark:text-slate-500">
                                                     {quiz.passed ? (
-                                                        <CheckCircle2 size={20} className="text-emerald-500" />
+                                                        <CheckCircle2
+                                                            size={20}
+                                                            className="text-emerald-500"
+                                                        />
                                                     ) : (
-                                                        <AlertCircle size={20} className="text-rose-500" />
+                                                        <AlertCircle
+                                                            size={20}
+                                                            className="text-rose-500"
+                                                        />
                                                     )}
                                                 </div>
                                                 <div>
@@ -358,19 +410,23 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                             className={`rounded px-2 py-0.5 font-bold ${
                                                                 quiz.passed
                                                                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                                                    : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-455'
+                                                                    : 'dark:text-rose-455 bg-rose-50 text-rose-700 dark:bg-rose-500/10'
                                                             }`}
                                                         >
-                                                            {quiz.passed ? 'Lulus' : 'Gagal'}
+                                                            {quiz.passed
+                                                                ? 'Lulus'
+                                                                : 'Gagal'}
                                                         </span>
                                                         <span className="text-slate-500 dark:text-slate-400">
-                                                            {formatDate(quiz.completedAt)}
+                                                            {formatDate(
+                                                                quiz.completedAt,
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-start rounded-xl bg-slate-50/50 border border-slate-200/60 px-4 py-2 sm:items-end sm:bg-transparent sm:border-none sm:px-0 sm:py-0 dark:bg-slate-900/50 sm:dark:bg-transparent">
-                                                <span className="text-[10px] font-bold text-slate-450 uppercase dark:text-slate-400">
+                                            <div className="flex flex-col items-start rounded-xl border border-slate-200/60 bg-slate-50/50 px-4 py-2 sm:items-end sm:border-none sm:bg-transparent sm:px-0 sm:py-0 dark:bg-slate-900/50 sm:dark:bg-transparent">
+                                                <span className="text-slate-450 text-[10px] font-bold uppercase dark:text-slate-400">
                                                     Nilai Quiz
                                                 </span>
                                                 <span className="text-xl font-black text-slate-900 dark:text-white">
@@ -380,7 +436,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                         </div>
                                     ))}
                                     {student.quizResults.length === 0 && (
-                                        <div className="p-8 text-center text-sm text-slate-500 dark:text-slate-450">
+                                        <div className="dark:text-slate-450 p-8 text-center text-sm text-slate-500">
                                             Belum ada quiz yang dikerjakan.
                                         </div>
                                     )}
@@ -394,9 +450,12 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             <div className="relative z-10">
-                                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-5 py-4 bg-slate-50/50 dark:bg-slate-950/20">
+                                <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/50 px-5 py-4 dark:border-slate-800/60 dark:bg-slate-950/20">
                                     <h3 className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-                                        <BookOpen size={18} className="text-indigo-550 dark:text-indigo-400" />
+                                        <BookOpen
+                                            size={18}
+                                            className="text-indigo-550 dark:text-indigo-400"
+                                        />
                                         Riwayat Pengumpulan Tugas
                                     </h3>
                                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
@@ -411,10 +470,21 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                         >
                                             <div className="flex items-start gap-4">
                                                 <div className="mt-0.5 text-slate-400 dark:text-slate-500">
-                                                    {['graded', 'passed'].includes(sub.status.toLowerCase()) ? (
-                                                        <CheckCircle2 size={20} className="text-emerald-500" />
+                                                    {[
+                                                        'graded',
+                                                        'passed',
+                                                    ].includes(
+                                                        sub.status.toLowerCase(),
+                                                    ) ? (
+                                                        <CheckCircle2
+                                                            size={20}
+                                                            className="text-emerald-500"
+                                                        />
                                                     ) : (
-                                                        <AlertCircle size={20} className="text-amber-500" />
+                                                        <AlertCircle
+                                                            size={20}
+                                                            className="text-amber-500"
+                                                        />
                                                     )}
                                                 </div>
                                                 <div>
@@ -422,26 +492,38 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                                         {sub.title}
                                                     </h4>
                                                     <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                                                        Jalur: {sub.careerPath || 'Umum'}
+                                                        Jalur:{' '}
+                                                        {sub.careerPath ||
+                                                            'Umum'}
                                                     </p>
                                                     <div className="mt-2 flex items-center gap-2 text-xs">
                                                         <span
                                                             className={`rounded px-2 py-0.5 font-bold ${
-                                                                ['graded', 'passed'].includes(sub.status.toLowerCase())
+                                                                [
+                                                                    'graded',
+                                                                    'passed',
+                                                                ].includes(
+                                                                    sub.status.toLowerCase(),
+                                                                )
                                                                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                                                    : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-450'
+                                                                    : 'dark:text-amber-450 bg-amber-50 text-amber-700 dark:bg-amber-500/10'
                                                             }`}
                                                         >
-                                                            {sub.status === 'graded' ? 'Sudah Dinilai' : sub.status}
+                                                            {sub.status ===
+                                                            'graded'
+                                                                ? 'Sudah Dinilai'
+                                                                : sub.status}
                                                         </span>
                                                         <span className="text-slate-500 dark:text-slate-400">
-                                                            {formatDate(sub.createdAt)}
+                                                            {formatDate(
+                                                                sub.createdAt,
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-start rounded-xl bg-slate-50/50 border border-slate-200/60 px-4 py-2 sm:items-end sm:bg-transparent sm:border-none sm:px-0 sm:py-0 dark:bg-slate-900/50 sm:dark:bg-transparent">
-                                                <span className="text-[10px] font-bold text-slate-455 uppercase dark:text-slate-400">
+                                            <div className="flex flex-col items-start rounded-xl border border-slate-200/60 bg-slate-50/50 px-4 py-2 sm:items-end sm:border-none sm:bg-transparent sm:px-0 sm:py-0 dark:bg-slate-900/50 sm:dark:bg-transparent">
+                                                <span className="text-slate-455 text-[10px] font-bold uppercase dark:text-slate-400">
                                                     Nilai
                                                 </span>
                                                 <span className="text-xl font-black text-slate-900 dark:text-white">
@@ -451,7 +533,7 @@ export default function StudentJourneyShow({ student, submissions }: Props) {
                                         </div>
                                     ))}
                                     {submissions.length === 0 && (
-                                        <div className="p-8 text-center text-sm text-slate-500 dark:text-slate-450">
+                                        <div className="dark:text-slate-450 p-8 text-center text-sm text-slate-500">
                                             Belum ada tugas yang dikumpulkan.
                                         </div>
                                     )}
@@ -475,10 +557,10 @@ function MetricBox({
     icon: React.ReactNode;
 }) {
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-4 shadow-sm shadow-slate-100/50 dark:border-slate-800 w-full">
+        <div className="relative w-full overflow-hidden rounded-xl border border-slate-200/80 p-4 shadow-sm shadow-slate-100/50 dark:border-slate-800">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
-            
+
             <div className="relative z-10 flex flex-col">
                 <div className="mb-2 flex items-start justify-between">
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">

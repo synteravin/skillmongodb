@@ -14,10 +14,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Head title="SkillVentura — Forgot Password" />
 
             {/* ================= FULL BACKGROUND ================= */}
-            <div className="relative flex min-h-screen items-center justify-center 
-                            bg-gray-100 dark:bg-[#0b0b14] 
-                            px-4 sm:px-6 lg:px-8 py-8 transition-colors">
-
+            <div className="relative flex min-h-screen items-center justify-center bg-gray-100 px-4 py-8 transition-colors sm:px-6 lg:px-8 dark:bg-[#0b0b14]">
                 {/* Background Image */}
                 <img
                     src="/images/background-login.png"
@@ -26,24 +23,20 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 />
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-[1px]" />
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] dark:bg-black/60" />
 
                 {/* ================= CARD ================= */}
-                <div className="relative w-full max-w-sm sm:max-w-sm lg:max-w-lg 
-                                rounded-[30px] 
-                                bg-white dark:bg-[#0f0f1a]
-                                p-6 sm:p-8 lg:p-10 shadow-xl">
-
+                <div className="relative w-full max-w-sm rounded-[30px] bg-white p-6 shadow-xl sm:max-w-sm sm:p-8 lg:max-w-lg lg:p-10 dark:bg-[#0f0f1a]">
                     {/* Neon Border */}
                     <div className="pointer-events-none absolute inset-0 rounded-[30px] border-2 border-yellow-400/70 dark:border-yellow-400" />
 
                     {/* HEADER */}
                     <div className="mb-6 text-center text-gray-900 dark:text-white">
-                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                        <h2 className="text-xl font-semibold sm:text-2xl lg:text-3xl">
                             Forgot Password
                         </h2>
 
-                        <p className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-slate-400">
+                        <p className="mt-2 text-xs text-gray-500 sm:text-sm dark:text-slate-400">
                             Enter your email to receive a password reset link.
                         </p>
                     </div>
@@ -66,10 +59,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                         type="email"
                                         placeholder="Email"
                                         autoFocus
-                                        className="border border-gray-200 bg-gray-50 text-gray-900
-                                        dark:border-none dark:bg-[#1c1c2b] dark:text-white
-                                        placeholder:text-gray-400 dark:placeholder:text-slate-400
-                                        focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+                                        className="border border-gray-200 bg-gray-50 text-gray-900 transition-all duration-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
                                     />
                                     <InputError message={errors.email} />
                                 </div>
@@ -77,7 +67,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 {/* SUBMIT BUTTON */}
                                 <Button
                                     disabled={processing}
-                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    className="w-full bg-indigo-600 text-white hover:bg-indigo-700"
                                 >
                                     {processing && (
                                         <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -88,11 +78,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 {/* LOGIN LINK */}
                                 <TextLink
                                     href={login()}
-                                    className="block w-full rounded-lg border-2 border-indigo-500 
-                                    py-2 text-center 
-                                    text-indigo-600 dark:text-white
-                                    transition-all duration-300
-                                    hover:bg-indigo-500/10"
+                                    className="block w-full rounded-lg border-2 border-indigo-500 py-2 text-center text-indigo-600 transition-all duration-300 hover:bg-indigo-500/10 dark:text-white"
                                 >
                                     Or, return to Log in
                                 </TextLink>

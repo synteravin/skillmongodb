@@ -46,7 +46,10 @@ export default function AvatarCropper({
         const observer = new MutationObserver(() => {
             setIsDark(root.classList.contains('dark'));
         });
-        observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+        observer.observe(root, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
         return () => observer.disconnect();
     }, []);
 
@@ -76,7 +79,9 @@ export default function AvatarCropper({
         ctx.clearRect(0, 0, size, size);
 
         // Fallback background (only visible behind transparent PNGs)
-        ctx.fillStyle = isDark ? '#0f172a' /* slate-900 */ : '#e2e8f0' /* slate-200 */;
+        ctx.fillStyle = isDark
+            ? '#0f172a' /* slate-900 */
+            : '#e2e8f0' /* slate-200 */;
         ctx.fillRect(0, 0, size, size);
 
         // Draw image centred + offset
@@ -182,7 +187,9 @@ export default function AvatarCropper({
     // ── Wheel zoom ────────────────────────────────────────────────────────────
     const handleWheel = (e: React.WheelEvent) => {
         e.preventDefault();
-        setScale((s) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, s - e.deltaY * 0.001)));
+        setScale((s) =>
+            Math.min(MAX_SCALE, Math.max(MIN_SCALE, s - e.deltaY * 0.001)),
+        );
     };
 
     // ── Confirm: render onto offscreen canvas and export ─────────────────────
@@ -219,7 +226,9 @@ export default function AvatarCropper({
         offscreen.toBlob(
             (blob) => {
                 if (!blob) return;
-                const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+                const file = new File([blob], 'avatar.jpg', {
+                    type: 'image/jpeg',
+                });
                 onConfirm(file);
             },
             'image/jpeg',
@@ -240,14 +249,16 @@ export default function AvatarCropper({
         return () => window.removeEventListener('resize', update);
     }, []);
 
-    const zoomPercent = Math.round(((scale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE)) * 100);
+    const zoomPercent = Math.round(
+        ((scale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE)) * 100,
+    );
 
     return (
         /* Backdrop */
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
             <div
                 ref={containerRef}
-                className="relative w-full max-w-sm rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:to-[#0a0b14] shadow-2xl shadow-black/40 flex flex-col"
+                className="relative flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-black/40 dark:border-slate-800 dark:bg-gradient-to-b dark:from-slate-900 dark:to-[#0a0b14]"
             >
                 {/* Dot-grid backdrop texture */}
                 <div
@@ -261,42 +272,46 @@ export default function AvatarCropper({
                 />
 
                 {/* Top accent line */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#3B28F6] z-10" />
+                <div className="absolute top-0 right-0 left-0 z-10 h-[2px] bg-[#3B28F6]" />
 
                 {/* Header */}
-                <div className="relative flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 z-10">
+                <div className="relative z-10 flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800">
                     {/* Corner brackets */}
-                    <span className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#3B28F6]/60" />
-                    <span className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#3B28F6]/60" />
+                    <span className="absolute top-2 left-2 h-3 w-3 border-t-2 border-l-2 border-[#3B28F6]/60" />
+                    <span className="absolute top-2 right-2 h-3 w-3 border-t-2 border-r-2 border-[#3B28F6]/60" />
 
                     <div className="flex items-center gap-2.5">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3B28F6] opacity-60" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3B28F6]" />
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3B28F6] opacity-60" />
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#3B28F6]" />
                         </span>
-                        <h3 className="font-['Orbitron'] text-sm font-bold tracking-widest text-slate-900 dark:text-white uppercase">
+                        <h3 className="font-['Orbitron'] text-sm font-bold tracking-widest text-slate-900 uppercase dark:text-white">
                             Adjust Photo
                         </h3>
                     </div>
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="flex items-center justify-center w-7 h-7 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+                        className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white"
                     >
                         <X size={16} />
                     </button>
                 </div>
 
                 {/* Preview Canvas */}
-                <div className="relative flex flex-col items-center gap-4 px-5 py-6 z-10">
-                    <p className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-['Outfit'] text-center -mt-1">
+                <div className="relative z-10 flex flex-col items-center gap-4 px-5 py-6">
+                    <p className="-mt-1 flex items-center gap-1.5 text-center font-['Outfit'] text-[11px] text-slate-500 dark:text-slate-400">
                         <Move size={12} className="text-[#3B28F6]" />
                         Drag to reposition · Scroll or use slider to zoom
                     </p>
 
                     <div
-                        className="relative rounded-full overflow-hidden cursor-grab active:cursor-grabbing"
-                        style={{ width: canvasSize, height: canvasSize, borderRadius: '50%' }}
+                        className="relative cursor-grab overflow-hidden rounded-full active:cursor-grabbing"
+                        style={{
+                            width: canvasSize,
+                            height: canvasSize,
+                            borderRadius: '50%',
+                        }}
                         onMouseDown={handleMouseDown}
                         onMouseMove={handleMouseMove}
                         onMouseUp={handleMouseUp}
@@ -316,16 +331,20 @@ export default function AvatarCropper({
                     </div>
 
                     {/* Zoom readout */}
-                    <span className="font-['Outfit'] text-[10px] tracking-widest uppercase text-slate-400 dark:text-slate-500 -mt-2">
+                    <span className="-mt-2 font-['Outfit'] text-[10px] tracking-widest text-slate-400 uppercase dark:text-slate-500">
                         Zoom {zoomPercent}%
                     </span>
 
                     {/* Zoom Slider */}
-                    <div className="flex items-center gap-3 w-full">
+                    <div className="flex w-full items-center gap-3">
                         <button
                             type="button"
-                            onClick={() => setScale((s) => Math.max(MIN_SCALE, s - ZOOM_STEP))}
-                            className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md border border-slate-300 dark:border-slate-700 hover:border-[#3B28F6] text-slate-500 dark:text-slate-400 hover:text-[#3B28F6] transition"
+                            onClick={() =>
+                                setScale((s) =>
+                                    Math.max(MIN_SCALE, s - ZOOM_STEP),
+                                )
+                            }
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-300 text-slate-500 transition hover:border-[#3B28F6] hover:text-[#3B28F6] dark:border-slate-700 dark:text-slate-400"
                         >
                             <ZoomOut size={14} />
                         </button>
@@ -336,14 +355,20 @@ export default function AvatarCropper({
                             max={MAX_SCALE}
                             step={0.01}
                             value={scale}
-                            onChange={(e) => setScale(parseFloat(e.target.value))}
-                            className="flex-1 h-1.5 accent-[#3B28F6] cursor-pointer"
+                            onChange={(e) =>
+                                setScale(parseFloat(e.target.value))
+                            }
+                            className="h-1.5 flex-1 cursor-pointer accent-[#3B28F6]"
                         />
 
                         <button
                             type="button"
-                            onClick={() => setScale((s) => Math.min(MAX_SCALE, s + ZOOM_STEP))}
-                            className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md border border-slate-300 dark:border-slate-700 hover:border-[#3B28F6] text-slate-500 dark:text-slate-400 hover:text-[#3B28F6] transition"
+                            onClick={() =>
+                                setScale((s) =>
+                                    Math.min(MAX_SCALE, s + ZOOM_STEP),
+                                )
+                            }
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-300 text-slate-500 transition hover:border-[#3B28F6] hover:text-[#3B28F6] dark:border-slate-700 dark:text-slate-400"
                         >
                             <ZoomIn size={14} />
                         </button>
@@ -351,22 +376,22 @@ export default function AvatarCropper({
                 </div>
 
                 {/* Actions */}
-                <div className="relative flex gap-3 px-5 pb-5 z-10">
+                <div className="relative z-10 flex gap-3 px-5 pb-5">
                     {/* Corner brackets */}
-                    <span className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#3B28F6]/30" />
-                    <span className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#3B28F6]/30" />
+                    <span className="absolute bottom-2 left-2 h-3 w-3 border-b-2 border-l-2 border-[#3B28F6]/30" />
+                    <span className="absolute right-2 bottom-2 h-3 w-3 border-r-2 border-b-2 border-[#3B28F6]/30" />
 
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="flex-1 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-white font-['Outfit'] text-sm font-semibold transition"
+                        className="flex-1 rounded-lg border border-slate-300 py-2.5 font-['Outfit'] text-sm font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                     >
                         Cancel
                     </button>
                     <button
                         type="button"
                         onClick={handleConfirm}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#3B28F6] hover:bg-[#2c1cd6] text-white font-['Outfit'] text-sm font-bold transition shadow-[0_0_20px_rgba(59,40,246,0.35)]"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#3B28F6] py-2.5 font-['Outfit'] text-sm font-bold text-white shadow-[0_0_20px_rgba(59,40,246,0.35)] transition hover:bg-[#2c1cd6]"
                     >
                         <Check size={15} />
                         Apply

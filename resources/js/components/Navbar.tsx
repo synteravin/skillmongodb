@@ -113,7 +113,7 @@ export default function Navbar({
                 </div>
 
                 <button
-                    className="p-2 text-sky-500 dark:text-sky-400 md:hidden"
+                    className="p-2 text-sky-500 md:hidden dark:text-sky-400"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
                     {mobileMenuOpen ? <X /> : <Menu />}

@@ -36,8 +36,8 @@ export default function GamifiedMapSection() {
                         Gamified Learning for Every Skill Level
                     </h2>
                     <p className="text-slate-400">
-                        Level Up Your Skills Through VENTURA'S Gamified
-                        Learning Roadmap
+                        Level Up Your Skills Through VENTURA'S Gamified Learning
+                        Roadmap
                     </p>
                 </div>
 
@@ -65,22 +65,14 @@ export default function GamifiedMapSection() {
                     <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
                     {/* Map Points */}
-                    <MapPoint
-                        top="30%"
-                        left="20%"
-                        label="Basis Realm"
-                    />
+                    <MapPoint top="30%" left="20%" label="Basis Realm" />
                     <MapPoint
                         top="50%"
                         left="50%"
                         label="Grand Line (New World)"
                         color="bg-yellow-400"
                     />
-                    <MapPoint
-                        top="70%"
-                        left="80%"
-                        label="Expert Zone"
-                    />
+                    <MapPoint top="70%" left="80%" label="Expert Zone" />
                 </div>
             </div>
         </section>

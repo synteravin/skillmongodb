@@ -32,14 +32,16 @@ export default function DeleteUser() {
                         Delete Account
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400/60">
-                        Permanently delete your account and all associated resources.
+                        Permanently delete your account and all associated
+                        resources.
                     </p>
                 </div>
             </div>
 
             <div className="space-y-4">
                 <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400/70">
-                    Once your account is deleted, all of its resources and data will be permanently lost. This action is irreversible.
+                    Once your account is deleted, all of its resources and data
+                    will be permanently lost. This action is irreversible.
                 </p>
 
                 <Dialog>

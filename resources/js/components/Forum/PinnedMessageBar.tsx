@@ -12,11 +12,11 @@ export default function PinnedMessageBar({
     scrollToMessage,
 }: PinnedMessageBarProps) {
     if (pinnedMessages.length === 0) return null;
-    
+
     const latestPinned = pinnedMessages[pinnedMessages.length - 1];
 
     return (
-        <div className="z-10 flex shrink-0 items-center justify-between border-b border-amber-200/80 bg-amber-50/80 dark:border-[#facc15]/20 dark:bg-[#121212] transition-colors duration-300 px-4 py-2 md:px-4 md:py-2 lg:px-6 lg:py-2.5 font-['Oxanium'] text-xs text-slate-700 dark:text-slate-300">
+        <div className="z-10 flex shrink-0 items-center justify-between border-b border-amber-200/80 bg-amber-50/80 px-4 py-2 font-['Oxanium'] text-xs text-slate-700 transition-colors duration-300 md:px-4 md:py-2 lg:px-6 lg:py-2.5 dark:border-[#facc15]/20 dark:bg-[#121212] dark:text-slate-300">
             <div
                 className="flex flex-1 cursor-pointer items-center gap-2 truncate transition duration-300 hover:text-slate-900 dark:hover:text-white"
                 onClick={() => scrollToMessage(latestPinned.id)}

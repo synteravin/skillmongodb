@@ -1,7 +1,7 @@
-import AppLayout from "@/layouts/app-layout";
-import { router } from "@inertiajs/react";
-import { useState } from "react";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import AppLayout from '@/layouts/app-layout';
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 export default function ModuleIndex({ path }: any) {
     const pathId = path._id?.$oid || path._id || path.id;
@@ -37,18 +37,17 @@ export default function ModuleIndex({ path }: any) {
 
     return (
         <AppLayout>
-            <div className="relative min-h-screen bg-[#030712] text-white p-6 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] pointer-events-none select-none bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.12),transparent_50%)] z-0" />
+            <div className="relative min-h-screen overflow-hidden bg-[#030712] p-6 text-white">
+                <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[400px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.12),transparent_50%)] select-none" />
 
-                <div className="relative z-10 w-full mx-auto flex flex-col gap-6">
-
+                <div className="relative z-10 mx-auto flex w-full flex-col gap-6">
                     {/* HEADER */}
-                    <div className="flex justify-between items-center bg-[#060B1A]/80 border border-white/8 p-6 rounded-xl backdrop-blur-sm shadow-md">
+                    <div className="flex items-center justify-between rounded-xl border border-white/8 bg-[#060B1A]/80 p-6 shadow-md backdrop-blur-sm">
                         <div>
                             <h1 className="text-2xl font-bold text-white">
                                 Module Management
                             </h1>
-                            <p className="text-sm text-slate-400 mt-1 font-medium">
+                            <p className="mt-1 text-sm font-medium text-slate-400">
                                 Path: {path.name}
                             </p>
                         </div>
@@ -56,9 +55,11 @@ export default function ModuleIndex({ path }: any) {
                         {/* ADD MODULE */}
                         <button
                             onClick={() =>
-                                router.visit(`/admin/modules/create?path_id=${pathId}`)
+                                router.visit(
+                                    `/admin/modules/create?path_id=${pathId}`,
+                                )
                             }
-                            className="bg-gradient-to-r from-[#7C5CFF] to-[#8B5CF6] hover:from-[#8B5CF6] hover:to-[#7C5CFF] transition px-5 py-2.5 rounded-lg font-semibold text-sm shadow-md text-white"
+                            className="rounded-lg bg-gradient-to-r from-[#7C5CFF] to-[#8B5CF6] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:from-[#8B5CF6] hover:to-[#7C5CFF]"
                         >
                             + Add Module
                         </button>
@@ -66,67 +67,68 @@ export default function ModuleIndex({ path }: any) {
 
                     {/* EMPTY STATE */}
                     {path.modules.length === 0 && (
-                        <div className="bg-[#060B1A]/40 border border-white/8 rounded-xl p-8 text-center">
-                            <p className="text-slate-400 text-sm font-medium">
+                        <div className="rounded-xl border border-white/8 bg-[#060B1A]/40 p-8 text-center">
+                            <p className="text-sm font-medium text-slate-400">
                                 Belum ada module di path ini
                             </p>
                         </div>
                     )}
 
                     {/* MODULE LIST */}
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid gap-4 md:grid-cols-2">
                         {path.modules.map((module: any, index: number) => (
                             <div
                                 key={module._id}
-                                className="bg-[#060B1A]/80 backdrop-blur-sm border border-white/8 rounded-xl p-5 flex flex-col gap-4 hover:border-[#7C5CFF]/50 hover:shadow-lg hover:shadow-[#7C5CFF]/5 transition duration-200 ease-out"
+                                className="flex flex-col gap-4 rounded-xl border border-white/8 bg-[#060B1A]/80 p-5 backdrop-blur-sm transition duration-200 ease-out hover:border-[#7C5CFF]/50 hover:shadow-lg hover:shadow-[#7C5CFF]/5"
                             >
-
                                 {/* TOP */}
-                                <div className="flex justify-between items-start">
+                                <div className="flex items-start justify-between">
                                     <div>
-                                        <p className="text-xs font-semibold text-slate-500 tracking-wider uppercase mb-1">
+                                        <p className="mb-1 text-xs font-semibold tracking-wider text-slate-500 uppercase">
                                             Module #{index + 1}
                                         </p>
-                                        <h2 className="font-bold text-lg leading-tight text-white">
+                                        <h2 className="text-lg leading-tight font-bold text-white">
                                             {module.title}
                                         </h2>
                                     </div>
 
-                                    <span className="text-xs bg-white/5 border border-white/5 text-slate-300 px-2.5 py-1 rounded-lg font-medium">
+                                    <span className="rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-xs font-medium text-slate-300">
                                         {module.contents?.length || 0} contents
                                     </span>
                                 </div>
 
                                 {/* ACTION */}
-                                <div className="flex justify-between items-center mt-auto pt-3 border-t border-white/5">
-
+                                <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
                                     <button
                                         onClick={() =>
-                                            router.visit(`/admin/modules/${module.slug}`)
+                                            router.visit(
+                                                `/admin/modules/${module.slug}`,
+                                            )
                                         }
-                                        className="text-[#7C5CFF] hover:text-[#8B5CF6] text-xs font-semibold transition-colors"
+                                        className="text-xs font-semibold text-[#7C5CFF] transition-colors hover:text-[#8B5CF6]"
                                     >
                                         Detail
                                     </button>
 
                                     <button
-                                        onClick={() => handleDeleteModule(module)}
-                                        className="text-rose-400 hover:text-rose-350 text-xs font-semibold transition-colors"
+                                        onClick={() =>
+                                            handleDeleteModule(module)
+                                        }
+                                        className="hover:text-rose-350 text-xs font-semibold text-rose-400 transition-colors"
                                     >
                                         Delete
                                     </button>
-
                                 </div>
-
                             </div>
                         ))}
                     </div>
-
                 </div>
             </div>
             <ConfirmModal
                 open={confirmModal.open}
-                onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                onClose={() =>
+                    setConfirmModal((prev) => ({ ...prev, open: false }))
+                }
                 onConfirm={confirmModal.onConfirm}
                 title={confirmModal.title}
                 message={confirmModal.message}

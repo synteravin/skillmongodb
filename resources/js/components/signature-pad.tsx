@@ -12,7 +12,11 @@ interface Props {
 }
 
 const FONTS = [
-    { name: 'Dancing Script', label: 'Dancing Script', family: 'Dancing Script' },
+    {
+        name: 'Dancing Script',
+        label: 'Dancing Script',
+        family: 'Dancing Script',
+    },
     { name: 'Great Vibes', label: 'Great Vibes', family: 'Great Vibes' },
     { name: 'Alex Brush', label: 'Alex Brush', family: 'Alex Brush' },
     { name: 'Caveat', label: 'Caveat', family: 'Caveat' },
@@ -33,7 +37,10 @@ function cropCanvas(sourceCanvas: HTMLCanvasElement): string {
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
-    let minX = width, minY = height, maxX = 0, maxY = 0;
+    let minX = width,
+        minY = height,
+        maxX = 0,
+        maxY = 0;
     let found = false;
 
     for (let y = 0; y < height; y++) {
@@ -65,7 +72,17 @@ function cropCanvas(sourceCanvas: HTMLCanvasElement): string {
     croppedCanvas.height = croppedHeight;
     const croppedCtx = croppedCanvas.getContext('2d');
     if (croppedCtx) {
-        croppedCtx.drawImage(sourceCanvas, minX, minY, croppedWidth, croppedHeight, 0, 0, croppedWidth, croppedHeight);
+        croppedCtx.drawImage(
+            sourceCanvas,
+            minX,
+            minY,
+            croppedWidth,
+            croppedHeight,
+            0,
+            0,
+            croppedWidth,
+            croppedHeight,
+        );
     }
 
     return croppedCanvas.toDataURL('image/png');
@@ -100,7 +117,9 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+            if (
+                !['image/png', 'image/jpeg', 'image/webp'].includes(file.type)
+            ) {
                 setError('Please select a PNG, JPG, or WEBP image.');
                 return;
             }
@@ -153,7 +172,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     setSaving(false);
                     setError(errors.signature || 'Failed to save signature.');
                 },
-            }
+            },
         );
     };
 
@@ -182,7 +201,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     setSaving(false);
                     setError(errors.signature || 'Failed to save signature.');
                 },
-            }
+            },
         );
     };
 
@@ -203,7 +222,11 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
             onSuccess: () => setSaving(false),
             onError: (errors) => {
                 setSaving(false);
-                setError(errors.signature_file || errors.signature || 'Failed to save signature file.');
+                setError(
+                    errors.signature_file ||
+                        errors.signature ||
+                        'Failed to save signature file.',
+                );
             },
         });
     };
@@ -228,17 +251,23 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
 
             {/* Current Signature Display */}
             {currentSignatureUrl && (
-                <div className="p-4 border border-slate-300 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900/50 space-y-3">
+                <div className="space-y-3 rounded-xl border border-slate-300 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/50">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-slate-850 dark:text-slate-300">
+                        <span className="text-slate-850 text-sm font-semibold dark:text-slate-300">
                             Current Active Signature
                         </span>
-                        <Button type="button" variant="destructive" onClick={() => setShowDeleteConfirm(true)} size="sm" className="gap-1.5 h-8 cursor-pointer">
-                            <Trash2 className="w-3.5 h-3.5" />
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={() => setShowDeleteConfirm(true)}
+                            size="sm"
+                            className="h-8 cursor-pointer gap-1.5"
+                        >
+                            <Trash2 className="h-3.5 w-3.5" />
                             Remove
                         </Button>
                     </div>
-                    <div className="border border-slate-300 dark:border-slate-850 rounded-lg bg-white dark:bg-slate-950 p-4 inline-flex items-center justify-center min-w-[240px] max-w-md shadow-sm">
+                    <div className="dark:border-slate-850 inline-flex max-w-md min-w-[240px] items-center justify-center rounded-lg border border-slate-300 bg-white p-4 shadow-sm dark:bg-slate-950">
                         <img
                             src={currentSignatureUrl}
                             alt="Current active signature"
@@ -249,41 +278,50 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
             )}
 
             {/* Mode Tabs */}
-            <div className="flex rounded-lg bg-slate-100 dark:bg-slate-900/60 p-1 border border-slate-300 dark:border-slate-800/80 gap-1">
+            <div className="flex gap-1 rounded-lg border border-slate-300 bg-slate-100 p-1 dark:border-slate-800/80 dark:bg-slate-900/60">
                 <button
                     type="button"
-                    onClick={() => { setMode('type'); setError(''); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all cursor-pointer ${
+                    onClick={() => {
+                        setMode('type');
+                        setError('');
+                    }}
+                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-all ${
                         mode === 'type'
-                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-800'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                            ? 'border border-slate-200 bg-white text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100'
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                 >
-                    <Type className="w-4 h-4" />
+                    <Type className="h-4 w-4" />
                     Ketik (Type)
                 </button>
                 <button
                     type="button"
-                    onClick={() => { setMode('draw'); setError(''); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all cursor-pointer ${
+                    onClick={() => {
+                        setMode('draw');
+                        setError('');
+                    }}
+                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-all ${
                         mode === 'draw'
-                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-800'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                            ? 'border border-slate-200 bg-white text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100'
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                 >
-                    <PenTool className="w-4 h-4" />
+                    <PenTool className="h-4 w-4" />
                     Gambar (Draw)
                 </button>
                 <button
                     type="button"
-                    onClick={() => { setMode('upload'); setError(''); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all cursor-pointer ${
+                    onClick={() => {
+                        setMode('upload');
+                        setError('');
+                    }}
+                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-all ${
                         mode === 'upload'
-                            ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-800'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                            ? 'border border-slate-200 bg-white text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100'
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                 >
-                    <Upload className="w-4 h-4" />
+                    <Upload className="h-4 w-4" />
                     Unggah (Upload)
                 </button>
             </div>
@@ -292,7 +330,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
             {mode === 'type' && (
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-semibold mb-1.5 text-slate-700 dark:text-slate-300">
+                        <label className="mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                             Enter Your Full Name
                         </label>
                         <input
@@ -300,36 +338,41 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                             value={typedName}
                             onChange={(e) => setTypedName(e.target.value)}
                             placeholder="e.g. Narendra Wicaksono"
-                            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-2 text-slate-700 dark:text-slate-300">
+                        <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                             Choose Signature Font Style
                         </label>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                             {FONTS.map((font) => (
                                 <div
                                     key={font.family}
                                     onClick={() => setSelectedFont(font.family)}
-                                    className={`p-4 rounded-xl border cursor-pointer transition-all flex flex-col items-center justify-center relative ${
+                                    className={`relative flex cursor-pointer flex-col items-center justify-center rounded-xl border p-4 transition-all ${
                                         selectedFont === font.family
-                                            ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20'
-                                            : 'border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-700'
+                                            ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-500/20 dark:bg-indigo-950/30'
+                                            : 'border-slate-300 bg-white hover:border-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
                                     }`}
                                 >
                                     {selectedFont === font.family && (
-                                        <div className="absolute top-2.5 right-2.5 w-5 h-5 bg-indigo-600 rounded-full flex items-center justify-center text-white">
-                                            <Check className="w-3 h-3 stroke-[3]" />
+                                        <div className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white">
+                                            <Check className="h-3 w-3 stroke-[3]" />
                                         </div>
                                     )}
-                                    <span className="text-xs font-semibold text-slate-400 mb-1">{font.label}</span>
+                                    <span className="mb-1 text-xs font-semibold text-slate-400">
+                                        {font.label}
+                                    </span>
                                     <span
-                                        className="text-3xl text-slate-900 dark:text-slate-100 py-2 truncate max-w-full px-2"
-                                        style={{ fontFamily: `'${font.family}', cursive, serif` }}
+                                        className="max-w-full truncate px-2 py-2 text-3xl text-slate-900 dark:text-slate-100"
+                                        style={{
+                                            fontFamily: `'${font.family}', cursive, serif`,
+                                        }}
                                     >
-                                        {typedName.trim() || 'Signature Preview'}
+                                        {typedName.trim() ||
+                                            'Signature Preview'}
                                     </span>
                                 </div>
                             ))}
@@ -339,8 +382,15 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     {error && <InputError message={error} className="mt-2" />}
 
                     <div className="flex justify-end">
-                        <Button type="button" onClick={handleSaveType} disabled={saving || !typedName.trim()} className="cursor-pointer">
-                            {saving ? 'Saving Signature...' : 'Save Type Signature'}
+                        <Button
+                            type="button"
+                            onClick={handleSaveType}
+                            disabled={saving || !typedName.trim()}
+                            className="cursor-pointer"
+                        >
+                            {saving
+                                ? 'Saving Signature...'
+                                : 'Save Type Signature'}
                         </Button>
                     </div>
                 </div>
@@ -353,15 +403,19 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                             Draw your signature on canvas below
                         </span>
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-slate-500">Ink Color:</span>
+                            <span className="text-xs text-slate-500">
+                                Ink Color:
+                            </span>
                             <div className="flex gap-1.5">
                                 {INK_COLORS.map((ink) => (
                                     <button
                                         key={ink.hex}
                                         type="button"
                                         onClick={() => setPenColor(ink.hex)}
-                                        className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center cursor-pointer ${
-                                            penColor === ink.hex ? 'ring-2 ring-indigo-500 ring-offset-2 scale-110' : 'opacity-80'
+                                        className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border transition-all ${
+                                            penColor === ink.hex
+                                                ? 'scale-110 ring-2 ring-indigo-500 ring-offset-2'
+                                                : 'opacity-80'
                                         }`}
                                         style={{ backgroundColor: ink.hex }}
                                         title={ink.name}
@@ -371,12 +425,13 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                         </div>
                     </div>
 
-                    <div className="border border-slate-300 dark:border-slate-800 rounded-xl bg-white overflow-hidden shadow-sm touch-none dark:invert">
+                    <div className="touch-none overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm dark:border-slate-800 dark:invert">
                         <SignatureCanvas
                             ref={sigPad}
                             penColor={penColor}
                             canvasProps={{
-                                className: 'w-full h-56 cursor-crosshair bg-white',
+                                className:
+                                    'w-full h-56 cursor-crosshair bg-white',
                             }}
                             onBegin={() => setIsDrawing(true)}
                         />
@@ -394,8 +449,15 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                         >
                             Clear Canvas
                         </Button>
-                        <Button type="button" onClick={handleSaveDraw} disabled={!isDrawing || saving} className="cursor-pointer">
-                            {saving ? 'Saving Signature...' : 'Save Drawn Signature'}
+                        <Button
+                            type="button"
+                            onClick={handleSaveDraw}
+                            disabled={!isDrawing || saving}
+                            className="cursor-pointer"
+                        >
+                            {saving
+                                ? 'Saving Signature...'
+                                : 'Save Drawn Signature'}
                         </Button>
                     </div>
                 </div>
@@ -403,7 +465,7 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
 
             {mode === 'upload' && (
                 <div className="space-y-4">
-                    <div className="border-2 border-dashed rounded-xl p-6 text-center border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-colors">
+                    <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900/40 dark:hover:bg-slate-900/60">
                         <input
                             type="file"
                             accept="image/png, image/jpeg, image/webp"
@@ -411,20 +473,31 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                             className="hidden"
                             id="signature-upload-input"
                         />
-                        <label htmlFor="signature-upload-input" className="cursor-pointer flex flex-col items-center">
-                            <Upload className="w-10 h-10 text-slate-400 mb-2" />
+                        <label
+                            htmlFor="signature-upload-input"
+                            className="flex cursor-pointer flex-col items-center"
+                        >
+                            <Upload className="mb-2 h-10 w-10 text-slate-400" />
                             <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                                 Click to upload signature image
                             </span>
-                            <span className="text-xs text-slate-500 mt-1">PNG, JPG, or WEBP (Max 2MB)</span>
+                            <span className="mt-1 text-xs text-slate-500">
+                                PNG, JPG, or WEBP (Max 2MB)
+                            </span>
                         </label>
                     </div>
 
                     {uploadPreview && (
-                        <div className="p-4 border border-slate-300 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 text-center space-y-2">
-                            <span className="text-xs text-slate-500 block">Selected File Preview:</span>
-                            <img src={uploadPreview} alt="Upload preview" className="max-h-24 mx-auto object-contain" />
-                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300 block truncate">
+                        <div className="space-y-2 rounded-xl border border-slate-300 bg-white p-4 text-center dark:border-slate-800 dark:bg-slate-900">
+                            <span className="block text-xs text-slate-500">
+                                Selected File Preview:
+                            </span>
+                            <img
+                                src={uploadPreview}
+                                alt="Upload preview"
+                                className="mx-auto max-h-24 object-contain"
+                            />
+                            <span className="block truncate text-xs font-medium text-slate-700 dark:text-slate-300">
                                 {uploadFile?.name}
                             </span>
                         </div>
@@ -433,8 +506,15 @@ export default function SignaturePad({ currentSignatureUrl }: Props) {
                     {error && <InputError message={error} className="mt-2" />}
 
                     <div className="flex justify-end">
-                        <Button type="button" onClick={handleSaveUpload} disabled={saving || !uploadFile} className="cursor-pointer">
-                            {saving ? 'Uploading Signature...' : 'Save Uploaded Signature'}
+                        <Button
+                            type="button"
+                            onClick={handleSaveUpload}
+                            disabled={saving || !uploadFile}
+                            className="cursor-pointer"
+                        >
+                            {saving
+                                ? 'Uploading Signature...'
+                                : 'Save Uploaded Signature'}
                         </Button>
                     </div>
                 </div>

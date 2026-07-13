@@ -24,7 +24,6 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
             {/* ================= FULL BACKGROUND ================= */}
             <div className="relative min-h-screen overflow-hidden">
-
                 {/* Background Image */}
                 <img
                     src="/images/background-login.png"
@@ -32,14 +31,12 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 />
 
                 {/* Dark Overlay */}
-                <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-[1px]" />
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] dark:bg-black/60" />
 
                 {/* ================= CENTER CONTENT ================= */}
                 <div className="relative z-10 flex min-h-screen items-center justify-center px-6">
-
                     {/* CARD */}
                     <div className="relative w-full max-w-md rounded-[30px] bg-[#0f0f1a] p-10">
-
                         {/* Neon Border */}
                         <div className="pointer-events-none absolute inset-0 rounded-[30px] border-2 border-yellow-400/70 dark:border-yellow-400" />
 
@@ -92,7 +89,11 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                                         <Input
                                             name="password"
-                                            type={showPassword ? 'text' : 'password'}
+                                            type={
+                                                showPassword
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
                                             placeholder="New password"
                                             required
                                             className="border-none bg-[#1c1c2b] pr-10 text-white placeholder:text-slate-400"
@@ -100,8 +101,10 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                                         <button
                                             type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-[38px] text-slate-400 hover:text-white"
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
+                                            className="absolute top-[38px] right-3 text-slate-400 hover:text-white"
                                         >
                                             {showPassword ? (
                                                 <EyeOff size={18} />
@@ -121,7 +124,11 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                                         <Input
                                             name="password_confirmation"
-                                            type={showConfirm ? 'text' : 'password'}
+                                            type={
+                                                showConfirm
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
                                             placeholder="Confirm password"
                                             required
                                             className="border-none bg-[#1c1c2b] pr-10 text-white placeholder:text-slate-400"
@@ -129,8 +136,10 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                                         <button
                                             type="button"
-                                            onClick={() => setShowConfirm(!showConfirm)}
-                                            className="absolute right-3 top-[38px] text-slate-400 hover:text-white"
+                                            onClick={() =>
+                                                setShowConfirm(!showConfirm)
+                                            }
+                                            className="absolute top-[38px] right-3 text-slate-400 hover:text-white"
                                         >
                                             {showConfirm ? (
                                                 <EyeOff size={18} />
@@ -139,14 +148,18 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                                             )}
                                         </button>
 
-                                        <InputError message={errors.password_confirmation} />
+                                        <InputError
+                                            message={
+                                                errors.password_confirmation
+                                            }
+                                        />
                                     </div>
 
                                     {/* SUBMIT */}
                                     <Button
                                         type="submit"
                                         disabled={processing}
-                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                                        className="w-full bg-indigo-600 text-white hover:bg-indigo-700"
                                     >
                                         {processing && <Spinner />}
                                         Reset Password

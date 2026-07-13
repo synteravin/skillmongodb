@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { router, Link } from '@inertiajs/react';
-import { Lock, Check, Play, FileText, X, ZoomIn,ChevronDown, BookOpen } from 'lucide-react';
+import {
+    Lock,
+    Check,
+    Play,
+    FileText,
+    X,
+    ZoomIn,
+    ChevronDown,
+    BookOpen,
+} from 'lucide-react';
 
 /* ================= TYPES ================= */
 type Content = {
@@ -127,7 +136,7 @@ function ImageContent({ item }: { item: Content }) {
                                 Catatan
                             </span>
                         </div>
-                        <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-[#334155] dark:text-gray-300">
+                        <p className="text-[13px] leading-relaxed whitespace-pre-wrap text-[#334155] dark:text-gray-300">
                             {item.content.caption}
                         </p>
                         <div className="mt-auto flex items-center gap-2 border-t border-dashed border-blue-200 pt-3 dark:border-blue-500/20">
@@ -217,7 +226,7 @@ export default function LearnShow({
     };
 
     const [moduleDropdownOpen, setModuleDropdownOpen] = useState(false);
-    
+
     return (
         <div className="flex h-screen flex-col overflow-hidden bg-[#f0f4ff] text-[#1e293b] dark:bg-[#040812] dark:text-white">
             {/* ================= HEADER ================= */}
@@ -238,15 +247,69 @@ export default function LearnShow({
                                 viewBox="0 0 48 48"
                                 className="h-7 w-7 scale-125 text-blue-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
-                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
-                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
-                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
-                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
-                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                                <rect
+                                    x="12"
+                                    y="20"
+                                    width="29"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="20"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="5"
+                                    y="20"
+                                    width="5"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="16"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="24"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="12"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="28"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="8"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="32"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
                             </svg>
                         </Link>
                         <h1 className="font-['Orbitron'] text-xl font-bold tracking-[0.15em] text-[#1e3a8a] uppercase md:text-2xl lg:text-3xl dark:text-white">
@@ -258,183 +321,230 @@ export default function LearnShow({
 
             {/* ================= MAIN ================= */}
             <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-1 pt-2 pb-1 md:flex-row">
-               {/* ================= LEFT PANEL ================= */}
+                {/* ================= LEFT PANEL ================= */}
 
-{/* MOBILE: Dropdown */}
-<div className="md:hidden flex-shrink-0">
-    <button
-        onClick={() => setModuleDropdownOpen(prev => !prev)}
-        className="flex w-full items-center justify-between rounded-xl border border-blue-200 bg-white px-4 py-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-r dark:from-[#0d1229] dark:to-[#080d1e]"
-    >
-        <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-blue-500 dark:text-blue-400" />
-            <span className="font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
-                Quest Modules
-            </span>
-        </div>
-        <div className="flex items-center gap-2">
-            <span className="text-xs text-blue-400 dark:text-gray-500">
-                {modules.filter(m => isCompleted(m._id)).length}/{modules.length}
-            </span>
-            <ChevronDown
-                className={`h-4 w-4 text-blue-400 transition-transform duration-300 dark:text-gray-400 ${
-                    moduleDropdownOpen ? 'rotate-180' : ''
-                }`}
-            />
-        </div>
-    </button>
-
-    <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            moduleDropdownOpen ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0'
-        }`}
-    >
-        <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 mt-1 flex max-h-[60vh] flex-col gap-2 overflow-y-auto rounded-xl border border-blue-200 bg-white p-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e]">
-            {modules.map((mod, index) => {
-                const isActive = module._id === mod._id;
-                const unlocked = isUnlocked(index);
-                const done = isCompleted(mod._id);
-
-                return (
-                    <div
-                        key={`mod_mobile_${index}`}
-                        onClick={() => {
-                            if (unlocked) {
-                                goToModule(mod);
-                                setModuleDropdownOpen(false);
-                            }
-                        }}
-                        className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
-                            unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
-                        } ${
-                            isActive
-                                ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
-                                : done
-                                  ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d]'
-                                  : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5'
-                        }`}
+                {/* MOBILE: Dropdown */}
+                <div className="flex-shrink-0 md:hidden">
+                    <button
+                        onClick={() => setModuleDropdownOpen((prev) => !prev)}
+                        className="flex w-full items-center justify-between rounded-xl border border-blue-200 bg-white px-4 py-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-r dark:from-[#0d1229] dark:to-[#080d1e]"
                     >
-                        <div
-                            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border ${
-                                isActive
-                                    ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
-                                    : done
-                                      ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
-                                      : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
-                            }`}
-                        >
-                            {!unlocked ? (
-                                <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                            ) : done ? (
-                                <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
-                            ) : isActive ? (
-                                <Play className="h-4 w-4 text-blue-600 dark:text-indigo-300" fill="currentColor" />
-                            ) : (
-                                <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
-                                    {String(index + 1).padStart(2, '0')}
-                                </span>
-                            )}
-                        </div>
-                        <div className="flex min-w-0 flex-col">
-                            <span
-                                className={`font-['Orbitron'] mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${
-                                    isActive ? 'text-blue-500 dark:text-blue-400' : done ? 'text-green-600 dark:text-green-400' : 'text-blue-300 dark:text-white/30'
-                                }`}
-                            >
-                                Modul {String(index + 1).padStart(2, '0')}
-                            </span>
-                            <span
-                                className={`truncate text-sm leading-tight font-bold ${
-                                    isActive ? 'text-[#1e3a8a] dark:text-white' : done ? 'text-green-800 dark:text-green-200' : unlocked ? 'text-[#334155] dark:text-white/60' : 'text-gray-400 dark:text-white/30'
-                                }`}
-                            >
-                                {mod.title}
+                        <div className="flex items-center gap-2">
+                            <BookOpen className="h-4 w-4 text-blue-500 dark:text-blue-400" />
+                            <span className="font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
+                                Quest Modules
                             </span>
                         </div>
-                        {isActive && (
-                            <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
-                        )}
-                    </div>
-                );
-            })}
-        </div>
-    </div>
-</div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-blue-400 dark:text-gray-500">
+                                {
+                                    modules.filter((m) => isCompleted(m._id))
+                                        .length
+                                }
+                                /{modules.length}
+                            </span>
+                            <ChevronDown
+                                className={`h-4 w-4 text-blue-400 transition-transform duration-300 dark:text-gray-400 ${
+                                    moduleDropdownOpen ? 'rotate-180' : ''
+                                }`}
+                            />
+                        </div>
+                    </button>
 
-{/* DESKTOP: Panel biasa */}
-<div className="hidden w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:flex md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
-    <p className="font-['Orbitron'] flex-shrink-0 px-1 text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
-        Quest Modules
-    </p>
-    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1 dark:scrollbar-thumb-blue-500/30">
-        {modules.map((mod, index) => {
-            const isActive = module._id === mod._id;
-            const unlocked = isUnlocked(index);
-            const done = isCompleted(mod._id);
-
-            return (
-                <div
-                    key={`mod_${index}`}
-                    onClick={() => unlocked && goToModule(mod)}
-                    className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
-                        unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
-                    } ${
-                        isActive
-                            ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
-                            : done
-                              ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d] dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]'
-                              : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5 dark:hover:border-white/5 dark:hover:bg-white/5'
-                    }`}
-                >
                     <div
-                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border ${
-                            isActive
-                                ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
-                                : done
-                                  ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
-                                  : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                            moduleDropdownOpen
+                                ? 'max-h-[60vh] opacity-100'
+                                : 'max-h-0 opacity-0'
                         }`}
                     >
-                        {!unlocked ? (
-                            <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                        ) : done ? (
-                            <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
-                        ) : isActive ? (
-                            <Play className="h-4 w-4 text-blue-600 dark:text-indigo-300" fill="currentColor" />
-                        ) : (
-                            <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
-                                {String(index + 1).padStart(2, '0')}
-                            </span>
-                        )}
+                        <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 mt-1 flex max-h-[60vh] flex-col gap-2 overflow-y-auto rounded-xl border border-blue-200 bg-white p-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e]">
+                            {modules.map((mod, index) => {
+                                const isActive = module._id === mod._id;
+                                const unlocked = isUnlocked(index);
+                                const done = isCompleted(mod._id);
+
+                                return (
+                                    <div
+                                        key={`mod_mobile_${index}`}
+                                        onClick={() => {
+                                            if (unlocked) {
+                                                goToModule(mod);
+                                                setModuleDropdownOpen(false);
+                                            }
+                                        }}
+                                        className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
+                                            unlocked
+                                                ? 'cursor-pointer'
+                                                : 'cursor-not-allowed opacity-40'
+                                        } ${
+                                            isActive
+                                                ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
+                                                : done
+                                                  ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d]'
+                                                  : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5'
+                                        }`}
+                                    >
+                                        <div
+                                            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border ${
+                                                isActive
+                                                    ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
+                                                    : done
+                                                      ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
+                                                      : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
+                                            }`}
+                                        >
+                                            {!unlocked ? (
+                                                <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                                            ) : done ? (
+                                                <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                            ) : isActive ? (
+                                                <Play
+                                                    className="h-4 w-4 text-blue-600 dark:text-indigo-300"
+                                                    fill="currentColor"
+                                                />
+                                            ) : (
+                                                <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
+                                                    {String(index + 1).padStart(
+                                                        2,
+                                                        '0',
+                                                    )}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="flex min-w-0 flex-col">
+                                            <span
+                                                className={`mb-0.5 font-['Orbitron'] text-[10px] font-semibold tracking-widest uppercase ${
+                                                    isActive
+                                                        ? 'text-blue-500 dark:text-blue-400'
+                                                        : done
+                                                          ? 'text-green-600 dark:text-green-400'
+                                                          : 'text-blue-300 dark:text-white/30'
+                                                }`}
+                                            >
+                                                Modul{' '}
+                                                {String(index + 1).padStart(
+                                                    2,
+                                                    '0',
+                                                )}
+                                            </span>
+                                            <span
+                                                className={`truncate text-sm leading-tight font-bold ${
+                                                    isActive
+                                                        ? 'text-[#1e3a8a] dark:text-white'
+                                                        : done
+                                                          ? 'text-green-800 dark:text-green-200'
+                                                          : unlocked
+                                                            ? 'text-[#334155] dark:text-white/60'
+                                                            : 'text-gray-400 dark:text-white/30'
+                                                }`}
+                                            >
+                                                {mod.title}
+                                            </span>
+                                        </div>
+                                        {isActive && (
+                                            <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
-                    <div className="flex min-w-0 flex-col">
-                        <span
-                            className={`font-['Orbitron'] mb-0.5 text-[10px] font-semibold tracking-widest uppercase ${
-                                isActive ? 'text-blue-500 dark:text-blue-400' : done ? 'text-green-600 dark:text-green-400' : 'text-blue-300 dark:text-white/30'
-                            }`}
-                        >
-                            Modul {String(index + 1).padStart(2, '0')}
-                        </span>
-                        <span
-                            className={`truncate text-sm leading-tight font-bold ${
-                                isActive ? 'text-[#1e3a8a] dark:text-white' : done ? 'text-green-800 dark:text-green-200' : unlocked ? 'text-[#334155] dark:text-white/60' : 'text-gray-400 dark:text-white/30'
-                            }`}
-                        >
-                            {mod.title}
-                        </span>
-                    </div>
-                    {isActive && (
-                        <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
-                    )}
                 </div>
-            );
-        })}
-    </div>
-</div>
+
+                {/* DESKTOP: Panel biasa */}
+                <div className="hidden w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:flex md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
+                    <p className="flex-shrink-0 px-1 font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
+                        Quest Modules
+                    </p>
+                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-500/30 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
+                        {modules.map((mod, index) => {
+                            const isActive = module._id === mod._id;
+                            const unlocked = isUnlocked(index);
+                            const done = isCompleted(mod._id);
+
+                            return (
+                                <div
+                                    key={`mod_${index}`}
+                                    onClick={() => unlocked && goToModule(mod)}
+                                    className={`relative flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-300 ${
+                                        unlocked
+                                            ? 'cursor-pointer'
+                                            : 'cursor-not-allowed opacity-40'
+                                    } ${
+                                        isActive
+                                            ? 'border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]'
+                                            : done
+                                              ? 'border border-green-400/60 bg-gradient-to-br from-[#dcfce7] to-[#f0fdf4] dark:border-green-500/50 dark:from-[#0a2a1a] dark:to-[#0d1f2d] dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]'
+                                              : 'border border-blue-100 bg-[#f8faff] hover:border-blue-300 hover:bg-blue-50 dark:border-white/5 dark:bg-white/5 dark:hover:border-white/5 dark:hover:bg-white/5'
+                                    }`}
+                                >
+                                    <div
+                                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border ${
+                                            isActive
+                                                ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
+                                                : done
+                                                  ? 'border-green-400/60 bg-green-100 dark:border-green-500/40 dark:bg-green-500/15'
+                                                  : 'border-blue-200 bg-blue-50 dark:border-white/10 dark:bg-white/5'
+                                        }`}
+                                    >
+                                        {!unlocked ? (
+                                            <Lock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                                        ) : done ? (
+                                            <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                        ) : isActive ? (
+                                            <Play
+                                                className="h-4 w-4 text-blue-600 dark:text-indigo-300"
+                                                fill="currentColor"
+                                            />
+                                        ) : (
+                                            <span className="font-['Orbitron'] text-xs font-bold text-blue-400 dark:text-gray-400">
+                                                {String(index + 1).padStart(
+                                                    2,
+                                                    '0',
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex min-w-0 flex-col">
+                                        <span
+                                            className={`mb-0.5 font-['Orbitron'] text-[10px] font-semibold tracking-widest uppercase ${
+                                                isActive
+                                                    ? 'text-blue-500 dark:text-blue-400'
+                                                    : done
+                                                      ? 'text-green-600 dark:text-green-400'
+                                                      : 'text-blue-300 dark:text-white/30'
+                                            }`}
+                                        >
+                                            Modul{' '}
+                                            {String(index + 1).padStart(2, '0')}
+                                        </span>
+                                        <span
+                                            className={`truncate text-sm leading-tight font-bold ${
+                                                isActive
+                                                    ? 'text-[#1e3a8a] dark:text-white'
+                                                    : done
+                                                      ? 'text-green-800 dark:text-green-200'
+                                                      : unlocked
+                                                        ? 'text-[#334155] dark:text-white/60'
+                                                        : 'text-gray-400 dark:text-white/30'
+                                            }`}
+                                        >
+                                            {mod.title}
+                                        </span>
+                                    </div>
+                                    {isActive && (
+                                        <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
 
                 {/* ================= RIGHT PANEL ================= */}
                 <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
-                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 min-h-0 flex-1 overflow-y-auto rounded-xl border border-blue-200 bg-white p-4 shadow-sm md:p-6 lg:p-8 dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none dark:scrollbar-thumb-blue-500/30">
+                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-500/30 min-h-0 flex-1 overflow-y-auto rounded-xl border border-blue-200 bg-white p-4 shadow-sm md:p-6 lg:p-8 dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
                         {/* Module Title */}
                         <div className="mb-6 flex items-center gap-3">
                             <div className="h-6 w-[3px] rounded-full bg-gradient-to-b from-blue-500 to-indigo-400 dark:from-blue-400 dark:to-purple-400" />
@@ -457,7 +567,10 @@ export default function LearnShow({
                                         {item.content?.title && (
                                             <div className="mb-2 flex items-center gap-2">
                                                 <span className="rounded border border-blue-300 bg-blue-100 px-2 py-0.5 text-[10px] font-bold tracking-widest text-blue-600 uppercase dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-400">
-                                                    {String(index + 1).padStart(2, '0')}
+                                                    {String(index + 1).padStart(
+                                                        2,
+                                                        '0',
+                                                    )}
                                                 </span>
                                                 <h3 className="font-['Orbitron'] text-base font-bold text-blue-700 dark:text-blue-300">
                                                     {item.content.title}
@@ -465,7 +578,8 @@ export default function LearnShow({
                                             </div>
                                         )}
                                         <p className="border-l-2 border-blue-300 pl-6 text-[14px] leading-relaxed whitespace-pre-wrap text-[#334155] md:text-[15px] dark:border-blue-500/20 dark:text-gray-300">
-                                            {item.content?.description || item.content?.text}
+                                            {item.content?.description ||
+                                                item.content?.text}
                                         </p>
                                     </div>
                                 )}
@@ -481,7 +595,9 @@ export default function LearnShow({
                                         </div>
                                         <div className="aspect-video w-full">
                                             <iframe
-                                                src={getYoutubeEmbedUrl(item.content.url)}
+                                                src={getYoutubeEmbedUrl(
+                                                    item.content.url,
+                                                )}
                                                 className="block h-full w-full"
                                                 allowFullScreen
                                             />
@@ -490,7 +606,9 @@ export default function LearnShow({
                                 )}
 
                                 {/* ── IMAGE ── */}
-                                {item.type === 'image' && <ImageContent item={item} />}
+                                {item.type === 'image' && (
+                                    <ImageContent item={item} />
+                                )}
 
                                 {/* ── VIDEO ── */}
                                 {item.type === 'video' && (
@@ -506,7 +624,9 @@ export default function LearnShow({
                                                 controls
                                                 className="block h-full w-full bg-[#f8faff] dark:bg-black"
                                             >
-                                                <source src={item.content.url} />
+                                                <source
+                                                    src={item.content.url}
+                                                />
                                             </video>
                                         </div>
                                     </div>
@@ -527,7 +647,9 @@ export default function LearnShow({
                                             </p>
 
                                             <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                                                {item.content.url.split('/').pop()}
+                                                {item.content.url
+                                                    .split('/')
+                                                    .pop()}
                                             </p>
                                         </div>
 
@@ -556,7 +678,7 @@ export default function LearnShow({
                             {prevModule && (
                                 <button
                                     onClick={() => goToModule(prevModule)}
-                                    className="font-['Orbitron'] flex-1 rounded-lg border border-blue-300 bg-white px-4 py-2.5 text-center text-sm font-bold text-[#1e3a8a] transition-all hover:bg-blue-100 sm:flex-none sm:py-2 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/5 dark:hover:brightness-110"
+                                    className="flex-1 rounded-lg border border-blue-300 bg-white px-4 py-2.5 text-center font-['Orbitron'] text-sm font-bold text-[#1e3a8a] transition-all hover:bg-blue-100 sm:flex-none sm:py-2 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/5 dark:hover:brightness-110"
                                 >
                                     ← Prev
                                 </button>
@@ -569,7 +691,7 @@ export default function LearnShow({
                                         }
                                     }}
                                     disabled={!isUnlocked(currentIndex + 1)}
-                                    className={`font-['Orbitron'] flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-bold transition-all sm:flex-none sm:py-2 ${
+                                    className={`flex-1 rounded-lg px-4 py-2.5 text-center font-['Orbitron'] text-sm font-bold transition-all sm:flex-none sm:py-2 ${
                                         isUnlocked(currentIndex + 1)
                                             ? 'border border-blue-600 bg-[#2563EB] text-white shadow-sm hover:bg-[#1d4ed8] dark:border-blue-500/40 dark:bg-blue-500/10 dark:shadow-none dark:hover:bg-blue-500/10 dark:hover:brightness-110'
                                             : 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 opacity-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-500'
@@ -584,15 +706,19 @@ export default function LearnShow({
                             {!isCompleted(module._id) && (
                                 <button
                                     onClick={completeModule}
-                                    className="font-['Orbitron'] w-full rounded-lg border border-green-400 bg-green-50 px-5 py-2.5 text-sm font-bold text-green-700 shadow-sm transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-green-500/50 dark:bg-green-500/15 dark:text-green-400 dark:shadow-none dark:hover:brightness-110"
+                                    className="w-full rounded-lg border border-green-400 bg-green-50 px-5 py-2.5 font-['Orbitron'] text-sm font-bold text-green-700 shadow-sm transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-green-500/50 dark:bg-green-500/15 dark:text-green-400 dark:shadow-none dark:hover:brightness-110"
                                 >
                                     ✓ Tandai Selesai
                                 </button>
                             )}
                             {isLastModule && finalQuizId && allCompleted && (
                                 <button
-                                    onClick={() => router.visit(`/student/quiz/${finalQuizId}`)}
-                                    className="font-['Orbitron'] w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"
+                                    onClick={() =>
+                                        router.visit(
+                                            `/student/quiz/${finalQuizId}`,
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"
                                 >
                                     MULAI TEST →
                                 </button>

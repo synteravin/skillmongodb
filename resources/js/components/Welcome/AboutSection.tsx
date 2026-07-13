@@ -1,9 +1,6 @@
 export default function AboutSection() {
     return (
-        <section
-            id="about"
-            className="relative py-12 md:py-24 2xl:py-32"
-        >
+        <section id="about" className="relative py-12 md:py-24 2xl:py-32">
             <div className="relative z-10 container mx-auto px-6">
                 <div className="mx-auto max-w-4xl 2xl:max-w-6xl">
                     {/* 🔥 CARD UTAMA */}
@@ -63,21 +60,18 @@ export default function AboutSection() {
                                     <div className="absolute -top-3 left-8 h-2 w-16 rounded-full bg-cyan-400 lg:hidden" />
 
                                     <p className="leading-relaxed text-slate-300">
-                                        Skill Ventura adalah sebuah
-                                        project berbasis teknologi yang
-                                        dirancang untuk mengembangkan
-                                        keterampilan pengguna secara
-                                        progresif melalui pendekatan
-                                        pembelajaran interaktif dan
-                                        berbasis tantangan. Lorem ipsum,
-                                        dolor sit amet consectetur
-                                        adipisicing elit. Accusamus
-                                        repellat delectus beatae? Eius
-                                        nemo amet nostrum fugiat
-                                        recusandae! Fugiat,
-                                        voluptates?Lorem ipsum dolor sit
-                                        amet consectetur adipisicing
-                                        elit. Pariatur, assumenda?
+                                        Skill Ventura adalah sebuah project
+                                        berbasis teknologi yang dirancang untuk
+                                        mengembangkan keterampilan pengguna
+                                        secara progresif melalui pendekatan
+                                        pembelajaran interaktif dan berbasis
+                                        tantangan. Lorem ipsum, dolor sit amet
+                                        consectetur adipisicing elit. Accusamus
+                                        repellat delectus beatae? Eius nemo amet
+                                        nostrum fugiat recusandae! Fugiat,
+                                        voluptates?Lorem ipsum dolor sit amet
+                                        consectetur adipisicing elit. Pariatur,
+                                        assumenda?
                                     </p>
                                 </div>
 
@@ -96,19 +90,16 @@ export default function AboutSection() {
 
                                     <p className="leading-relaxed text-slate-300">
                                         We gamify the experience to make
-                                        learning addictive, fun, and
-                                        effective. Level up your
-                                        real-world stats while having
-                                        fun. Lorem ipsum dolor sit amet,
-                                        consectetur adipisicing elit.
-                                        Nihil quod omnis eveniet
-                                        reprehenderit ab pariatur
-                                        tempora eum iure magnam quo nemo
-                                        id, eligendi corrupti ea.
-                                        Inventore quibusdam sequi dicta
-                                        sed reprehenderit optio autem
-                                        ullam modi ex eum, voluptatem
-                                        dolor officiis tempora nihil
+                                        learning addictive, fun, and effective.
+                                        Level up your real-world stats while
+                                        having fun. Lorem ipsum dolor sit amet,
+                                        consectetur adipisicing elit. Nihil quod
+                                        omnis eveniet reprehenderit ab pariatur
+                                        tempora eum iure magnam quo nemo id,
+                                        eligendi corrupti ea. Inventore
+                                        quibusdam sequi dicta sed reprehenderit
+                                        optio autem ullam modi ex eum,
+                                        voluptatem dolor officiis tempora nihil
                                         iusto consequatur. Doloribus!
                                     </p>
                                 </div>

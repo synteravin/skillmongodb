@@ -1,6 +1,6 @@
 export default function AnswerForm({ data, onChange }: any) {
     return (
-        <div className="flex items-center gap-2 mb-2">
+        <div className="mb-2 flex items-center gap-2">
             <input
                 type="text"
                 placeholder="Answer..."
@@ -21,5 +21,5 @@ export default function AnswerForm({ data, onChange }: any) {
 
             <span>Correct</span>
         </div>
-    )
+    );
 }
