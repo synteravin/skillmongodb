@@ -94,13 +94,13 @@ export default function Show({ submission, studentSubmission }: Props) {
             {/* ================= HEADER ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
-                    className="relative border-[2px] border-transparent md:border-[3px]"
+                    className="relative rounded-md p-[2px] md:p-[3px]"
                     style={{
-                        borderImage:
-                            'linear-gradient(to right, #2563EB 0%, #3b82f6 30%, #6366f1 50%, #facc15 100%) 1',
+                        backgroundImage:
+                            'linear-gradient(to right, #2563EB 0%, #3b82f6 30%, #6366f1 50%, #facc15 100%)',
                     }}
                 >
-                    <div className="flex items-center gap-4 bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">
+                    <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">
                         <Link
                             href={`/student/career-groups/${submission.group_id}/submissions`}
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-300 bg-[#eff6ff] p-2 transition-colors hover:border-blue-500 hover:bg-blue-100 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"

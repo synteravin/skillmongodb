@@ -363,13 +363,13 @@ function MobileRoadmap({
                 ══════════════════════════════════════════ */}
                 <div className="mb-3 w-full">
                     <div
-                        className="relative w-full border-[2px] border-transparent"
+                        className="relative w-full rounded-md p-[2px]"
                         style={{
-                            borderImage:
-                                'linear-gradient(to right, #3B28F6 0%, #4c2fff 40%, #facc15 100%) 1',
+                            backgroundImage:
+                                'linear-gradient(to right, #3B28F6 0%, #4c2fff 40%, #facc15 100%)',
                         }}
                     >
-                        <div className="bg-white px-4 py-2.5 dark:bg-[#040812]">
+                        <div className="rounded-[4px] bg-white px-4 py-2.5 dark:bg-[#040812]">
                             <p className="font-['Orbitron'] text-[9px] font-semibold tracking-[0.25em] text-blue-400 uppercase dark:text-blue-400">
                                 Learning Path
                             </p>
@@ -860,13 +860,13 @@ export default function Roadmap({
             {/* ================= HEADER (unchanged, visible both breakpoints) ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
-                    className="relative border-[2px] md:border-[3px]"
+                    className="relative rounded-md p-[2px] md:p-[3px]"
                     style={{
-                        borderImage:
-                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1',
+                        backgroundImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                     }}
                 >
-                    <div className="flex items-center gap-4 bg-white px-4 py-4 md:px-6 dark:bg-[#040812]">
+                    <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 md:px-6 dark:bg-[#040812]">
                         {/* Back Button */}
                         <Link
                             href="/student/course"

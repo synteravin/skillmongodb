@@ -3,11 +3,18 @@ import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     ArrowRight,
-    Music,
-    Slack,
-    LayoutGrid,
-    MessageCircle,
-    Zap,
+    Code2,
+    ShieldCheck,
+    Cloud,
+    Database,
+    Brain,
+    Smartphone,
+    Globe,
+    Palette,
+    TrendingUp,
+    Briefcase,
+    Microscope,
+    Gamepad2,
 } from 'lucide-react';
 
 export default function HeroSection() {
@@ -80,34 +87,68 @@ export default function HeroSection() {
             </div>
 
             {/* MARQUEE - ALWAYS VISIBLE */}
-            <div className="relative z-20 mt-24 w-full rotate-[3deg]">
-                <div className="border border-slate-200/50 bg-gradient-to-r from-white/80 via-slate-200/60 to-white/80 shadow-lg backdrop-blur-lg transition-all duration-500 dark:border-white/10 dark:from-black/70 dark:via-indigo-900/60 dark:to-black/70 dark:shadow-2xl">
-                    <div className="animate-infinite-scroll flex w-max items-center gap-12 px-6 py-4 text-sm text-slate-600 md:gap-20 md:px-10 md:py-6 md:text-base dark:text-white/70">
+            <div className="relative z-20 mt-24 w-full rotate-[3deg] overflow-hidden">
+                <div className="border border-slate-200/50 bg-gradient-to-r from-white/80 via-slate-200/60 to-white/80 shadow-lg backdrop-blur-lg transition-all duration-500 dark:border-white/10 dark:from-black/70 dark:via-indigo-900/60 dark:to-black/70 dark:shadow-2xl overflow-hidden">
+                    <div className="animate-marquee hover:[animation-play-state:paused] flex w-max items-center py-4 md:py-6 text-slate-800 dark:text-white">
                         {[...Array(2)].map((_, i) => (
                             <div
                                 key={i}
-                                className="flex items-center gap-12 md:gap-20"
+                                className="flex items-center gap-12 pr-12 md:gap-16 md:pr-16 shrink-0"
                             >
-                                <span className="flex items-center gap-3">
-                                    <Music size={22} /> Spotify
-                                </span>
-                                <span className="flex items-center gap-3">
-                                    <Slack size={22} /> Slack
-                                </span>
-                                <span className="flex items-center gap-3">
-                                    <LayoutGrid size={22} /> Y Combinator
-                                </span>
-                                <span className="flex items-center gap-3">
-                                    <MessageCircle size={22} /> Discord
-                                </span>
-                                <span className="flex items-center gap-3">
-                                    <Zap size={22} /> Linear
-                                </span>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Code2 size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Software Development</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <ShieldCheck size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Cyber Security</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Cloud size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Cloud Computing</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Database size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Data Science</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Brain size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Artificial Intelligence</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Smartphone size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Mobile Development</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Globe size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Web Development</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Palette size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">UI/UX Design</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <TrendingUp size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Digital Marketing</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Briefcase size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Business Management</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Microscope size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Research & Innovation</span>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <Gamepad2 size={22} className="text-slate-800 dark:text-white" />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">Game Development</span>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
+
         </section>
     );
 }
