@@ -8,6 +8,7 @@ interface Message {
     created_at: string;
     sender: {
         id: string;
+        _id?: string;
         name: string;
         role: string;
     };
@@ -17,14 +18,20 @@ interface Props {
     bidId: string;
     questTitle: string;
     targetUserName: string;
+    isDisputed?: boolean;
     onClose: () => void;
+    creatorId?: string;
+    workerId?: string;
 }
 
 export default function QuestChatPanel({
     bidId,
     questTitle,
     targetUserName,
+    isDisputed = false,
     onClose,
+    creatorId,
+    workerId,
 }: Props) {
     const { props } = usePage<any>();
     const currentUser = props.auth?.user;
@@ -165,7 +172,7 @@ export default function QuestChatPanel({
                     </div>
                     <div className="min-w-0">
                         <h4 className="truncate text-sm font-bold text-slate-900 dark:text-white">
-                            {targetUserName}
+                            {isDisputed ? 'Ruang Mediasi Arbitrase' : targetUserName}
                         </h4>
                         <span className="block truncate text-[10px] text-slate-400 dark:text-slate-500">
                             Quest: {questTitle}
@@ -183,6 +190,17 @@ export default function QuestChatPanel({
 
             {/* Messages Area */}
             <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/50 p-4 dark:bg-[#080a10]">
+                {isDisputed && (
+                    <div className="flex gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 p-3.5 text-xs text-amber-800 dark:text-amber-300">
+                        <ShieldAlert className="h-4 w-4 shrink-0 text-amber-500 animate-pulse mt-0.5" />
+                        <div className="space-y-0.5">
+                            <span className="block font-bold uppercase tracking-wider text-[10px]">Ruang Mediasi Aktif</span>
+                            <p className="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
+                                Admin hadir sebagai mediator resmi untuk menyelesaikan sengketa ini. Silakan lampirkan argumen dan bukti pekerjaan Anda di bawah ini.
+                            </p>
+                        </div>
+                    </div>
+                )}
                 {loading ? (
                     <div className="flex h-full flex-col items-center justify-center gap-2 text-slate-400">
                         <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
@@ -209,11 +227,26 @@ export default function QuestChatPanel({
                                 key={msg.id}
                                 className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
                             >
-                                <span className="mb-1 px-1 text-[9px] text-slate-400">
-                                    {isSelf ? 'Anda' : msg.sender.name} •{' '}
-                                    {msg.sender.role === 'admin'
-                                        ? 'Admin'
-                                        : 'Siswa'}
+                                <span className="mb-1 px-1 text-[9px] text-slate-400 flex items-center gap-1">
+                                    <span>{isSelf ? 'Anda' : msg.sender.name}</span>
+                                    <span>•</span>
+                                    {msg.sender.role === 'admin' ? (
+                                        <span className="rounded bg-red-500/10 border border-red-500/20 px-1 py-0.5 text-[8px] font-bold text-red-500 uppercase tracking-wider">
+                                            Mediator
+                                        </span>
+                                    ) : msg.sender.id === creatorId || msg.sender._id === creatorId ? (
+                                        <span className="rounded bg-blue-500/10 border border-blue-500/20 px-1 py-0.5 text-[8px] font-bold text-blue-505 uppercase tracking-wider dark:text-blue-400">
+                                            Pembuat Quest
+                                        </span>
+                                    ) : msg.sender.id === workerId || msg.sender._id === workerId ? (
+                                        <span className="rounded bg-emerald-500/10 border border-emerald-500/20 px-1 py-0.5 text-[8px] font-bold text-emerald-505 uppercase tracking-wider dark:text-emerald-400">
+                                            Pekerja
+                                        </span>
+                                    ) : (
+                                        <span className="rounded bg-slate-500/10 border border-slate-500/20 px-1 py-0.5 text-[8px] font-bold text-slate-500 uppercase tracking-wider">
+                                            Siswa
+                                        </span>
+                                    )}
                                 </span>
                                 <div
                                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${

@@ -480,6 +480,7 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/approve', [QuestController::class, 'approveWork'])->name('quests.approve-work');
         Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
         Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
+        Route::post('/quests/{quest}/extend-deadline', [QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
     });
 
 /*

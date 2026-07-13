@@ -130,8 +130,8 @@ class ProfileController extends Controller
         $tier = $ranks[$tierIndex] ?? $ranks->last();
 
         $rankData = [
-            'name' => $tier->name,
-            'image' => $tier->image_url,
+            'name' => $tier->name ?? 'Unranked',
+            'image' => $tier->image_url ?? null,
             'star' => $star,
         ];
         // ========================

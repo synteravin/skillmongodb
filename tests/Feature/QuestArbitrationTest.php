@@ -147,6 +147,7 @@ class QuestArbitrationTest extends TestCase
             'status' => 'disputed',
             'creator_id' => (string) $creator->_id,
             'worker_id' => (string) $worker->_id,
+            'rewards' => ['exp' => 250, 'gold' => 150, 'erp' => 100],
             'dispute' => [
                 'status' => 'pending',
                 'reason' => 'Dispute reason',
@@ -185,7 +186,7 @@ class QuestArbitrationTest extends TestCase
             ->where('type', 'release_payout')
             ->first();
         $this->assertNotNull($workerTx);
-        $this->assertEquals(600, $workerTx->amount);
+        $this->assertEquals(90, $workerTx->amount);
 
         // No refund transaction is recorded for the creator
         $creatorTx = QuestTransaction::where('quest_id', $quest->_id)
@@ -197,14 +198,16 @@ class QuestArbitrationTest extends TestCase
     public function test_admin_can_extend_quest_deadline(): void
     {
         $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
         $quest = Quest::create([
             'title' => 'Freelance Web Design',
             'description' => 'Create web portfolio',
             'min_salary' => 1000,
             'max_salary' => 3000,
-            'deadline' => now()->addDays(5),
-            'status' => 'ongoing',
+            'deadline' => now()->subDays(1),
+            'status' => 'expired',
             'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
         ]);
 
         $admin = $this->createAdmin();
@@ -220,6 +223,7 @@ class QuestArbitrationTest extends TestCase
 
         $quest->refresh();
         $this->assertEquals($newDeadline->toIso8601String(), $quest->deadline->toIso8601String());
+        $this->assertEquals('ongoing', $quest->status);
     }
 
     public function test_admin_can_reopen_bidding(): void
