@@ -126,13 +126,11 @@ class QuestArbitrationTest extends TestCase
         $this->assertEquals('cancelled', $quest->status);
         $this->assertEquals('resolved_refund_creator', $quest->dispute['status']);
 
-        // Check ledger transaction
+        // Check ledger transaction (No refund transaction is recorded for the creator since they were never charged escrow)
         $transaction = QuestTransaction::where('quest_id', $quest->_id)
             ->where('type', 'refund_escrow')
             ->first();
-        $this->assertNotNull($transaction);
-        $this->assertEquals(1500, $transaction->amount);
-        $this->assertEquals((string) $creator->_id, $transaction->user_id);
+        $this->assertNull($transaction);
     }
 
     public function test_admin_can_resolve_dispute_with_split(): void
@@ -189,11 +187,11 @@ class QuestArbitrationTest extends TestCase
         $this->assertNotNull($workerTx);
         $this->assertEquals(600, $workerTx->amount);
 
+        // No refund transaction is recorded for the creator
         $creatorTx = QuestTransaction::where('quest_id', $quest->_id)
             ->where('type', 'refund_escrow')
             ->first();
-        $this->assertNotNull($creatorTx);
-        $this->assertEquals(400, $creatorTx->amount);
+        $this->assertNull($creatorTx);
     }
 
     public function test_admin_can_extend_quest_deadline(): void
@@ -262,10 +260,10 @@ class QuestArbitrationTest extends TestCase
         $bid->refresh();
         $this->assertEquals('rejected', $bid->status);
 
+        // No refund transaction is recorded for the creator
         $transaction = QuestTransaction::where('quest_id', $quest->_id)
             ->where('type', 'refund_escrow')
             ->first();
-        $this->assertNotNull($transaction);
-        $this->assertEquals(1500, $transaction->amount);
+        $this->assertNull($transaction);
     }
 }

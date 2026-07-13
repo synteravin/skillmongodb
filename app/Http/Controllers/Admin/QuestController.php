@@ -48,6 +48,19 @@ class QuestController extends Controller
     {
         $data = $request->validated();
 
+        $maxSalary = (int) $data['max_salary'];
+        if ($maxSalary >= 10000000) {
+            $tier = 'S';
+        } elseif ($maxSalary >= 5000000) {
+            $tier = 'A';
+        } elseif ($maxSalary >= 2500000) {
+            $tier = 'B';
+        } elseif ($maxSalary >= 1000000) {
+            $tier = 'C';
+        } else {
+            $tier = 'D';
+        }
+
         Quest::create([
             'title' => $data['title'],
             'description' => $data['description'],
@@ -56,15 +69,22 @@ class QuestController extends Controller
             'deadline' => now()->parse($data['deadline']),
             'status' => 'open',
             'creator_id' => auth()->id(),
+            'tier' => $tier,
         ]);
 
         return redirect()->route('admin.quests.index')->with('success', 'Quest berhasil dibuat!');
     }
 
-    public function show(string $id)
+    public function show(string $id, QuestService $questService)
     {
         $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
         $user = auth()->user();
+
+        $rewards = $questService->getRewardsForQuest($quest);
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        if ($acceptedBid) {
+            $rewards['gold'] = (int) $acceptedBid->bid_amount;
+        }
 
         $bids = QuestBid::with('student')
             ->where('quest_id', $id)
@@ -179,8 +199,9 @@ class QuestController extends Controller
                 'submission_file' => $resolvedSubmissionFile,
                 'tier' => $quest->tier ?? 'C',
                 'custom_rewards' => $quest->custom_rewards,
-                'dispute' => $quest->dispute,
+                'dispute' => $questService->resolveDispute($quest),
                 'submission_history' => $resolvedSubmissionHistory,
+                'rewards' => $rewards,
             ],
             'bids' => $bids,
             'transactions' => $transactions,
@@ -201,12 +222,26 @@ class QuestController extends Controller
             'max_salary.gte' => 'Gaji maksimal harus lebih besar atau sama dengan gaji minimal.',
         ]);
 
+        $maxSalary = (int) $data['max_salary'];
+        if ($maxSalary >= 10000000) {
+            $tier = 'S';
+        } elseif ($maxSalary >= 5000000) {
+            $tier = 'A';
+        } elseif ($maxSalary >= 2500000) {
+            $tier = 'B';
+        } elseif ($maxSalary >= 1000000) {
+            $tier = 'C';
+        } else {
+            $tier = 'D';
+        }
+
         $quest->update([
             'title' => $data['title'],
             'description' => $data['description'],
             'min_salary' => (int) $data['min_salary'],
             'max_salary' => (int) $data['max_salary'],
             'deadline' => now()->parse($data['deadline']),
+            'tier' => $tier,
         ]);
 
         return redirect()->route('admin.quests.index')->with('success', 'Quest berhasil diupdate!');
@@ -399,12 +434,6 @@ class QuestController extends Controller
     {
         $quest = Quest::findOrFail($questId);
 
-        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
-        if ($acceptedBid && in_array($quest->status, ['ongoing', 'submitted', 'disputed', 'approved'])) {
-            $bidAmount = (int) $acceptedBid->bid_amount;
-            $questService->recordTransaction($quest->_id, $quest->creator_id, $bidAmount, 'refund_escrow', "Escrow refund due to admin force cancellation of quest: {$quest->title}");
-        }
-
         $quest->update([
             'status' => 'cancelled',
             'completed_at' => now(),
@@ -445,8 +474,6 @@ class QuestController extends Controller
 
         $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
         if ($acceptedBid) {
-            $bidAmount = (int) $acceptedBid->bid_amount;
-            $questService->recordTransaction($quest->_id, $quest->creator_id, $bidAmount, 'refund_escrow', "Escrow refund due to admin re-opening bidding for quest: {$quest->title}");
             $acceptedBid->update(['status' => 'rejected']);
         }
 
