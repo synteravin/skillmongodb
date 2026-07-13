@@ -34,10 +34,10 @@
    /* Garis Kuning Atas Tengah */
     .quiz-footer .footer-bar-top {
         height: 5px !important;              /* Ketebalan garis */
-        width: 357px !important;             /* Panjang garis atas */
+        width: 370px !important;             /* Panjang garis atas */
         background-color: #FACC15 !important;
         top: 60% !important;
-        left: 29% !important;
+        left: 28.5% !important;
     }
 
     /* Garis Kuning Bawah Samping Kiri */
