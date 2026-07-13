@@ -215,6 +215,12 @@ class QuestService
             ];
         }, $quest->submission_history ?? []);
 
+        $rewards = $this->getRewardsForQuest($quest);
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        if ($acceptedBid) {
+            $rewards['gold'] = (int) $acceptedBid->bid_amount;
+        }
+
         return [
             'quest' => [
                 '_id' => (string) $quest->_id,
@@ -248,11 +254,46 @@ class QuestService
                 'submission_file' => $resolvedSubmissionFile,
                 'tier' => $quest->tier ?? 'C',
                 'custom_rewards' => $quest->custom_rewards,
-                'dispute' => $quest->dispute,
+                'dispute' => $this->resolveDispute($quest),
                 'submission_history' => $resolvedSubmissionHistory,
+                'rewards' => $rewards,
             ],
             'bids' => $bids,
         ];
+    }
+
+    /**
+     * Resolve and format dispute details for frontend compatibility.
+     */
+    public function resolveDispute(Quest $quest): ?array
+    {
+        if (! $quest->dispute) {
+            return null;
+        }
+
+        $disputer = User::find($quest->dispute['disputer_id'] ?? $quest->dispute['filer_id'] ?? null);
+
+        $resolvedDispute = array_merge([
+            'status' => $quest->dispute['status'] ?? 'pending',
+            'reason' => $quest->dispute['reason'] ?? '',
+            'disputed_at' => $quest->dispute['disputed_at'] ?? null,
+            'resolved_at' => $quest->dispute['resolved_at'] ?? null,
+            'ruled_at' => $quest->dispute['ruled_at'] ?? $quest->dispute['resolved_at'] ?? null,
+            'ruling_note' => $quest->dispute['ruling_note'] ?? null,
+            'note' => $quest->dispute['note'] ?? $quest->dispute['ruling_note'] ?? null,
+            'split_percentage' => $quest->dispute['split_percentage'] ?? null,
+            'disputer_id' => $quest->dispute['disputer_id'] ?? null,
+            'filer_id' => $quest->dispute['filer_id'] ?? $quest->dispute['disputer_id'] ?? null,
+            'filer_name' => $quest->dispute['filer_name'] ?? ($disputer ? $disputer->name : 'User'),
+            'ruling' => $quest->dispute['ruling'] ?? null,
+        ], $quest->dispute);
+
+        if (empty($resolvedDispute['ruling']) && isset($quest->dispute['status']) && str_starts_with($quest->dispute['status'], 'resolved_')) {
+            $rulingRaw = substr($quest->dispute['status'], 9);
+            $resolvedDispute['ruling'] = $rulingRaw === 'release_payout' ? 'pay_worker' : ($rulingRaw === 'refund_creator' ? 'refund' : $rulingRaw);
+        }
+
+        return $resolvedDispute;
     }
 
     /**
@@ -261,6 +302,19 @@ class QuestService
     public function createQuest(User $creator, array $data): Quest
     {
         $status = $creator->isAdmin() ? 'open' : 'draft';
+
+        $maxSalary = (int) $data['max_salary'];
+        if ($maxSalary >= 10000000) {
+            $tier = 'S';
+        } elseif ($maxSalary >= 5000000) {
+            $tier = 'A';
+        } elseif ($maxSalary >= 2500000) {
+            $tier = 'B';
+        } elseif ($maxSalary >= 1000000) {
+            $tier = 'C';
+        } else {
+            $tier = 'D';
+        }
 
         return Quest::create([
             'title' => $data['title'],
@@ -272,7 +326,7 @@ class QuestService
             'creator_id' => $creator->_id,
             'images' => $data['images'] ?? [],
             'files' => $data['files'] ?? [],
-            'tier' => $data['tier'] ?? 'C',
+            'tier' => $tier,
             'custom_rewards' => $data['custom_rewards'] ?? null,
             'submission_history' => [],
         ]);
@@ -318,10 +372,6 @@ class QuestService
             'status' => 'ongoing',
             'worker_id' => $acceptedBid->student_id,
         ]);
-
-        // Record hold_escrow transaction from creator
-        $bidAmount = (int) $acceptedBid->bid_amount;
-        $this->recordTransaction($quest->_id, $quest->creator_id, -$bidAmount, 'hold_escrow', "Escrow holding for bid accept on quest: {$quest->title}");
     }
 
     /**
@@ -417,10 +467,15 @@ class QuestService
             'dispute' => [
                 'disputed_at' => now()->toIso8601String(),
                 'disputer_id' => $user->_id,
+                'filer_id' => $user->_id,
+                'filer_name' => $user->name,
                 'reason' => $reason,
                 'status' => 'pending',
                 'resolved_at' => null,
+                'ruled_at' => null,
                 'ruling_note' => null,
+                'note' => null,
+                'ruling' => null,
             ],
         ]);
 
@@ -467,8 +522,11 @@ class QuestService
 
         $dispute = $quest->dispute ?? [];
         $dispute['status'] = 'resolved_'.$ruling;
+        $dispute['ruling'] = $ruling === 'release_payout' ? 'pay_worker' : ($ruling === 'refund_creator' ? 'refund' : $ruling);
         $dispute['ruling_note'] = $note;
+        $dispute['note'] = $note;
         $dispute['resolved_at'] = now()->toIso8601String();
+        $dispute['ruled_at'] = now()->toIso8601String();
         if ($ruling === 'split') {
             $dispute['split_percentage'] = (int) $splitPercentage;
         }
@@ -489,10 +547,6 @@ class QuestService
                 'completed_at' => now(),
                 'dispute' => $dispute,
             ]);
-
-            if ($quest->creator_id) {
-                $this->recordTransaction($quest->_id, $quest->creator_id, $bidAmount, 'refund_escrow', 'Escrow refund to creator via admin arbitration ruling: refund_creator');
-            }
         } elseif ($ruling === 'split') {
             $splitPercentage = (int) $splitPercentage;
             $workerShare = (int) round(($bidAmount * $splitPercentage) / 100);
@@ -544,10 +598,6 @@ class QuestService
                 $progress->save();
 
                 $this->recordTransaction($quest->_id, $quest->worker_id, $workerShare, 'release_payout', "Split payout release (Share: {$splitPercentage}%) for quest: {$quest->title}");
-            }
-
-            if ($quest->creator_id) {
-                $this->recordTransaction($quest->_id, $quest->creator_id, $creatorShare, 'refund_escrow', 'Split payout refund to creator (Share: '.(100 - $splitPercentage)."%) for quest: {$quest->title}");
             }
         }
 
@@ -646,6 +696,12 @@ class QuestService
                 ];
             }
 
+            $rewards = $this->getRewardsForQuest($quest);
+            $acceptedBid = $bids->firstWhere('quest_id', (string) $quest->_id);
+            if ($acceptedBid && $acceptedBid->status === 'accepted') {
+                $rewards['gold'] = (int) $acceptedBid->bid_amount;
+            }
+
             return [
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
@@ -681,6 +737,8 @@ class QuestService
                 'rating_comment' => $quest->rating_comment,
                 'revision_note' => $quest->revision_note,
                 'rejection_note' => $quest->rejection_note,
+                'rewards' => $rewards,
+                'dispute' => $this->resolveDispute($quest),
             ];
         });
     }

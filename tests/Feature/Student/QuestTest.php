@@ -244,4 +244,66 @@ class QuestTest extends TestCase
         $response = $this->actingAs($otherStudent)->get("/student/quests/{$quest->_id}");
         $response->assertStatus(403);
     }
+
+    public function test_creator_can_accept_bid_with_zero_gold(): void
+    {
+        $creator = $this->createStudent('Quest Creator');
+        $quest = Quest::create([
+            'title' => 'Need landing page',
+            'description' => 'Create a landing page using React.',
+            'min_salary' => 1000000,
+            'max_salary' => 2000000,
+            'deadline' => now()->addDays(5),
+            'status' => 'open',
+            'creator_id' => $creator->_id,
+        ]);
+
+        $bidder = $this->createStudent('Bidder Student');
+        $bid = QuestBid::create([
+            'quest_id' => $quest->_id,
+            'student_id' => $bidder->_id,
+            'bid_amount' => 1500000,
+            'cv' => 'CV',
+            'portfolio' => 'Portfolio',
+            'proposal' => 'Proposal',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($creator);
+
+        $response = $this->post("/student/quests/{$quest->_id}/accept-bid/{$bid->_id}");
+        $response->assertRedirect(route('student.quests.show', $quest->_id));
+
+        $quest->refresh();
+        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals($bidder->_id, $quest->worker_id);
+    }
+
+    public function test_quest_tier_calculated_on_creation(): void
+    {
+        $student = $this->createStudent('Student 1');
+        $this->actingAs($student);
+
+        // Tier S: max_salary >= 10,000,000
+        $this->post('/student/quests', [
+            'title' => 'Tier S Quest',
+            'description' => 'Description S',
+            'min_salary' => 8000000,
+            'max_salary' => 12000000,
+            'deadline' => now()->addDays(5)->toDateString(),
+        ]);
+        $questS = Quest::where('title', 'Tier S Quest')->first();
+        $this->assertEquals('S', $questS->tier);
+
+        // Tier D: max_salary < 1,000,000
+        $this->post('/student/quests', [
+            'title' => 'Tier D Quest',
+            'description' => 'Description D',
+            'min_salary' => 100000,
+            'max_salary' => 500000,
+            'deadline' => now()->addDays(5)->toDateString(),
+        ]);
+        $questD = Quest::where('title', 'Tier D Quest')->first();
+        $this->assertEquals('D', $questD->tier);
+    }
 }

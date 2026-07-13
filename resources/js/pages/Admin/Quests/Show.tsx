@@ -85,6 +85,11 @@ interface Quest {
         submission_note?: string | null;
         submission_file?: { name: string; url: string; size: number } | null;
     }>;
+    rewards?: {
+        exp?: number;
+        gold?: number;
+        erp?: number;
+    };
 }
 
 const RevisionHistory = ({
@@ -275,7 +280,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     const [showApproveForm, setShowApproveForm] = useState(false);
     const [showRejectForm, setShowRejectForm] = useState(false);
     const { props } = usePage<any>();
-    const currentUserId = props.auth?.user?._id;
+    const currentUserId = props.auth?.user?.id;
 
     // Define active tab
     const [activeTab, setActiveTab] = useState<
@@ -1776,8 +1781,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                         }
                                                         className="w-full cursor-pointer rounded-xl border border-red-500/20 bg-red-500/10 py-2.5 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase transition-all hover:bg-red-500/20 dark:text-red-300"
                                                     >
-                                                        Batalkan Quest & Refund
-                                                        Escrow
+                                                        Batalkan Quest & Batalkan Reward
                                                     </button>
                                                 </div>
                                             </div>
@@ -1870,7 +1874,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                                             .ruling ??
                                                                             '',
                                                                     ) &&
-                                                                        'Refund Penuh Ke Pembuat'}
+                                                                        'Pembatalan Quest & Reward'}
                                                                     {[
                                                                         'pay_worker',
                                                                         'release_payout',
@@ -1880,7 +1884,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                                             .ruling ??
                                                                             '',
                                                                     ) &&
-                                                                        'Bayar Penuh Ke Pekerja'}
+                                                                        'Bayar Reward Penuh Ke Pekerja'}
                                                                     {quest
                                                                         .dispute
                                                                         .ruling ===
@@ -1975,12 +1979,10 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                                     className="sr-only"
                                                                 />
                                                                 <span className="block font-['Orbitron'] text-xs uppercase">
-                                                                    Refund
-                                                                    Pembuat
+                                                                    Batalkan Reward
                                                                 </span>
                                                                 <span className="mt-0.5 block text-[10px] text-slate-400">
-                                                                    100% dana ke
-                                                                    pembuat
+                                                                    100% reward dibatalkan
                                                                 </span>
                                                             </label>
 
@@ -2017,7 +2019,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                                     Pekerja
                                                                 </span>
                                                                 <span className="mt-0.5 block text-[10px] text-slate-400">
-                                                                    100% dana ke
+                                                                    100% reward ke
                                                                     pekerja
                                                                 </span>
                                                             </label>
@@ -2097,17 +2099,16 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-['Orbitron'] text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-[#0c122c] dark:text-white"
                                                                 />
                                                                 <span className="mt-0.5 block text-[10px] text-slate-400">
-                                                                    Sisa (
-                                                                    {100 -
-                                                                        arbitrateForm
-                                                                            .data
-                                                                            .split_percentage}
-                                                                    %) akan
-                                                                    dikembalikan
-                                                                    kepada
-                                                                    pembuat
-                                                                    quest.
-                                                                </span>
+                                                                     Sisa (
+                                                                     {100 -
+                                                                         arbitrateForm
+                                                                             .data
+                                                                             .split_percentage}
+                                                                     %) dari
+                                                                     reward
+                                                                     dibatalkan/tidak
+                                                                     dicairkan.
+                                                                 </span>
                                                                 {arbitrateForm
                                                                     .errors
                                                                     .split_percentage && (
@@ -2379,6 +2380,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     <span className="dark:text-purple-450 block font-['Orbitron'] text-[10px] font-bold tracking-wider text-purple-600 uppercase">
                                         🎁 RPG Quest Rewards
                                     </span>
+
                                     <div className="grid grid-cols-3 gap-2 text-center font-['Orbitron'] text-xs font-bold">
                                         <div className="text-purple-605 flex flex-col items-center rounded-xl border border-purple-500/20 bg-purple-500/10 py-2.5 transition-transform hover:scale-[1.03] dark:text-purple-300">
                                             <Award className="mb-1 h-3.5 w-3.5 text-purple-500" />
