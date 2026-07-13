@@ -165,28 +165,7 @@ export default function MobilePlay({
         return (
             <div className="flex h-screen flex-col overflow-hidden bg-[#04080f] font-['Rajdhani',sans-serif] text-white">
                 {/* Header (EXP & Gold) */}
-                <header className="flex-shrink-0 flex items-center justify-between px-4 py-3 bg-[#0a0f1d] border-b border-[#3B28F6]/20">
-                    
-                    
-                    <div className="flex items-center gap-3">
-                        {/* EXP Progress Bar */}
-                        <div className="flex items-center gap-2 bg-[#121829] px-2.5 py-1 rounded-full border border-blue-500/30">
-                            <span className="text-[10px] font-['Orbitron'] font-black text-blue-400">LV.{user_stats.level}</span>
-                            <div className="h-1.5 w-16 bg-slate-800 rounded-full overflow-hidden">
-                                <div 
-                                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500" 
-                                    style={{ width: `${(user_stats.xp / user_stats.exp_max) * 100}%` }}
-                                />
-                            </div>
-                            <span className="text-[9px] font-mono text-gray-400">{user_stats.xp}/{user_stats.exp_max}</span>
-                        </div>
-                        {/* Gold Coin */}
-                        <div className="flex items-center gap-1 bg-[#121829] px-2.5 py-1 rounded-full border border-yellow-500/30">
-                            <img src="/images/Gold.webp" className="h-4.5 w-4.5 object-contain" alt="Gold" />
-                            <span className="text-[10px] font-['Orbitron'] font-bold text-yellow-400">{user_stats.gold.toLocaleString()}</span>
-                        </div>
-                    </div>
-
+                <header className="flex-shrink-0 flex items-center justify-end px-4 py-3 bg-[#0a0f1d] border-b border-[#3B28F6]/20">
                     <button className="p-2 -mr-2 text-white opacity-60 hover:opacity-100 transition-opacity">
                         <MoreHorizontal className="h-6 w-6" />
                     </button>
@@ -253,26 +232,7 @@ export default function MobilePlay({
     return (
         <div className="flex h-screen w-screen overflow-hidden bg-[#04080f] font-['Rajdhani',sans-serif] text-white">
             {/* Left Sidebar */}
-            <aside className="w-14 shrink-0 flex flex-col items-center justify-between py-4 border-r border-[#3B28F6]/20 bg-[#070b18]">
-                
-
-                {/* Stats stacked vertically */}
-                <div className="flex flex-col items-center gap-5">
-                    {/* Gold */}
-                    <div className="flex flex-col items-center gap-1">
-                        <img src="/images/Gold.webp" className="h-5 w-5 object-contain" alt="Gold" />
-                        <span className="text-[10px] font-['Orbitron'] font-bold text-yellow-400">{user_stats.gold.toLocaleString()}</span>
-                    </div>
-
-                    {/* EXP/Level */}
-                    <div className="flex flex-col items-center gap-1">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full border border-blue-500/50 bg-[#121829] text-[10px] font-['Orbitron'] font-black text-blue-400">
-                            L{user_stats.level}
-                        </div>
-                        <span className="text-[8px] font-mono text-gray-400">{user_stats.xp}/{user_stats.exp_max}</span>
-                    </div>
-                </div>
-
+            <aside className="w-14 shrink-0 flex flex-col items-center justify-end py-4 border-r border-[#3B28F6]/20 bg-[#070b18]">
                 <button className="p-2 text-white opacity-60 hover:opacity-100 transition-opacity">
                     <MoreHorizontal className="h-6 w-6" />
                 </button>

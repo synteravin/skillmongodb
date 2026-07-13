@@ -86,13 +86,13 @@ export default function Index({ courses }: { courses: Course[] }) {
                 {/* ================= HEADER (DIAM) ================= */}
                 <div className="w-full flex-shrink-0 px-1 pt-0.5">
                     <div
-                        className="relative border-[2px] border-transparent md:border-[3px]"
+                        className="relative rounded-md p-[2px] md:p-[3px]"
                         style={{
-                            borderImage:
-                                'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1',
+                            backgroundImage:
+                                'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                         }}
                     >
-                        <div className="relative flex items-center justify-between gap-2 bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
+                        <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                             <Link
                                 href="/student/dashboard"
                                 className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
@@ -210,7 +210,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                             return (
                                 <div
                                     key={course._id}
-                                    className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border shadow-[0_18px_45px_rgba(15,23,42,0.06)] transition-all duration-500 sm:rounded-[28px] ${isLocked ? 'border-blue-300 bg-slate-100 shadow-[0_0_30px_rgba(15,23,42,0.08)] dark:border-[#1e3a8a] dark:bg-[#02040f]' : 'border-blue-300 bg-white dark:border-[#1e3a8a] dark:bg-[#061028]'} ${isLocked && 'pointer-events-none'} ${
+                                    className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-[12px] border shadow-[0_18px_45px_rgba(15,23,42,0.06)] transition-all duration-500 ${isLocked ? 'border-blue-300 bg-slate-100 shadow-[0_0_30px_rgba(15,23,42,0.08)] dark:border-[#1e3a8a] dark:bg-[#02040f]' : 'border-blue-300 bg-white dark:border-[#1e3a8a] dark:bg-[#061028]'} ${isLocked && 'pointer-events-none'} ${
                                         !isLocked
                                             ? isActive
                                                 ? 'border-indigo-600 hover:shadow-[0_0_30px_rgba(59,40,246,0.12)]'
@@ -318,7 +318,7 @@ export default function Index({ courses }: { courses: Course[] }) {
 
                                     {/* LOCK OVERLAY - CENTERED IN CARD */}
                                     {isLocked && (
-                                        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl px-4 sm:rounded-[28px]">
+                                        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-sm px-4">
                                             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-400 bg-blue-200/60 shadow-md sm:h-14 sm:w-14 dark:border-blue-700 dark:bg-blue-950/40">
                                                 <Lock className="h-5 w-5 text-blue-600 sm:h-7 sm:w-7 dark:text-blue-400" />
                                             </div>

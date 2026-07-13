@@ -136,7 +136,7 @@ export default function Index({ certificates }: Props) {
                             'linear-gradient(to right, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                     }}
                 >
-                    <div className="flex min-h-0 flex-1 flex-col rounded-[14px] bg-white p-6 transition-colors duration-500 sm:p-8 md:p-10 dark:bg-[#0b0d32]">
+                    <div className="flex min-h-0 flex-1 flex-col rounded-[14px] bg-white p-6 transition-colors duration-500 sm:p-8 md:p-10 dark:bg-[#020202]">
                         {/* HEADER — cuma muncul di lg+, fixed di atas, gak ikut scroll */}
                         <div className="mb-2 hidden shrink-0 grid-cols-3 items-center border-b border-slate-200/60 px-6 pb-4 font-['Orbitron'] text-sm font-bold tracking-[0.2em] text-slate-600 uppercase transition-colors duration-500 lg:grid dark:border-slate-800/60 dark:text-[#f0f0f0]">
                             <div className="text-left">ID CERTIFICATE</div>

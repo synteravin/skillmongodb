@@ -68,13 +68,13 @@ export default function MentorProfile({ mentor }: Props) {
             {/* ── HEADER NAVIGATION (MATCHING SELECT COURSE) ── */}
             <div className="relative z-30 w-full shrink-0 px-1 pt-0.5">
                 <div
-                    className="relative border-[2px] border-transparent md:border-[3px]"
+                    className="relative rounded-md p-[2px] md:p-[3px]"
                     style={{
-                        borderImage:
-                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%) 1',
+                        backgroundImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                     }}
                 >
-                    <div className="relative flex items-center justify-between gap-2 bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
+                    <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                         <button
                             onClick={() => window.history.back()}
                             className="relative z-10 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
