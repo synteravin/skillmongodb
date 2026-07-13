@@ -33,6 +33,7 @@ class Quest extends Model
         'revisions',
         'tier',
         'custom_rewards',
+        'rewards',
         'dispute',
         'submission_history',
     ];
@@ -56,6 +57,7 @@ class Quest extends Model
             'revisions' => 'array',
             'tier' => 'string',
             'custom_rewards' => 'array',
+            'rewards' => 'array',
             'dispute' => 'array',
             'submission_history' => 'array',
         ];

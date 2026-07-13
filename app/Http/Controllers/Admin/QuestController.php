@@ -19,7 +19,15 @@ class QuestController extends Controller
 {
     public function index(Request $request)
     {
-        $quests = Quest::with(['creator', 'worker'])->latest()->get()->map(function ($quest) {
+        $rawQuests = Quest::with(['creator', 'worker'])->latest()->get();
+        $acceptedBids = QuestBid::where('status', 'accepted')
+            ->whereIn('quest_id', $rawQuests->pluck('_id')->toArray())
+            ->get()
+            ->keyBy('quest_id');
+
+        $quests = $rawQuests->map(function ($quest) use ($acceptedBids) {
+            $acceptedBid = $acceptedBids->get($quest->_id);
+
             return [
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
@@ -36,6 +44,7 @@ class QuestController extends Controller
                     'name' => $quest->worker->name,
                 ] : null,
                 'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
+                'accepted_bid_amount' => $acceptedBid ? (int) $acceptedBid->bid_amount : null,
             ];
         });
 
@@ -81,10 +90,6 @@ class QuestController extends Controller
         $user = auth()->user();
 
         $rewards = $questService->getRewardsForQuest($quest);
-        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
-        if ($acceptedBid) {
-            $rewards['gold'] = (int) $acceptedBid->bid_amount;
-        }
 
         $bids = QuestBid::with('student')
             ->where('quest_id', $id)
@@ -169,6 +174,9 @@ class QuestController extends Controller
                 ];
             });
 
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        $acceptedBidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : null;
+
         return Inertia::render('Admin/Quests/Show', [
             'quest' => [
                 '_id' => (string) $quest->_id,
@@ -202,6 +210,7 @@ class QuestController extends Controller
                 'dispute' => $questService->resolveDispute($quest),
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
+                'accepted_bid_amount' => $acceptedBidAmount,
             ],
             'bids' => $bids,
             'transactions' => $transactions,
@@ -223,6 +232,7 @@ class QuestController extends Controller
         ]);
 
         $maxSalary = (int) $data['max_salary'];
+        $minSalary = (int) $data['min_salary'];
         if ($maxSalary >= 10000000) {
             $tier = 'S';
         } elseif ($maxSalary >= 5000000) {
@@ -235,13 +245,34 @@ class QuestController extends Controller
             $tier = 'D';
         }
 
+        $avgBudget = ($minSalary + $maxSalary) / 2;
+
+        $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
+        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
+        $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
+
+        $calculatedRewards = [
+            'exp' => $exp,
+            'gold' => $gold,
+            'erp' => $erp,
+        ];
+
+        if ($quest->custom_rewards) {
+            $calculatedRewards = [
+                'exp' => (int) ($quest->custom_rewards['exp'] ?? $calculatedRewards['exp']),
+                'gold' => (int) ($quest->custom_rewards['gold'] ?? $calculatedRewards['gold']),
+                'erp' => (int) ($quest->custom_rewards['erp'] ?? $calculatedRewards['erp']),
+            ];
+        }
+
         $quest->update([
             'title' => $data['title'],
             'description' => $data['description'],
-            'min_salary' => (int) $data['min_salary'],
-            'max_salary' => (int) $data['max_salary'],
+            'min_salary' => $minSalary,
+            'max_salary' => $maxSalary,
             'deadline' => now()->parse($data['deadline']),
             'tier' => $tier,
+            'rewards' => $calculatedRewards,
         ]);
 
         return redirect()->route('admin.quests.index')->with('success', 'Quest berhasil diupdate!');
@@ -457,9 +488,15 @@ class QuestController extends Controller
             'deadline.after' => 'Tanggal deadline harus berupa tanggal di masa depan.',
         ]);
 
-        $quest->update([
+        $updateData = [
             'deadline' => now()->parse($request->deadline),
-        ]);
+        ];
+
+        if ($quest->status === 'expired') {
+            $updateData['status'] = empty($quest->worker_id) ? 'open' : 'ongoing';
+        }
+
+        $quest->update($updateData);
 
         return redirect()->route('admin.quests.show', $quest->_id)
             ->with('success', 'Tenggat waktu pengerjaan berhasil diperpanjang!');

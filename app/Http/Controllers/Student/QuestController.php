@@ -453,4 +453,40 @@ class QuestController extends Controller
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Banding (dispute) berhasil diajukan! Menunggu peninjauan arbitrase oleh Admin.');
     }
+
+    /**
+     * Extend quest deadline.
+     */
+    public function extendDeadline(Request $request, string $questId)
+    {
+        $quest = Quest::findOrFail($questId);
+        $user = $request->user();
+
+        // Check authorization (must be creator or admin)
+        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Hanya pembuat quest atau admin yang dapat memperpanjang tenggat waktu.');
+        }
+
+        $request->validate([
+            'deadline' => ['required', 'date', 'after:now'],
+        ], [
+            'deadline.required' => 'Tenggat waktu baru wajib diisi.',
+            'deadline.date' => 'Tenggat waktu harus berupa tanggal valid.',
+            'deadline.after' => 'Tenggat waktu baru harus berupa waktu di masa depan.',
+        ]);
+
+        $updateData = [
+            'deadline' => now()->parse($request->deadline),
+        ];
+
+        // If the quest was expired, restore its status
+        if ($quest->status === 'expired') {
+            $updateData['status'] = empty($quest->worker_id) ? 'open' : 'ongoing';
+        }
+
+        $quest->update($updateData);
+
+        return redirect()->route('student.quests.show', $quest->_id)
+            ->with('success', 'Tenggat waktu quest berhasil diperpanjang!');
+    }
 }

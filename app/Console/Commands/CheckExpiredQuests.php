@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\User;
-use App\Models\UserStat;
 use Illuminate\Console\Command;
 
 class CheckExpiredQuests extends Command
@@ -31,48 +30,20 @@ class CheckExpiredQuests extends Command
     {
         $this->info('Memulai pengecekan quest kadaluarsa...');
 
-        $expiredQuests = Quest::where('status', 'ongoing')
+        $expiredQuests = Quest::where('status', 'open')
             ->where('deadline', '<', now())
             ->get();
 
         $count = 0;
 
         foreach ($expiredQuests as $quest) {
-            $workerId = $quest->worker_id;
             $creatorId = $quest->creator_id;
 
-            // 1. Ubah status quest ke 'expired' dan reset worker
+            // 1. Ubah status quest ke 'expired'
             $quest->status = 'expired';
-            $quest->worker_id = null;
             $quest->save();
 
-            // 2. Kurangi ERP pekerja sebesar -10 ERP (di user_stats)
-            if ($workerId) {
-                $progress = UserStat::where('user_id', $workerId)->first();
-                if ($progress) {
-                    $oldErp = $progress->erp ?? 0;
-                    $newErp = max(0, $oldErp - 10);
-                    $progress->erp = $newErp;
-                    $progress->save();
-
-                    $this->info("Pekerja {$workerId} dikenakan penalti ERP (ERP sebelumnya: {$oldErp}, ERP baru: {$newErp}).");
-                }
-
-                // Kirim notifikasi ke pekerja
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => $workerId,
-                    'data' => [
-                        'quest_id' => $quest->_id,
-                        'title' => $quest->title,
-                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena melewati tenggat waktu. Reputasi ERP Anda berkurang -10.",
-                        'type' => 'quest_expired_worker',
-                    ],
-                    'read_at' => null,
-                ]);
-            }
-
-            // 3. Kirim notifikasi ke pembuat quest
+            // 2. Kirim notifikasi ke pembuat quest
             if ($creatorId) {
                 Notification::create([
                     'notifiable_type' => User::class,
@@ -80,7 +51,7 @@ class CheckExpiredQuests extends Command
                     'data' => [
                         'quest_id' => $quest->_id,
                         'title' => $quest->title,
-                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena melewati tenggat waktu dan pekerja dilepaskan.",
+                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena tidak ada pekerja yang dipilih hingga melewati batas tenggat waktu.",
                         'type' => 'quest_expired_creator',
                     ],
                     'read_at' => null,

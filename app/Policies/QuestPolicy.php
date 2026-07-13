@@ -28,6 +28,11 @@ class QuestPolicy extends BasePolicy
             return false;
         }
 
+        // Must not be past deadline
+        if ($quest->deadline && $quest->deadline < now()) {
+            return false;
+        }
+
         // Hasn't bid yet
         $alreadyBid = QuestBid::where('quest_id', $quest->_id)
             ->where('student_id', $user->_id)
@@ -41,6 +46,10 @@ class QuestPolicy extends BasePolicy
      */
     public function acceptBid(User $user, Quest $quest): bool
     {
+        if ($quest->deadline && $quest->deadline < now()) {
+            return false;
+        }
+
         if ($user->isAdmin()) {
             return $quest->status === 'open';
         }

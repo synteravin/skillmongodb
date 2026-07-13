@@ -93,6 +93,7 @@ class QuestSubmissionTest extends TestCase
             'status' => 'submitted',
             'creator_id' => (string) $creator->_id,
             'worker_id' => (string) $worker->_id,
+            'rewards' => ['exp' => 250, 'gold' => 150, 'erp' => 100],
             'submission_file' => [
                 'name' => 'project.zip',
                 'path' => 'quests/deliverables/test.zip',
@@ -263,6 +264,7 @@ class QuestSubmissionTest extends TestCase
             'status' => 'submitted',
             'creator_id' => (string) $creator->_id,
             'worker_id' => (string) $worker->_id,
+            'rewards' => ['exp' => 250, 'gold' => 150, 'erp' => 100],
             'submission_file' => [
                 'name' => 'project.zip',
                 'path' => 'quests/deliverables/test.zip',
@@ -391,6 +393,7 @@ class QuestSubmissionTest extends TestCase
             'status' => 'ongoing',
             'creator_id' => (string) $creator->_id,
             'worker_id' => (string) $worker->_id,
+            'rewards' => ['exp' => 250, 'gold' => 150, 'erp' => 100],
         ]);
 
         // 1. Worker submits work with only repository link (no ZIP)

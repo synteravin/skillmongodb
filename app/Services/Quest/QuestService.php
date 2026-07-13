@@ -18,36 +18,14 @@ class QuestService
      */
     public function listQuests(?string $search = null, ?string $status = null)
     {
-        // On-the-fly expiration check
-        $expiredQuests = Quest::where('status', 'ongoing')
+        // On-the-fly expiration check for open quests
+        $expiredQuests = Quest::where('status', 'open')
             ->where('deadline', '<', now())
             ->get();
 
         foreach ($expiredQuests as $eq) {
             $eq->status = 'expired';
-            $wId = $eq->worker_id;
-            $eq->worker_id = null;
             $eq->save();
-
-            if ($wId) {
-                $progress = UserStat::where('user_id', $wId)->first();
-                if ($progress) {
-                    $progress->erp = max(0, ($progress->erp ?? 0) - 10);
-                    $progress->save();
-                }
-
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => $wId,
-                    'data' => [
-                        'quest_id' => $eq->_id,
-                        'title' => $eq->title,
-                        'message' => "Quest '{$eq->title}' telah kadaluarsa karena melewati tenggat waktu. Reputasi ERP Anda berkurang -10.",
-                        'type' => 'quest_expired_worker',
-                    ],
-                    'read_at' => null,
-                ]);
-            }
 
             if ($eq->creator_id) {
                 Notification::create([
@@ -56,7 +34,7 @@ class QuestService
                     'data' => [
                         'quest_id' => $eq->_id,
                         'title' => $eq->title,
-                        'message' => "Quest '{$eq->title}' telah kadaluarsa karena melewati tenggat waktu dan pekerja dilepaskan.",
+                        'message' => "Quest Anda '{$eq->title}' telah kadaluarsa karena tidak ada pekerja yang dipilih hingga melewati batas tenggat waktu.",
                         'type' => 'quest_expired_creator',
                     ],
                     'read_at' => null,
@@ -103,31 +81,9 @@ class QuestService
     {
         $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
 
-        if ($quest->status === 'ongoing' && $quest->deadline < now()) {
+        if ($quest->status === 'open' && $quest->deadline < now()) {
             $quest->status = 'expired';
-            $workerId = $quest->worker_id;
-            $quest->worker_id = null;
             $quest->save();
-
-            if ($workerId) {
-                $progress = UserStat::where('user_id', $workerId)->first();
-                if ($progress) {
-                    $progress->erp = max(0, ($progress->erp ?? 0) - 10);
-                    $progress->save();
-                }
-
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => $workerId,
-                    'data' => [
-                        'quest_id' => $quest->_id,
-                        'title' => $quest->title,
-                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena melewati tenggat waktu. Reputasi ERP Anda berkurang -10.",
-                        'type' => 'quest_expired_worker',
-                    ],
-                    'read_at' => null,
-                ]);
-            }
 
             if ($quest->creator_id) {
                 Notification::create([
@@ -136,14 +92,12 @@ class QuestService
                     'data' => [
                         'quest_id' => $quest->_id,
                         'title' => $quest->title,
-                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena melewati tenggat waktu dan pekerja dilepaskan.",
+                        'message' => "Quest Anda '{$quest->title}' telah kadaluarsa karena tidak ada pekerja yang dipilih hingga melewati batas tenggat waktu.",
                         'type' => 'quest_expired_creator',
                     ],
                     'read_at' => null,
                 ]);
             }
-
-            $quest->load('worker');
         }
 
         $bids = QuestBid::with('student')
@@ -216,10 +170,9 @@ class QuestService
         }, $quest->submission_history ?? []);
 
         $rewards = $this->getRewardsForQuest($quest);
+
         $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
-        if ($acceptedBid) {
-            $rewards['gold'] = (int) $acceptedBid->bid_amount;
-        }
+        $acceptedBidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : null;
 
         return [
             'quest' => [
@@ -257,6 +210,7 @@ class QuestService
                 'dispute' => $this->resolveDispute($quest),
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
+                'accepted_bid_amount' => $acceptedBidAmount,
             ],
             'bids' => $bids,
         ];
@@ -304,6 +258,7 @@ class QuestService
         $status = $creator->isAdmin() ? 'open' : 'draft';
 
         $maxSalary = (int) $data['max_salary'];
+        $minSalary = (int) $data['min_salary'];
         if ($maxSalary >= 10000000) {
             $tier = 'S';
         } elseif ($maxSalary >= 5000000) {
@@ -316,11 +271,31 @@ class QuestService
             $tier = 'D';
         }
 
+        $avgBudget = ($minSalary + $maxSalary) / 2;
+
+        $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
+        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
+        $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
+
+        $calculatedRewards = [
+            'exp' => $exp,
+            'gold' => $gold,
+            'erp' => $erp,
+        ];
+
+        if (isset($data['custom_rewards']) && $data['custom_rewards']) {
+            $calculatedRewards = [
+                'exp' => (int) ($data['custom_rewards']['exp'] ?? $calculatedRewards['exp']),
+                'gold' => (int) ($data['custom_rewards']['gold'] ?? $calculatedRewards['gold']),
+                'erp' => (int) ($data['custom_rewards']['erp'] ?? $calculatedRewards['erp']),
+            ];
+        }
+
         return Quest::create([
             'title' => $data['title'],
             'description' => $data['description'],
-            'min_salary' => (int) $data['min_salary'],
-            'max_salary' => (int) $data['max_salary'],
+            'min_salary' => $minSalary,
+            'max_salary' => $maxSalary,
             'deadline' => now()->parse($data['deadline']),
             'status' => $status,
             'creator_id' => $creator->_id,
@@ -328,6 +303,7 @@ class QuestService
             'files' => $data['files'] ?? [],
             'tier' => $tier,
             'custom_rewards' => $data['custom_rewards'] ?? null,
+            'rewards' => $calculatedRewards,
             'submission_history' => [],
         ]);
     }
@@ -379,6 +355,14 @@ class QuestService
      */
     public function getRewardsForQuest(Quest $quest): array
     {
+        if ($quest->rewards) {
+            return [
+                'exp' => (int) ($quest->rewards['exp'] ?? 250),
+                'gold' => (int) ($quest->rewards['gold'] ?? 150),
+                'erp' => (int) ($quest->rewards['erp'] ?? 100),
+            ];
+        }
+
         if ($quest->custom_rewards) {
             return [
                 'exp' => (int) ($quest->custom_rewards['exp'] ?? 250),
@@ -387,18 +371,20 @@ class QuestService
             ];
         }
 
-        // Default reward mapping based on Tier
-        $rewards = [
-            'D' => ['exp' => 100, 'gold' => 50, 'erp' => 20],
-            'C' => ['exp' => 250, 'gold' => 150, 'erp' => 100],
-            'B' => ['exp' => 500, 'gold' => 300, 'erp' => 100],
-            'A' => ['exp' => 1000, 'gold' => 600, 'erp' => 200],
-            'S' => ['exp' => 2500, 'gold' => 1500, 'erp' => 500],
+        // Fallback to formula-based calculation for backward compatibility
+        $maxSalary = (int) $quest->max_salary;
+        $minSalary = (int) $quest->min_salary;
+        $avgBudget = ($minSalary + $maxSalary) / 2;
+
+        $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
+        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
+        $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
+
+        return [
+            'exp' => $exp,
+            'gold' => $gold,
+            'erp' => $erp,
         ];
-
-        $tier = $quest->tier ?? 'C';
-
-        return $rewards[$tier] ?? $rewards['C'];
     }
 
     /**
@@ -419,13 +405,6 @@ class QuestService
             'path_stats' => [],
         ]);
 
-        $rewards = $this->getRewardsForQuest($quest);
-
-        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
-        if ($acceptedBid) {
-            $rewards['gold'] = (int) $acceptedBid->bid_amount;
-        }
-
         $pathStats = $progress->path_stats ?? [];
         if (is_string($pathStats)) {
             $pathStats = json_decode($pathStats, true) ?: [];
@@ -434,6 +413,12 @@ class QuestService
         }
 
         $questKey = (string) $quest->_id;
+        if (isset($pathStats[$questKey])) {
+            return;
+        }
+
+        $rewards = $this->getRewardsForQuest($quest);
+
         $pathStats[$questKey] = [
             'exp' => $rewards['exp'],
             'gold' => $rewards['gold'],
@@ -443,7 +428,6 @@ class QuestService
         $progress->path_stats = $pathStats;
 
         $progress->exp = (int) ($progress->exp ?? 0) + $rewards['exp'];
-        $progress->gold = (int) ($progress->gold ?? 0) + $rewards['gold'];
         $progress->erp = (int) ($progress->erp ?? 0) + $rewards['erp'];
         $progress->level = (int) max(($progress->level ?? 1), floor($progress->exp / 500) + 1);
 
@@ -549,8 +533,6 @@ class QuestService
             ]);
         } elseif ($ruling === 'split') {
             $splitPercentage = (int) $splitPercentage;
-            $workerShare = (int) round(($bidAmount * $splitPercentage) / 100);
-            $creatorShare = $bidAmount - $workerShare;
 
             $quest->update([
                 'status' => 'completed',
@@ -572,10 +554,6 @@ class QuestService
                     'path_stats' => [],
                 ]);
 
-                $rewards = $this->getRewardsForQuest($quest);
-                $partialExp = (int) round(($rewards['exp'] * $splitPercentage) / 100);
-                $partialErp = (int) round(($rewards['erp'] * $splitPercentage) / 100);
-
                 $pathStats = $progress->path_stats ?? [];
                 if (is_string($pathStats)) {
                     $pathStats = json_decode($pathStats, true) ?: [];
@@ -584,20 +562,28 @@ class QuestService
                 }
 
                 $questKey = (string) $quest->_id;
+                if (isset($pathStats[$questKey])) {
+                    return;
+                }
+
+                $rewards = $this->getRewardsForQuest($quest);
+                $partialExp = (int) round(($rewards['exp'] * $splitPercentage) / 100);
+                $partialGold = (int) round(($rewards['gold'] * $splitPercentage) / 100);
+                $partialErp = (int) round(($rewards['erp'] * $splitPercentage) / 100);
+
                 $pathStats[$questKey] = [
                     'exp' => $partialExp,
-                    'gold' => $workerShare,
+                    'gold' => $partialGold,
                     'quiz_score' => $partialErp,
                 ];
 
                 $progress->path_stats = $pathStats;
                 $progress->exp = (int) ($progress->exp ?? 0) + $partialExp;
-                $progress->gold = (int) ($progress->gold ?? 0) + $workerShare;
                 $progress->erp = (int) ($progress->erp ?? 0) + $partialErp;
                 $progress->level = (int) max(($progress->level ?? 1), floor($progress->exp / 500) + 1);
                 $progress->save();
 
-                $this->recordTransaction($quest->_id, $quest->worker_id, $workerShare, 'release_payout', "Split payout release (Share: {$splitPercentage}%) for quest: {$quest->title}");
+                $this->recordTransaction($quest->_id, $quest->worker_id, $partialGold, 'release_payout', "Split payout release (Share: {$splitPercentage}%) for quest: {$quest->title}");
             }
         }
 
@@ -697,10 +683,6 @@ class QuestService
             }
 
             $rewards = $this->getRewardsForQuest($quest);
-            $acceptedBid = $bids->firstWhere('quest_id', (string) $quest->_id);
-            if ($acceptedBid && $acceptedBid->status === 'accepted') {
-                $rewards['gold'] = (int) $acceptedBid->bid_amount;
-            }
 
             return [
                 '_id' => (string) $quest->_id,

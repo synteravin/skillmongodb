@@ -32,6 +32,7 @@ interface Quest {
         name: string;
     } | null;
     bids_count: number;
+    accepted_bid_amount?: number | null;
 }
 
 interface Props {
@@ -260,8 +261,18 @@ export default function Index({ quests }: Props) {
                                     }
                                     className={`rounded-lg border px-4 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all ${
                                         statusFilter === statusOption
-                                            ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
-                                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300'
+                                            ? statusOption === 'draft'
+                                                ? 'border-amber-500 bg-amber-600 text-white shadow-sm'
+                                                : statusOption === 'open'
+                                                  ? 'border-emerald-500 bg-emerald-600 text-white shadow-sm'
+                                                  : statusOption === 'rejected'
+                                                    ? 'border-red-500 bg-red-650 text-white shadow-sm'
+                                                    : statusOption === 'ongoing'
+                                                      ? 'border-sky-500 bg-sky-655 text-white shadow-sm'
+                                                      : statusOption === 'completed'
+                                                        ? 'border-slate-500 bg-slate-650 text-white shadow-sm'
+                                                        : 'border-[#3B28F6] bg-[#3B28F6] text-white shadow-sm'
+                                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-800/60 dark:bg-slate-900/40 dark:text-slate-350'
                                     }`}
                                 >
                                     {statusOption === 'all'
@@ -297,139 +308,136 @@ export default function Index({ quests }: Props) {
                             <div className="overflow-x-auto">
                                 <table className="w-full border-collapse text-left">
                                     <thead>
-                                        <tr className="border-b border-slate-200/80 bg-slate-50 text-xs font-bold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-900/50">
+                                        <tr className="border-b border-slate-200/80 bg-slate-50 text-[10px] font-extrabold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-900/50">
                                             <th className="px-6 py-4">Quest</th>
-                                            <th className="px-6 py-4">Gaji</th>
-                                            <th className="px-6 py-4">
-                                                Deadline
-                                            </th>
-                                            <th className="px-6 py-4">
-                                                Pembuat
-                                            </th>
-                                            <th className="px-6 py-4">
-                                                Pekerja
-                                            </th>
+                                            <th className="px-6 py-4">Gaji / Anggaran</th>
+                                            <th className="px-6 py-4">Deadline</th>
+                                            <th className="px-6 py-4">Pembuat</th>
+                                            <th className="px-6 py-4">Pekerja</th>
                                             <th className="px-6 py-4">Bids</th>
-                                            <th className="px-6 py-4">
-                                                Status
-                                            </th>
-                                            <th className="px-6 py-4 text-right">
-                                                Aksi
-                                            </th>
+                                            <th className="px-6 py-4">Status</th>
+                                            <th className="px-6 py-4 text-right">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-200/60 text-sm dark:divide-slate-800/60">
                                         {sortedFilteredQuests.map((quest) => (
                                             <tr
                                                 key={quest._id}
-                                                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30"
+                                                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/20"
                                             >
                                                 <td className="px-6 py-4">
                                                     <span className="block max-w-xs truncate font-bold text-slate-900 dark:text-white">
                                                         {quest.title}
                                                     </span>
-                                                    <span className="line-clamp-1 max-w-xs text-xs text-slate-400">
-                                                        {quest.description}
-                                                    </span>
                                                 </td>
-                                                <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
-                                                    {formatCurrency(
-                                                        quest.min_salary,
-                                                    )}{' '}
-                                                    -{' '}
-                                                    {formatCurrency(
-                                                        quest.max_salary,
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
-                                                    {formatDate(quest.deadline)}
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <span className="font-medium">
-                                                        {quest.creator.name}
-                                                    </span>
-                                                    <span className="block text-[10px] text-slate-400 capitalize">
-                                                        {quest.creator.role}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 font-medium text-slate-600 dark:text-slate-300">
-                                                    {quest.worker ? (
-                                                        quest.worker.name
+                                                <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-350 whitespace-nowrap">
+                                                    {quest.accepted_bid_amount ? (
+                                                        <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                                                            {formatCurrency(quest.accepted_bid_amount)}
+                                                        </span>
                                                     ) : (
-                                                        <span className="text-slate-400 italic">
-                                                            Belum Ada
+                                                        <span className="text-xs font-bold">
+                                                            {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
                                                         </span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 font-bold text-indigo-600 dark:text-indigo-400">
-                                                    {quest.bids_count} Bid
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                                        <Calendar size={13} className="shrink-0 text-indigo-500" />
+                                                        <span>{formatDate(quest.deadline)}</span>
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-600 uppercase border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700/50">
+                                                            {quest.creator.name.charAt(0)}
+                                                        </div>
+                                                        <div>
+                                                            <span className="block font-semibold text-slate-800 dark:text-slate-200">
+                                                                {quest.creator.name}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    {quest.worker ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 uppercase border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/30">
+                                                                {quest.worker.name.charAt(0)}
+                                                            </div>
+                                                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                                                {quest.worker.name}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-1.5 text-slate-400">
+                                                            <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-400 opacity-75"></span>
+                                                                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                                            </span>
+                                                            <span className="text-xs italic">Mencari Pelamar</span>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Users size={14} className="text-slate-400" />
+                                                        <span className="font-bold text-slate-700 dark:text-slate-300">
+                                                            {quest.bids_count}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <span
-                                                        className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
-                                                            quest.status ===
-                                                            'open'
-                                                                ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400'
-                                                                : quest.status ===
-                                                                    'draft'
-                                                                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
-                                                                  : quest.status ===
-                                                                      'rejected'
-                                                                    ? 'bg-red-105 dark:bg-red-955/40 text-red-700 dark:text-red-400'
-                                                                    : quest.status ===
-                                                                        'expired'
-                                                                      ? 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400'
-                                                                      : quest.status ===
-                                                                          'ongoing'
-                                                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
-                                                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400'
+                                                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-extrabold tracking-wider uppercase border ${
+                                                            quest.status === 'open'
+                                                                ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-450 dark:bg-emerald-955/20 dark:border-emerald-900/30'
+                                                                : quest.status === 'draft'
+                                                                  ? 'bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-450 dark:bg-amber-955/20 dark:border-amber-900/30'
+                                                                  : quest.status === 'rejected'
+                                                                    ? 'bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-450 dark:bg-red-955/20 dark:border-red-900/30'
+                                                                    : quest.status === 'expired'
+                                                                      ? 'bg-rose-500/10 text-rose-700 border-rose-500/20 dark:text-rose-450 dark:bg-rose-955/20 dark:border-rose-900/30'
+                                                                      : quest.status === 'ongoing'
+                                                                        ? 'bg-sky-500/10 text-sky-700 border-sky-500/20 dark:text-sky-450 dark:bg-sky-955/20 dark:border-sky-900/30'
+                                                                        : 'bg-slate-500/10 text-slate-700 border-slate-500/20 dark:text-slate-400 dark:bg-slate-900/60 dark:border-slate-800'
                                                         }`}
                                                     >
                                                         {quest.status === 'open'
                                                             ? 'Tersedia'
-                                                            : quest.status ===
-                                                                'draft'
-                                                              ? 'Draft / Pending'
-                                                              : quest.status ===
-                                                                  'rejected'
+                                                            : quest.status === 'draft'
+                                                              ? 'Draft'
+                                                              : quest.status === 'rejected'
                                                                 ? 'Ditolak'
-                                                                : quest.status ===
-                                                                    'expired'
+                                                                : quest.status === 'expired'
                                                                   ? 'Kadaluarsa'
-                                                                  : quest.status ===
-                                                                      'ongoing'
+                                                                  : quest.status === 'ongoing'
                                                                     ? 'Berjalan'
                                                                     : 'Selesai'}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-right">
-                                                    <div className="flex justify-end gap-2">
+                                                <td className="px-6 py-4 text-right whitespace-nowrap">
+                                                    <div className="flex justify-end gap-1">
                                                         <Link
                                                             href={`/admin/quests/${quest._id}`}
                                                             title="Detail & Bid"
-                                                            className="p-1.5 text-slate-400 transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
                                                         >
-                                                            <Eye size={16} />
+                                                            <Eye size={15} />
                                                         </Link>
                                                         <button
-                                                            onClick={() =>
-                                                                openEdit(quest)
-                                                            }
+                                                            onClick={() => openEdit(quest)}
                                                             title="Edit"
-                                                            className="p-1.5 text-slate-400 transition-colors hover:text-amber-600 dark:hover:text-amber-400"
+                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400"
                                                         >
-                                                            <Pencil size={16} />
+                                                            <Pencil size={15} />
                                                         </button>
                                                         <button
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    quest._id,
-                                                                )
-                                                            }
+                                                            onClick={() => handleDelete(quest._id)}
                                                             title="Delete"
-                                                            className="p-1.5 text-slate-400 transition-colors hover:text-red-600"
+                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-600"
                                                         >
-                                                            <Trash2 size={16} />
+                                                            <Trash2 size={15} />
                                                         </button>
                                                     </div>
                                                 </td>
