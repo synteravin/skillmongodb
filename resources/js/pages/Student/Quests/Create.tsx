@@ -45,8 +45,8 @@ export default function Create({ template }: { template?: any }) {
 
     // Calculate rewards dynamically when budget changes
     useEffect(() => {
-        const minVal = parseFloat(data.min_salary) || 0;
         const maxVal = parseFloat(data.max_salary) || 0;
+        const minVal = parseFloat(data.min_salary) || 0;
         const avgBudget = (minVal + maxVal) / 2;
 
         // EXP calculation: 100 base + 1 EXP per 10k IDR budget, max 1000
