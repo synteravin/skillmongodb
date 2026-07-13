@@ -14,9 +14,7 @@ export default function FaqSection() {
             <div className="container mx-auto max-w-4xl px-6">
                 {/* Title */}
                 <h2 className="mb-16 text-center text-4xl font-black">
-                    <span className="text-[#3B28F6]">
-                        Frequently Asked{' '}
-                    </span>
+                    <span className="text-[#3B28F6]">Frequently Asked </span>
                     <span className="text-[#FACC15]">Questions</span>
                 </h2>
 
@@ -77,10 +75,9 @@ export default function FaqSection() {
                                     >
                                         <div className="px-14 pt-2 pb-6 text-sm leading-relaxed text-gray-200">
                                             Yes, Skill Ventura offers a
-                                            comprehensive learning
-                                            experience tailored to your
-                                            needs. We combine theory
-                                            with practice in a fun,
+                                            comprehensive learning experience
+                                            tailored to your needs. We combine
+                                            theory with practice in a fun,
                                             engaging way.
                                         </div>
                                     </motion.div>

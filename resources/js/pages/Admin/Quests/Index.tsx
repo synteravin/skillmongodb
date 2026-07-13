@@ -43,8 +43,12 @@ export default function Index({ quests }: Props) {
     const [editingQuest, setEditingQuest] = useState<Quest | null>(null);
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'open' | 'rejected' | 'ongoing' | 'completed'>('all');
-    const [sortBy, setSortBy] = useState<'latest' | 'highest_salary' | 'closest_deadline'>('latest');
+    const [statusFilter, setStatusFilter] = useState<
+        'all' | 'draft' | 'open' | 'rejected' | 'ongoing' | 'completed'
+    >('all');
+    const [sortBy, setSortBy] = useState<
+        'latest' | 'highest_salary' | 'closest_deadline'
+    >('latest');
 
     const filteredQuests = quests.filter((quest) => {
         const matchesSearch =
@@ -60,7 +64,9 @@ export default function Index({ quests }: Props) {
             return b.max_salary - a.max_salary;
         }
         if (sortBy === 'closest_deadline') {
-            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+            return (
+                new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
+            );
         }
         return 0;
     });
@@ -84,10 +90,10 @@ export default function Index({ quests }: Props) {
     function openEdit(quest: Quest) {
         clearErrors();
         reset();
-        
+
         // Format ISO string to YYYY-MM-DD for date input
         const deadlineDate = quest.deadline ? quest.deadline.split('T')[0] : '';
-        
+
         setData({
             title: quest.title,
             description: quest.description,
@@ -131,23 +137,23 @@ export default function Index({ quests }: Props) {
     }
 
     const formatCurrency = (num: number) => {
-        return new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
             minimumFractionDigits: 0,
         }).format(num);
     };
 
     const formatDate = (dateStr: string) => {
         const d = new Date(dateStr);
-        const datePart = d.toLocaleDateString("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
+        const datePart = d.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
         });
-        const timePart = d.toLocaleTimeString("id-ID", {
-            hour: "2-digit",
-            minute: "2-digit",
+        const timePart = d.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
         });
         return `${datePart} pukul ${timePart}`;
     };
@@ -187,7 +193,9 @@ export default function Index({ quests }: Props) {
                                     Quest Management (Freelance)
                                 </h1>
                                 <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
-                                    Kelola lowongan pekerjaan freelance, moderasi penawaran masuk dari siswa, dan pantau proyek yang berjalan.
+                                    Kelola lowongan pekerjaan freelance,
+                                    moderasi penawaran masuk dari siswa, dan
+                                    pantau proyek yang berjalan.
                                 </p>
                             </div>
 
@@ -202,132 +210,196 @@ export default function Index({ quests }: Props) {
                     </div>
 
                     {/* FILTERS & SEARCH */}
-                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-                        <div className="flex flex-col sm:flex-row gap-3 items-center w-full md:w-auto">
+                    <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm md:flex-row dark:border-slate-800 dark:bg-[#0d1117]">
+                        <div className="flex w-full flex-col items-center gap-3 sm:flex-row md:w-auto">
                             <div className="relative w-full sm:w-64 md:w-80">
                                 <input
                                     type="text"
                                     placeholder="Cari judul atau deskripsi..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-indigo-500 text-sm"
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pr-4 pl-10 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900"
                                 />
-                                <Search className="absolute left-3 top-2.5 w-4.5 h-4.5 text-slate-400" />
+                                <Search className="absolute top-2.5 left-3 h-4.5 w-4.5 text-slate-400" />
                             </div>
 
                             {/* Sort Selector */}
                             <select
                                 value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value as any)}
-                                className="w-full sm:w-44 px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-indigo-500 text-xs font-semibold uppercase text-slate-600 dark:text-slate-350 cursor-pointer"
+                                onChange={(e) =>
+                                    setSortBy(e.target.value as any)
+                                }
+                                className="dark:text-slate-350 w-full cursor-pointer rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 uppercase focus:border-indigo-500 focus:outline-none sm:w-44 dark:border-slate-800 dark:bg-slate-900"
                             >
                                 <option value="latest">Urutan: Terbaru</option>
-                                <option value="highest_salary">Urutan: Gaji Tertinggi</option>
-                                <option value="closest_deadline">Urutan: Deadline Terdekat</option>
+                                <option value="highest_salary">
+                                    Urutan: Gaji Tertinggi
+                                </option>
+                                <option value="closest_deadline">
+                                    Urutan: Deadline Terdekat
+                                </option>
                             </select>
                         </div>
 
-                        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-                            {['all', 'draft', 'open', 'rejected', 'ongoing', 'completed'].map((statusOption) => (
+                        <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
+                            {[
+                                'all',
+                                'draft',
+                                'open',
+                                'rejected',
+                                'ongoing',
+                                'completed',
+                            ].map((statusOption) => (
                                 <button
                                     key={statusOption}
                                     type="button"
-                                    onClick={() => setStatusFilter(statusOption as any)}
-                                    className={`px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border transition-all ${
+                                    onClick={() =>
+                                        setStatusFilter(statusOption as any)
+                                    }
+                                    className={`rounded-lg border px-4 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all ${
                                         statusFilter === statusOption
-                                            ? "bg-indigo-600 border-indigo-500 text-white shadow-sm"
-                                            : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100"
+                                            ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
+                                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300'
                                     }`}
                                 >
                                     {statusOption === 'all'
-                                        ? "Semua"
+                                        ? 'Semua'
                                         : statusOption === 'draft'
-                                        ? "Draft"
-                                        : statusOption === 'open'
-                                        ? "Tersedia"
-                                        : statusOption === 'rejected'
-                                        ? "Ditolak"
-                                        : statusOption === 'ongoing'
-                                        ? "Berjalan"
-                                        : "Selesai"}
+                                          ? 'Draft'
+                                          : statusOption === 'open'
+                                            ? 'Tersedia'
+                                            : statusOption === 'rejected'
+                                              ? 'Ditolak'
+                                              : statusOption === 'ongoing'
+                                                ? 'Berjalan'
+                                                : 'Selesai'}
                                 </button>
                             ))}
                         </div>
                     </div>
 
                     {/* QUEST TABLE */}
-                    <div className="bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
+                    <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-[#0d1117]">
                         {sortedFilteredQuests.length === 0 ? (
                             <div className="py-20 text-center text-slate-500">
-                                <Briefcase className="w-12 h-12 mx-auto text-slate-300 mb-3" />
-                                <p className="font-semibold text-base">Tidak ada Quest yang ditemukan</p>
-                                <p className="text-sm text-slate-400 mt-1">Coba sesuaikan filter atau tambahkan quest baru.</p>
+                                <Briefcase className="mx-auto mb-3 h-12 w-12 text-slate-300" />
+                                <p className="text-base font-semibold">
+                                    Tidak ada Quest yang ditemukan
+                                </p>
+                                <p className="mt-1 text-sm text-slate-400">
+                                    Coba sesuaikan filter atau tambahkan quest
+                                    baru.
+                                </p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                                <table className="w-full border-collapse text-left">
                                     <thead>
-                                        <tr className="border-b border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                        <tr className="border-b border-slate-200/80 bg-slate-50 text-xs font-bold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-900/50">
                                             <th className="px-6 py-4">Quest</th>
                                             <th className="px-6 py-4">Gaji</th>
-                                            <th className="px-6 py-4">Deadline</th>
-                                            <th className="px-6 py-4">Pembuat</th>
-                                            <th className="px-6 py-4">Pekerja</th>
+                                            <th className="px-6 py-4">
+                                                Deadline
+                                            </th>
+                                            <th className="px-6 py-4">
+                                                Pembuat
+                                            </th>
+                                            <th className="px-6 py-4">
+                                                Pekerja
+                                            </th>
                                             <th className="px-6 py-4">Bids</th>
-                                            <th className="px-6 py-4">Status</th>
-                                            <th className="px-6 py-4 text-right">Aksi</th>
+                                            <th className="px-6 py-4">
+                                                Status
+                                            </th>
+                                            <th className="px-6 py-4 text-right">
+                                                Aksi
+                                            </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 text-sm">
+                                    <tbody className="divide-y divide-slate-200/60 text-sm dark:divide-slate-800/60">
                                         {sortedFilteredQuests.map((quest) => (
-                                            <tr key={quest._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors">
+                                            <tr
+                                                key={quest._id}
+                                                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30"
+                                            >
                                                 <td className="px-6 py-4">
-                                                    <span className="font-bold text-slate-900 dark:text-white block truncate max-w-xs">{quest.title}</span>
-                                                    <span className="text-xs text-slate-400 line-clamp-1 max-w-xs">{quest.description}</span>
+                                                    <span className="block max-w-xs truncate font-bold text-slate-900 dark:text-white">
+                                                        {quest.title}
+                                                    </span>
+                                                    <span className="line-clamp-1 max-w-xs text-xs text-slate-400">
+                                                        {quest.description}
+                                                    </span>
                                                 </td>
                                                 <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
-                                                    {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
+                                                    {formatCurrency(
+                                                        quest.min_salary,
+                                                    )}{' '}
+                                                    -{' '}
+                                                    {formatCurrency(
+                                                        quest.max_salary,
+                                                    )}
                                                 </td>
                                                 <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                                                     {formatDate(quest.deadline)}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className="font-medium">{quest.creator.name}</span>
-                                                    <span className="block text-[10px] text-slate-400 capitalize">{quest.creator.role}</span>
+                                                    <span className="font-medium">
+                                                        {quest.creator.name}
+                                                    </span>
+                                                    <span className="block text-[10px] text-slate-400 capitalize">
+                                                        {quest.creator.role}
+                                                    </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-slate-600 dark:text-slate-300 font-medium">
-                                                    {quest.worker ? quest.worker.name : <span className="text-slate-400 italic">Belum Ada</span>}
+                                                <td className="px-6 py-4 font-medium text-slate-600 dark:text-slate-300">
+                                                    {quest.worker ? (
+                                                        quest.worker.name
+                                                    ) : (
+                                                        <span className="text-slate-400 italic">
+                                                            Belum Ada
+                                                        </span>
+                                                    )}
                                                 </td>
                                                 <td className="px-6 py-4 font-bold text-indigo-600 dark:text-indigo-400">
                                                     {quest.bids_count} Bid
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span
-                                                        className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                                            quest.status === "open"
-                                                                ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400"
-                                                                : quest.status === "draft"
-                                                                ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
-                                                                : quest.status === "rejected"
-                                                                ? "bg-red-105 text-red-700 dark:bg-red-955/40 dark:text-red-400"
-                                                                : quest.status === "expired"
-                                                                ? "bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400"
-                                                                : quest.status === "ongoing"
-                                                                ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400"
-                                                                : "bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400"
+                                                        className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                                                            quest.status ===
+                                                            'open'
+                                                                ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400'
+                                                                : quest.status ===
+                                                                    'draft'
+                                                                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
+                                                                  : quest.status ===
+                                                                      'rejected'
+                                                                    ? 'bg-red-105 dark:bg-red-955/40 text-red-700 dark:text-red-400'
+                                                                    : quest.status ===
+                                                                        'expired'
+                                                                      ? 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400'
+                                                                      : quest.status ===
+                                                                          'ongoing'
+                                                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
+                                                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-900/60 dark:text-slate-400'
                                                         }`}
                                                     >
-                                                        {quest.status === "open"
-                                                            ? "Tersedia"
-                                                            : quest.status === "draft"
-                                                            ? "Draft / Pending"
-                                                            : quest.status === "rejected"
-                                                            ? "Ditolak"
-                                                            : quest.status === "expired"
-                                                            ? "Kadaluarsa"
-                                                            : quest.status === "ongoing"
-                                                            ? "Berjalan"
-                                                            : "Selesai"}
+                                                        {quest.status === 'open'
+                                                            ? 'Tersedia'
+                                                            : quest.status ===
+                                                                'draft'
+                                                              ? 'Draft / Pending'
+                                                              : quest.status ===
+                                                                  'rejected'
+                                                                ? 'Ditolak'
+                                                                : quest.status ===
+                                                                    'expired'
+                                                                  ? 'Kadaluarsa'
+                                                                  : quest.status ===
+                                                                      'ongoing'
+                                                                    ? 'Berjalan'
+                                                                    : 'Selesai'}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
@@ -335,21 +407,27 @@ export default function Index({ quests }: Props) {
                                                         <Link
                                                             href={`/admin/quests/${quest._id}`}
                                                             title="Detail & Bid"
-                                                            className="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                                                            className="p-1.5 text-slate-400 transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
                                                         >
                                                             <Eye size={16} />
                                                         </Link>
                                                         <button
-                                                            onClick={() => openEdit(quest)}
+                                                            onClick={() =>
+                                                                openEdit(quest)
+                                                            }
                                                             title="Edit"
-                                                            className="p-1.5 text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                                                            className="p-1.5 text-slate-400 transition-colors hover:text-amber-600 dark:hover:text-amber-400"
                                                         >
                                                             <Pencil size={16} />
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDelete(quest._id)}
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    quest._id,
+                                                                )
+                                                            }
                                                             title="Delete"
-                                                            className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                                                            className="p-1.5 text-slate-400 transition-colors hover:text-red-600"
                                                         >
                                                             <Trash2 size={16} />
                                                         </button>
@@ -373,9 +451,9 @@ export default function Index({ quests }: Props) {
             >
                 <form onSubmit={submit} className="space-y-4 pt-2">
                     {Object.keys(errors).length > 0 && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg text-xs font-semibold mb-4">
+                        <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs font-semibold text-red-500">
                             Terdapat kesalahan:
-                            <ul className="list-disc list-inside mt-1 font-normal space-y-0.5">
+                            <ul className="mt-1 list-inside list-disc space-y-0.5 font-normal">
                                 {Object.entries(errors).map(([key, val]) => (
                                     <li key={key}>{val}</li>
                                 ))}
@@ -384,78 +462,116 @@ export default function Index({ quests }: Props) {
                     )}
 
                     <div className="space-y-1">
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Judul Quest</label>
+                        <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                            Judul Quest
+                        </label>
                         <input
                             type="text"
                             value={data.title}
                             onChange={(e) => setData('title', e.target.value)}
-                            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-indigo-500 text-sm"
+                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900"
                             placeholder="Contoh: Membuat Logo Vector untuk Landing Page"
                         />
-                        {errors.title && <p className="text-xs text-red-500 font-semibold">{errors.title}</p>}
+                        {errors.title && (
+                            <p className="text-xs font-semibold text-red-500">
+                                {errors.title}
+                            </p>
+                        )}
                     </div>
 
                     <div className="space-y-1">
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Deskripsi Pekerjaan</label>
+                        <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                            Deskripsi Pekerjaan
+                        </label>
                         <textarea
                             value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
-                            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-indigo-500 text-sm"
+                            onChange={(e) =>
+                                setData('description', e.target.value)
+                            }
+                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900"
                             rows={4}
                             placeholder="Jelaskan spesifikasi teknis dan kriteria pekerjaan..."
                         />
-                        {errors.description && <p className="text-xs text-red-500 font-semibold">{errors.description}</p>}
+                        {errors.description && (
+                            <p className="text-xs font-semibold text-red-500">
+                                {errors.description}
+                            </p>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Gaji Min (Rp)</label>
+                            <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                                Gaji Min (Rp)
+                            </label>
                             <input
                                 type="number"
                                 value={data.min_salary}
-                                onChange={(e) => setData('min_salary', e.target.value)}
-                                className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-indigo-500 text-sm"
+                                onChange={(e) =>
+                                    setData('min_salary', e.target.value)
+                                }
+                                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950"
                                 placeholder="Contoh: 1000000"
                             />
-                            {errors.min_salary && <p className="text-xs text-red-500 font-semibold">{errors.min_salary}</p>}
+                            {errors.min_salary && (
+                                <p className="text-xs font-semibold text-red-500">
+                                    {errors.min_salary}
+                                </p>
+                            )}
                         </div>
 
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Gaji Max (Rp)</label>
+                            <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                                Gaji Max (Rp)
+                            </label>
                             <input
                                 type="number"
                                 value={data.max_salary}
-                                onChange={(e) => setData('max_salary', e.target.value)}
-                                className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-indigo-500 text-sm"
+                                onChange={(e) =>
+                                    setData('max_salary', e.target.value)
+                                }
+                                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950"
                                 placeholder="Contoh: 2500000"
                             />
-                            {errors.max_salary && <p className="text-xs text-red-500 font-semibold">{errors.max_salary}</p>}
+                            {errors.max_salary && (
+                                <p className="text-xs font-semibold text-red-500">
+                                    {errors.max_salary}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <div className="space-y-1">
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Deadline</label>
+                        <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                            Deadline
+                        </label>
                         <input
                             type="date"
                             value={data.deadline}
-                            onChange={(e) => setData('deadline', e.target.value)}
-                            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-indigo-500 text-sm"
+                            onChange={(e) =>
+                                setData('deadline', e.target.value)
+                            }
+                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900"
                         />
-                        {errors.deadline && <p className="text-xs text-red-500 font-semibold">{errors.deadline}</p>}
+                        {errors.deadline && (
+                            <p className="text-xs font-semibold text-red-500">
+                                {errors.deadline}
+                            </p>
+                        )}
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                    <div className="flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800/80">
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-800 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-300 transition-colors"
+                            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900"
                         >
                             Batal
                         </button>
                         <button
                             type="submit"
                             disabled={processing}
-                            className="px-5 py-2 rounded-lg bg-[#3B28F6] hover:bg-[#2a1ce0] text-white font-semibold text-sm shadow-sm transition-colors disabled:opacity-50"
+                            className="rounded-lg bg-[#3B28F6] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#2a1ce0] disabled:opacity-50"
                         >
                             {processing ? 'Menyimpan...' : 'Simpan'}
                         </button>

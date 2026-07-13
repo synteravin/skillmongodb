@@ -1,5 +1,11 @@
 import React from 'react';
-import { Pin, CornerUpLeft, Pencil, Trash2, User as UserIcon } from 'lucide-react';
+import {
+    Pin,
+    CornerUpLeft,
+    Pencil,
+    Trash2,
+    User as UserIcon,
+} from 'lucide-react';
 import { Message } from './types';
 
 interface MessageBubbleProps {
@@ -91,7 +97,7 @@ export default function MessageBubble({
     if (isSystem) {
         return (
             <div className="my-2 flex justify-center">
-                <span className="rounded-full border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900/80 px-3 py-1 font-['Oxanium'] text-[10px] text-slate-650 dark:text-slate-500">
+                <span className="text-slate-650 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 font-['Oxanium'] text-[10px] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-500">
                     {msg.message}
                 </span>
             </div>
@@ -125,19 +131,21 @@ export default function MessageBubble({
     return (
         <div
             ref={domRef}
-            className={`group relative flex max-w-[78%] sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] rounded-2xl transition-all duration-500 animate-fade-in-slide-up min-w-0 ${
-                isMentorOrAdmin 
-                    ? 'gap-3.5 md:gap-4 lg:gap-4.5' 
+            className={`group animate-fade-in-slide-up relative flex max-w-[78%] min-w-0 rounded-2xl transition-all duration-500 sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] ${
+                isMentorOrAdmin
+                    ? 'gap-3.5 md:gap-4 lg:gap-4.5'
                     : 'gap-2 md:gap-3'
             } ${
-                isSelf ? 'self-end ml-auto flex-row-reverse w-fit' : 'self-start mr-auto w-fit'
+                isSelf
+                    ? 'ml-auto w-fit flex-row-reverse self-end'
+                    : 'mr-auto w-fit self-start'
             } ${
-                isConsecutive 
-                    ? 'mt-1' 
-                    : (isMentorOrAdmin ? 'mt-2.5 md:mt-2 lg:mt-2.5' : 'mt-4')
-            } ${
-                Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''
-            }`}
+                isConsecutive
+                    ? 'mt-1'
+                    : isMentorOrAdmin
+                      ? 'mt-2.5 md:mt-2 lg:mt-2.5'
+                      : 'mt-4'
+            } ${Object.keys(reactionsGrouped).length > 0 ? 'mb-4.5' : ''}`}
         >
             {/* Avatar Pengirim */}
             {!isSelf &&
@@ -163,16 +171,18 @@ export default function MessageBubble({
                         )}
                     </div>
                 ) : (
-                    <div className={`${isMentorOrAdmin ? 'w-8 md:w-8 lg:w-9' : 'w-9 md:w-11'} shrink-0`} />
+                    <div
+                        className={`${isMentorOrAdmin ? 'w-8 md:w-8 lg:w-9' : 'w-9 md:w-11'} shrink-0`}
+                    />
                 ))}
 
             {/* Balon Chat Container */}
-            <div className="relative flex flex-col min-w-0">
+            <div className="relative flex min-w-0 flex-col">
                 {/* ── MENU PILIHAN (Klik Bubble Chat) ── */}
                 {activeMenuMessageId === msg.id && (
                     <div
                         onClick={(e) => e.stopPropagation()} // Mencegah tertutupnya menu
-                        className={`message-action-menu absolute bottom-full z-30 mb-2 flex scale-100 flex-col rounded-xl border border-slate-200 bg-white/95 text-slate-800 p-2 shadow-2xl backdrop-blur-md transition-all animate-scale-up dark:border-[#3B28F6]/40 dark:bg-[#05060f]/95 dark:text-slate-200 ${
+                        className={`message-action-menu animate-scale-up absolute bottom-full z-30 mb-2 flex scale-100 flex-col rounded-xl border border-slate-200 bg-white/95 p-2 text-slate-800 shadow-2xl backdrop-blur-md transition-all dark:border-[#3B28F6]/40 dark:bg-[#05060f]/95 dark:text-slate-200 ${
                             isSelf ? 'right-0' : 'left-0'
                         }`}
                         style={{
@@ -180,7 +190,7 @@ export default function MessageBubble({
                         }}
                     >
                         {/* Quick Reaction Bar */}
-                        <div className="mb-2 flex items-center justify-between gap-1 border-b border-slate-150 dark:border-[#3B28F6]/20 pb-2">
+                        <div className="border-slate-150 mb-2 flex items-center justify-between gap-1 border-b pb-2 dark:border-[#3B28F6]/20">
                             {quickReactions.map((emoji) => (
                                 <button
                                     key={emoji}
@@ -248,26 +258,32 @@ export default function MessageBubble({
                     style={
                         {
                             '--bubble-bg': isMentorOrAdmin
-                                ? (isDark
-                                    ? (isSelf ? '#232d3f' : '#1e293b')
-                                    : (isSelf ? '#e0e7ff' : '#ffffff'))
-                                : (isDark
-                                    ? '#0b0f19'
-                                    : (isSelf ? '#fefce8' : '#eef2ff')),
+                                ? isDark
+                                    ? isSelf
+                                        ? '#232d3f'
+                                        : '#1e293b'
+                                    : isSelf
+                                      ? '#e0e7ff'
+                                      : '#ffffff'
+                                : isDark
+                                  ? '#0b0f19'
+                                  : isSelf
+                                    ? '#fefce8'
+                                    : '#eef2ff',
                         } as React.CSSProperties
                     }
-                    className={`chat-bubble-body relative flex cursor-pointer flex-col transition duration-200 select-none active:scale-[0.99] min-w-0 ${
-                        isMentorOrAdmin 
-                            ? 'pt-1.5 pr-[48px] pb-1.5 pl-[10px]' 
+                    className={`chat-bubble-body relative flex min-w-0 cursor-pointer flex-col transition duration-200 select-none active:scale-[0.99] ${
+                        isMentorOrAdmin
+                            ? 'pt-1.5 pr-[48px] pb-1.5 pl-[10px]'
                             : 'pt-2 pr-[51px] pb-2 pl-[12px]'
                     } ${
                         isMentorOrAdmin
-                            ? (isSelf
-                                ? `border border-[#c7d2fe] bg-[#e0e7ff] text-[#1e1b4b] dark:text-[#f1f5f9] shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] dark:border-[#3b4b61] dark:bg-[#232d3f] rounded-[8px] ${isConsecutive ? '' : 'rounded-tr-none'}`
-                                : `border border-slate-200 bg-[#ffffff] text-slate-800 dark:text-[#f1f5f9] shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] dark:border-[#334155] dark:bg-[#1e293b] rounded-[8px] ${isConsecutive ? '' : 'rounded-tl-none'}`)
-                            : (isSelf
-                                ? `border border-amber-355 bg-[#fefce8] text-slate-800 dark:text-slate-100 shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#facc15] dark:bg-[#facc15]/5 dark:shadow-[0_0_8px_rgba(250,204,21,0.15)] rounded-[3px] ${isConsecutive ? '' : 'rounded-tr-none'}`
-                                : `border border-indigo-200 bg-[#eef2ff] text-slate-800 dark:text-slate-100 shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#3B28F6] dark:bg-[#3B28F6]/5 dark:shadow-[0_0_8px_rgba(59,40,246,0.15)] rounded-[3px] ${isConsecutive ? '' : 'rounded-tl-none'}`)
+                            ? isSelf
+                                ? `rounded-[8px] border border-[#c7d2fe] bg-[#e0e7ff] text-[#1e1b4b] shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] dark:border-[#3b4b61] dark:bg-[#232d3f] dark:text-[#f1f5f9] ${isConsecutive ? '' : 'rounded-tr-none'}`
+                                : `rounded-[8px] border border-slate-200 bg-[#ffffff] text-slate-800 shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] dark:border-[#334155] dark:bg-[#1e293b] dark:text-[#f1f5f9] ${isConsecutive ? '' : 'rounded-tl-none'}`
+                            : isSelf
+                              ? `border-amber-355 rounded-[3px] border bg-[#fefce8] text-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#facc15] dark:bg-[#facc15]/5 dark:text-slate-100 dark:shadow-[0_0_8px_rgba(250,204,21,0.15)] ${isConsecutive ? '' : 'rounded-tr-none'}`
+                              : `rounded-[3px] border border-indigo-200 bg-[#eef2ff] text-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.05)] dark:border-[#3B28F6] dark:bg-[#3B28F6]/5 dark:text-slate-100 dark:shadow-[0_0_8px_rgba(59,40,246,0.15)] ${isConsecutive ? '' : 'rounded-tl-none'}`
                     } ${msg.is_pinned ? (isMentorOrAdmin ? 'ring-1 ring-slate-400 dark:ring-slate-500' : 'ring-1 ring-amber-400 dark:ring-[#facc15]/50') : ''} ${
                         Object.keys(reactionsGrouped).length > 0 ? 'pb-5.5' : ''
                     }`}
@@ -277,16 +293,20 @@ export default function MessageBubble({
                         {msg.is_pinned && (
                             <Pin className="h-3 w-3 rotate-45 text-[#facc15] dark:text-[#facc15]" />
                         )}
-                        {!isSelf && !isConsecutive && msg.sender.role === 'admin' && (
-                            <span className="rounded-xs border border-rose-500/30 bg-rose-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-rose-500 dark:text-rose-400 uppercase">
-                                Admin
-                            </span>
-                        )}
-                        {!isSelf && !isConsecutive && msg.sender.role === 'mentor' && (
-                            <span className="rounded-xs border border-emerald-500/30 bg-emerald-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">
-                                Mentor
-                            </span>
-                        )}
+                        {!isSelf &&
+                            !isConsecutive &&
+                            msg.sender.role === 'admin' && (
+                                <span className="rounded-xs border border-rose-500/30 bg-rose-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-rose-500 uppercase dark:text-rose-400">
+                                    Admin
+                                </span>
+                            )}
+                        {!isSelf &&
+                            !isConsecutive &&
+                            msg.sender.role === 'mentor' && (
+                                <span className="rounded-xs border border-emerald-500/30 bg-emerald-500/20 px-1 py-[1px] text-[8px] leading-none font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+                                    Mentor
+                                </span>
+                            )}
                     </div>
 
                     {/* Arrow Ekor Balon Chat */}
@@ -297,34 +317,32 @@ export default function MessageBubble({
                             ) : (
                                 <div className="wa-bubble-arrow wa-bubble-arrow-left" />
                             )
+                        ) : isSelf ? (
+                            <div
+                                className="pointer-events-none absolute top-[12px] right-[-5px] z-10 h-[10px] w-[10px] select-none"
+                                style={{
+                                    transform: 'rotate(-45deg)',
+                                    borderWidth: '0 1px 1px 0',
+                                    borderStyle: 'solid',
+                                    borderColor: isDark ? '#facc15' : '#fcd34d',
+                                    borderRadius: '0 0 1px 0',
+                                    background:
+                                        'linear-gradient(-45deg, var(--bubble-bg) 51%, transparent 0)',
+                                }}
+                            />
                         ) : (
-                            isSelf ? (
-                                <div
-                                    className="pointer-events-none absolute top-[12px] right-[-5px] z-10 h-[10px] w-[10px] select-none"
-                                    style={{
-                                        transform: 'rotate(-45deg)',
-                                        borderWidth: '0 1px 1px 0',
-                                        borderStyle: 'solid',
-                                        borderColor: isDark ? '#facc15' : '#fcd34d',
-                                        borderRadius: '0 0 1px 0',
-                                        background:
-                                            'linear-gradient(-45deg, var(--bubble-bg) 51%, transparent 0)',
-                                    }}
-                                />
-                            ) : (
-                                <div
-                                    className="pointer-events-none absolute top-[12px] left-[-6px] z-10 h-[10px] w-[10px] select-none"
-                                    style={{
-                                        transform: 'rotate(-45deg)',
-                                        borderWidth: '1px 0 0 1px',
-                                        borderStyle: 'solid',
-                                        borderColor: isDark ? '#3B28F6' : '#c7d2fe',
-                                        borderRadius: '2px 0 0 0',
-                                        background:
-                                            'linear-gradient(-45deg, transparent 48%, var(--bubble-bg) 0)',
-                                    }}
-                                />
-                            )
+                            <div
+                                className="pointer-events-none absolute top-[12px] left-[-6px] z-10 h-[10px] w-[10px] select-none"
+                                style={{
+                                    transform: 'rotate(-45deg)',
+                                    borderWidth: '1px 0 0 1px',
+                                    borderStyle: 'solid',
+                                    borderColor: isDark ? '#3B28F6' : '#c7d2fe',
+                                    borderRadius: '2px 0 0 0',
+                                    background:
+                                        'linear-gradient(-45deg, transparent 48%, var(--bubble-bg) 0)',
+                                }}
+                            />
                         ))}
 
                     {/* Nama & Peran Pengirim */}
@@ -346,40 +364,41 @@ export default function MessageBubble({
                     )}
 
                     {/* Render Kutipan Pesan (Jika Balasan) */}
-                    {msg.parent && (() => {
-                        const parentSenderId = msg.parent!.sender_id;
-                        const nameColor = parentSenderId
-                            ? getNameColor(parentSenderId)
-                            : '#3B28F6';
-                        const isFullBorder = isSelf;
-                        return (
-                            <div
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
-                                    scrollToMessage(msg.parent!.id);
-                                }}
-                                className={`mb-2.5 max-w-[220px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] cursor-pointer bg-slate-100/90 hover:bg-slate-200/90 dark:bg-slate-900 dark:hover:bg-slate-950 text-left transition ${
-                                    isFullBorder
-                                        ? 'border border-indigo-200 dark:border-[#3B28F6] rounded px-3 py-1.5'
-                                        : 'border border-indigo-200 dark:border-[#3B28F6] rounded-xs py-1 pl-3'
-                                }`}
-                            >
-                                <p
-                                    className="font-['Oxanium'] text-[11px] font-extrabold tracking-wide"
-                                    style={{ color: nameColor }}
+                    {msg.parent &&
+                        (() => {
+                            const parentSenderId = msg.parent!.sender_id;
+                            const nameColor = parentSenderId
+                                ? getNameColor(parentSenderId)
+                                : '#3B28F6';
+                            const isFullBorder = isSelf;
+                            return (
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
+                                        scrollToMessage(msg.parent!.id);
+                                    }}
+                                    className={`mb-2.5 max-w-[220px] cursor-pointer bg-slate-100/90 text-left transition hover:bg-slate-200/90 sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] dark:bg-slate-900 dark:hover:bg-slate-950 ${
+                                        isFullBorder
+                                            ? 'rounded border border-indigo-200 px-3 py-1.5 dark:border-[#3B28F6]'
+                                            : 'rounded-xs border border-indigo-200 py-1 pl-3 dark:border-[#3B28F6]'
+                                    }`}
                                 >
-                                    {msg.parent.sender_name}
-                                </p>
-                                <p className="line-clamp-2 break-words font-['Oxanium'] text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                                    {msg.parent.message}
-                                </p>
-                            </div>
-                        );
-                    })()}
+                                    <p
+                                        className="font-['Oxanium'] text-[11px] font-extrabold tracking-wide"
+                                        style={{ color: nameColor }}
+                                    >
+                                        {msg.parent.sender_name}
+                                    </p>
+                                    <p className="mt-0.5 line-clamp-2 font-['Oxanium'] text-[11px] break-words text-slate-500 dark:text-slate-400">
+                                        {msg.parent.message}
+                                    </p>
+                                </div>
+                            );
+                        })()}
 
                     {/* Gambar Lampiran */}
                     {msg.attachments && msg.attachments.length > 0 && (
-                        <div className="mb-2 max-w-full overflow-hidden rounded-lg border border-slate-200 dark:border-[#3B28F6]/20 bg-black/5 dark:bg-black/40">
+                        <div className="mb-2 max-w-full overflow-hidden rounded-lg border border-slate-200 bg-black/5 dark:border-[#3B28F6]/20 dark:bg-black/40">
                             {msg.attachments.map((url, i) => (
                                 <img
                                     key={i}
@@ -397,11 +416,13 @@ export default function MessageBubble({
 
                     {/* Teks Pesan */}
                     {msg.message && (
-                        <p className={`font-['Oxanium'] leading-relaxed break-words whitespace-pre-wrap text-slate-800 dark:text-slate-100 select-text text-xs ${
-                            isMentorOrAdmin 
-                                ? 'md:text-[13px] lg:text-[13px] xl:text-[13px]' 
-                                : 'md:text-sm'
-                        }`}>
+                        <p
+                            className={`font-['Oxanium'] text-xs leading-relaxed break-words whitespace-pre-wrap text-slate-800 select-text dark:text-slate-100 ${
+                                isMentorOrAdmin
+                                    ? 'md:text-[13px] lg:text-[13px] xl:text-[13px]'
+                                    : 'md:text-sm'
+                            }`}
+                        >
                             {msg.message}
                         </p>
                     )}
@@ -428,13 +449,15 @@ export default function MessageBubble({
                                             handleToggleReaction(msg.id, emoji);
                                         }}
                                         title={data.users.join(', ')}
-                                        className={`flex items-center gap-0.5 rounded-full px-1.5 py-[3px] text-[11px] leading-none shadow-sm dark:shadow-md transition-transform active:scale-90 ${
+                                        className={`flex items-center gap-0.5 rounded-full px-1.5 py-[3px] text-[11px] leading-none shadow-sm transition-transform active:scale-90 dark:shadow-md ${
                                             data.hasReacted
                                                 ? 'border border-indigo-300 bg-indigo-50 dark:border-slate-800 dark:bg-[#1f2c34]'
-                                                : 'border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-350'
+                                                : 'dark:text-slate-350 border border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700'
                                         }`}
                                     >
-                                        <span className="text-[13px]">{emoji}</span>
+                                        <span className="text-[13px]">
+                                            {emoji}
+                                        </span>
                                         {data.count > 1 && (
                                             <span
                                                 className={`font-semibold ${

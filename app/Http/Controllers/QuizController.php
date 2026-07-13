@@ -15,7 +15,7 @@ class QuizController extends Controller
     {
         $quiz = Quiz::with(['path.modules', 'questions.answers'])->findOrFail($id);
 
-        $user = auth()->user();
+        $user = auth()->user()->load(['userStats']);
 
         $progress = UserStat::where('user_id', $user->_id)
             ->where('course_id', $quiz->path->course_id)
@@ -36,8 +36,48 @@ class QuizController extends Controller
             ->where('passed', true)
             ->exists();
 
+        // 🔥 Hitung EXP dan Gold untuk Kuis
+        $totalExp = 0;
+        $totalGold = 0;
+
+        foreach ($user->userStats as $stat) {
+            $statExp = 0;
+            $statGold = 0;
+
+            if ($stat->path_stats) {
+                $pathStats = $stat->path_stats;
+
+                // Normalize Mongo
+                if (is_string($pathStats)) {
+                    $pathStats = json_decode($pathStats, true);
+                } elseif (is_object($pathStats)) {
+                    $pathStats = json_decode(json_encode($pathStats), true);
+                }
+
+                foreach ($pathStats as $value) {
+                    $item = (array) $value;
+
+                    $statExp += $item['exp'] ?? 0;
+                    $statGold += $item['gold'] ?? 0;
+                }
+            }
+
+            $totalExp += max((int) ($stat->exp ?? 0), $statExp);
+            $totalGold += max((int) ($stat->gold ?? 0), $statGold);
+        }
+
+        $expPerLevel = 500;
+        $currentLevel = floor($totalExp / $expPerLevel) + 1;
+        $currentExp = $totalExp % $expPerLevel;
+
         return Inertia::render('Student/Quiz/Play', [
             'has_submitted' => $hasPassed,
+            'user_stats' => [
+                'level' => $currentLevel,
+                'xp' => $currentExp,
+                'exp_max' => $expPerLevel,
+                'gold' => $totalGold,
+            ],
             'quiz' => [
                 'id' => (string) $quiz->_id,
                 'difficulty' => $quiz->difficulty,

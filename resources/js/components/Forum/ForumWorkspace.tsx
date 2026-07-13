@@ -92,19 +92,29 @@ export default function ForumWorkspace({
     // Premium states
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
     const [editingMessage, setEditingMessage] = useState<Message | null>(null);
-    const [activeMenuMessageId, setActiveMenuMessageId] = useState<string | null>(null);
-    const [showReactionPickerId, setShowReactionPickerId] = useState<string | null>(null);
+    const [activeMenuMessageId, setActiveMenuMessageId] = useState<
+        string | null
+    >(null);
+    const [showReactionPickerId, setShowReactionPickerId] = useState<
+        string | null
+    >(null);
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
+    const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(
+        null,
+    );
 
     // User Profile Modal states
     const [profileModalOpen, setProfileModalOpen] = useState(false);
     const [profileLoading, setProfileLoading] = useState(false);
-    const [selectedProfile, setSelectedProfile] = useState<SelectedProfile | null>(null);
+    const [selectedProfile, setSelectedProfile] =
+        useState<SelectedProfile | null>(null);
 
     // Lightbox image preview state
-    const [previewImage, setPreviewImage] = useState<{ url: string; msg: Message } | null>(null);
+    const [previewImage, setPreviewImage] = useState<{
+        url: string;
+        msg: Message;
+    } | null>(null);
 
     const chatEndRef = useRef<HTMLDivElement | null>(null);
     const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -150,7 +160,9 @@ export default function ForumWorkspace({
             const lastMsg = localMessages[localMessages.length - 1];
             const lastId = lastMsg ? lastMsg.id : '';
 
-            fetch(`${basePath}/${selectedCourse.slug}/messages?after_id=${lastId}`)
+            fetch(
+                `${basePath}/${selectedCourse.slug}/messages?after_id=${lastId}`,
+            )
                 .then((res) => {
                     if (res.status === 200) {
                         return res.json();
@@ -162,7 +174,7 @@ export default function ForumWorkspace({
                         setLocalMessages((prev) => {
                             const existingIds = new Set(prev.map((m) => m.id));
                             const filteredNew = newMsgs.filter(
-                                (m) => !existingIds.has(m.id)
+                                (m) => !existingIds.has(m.id),
                             );
                             if (filteredNew.length === 0) return prev;
                             const merged = [...prev, ...filteredNew];
@@ -229,7 +241,7 @@ export default function ForumWorkspace({
                     onError: (errors: any) => {
                         console.error('Gagal mengedit pesan:', errors);
                     },
-                }
+                },
             );
             return;
         }
@@ -259,13 +271,13 @@ export default function ForumWorkspace({
                 bubble.classList.add(
                     'ring-4',
                     'ring-[#facc15]/70',
-                    'scale-[1.02]'
+                    'scale-[1.02]',
                 );
                 setTimeout(() => {
                     bubble.classList.remove(
                         'ring-4',
                         'ring-[#facc15]/70',
-                        'scale-[1.02]'
+                        'scale-[1.02]',
                     );
                 }, 1500);
             }
@@ -279,7 +291,7 @@ export default function ForumWorkspace({
                 if (m.id === messageId) {
                     const reactions = [...(m.reactions || [])];
                     const foundIndex = reactions.findIndex(
-                        (r) => r.user_id === currentUserId
+                        (r) => r.user_id === currentUserId,
                     );
                     if (foundIndex !== -1) {
                         if (reactions[foundIndex].emoji === emoji) {
@@ -300,7 +312,7 @@ export default function ForumWorkspace({
                     return { ...m, reactions };
                 }
                 return m;
-            })
+            }),
         );
         setActiveMenuMessageId(null);
 
@@ -311,11 +323,11 @@ export default function ForumWorkspace({
                 preserveState: true,
                 preserveScroll: true,
                 only: ['messages'],
-            }
+            },
         );
     };
 
-    // API 
+    // API
     //  (pin) pesan (Optimistik + Inertia)
     const handleTogglePin = (messageId: string) => {
         setLocalMessages((prev) =>
@@ -324,7 +336,7 @@ export default function ForumWorkspace({
                     return { ...m, is_pinned: !m.is_pinned };
                 }
                 return m;
-            })
+            }),
         );
         setActiveMenuMessageId(null);
 
@@ -335,7 +347,7 @@ export default function ForumWorkspace({
                 preserveState: true,
                 preserveScroll: true,
                 only: ['messages', 'pinnedMessages'],
-            }
+            },
         );
     };
 
@@ -432,9 +444,7 @@ export default function ForumWorkspace({
     };
 
     return (
-        <div
-            className="flex h-full w-full overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#121212] dark:text-white min-w-0"
-        >
+        <div className="flex h-full w-full min-w-0 overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#121212] dark:text-white">
             {/* Sidebar Kiri */}
             <ForumSidebar
                 courses={courses}
@@ -451,10 +461,8 @@ export default function ForumWorkspace({
 
             {/* Area Chat Utama */}
             <div
-
-                className={`flex flex-1 flex-col bg-[#f8fafc] dark:bg-[#0f0e0e] transition-colors duration-300 animate-fade-in min-w-0 ${
+                className={`animate-fade-in flex min-w-0 flex-1 flex-col bg-[#f8fafc] transition-colors duration-300 dark:bg-[#0f0e0e] ${
                     showChatMobile ? 'flex' : 'hidden lg:flex'
-
                 }`}
             >
                 {selectedCourse ? (
@@ -472,25 +480,35 @@ export default function ForumWorkspace({
                         />
 
                         {/* Feed Chat Area */}
-                        <div className={`flex flex-col bg-radial-gradient flex-1 overflow-y-auto overflow-x-hidden from-indigo-950/5 via-transparent to-transparent px-3 py-3 ${
-                            isMentorOrAdmin 
-                                ? 'md:px-3 md:py-3 lg:px-4 lg:py-4 xl:px-4 xl:py-4 wa-scrollbar' 
-                                : 'md:px-4 md:py-5 lg:px-6 lg:py-6'
-                        }`}>
+                        <div
+                            className={`bg-radial-gradient flex flex-1 flex-col overflow-x-hidden overflow-y-auto from-indigo-950/5 via-transparent to-transparent px-3 py-3 ${
+                                isMentorOrAdmin
+                                    ? 'wa-scrollbar md:px-3 md:py-3 lg:px-4 lg:py-4 xl:px-4 xl:py-4'
+                                    : 'md:px-4 md:py-5 lg:px-6 lg:py-6'
+                            }`}
+                        >
                             {localMessages.length === 0 ? (
                                 <EmptyState type="no-messages" />
                             ) : (
                                 localMessages.map((msg, index) => {
                                     const isConsecutive = (() => {
                                         if (index === 0) return false;
-                                        const prevMsg = localMessages[index - 1];
-                                        if (prevMsg.sender.role === 'system') return false;
-                                        if (prevMsg.sender.id !== msg.sender.id) return false;
+                                        const prevMsg =
+                                            localMessages[index - 1];
+                                        if (prevMsg.sender.role === 'system')
+                                            return false;
+                                        if (prevMsg.sender.id !== msg.sender.id)
+                                            return false;
                                         try {
                                             const timeDiff =
-                                                new Date(msg.created_at).getTime() -
-                                                new Date(prevMsg.created_at).getTime();
-                                            if (timeDiff > 5 * 60 * 1000) return false;
+                                                new Date(
+                                                    msg.created_at,
+                                                ).getTime() -
+                                                new Date(
+                                                    prevMsg.created_at,
+                                                ).getTime();
+                                            if (timeDiff > 5 * 60 * 1000)
+                                                return false;
                                         } catch (e) {}
                                         return true;
                                     })();
@@ -498,46 +516,77 @@ export default function ForumWorkspace({
                                     const showDateDivider =
                                         index === 0 ||
                                         new Date(
-                                            localMessages[index - 1].created_at
+                                            localMessages[index - 1].created_at,
                                         ).toDateString() !==
-                                            new Date(msg.created_at).toDateString();
+                                            new Date(
+                                                msg.created_at,
+                                            ).toDateString();
 
                                     return (
                                         <React.Fragment key={msg.id}>
-                                          
                                             {showDateDivider && (
                                                 <div className="my-4 flex justify-center">
-                                                    <span className={`rounded-xs border border-slate-200 bg-slate-200/60 px-3 py-1 font-['Oxanium'] text-[10px] font-bold tracking-wider text-slate-700 uppercase animate-fade-in ${
-                                                        isMentorOrAdmin
-                                                            ? 'dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400'
-                                                            : 'dark:border-[#3B28F6]/10 dark:bg-black/40 dark:text-[#facc15]'
-                                                    }`}>
-                                                        {formatHeaderDate(msg.created_at)}
+                                                    <span
+                                                        className={`animate-fade-in rounded-xs border border-slate-200 bg-slate-200/60 px-3 py-1 font-['Oxanium'] text-[10px] font-bold tracking-wider text-slate-700 uppercase ${
+                                                            isMentorOrAdmin
+                                                                ? 'dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400'
+                                                                : 'dark:border-[#3B28F6]/10 dark:bg-black/40 dark:text-[#facc15]'
+                                                        }`}
+                                                    >
+                                                        {formatHeaderDate(
+                                                            msg.created_at,
+                                                        )}
                                                     </span>
                                                 </div>
                                             )}
 
                                             <MessageBubble
                                                 domRef={(el) => {
-                                                    messageRefs.current[msg.id] = el;
+                                                    messageRefs.current[
+                                                        msg.id
+                                                    ] = el;
                                                 }}
                                                 msg={msg}
                                                 currentUserId={currentUserId}
-                                                isMentorOrAdmin={isMentorOrAdmin}
+                                                isMentorOrAdmin={
+                                                    isMentorOrAdmin
+                                                }
                                                 isDark={isDark}
                                                 isConsecutive={isConsecutive}
-                                                activeMenuMessageId={activeMenuMessageId}
-                                                setActiveMenuMessageId={setActiveMenuMessageId}
-                                                showReactionPickerId={showReactionPickerId}
-                                                setShowReactionPickerId={setShowReactionPickerId}
-                                                handleToggleReaction={handleToggleReaction}
+                                                activeMenuMessageId={
+                                                    activeMenuMessageId
+                                                }
+                                                setActiveMenuMessageId={
+                                                    setActiveMenuMessageId
+                                                }
+                                                showReactionPickerId={
+                                                    showReactionPickerId
+                                                }
+                                                setShowReactionPickerId={
+                                                    setShowReactionPickerId
+                                                }
+                                                handleToggleReaction={
+                                                    handleToggleReaction
+                                                }
                                                 handleReplyTo={handleReplyTo}
-                                                handleStartEdit={handleStartEdit}
-                                                handleTogglePin={handleTogglePin}
-                                                handleDeleteMessage={handleDeleteMessage}
-                                                handleShowProfile={handleShowProfile}
-                                                setPreviewImage={setPreviewImage}
-                                                scrollToMessage={scrollToMessage}
+                                                handleStartEdit={
+                                                    handleStartEdit
+                                                }
+                                                handleTogglePin={
+                                                    handleTogglePin
+                                                }
+                                                handleDeleteMessage={
+                                                    handleDeleteMessage
+                                                }
+                                                handleShowProfile={
+                                                    handleShowProfile
+                                                }
+                                                setPreviewImage={
+                                                    setPreviewImage
+                                                }
+                                                scrollToMessage={
+                                                    scrollToMessage
+                                                }
                                                 quickReactions={quickReactions}
                                             />
                                         </React.Fragment>

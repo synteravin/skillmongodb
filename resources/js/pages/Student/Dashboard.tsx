@@ -502,12 +502,12 @@ function TopBar({
     return (
         <header className="relative z-20 flex w-full items-center justify-between px-3 py-3 md:px-6 md:py-4 lg:px-10 lg:py-6">
             {/* LEFT */}
-            <div className="relative md:absolute md:top-2 md:left-2 flex items-center gap-2 md:gap-4 lg:gap-5">
+            <div className="relative flex items-center gap-2 md:absolute md:top-2 md:left-2 md:gap-4 lg:gap-5">
                 <Link
                     href="/student/profile"
-                    className="relative h-[55px] w-[55px] md:h-[70px] md:w-[70px] flex-shrink-0"
+                    className="relative h-[55px] w-[55px] flex-shrink-0 md:h-[70px] md:w-[70px]"
                 >
-                    <div className="absolute inset-[8px] md:inset-[10px] overflow-hidden rounded-md">
+                    <div className="absolute inset-[8px] overflow-hidden rounded-md md:inset-[10px]">
                         <img
                             src={user.avatar ?? '/images/default-avatar.svg'}
                             className="h-full w-full object-cover"
@@ -522,7 +522,7 @@ function TopBar({
 
                 <div className="leading-tight">
                     <p
-                        className=" text-xs sm:text-sm font-semibold md:text-lg lg:text-2xl truncate max-w-[90px] sm:max-w-[150px] md:max-w-none"
+                        className="max-w-[90px] truncate text-xs font-semibold sm:max-w-[150px] sm:text-sm md:max-w-none md:text-lg lg:text-2xl"
                         style={{ fontFamily: 'Orbitron' }}
                         title={user.username || user.name}
                     >
@@ -530,7 +530,7 @@ function TopBar({
                     </p>
 
                     <p
-                        className="text-[10px] sm:text-xs font-semibold md:text-sm lg:text-xl md:text-inherit dark:md:text-inherit "
+                        className="text-[10px] font-semibold sm:text-xs md:text-sm md:text-inherit lg:text-xl dark:md:text-inherit"
                         style={{ fontFamily: 'Orbitron' }}
                     >
                         lvl {user.level}
@@ -539,19 +539,19 @@ function TopBar({
             </div>
 
             {/* RIGHT */}
-            <div className="relative md:absolute md:top-2 md:right-2 flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-5">
-                <div className="flex items-center gap-1 sm:gap-2 rounded-2xl border border-amber-200/90 bg-amber-50/90 px-2 py-1.5 md:px-3 md:py-2 shadow-sm dark:border-amber-400/30 dark:bg-amber-400/10">
+            <div className="relative flex items-center gap-1 sm:gap-2 md:absolute md:top-2 md:right-2 md:gap-3 lg:gap-4 xl:gap-5">
+                <div className="flex items-center gap-1 rounded-2xl border border-amber-200/90 bg-amber-50/90 px-2 py-1.5 shadow-sm sm:gap-2 md:px-3 md:py-2 dark:border-amber-400/30 dark:bg-amber-400/10">
                     <img
                         src="/images/Gold.webp"
                         className="h-5 w-5 object-contain md:h-8 md:w-8"
                     />
-                    <div className="text-[11px] sm:text-sm font-semibold tracking-wide text-slate-900 md:text-base dark:text-amber-100">
+                    <div className="text-[11px] font-semibold tracking-wide text-slate-900 sm:text-sm md:text-base dark:text-amber-100">
                         {user.gold.toLocaleString()}
                     </div>
                 </div>
 
                 <button
-                    className="relative inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-white/90 p-2 md:px-3 md:py-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                    className="relative inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-white/90 p-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-100 md:px-3 md:py-2 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
                     aria-label="Messages"
                 >
                     <MessageSquareMore className="h-5 w-5 text-slate-700 md:h-6 md:w-6 dark:text-sky-300" />
@@ -560,7 +560,7 @@ function TopBar({
 
                 <button
                     onClick={toggleTheme}
-                    className="inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-100/90 p-2 md:px-3 md:py-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-200 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                    className="inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-100/90 p-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-200 md:px-3 md:py-2 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
                     aria-label={
                         dark ? 'Switch to light mode' : 'Switch to dark mode'
                     }
@@ -638,20 +638,12 @@ and dominate the game`;
     }, [showBubble]);
 
     return (
-        <div className="absolute inset-0 z-10 pointer-events-none">
+        <div className="pointer-events-none absolute inset-0 z-10">
             {/* Mobile: centered horizontally, bottom-0 agar kaki tenggelam ke fixed BottomNav (z-30) */}
             {/* Desktop md+: absolute right-positioned, bottom negatif agar tenggelam ke absolute BottomNav */}
-            <div className="
-                absolute pointer-events-auto
-                bottom-0 md:bottom-[-90px] lg:bottom-[-120px]
-                left-1/2 -translate-x-1/2
-                md:left-auto md:translate-x-24 md:right-[180px]
-                lg:translate-x-5 lg:right-[220px]
-                xl:right-[260px]
-                2xl:right-[370px]
-            ">
+            <div className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2 md:right-[180px] md:bottom-[-90px] md:left-auto md:translate-x-24 lg:right-[220px] lg:bottom-[-120px] lg:translate-x-5 xl:right-[260px] 2xl:right-[370px]">
                 {showBubble && (
-                    <SpeechBubble className="animate-fadeIn absolute bottom-full mb-4 left-1/2 -translate-x-1/2 md:bottom-auto md:top-12 md:left-auto md:translate-x-0 md:-right-56 lg:-right-75">
+                    <SpeechBubble className="animate-fadeIn absolute bottom-full left-1/2 mb-4 -translate-x-1/2 md:top-12 md:-right-56 md:bottom-auto md:left-auto md:translate-x-0 lg:-right-75">
                         <p className="text-xs leading-relaxed whitespace-pre-line md:text-sm lg:text-base">
                             {displayText}
                             <span className="animate-pulse">|</span>

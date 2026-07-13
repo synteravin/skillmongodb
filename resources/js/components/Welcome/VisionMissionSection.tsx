@@ -203,8 +203,8 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Lorem ipsum dolor sit amet
-                                    consectetur adipisicing elit.
+                                    Lorem ipsum dolor sit amet consectetur
+                                    adipisicing elit.
                                 </p>
                             </div>
                         </div>
@@ -233,8 +233,8 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Becoming the leading gamified
-                                    learning ecosystem.
+                                    Becoming the leading gamified learning
+                                    ecosystem.
                                 </p>
                             </div>
                         </div>
@@ -263,8 +263,8 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Innovation, accessibility, and
-                                    community learning.
+                                    Innovation, accessibility, and community
+                                    learning.
                                 </p>
                             </div>
                         </div>
@@ -293,8 +293,8 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Empower learners with real-world
-                                    tech skills.
+                                    Empower learners with real-world tech
+                                    skills.
                                 </p>
                             </div>
                         </div>

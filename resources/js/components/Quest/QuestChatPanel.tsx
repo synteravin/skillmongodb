@@ -20,15 +20,20 @@ interface Props {
     onClose: () => void;
 }
 
-export default function QuestChatPanel({ bidId, questTitle, targetUserName, onClose }: Props) {
+export default function QuestChatPanel({
+    bidId,
+    questTitle,
+    targetUserName,
+    onClose,
+}: Props) {
     const { props } = usePage<any>();
     const currentUser = props.auth?.user;
-    
+
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
-    
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const pollingIntervalRef = useRef<any>(null);
 
@@ -55,8 +60,8 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
     // Poll for new messages
     const pollNewMessages = async (lastId: string) => {
         try {
-            const url = lastId 
-                ? `/quests/bids/${bidId}/messages?after_id=${lastId}` 
+            const url = lastId
+                ? `/quests/bids/${bidId}/messages?after_id=${lastId}`
                 : `/quests/bids/${bidId}/messages`;
             const response = await fetch(url);
             if (response.ok) {
@@ -64,8 +69,10 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
                 if (data.length > 0) {
                     setMessages((prev) => {
                         // Prevent duplicates
-                        const existingIds = new Set(prev.map(m => m.id));
-                        const filteredNew = data.filter((m: Message) => !existingIds.has(m.id));
+                        const existingIds = new Set(prev.map((m) => m.id));
+                        const filteredNew = data.filter(
+                            (m: Message) => !existingIds.has(m.id),
+                        );
                         return [...prev, ...filteredNew];
                     });
                 }
@@ -92,8 +99,9 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
             clearInterval(pollingIntervalRef.current);
         }
 
-        const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : '';
-        
+        const lastMessageId =
+            messages.length > 0 ? messages[messages.length - 1].id : '';
+
         pollingIntervalRef.current = setInterval(() => {
             pollNewMessages(lastMessageId);
         }, 3000);
@@ -109,13 +117,17 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
 
         setSending(true);
         try {
-            const csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
+            const csrfToken = (
+                document.querySelector(
+                    'meta[name="csrf-token"]',
+                ) as HTMLMetaElement
+            )?.content;
             const response = await fetch(`/quests/bids/${bidId}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken || '',
-                    'Accept': 'application/json',
+                    Accept: 'application/json',
                 },
                 body: JSON.stringify({ message: newMessage }),
             });
@@ -144,18 +156,18 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
     };
 
     return (
-        <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[450px] bg-white dark:bg-[#0c0f19] border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col transition-all duration-300">
+        <div className="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-slate-200 bg-white shadow-2xl transition-all duration-300 sm:w-[450px] dark:border-slate-800 dark:bg-[#0c0f19]">
             {/* Header */}
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-[#f8fafc] dark:bg-[#0f1322] flex items-center justify-between">
-                <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold shrink-0">
-                        <MessageSquare className="w-5 h-5" />
+            <div className="flex items-center justify-between border-b border-slate-200 bg-[#f8fafc] p-4 dark:border-slate-800 dark:bg-[#0f1322]">
+                <div className="flex min-w-0 items-center gap-2.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 font-bold text-indigo-600 dark:text-indigo-400">
+                        <MessageSquare className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                        <h4 className="font-bold text-sm text-slate-900 dark:text-white truncate">
+                        <h4 className="truncate text-sm font-bold text-slate-900 dark:text-white">
                             {targetUserName}
                         </h4>
-                        <span className="block text-[10px] text-slate-400 dark:text-slate-500 truncate">
+                        <span className="block truncate text-[10px] text-slate-400 dark:text-slate-500">
                             Quest: {questTitle}
                         </span>
                     </div>
@@ -163,49 +175,61 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
 
                 <button
                     onClick={onClose}
-                    className="w-8 h-8 rounded-lg hover:bg-slate-200 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-colors cursor-pointer"
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/5"
                 >
                     <X size={18} />
                 </button>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 dark:bg-[#080a10]">
+            <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/50 p-4 dark:bg-[#080a10]">
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400 gap-2">
-                        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="flex h-full flex-col items-center justify-center gap-2 text-slate-400">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
                         <span className="text-xs">Memuat obrolan...</span>
                     </div>
                 ) : messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400 p-6 text-center space-y-2">
-                        <MessageSquare className="w-12 h-12 stroke-1 text-slate-300 dark:text-slate-700" />
-                        <h5 className="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Obrolan</h5>
+                    <div className="flex h-full flex-col items-center justify-center space-y-2 p-6 text-center text-slate-400">
+                        <MessageSquare className="h-12 w-12 stroke-1 text-slate-300 dark:text-slate-700" />
+                        <h5 className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                            Belum Ada Obrolan
+                        </h5>
                         <p className="text-xs text-slate-400">
-                            Kirim pesan pertama Anda untuk memulai diskusi mengenai pekerjaan freelance ini.
+                            Kirim pesan pertama Anda untuk memulai diskusi
+                            mengenai pekerjaan freelance ini.
                         </p>
                     </div>
                 ) : (
                     messages.map((msg) => {
-                        const isSelf = msg.sender.id === currentUser?.id || msg.sender.id === currentUser?._id;
+                        const isSelf =
+                            msg.sender.id === currentUser?.id ||
+                            msg.sender.id === currentUser?._id;
                         return (
                             <div
                                 key={msg.id}
                                 className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
                             >
-                                <span className="text-[9px] text-slate-400 mb-1 px-1">
-                                    {isSelf ? 'Anda' : msg.sender.name} • {msg.sender.role === 'admin' ? 'Admin' : 'Siswa'}
+                                <span className="mb-1 px-1 text-[9px] text-slate-400">
+                                    {isSelf ? 'Anda' : msg.sender.name} •{' '}
+                                    {msg.sender.role === 'admin'
+                                        ? 'Admin'
+                                        : 'Siswa'}
                                 </span>
                                 <div
                                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
                                         isSelf
-                                            ? 'bg-[#3B28F6] text-white rounded-tr-none'
-                                            : 'bg-white dark:bg-[#121625] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                                            ? 'rounded-tr-none bg-[#3B28F6] text-white'
+                                            : 'rounded-tl-none border border-slate-200 bg-white text-slate-800 dark:border-slate-800 dark:bg-[#121625] dark:text-slate-200'
                                     }`}
                                 >
-                                    <p className="leading-relaxed break-words whitespace-pre-wrap">{msg.message}</p>
+                                    <p className="leading-relaxed break-words whitespace-pre-wrap">
+                                        {msg.message}
+                                    </p>
                                     <span
-                                        className={`block text-[9px] text-right mt-1.5 ${
-                                            isSelf ? 'text-indigo-200' : 'text-slate-400'
+                                        className={`mt-1.5 block text-right text-[9px] ${
+                                            isSelf
+                                                ? 'text-indigo-200'
+                                                : 'text-slate-400'
                                         }`}
                                     >
                                         {formatTime(msg.created_at)}
@@ -221,19 +245,19 @@ export default function QuestChatPanel({ bidId, questTitle, targetUserName, onCl
             {/* Input Area */}
             <form
                 onSubmit={handleSendMessage}
-                className="p-4 border-t border-slate-200 dark:border-slate-800 bg-[#f8fafc] dark:bg-[#0f1322] flex items-center gap-2"
+                className="flex items-center gap-2 border-t border-slate-200 bg-[#f8fafc] p-4 dark:border-slate-800 dark:bg-[#0f1322]"
             >
                 <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Tulis pesan..."
-                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                    className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                 />
                 <button
                     type="submit"
                     disabled={!newMessage.trim() || sending}
-                    className="w-10 h-10 rounded-xl bg-[#3B28F6] hover:bg-[#2a1ce0] text-white flex items-center justify-center shadow-sm disabled:opacity-50 transition-colors cursor-pointer shrink-0"
+                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#3B28F6] text-white shadow-sm transition-colors hover:bg-[#2a1ce0] disabled:opacity-50"
                 >
                     <Send size={16} />
                 </button>

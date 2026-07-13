@@ -88,13 +88,15 @@ export default function Profile({ mentor }: Props) {
                     onCancel={handleCropCancel}
                 />
             )}
-            <div className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
-
+            <div
+                className="mx-auto w-full space-y-8 p-4 sm:p-6 lg:p-8"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+            >
                 {/* Header Section */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-[#0d0f17]">
                     {/* Grid Pattern Motif */}
-                    <div 
-                        className="absolute inset-0 z-0 pointer-events-none"
+                    <div
+                        className="pointer-events-none absolute inset-0 z-0"
                         style={{
                             backgroundImage: `
                                 linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
@@ -104,54 +106,62 @@ export default function Profile({ mentor }: Props) {
                         }}
                     />
 
-                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 z-0" />
+                    <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                     <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="max-w-2xl space-y-3">
                             <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                 Mentor Profile
                             </span>
-                            <h1 className="text-2xl md:text-[28px] font-semibold tracking-tight text-slate-800 dark:text-white leading-snug">
+                            <h1 className="text-2xl leading-snug font-semibold tracking-tight text-slate-800 md:text-[28px] dark:text-white">
                                 My Profile
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
-                                Manage your professional biography, avatar, and academic credentials.
+                            <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
+                                Manage your professional biography, avatar, and
+                                academic credentials.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <form onSubmit={submit} className="space-y-8">
-
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-
                         {/* LEFT COLUMN: Avatar & Stats */}
                         <div className="space-y-6 lg:col-span-1">
-
                             {/* Avatar Card */}
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                                 <div className="relative z-10 flex flex-col items-center">
                                     {/* Circle Avatar Uploader */}
-                                    <div className="relative mb-6 flex-shrink-0 group">
+                                    <div className="group relative mb-6 flex-shrink-0">
                                         <div
-                                            className="h-32 w-32 cursor-pointer overflow-hidden rounded-full border border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/40 transition-colors relative"
-                                            onClick={() => fileInputRef.current?.click()}
+                                            className="relative h-32 w-32 cursor-pointer overflow-hidden rounded-full border border-slate-200 transition-colors hover:border-indigo-300 dark:border-slate-800 dark:hover:border-indigo-500/40"
+                                            onClick={() =>
+                                                fileInputRef.current?.click()
+                                            }
                                         >
                                             <img
-                                                src={preview || `https://ui-avatars.com/api/?name=${mentor.name}&background=3b28f6&color=fff`}
+                                                src={
+                                                    preview ||
+                                                    `https://ui-avatars.com/api/?name=${mentor.name}&background=3b28f6&color=fff`
+                                                }
                                                 className="h-full w-full object-cover"
                                                 alt="avatar"
                                             />
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <Camera size={24} className="text-white" />
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                                <Camera
+                                                    size={24}
+                                                    className="text-white"
+                                                />
                                             </div>
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => fileInputRef.current?.click()}
+                                            onClick={() =>
+                                                fileInputRef.current?.click()
+                                            }
                                             className="absolute right-1 bottom-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-colors hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/30 dark:text-slate-300 dark:hover:border-indigo-500/40 dark:hover:text-indigo-400"
                                         >
                                             <Camera size={14} />
@@ -166,28 +176,32 @@ export default function Profile({ mentor }: Props) {
                                     </div>
 
                                     {/* Name & Title */}
-                                    <h2 className="text-lg font-semibold text-slate-800 dark:text-white text-center break-all mb-1">
+                                    <h2 className="mb-1 text-center text-lg font-semibold break-all text-slate-800 dark:text-white">
                                         {mentor.name}
                                     </h2>
-                                    <p className="text-[0.65rem] font-semibold tracking-[0.15em] uppercase text-indigo-600 dark:text-indigo-400 mb-6 text-center">
-                                        {mentor.profession || 'Instructor Mentor'}
+                                    <p className="mb-6 text-center text-[0.65rem] font-semibold tracking-[0.15em] text-indigo-600 uppercase dark:text-indigo-400">
+                                        {mentor.profession ||
+                                            'Instructor Mentor'}
                                     </p>
 
                                     {/* Stats Grid */}
-                                    <div className="grid grid-cols-2 gap-4 w-full border-t border-slate-200 dark:border-slate-800 pt-6">
+                                    <div className="grid w-full grid-cols-2 gap-4 border-t border-slate-200 pt-6 dark:border-slate-800">
                                         <div className="text-center">
                                             <p className="text-2xl font-semibold tracking-tight text-indigo-600 dark:text-indigo-400">
-                                                {mentor.stats.total_career_groups}
+                                                {
+                                                    mentor.stats
+                                                        .total_career_groups
+                                                }
                                             </p>
-                                            <p className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase mt-1">
+                                            <p className="mt-1 text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                                 Branches
                                             </p>
                                         </div>
-                                        <div className="text-center border-l border-slate-200 dark:border-slate-800">
+                                        <div className="border-l border-slate-200 text-center dark:border-slate-800">
                                             <p className="text-2xl font-semibold tracking-tight text-slate-600 dark:text-slate-300">
                                                 {mentor.stats.total_students}
                                             </p>
-                                            <p className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase mt-1">
+                                            <p className="mt-1 text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                                 Students
                                             </p>
                                         </div>
@@ -196,12 +210,12 @@ export default function Profile({ mentor }: Props) {
                             </div>
 
                             {/* Status Card */}
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                                 <div className="relative z-10">
-                                    <span className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase block mb-3">
+                                    <span className="mb-3 block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                         Account Status
                                     </span>
                                     <div className="flex items-center gap-2.5 text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -214,43 +228,50 @@ export default function Profile({ mentor }: Props) {
 
                         {/* RIGHT COLUMN: Basic Information */}
                         <div className="lg:col-span-2">
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 sm:p-8 dark:border-slate-800">
                                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                                 <div className="relative z-10">
-                                    <ProfileFormBasic data={data} setData={setData} errors={errors} />
+                                    <ProfileFormBasic
+                                        data={data}
+                                        setData={setData}
+                                        errors={errors}
+                                    />
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     {/* FULL-WIDTH CARDS: Work Experience & Education */}
-                    <div className="space-y-8 w-full">
+                    <div className="w-full space-y-8">
                         {/* Work Experience Card */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 sm:p-8 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             <div className="relative z-10">
                                 <ProfileFormWorkExperience
                                     workExperiences={data.work_experiences}
-                                    onChange={(val) => setData('work_experiences', val)}
+                                    onChange={(val) =>
+                                        setData('work_experiences', val)
+                                    }
                                     errors={errors}
                                 />
                             </div>
                         </div>
 
                         {/* Education Card */}
-                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 sm:p-8 dark:border-slate-800">
                             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             <div className="relative z-10">
                                 <ProfileFormEducation
                                     educations={data.educations}
-                                    onChange={(val) => setData('educations', val)}
+                                    onChange={(val) =>
+                                        setData('educations', val)
+                                    }
                                     errors={errors}
                                 />
                             </div>

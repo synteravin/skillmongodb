@@ -11,10 +11,7 @@ const normalizeString = (val: any): string => {
     if (val === null || val === undefined) {
         return '';
     }
-    return String(val)
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, ' ');
+    return String(val).toLowerCase().trim().replace(/\s+/g, ' ');
 };
 
 // Helper to check if value looks like a valid identifier (not empty, not just "unknown" or "assignment")
@@ -22,19 +19,33 @@ const isValidIdentifier = (val: string): boolean => {
     if (!val) {
         return false;
     }
-    const ignored = ['unknown', 'assignment', 'undefined', 'null', 'course', 'path', 'quiz', 'module', 'none'];
+    const ignored = [
+        'unknown',
+        'assignment',
+        'undefined',
+        'null',
+        'course',
+        'path',
+        'quiz',
+        'module',
+        'none',
+    ];
     return !ignored.includes(val);
 };
 
 // Helper to extract all strings and values recursively from an object/array
 const collectAllValues = (obj: any, keysToCollect: string[]): string[] => {
     const values: string[] = [];
-    
+
     const recurse = (current: any) => {
         if (!current) {
             return;
         }
-        if (typeof current === 'string' || typeof current === 'number' || typeof current === 'boolean') {
+        if (
+            typeof current === 'string' ||
+            typeof current === 'number' ||
+            typeof current === 'boolean'
+        ) {
             const normalized = normalizeString(current);
             if (isValidIdentifier(normalized)) {
                 values.push(normalized);
@@ -42,25 +53,34 @@ const collectAllValues = (obj: any, keysToCollect: string[]): string[] => {
             return;
         }
         if (Array.isArray(current)) {
-            current.forEach(item => recurse(item));
+            current.forEach((item) => recurse(item));
             return;
         }
         if (typeof current === 'object') {
-            Object.keys(current).forEach(k => {
-                const isTargetKey = keysToCollect.some(target => 
-                    k === target || 
-                    k.toLowerCase() === target.toLowerCase() || 
-                    k.toLowerCase().includes(target.toLowerCase())
+            Object.keys(current).forEach((k) => {
+                const isTargetKey = keysToCollect.some(
+                    (target) =>
+                        k === target ||
+                        k.toLowerCase() === target.toLowerCase() ||
+                        k.toLowerCase().includes(target.toLowerCase()),
                 );
-                
+
                 if (isTargetKey) {
                     const val = current[k];
-                    if (val && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+                    if (
+                        val &&
+                        (typeof val === 'string' ||
+                            typeof val === 'number' ||
+                            typeof val === 'boolean')
+                    ) {
                         const normalized = normalizeString(val);
                         if (isValidIdentifier(normalized)) {
                             values.push(normalized);
                         }
-                    } else if (val && (typeof val === 'object' || Array.isArray(val))) {
+                    } else if (
+                        val &&
+                        (typeof val === 'object' || Array.isArray(val))
+                    ) {
                         recurse(val);
                     }
                 } else {
@@ -69,7 +89,7 @@ const collectAllValues = (obj: any, keysToCollect: string[]): string[] => {
             });
         }
     };
-    
+
     recurse(obj);
     return Array.from(new Set(values));
 };
@@ -79,7 +99,7 @@ const getSelectedCourseIdentifiers = (course: any): string[] => {
     if (!course) {
         return [];
     }
-    
+
     const ids: string[] = [];
     const add = (val: any) => {
         const norm = normalizeString(val);
@@ -99,13 +119,27 @@ const getSelectedCourseIdentifiers = (course: any): string[] => {
     add(course.careerGroup);
 
     const deepKeys = [
-        'id', '_id', 'slug', 'title', 'name', 'course_name', 'courseName',
-        'career_group', 'careerGroup', 'basic_paths', 'basic_path', 'path', 'paths',
-        'module', 'modules', 'quiz', 'quizzes'
+        'id',
+        '_id',
+        'slug',
+        'title',
+        'name',
+        'course_name',
+        'courseName',
+        'career_group',
+        'careerGroup',
+        'basic_paths',
+        'basic_path',
+        'path',
+        'paths',
+        'module',
+        'modules',
+        'quiz',
+        'quizzes',
     ];
-    
+
     const deepValues = collectAllValues(course, deepKeys);
-    deepValues.forEach(v => {
+    deepValues.forEach((v) => {
         if (!ids.includes(v)) {
             ids.push(v);
         }
@@ -119,7 +153,7 @@ const getItemIdentifiers = (item: any): string[] => {
     if (!item) {
         return [];
     }
-    
+
     const ids: string[] = [];
     const add = (val: any) => {
         const norm = normalizeString(val);
@@ -155,15 +189,37 @@ const getItemIdentifiers = (item: any): string[] => {
     add(item.careerGroup);
 
     const deepKeys = [
-        'id', '_id', 'slug', 'title', 'name', 'course_id', 'courseId',
-        'basic_path_id', 'basicPathId', 'basic_path_title', 'basicPathTitle',
-        'path_id', 'pathId', 'path_title', 'pathTitle', 'path_name', 'pathName',
-        'module_id', 'moduleId', 'module_title', 'moduleTitle',
-        'quiz_id', 'quizId', 'quiz_title', 'quizTitle', 'career_group', 'careerGroup'
+        'id',
+        '_id',
+        'slug',
+        'title',
+        'name',
+        'course_id',
+        'courseId',
+        'basic_path_id',
+        'basicPathId',
+        'basic_path_title',
+        'basicPathTitle',
+        'path_id',
+        'pathId',
+        'path_title',
+        'pathTitle',
+        'path_name',
+        'pathName',
+        'module_id',
+        'moduleId',
+        'module_title',
+        'moduleTitle',
+        'quiz_id',
+        'quizId',
+        'quiz_title',
+        'quizTitle',
+        'career_group',
+        'careerGroup',
     ];
-    
+
     const deepValues = collectAllValues(item, deepKeys);
-    deepValues.forEach(v => {
+    deepValues.forEach((v) => {
         if (!ids.includes(v)) {
             ids.push(v);
         }
@@ -173,7 +229,10 @@ const getItemIdentifiers = (item: any): string[] => {
 };
 
 // Match Condition
-const isMatch = (selectedCourseIdentifiers: string[], itemIdentifiers: string[]): boolean => {
+const isMatch = (
+    selectedCourseIdentifiers: string[],
+    itemIdentifiers: string[],
+): boolean => {
     for (const cId of selectedCourseIdentifiers) {
         for (const iId of itemIdentifiers) {
             if (cId === iId) {
@@ -219,9 +278,7 @@ function PremiumCard({
                             {title}
                         </h2>
                         {badgeText && (
-                            <span
-                                className="rounded border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase text-slate-650 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400"
-                            >
+                            <span className="text-slate-650 rounded border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
                                 {badgeText}
                             </span>
                         )}
@@ -264,7 +321,7 @@ function StatCard({
             {/* Content */}
             <div className="relative z-10">
                 <p className="text-[0.6rem] font-semibold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
-                    {title} 
+                    {title}
                 </p>
 
                 <p className="mt-2 text-2xl leading-none font-black tracking-tight text-slate-800 sm:text-3xl dark:text-white">
@@ -313,36 +370,38 @@ export default function Show({ user, details }: { user: any; details: any }) {
     const submissions = details.recent_submissions || [];
 
     const isSingleCourse = details.course_history?.length === 1;
-    const selectedCourseIdentifiers = selectedCourse ? getSelectedCourseIdentifiers(selectedCourse) : [];
+    const selectedCourseIdentifiers = selectedCourse
+        ? getSelectedCourseIdentifiers(selectedCourse)
+        : [];
 
     const filteredSubmissions = selectedCourse
-        ? (isSingleCourse
+        ? isSingleCourse
             ? submissions
             : submissions.filter((sub: any) => {
                   const itemIds = getItemIdentifiers(sub);
                   const matched = isMatch(selectedCourseIdentifiers, itemIds);
                   return matched;
-              }))
+              })
         : [];
 
     const filteredQuizResults = selectedCourse
-        ? (isSingleCourse
+        ? isSingleCourse
             ? quizResults
             : quizResults.filter((quiz: any) => {
                   const itemIds = getItemIdentifiers(quiz);
                   const matched = isMatch(selectedCourseIdentifiers, itemIds);
                   return matched;
-              }))
+              })
         : [];
 
     const filteredQuizzes = filteredQuizResults;
 
-    console.log("selectedCourse", selectedCourse);
-    console.log("course identifiers", selectedCourseIdentifiers);
-    console.log("quizResults raw", quizResults);
-    console.log("submissions raw", submissions);
-    console.log("filteredQuizResults", filteredQuizResults);
-    console.log("filteredSubmissions", filteredSubmissions);
+    console.log('selectedCourse', selectedCourse);
+    console.log('course identifiers', selectedCourseIdentifiers);
+    console.log('quizResults raw', quizResults);
+    console.log('submissions raw', submissions);
+    console.log('filteredQuizResults', filteredQuizResults);
+    console.log('filteredSubmissions', filteredSubmissions);
 
     const StudentDetails = () => (
         <div className="space-y-6">
@@ -422,7 +481,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                         className={`flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-3 transition-colors ${
                                             isSelected
                                                 ? 'border-slate-400 bg-slate-100/80 dark:border-slate-600 dark:bg-slate-800/60'
-                                                : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20'
+                                                : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/10 dark:hover:bg-slate-800/20'
                                         }`}
                                     >
                                         <div className="flex min-w-0 items-center gap-3">
@@ -473,8 +532,9 @@ export default function Show({ user, details }: { user: any; details: any }) {
                 <PremiumCard title="All Submissions">
                     {!selectedCourse ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <p className="text-sm font-medium text-slate-400 dark:text-slate-500 max-w-xs leading-relaxed">
-                                Select a course from Course History to view related quiz results and submissions.
+                            <p className="max-w-xs text-sm leading-relaxed font-medium text-slate-400 dark:text-slate-500">
+                                Select a course from Course History to view
+                                related quiz results and submissions.
                             </p>
                         </div>
                     ) : filteredSubmissions.length > 0 ? (
@@ -486,7 +546,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                 (sub: any, idx: number) => (
                                     <div
                                         key={idx}
-                                        className="border-slate-200 dark:border-slate-800 rounded-lg border bg-slate-50/50 p-4 transition-colors hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
+                                        className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
                                     >
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="min-w-0 flex-1">
@@ -558,8 +618,9 @@ export default function Show({ user, details }: { user: any; details: any }) {
                 <PremiumCard title="All Quiz Results">
                     {!selectedCourse ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <p className="text-sm font-medium text-slate-400 dark:text-slate-500 max-w-xs leading-relaxed">
-                                Select a course from Course History to view related quiz results and submissions.
+                            <p className="max-w-xs text-sm leading-relaxed font-medium text-slate-400 dark:text-slate-500">
+                                Select a course from Course History to view
+                                related quiz results and submissions.
                             </p>
                         </div>
                     ) : filteredQuizzes.length > 0 ? (
@@ -570,7 +631,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
                             {filteredQuizzes.map((quiz: any, idx: number) => (
                                 <div
                                     key={idx}
-                                    className="border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 rounded-lg border bg-slate-50/50 p-3.5 transition-colors hover:bg-slate-100 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
+                                    className="flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-slate-50/50 p-3.5 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/10 dark:hover:bg-slate-800/20"
                                 >
                                     <div className="min-w-0">
                                         <h4 className="truncate text-xs font-semibold text-slate-800 dark:text-white">
@@ -590,7 +651,8 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                         <span
                                             className={`text-xs font-black ${quiz.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-650 dark:text-rose-455'}`}
                                         >
-                                            Score: {quiz.score}/100 (+{quiz.score * 2} ERP)
+                                            Score: {quiz.score}/100 (+
+                                            {quiz.score * 2} ERP)
                                         </span>
                                         <button
                                             onClick={() =>
@@ -619,7 +681,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
 
             {/* Character Details (Dipindah Paling Bawah) */}
             <PremiumCard title="Character Details">
-                <div className="border-slate-200 dark:border-slate-800 relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border bg-slate-50/50 p-4 sm:flex-row dark:bg-slate-900/20">
+                <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50 p-4 sm:flex-row dark:border-slate-800 dark:bg-slate-900/20">
                     <div className="z-10 flex-shrink-0">
                         {details.gamification.character_avatar ? (
                             <div className="flex h-16 w-auto items-center justify-center rounded-lg border border-slate-200 bg-white p-1 dark:border-slate-700/50 dark:bg-slate-900/40">
@@ -1075,7 +1137,8 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                                 {selectedDetail.data.score}{' '}
                                                 <span className="text-xs font-normal text-slate-500">
                                                     / 100 (+
-                                                    {selectedDetail.data.score * 2}{' '}
+                                                    {selectedDetail.data.score *
+                                                        2}{' '}
                                                     ERP)
                                                 </span>
                                             </p>

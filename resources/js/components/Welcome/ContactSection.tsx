@@ -21,20 +21,18 @@ export default function ContactSection() {
                         </h3>
 
                         <p className="mb-4 text-sm leading-relaxed text-gray-600 sm:mb-6 sm:text-base dark:text-gray-300">
-                            SKILL VENTURA contact support is available
-                            Monday to Friday, from 8 AM to 4 PM. During
-                            these hours, our team is ready to assist
-                            with questions, guidance, or any support you
-                            need while using the platform. Messages sent
-                            outside these hours will be answered on the
-                            next working day.
+                            SKILL VENTURA contact support is available Monday to
+                            Friday, from 8 AM to 4 PM. During these hours, our
+                            team is ready to assist with questions, guidance, or
+                            any support you need while using the platform.
+                            Messages sent outside these hours will be answered
+                            on the next working day.
                         </p>
 
                         <p className="text-sm leading-relaxed text-gray-600 sm:text-base dark:text-gray-300">
-                            We remain committed to providing helpful and
-                            timely support to ensure your learning
-                            experience on SKILL VENTURA stays smooth and
-                            enjoyable.
+                            We remain committed to providing helpful and timely
+                            support to ensure your learning experience on SKILL
+                            VENTURA stays smooth and enjoyable.
                         </p>
                     </div>
 

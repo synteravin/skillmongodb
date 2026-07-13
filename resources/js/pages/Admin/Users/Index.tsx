@@ -48,7 +48,12 @@ export default function Index({
 }: {
     users: PaginatedUsers;
     filters?: { search?: string };
-    stats?: { total: number; students: number; mentors: number; admins: number };
+    stats?: {
+        total: number;
+        students: number;
+        mentors: number;
+        admins: number;
+    };
 }) {
     const [showModal, setShowModal] = useState(false);
     const [editUser, setEditUser] = useState<User | null>(null);
@@ -252,7 +257,8 @@ export default function Index({
         setConfirmModal({
             open: true,
             title: 'Hapus User',
-            message: 'Are you sure you want to delete this user? This action cannot be undone.',
+            message:
+                'Are you sure you want to delete this user? This action cannot be undone.',
             confirmText: 'Delete User',
             variant: 'danger',
             onConfirm: () => {
@@ -266,7 +272,8 @@ export default function Index({
         const styles = {
             admin: 'bg-rose-500/10 text-rose-500 border-rose-200 dark:border-rose-500/20 dark:text-rose-400',
             mentor: 'bg-indigo-500/10 text-indigo-600 border-indigo-200 dark:border-indigo-500/20 dark:text-indigo-400',
-            student: 'bg-emerald-500/10 text-emerald-600 border-emerald-200 dark:border-emerald-500/20 dark:text-emerald-400',
+            student:
+                'bg-emerald-500/10 text-emerald-600 border-emerald-200 dark:border-emerald-500/20 dark:text-emerald-400',
         };
         const dotStyles = {
             admin: 'bg-rose-500',
@@ -284,7 +291,9 @@ export default function Index({
                 className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold tracking-wide ${activeStyle}`}
             >
                 <span className={`h-1.5 w-1.5 rounded-full ${dotStyle}`} />
-                {role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Unknown'}
+                {role
+                    ? role.charAt(0).toUpperCase() + role.slice(1)
+                    : 'Unknown'}
             </span>
         );
     };
@@ -298,14 +307,14 @@ export default function Index({
     return (
         <AppLayout>
             <div
-                className="w-full mx-auto space-y-8 p-4 sm:p-6 lg:p-8"
+                className="mx-auto w-full space-y-8 p-4 sm:p-6 lg:p-8"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Header */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 bg-[#f5f6ff] dark:bg-[#0d0f17] dark:border-slate-800 shadow-sm">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17]">
                     {/* Grid Pattern Motif */}
-                    <div 
-                        className="absolute inset-0 z-0 pointer-events-none"
+                    <div
+                        className="pointer-events-none absolute inset-0 z-0"
                         style={{
                             backgroundImage: `
                                 linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
@@ -315,18 +324,19 @@ export default function Index({
                         }}
                     />
 
-                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 z-0" />
+                    <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                     <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="max-w-2xl space-y-3">
                             <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                 Administration
                             </span>
-                            <h1 className="text-2xl md:text-[28px] font-semibold tracking-tight text-slate-800 dark:text-white leading-snug">
+                            <h1 className="text-2xl leading-snug font-semibold tracking-tight text-slate-800 md:text-[28px] dark:text-white">
                                 User Management
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
-                                Manage system users, assigned roles, and access control.
+                            <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
+                                Manage system users, assigned roles, and access
+                                control.
                             </p>
                         </div>
 
@@ -335,17 +345,25 @@ export default function Index({
                             <form onSubmit={handleSearch} className="relative">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                     {isSearching ? (
-                                        <Loader2 size={14} className="animate-spin text-indigo-600 dark:text-indigo-400" />
+                                        <Loader2
+                                            size={14}
+                                            className="animate-spin text-indigo-600 dark:text-indigo-400"
+                                        />
                                     ) : (
-                                        <Search size={14} className="text-slate-400" />
+                                        <Search
+                                            size={14}
+                                            className="text-slate-400"
+                                        />
                                     )}
                                 </div>
                                 <input
                                     type="text"
                                     placeholder="Search users..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pr-9 pl-9 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-indigo-300 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40 sm:w-64"
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pr-9 pl-9 text-sm text-slate-800 transition-colors outline-none placeholder:text-slate-400 focus:border-indigo-300 sm:w-64 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40"
                                 />
                                 {searchQuery && (
                                     <button
@@ -362,7 +380,7 @@ export default function Index({
                             {/* Add User Button */}
                             <button
                                 onClick={openCreate}
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#3B28F6] hover:bg-[#2a1ce0] text-white text-sm font-semibold shadow-sm transition-all"
+                                className="inline-flex items-center gap-2 rounded-xl bg-[#3B28F6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#2a1ce0]"
                             >
                                 <Plus size={16} />
                                 Add User
@@ -374,59 +392,65 @@ export default function Index({
                 {/* Stats Row */}
                 <section className="grid gap-4 sm:grid-cols-3">
                     {/* Card 1: Total Users */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xs">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-xs sm:p-6 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                         <div className="relative z-10 flex items-center justify-between gap-4">
                             <div className="space-y-1">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500">
                                     Total Users
                                 </span>
-                                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
+                                <p className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl dark:text-white">
                                     {stats?.total ?? users.total}
                                 </p>
                                 <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                                     Registered platform accounts
                                 </p>
                             </div>
-                           
                         </div>
                     </div>
 
                     {/* Card 2: Students */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xs">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-xs sm:p-6 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                         <div className="relative z-10 flex items-center justify-between gap-4">
                             <div className="space-y-1">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <span className="text-xs font-semibold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
                                     Students
                                 </span>
-                                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
+                                <p className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl dark:text-white">
                                     {stats?.students ?? 0}
                                 </p>
                                 <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                                    {stats?.total ? Math.round(((stats.students ?? 0) / stats.total) * 100) : 0}% of total users
+                                    {stats?.total
+                                        ? Math.round(
+                                              ((stats.students ?? 0) /
+                                                  stats.total) *
+                                                  100,
+                                          )
+                                        : 0}
+                                    % of total users
                                 </p>
                             </div>
-                            
                         </div>
                     </div>
 
                     {/* Card 3: Mentors & Staff */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200 p-5 sm:p-6 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xs">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-xs sm:p-6 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                         <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                         <div className="relative z-10 flex items-center justify-between gap-4">
                             <div className="space-y-1">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                <span className="text-xs font-semibold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
                                     Mentors & Staff
                                 </span>
-                                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
-                                    {(stats?.mentors ?? 0) + (stats?.admins ?? 0)}
+                                <p className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl dark:text-white">
+                                    {(stats?.mentors ?? 0) +
+                                        (stats?.admins ?? 0)}
                                 </p>
                                 <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                                    {stats?.mentors ?? 0} Mentors, {stats?.admins ?? 0} Admins
+                                    {stats?.mentors ?? 0} Mentors,{' '}
+                                    {stats?.admins ?? 0} Admins
                                 </p>
                             </div>
-                            
                         </div>
                     </div>
                 </section>
@@ -439,39 +463,47 @@ export default function Index({
                     {/* Table Header / Bulk Action Bar */}
                     <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-slate-800">
                         {selectedIds.length > 0 ? (
-                            <div className="flex flex-wrap items-center justify-between w-full gap-3 bg-indigo-50/70 dark:bg-indigo-950/40 -mx-6 -my-4 px-6 py-3 border-b border-indigo-200 dark:border-indigo-800/60">
+                            <div className="-mx-6 -my-4 flex w-full flex-wrap items-center justify-between gap-3 border-b border-indigo-200 bg-indigo-50/70 px-6 py-3 dark:border-indigo-800/60 dark:bg-indigo-950/40">
                                 <div className="flex items-center gap-3">
                                     <input
                                         type="checkbox"
                                         checked={isAllSelected}
                                         onChange={toggleSelectAll}
-                                        className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer"
+                                        className="h-4 w-4 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
                                     />
                                     <span className="text-xs font-semibold text-indigo-900 dark:text-indigo-200">
                                         {selectedIds.length} User Terpilih
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-900 rounded-lg p-1 border border-indigo-200 dark:border-indigo-800 text-xs font-medium">
-                                        <span className="px-2 text-slate-500 text-[0.7rem] font-semibold uppercase">Ubah Role:</span>
+                                    <div className="flex items-center gap-1 rounded-lg border border-indigo-200 bg-white p-1 text-xs font-medium dark:border-indigo-800 dark:bg-slate-900">
+                                        <span className="px-2 text-[0.7rem] font-semibold text-slate-500 uppercase">
+                                            Ubah Role:
+                                        </span>
                                         <button
                                             type="button"
-                                            onClick={() => handleBulkRoleChange('student')}
-                                            className="px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                                            onClick={() =>
+                                                handleBulkRoleChange('student')
+                                            }
+                                            className="rounded px-2 py-1 text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             Student
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => handleBulkRoleChange('mentor')}
-                                            className="px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-purple-600 dark:text-purple-400 transition-colors"
+                                            onClick={() =>
+                                                handleBulkRoleChange('mentor')
+                                            }
+                                            className="rounded px-2 py-1 text-purple-600 transition-colors hover:bg-slate-100 dark:text-purple-400 dark:hover:bg-slate-800"
                                         >
                                             Mentor
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => handleBulkRoleChange('admin')}
-                                            className="px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-indigo-600 dark:text-indigo-400 transition-colors"
+                                            onClick={() =>
+                                                handleBulkRoleChange('admin')
+                                            }
+                                            className="rounded px-2 py-1 text-indigo-600 transition-colors hover:bg-slate-100 dark:text-indigo-400 dark:hover:bg-slate-800"
                                         >
                                             Admin
                                         </button>
@@ -479,7 +511,7 @@ export default function Index({
                                     <button
                                         type="button"
                                         onClick={handleBulkDelete}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-semibold hover:bg-rose-700 transition-colors shadow-sm"
+                                        className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-700"
                                     >
                                         <Trash2 size={13} />
                                         Hapus Terpilih
@@ -495,29 +527,45 @@ export default function Index({
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/70 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                            <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200/60 bg-slate-100/70 p-1 dark:border-slate-800/60 dark:bg-slate-900/50">
                                 {[
-                                    { id: 'all', label: 'All Users', count: stats?.total ?? users.total },
-                                    { id: 'student', label: 'Students', count: stats?.students ?? 0 },
-                                    { id: 'mentor', label: 'Mentors', count: stats?.mentors ?? 0 },
-                                    { id: 'admin', label: 'Admins', count: stats?.admins ?? 0 },
+                                    {
+                                        id: 'all',
+                                        label: 'All Users',
+                                        count: stats?.total ?? users.total,
+                                    },
+                                    {
+                                        id: 'student',
+                                        label: 'Students',
+                                        count: stats?.students ?? 0,
+                                    },
+                                    {
+                                        id: 'mentor',
+                                        label: 'Mentors',
+                                        count: stats?.mentors ?? 0,
+                                    },
+                                    {
+                                        id: 'admin',
+                                        label: 'Admins',
+                                        count: stats?.admins ?? 0,
+                                    },
                                 ].map((tab) => (
                                     <button
                                         key={tab.id}
                                         type="button"
                                         onClick={() => setSelectedRole(tab.id)}
-                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                        className={`flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                                             selectedRole === tab.id
-                                                ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                                                ? 'bg-white text-indigo-600 shadow-xs dark:bg-slate-800 dark:text-indigo-400'
                                                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                                         }`}
                                     >
                                         <span>{tab.label}</span>
                                         <span
-                                            className={`px-1.5 py-0.5 rounded-full text-[10px] tabular-nums ${
+                                            className={`rounded-full px-1.5 py-0.5 text-[10px] tabular-nums ${
                                                 selectedRole === tab.id
-                                                    ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300 font-bold'
-                                                    : 'bg-slate-200/60 text-slate-600 dark:bg-slate-800 dark:text-slate-400 font-medium'
+                                                    ? 'bg-indigo-50 font-bold text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300'
+                                                    : 'bg-slate-200/60 font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400'
                                             }`}
                                         >
                                             {tab.count}
@@ -529,7 +577,7 @@ export default function Index({
                     </div>
 
                     {/* Desktop Table */}
-                    <div className="relative z-10 hidden lg:block overflow-x-auto">
+                    <div className="relative z-10 hidden overflow-x-auto lg:block">
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/30">
@@ -538,22 +586,22 @@ export default function Index({
                                             type="checkbox"
                                             checked={isAllSelected}
                                             onChange={toggleSelectAll}
-                                            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer"
+                                            className="h-4 w-4 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
                                         />
                                     </th>
-                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 dark:text-slate-500 uppercase">
+                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 uppercase dark:text-slate-500">
                                         #
                                     </th>
-                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 dark:text-slate-500 uppercase">
+                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 uppercase dark:text-slate-500">
                                         User
                                     </th>
-                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 dark:text-slate-500 uppercase">
+                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 uppercase dark:text-slate-500">
                                         Email
                                     </th>
-                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 dark:text-slate-500 uppercase">
+                                    <th className="px-6 py-3 text-left text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 uppercase dark:text-slate-500">
                                         Role
                                     </th>
-                                    <th className="px-6 py-3 text-right text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 dark:text-slate-500 uppercase">
+                                    <th className="px-6 py-3 text-right text-[0.6rem] font-semibold tracking-[0.15em] text-slate-500 uppercase dark:text-slate-500">
                                         Actions
                                     </th>
                                 </tr>
@@ -572,13 +620,19 @@ export default function Index({
                                             <td className="w-10 px-4 py-4 text-center">
                                                 <input
                                                     type="checkbox"
-                                                    checked={selectedIds.includes(user._id)}
-                                                    onChange={() => toggleSelectOne(user._id)}
-                                                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer"
+                                                    checked={selectedIds.includes(
+                                                        user._id,
+                                                    )}
+                                                    onChange={() =>
+                                                        toggleSelectOne(
+                                                            user._id,
+                                                        )
+                                                    }
+                                                    className="h-4 w-4 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
                                                 />
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm font-medium text-slate-400 dark:text-slate-600 tabular-nums">
+                                                <span className="text-sm font-medium text-slate-400 tabular-nums dark:text-slate-600">
                                                     {(users.from ?? 0) + i}
                                                 </span>
                                             </td>
@@ -590,7 +644,7 @@ export default function Index({
                                                                 ? user.avatar
                                                                 : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
                                                         }
-                                                        className="h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 object-cover shrink-0"
+                                                        className="h-9 w-9 shrink-0 rounded-full border border-slate-200 object-cover dark:border-slate-800"
                                                         alt={user.name}
                                                     />
                                                     <div className="min-w-0">
@@ -621,14 +675,18 @@ export default function Index({
                                                         <Eye size={14} />
                                                     </Link>
                                                     <button
-                                                        onClick={() => openEdit(user)}
+                                                        onClick={() =>
+                                                            openEdit(user)
+                                                        }
                                                         className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
                                                         title="Edit"
                                                     >
                                                         <Pencil size={14} />
                                                     </button>
                                                     <button
-                                                        onClick={() => deleteUser(user._id)}
+                                                        onClick={() =>
+                                                            deleteUser(user._id)
+                                                        }
                                                         className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                                                         title="Delete"
                                                     >
@@ -640,10 +698,16 @@ export default function Index({
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-16 text-center">
+                                        <td
+                                            colSpan={6}
+                                            className="px-6 py-16 text-center"
+                                        >
                                             <div className="flex flex-col items-center gap-3">
                                                 <div className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
-                                                    <Users size={24} className="text-slate-400" />
+                                                    <Users
+                                                        size={24}
+                                                        className="text-slate-400"
+                                                    />
                                                 </div>
                                                 <p className="text-sm font-medium text-slate-800 dark:text-white">
                                                     No users found
@@ -670,7 +734,7 @@ export default function Index({
                     </div>
 
                     {/* Mobile Card View */}
-                    <div className="relative z-10 divide-y divide-slate-200 dark:divide-slate-800 lg:hidden">
+                    <div className="relative z-10 divide-y divide-slate-200 lg:hidden dark:divide-slate-800">
                         {users.data.length > 0 ? (
                             users.data.map((user, i) => (
                                 <div
@@ -681,14 +745,18 @@ export default function Index({
                                             : 'hover:bg-slate-50/50 dark:hover:bg-slate-900/30'
                                     }`}
                                 >
-                                    <div className="flex items-center gap-3 min-w-0">
+                                    <div className="flex min-w-0 items-center gap-3">
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.includes(user._id)}
-                                            onChange={() => toggleSelectOne(user._id)}
-                                            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 cursor-pointer shrink-0"
+                                            checked={selectedIds.includes(
+                                                user._id,
+                                            )}
+                                            onChange={() =>
+                                                toggleSelectOne(user._id)
+                                            }
+                                            className="h-4 w-4 shrink-0 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900"
                                         />
-                                        <span className="shrink-0 text-xs font-medium text-slate-400 dark:text-slate-600 tabular-nums w-4">
+                                        <span className="w-4 shrink-0 text-xs font-medium text-slate-400 tabular-nums dark:text-slate-600">
                                             {(users.from ?? 0) + i}
                                         </span>
                                         <img
@@ -697,7 +765,7 @@ export default function Index({
                                                     ? user.avatar
                                                     : `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`
                                             }
-                                            className="h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 object-cover shrink-0"
+                                            className="h-9 w-9 shrink-0 rounded-full border border-slate-200 object-cover dark:border-slate-800"
                                             alt={user.name}
                                         />
                                         <div className="min-w-0">
@@ -710,8 +778,7 @@ export default function Index({
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        
+                                    <div className="flex shrink-0 items-center gap-2">
                                         <div className="flex items-center gap-0.5">
                                             <Link
                                                 href={`/admin/users/${user._id}`}
@@ -728,7 +795,9 @@ export default function Index({
                                                 <Pencil size={14} />
                                             </button>
                                             <button
-                                                onClick={() => deleteUser(user._id)}
+                                                onClick={() =>
+                                                    deleteUser(user._id)
+                                                }
                                                 className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                                                 title="Delete"
                                             >
@@ -741,12 +810,15 @@ export default function Index({
                         ) : (
                             <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
                                 <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
-                                    <Users size={24} className="text-slate-400" />
+                                    <Users
+                                        size={24}
+                                        className="text-slate-400"
+                                    />
                                 </div>
                                 <p className="text-sm font-medium text-slate-800 dark:text-white">
                                     No users found
                                 </p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400/60 mt-1">
+                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400/60">
                                     {searchQuery
                                         ? `No results for "${searchQuery}"`
                                         : 'Get started by adding a new user.'}
@@ -785,13 +857,17 @@ export default function Index({
                                                     ? 'border border-indigo-300 bg-indigo-50 text-indigo-600 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-400'
                                                     : 'border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-800 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200'
                                             }`}
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: link.label,
+                                            }}
                                         />
                                     ) : (
                                         <span
                                             key={i}
-                                            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium tabular-nums text-slate-400 opacity-50 cursor-not-allowed dark:border-slate-800 dark:text-slate-600"
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            className="cursor-not-allowed rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
+                                            dangerouslySetInnerHTML={{
+                                                __html: link.label,
+                                            }}
                                         />
                                     ),
                                 )}
@@ -815,16 +891,18 @@ export default function Index({
                             style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
                             {/* Top accent */}
-                            <div className="pointer-events-none absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                            <div className="pointer-events-none absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                             {/* Modal Header */}
                             <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 py-5 dark:border-slate-800">
                                 <div>
-                                    <span className="block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 dark:text-slate-500 uppercase mb-2">
+                                    <span className="mb-2 block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                         {editUser ? 'Edit User' : 'New User'}
                                     </span>
                                     <h2 className="text-base font-semibold text-slate-800 dark:text-white">
-                                        {editUser ? 'Edit User Details' : 'Create New User'}
+                                        {editUser
+                                            ? 'Edit User Details'
+                                            : 'Create New User'}
                                     </h2>
                                     <p className="mt-1 text-sm text-slate-500 dark:text-slate-400/60">
                                         {editUser
@@ -834,9 +912,11 @@ export default function Index({
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={() => !processing && setShowModal(false)}
+                                    onClick={() =>
+                                        !processing && setShowModal(false)
+                                    }
                                     disabled={processing}
-                                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white disabled:opacity-50"
+                                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50 dark:hover:bg-slate-800 dark:hover:text-white"
                                 >
                                     <X size={16} />
                                 </button>
@@ -847,9 +927,11 @@ export default function Index({
                                 {/* AVATAR */}
                                 <div className="flex flex-col items-center justify-center">
                                     <div
-                                        className="relative h-24 w-24 rounded-full border-2 border-dashed border-slate-200 group flex cursor-pointer items-center justify-center overflow-hidden transition-colors hover:border-indigo-300 dark:border-slate-700 dark:hover:border-indigo-500/40"
+                                        className="group relative flex h-24 w-24 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-slate-200 transition-colors hover:border-indigo-300 dark:border-slate-700 dark:hover:border-indigo-500/40"
                                         onClick={() =>
-                                            document.getElementById('avatarInput')?.click()
+                                            document
+                                                .getElementById('avatarInput')
+                                                ?.click()
                                         }
                                     >
                                         {preview ? (
@@ -860,7 +942,10 @@ export default function Index({
                                                     className="h-full w-full object-cover"
                                                 />
                                                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                                    <Camera size={20} className="text-white" />
+                                                    <Camera
+                                                        size={20}
+                                                        className="text-white"
+                                                    />
                                                 </div>
                                             </>
                                         ) : (
@@ -878,7 +963,8 @@ export default function Index({
                                         accept="image/*"
                                         className="hidden"
                                         onChange={(e) =>
-                                            e.target.files && handleFile(e.target.files[0])
+                                            e.target.files &&
+                                            handleFile(e.target.files[0])
                                         }
                                     />
                                     {errors.avatar && (
@@ -893,16 +979,27 @@ export default function Index({
                                         {/* Full Name */}
                                         <div>
                                             <label className={labelClass}>
-                                                Full Name <span className="text-rose-500">*</span>
+                                                Full Name{' '}
+                                                <span className="text-rose-500">
+                                                    *
+                                                </span>
                                             </label>
                                             <div className="relative">
                                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <UserIcon size={14} className="text-slate-400" />
+                                                    <UserIcon
+                                                        size={14}
+                                                        className="text-slate-400"
+                                                    />
                                                 </div>
                                                 <input
                                                     placeholder="John Doe"
                                                     value={data.name}
-                                                    onChange={(e) => setData('name', e.target.value)}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'name',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     className={`${inputClass} pl-9`}
                                                     required
                                                 />
@@ -917,7 +1014,10 @@ export default function Index({
                                         {/* Username */}
                                         <div>
                                             <label className={labelClass}>
-                                                Username <span className="text-rose-500">*</span>
+                                                Username{' '}
+                                                <span className="text-rose-500">
+                                                    *
+                                                </span>
                                             </label>
                                             <div className="relative">
                                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -929,7 +1029,10 @@ export default function Index({
                                                     placeholder="johndoe"
                                                     value={data.username}
                                                     onChange={(e) =>
-                                                        setData('username', e.target.value)
+                                                        setData(
+                                                            'username',
+                                                            e.target.value,
+                                                        )
                                                     }
                                                     className={`${inputClass} pl-8`}
                                                     required
@@ -946,17 +1049,28 @@ export default function Index({
                                     {/* Email */}
                                     <div>
                                         <label className={labelClass}>
-                                            Email Address <span className="text-rose-500">*</span>
+                                            Email Address{' '}
+                                            <span className="text-rose-500">
+                                                *
+                                            </span>
                                         </label>
                                         <div className="relative">
                                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                <Mail size={14} className="text-slate-400" />
+                                                <Mail
+                                                    size={14}
+                                                    className="text-slate-400"
+                                                />
                                             </div>
                                             <input
                                                 type="email"
                                                 placeholder="john@example.com"
                                                 value={data.email}
-                                                onChange={(e) => setData('email', e.target.value)}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'email',
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 className={`${inputClass} pl-9`}
                                                 required
                                             />
@@ -974,18 +1088,29 @@ export default function Index({
                                             <label className={labelClass}>
                                                 Password{' '}
                                                 {editUser ? (
-                                                    <span className="normal-case font-normal text-slate-400">
+                                                    <span className="font-normal text-slate-400 normal-case">
                                                         (optional)
                                                     </span>
                                                 ) : (
-                                                    <span className="text-rose-500">*</span>
+                                                    <span className="text-rose-500">
+                                                        *
+                                                    </span>
                                                 )}
                                             </label>
                                             <input
                                                 type="password"
-                                                placeholder={editUser ? 'Leave blank to keep' : '••••••••'}
+                                                placeholder={
+                                                    editUser
+                                                        ? 'Leave blank to keep'
+                                                        : '••••••••'
+                                                }
                                                 value={data.password}
-                                                onChange={(e) => setData('password', e.target.value)}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'password',
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 className={inputClass}
                                                 required={!editUser}
                                             />
@@ -999,22 +1124,38 @@ export default function Index({
                                         {/* Role */}
                                         <div>
                                             <label className={labelClass}>
-                                                Role <span className="text-rose-500">*</span>
+                                                Role{' '}
+                                                <span className="text-rose-500">
+                                                    *
+                                                </span>
                                             </label>
                                             <div className="relative">
                                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <Shield size={14} className="text-slate-400" />
+                                                    <Shield
+                                                        size={14}
+                                                        className="text-slate-400"
+                                                    />
                                                 </div>
                                                 <select
                                                     value={data.role}
                                                     onChange={(e) =>
-                                                        setData('role', e.target.value as any)
+                                                        setData(
+                                                            'role',
+                                                            e.target
+                                                                .value as any,
+                                                        )
                                                     }
-                                                    className={`${inputClass} pl-9 appearance-none`}
+                                                    className={`${inputClass} appearance-none pl-9`}
                                                 >
-                                                    <option value="student">Student</option>
-                                                    <option value="mentor">Mentor</option>
-                                                    <option value="admin">Admin</option>
+                                                    <option value="student">
+                                                        Student
+                                                    </option>
+                                                    <option value="mentor">
+                                                        Mentor
+                                                    </option>
+                                                    <option value="admin">
+                                                        Admin
+                                                    </option>
                                                 </select>
                                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
                                                     <svg
@@ -1046,7 +1187,9 @@ export default function Index({
                             <div className="flex shrink-0 justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-slate-800">
                                 <button
                                     type="button"
-                                    onClick={() => !processing && setShowModal(false)}
+                                    onClick={() =>
+                                        !processing && setShowModal(false)
+                                    }
                                     disabled={processing}
                                     className="rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:text-white"
                                 >
@@ -1058,7 +1201,10 @@ export default function Index({
                                     className="flex items-center gap-2 rounded-lg border border-indigo-300 bg-indigo-50 px-6 py-2.5 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-70 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20"
                                 >
                                     {processing ? (
-                                        <Loader2 size={16} className="animate-spin" />
+                                        <Loader2
+                                            size={16}
+                                            className="animate-spin"
+                                        />
                                     ) : (
                                         <Save size={16} />
                                     )}
@@ -1076,7 +1222,9 @@ export default function Index({
                     confirmText={confirmModal.confirmText}
                     variant={confirmModal.variant}
                     onConfirm={confirmModal.onConfirm}
-                    onClose={() => setConfirmModal((prev) => ({ ...prev, open: false }))}
+                    onClose={() =>
+                        setConfirmModal((prev) => ({ ...prev, open: false }))
+                    }
                 />
 
                 {cropSrc && (

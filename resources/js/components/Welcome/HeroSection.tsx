@@ -1,14 +1,18 @@
 import { login } from '@/routes';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Music, Slack, LayoutGrid, MessageCircle, Zap } from 'lucide-react';
+import {
+    ArrowRight,
+    Music,
+    Slack,
+    LayoutGrid,
+    MessageCircle,
+    Zap,
+} from 'lucide-react';
 
 export default function HeroSection() {
     return (
-        <section
-            id="home"
-            className="relative overflow-visible pt-32 pb-40"
-        >
+        <section id="home" className="relative overflow-visible pt-32 pb-40">
             {/* GLOBAL GLOW LIGHT / DARK */}
             <div className="absolute right-[-150px] -bottom-[250px] -z-10 h-[600px] w-[600px] rounded-full bg-[#E9E5FF] blur-[180px] transition-all duration-500 md:h-[900px] md:w-[900px] dark:bg-[#3B28F6] dark:opacity-60 dark:blur-[260px]" />
             <div className="absolute -bottom-[200px] left-0 -z-10 h-[500px] w-[500px] rounded-full bg-blue-200 blur-[150px] transition-all duration-500 md:h-[700px] md:w-[700px] dark:bg-blue-700 dark:opacity-40 dark:blur-[220px]" />
@@ -33,8 +37,8 @@ export default function HeroSection() {
                             style={{ fontFamily: 'Lalezar' }}
                             className="mb-6 text-4xl leading-[1.1] font-black tracking-wide text-[#020101] drop-shadow-[4px_3px_0_#FACC15B3] md:text-7xl dark:text-white"
                         >
-                            Learn The Skills <br /> Play The Game <br />{' '}
-                            Level Up Your Live
+                            Learn The Skills <br /> Play The Game <br /> Level
+                            Up Your Live
                         </motion.h1>
 
                         <motion.div
@@ -91,8 +95,7 @@ export default function HeroSection() {
                                     <Slack size={22} /> Slack
                                 </span>
                                 <span className="flex items-center gap-3">
-                                    <LayoutGrid size={22} /> Y
-                                    Combinator
+                                    <LayoutGrid size={22} /> Y Combinator
                                 </span>
                                 <span className="flex items-center gap-3">
                                     <MessageCircle size={22} /> Discord

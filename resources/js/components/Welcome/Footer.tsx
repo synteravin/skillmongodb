@@ -23,9 +23,9 @@ export default function Footer() {
                     </h4>
 
                     <p className="mb-4 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                        A gamified learning platform where you level up
-                        through real projects, missions, and a guided
-                        skill-building roadmap.
+                        A gamified learning platform where you level up through
+                        real projects, missions, and a guided skill-building
+                        roadmap.
                     </p>
 
                     <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">

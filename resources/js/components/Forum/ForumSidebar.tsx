@@ -45,18 +45,22 @@ export default function ForumSidebar({
     const isMentorOrAdmin = role === 'admin' || role === 'mentor';
 
     const filteredCourses = courses.filter((c) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase())
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     return (
         <div
-            className={`flex w-full shrink-0 flex-col border-r border-slate-200 bg-white transition-colors duration-300 ${isMentorOrAdmin ? 'dark:border-slate-800' : 'dark:border-[#3B28F6]/20'} dark:bg-[#0f0e0e] animate-fade-in md:w-[210px] lg:w-[280px] xl:w-[340px] 2xl:w-[380px] ${
+            className={`flex w-full shrink-0 flex-col border-r border-slate-200 bg-white transition-colors duration-300 ${isMentorOrAdmin ? 'dark:border-slate-800' : 'dark:border-[#3B28F6]/20'} animate-fade-in md:w-[210px] lg:w-[280px] xl:w-[340px] 2xl:w-[380px] dark:bg-[#0f0e0e] ${
                 showChatMobile ? 'hidden md:flex' : 'flex'
             }`}
         >
             {/* Header Sidebar: Tombol Back & Kolom Pencarian */}
-            <div className={`border-b border-slate-200 ${isMentorOrAdmin ? 'dark:border-slate-800' : 'dark:border-[#3B28F6]/20'} p-4`}>
-                <div className={`mb-4 flex items-center ${isMentorOrAdmin ? '' : 'gap-3 sm:gap-6'}`}>
+            <div
+                className={`border-b border-slate-200 ${isMentorOrAdmin ? 'dark:border-slate-800' : 'dark:border-[#3B28F6]/20'} p-4`}
+            >
+                <div
+                    className={`mb-4 flex items-center ${isMentorOrAdmin ? '' : 'gap-3 sm:gap-6'}`}
+                >
                     {/* Tombol Back Futuristik */}
                     {!isMentorOrAdmin && (
                         <div className="group relative shrink-0 cursor-pointer">
@@ -75,7 +79,10 @@ export default function ForumSidebar({
                                         y2="0%"
                                     >
                                         <stop offset="0%" stopColor="#3B28F6" />
-                                        <stop offset="100%" stopColor="#FACC15" />
+                                        <stop
+                                            offset="100%"
+                                            stopColor="#FACC15"
+                                        />
                                     </linearGradient>
                                 </defs>
                                 <path
@@ -110,15 +117,16 @@ export default function ForumSidebar({
                         </div>
                     )}
 
-                   <h1 className={`font-['Orbitron'] font-extrabold tracking-[0.05em] whitespace-nowrap ${isMentorOrAdmin ? 'text-slate-700 dark:text-slate-350 text-center w-full md:text-left py-1' : 'text-[#1e3a8a] dark:text-[#F0F0F0]'} 
-                uppercase transition-colors duration-500 sm:text-xl sm:tracking-[0.1em] md:text-[11px] lg:text-[14px] xl:text-[18px] 2xl:text-lg`}>
-                    Forum Group
-                </h1>
+                    <h1
+                        className={`font-['Orbitron'] font-extrabold tracking-[0.05em] whitespace-nowrap ${isMentorOrAdmin ? 'dark:text-slate-350 w-full py-1 text-center text-slate-700 md:text-left' : 'text-[#1e3a8a] dark:text-[#F0F0F0]'} uppercase transition-colors duration-500 sm:text-xl sm:tracking-[0.1em] md:text-[11px] lg:text-[14px] xl:text-[18px] 2xl:text-lg`}
+                    >
+                        Forum Group
+                    </h1>
                 </div>
 
                 {/* Input Pencarian */}
                 <div className="relative">
-                    <Search className="absolute top-1/2 left-3 md:left-2.5 z-10 h-4 w-4 md:h-3.5 md:w-3.5 -translate-y-1/2 text-slate-400" />
+                    <Search className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-slate-400 md:left-2.5 md:h-3.5 md:w-3.5" />
                     <input
                         type="text"
                         placeholder="Cari grup..."
@@ -126,29 +134,29 @@ export default function ForumSidebar({
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => setIsSearchFocused(true)}
                         onBlur={() => setIsSearchFocused(false)}
-                        className="w-full rounded-xl border border-transparent bg-slate-50 py-2.5 md:py-2 pr-4 pl-10 md:pl-8.5 text-sm md:text-xs text-slate-800 placeholder-slate-400 transition-all duration-200 outline-none dark:bg-transparent dark:text-white dark:placeholder-slate-500"
+                        className="w-full rounded-xl border border-transparent bg-slate-50 py-2.5 pr-4 pl-10 text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 outline-none md:py-2 md:pl-8.5 md:text-xs dark:bg-transparent dark:text-white dark:placeholder-slate-500"
                         style={{
                             borderStyle: 'solid',
                             borderWidth: isSearchFocused ? '2px' : '1px',
                             borderColor: 'transparent',
                             backgroundImage: isMentorOrAdmin
-                                ? (isDark
+                                ? isDark
                                     ? 'linear-gradient(#0f0e0e, #0f0e0e), linear-gradient(to bottom, #475569 0%, #334155 100%)'
-                                    : 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(to bottom, #cbd5e1 0%, #94a3b8 100%)')
-                                : (isDark
-                                    ? 'linear-gradient(#0f0e0e, #0f0e0e), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)'
-                                    : 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)'),
+                                    : 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(to bottom, #cbd5e1 0%, #94a3b8 100%)'
+                                : isDark
+                                  ? 'linear-gradient(#0f0e0e, #0f0e0e), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)'
+                                  : 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                             backgroundOrigin: 'border-box',
                             backgroundClip: 'padding-box, border-box',
                             backgroundColor: 'transparent',
                             boxShadow: isSearchFocused
-                                ? (isMentorOrAdmin
-                                    ? (isDark 
-                                        ? '0 0 10px rgba(71, 85, 105, 0.25)' 
-                                        : '0 0 10px rgba(148, 163, 184, 0.15)')
-                                    : (isDark 
-                                        ? '0 0 10px rgba(59, 40, 246, 0.25), 0 0 5px rgba(250, 204, 21, 0.15)' 
-                                        : '0 0 10px rgba(59, 40, 246, 0.15), 0 0 5px rgba(250, 204, 21, 0.05)'))
+                                ? isMentorOrAdmin
+                                    ? isDark
+                                        ? '0 0 10px rgba(71, 85, 105, 0.25)'
+                                        : '0 0 10px rgba(148, 163, 184, 0.15)'
+                                    : isDark
+                                      ? '0 0 10px rgba(59, 40, 246, 0.25), 0 0 5px rgba(250, 204, 21, 0.15)'
+                                      : '0 0 10px rgba(59, 40, 246, 0.15), 0 0 5px rgba(250, 204, 21, 0.05)'
                                 : 'none',
                         }}
                     />
@@ -172,29 +180,33 @@ export default function ForumSidebar({
                                 onClick={() => {
                                     setShowChatMobile(true);
                                     if (!isActive) {
-                                        router.visit(`${basePath}/${group.slug}`);
+                                        router.visit(
+                                            `${basePath}/${group.slug}`,
+                                        );
                                     }
                                 }}
                                 className={`flex cursor-pointer items-center transition-colors duration-200 ${
                                     isMentorOrAdmin
                                         ? `gap-2 rounded-md border px-2.5 py-1.5 md:py-1 ${
-                                            isActive
-                                                ? 'bg-slate-100 border-slate-400 dark:bg-slate-800 dark:border-slate-600'
-                                                : 'bg-white border-slate-200 hover:bg-slate-50 dark:bg-transparent dark:border-slate-800 dark:hover:bg-slate-800/40'
+                                              isActive
+                                                  ? 'border-slate-400 bg-slate-100 dark:border-slate-600 dark:bg-slate-800'
+                                                  : 'border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-transparent dark:hover:bg-slate-800/40'
                                           }`
-                                        : `gap-2.5 sm:gap-3 rounded-lg border px-3 sm:px-4 py-2.5 sm:py-3 ${
-                                            isActive
-                                                ? 'bg-slate-200 border-slate-600 dark:bg-slate-700/50 dark:border-white'
-                                                : 'bg-white border-slate-300 hover:bg-slate-100/70 dark:bg-transparent dark:border-white/60 dark:hover:bg-slate-700/30'
+                                        : `gap-2.5 rounded-lg border px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3 ${
+                                              isActive
+                                                  ? 'border-slate-600 bg-slate-200 dark:border-white dark:bg-slate-700/50'
+                                                  : 'border-slate-300 bg-white hover:bg-slate-100/70 dark:border-white/60 dark:bg-transparent dark:hover:bg-slate-700/30'
                                           }`
                                 }`}
                             >
                                 {/* Avatar Kursus */}
-                                <div className={`relative shrink-0 overflow-hidden rounded-lg border bg-slate-900 ${
-                                    isMentorOrAdmin
-                                        ? 'h-8 w-8 md:h-7 md:w-7 lg:h-8 lg:w-8 xl:h-8.5 xl:w-8.5 border-slate-200 dark:border-slate-800'
-                                        : 'h-10 w-10 md:h-8 md:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 border-slate-200 dark:border-white/10'
-                                }`}>
+                                <div
+                                    className={`relative shrink-0 overflow-hidden rounded-lg border bg-slate-900 ${
+                                        isMentorOrAdmin
+                                            ? 'h-8 w-8 border-slate-200 md:h-7 md:w-7 lg:h-8 lg:w-8 xl:h-8.5 xl:w-8.5 dark:border-slate-800'
+                                            : 'h-10 w-10 border-slate-200 md:h-8 md:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 dark:border-white/10'
+                                    }`}
+                                >
                                     {group.thumbnail ? (
                                         <img
                                             src={group.thumbnail}
@@ -211,30 +223,38 @@ export default function ForumSidebar({
                                 {/* Info & Cuplikan Chat */}
                                 <div className="min-w-0 flex-1">
                                     <div className="mb-1 flex items-center justify-between">
-                                        <h3 className={`truncate font-['Oxanium'] leading-none font-semibold text-slate-800 dark:text-white ${
-                                            isMentorOrAdmin ? 'text-xs lg:text-[13px]' : 'text-sm md:text-xs lg:text-sm'
-                                        }`}>
+                                        <h3
+                                            className={`truncate font-['Oxanium'] leading-none font-semibold text-slate-800 dark:text-white ${
+                                                isMentorOrAdmin
+                                                    ? 'text-xs lg:text-[13px]'
+                                                    : 'text-sm md:text-xs lg:text-sm'
+                                            }`}
+                                        >
                                             {group.title}
                                         </h3>
                                         {group.last_message && (
-                                            <span className="ml-2 shrink-0 text-[10px] md:text-[8px] lg:text-[10px] whitespace-nowrap text-slate-500">
+                                            <span className="ml-2 shrink-0 text-[10px] whitespace-nowrap text-slate-500 md:text-[8px] lg:text-[10px]">
                                                 {formatTime(
-                                                    group.last_message.created_at
+                                                    group.last_message
+                                                        .created_at,
                                                 )}
                                             </span>
                                         )}
                                     </div>
-                                    <div className="truncate text-xs md:text-[10px] lg:text-xs text-slate-500 dark:text-slate-400">
+                                    <div className="truncate text-xs text-slate-500 md:text-[10px] lg:text-xs dark:text-slate-400">
                                         {group.last_message ? (
                                             <>
                                                 <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                    {group.last_message.sender_name}
+                                                    {
+                                                        group.last_message
+                                                            .sender_name
+                                                    }
                                                     :
                                                 </span>{' '}
                                                 {group.last_message.message}
                                             </>
                                         ) : (
-                                            <span className="text-slate-400 dark:text-slate-600 italic">
+                                            <span className="text-slate-400 italic dark:text-slate-600">
                                                 Belum ada pesan
                                             </span>
                                         )}

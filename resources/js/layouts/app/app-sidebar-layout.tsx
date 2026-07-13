@@ -20,29 +20,28 @@ export default function AppSidebarLayout({
 
     const { props } = usePage<any>();
 
-    const isForum = typeof window !== 'undefined' && window.location.pathname.includes('/forum');
+    const isForum =
+        typeof window !== 'undefined' &&
+        window.location.pathname.includes('/forum');
 
     return (
         <AppShell variant="sidebar">
             <Sidebar isOpen={isOpen} setSidebarOpen={setSidebarOpen} />
             <AppContent
                 variant="sidebar"
-                className={`min-h-screen transition-all duration-300 ml-0 bg-[#f8fafc] dark:bg-background
-                    ${isOpen ? 'md:ml-64' : 'md:ml-16'}
-                    ${isForum ? 'h-screen overflow-hidden' : 'overflow-x-hidden'}
-                `}
+                className={`ml-0 min-h-screen bg-[#f8fafc] transition-all duration-300 dark:bg-background ${isOpen ? 'md:ml-64' : 'md:ml-16'} ${isForum ? 'h-screen overflow-hidden' : 'overflow-x-hidden'} `}
             >
                 {/* Premium Sticky Mobile Header Navbar */}
-                <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/85 px-4 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/85 md:hidden">
+                <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/85 px-4 backdrop-blur-md md:hidden dark:border-slate-800/80 dark:bg-slate-900/85">
                     <div className="flex items-center gap-3">
                         {/* Hamburger Button with large touch target */}
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="flex h-10 w-10 items-center justify-center rounded-lg text-sky-500 hover:bg-sky-50 dark:text-sky-400 dark:hover:bg-sky-950/20 active:scale-95 transition"
+                            className="flex h-10 w-10 items-center justify-center rounded-lg text-sky-500 transition hover:bg-sky-50 active:scale-95 dark:text-sky-400 dark:hover:bg-sky-950/20"
                         >
                             <Menu size={20} />
                         </button>
-                        <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white select-none">
+                        <span className="text-sm font-bold tracking-tight text-slate-900 select-none dark:text-white">
                             Skill
                             <span className="text-indigo-600 dark:text-indigo-400">
                                 Ventura

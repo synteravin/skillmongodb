@@ -21,7 +21,7 @@ type StatCardProps = {
 
 function StatCard({ title, value, icon: Icon }: StatCardProps) {
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -60,7 +60,7 @@ function ProgressChart({
     const offset = circumference - (progress / 100) * circumference;
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-8 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-8 shadow-sm shadow-slate-100/50 dark:border-slate-800">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -152,10 +152,10 @@ function CareerGroupStats({
     return (
         <button
             onClick={onSelect}
-            className={`relative overflow-hidden rounded-lg border p-6 text-left transition-all shadow-xs ${
+            className={`relative overflow-hidden rounded-lg border p-6 text-left shadow-xs transition-all ${
                 isSelected
-                    ? 'border-indigo-350 bg-indigo-50/80 dark:border-indigo-500/40 dark:bg-indigo-500/5 shadow-indigo-100/30 dark:shadow-none'
-                    : 'border-slate-200 bg-slate-50/80 hover:bg-slate-100/60 dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/50 hover:shadow-sm'
+                    ? 'border-indigo-350 bg-indigo-50/80 shadow-indigo-100/30 dark:border-indigo-500/40 dark:bg-indigo-500/5 dark:shadow-none'
+                    : 'border-slate-200 bg-slate-50/80 hover:bg-slate-100/60 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/50'
             }`}
         >
             <div className="relative z-10">
@@ -233,7 +233,7 @@ type StudentTableProps = {
 function StudentTable({ students }: StudentTableProps) {
     if (students.length === 0) {
         return (
-            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-8 text-center dark:border-slate-800 shadow-sm shadow-slate-100/50">
+            <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-8 text-center shadow-sm shadow-slate-100/50 dark:border-slate-800">
                 <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                 <p className="relative z-10 text-slate-500 dark:text-slate-400/60">
                     No students found
@@ -243,7 +243,7 @@ function StudentTable({ students }: StudentTableProps) {
     }
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200/80 shadow-sm shadow-slate-100/50 dark:border-slate-800">
             <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -283,7 +283,7 @@ function StudentTable({ students }: StudentTableProps) {
                                             <img
                                                 src={student.avatar}
                                                 alt={student.name}
-                                                className="h-10 w-10 rounded-full object-cover border border-slate-200 dark:border-slate-800"
+                                                className="h-10 w-10 rounded-full border border-slate-200 object-cover dark:border-slate-800"
                                             />
                                         ) : (
                                             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
@@ -330,7 +330,7 @@ function StudentTable({ students }: StudentTableProps) {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className="inline-block rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium capitalize text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400/60">
+                                    <span className="inline-block rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600 capitalize dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400/60">
                                         {student.status.replace('_', ' ')}
                                     </span>
                                 </td>
@@ -427,9 +427,12 @@ export default function Detail({
 
     return (
         <AppLayout>
-            <div className="w-full space-y-8 p-4 sm:p-6 lg:p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <div
+                className="w-full space-y-8 p-4 sm:p-6 lg:p-8"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
+            >
                 {/* Header */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 sm:p-8 md:p-10 dark:border-slate-800 shadow-sm shadow-slate-100/50">
+                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 sm:p-8 md:p-10 dark:border-slate-800">
                     <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
@@ -438,10 +441,10 @@ export default function Detail({
                             <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                 Mentor Details
                             </span>
-                            <h1 className="text-2xl md:text-[28px] font-semibold tracking-tight text-slate-800 dark:text-white leading-snug">
+                            <h1 className="text-2xl leading-snug font-semibold tracking-tight text-slate-800 md:text-[28px] dark:text-white">
                                 {mentor.name}
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400/60 text-sm md:text-[15px] leading-relaxed">
+                            <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
                                 {statistics.totalStudents} students •{' '}
                                 {mentor.careerGroupsCount} career groups
                             </p>

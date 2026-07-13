@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import { router, Link } from '@inertiajs/react';
-import { Plus, FolderGit2, PlusCircle, Layers, ArrowLeft, Pencil, Trash2, Globe, FileText, CheckCircle, GripVertical } from 'lucide-react';
+import {
+    Plus,
+    FolderGit2,
+    PlusCircle,
+    Layers,
+    ArrowLeft,
+    Pencil,
+    Trash2,
+    Globe,
+    FileText,
+    CheckCircle,
+    GripVertical,
+} from 'lucide-react';
 
 import AppLayout from '@/layouts/app-layout';
 import Modal from '@/components/ui/Modal';
@@ -114,7 +126,7 @@ function SortablePathCard({
                             e.stopPropagation();
                             onEdit(path);
                         }}
-                        className="rounded-lg p-1 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400 transition-colors"
+                        className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
                         title="Edit Path Name"
                     >
                         <Pencil className="h-3.5 w-3.5" />
@@ -127,7 +139,7 @@ function SortablePathCard({
                             e.stopPropagation();
                             onDelete(path);
                         }}
-                        className="rounded-lg p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-colors"
+                        className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                         title="Delete Path"
                     >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -136,7 +148,7 @@ function SortablePathCard({
                 <div
                     {...attributes}
                     {...listeners}
-                    className="dark:hover:bg-slate-800 cursor-grab rounded-lg p-1 text-slate-400 opacity-100 transition-all duration-200 hover:bg-slate-100 active:cursor-grabbing md:opacity-0 md:group-hover:opacity-100 dark:text-slate-500"
+                    className="cursor-grab rounded-lg p-1 text-slate-400 opacity-100 transition-all duration-200 hover:bg-slate-100 active:cursor-grabbing md:opacity-0 md:group-hover:opacity-100 dark:text-slate-500 dark:hover:bg-slate-800"
                     title="Tarik untuk memindahkan"
                 >
                     <GripVertical size={16} />
@@ -146,7 +158,7 @@ function SortablePathCard({
             <div className="mb-3 flex items-center justify-between gap-2.5 pr-20">
                 <Link
                     href={`/admin/paths/${path._id}/modules`}
-                    className="text-slate-800 dark:text-slate-200 truncate text-xs font-bold transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
+                    className="truncate text-xs font-bold text-slate-800 transition-colors hover:text-indigo-600 hover:underline dark:text-slate-200 dark:hover:text-indigo-400"
                 >
                     {path.name}
                 </Link>
@@ -183,9 +195,13 @@ export default function Builder({
     course: Course;
     mentors: Mentor[];
 }) {
-    const assignedGroups = course.career_groups?.filter(g => g.mentor) || [];
-    const completedGroups = assignedGroups.filter(g => g.status === 'completed');
-    const isAllCompleted = assignedGroups.length > 0 && completedGroups.length === assignedGroups.length;
+    const assignedGroups = course.career_groups?.filter((g) => g.mentor) || [];
+    const completedGroups = assignedGroups.filter(
+        (g) => g.status === 'completed',
+    );
+    const isAllCompleted =
+        assignedGroups.length > 0 &&
+        completedGroups.length === assignedGroups.length;
 
     /* ================= MODAL STATE ================= */
     const [openCareerGroup, setOpenCareerGroup] = useState(false);
@@ -194,8 +210,14 @@ export default function Builder({
     const [openAssignMentor, setOpenAssignMentor] = useState(false);
 
     // Edit Modal States
-    const [editingPath, setEditingPath] = useState<{ _id: string; name: string } | null>(null);
-    const [editingGroup, setEditingGroup] = useState<{ _id: string; name: string } | null>(null);
+    const [editingPath, setEditingPath] = useState<{
+        _id: string;
+        name: string;
+    } | null>(null);
+    const [editingGroup, setEditingGroup] = useState<{
+        _id: string;
+        name: string;
+    } | null>(null);
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
         title: string;
@@ -231,7 +253,7 @@ export default function Builder({
             {
                 preserveScroll: true,
                 onSuccess: () => setEditingPath(null),
-            }
+            },
         );
     };
 
@@ -241,7 +263,9 @@ export default function Builder({
             title: 'Hapus Path',
             message: `Apakah Anda yakin ingin menghapus path "${path.name}"? Seluruh modul di dalamnya juga akan terhapus.`,
             onConfirm: () => {
-                router.delete(`/admin/paths/${path._id}`, { preserveScroll: true });
+                router.delete(`/admin/paths/${path._id}`, {
+                    preserveScroll: true,
+                });
             },
         });
     };
@@ -258,7 +282,7 @@ export default function Builder({
             {
                 preserveScroll: true,
                 onSuccess: () => setEditingGroup(null),
-            }
+            },
         );
     };
 
@@ -268,37 +292,57 @@ export default function Builder({
             title: 'Hapus Career Branch',
             message: `Apakah Anda yakin ingin menghapus Career Branch "${group.name}"? Seluruh path dan modul di dalamnya juga akan terhapus.`,
             onConfirm: () => {
-                router.delete(`/admin/career-groups/${group._id}`, { preserveScroll: true });
+                router.delete(`/admin/career-groups/${group._id}`, {
+                    preserveScroll: true,
+                });
             },
         });
     };
 
     const handlePublishToggle = () => {
-        const hasUncompleted = course.career_groups?.some(g => g.mentor && g.status !== 'completed');
-        
+        const hasUncompleted = course.career_groups?.some(
+            (g) => g.mentor && g.status !== 'completed',
+        );
+
         if (course.status !== 'published' && hasUncompleted) {
             setConfirmModal({
                 open: true,
                 title: 'Konfirmasi Publikasi Course',
-                message: 'Peringatan: Beberapa Career Branch belum ditandai selesai oleh mentornya. Apakah Anda yakin ingin mempublikasikan course ini sekarang?',
+                message:
+                    'Peringatan: Beberapa Career Branch belum ditandai selesai oleh mentornya. Apakah Anda yakin ingin mempublikasikan course ini sekarang?',
                 confirmText: 'Publikasikan',
                 variant: 'primary',
                 onConfirm: () => {
-                    router.post(`/admin/courses/${course.slug}/publish`, {}, { preserveScroll: true });
-                }
+                    router.post(
+                        `/admin/courses/${course.slug}/publish`,
+                        {},
+                        { preserveScroll: true },
+                    );
+                },
             });
         } else {
             setConfirmModal({
                 open: true,
-                title: course.status === 'published' ? 'Batalkan Publikasi Course' : 'Publikasikan Course',
-                message: course.status === 'published' 
-                    ? 'Apakah Anda yakin ingin membatalkan publikasi course ini? Siswa tidak akan dapat melihat course ini lagi.'
-                    : 'Apakah Anda yakin ingin mempublikasikan course ini? Course akan langsung terlihat oleh semua siswa.',
-                confirmText: course.status === 'published' ? 'Batalkan Publikasi' : 'Publikasikan',
+                title:
+                    course.status === 'published'
+                        ? 'Batalkan Publikasi Course'
+                        : 'Publikasikan Course',
+                message:
+                    course.status === 'published'
+                        ? 'Apakah Anda yakin ingin membatalkan publikasi course ini? Siswa tidak akan dapat melihat course ini lagi.'
+                        : 'Apakah Anda yakin ingin mempublikasikan course ini? Course akan langsung terlihat oleh semua siswa.',
+                confirmText:
+                    course.status === 'published'
+                        ? 'Batalkan Publikasi'
+                        : 'Publikasikan',
                 variant: course.status === 'published' ? 'danger' : 'primary',
                 onConfirm: () => {
-                    router.post(`/admin/courses/${course.slug}/publish`, {}, { preserveScroll: true });
-                }
+                    router.post(
+                        `/admin/courses/${course.slug}/publish`,
+                        {},
+                        { preserveScroll: true },
+                    );
+                },
             });
         }
     };
@@ -308,7 +352,7 @@ export default function Builder({
         router.post(
             `/admin/career-groups/${group._id}/status`,
             { status: nextStatus },
-            { preserveScroll: true }
+            { preserveScroll: true },
         );
     };
 
@@ -516,7 +560,7 @@ export default function Builder({
 
                                     {/* Badge */}
                                     <div className="inline-flex w-fit items-center gap-1.5 rounded border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-600 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
-                                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-605 dark:bg-indigo-400" />
+                                        <span className="bg-indigo-605 h-1.5 w-1.5 animate-pulse rounded-full dark:bg-indigo-400" />
                                         <span className="text-[10px] font-bold tracking-[0.12em] uppercase">
                                             Course Builder Workspace
                                         </span>
@@ -524,13 +568,19 @@ export default function Builder({
 
                                     {/* Status Badge */}
                                     {course.status === 'published' ? (
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider">
-                                            <Globe size={10} className="shrink-0" />
+                                        <span className="inline-flex items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+                                            <Globe
+                                                size={10}
+                                                className="shrink-0"
+                                            />
                                             Published
                                         </span>
                                     ) : (
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider">
-                                            <FileText size={10} className="shrink-0" />
+                                        <span className="inline-flex items-center gap-1 rounded border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
+                                            <FileText
+                                                size={10}
+                                                className="shrink-0"
+                                            />
                                             Draft
                                         </span>
                                     )}
@@ -538,7 +588,7 @@ export default function Builder({
 
                                 {/* Title */}
                                 <h1
-                                    className="m-0 text-2xl leading-none font-bold tracking-tight sm:text-3xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 dark:from-indigo-405 dark:via-indigo-305 dark:to-violet-405 bg-clip-text text-transparent"
+                                    className="dark:from-indigo-405 dark:via-indigo-305 dark:to-violet-405 m-0 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 bg-clip-text text-2xl leading-none font-bold tracking-tight text-transparent sm:text-3xl"
                                     style={{
                                         fontFamily: 'Orbitron, sans-serif',
                                     }}
@@ -548,26 +598,33 @@ export default function Builder({
 
                                 {/* Subtitle */}
                                 <p className="m-0 text-xs text-slate-500 sm:text-sm dark:text-slate-400">
-                                    Design and structure your curriculum by organizing basic fundamentals and career paths.
+                                    Design and structure your curriculum by
+                                    organizing basic fundamentals and career
+                                    paths.
                                 </p>
                             </div>
 
                             {/* Publish Section */}
                             <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50/60 p-4 shadow-2xs md:items-end dark:border-slate-800 dark:bg-[#090D1A]/50">
                                 <div className="text-left md:text-right">
-                                    <span className="text-xs text-slate-500 dark:text-slate-400">Mentor Progress: </span>
-                                    <span className={`text-xs font-bold ${isAllCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
-                                        {completedGroups.length}/{assignedGroups.length} Completed
+                                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                                        Mentor Progress:{' '}
+                                    </span>
+                                    <span
+                                        className={`text-xs font-bold ${isAllCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}
+                                    >
+                                        {completedGroups.length}/
+                                        {assignedGroups.length} Completed
                                     </span>
                                 </div>
                                 <button
                                     onClick={handlePublishToggle}
-                                    className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase shadow-xs transition-all cursor-pointer ${
+                                    className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold tracking-wider uppercase shadow-xs transition-all ${
                                         course.status === 'published'
-                                            ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-500/10'
+                                            ? 'bg-amber-600 text-white shadow-amber-500/10 hover:bg-amber-700'
                                             : isAllCompleted
-                                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/10'
-                                                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/10'
+                                              ? 'bg-emerald-600 text-white shadow-emerald-500/10 hover:bg-emerald-700'
+                                              : 'bg-indigo-600 text-white shadow-indigo-500/10 hover:bg-indigo-700'
                                     }`}
                                 >
                                     {course.status === 'published' ? (
@@ -646,8 +703,12 @@ export default function Builder({
                                                                     path._id,
                                                                 )}
                                                                 path={path}
-                                                                onEdit={handleEditPath}
-                                                                onDelete={handleDeletePath}
+                                                                onEdit={
+                                                                    handleEditPath
+                                                                }
+                                                                onDelete={
+                                                                    handleDeletePath
+                                                                }
                                                             />
                                                         ),
                                                     )}
@@ -710,33 +771,44 @@ export default function Builder({
                                                 {/* Group Header */}
                                                 <div className="flex flex-col gap-4 border-b border-slate-200 bg-slate-50/70 px-5 py-4 dark:border-slate-800/80 dark:bg-slate-900/40">
                                                     {/* Row 1: Title, Status, and Edit/Delete Actions */}
-                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
-                                                        <div className="flex items-center gap-3 min-w-0">
-                                                            <div className={`h-2.5 w-2.5 shrink-0 rounded-full ${group.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-indigo-600 animate-pulse shadow-[0_0_8px_rgba(79,70,229,0.5)] dark:bg-indigo-500 dark:shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`} />
-                                                            <span className="text-slate-800 dark:text-white font-['Orbitron'] text-sm font-bold tracking-wider uppercase truncate">
+                                                    <div className="flex w-full flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                                                        <div className="flex min-w-0 items-center gap-3">
+                                                            <div
+                                                                className={`h-2.5 w-2.5 shrink-0 rounded-full ${group.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'animate-pulse bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.5)] dark:bg-indigo-500 dark:shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}
+                                                            />
+                                                            <span className="truncate font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-white">
                                                                 {group.name}
                                                             </span>
-                                                            {group.status === 'completed' ? (
-                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[9px] font-bold uppercase tracking-wider shrink-0">
+                                                            {group.status ===
+                                                            'completed' ? (
+                                                                <span className="inline-flex shrink-0 items-center rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-emerald-500 uppercase">
                                                                     Completed
                                                                 </span>
                                                             ) : (
-                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-500/10 text-slate-500 border border-slate-500/20 text-[9px] font-bold uppercase tracking-wider shrink-0">
+                                                                <span className="inline-flex shrink-0 items-center rounded border border-slate-500/20 bg-slate-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
                                                                     Draft
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <div className="flex items-center gap-1.5 shrink-0">
+                                                        <div className="flex shrink-0 items-center gap-1.5">
                                                             <button
-                                                                onClick={() => handleEditGroup(group)}
-                                                                className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400 transition-colors"
+                                                                onClick={() =>
+                                                                    handleEditGroup(
+                                                                        group,
+                                                                    )
+                                                                }
+                                                                className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
                                                                 title="Edit Branch Name"
                                                             >
                                                                 <Pencil className="h-3.5 w-3.5" />
                                                             </button>
                                                             <button
-                                                                onClick={() => handleDeleteGroup(group)}
-                                                                className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-colors"
+                                                                onClick={() =>
+                                                                    handleDeleteGroup(
+                                                                        group,
+                                                                    )
+                                                                }
+                                                                className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                                                                 title="Delete Branch"
                                                             >
                                                                 <Trash2 className="h-3.5 w-3.5" />
@@ -745,41 +817,63 @@ export default function Builder({
                                                     </div>
 
                                                     {/* Row 2: Mentor Info and Main Action Buttons */}
-                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 w-full pt-3 border-t border-slate-200/50 dark:border-slate-800/40">
+                                                    <div className="flex w-full flex-col justify-between gap-3 border-t border-slate-200/50 pt-3 md:flex-row md:items-center dark:border-slate-800/40">
                                                         {/* Mentor Info */}
                                                         <div className="shrink-0">
                                                             {group.mentor ? (
                                                                 <div className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white/60 px-3 py-1.5 shadow-xs dark:border-slate-800/80 dark:bg-slate-900/60">
-                                                                    {group.mentor.avatar_url ? (
+                                                                    {group
+                                                                        .mentor
+                                                                        .avatar_url ? (
                                                                         <img
-                                                                            src={group.mentor.avatar_url}
+                                                                            src={
+                                                                                group
+                                                                                    .mentor
+                                                                                    .avatar_url
+                                                                            }
                                                                             className="h-7 w-7 rounded-full border border-slate-200 object-cover shadow-xs dark:border-slate-700"
                                                                             alt="mentor"
                                                                         />
                                                                     ) : (
-                                                                        <div className="to-purple-600 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-indigo-500 bg-gradient-to-br from-indigo-500 shadow-xs">
+                                                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-indigo-500 bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xs">
                                                                             <span className="text-[10px] font-bold text-white">
-                                                                                {group.mentor.name.charAt(0).toUpperCase()}
+                                                                                {group.mentor.name
+                                                                                    .charAt(
+                                                                                        0,
+                                                                                    )
+                                                                                    .toUpperCase()}
                                                                             </span>
                                                                         </div>
                                                                     )}
                                                                     <div className="flex flex-col">
                                                                         <span className="text-[10px] leading-tight font-bold text-slate-800 dark:text-[#F3F4F6]">
-                                                                            {group.mentor.name}
+                                                                            {
+                                                                                group
+                                                                                    .mentor
+                                                                                    .name
+                                                                            }
                                                                         </span>
-                                                                        <span className="text-slate-400 dark:text-slate-500 text-[8px] font-medium tracking-wider uppercase">
-                                                                            Branch Mentor
+                                                                        <span className="text-[8px] font-medium tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                                                            Branch
+                                                                            Mentor
                                                                         </span>
                                                                     </div>
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex items-center gap-2 rounded-xl border border-slate-200/60 bg-slate-100/50 px-3 py-1.5 dark:border-slate-800/40 dark:bg-slate-900/30">
                                                                     <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-dashed border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-900">
-                                                                        <span className="text-slate-400 dark:text-slate-500 text-xs font-bold">?</span>
+                                                                        <span className="text-xs font-bold text-slate-400 dark:text-slate-500">
+                                                                            ?
+                                                                        </span>
                                                                     </div>
                                                                     <div className="flex flex-col">
-                                                                        <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold">Unassigned</span>
-                                                                        <span className="text-slate-400 dark:text-slate-500 text-[8px] font-medium tracking-wider uppercase">No Mentor</span>
+                                                                        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                                                                            Unassigned
+                                                                        </span>
+                                                                        <span className="text-[8px] font-medium tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                                                            No
+                                                                            Mentor
+                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -788,27 +882,52 @@ export default function Builder({
                                                         {/* Buttons: Manage Mentor, Approve Branch, Add Path */}
                                                         <div className="flex flex-wrap items-center gap-2">
                                                             <button
-                                                                onClick={() => handleManageMentor(group._id, group.mentor?._id || null)}
-                                                                className="border-indigo-500/20 text-indigo-650 inline-flex shrink-0 cursor-pointer items-center rounded-lg border bg-indigo-500/10 px-3 py-1.5 font-['Orbitron'] text-[9px] font-bold tracking-wider uppercase shadow-xs transition-all hover:bg-indigo-600 hover:text-white dark:border-indigo-500/25 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-600 dark:hover:text-white"
+                                                                onClick={() =>
+                                                                    handleManageMentor(
+                                                                        group._id,
+                                                                        group
+                                                                            .mentor
+                                                                            ?._id ||
+                                                                            null,
+                                                                    )
+                                                                }
+                                                                className="text-indigo-650 inline-flex shrink-0 cursor-pointer items-center rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-3 py-1.5 font-['Orbitron'] text-[9px] font-bold tracking-wider uppercase shadow-xs transition-all hover:bg-indigo-600 hover:text-white dark:border-indigo-500/25 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-600 dark:hover:text-white"
                                                             >
                                                                 Manage Mentor
                                                             </button>
                                                             {group.mentor && (
                                                                 <button
-                                                                    onClick={() => handleToggleGroupStatus(group)}
+                                                                    onClick={() =>
+                                                                        handleToggleGroupStatus(
+                                                                            group,
+                                                                        )
+                                                                    }
                                                                     className={`inline-flex shrink-0 cursor-pointer items-center rounded-lg border px-3 py-1.5 font-['Orbitron'] text-[9px] font-bold tracking-wider uppercase shadow-xs transition-all ${
-                                                                        group.status === 'completed'
+                                                                        group.status ===
+                                                                        'completed'
                                                                             ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-600 dark:hover:text-white'
                                                                             : 'border-amber-500/20 bg-amber-500/10 text-amber-600 hover:bg-amber-600 hover:text-white dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-600 dark:hover:text-white'
                                                                     }`}
-                                                                    title={group.status === 'completed' ? "Revert to Draft" : "Approve and Complete"}
+                                                                    title={
+                                                                        group.status ===
+                                                                        'completed'
+                                                                            ? 'Revert to Draft'
+                                                                            : 'Approve and Complete'
+                                                                    }
                                                                 >
-                                                                    {group.status === 'completed' ? 'Revert Draft' : 'Approve Branch'}
+                                                                    {group.status ===
+                                                                    'completed'
+                                                                        ? 'Revert Draft'
+                                                                        : 'Approve Branch'}
                                                                 </button>
                                                             )}
                                                             <button
-                                                                onClick={() => openCareerPathModal(group._id)}
-                                                                className="border-slate-200 inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border bg-white px-3 py-1.5 text-[9px] font-bold tracking-wider text-slate-600 uppercase transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                                                                onClick={() =>
+                                                                    openCareerPathModal(
+                                                                        group._id,
+                                                                    )
+                                                                }
+                                                                className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-bold tracking-wider text-slate-600 uppercase transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                                                             >
                                                                 <Plus className="h-3.5 w-3.5" />
                                                                 Path
@@ -860,8 +979,12 @@ export default function Builder({
                                                                                 path={
                                                                                     path
                                                                                 }
-                                                                                onEdit={handleEditPath}
-                                                                                onDelete={handleDeletePath}
+                                                                                onEdit={
+                                                                                    handleEditPath
+                                                                                }
+                                                                                onDelete={
+                                                                                    handleDeletePath
+                                                                                }
                                                                             />
                                                                         ),
                                                                     )}
@@ -1061,7 +1184,7 @@ export default function Builder({
                                 </button>
                                 <button
                                     onClick={submitMentorAssignment}
-                                    className="dark:bg-indigo-600 rounded-lg border border-slate-800 bg-slate-800 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700 dark:border-indigo-500/50 dark:hover:bg-indigo-500"
+                                    className="rounded-lg border border-slate-800 bg-slate-800 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700 dark:border-indigo-500/50 dark:bg-indigo-600 dark:hover:bg-indigo-500"
                                 >
                                     Simpan Perubahan
                                 </button>
@@ -1075,7 +1198,10 @@ export default function Builder({
                         title="Edit Nama Path"
                         onClose={() => setEditingPath(null)}
                     >
-                        <div className="space-y-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        <div
+                            className="space-y-5"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
+                        >
                             <div>
                                 <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
                                     Nama Path
@@ -1083,7 +1209,16 @@ export default function Builder({
                                 <input
                                     type="text"
                                     value={editingPath?.name || ''}
-                                    onChange={(e) => setEditingPath(prev => prev ? { ...prev, name: e.target.value } : null)}
+                                    onChange={(e) =>
+                                        setEditingPath((prev) =>
+                                            prev
+                                                ? {
+                                                      ...prev,
+                                                      name: e.target.value,
+                                                  }
+                                                : null,
+                                        )
+                                    }
                                     className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
                                     placeholder="Contoh: Fundamental PHP"
                                 />
@@ -1098,7 +1233,7 @@ export default function Builder({
                                 </button>
                                 <button
                                     onClick={handleUpdatePath}
-                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-700 shadow-sm"
+                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700"
                                 >
                                     Simpan Perubahan
                                 </button>
@@ -1112,7 +1247,10 @@ export default function Builder({
                         title="Edit Career Branch"
                         onClose={() => setEditingGroup(null)}
                     >
-                        <div className="space-y-5" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        <div
+                            className="space-y-5"
+                            style={{ fontFamily: "'Outfit', sans-serif" }}
+                        >
                             <div>
                                 <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
                                     Nama Career Branch
@@ -1120,7 +1258,16 @@ export default function Builder({
                                 <input
                                     type="text"
                                     value={editingGroup?.name || ''}
-                                    onChange={(e) => setEditingGroup(prev => prev ? { ...prev, name: e.target.value } : null)}
+                                    onChange={(e) =>
+                                        setEditingGroup((prev) =>
+                                            prev
+                                                ? {
+                                                      ...prev,
+                                                      name: e.target.value,
+                                                  }
+                                                : null,
+                                        )
+                                    }
                                     className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
                                     placeholder="Contoh: Backend Web Development"
                                 />
@@ -1135,7 +1282,7 @@ export default function Builder({
                                 </button>
                                 <button
                                     onClick={handleUpdateGroup}
-                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-700 shadow-sm"
+                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700"
                                 >
                                     Simpan Perubahan
                                 </button>
@@ -1148,10 +1295,15 @@ export default function Builder({
                         open={confirmModal.open}
                         title={confirmModal.title}
                         message={confirmModal.message}
-                        confirmText={confirmModal.confirmText || "Hapus"}
-                        variant={confirmModal.variant || "danger"}
+                        confirmText={confirmModal.confirmText || 'Hapus'}
+                        variant={confirmModal.variant || 'danger'}
                         onConfirm={confirmModal.onConfirm}
-                        onClose={() => setConfirmModal(prev => ({ ...prev, open: false }))}
+                        onClose={() =>
+                            setConfirmModal((prev) => ({
+                                ...prev,
+                                open: false,
+                            }))
+                        }
                     />
                 </div>
             </div>

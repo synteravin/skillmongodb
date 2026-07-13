@@ -24,7 +24,7 @@ import {
     Clock,
     Award,
     ShieldAlert,
-    CheckCircle2
+    CheckCircle2,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
@@ -87,33 +87,45 @@ interface Quest {
     }>;
 }
 
-const RevisionHistory = ({ quest, viewType }: { quest: Quest; viewType: "creator_ongoing" | "creator_submitted" | "worker_ongoing" | "worker_submitted" | "admin_submitted" | "admin_ongoing" }) => {
+const RevisionHistory = ({
+    quest,
+    viewType,
+}: {
+    quest: Quest;
+    viewType:
+        | 'creator_ongoing'
+        | 'creator_submitted'
+        | 'worker_ongoing'
+        | 'worker_submitted'
+        | 'admin_submitted'
+        | 'admin_ongoing';
+}) => {
     if (!quest.revisions || quest.revisions.length === 0) {
         if (!quest.revision_note) {
             return null;
         }
-        
-        let label = "Instruksi/Catatan Revisi:";
-        if (viewType === "creator_ongoing") {
-            label = "Instruksi Revisi dari Anda:";
-        } else if (viewType === "creator_submitted") {
-            label = "Catatan Revisi Sebelumnya:";
-        } else if (viewType === "worker_ongoing") {
-            label = "Permintaan Revisi Pemilik:";
-        } else if (viewType === "worker_submitted") {
-            label = "Permintaan Revisi Sebelumnya:";
-        } else if (viewType === "admin_submitted") {
-            label = "Catatan Revisi Sebelumnya:";
-        } else if (viewType === "admin_ongoing") {
-            label = "Menunggu Revisi Pekerja:";
+
+        let label = 'Instruksi/Catatan Revisi:';
+        if (viewType === 'creator_ongoing') {
+            label = 'Instruksi Revisi dari Anda:';
+        } else if (viewType === 'creator_submitted') {
+            label = 'Catatan Revisi Sebelumnya:';
+        } else if (viewType === 'worker_ongoing') {
+            label = 'Permintaan Revisi Pemilik:';
+        } else if (viewType === 'worker_submitted') {
+            label = 'Permintaan Revisi Sebelumnya:';
+        } else if (viewType === 'admin_submitted') {
+            label = 'Catatan Revisi Sebelumnya:';
+        } else if (viewType === 'admin_ongoing') {
+            label = 'Menunggu Revisi Pekerja:';
         }
 
         return (
-            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1 font-['Oxanium']">
-                <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-600 dark:text-red-400">
+            <div className="space-y-1 rounded-xl border border-red-500/20 bg-red-500/10 p-3.5 font-['Oxanium']">
+                <span className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
                     ⚠️ {label}
                 </span>
-                <p className="text-xs text-slate-650 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                <p className="text-slate-650 dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap italic">
                     "{quest.revision_note}"
                 </p>
             </div>
@@ -121,73 +133,93 @@ const RevisionHistory = ({ quest, viewType }: { quest: Quest; viewType: "creator
     }
 
     const latestRevision = quest.revisions[quest.revisions.length - 1];
-    let mainLabel = "Instruksi Revisi Terakhir:";
-    if (viewType === "creator_ongoing") {
-        mainLabel = "Instruksi Revisi Terakhir dari Anda:";
-    } else if (viewType === "creator_submitted") {
-        mainLabel = "Catatan/Permintaan Revisi Sebelumnya:";
-    } else if (viewType === "worker_ongoing") {
-        mainLabel = "Permintaan Revisi Pemilik:";
-    } else if (viewType === "worker_submitted") {
-        mainLabel = "Permintaan Revisi Sebelumnya:";
-    } else if (viewType === "admin_submitted") {
-        mainLabel = "Catatan/Permintaan Revisi Sebelumnya:";
-    } else if (viewType === "admin_ongoing") {
-        mainLabel = "Menunggu Revisi Pekerja (Terakhir):";
+    let mainLabel = 'Instruksi Revisi Terakhir:';
+    if (viewType === 'creator_ongoing') {
+        mainLabel = 'Instruksi Revisi Terakhir dari Anda:';
+    } else if (viewType === 'creator_submitted') {
+        mainLabel = 'Catatan/Permintaan Revisi Sebelumnya:';
+    } else if (viewType === 'worker_ongoing') {
+        mainLabel = 'Permintaan Revisi Pemilik:';
+    } else if (viewType === 'worker_submitted') {
+        mainLabel = 'Permintaan Revisi Sebelumnya:';
+    } else if (viewType === 'admin_submitted') {
+        mainLabel = 'Catatan/Permintaan Revisi Sebelumnya:';
+    } else if (viewType === 'admin_ongoing') {
+        mainLabel = 'Menunggu Revisi Pekerja (Terakhir):';
     }
 
     return (
         <div className="space-y-3 font-['Oxanium']">
             {/* Latest Revision */}
-            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 space-y-1">
-                <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-red-650 dark:text-red-450">
+            <div className="space-y-1 rounded-xl border border-red-500/20 bg-red-500/10 p-3.5">
+                <span className="text-red-650 dark:text-red-450 block font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase">
                     ⚠️ {mainLabel}
                 </span>
-                <p className="text-xs text-slate-600 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
+                <p className="dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
                     "{latestRevision.note}"
                 </p>
-                <div className="text-[9px] text-slate-455 dark:text-slate-500 flex items-center gap-1 mt-1 font-sans">
+                <div className="text-slate-455 mt-1 flex items-center gap-1 font-sans text-[9px] dark:text-slate-500">
                     <span>Oleh {latestRevision.author_name} • </span>
                     <span>
-                        {new Date(latestRevision.created_at).toLocaleString("id-ID", {
-                            dateStyle: "medium",
-                            timeStyle: "short"
-                        })}
+                        {new Date(latestRevision.created_at).toLocaleString(
+                            'id-ID',
+                            {
+                                dateStyle: 'medium',
+                                timeStyle: 'short',
+                            },
+                        )}
                     </span>
                 </div>
             </div>
 
             {/* Previous Revisions */}
             {quest.revisions.length > 1 && (
-                <div className="border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50/20 dark:bg-black/10">
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/20 dark:border-slate-800/80 dark:bg-black/10">
                     <details className="group">
-                        <summary className="flex items-center justify-between px-3.5 py-2 text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white cursor-pointer select-none">
-                            <span>Lihat Riwayat Revisi Sebelumnya ({quest.revisions.length - 1})</span>
-                            <span className="transition-transform group-open:rotate-180 text-[8px] tracking-normal font-sans">▼</span>
+                        <summary className="flex cursor-pointer items-center justify-between px-3.5 py-2 font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-500 uppercase select-none hover:text-slate-700 dark:text-slate-400 dark:hover:text-white">
+                            <span>
+                                Lihat Riwayat Revisi Sebelumnya (
+                                {quest.revisions.length - 1})
+                            </span>
+                            <span className="font-sans text-[8px] tracking-normal transition-transform group-open:rotate-180">
+                                ▼
+                            </span>
                         </summary>
-                        <div className="px-3.5 pb-3 space-y-3 border-t border-slate-200/60 dark:border-slate-800/60 pt-3 max-h-[220px] overflow-y-auto">
-                            {quest.revisions.slice(0, -1).reverse().map((rev, idx) => {
-                                const revNum = quest.revisions!.length - 1 - idx;
-                                return (
-                                    <div key={idx} className="p-3 rounded-lg bg-slate-100/30 dark:bg-black/20 border border-slate-200/50 dark:border-slate-800/50 space-y-1">
-                                        <div className="flex items-center justify-between text-[9px] font-bold font-['Orbitron'] text-slate-500 dark:text-slate-400">
-                                            <span>REVISI #{revNum}</span>
-                                            <span className="font-normal font-sans text-slate-450 dark:text-slate-550">
-                                                {new Date(rev.created_at).toLocaleString("id-ID", {
-                                                    dateStyle: "medium",
-                                                    timeStyle: "short"
-                                                })}
-                                            </span>
+                        <div className="max-h-[220px] space-y-3 overflow-y-auto border-t border-slate-200/60 px-3.5 pt-3 pb-3 dark:border-slate-800/60">
+                            {quest.revisions
+                                .slice(0, -1)
+                                .reverse()
+                                .map((rev, idx) => {
+                                    const revNum =
+                                        quest.revisions!.length - 1 - idx;
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className="space-y-1 rounded-lg border border-slate-200/50 bg-slate-100/30 p-3 dark:border-slate-800/50 dark:bg-black/20"
+                                        >
+                                            <div className="flex items-center justify-between font-['Orbitron'] text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                                                <span>REVISI #{revNum}</span>
+                                                <span className="text-slate-450 dark:text-slate-550 font-sans font-normal">
+                                                    {new Date(
+                                                        rev.created_at,
+                                                    ).toLocaleString('id-ID', {
+                                                        dateStyle: 'medium',
+                                                        timeStyle: 'short',
+                                                    })}
+                                                </span>
+                                            </div>
+                                            <p className="dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
+                                                "{rev.note}"
+                                            </p>
+                                            <div className="text-slate-450 dark:text-slate-550 font-sans text-[9px]">
+                                                Diminta oleh:{' '}
+                                                <span className="dark:text-slate-450 font-semibold text-slate-500">
+                                                    {rev.author_name}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <p className="text-xs text-slate-600 dark:text-slate-350 italic whitespace-pre-wrap leading-relaxed mt-1">
-                                            "{rev.note}"
-                                        </p>
-                                        <div className="text-[9px] text-slate-450 dark:text-slate-550 font-sans">
-                                            Diminta oleh: <span className="font-semibold text-slate-500 dark:text-slate-450">{rev.author_name}</span>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
                         </div>
                     </details>
                 </div>
@@ -230,8 +262,14 @@ interface Props {
 }
 
 export default function Show({ quest, bids, transactions = [] }: Props) {
-    const [selectedChatBid, setSelectedChatBid] = useState<{ id: string; name: string } | null>(null);
-    const [previewImage, setPreviewImage] = useState<{ url: string; name: string } | null>(null);
+    const [selectedChatBid, setSelectedChatBid] = useState<{
+        id: string;
+        name: string;
+    } | null>(null);
+    const [previewImage, setPreviewImage] = useState<{
+        url: string;
+        name: string;
+    } | null>(null);
     const [acceptBidId, setAcceptBidId] = useState<string | null>(null);
     const [deleteBidId, setDeleteBidId] = useState<string | null>(null);
     const [showApproveForm, setShowApproveForm] = useState(false);
@@ -240,7 +278,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     const currentUserId = props.auth?.user?._id;
 
     // Define active tab
-    const [activeTab, setActiveTab] = useState<'detail' | 'project' | 'bids' | 'arbitration'>('detail');
+    const [activeTab, setActiveTab] = useState<
+        'detail' | 'project' | 'bids' | 'arbitration'
+    >('detail');
 
     const approveForm = useForm({
         rating: 5,
@@ -272,9 +312,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleExtendDeadline = (e: React.FormEvent) => {
         e.preventDefault();
-        
-        const utcDeadline = extendDeadlineForm.data.deadline 
-            ? new Date(extendDeadlineForm.data.deadline).toISOString() 
+
+        const utcDeadline = extendDeadlineForm.data.deadline
+            ? new Date(extendDeadlineForm.data.deadline).toISOString()
             : '';
 
         extendDeadlineForm.transform((data) => ({
@@ -290,13 +330,21 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     };
 
     const handleForceCancel = () => {
-        if (confirm('Apakah Anda yakin ingin membatalkan quest ini secara paksa? Uang escrow akan dikembalikan penuh ke pembuat quest.')) {
+        if (
+            confirm(
+                'Apakah Anda yakin ingin membatalkan quest ini secara paksa? Uang escrow akan dikembalikan penuh ke pembuat quest.',
+            )
+        ) {
             router.post(`/admin/quests/${quest._id}/force-cancel`);
         }
     };
 
     const handleReopenBidding = () => {
-        if (confirm('Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan uang escrow dikembalikan ke pembuat quest.')) {
+        if (
+            confirm(
+                'Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan uang escrow dikembalikan ke pembuat quest.',
+            )
+        ) {
             router.post(`/admin/quests/${quest._id}/reopen-bidding`);
         }
     };
@@ -329,9 +377,13 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     });
 
     const handleApprovePost = () => {
-        router.post(`/admin/quests/${quest._id}/approve-post`, {}, {
-            onSuccess: () => setShowApprovePostConfirm(false),
-        });
+        router.post(
+            `/admin/quests/${quest._id}/approve-post`,
+            {},
+            {
+                onSuccess: () => setShowApprovePostConfirm(false),
+            },
+        );
     };
 
     const handleRejectPost = (e: React.FormEvent) => {
@@ -366,19 +418,21 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
         const dm = 2;
         const sizes = ['Bytes', 'KB', 'MB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        return (
+            parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+        );
     };
 
     const formatDate = (dateStr: string) => {
         const d = new Date(dateStr);
-        const datePart = d.toLocaleDateString("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
+        const datePart = d.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
         });
-        const timePart = d.toLocaleTimeString("id-ID", {
-            hour: "2-digit",
-            minute: "2-digit",
+        const timePart = d.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
         });
         return `${datePart} pukul ${timePart}`;
     };
@@ -406,99 +460,102 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
                     {/* BACK LINK & BADGE */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-5">
+                    <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
                         <div className="space-y-1">
                             <Link
                                 href="/admin/quests"
-                                className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 font-['Orbitron']"
+                                className="inline-flex items-center gap-1.5 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                             >
                                 <ArrowLeft size={14} />
                                 Kembali ke Daftar Quest
                             </Link>
-                            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-['Oxanium']">
+                            <h2 className="font-['Oxanium'] text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
                                 {quest.title}
                             </h2>
                         </div>
 
                         <div className="flex items-center gap-3">
                             <span
-                                className={`shrink-0 rounded-xl px-4 py-1.5 text-xs font-black uppercase tracking-wider font-['Orbitron'] border ${
+                                className={`shrink-0 rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
                                     quest.status === 'open'
-                                        ? 'bg-green-500/10 text-green-700 border-green-500/20 dark:text-green-400'
+                                        ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
                                         : quest.status === 'draft'
-                                        ? 'bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-400'
-                                        : quest.status === 'rejected'
-                                        ? 'bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-400'
-                                        : quest.status === 'expired'
-                                        ? 'bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-400'
-                                        : quest.status === 'ongoing'
-                                        ? 'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400'
-                                        : quest.status === 'approved'
-                                        ? 'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400'
-                                        : quest.status === 'submitted'
-                                        ? 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:text-yellow-400'
-                                        : 'bg-slate-500/10 text-slate-600 border-slate-500/20 dark:text-slate-400'
+                                          ? 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                          : quest.status === 'rejected'
+                                            ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
+                                            : quest.status === 'expired'
+                                              ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
+                                              : quest.status === 'ongoing'
+                                                ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
+                                                : quest.status === 'approved'
+                                                  ? 'border-purple-500/20 bg-purple-500/10 text-purple-700 dark:text-purple-400'
+                                                  : quest.status === 'submitted'
+                                                    ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400'
+                                                    : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
                                 }`}
                             >
                                 {quest.status === 'open'
                                     ? 'Tersedia'
                                     : quest.status === 'draft'
-                                    ? 'Menunggu Review'
-                                    : quest.status === 'rejected'
-                                    ? 'Ditolak'
-                                    : quest.status === 'expired'
-                                    ? 'Kadaluarsa'
-                                    : quest.status === 'ongoing'
-                                    ? 'Pengerjaan'
-                                    : quest.status === 'approved'
-                                    ? 'Disetujui'
-                                    : quest.status === 'submitted'
-                                    ? 'Ditinjau'
-                                    : 'Selesai'}
+                                      ? 'Menunggu Review'
+                                      : quest.status === 'rejected'
+                                        ? 'Ditolak'
+                                        : quest.status === 'expired'
+                                          ? 'Kadaluarsa'
+                                          : quest.status === 'ongoing'
+                                            ? 'Pengerjaan'
+                                            : quest.status === 'approved'
+                                              ? 'Disetujui'
+                                              : quest.status === 'submitted'
+                                                ? 'Ditinjau'
+                                                : 'Selesai'}
                             </span>
                         </div>
                     </div>
 
                     {/* METRICS / STATS OVERVIEW */}
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-[#0c122c]/40 p-4 shadow-sm backdrop-blur-md">
-                            <div className="rounded-xl bg-indigo-500/10 p-3 text-indigo-600 dark:text-indigo-400 shrink-0">
+                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-slate-800 dark:bg-[#0c122c]/40">
+                            <div className="shrink-0 rounded-xl bg-indigo-500/10 p-3 text-indigo-600 dark:text-indigo-400">
                                 <TrendingUp className="h-5 w-5" />
                             </div>
                             <div className="font-['Oxanium']">
-                                <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                     Total Penawaran
                                 </span>
-                                <span className="text-base font-extrabold text-slate-900 dark:text-white font-['Orbitron']">
+                                <span className="font-['Orbitron'] text-base font-extrabold text-slate-900 dark:text-white">
                                     {bids.length} Bid
                                 </span>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-[#0c122c]/40 p-4 shadow-sm backdrop-blur-md">
-                            <div className="rounded-xl bg-purple-500/10 p-3 text-purple-600 dark:text-purple-400 shrink-0">
+                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-slate-800 dark:bg-[#0c122c]/40">
+                            <div className="shrink-0 rounded-xl bg-purple-500/10 p-3 text-purple-600 dark:text-purple-400">
                                 <DollarSign className="h-5 w-5" />
                             </div>
                             <div className="font-['Oxanium']">
-                                <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                     Rata-Rata Penawaran
                                 </span>
-                                <span className="text-base font-extrabold text-slate-900 dark:text-white font-['Orbitron']">
-                                    {averageBid > 0 ? formatCurrency(averageBid) : 'Rp 0'}
+                                <span className="font-['Orbitron'] text-base font-extrabold text-slate-900 dark:text-white">
+                                    {averageBid > 0
+                                        ? formatCurrency(averageBid)
+                                        : 'Rp 0'}
                                 </span>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-[#0c122c]/40 p-4 shadow-sm backdrop-blur-md">
-                            <div className="rounded-xl bg-blue-500/10 p-3 text-blue-600 dark:text-blue-400 shrink-0">
+                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-slate-800 dark:bg-[#0c122c]/40">
+                            <div className="shrink-0 rounded-xl bg-blue-500/10 p-3 text-blue-600 dark:text-blue-400">
                                 <Briefcase className="h-5 w-5" />
                             </div>
                             <div className="font-['Oxanium']">
-                                <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                     Rentang Anggaran
                                 </span>
-                                <span className="text-xs font-black text-slate-900 dark:text-white font-['Orbitron']">
-                                    {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
+                                <span className="font-['Orbitron'] text-xs font-black text-slate-900 dark:text-white">
+                                    {formatCurrency(quest.min_salary)} -{' '}
+                                    {formatCurrency(quest.max_salary)}
                                 </span>
                             </div>
                         </div>
@@ -506,35 +563,41 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                     {/* MAIN TWO-COLUMN LAYOUT */}
                     <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-                        
                         {/* LEFT COLUMN: TABS & CONTENT PANELS (lg:col-span-8) */}
                         <div className="space-y-6 lg:col-span-8">
-                            
                             {/* Moderation Post Card */}
                             {quest.status === 'draft' && (
-                                <div className="space-y-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6 shadow-md dark:bg-amber-955/10 font-['Oxanium']">
+                                <div className="dark:bg-amber-955/10 space-y-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6 font-['Oxanium'] shadow-md">
                                     <div className="border-b border-amber-500/10 pb-3">
-                                        <span className="inline-block text-[10px] font-bold tracking-widest text-amber-600 uppercase dark:text-amber-400 font-['Orbitron']">
+                                        <span className="inline-block font-['Orbitron'] text-[10px] font-bold tracking-widest text-amber-600 uppercase dark:text-amber-400">
                                             ⚠️ Moderasi Posting Quest
                                         </span>
-                                        <h3 className="text-sm font-bold text-slate-800 dark:text-amber-300 mt-1">
+                                        <h3 className="mt-1 text-sm font-bold text-slate-800 dark:text-amber-300">
                                             Persetujuan Quest Baru
                                         </h3>
                                     </div>
                                     <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-300">
-                                        Quest ini dikirim oleh <strong>{quest.creator.name}</strong> dan membutuhkan persetujuan Anda sebagai administrator sebelum dipublikasikan ke papan quest publik.
+                                        Quest ini dikirim oleh{' '}
+                                        <strong>{quest.creator.name}</strong>{' '}
+                                        dan membutuhkan persetujuan Anda sebagai
+                                        administrator sebelum dipublikasikan ke
+                                        papan quest publik.
                                     </p>
 
                                     <div className="flex gap-3 pt-2">
                                         <button
-                                            onClick={() => setShowApprovePostConfirm(true)}
-                                            className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-sm text-center font-['Orbitron']"
+                                            onClick={() =>
+                                                setShowApprovePostConfirm(true)
+                                            }
+                                            className="flex-1 cursor-pointer rounded-xl bg-emerald-600 py-2.5 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-all hover:bg-emerald-700"
                                         >
                                             Setujui & Publikasikan
                                         </button>
                                         <button
-                                            onClick={() => setShowRejectPostForm(true)}
-                                            className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-sm text-center font-['Orbitron']"
+                                            onClick={() =>
+                                                setShowRejectPostForm(true)
+                                            }
+                                            className="flex-1 cursor-pointer rounded-xl bg-red-600 py-2.5 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-all hover:bg-red-700"
                                         >
                                             Tolak Quest
                                         </button>
@@ -543,102 +606,157 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                             )}
 
                             {quest.status === 'rejected' && (
-                                <div className="space-y-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-6 shadow-md dark:bg-red-955/10 font-['Oxanium']">
-                                    <span className="inline-block text-[10px] font-bold tracking-widest text-red-600 uppercase dark:text-red-400 font-['Orbitron']">
+                                <div className="dark:bg-red-955/10 space-y-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-6 font-['Oxanium'] shadow-md">
+                                    <span className="inline-block font-['Orbitron'] text-[10px] font-bold tracking-widest text-red-600 uppercase dark:text-red-400">
                                         ❌ Quest Ditolak
                                     </span>
                                     <h3 className="text-sm font-bold text-red-600 dark:text-red-400">
                                         Status: Ditolak Admin
                                     </h3>
                                     {quest.rejection_note && (
-                                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl space-y-1">
-                                            <span className="block text-[9px] font-bold uppercase tracking-wider text-red-500">Catatan Penolakan Anda:</span>
-                                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{quest.rejection_note}</p>
+                                        <div className="space-y-1 rounded-xl border border-red-500/20 bg-red-500/10 p-3">
+                                            <span className="block text-[9px] font-bold tracking-wider text-red-500 uppercase">
+                                                Catatan Penolakan Anda:
+                                            </span>
+                                            <p className="text-xs leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300">
+                                                {quest.rejection_note}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
                             )}
 
                             {quest.status === 'expired' && (
-                                <div className="space-y-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-6 shadow-md dark:bg-red-955/10 font-['Oxanium']">
-                                    <span className="inline-block text-[10px] font-bold tracking-widest text-red-600 uppercase dark:text-red-400 font-['Orbitron']">
+                                <div className="dark:bg-red-955/10 space-y-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-6 font-['Oxanium'] shadow-md">
+                                    <span className="inline-block font-['Orbitron'] text-[10px] font-bold tracking-widest text-red-600 uppercase dark:text-red-400">
                                         🚨 Quest Kadaluarsa (Expired)
                                     </span>
                                     <h3 className="text-sm font-bold text-red-600 dark:text-red-400">
                                         Tenggat Waktu Terlewati
                                     </h3>
                                     <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                                        Tenggat waktu pengerjaan proyek ini telah berakhir sebelum pekerja berhasil menyelesaikan tugasnya. Pekerja lama dibebaskan dan penalti reputasi ERP telah diberlakukan secara otomatis oleh sistem.
+                                        Tenggat waktu pengerjaan proyek ini
+                                        telah berakhir sebelum pekerja berhasil
+                                        menyelesaikan tugasnya. Pekerja lama
+                                        dibebaskan dan penalti reputasi ERP
+                                        telah diberlakukan secara otomatis oleh
+                                        sistem.
                                     </p>
                                 </div>
                             )}
 
                             {/* Stepper Progress Timeline */}
-                            {quest.status !== 'draft' && quest.status !== 'rejected' && (
-                                <div className="p-6 rounded-2xl bg-white/70 dark:bg-[#0c122c]/40 border border-slate-200 dark:border-slate-800 shadow-sm font-['Orbitron'] text-[9px] sm:text-[10px] font-bold tracking-wider space-y-4">
-                                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 pb-2">
-                                        Alur Progress Quest
-                                    </span>
-                                    <div className="flex items-center justify-between relative pt-2">
-                                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 dark:bg-slate-800/80 z-0" />
-                                        <div 
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-indigo-500 z-0 transition-all duration-500" 
-                                            style={{
-                                                width: quest.status === 'open' ? '0%'
-                                                    : quest.status === 'ongoing' ? '25%'
-                                                    : quest.status === 'submitted' ? '50%'
-                                                    : quest.status === 'approved' ? '75%'
-                                                    : '105%'
-                                            }}
-                                        />
+                            {quest.status !== 'draft' &&
+                                quest.status !== 'rejected' && (
+                                    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Orbitron'] text-[9px] font-bold tracking-wider shadow-sm sm:text-[10px] dark:border-slate-800 dark:bg-[#0c122c]/40">
+                                        <span className="block border-b border-slate-100 pb-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:border-slate-800">
+                                            Alur Progress Quest
+                                        </span>
+                                        <div className="relative flex items-center justify-between pt-2">
+                                            <div className="absolute top-1/2 right-0 left-0 z-0 h-0.5 -translate-y-1/2 bg-slate-200 dark:bg-slate-800/80" />
+                                            <div
+                                                className="absolute top-1/2 left-0 z-0 h-0.5 -translate-y-1/2 bg-indigo-500 transition-all duration-500"
+                                                style={{
+                                                    width:
+                                                        quest.status === 'open'
+                                                            ? '0%'
+                                                            : quest.status ===
+                                                                'ongoing'
+                                                              ? '25%'
+                                                              : quest.status ===
+                                                                  'submitted'
+                                                                ? '50%'
+                                                                : quest.status ===
+                                                                    'approved'
+                                                                  ? '75%'
+                                                                  : '105%',
+                                                }}
+                                            />
 
-                                        {[
-                                            { key: 'open', label: 'Bidding' },
-                                            { key: 'ongoing', label: 'Pengerjaan' },
-                                            { key: 'submitted', label: 'Tinjauan' },
-                                            { key: 'approved', label: 'Disetujui' },
-                                            { key: 'completed', label: 'Selesai' }
-                                        ].map((step, idx) => {
-                                            const statuses = ['open', 'ongoing', 'submitted', 'approved', 'completed'];
-                                            const currentIdx = statuses.indexOf(quest.status);
-                                            const stepIdx = statuses.indexOf(step.key);
-                                            const isCompleted = stepIdx < currentIdx || quest.status === 'completed';
-                                            const isActive = quest.status === step.key;
+                                            {[
+                                                {
+                                                    key: 'open',
+                                                    label: 'Bidding',
+                                                },
+                                                {
+                                                    key: 'ongoing',
+                                                    label: 'Pengerjaan',
+                                                },
+                                                {
+                                                    key: 'submitted',
+                                                    label: 'Tinjauan',
+                                                },
+                                                {
+                                                    key: 'approved',
+                                                    label: 'Disetujui',
+                                                },
+                                                {
+                                                    key: 'completed',
+                                                    label: 'Selesai',
+                                                },
+                                            ].map((step, idx) => {
+                                                const statuses = [
+                                                    'open',
+                                                    'ongoing',
+                                                    'submitted',
+                                                    'approved',
+                                                    'completed',
+                                                ];
+                                                const currentIdx =
+                                                    statuses.indexOf(
+                                                        quest.status,
+                                                    );
+                                                const stepIdx =
+                                                    statuses.indexOf(step.key);
+                                                const isCompleted =
+                                                    stepIdx < currentIdx ||
+                                                    quest.status ===
+                                                        'completed';
+                                                const isActive =
+                                                    quest.status === step.key;
 
-                                            return (
-                                                <div key={step.key} className="flex flex-col items-center z-10 relative">
-                                                    <div 
-                                                        className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 transition-all duration-350 ${
-                                                            isCompleted
-                                                                ? 'bg-indigo-600 border-indigo-505 text-white shadow-[0_0_10px_rgba(99,102,241,0.4)]'
-                                                                : isActive
-                                                                ? 'bg-purple-600 border-purple-500 text-white shadow-[0_0_10px_rgba(168,85,247,0.4)]'
-                                                                : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-400'
-                                                        }`}
+                                                return (
+                                                    <div
+                                                        key={step.key}
+                                                        className="relative z-10 flex flex-col items-center"
                                                     >
-                                                        {isCompleted ? '✓' : idx + 1}
+                                                        <div
+                                                            className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all duration-350 sm:h-7 sm:w-7 ${
+                                                                isCompleted
+                                                                    ? 'border-indigo-505 bg-indigo-600 text-white shadow-[0_0_10px_rgba(99,102,241,0.4)]'
+                                                                    : isActive
+                                                                      ? 'border-purple-500 bg-purple-600 text-white shadow-[0_0_10px_rgba(168,85,247,0.4)]'
+                                                                      : 'border-slate-200 bg-white text-slate-400 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                            }`}
+                                                        >
+                                                            {isCompleted
+                                                                ? '✓'
+                                                                : idx + 1}
+                                                        </div>
+                                                        <span
+                                                            className={`mt-1.5 text-[8px] tracking-widest uppercase sm:text-[9px] ${
+                                                                isActive ||
+                                                                isCompleted
+                                                                    ? 'font-black text-indigo-600 dark:text-purple-300'
+                                                                    : 'text-slate-400'
+                                                            }`}
+                                                        >
+                                                            {step.label}
+                                                        </span>
                                                     </div>
-                                                    <span 
-                                                        className={`mt-1.5 text-[8px] sm:text-[9px] uppercase tracking-widest ${
-                                                            isActive || isCompleted ? 'text-indigo-600 dark:text-purple-300 font-black' : 'text-slate-400'
-                                                        }`}
-                                                    >
-                                                        {step.label}
-                                                    </span>
-                                                </div>
-                                            );
-                                        })}
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
                             {/* Tab Buttons */}
-                            <div className="flex border-b border-slate-200 dark:border-slate-800/80 gap-6 font-['Orbitron'] text-xs font-black tracking-wider shrink-0">
+                            <div className="flex shrink-0 gap-6 border-b border-slate-200 font-['Orbitron'] text-xs font-black tracking-wider dark:border-slate-800/80">
                                 <button
                                     onClick={() => setActiveTab('detail')}
-                                    className={`pb-3 relative transition-colors cursor-pointer ${
+                                    className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'detail'
-                                            ? 'text-indigo-600 dark:text-indigo-400 font-extrabold'
+                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
                                             : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                                     }`}
                                 >
@@ -647,15 +765,15 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         Spesifikasi Quest
                                     </span>
                                     {activeTab === 'detail' && (
-                                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
                                     )}
                                 </button>
 
                                 <button
                                     onClick={() => setActiveTab('project')}
-                                    className={`pb-3 relative transition-colors cursor-pointer ${
+                                    className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'project'
-                                            ? 'text-indigo-600 dark:text-indigo-400 font-extrabold'
+                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
                                             : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                                     }`}
                                 >
@@ -664,15 +782,15 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         Manajemen Pengerjaan
                                     </span>
                                     {activeTab === 'project' && (
-                                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
                                     )}
                                 </button>
 
                                 <button
                                     onClick={() => setActiveTab('bids')}
-                                    className={`pb-3 relative transition-colors cursor-pointer ${
+                                    className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'bids'
-                                            ? 'text-indigo-600 dark:text-indigo-400 font-extrabold'
+                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
                                             : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                                     }`}
                                 >
@@ -681,15 +799,15 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         Pelamar ({bids.length})
                                     </span>
                                     {activeTab === 'bids' && (
-                                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
                                     )}
                                 </button>
 
                                 <button
                                     onClick={() => setActiveTab('arbitration')}
-                                    className={`pb-3 relative transition-colors cursor-pointer ${
+                                    className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'arbitration'
-                                            ? 'text-indigo-600 dark:text-indigo-400 font-extrabold'
+                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
                                             : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                                     }`}
                                 >
@@ -698,115 +816,170 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         Arbitrase & Kontrol
                                     </span>
                                     {activeTab === 'arbitration' && (
-                                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
                                     )}
                                 </button>
                             </div>
 
                             {/* TAB 1: DETAILS */}
                             {activeTab === 'detail' && (
-                                <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-6">
+                                <div className="space-y-6 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
                                     <div className="space-y-3">
-                                        <h3 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-400 dark:text-blue-300/60 tracking-wider">
+                                        <h3 className="font-['Orbitron'] text-xs font-bold tracking-wider text-slate-400 uppercase dark:text-blue-300/60">
                                             Deskripsi Pekerjaan
                                         </h3>
-                                        <div className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-200 bg-slate-50/50 dark:bg-black/10 rounded-xl p-4 border border-slate-100 dark:border-slate-800/40 whitespace-pre-wrap font-['Oxanium']">
+                                        <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 font-['Oxanium'] text-sm leading-relaxed whitespace-pre-wrap text-slate-700 sm:text-base dark:border-slate-800/40 dark:bg-black/10 dark:text-slate-200">
                                             {quest.description}
                                         </div>
                                     </div>
 
                                     {/* Lampiran Quest (Gambar & File) */}
-                                    {((quest.images && quest.images.length > 0) || (quest.files && quest.files.length > 0)) && (
-                                        <div className="space-y-5 border-t border-slate-100 dark:border-slate-800 pt-5 font-['Oxanium']">
-                                            <h3 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-400 tracking-wider">
+                                    {((quest.images &&
+                                        quest.images.length > 0) ||
+                                        (quest.files &&
+                                            quest.files.length > 0)) && (
+                                        <div className="space-y-5 border-t border-slate-100 pt-5 font-['Oxanium'] dark:border-slate-800">
+                                            <h3 className="font-['Orbitron'] text-xs font-bold tracking-wider text-slate-400 uppercase">
                                                 Lampiran Pendukung
                                             </h3>
 
                                             {/* Images Gallery */}
-                                            {quest.images && quest.images.length > 0 && (
-                                                <div className="space-y-2.5">
-                                                    <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                                                        Galeri Gambar
-                                                    </span>
-                                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                                        {quest.images.map((img, index) => (
-                                                            <div key={index} className="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-black/20 p-1">
-                                                                <img
-                                                                    src={img.url}
-                                                                    alt={img.name}
-                                                                    onClick={() => setPreviewImage(img)}
-                                                                    className="w-full h-24 object-cover rounded-lg cursor-pointer transition-transform hover:scale-[1.02]"
-                                                                />
-                                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto">
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => setPreviewImage(img)}
-                                                                        className="p-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors cursor-pointer"
-                                                                        title="Detail Gambar"
+                                            {quest.images &&
+                                                quest.images.length > 0 && (
+                                                    <div className="space-y-2.5">
+                                                        <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                            Galeri Gambar
+                                                        </span>
+                                                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                                            {quest.images.map(
+                                                                (
+                                                                    img,
+                                                                    index,
+                                                                ) => (
+                                                                    <div
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        className="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50 p-1 dark:border-slate-800 dark:bg-black/20"
                                                                     >
-                                                                        <ImageIcon className="w-4 h-4" />
-                                                                    </button>
-                                                                    <a
-                                                                        href={img.url}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="p-1.5 bg-indigo-500 hover:bg-indigo-700 text-white rounded-lg transition-colors cursor-pointer"
-                                                                        title="Unduh di Tab Baru"
-                                                                    >
-                                                                        <Download className="w-4 h-4" />
-                                                                    </a>
-                                                                </div>
-                                                                <span className="block text-[9px] text-slate-500 dark:text-slate-400 truncate text-center mt-1 px-1">
-                                                                    {img.name}
-                                                                </span>
-                                                            </div>
-                                                        ))}
+                                                                        <img
+                                                                            src={
+                                                                                img.url
+                                                                            }
+                                                                            alt={
+                                                                                img.name
+                                                                            }
+                                                                            onClick={() =>
+                                                                                setPreviewImage(
+                                                                                    img,
+                                                                                )
+                                                                            }
+                                                                            className="h-24 w-full cursor-pointer rounded-lg object-cover transition-transform hover:scale-[1.02]"
+                                                                        />
+                                                                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 bg-black/60 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() =>
+                                                                                    setPreviewImage(
+                                                                                        img,
+                                                                                    )
+                                                                                }
+                                                                                className="cursor-pointer rounded-lg bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20"
+                                                                                title="Detail Gambar"
+                                                                            >
+                                                                                <ImageIcon className="h-4 w-4" />
+                                                                            </button>
+                                                                            <a
+                                                                                href={
+                                                                                    img.url
+                                                                                }
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="cursor-pointer rounded-lg bg-indigo-500 p-1.5 text-white transition-colors hover:bg-indigo-700"
+                                                                                title="Unduh di Tab Baru"
+                                                                            >
+                                                                                <Download className="h-4 w-4" />
+                                                                            </a>
+                                                                        </div>
+                                                                        <span className="mt-1 block truncate px-1 text-center text-[9px] text-slate-500 dark:text-slate-400">
+                                                                            {
+                                                                                img.name
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
                                             {/* Files List */}
-                                            {quest.files && quest.files.length > 0 && (
-                                                <div className="space-y-2.5">
-                                                    <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                                                        Dokumen Lampiran
-                                                    </span>
-                                                    <div className="space-y-2">
-                                                        {quest.files.map((file, index) => {
-                                                            const ext = file.name.split(".").pop()?.toLowerCase();
-                                                            const isZip = ext === "zip";
-                                                            return (
-                                                                <div key={index} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-black/20">
-                                                                    <div className="flex items-center gap-3 min-w-0">
-                                                                        {isZip ? (
-                                                                            <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
-                                                                        ) : (
-                                                                            <FileText className="w-5 h-5 text-indigo-500 shrink-0" />
-                                                                        )}
-                                                                        <div className="min-w-0">
-                                                                            <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
-                                                                                {file.name}
-                                                                            </p>
-                                                                            <p className="text-[10px] text-slate-400 font-semibold">
-                                                                                {formatBytes(file.size)}
-                                                                            </p>
+                                            {quest.files &&
+                                                quest.files.length > 0 && (
+                                                    <div className="space-y-2.5">
+                                                        <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                            Dokumen Lampiran
+                                                        </span>
+                                                        <div className="space-y-2">
+                                                            {quest.files.map(
+                                                                (
+                                                                    file,
+                                                                    index,
+                                                                ) => {
+                                                                    const ext =
+                                                                        file.name
+                                                                            .split(
+                                                                                '.',
+                                                                            )
+                                                                            .pop()
+                                                                            ?.toLowerCase();
+                                                                    const isZip =
+                                                                        ext ===
+                                                                        'zip';
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50/50 p-3 dark:border-slate-800/80 dark:bg-black/20"
+                                                                        >
+                                                                            <div className="flex min-w-0 items-center gap-3">
+                                                                                {isZip ? (
+                                                                                    <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
+                                                                                ) : (
+                                                                                    <FileText className="h-5 w-5 shrink-0 text-indigo-500" />
+                                                                                )}
+                                                                                <div className="min-w-0">
+                                                                                    <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                                                                        {
+                                                                                            file.name
+                                                                                        }
+                                                                                    </p>
+                                                                                    <p className="text-[10px] font-semibold text-slate-400">
+                                                                                        {formatBytes(
+                                                                                            file.size,
+                                                                                        )}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <a
+                                                                                href={
+                                                                                    file.url
+                                                                                }
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="hover:text-indigo-705 flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-indigo-500 transition-colors hover:bg-indigo-500/10"
+                                                                                title="Unduh berkas di Tab Baru"
+                                                                            >
+                                                                                <Download className="h-4.5 w-4.5" />
+                                                                            </a>
                                                                         </div>
-                                                                    </div>
-                                                                    <a
-                                                                        href={file.url}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="flex items-center justify-center p-1.5 text-indigo-500 hover:text-indigo-705 hover:bg-indigo-500/10 rounded-lg transition-colors cursor-pointer"
-                                                                        title="Unduh berkas di Tab Baru"
-                                                                    >
-                                                                        <Download className="w-4.5 h-4.5" />
-                                                                    </a>
-                                                                </div>
-                                                            );
-                                                        })}
+                                                                    );
+                                                                },
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
                                         </div>
                                     )}
                                 </div>
@@ -814,113 +987,185 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                             {/* TAB 2: PROJECT WORKFLOW & VERIFICATION */}
                             {activeTab === 'project' && (
-                                <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-5">
-                                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                                        <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider">
+                                <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                    <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                        <h3 className="font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
                                             Alur Kerja & Status Penyelesaian
                                         </h3>
-                                        
+
                                         {/* Worker chat shortcut */}
-                                        {quest.worker && (() => {
-                                            const acceptedBid = bids.find(b => b.status === "accepted" || b.student._id === quest.worker_id);
-                                            if (acceptedBid) {
-                                                return (
-                                                    <button
-                                                        onClick={() => setSelectedChatBid({ id: acceptedBid._id, name: quest.worker?.name ?? "" })}
-                                                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all duration-350 cursor-pointer flex items-center gap-1.5 relative shrink-0"
-                                                    >
-                                                        <MessageSquare size={12} />
-                                                        Chat Pekerja
-                                                        {acceptedBid.unread_messages_count > 0 && (
-                                                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
-                                                                {acceptedBid.unread_messages_count}
-                                                            </span>
-                                                        )}
-                                                    </button>
+                                        {quest.worker &&
+                                            (() => {
+                                                const acceptedBid = bids.find(
+                                                    (b) =>
+                                                        b.status ===
+                                                            'accepted' ||
+                                                        b.student._id ===
+                                                            quest.worker_id,
                                                 );
-                                            }
-                                            return null;
-                                        })()}
+                                                if (acceptedBid) {
+                                                    return (
+                                                        <button
+                                                            onClick={() =>
+                                                                setSelectedChatBid(
+                                                                    {
+                                                                        id: acceptedBid._id,
+                                                                        name:
+                                                                            quest
+                                                                                .worker
+                                                                                ?.name ??
+                                                                            '',
+                                                                    },
+                                                                )
+                                                            }
+                                                            className="relative flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-1.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-all duration-350 hover:bg-indigo-700"
+                                                        >
+                                                            <MessageSquare
+                                                                size={12}
+                                                            />
+                                                            Chat Pekerja
+                                                            {acceptedBid.unread_messages_count >
+                                                                0 && (
+                                                                <span className="absolute -top-1 -right-1 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900">
+                                                                    {
+                                                                        acceptedBid.unread_messages_count
+                                                                    }
+                                                                </span>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
                                     </div>
 
                                     {quest.worker ? (
-                                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-['Oxanium']">
+                                        <div className="flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 font-['Oxanium'] sm:flex-row sm:items-center dark:border-slate-800/50 dark:bg-black/20">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold shrink-0">
-                                                    {quest.worker.name.substring(0, 2).toUpperCase()}
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/10 font-bold text-indigo-600 dark:text-indigo-400">
+                                                    {quest.worker.name
+                                                        .substring(0, 2)
+                                                        .toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <span className="block text-[9px] text-slate-400 uppercase tracking-wider font-semibold">Pekerja Ditugaskan</span>
-                                                    <span className="font-bold text-slate-800 dark:text-white text-sm">{quest.worker.name}</span>
-                                                    <span className="block text-xs text-slate-500">{quest.worker.email}</span>
+                                                    <span className="block text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                        Pekerja Ditugaskan
+                                                    </span>
+                                                    <span className="text-sm font-bold text-slate-800 dark:text-white">
+                                                        {quest.worker.name}
+                                                    </span>
+                                                    <span className="block text-xs text-slate-500">
+                                                        {quest.worker.email}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="py-6 text-center text-slate-400 dark:text-blue-300/40 font-['Oxanium']">
-                                            <Briefcase className="w-8 h-8 mx-auto mb-2 opacity-50 text-indigo-500" />
-                                            <p className="font-bold text-xs uppercase font-['Orbitron']">Belum ada pekerja ditunjuk.</p>
-                                            <p className="text-[11px] text-slate-500">Silakan terima salah satu penawaran masuk pada tab "Pelamar" untuk memulai pengerjaan quest.</p>
+                                        <div className="py-6 text-center font-['Oxanium'] text-slate-400 dark:text-blue-300/40">
+                                            <Briefcase className="mx-auto mb-2 h-8 w-8 text-indigo-500 opacity-50" />
+                                            <p className="font-['Orbitron'] text-xs font-bold uppercase">
+                                                Belum ada pekerja ditunjuk.
+                                            </p>
+                                            <p className="text-[11px] text-slate-500">
+                                                Silakan terima salah satu
+                                                penawaran masuk pada tab
+                                                "Pelamar" untuk memulai
+                                                pengerjaan quest.
+                                            </p>
                                         </div>
                                     )}
 
                                     {quest.status === 'ongoing' && (
-                                        <div className="space-y-4 font-['Oxanium'] border-t border-slate-100 dark:border-slate-800/50 pt-4">
-                                            <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
-                                                Status quest ini adalah <strong>Dalam Pengerjaan</strong>. Pekerja saat ini sedang menyelesaikan deskripsi tugas.
+                                        <div className="space-y-4 border-t border-slate-100 pt-4 font-['Oxanium'] dark:border-slate-800/50">
+                                            <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
+                                                Status quest ini adalah{' '}
+                                                <strong>
+                                                    Dalam Pengerjaan
+                                                </strong>
+                                                . Pekerja saat ini sedang
+                                                menyelesaikan deskripsi tugas.
                                             </p>
-                                            <RevisionHistory quest={quest} viewType="admin_ongoing" />
+                                            <RevisionHistory
+                                                quest={quest}
+                                                viewType="admin_ongoing"
+                                            />
                                         </div>
                                     )}
 
                                     {quest.status === 'approved' && (
-                                        <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center flex flex-col gap-2 font-['Oxanium'] border-t border-slate-100 dark:border-slate-800/50 pt-4">
-                                            <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-indigo-600 dark:text-indigo-400">
-                                                Disetujui & Menunggu Berkas ZIP Final
+                                        <div className="flex flex-col gap-2 rounded-xl border border-t border-indigo-500/20 border-slate-100 bg-indigo-500/10 p-4 pt-4 text-center font-['Oxanium'] dark:border-slate-800/50">
+                                            <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
+                                                Disetujui & Menunggu Berkas ZIP
+                                                Final
                                             </span>
                                             <p className="text-[11px] text-slate-500 dark:text-slate-300">
-                                                Ulasan pengerjaan telah disetujui. Menunggu pekerja menyerahkan berkas proyek ZIP final agar quest ditutup dan rewards RPG didistribusikan.
+                                                Ulasan pengerjaan telah
+                                                disetujui. Menunggu pekerja
+                                                menyerahkan berkas proyek ZIP
+                                                final agar quest ditutup dan
+                                                rewards RPG didistribusikan.
                                             </p>
                                         </div>
                                     )}
 
                                     {quest.status === 'submitted' && (
-                                        <div className="space-y-5 font-['Oxanium'] border-t border-slate-100 dark:border-slate-800/50 pt-4">
-                                            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center flex flex-col gap-1">
-                                                <span className="block text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-amber-600 dark:text-amber-400">
+                                        <div className="space-y-5 border-t border-slate-100 pt-4 font-['Oxanium'] dark:border-slate-800/50">
+                                            <div className="flex flex-col gap-1 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-center">
+                                                <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
                                                     Penyerahan Tugas Masuk
                                                 </span>
-                                                <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
-                                                    Pekerja telah selesai melakukan penyerahan tugas awal. Silakan review hasil pekerjaannya di bawah ini.
+                                                <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
+                                                    Pekerja telah selesai
+                                                    melakukan penyerahan tugas
+                                                    awal. Silakan review hasil
+                                                    pekerjaannya di bawah ini.
                                                 </p>
                                             </div>
 
-                                            <RevisionHistory quest={quest} viewType="admin_submitted" />
+                                            <RevisionHistory
+                                                quest={quest}
+                                                viewType="admin_submitted"
+                                            />
 
-                                            <div className="space-y-3.5 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80">
+                                            <div className="space-y-3.5 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs dark:border-slate-800/80 dark:bg-black/20">
                                                 {quest.submission_file && (
                                                     <div className="space-y-1">
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Berkas Pekerjaan Utama (ZIP)</strong>
-                                                        <div className="flex items-center justify-between p-2.5 rounded-xl border border-amber-200/40 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-955/10">
-                                                            <div className="flex items-center gap-2.5 min-w-0">
-                                                                <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
+                                                        <strong className="block text-[10px] tracking-wider text-slate-400 uppercase">
+                                                            Berkas Pekerjaan
+                                                            Utama (ZIP)
+                                                        </strong>
+                                                        <div className="dark:bg-amber-955/10 flex items-center justify-between rounded-xl border border-amber-200/40 bg-amber-500/5 p-2.5 dark:border-amber-500/20">
+                                                            <div className="flex min-w-0 items-center gap-2.5">
+                                                                <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
                                                                 <div className="min-w-0">
-                                                                    <p className="text-xs font-semibold text-slate-750 dark:text-slate-200 truncate">
-                                                                        {quest.submission_file.name}
+                                                                    <p className="text-slate-750 truncate text-xs font-semibold dark:text-slate-200">
+                                                                        {
+                                                                            quest
+                                                                                .submission_file
+                                                                                .name
+                                                                        }
                                                                     </p>
                                                                     <p className="text-[10px] text-slate-400">
-                                                                        {formatBytes(quest.submission_file.size)}
+                                                                        {formatBytes(
+                                                                            quest
+                                                                                .submission_file
+                                                                                .size,
+                                                                        )}
                                                                     </p>
                                                                 </div>
                                                             </div>
                                                             <a
-                                                                href={quest.submission_file.url}
+                                                                href={
+                                                                    quest
+                                                                        .submission_file
+                                                                        .url
+                                                                }
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="flex items-center justify-center p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                                                                className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
                                                                 title="Unduh ZIP di Tab Baru"
                                                             >
-                                                                <Download className="w-4.5 h-4.5" />
+                                                                <Download className="h-4.5 w-4.5" />
                                                             </a>
                                                         </div>
                                                     </div>
@@ -928,62 +1173,100 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                                 {quest.submission_link && (
                                                     <div>
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Link Hasil Pekerjaan</strong>
-                                                        <a href={quest.submission_link} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
-                                                            {quest.submission_link}
+                                                        <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
+                                                            Link Hasil Pekerjaan
+                                                        </strong>
+                                                        <a
+                                                            href={
+                                                                quest.submission_link
+                                                            }
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="font-semibold break-all text-indigo-500 hover:underline"
+                                                        >
+                                                            {
+                                                                quest.submission_link
+                                                            }
                                                         </a>
                                                     </div>
                                                 )}
 
                                                 {quest.submission_note && (
                                                     <div>
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Catatan Pekerja</strong>
-                                                        <p className="text-slate-700 dark:text-slate-300 bg-white/40 dark:bg-black/15 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/40 whitespace-pre-wrap leading-relaxed">
-                                                            {quest.submission_note}
+                                                        <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
+                                                            Catatan Pekerja
+                                                        </strong>
+                                                        <p className="rounded-lg border border-slate-200 bg-white/40 p-2.5 leading-relaxed whitespace-pre-wrap text-slate-700 dark:border-slate-800/40 dark:bg-black/15 dark:text-slate-300">
+                                                            {
+                                                                quest.submission_note
+                                                            }
                                                         </p>
                                                     </div>
                                                 )}
                                             </div>
 
-                                            {!showApproveForm && !showRejectForm && (
-                                                <div className="flex gap-3 border-t border-slate-200 dark:border-slate-800 pt-4">
-                                                    <button
-                                                        onClick={() => setShowApproveForm(true)}
-                                                        className="flex-1 py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-green-600 hover:bg-green-700 shadow-sm transition-colors cursor-pointer"
-                                                    >
-                                                        Setujui & Selesaikan
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setShowRejectForm(true)}
-                                                        className="flex-1 py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-red-605 hover:bg-red-700 shadow-sm transition-colors cursor-pointer"
-                                                    >
-                                                        Tolak / Minta Revisi
-                                                    </button>
-                                                </div>
-                                            )}
+                                            {!showApproveForm &&
+                                                !showRejectForm && (
+                                                    <div className="flex gap-3 border-t border-slate-200 pt-4 dark:border-slate-800">
+                                                        <button
+                                                            onClick={() =>
+                                                                setShowApproveForm(
+                                                                    true,
+                                                                )
+                                                            }
+                                                            className="flex-1 cursor-pointer rounded-xl bg-green-600 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-colors hover:bg-green-700"
+                                                        >
+                                                            Setujui & Selesaikan
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                setShowRejectForm(
+                                                                    true,
+                                                                )
+                                                            }
+                                                            className="bg-red-605 flex-1 cursor-pointer rounded-xl py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-colors hover:bg-red-700"
+                                                        >
+                                                            Tolak / Minta Revisi
+                                                        </button>
+                                                    </div>
+                                                )}
 
                                             {showApproveForm && (
-                                                <form onSubmit={handleApproveWork} className="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-4">
-                                                    <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200">
-                                                        Berikan Penilaian & Ulasan Pekerja
+                                                <form
+                                                    onSubmit={handleApproveWork}
+                                                    className="space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800"
+                                                >
+                                                    <h4 className="font-['Orbitron'] text-xs font-bold text-slate-700 uppercase dark:text-blue-200">
+                                                        Berikan Penilaian &
+                                                        Ulasan Pekerja
                                                     </h4>
                                                     <div className="space-y-1">
-                                                        <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                                                        <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                                             Rating Kinerja
                                                         </label>
-                                                        <div className="flex gap-1.5 justify-center py-1">
-                                                            {[1, 2, 3, 4, 5].map((val) => (
+                                                        <div className="flex justify-center gap-1.5 py-1">
+                                                            {[
+                                                                1, 2, 3, 4, 5,
+                                                            ].map((val) => (
                                                                 <button
                                                                     key={val}
                                                                     type="button"
-                                                                    onClick={() => approveForm.setData("rating", val)}
-                                                                    className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
+                                                                    onClick={() =>
+                                                                        approveForm.setData(
+                                                                            'rating',
+                                                                            val,
+                                                                        )
+                                                                    }
+                                                                    className="cursor-pointer transition-transform focus:outline-none active:scale-95"
                                                                 >
                                                                     <Star
-                                                                        className={`w-7 h-7 ${
-                                                                            val <= approveForm.data.rating
-                                                                                ? "text-amber-400 fill-amber-400"
-                                                                                : "text-slate-300 dark:text-slate-600"
+                                                                        className={`h-7 w-7 ${
+                                                                            val <=
+                                                                            approveForm
+                                                                                .data
+                                                                                .rating
+                                                                                ? 'fill-amber-400 text-amber-400'
+                                                                                : 'text-slate-300 dark:text-slate-600'
                                                                         }`}
                                                                     />
                                                                 </button>
@@ -992,33 +1275,48 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                     </div>
 
                                                     <div className="space-y-1">
-                                                        <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                                                        <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                                             Ulasan Anda
                                                         </label>
                                                         <textarea
                                                             placeholder="Berikan ulasan tentang penyelesaian pekerjaan..."
                                                             rows={3}
-                                                            value={approveForm.data.rating_comment}
-                                                            onChange={(e) => approveForm.setData("rating_comment", e.target.value)}
-                                                            className="w-full px-3 py-2 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-white"
+                                                            value={
+                                                                approveForm.data
+                                                                    .rating_comment
+                                                            }
+                                                            onChange={(e) =>
+                                                                approveForm.setData(
+                                                                    'rating_comment',
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
                                                         />
                                                     </div>
 
                                                     <div className="flex gap-2">
                                                         <button
                                                             type="submit"
-                                                            disabled={approveForm.processing}
-                                                            className="flex-1 py-2 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 transition-colors cursor-pointer"
+                                                            disabled={
+                                                                approveForm.processing
+                                                            }
+                                                            className="flex-1 cursor-pointer rounded-xl bg-green-600 py-2 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-green-700 disabled:opacity-50"
                                                         >
-                                                            {approveForm.processing ? "Menyelesaikan..." : "Kirim Ulasan & Setujui"}
+                                                            {approveForm.processing
+                                                                ? 'Menyelesaikan...'
+                                                                : 'Kirim Ulasan & Setujui'}
                                                         </button>
                                                         <button
                                                             type="button"
                                                             onClick={() => {
-                                                                setShowApproveForm(false);
+                                                                setShowApproveForm(
+                                                                    false,
+                                                                );
                                                                 approveForm.reset();
                                                             }}
-                                                            className="px-3 py-2 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors"
+                                                            className="rounded-xl px-3 py-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-500 uppercase transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
                                                         >
                                                             Batal
                                                         </button>
@@ -1027,39 +1325,61 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                             )}
 
                                             {showRejectForm && (
-                                                <form onSubmit={handleRejectWork} className="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-4">
-                                                    <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200">
+                                                <form
+                                                    onSubmit={handleRejectWork}
+                                                    className="space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800"
+                                                >
+                                                    <h4 className="font-['Orbitron'] text-xs font-bold text-slate-700 uppercase dark:text-blue-200">
                                                         Kirim Feedback Revisi
                                                     </h4>
                                                     <div className="space-y-1">
-                                                        <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
-                                                            Detail Revisi yang Harus Diperbaiki <span className="text-red-500">*</span>
+                                                        <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                                            Detail Revisi yang
+                                                            Harus Diperbaiki{' '}
+                                                            <span className="text-red-500">
+                                                                *
+                                                            </span>
                                                         </label>
                                                         <textarea
                                                             required
                                                             placeholder="Jelaskan secara rinci apa saja yang perlu diperbaiki pekerja..."
                                                             rows={4}
-                                                            value={rejectForm.data.revision_note}
-                                                            onChange={(e) => rejectForm.setData("revision_note", e.target.value)}
-                                                            className="w-full px-3 py-2 bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:border-red-500 text-slate-800 dark:text-white"
+                                                            value={
+                                                                rejectForm.data
+                                                                    .revision_note
+                                                            }
+                                                            onChange={(e) =>
+                                                                rejectForm.setData(
+                                                                    'revision_note',
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
                                                         />
                                                     </div>
 
                                                     <div className="flex gap-2">
                                                         <button
                                                             type="submit"
-                                                            disabled={rejectForm.processing}
-                                                            className="flex-1 py-2 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition-colors cursor-pointer"
+                                                            disabled={
+                                                                rejectForm.processing
+                                                            }
+                                                            className="flex-1 cursor-pointer rounded-xl bg-red-600 py-2 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-red-700 disabled:opacity-50"
                                                         >
-                                                            {rejectForm.processing ? "Mengirim..." : "Kirim Catatan Revisi"}
+                                                            {rejectForm.processing
+                                                                ? 'Mengirim...'
+                                                                : 'Kirim Catatan Revisi'}
                                                         </button>
                                                         <button
                                                             type="button"
                                                             onClick={() => {
-                                                                setShowRejectForm(false);
+                                                                setShowRejectForm(
+                                                                    false,
+                                                                );
                                                                 rejectForm.reset();
                                                             }}
-                                                            className="px-3 py-2 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors"
+                                                            className="rounded-xl px-3 py-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-500 uppercase transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
                                                         >
                                                             Batal
                                                         </button>
@@ -1070,64 +1390,92 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     )}
 
                                     {quest.status === 'completed' && (
-                                        <div className="space-y-4 font-['Oxanium'] border-t border-slate-100 dark:border-slate-800/50 pt-4">
-                                            <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center flex flex-col gap-1">
-                                                <Check className="w-8 h-8 text-green-500 mx-auto" />
-                                                <span className="block text-xs font-bold uppercase tracking-wider text-green-600 dark:text-green-400 font-['Orbitron']">
+                                        <div className="space-y-4 border-t border-slate-100 pt-4 font-['Oxanium'] dark:border-slate-800/50">
+                                            <div className="flex flex-col gap-1 rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-center">
+                                                <Check className="mx-auto h-8 w-8 text-green-500" />
+                                                <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-green-600 uppercase dark:text-green-400">
                                                     Quest Selesai
                                                 </span>
-                                                <p className="text-xs text-slate-500 dark:text-blue-300/60 leading-relaxed">
-                                                    Pekerjaan telah disetujui, berkas final ZIP telah terkirim, dan quest diselesaikan secara resmi.
+                                                <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
+                                                    Pekerjaan telah disetujui,
+                                                    berkas final ZIP telah
+                                                    terkirim, dan quest
+                                                    diselesaikan secara resmi.
                                                 </p>
                                             </div>
 
                                             {quest.rating && (
-                                                <div className="p-4 rounded-xl bg-slate-50/50 dark:bg-black/20 border border-slate-200/20 dark:border-slate-500/5 space-y-2 text-center">
-                                                    <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold font-['Oxanium']">Ulasan Penilaian Anda</span>
+                                                <div className="space-y-2 rounded-xl border border-slate-200/20 bg-slate-50/50 p-4 text-center dark:border-slate-500/5 dark:bg-black/20">
+                                                    <span className="block font-['Oxanium'] text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                        Ulasan Penilaian Anda
+                                                    </span>
                                                     <div className="flex justify-center gap-1 font-['Oxanium']">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star
-                                                                key={star}
-                                                                className={`w-5 h-5 ${
-                                                                    star <= (quest.rating ?? 0)
-                                                                        ? 'text-amber-400 fill-amber-400'
-                                                                        : 'text-slate-300 dark:text-slate-600'
-                                                                }`}
-                                                            />
-                                                        ))}
+                                                        {[1, 2, 3, 4, 5].map(
+                                                            (star) => (
+                                                                <Star
+                                                                    key={star}
+                                                                    className={`h-5 w-5 ${
+                                                                        star <=
+                                                                        (quest.rating ??
+                                                                            0)
+                                                                            ? 'fill-amber-400 text-amber-400'
+                                                                            : 'text-slate-300 dark:text-slate-600'
+                                                                    }`}
+                                                                />
+                                                            ),
+                                                        )}
                                                     </div>
                                                     {quest.rating_comment && (
-                                                        <p className="text-xs italic text-slate-600 dark:text-slate-300 bg-white/40 dark:bg-black/10 p-2.5 rounded-lg border border-slate-100 dark:border-blue-500/5 font-['Oxanium']">
-                                                            "{quest.rating_comment}"
+                                                        <p className="rounded-lg border border-slate-100 bg-white/40 p-2.5 font-['Oxanium'] text-xs text-slate-600 italic dark:border-blue-500/5 dark:bg-black/10 dark:text-slate-300">
+                                                            "
+                                                            {
+                                                                quest.rating_comment
+                                                            }
+                                                            "
                                                         </p>
                                                     )}
                                                 </div>
                                             )}
 
-                                            <div className="space-y-3 text-xs bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                                            <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs dark:border-slate-800 dark:bg-black/20">
                                                 {quest.submission_file && (
                                                     <div className="space-y-1">
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px]">Berkas Proyek Final (ZIP)</strong>
-                                                        <div className="flex items-center justify-between p-2.5 rounded-xl border border-amber-200/40 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-955/10">
-                                                            <div className="flex items-center gap-2.5 min-w-0">
-                                                                <FileArchive className="w-5 h-5 text-amber-500 shrink-0" />
+                                                        <strong className="block text-[10px] tracking-wider text-slate-400 uppercase">
+                                                            Berkas Proyek Final
+                                                            (ZIP)
+                                                        </strong>
+                                                        <div className="dark:bg-amber-955/10 flex items-center justify-between rounded-xl border border-amber-200/40 bg-amber-500/5 p-2.5 dark:border-amber-500/20">
+                                                            <div className="flex min-w-0 items-center gap-2.5">
+                                                                <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
                                                                 <div className="min-w-0">
-                                                                    <p className="text-xs font-semibold text-slate-750 dark:text-slate-200 truncate">
-                                                                        {quest.submission_file.name}
+                                                                    <p className="text-slate-750 truncate text-xs font-semibold dark:text-slate-200">
+                                                                        {
+                                                                            quest
+                                                                                .submission_file
+                                                                                .name
+                                                                        }
                                                                     </p>
                                                                     <p className="text-[10px] text-slate-400">
-                                                                        {formatBytes(quest.submission_file.size)}
+                                                                        {formatBytes(
+                                                                            quest
+                                                                                .submission_file
+                                                                                .size,
+                                                                        )}
                                                                     </p>
                                                                 </div>
                                                             </div>
                                                             <a
-                                                                href={quest.submission_file.url}
+                                                                href={
+                                                                    quest
+                                                                        .submission_file
+                                                                        .url
+                                                                }
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="flex items-center justify-center p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                                                                className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
                                                                 title="Unduh ZIP di Tab Baru"
                                                             >
-                                                                <Download className="w-4.5 h-4.5" />
+                                                                <Download className="h-4.5 w-4.5" />
                                                             </a>
                                                         </div>
                                                     </div>
@@ -1135,9 +1483,21 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                                 {quest.submission_link && (
                                                     <div>
-                                                        <strong className="block text-slate-400 uppercase tracking-wider text-[10px] mb-1">Tautan Demo Pekerjaan</strong>
-                                                        <a href={quest.submission_link} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline break-all font-semibold">
-                                                            {quest.submission_link}
+                                                        <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
+                                                            Tautan Demo
+                                                            Pekerjaan
+                                                        </strong>
+                                                        <a
+                                                            href={
+                                                                quest.submission_link
+                                                            }
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="font-semibold break-all text-indigo-500 hover:underline"
+                                                        >
+                                                            {
+                                                                quest.submission_link
+                                                            }
                                                         </a>
                                                     </div>
                                                 )}
@@ -1149,74 +1509,110 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                             {/* TAB 3: BIDS / CANDIDATES */}
                             {activeTab === 'bids' && (
-                                <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-5">
-                                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                                        <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider">
+                                <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                    <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                        <h3 className="font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
                                             Pelamar yang Mendaftar
                                         </h3>
-                                        <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300">
+                                        <span className="rounded-md border border-purple-500/20 bg-purple-500/10 px-2 py-0.5 text-xs font-semibold text-purple-600 dark:text-purple-300">
                                             {bids.length} Pelamar
                                         </span>
                                     </div>
 
                                     {bids.length === 0 ? (
-                                        <div className="py-12 text-center text-slate-400 dark:text-blue-300/40 font-['Oxanium']">
-                                            <Briefcase className="w-10 h-10 mx-auto mb-2 opacity-50 text-indigo-500" />
-                                            <p className="font-bold text-xs uppercase font-['Orbitron']">Belum ada pelamar.</p>
-                                            <p className="text-[11px] text-slate-500">Siswa belum mengajukan proposal penawaran untuk quest ini.</p>
+                                        <div className="py-12 text-center font-['Oxanium'] text-slate-400 dark:text-blue-300/40">
+                                            <Briefcase className="mx-auto mb-2 h-10 w-10 text-indigo-500 opacity-50" />
+                                            <p className="font-['Orbitron'] text-xs font-bold uppercase">
+                                                Belum ada pelamar.
+                                            </p>
+                                            <p className="text-[11px] text-slate-500">
+                                                Siswa belum mengajukan proposal
+                                                penawaran untuk quest ini.
+                                            </p>
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[750px] overflow-y-auto pr-1">
+                                        <div className="grid max-h-[750px] grid-cols-1 gap-4 overflow-y-auto pr-1 sm:grid-cols-2">
                                             {bids.map((bid) => (
                                                 <div
                                                     key={bid._id}
-                                                    className={`p-4 rounded-xl border flex flex-col justify-between gap-3.5 transition-all duration-300 ${
-                                                        bid.status === "accepted"
-                                                            ? "bg-green-500/10 border-green-500/35 dark:border-green-500/20"
-                                                            : bid.status === "rejected"
-                                                            ? "bg-slate-100/50 dark:bg-[#111425] border-slate-200/50 dark:border-slate-800/40 opacity-65"
-                                                            : "bg-slate-50/50 dark:bg-black/20 border-slate-200 dark:border-slate-800/60 hover:border-purple-500/50"
+                                                    className={`flex flex-col justify-between gap-3.5 rounded-xl border p-4 transition-all duration-300 ${
+                                                        bid.status ===
+                                                        'accepted'
+                                                            ? 'border-green-500/35 bg-green-500/10 dark:border-green-500/20'
+                                                            : bid.status ===
+                                                                'rejected'
+                                                              ? 'border-slate-200/50 bg-slate-100/50 opacity-65 dark:border-slate-800/40 dark:bg-[#111425]'
+                                                              : 'border-slate-200 bg-slate-50/50 hover:border-purple-500/50 dark:border-slate-800/60 dark:bg-black/20'
                                                     }`}
                                                 >
-                                                    <div className="font-['Oxanium'] space-y-3">
+                                                    <div className="space-y-3 font-['Oxanium']">
                                                         <div className="flex items-start justify-between gap-3">
-                                                            <div className="flex items-center gap-2.5 min-w-0">
-                                                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-xs font-bold text-white flex items-center justify-center shrink-0">
-                                                                    {bid.student.name.substring(0, 2).toUpperCase()}
+                                                            <div className="flex min-w-0 items-center gap-2.5">
+                                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-xs font-bold text-white">
+                                                                    {bid.student.name
+                                                                        .substring(
+                                                                            0,
+                                                                            2,
+                                                                        )
+                                                                        .toUpperCase()}
                                                                 </div>
                                                                 <div className="min-w-0">
-                                                                    <span className="font-extrabold text-xs text-slate-800 dark:text-white block truncate">
-                                                                        {bid.student.name}
+                                                                    <span className="block truncate text-xs font-extrabold text-slate-800 dark:text-white">
+                                                                        {
+                                                                            bid
+                                                                                .student
+                                                                                .name
+                                                                        }
                                                                     </span>
-                                                                    <span className="text-[10px] text-slate-400 block truncate">
-                                                                        {bid.student.email}
+                                                                    <span className="block truncate text-[10px] text-slate-400">
+                                                                        {
+                                                                            bid
+                                                                                .student
+                                                                                .email
+                                                                        }
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <span className="font-black text-purple-600 dark:text-purple-300 text-xs font-['Orbitron'] shrink-0 ml-1">
-                                                                {formatCurrency(bid.bid_amount)}
+                                                            <span className="ml-1 shrink-0 font-['Orbitron'] text-xs font-black text-purple-600 dark:text-purple-300">
+                                                                {formatCurrency(
+                                                                    bid.bid_amount,
+                                                                )}
                                                             </span>
                                                         </div>
 
-                                                        <div className="text-xs text-slate-500 dark:text-slate-300 space-y-1.5 bg-white/50 dark:bg-[#090b16] p-2.5 rounded-lg border border-slate-100 dark:border-slate-800/40">
+                                                        <div className="space-y-1.5 rounded-lg border border-slate-100 bg-white/50 p-2.5 text-xs text-slate-500 dark:border-slate-800/40 dark:bg-[#090b16] dark:text-slate-300">
                                                             <p className="line-clamp-3 leading-relaxed">
-                                                                <strong className="block text-[8px] text-slate-400 uppercase tracking-wider mb-0.5 font-['Orbitron']">Proposal</strong>
+                                                                <strong className="mb-0.5 block font-['Orbitron'] text-[8px] tracking-wider text-slate-400 uppercase">
+                                                                    Proposal
+                                                                </strong>
                                                                 {bid.proposal}
                                                             </p>
                                                             <div className="flex gap-2 pt-1">
                                                                 <a
-                                                                    href={bid.cv.startsWith("http") ? bid.cv : "#"}
+                                                                    href={
+                                                                        bid.cv.startsWith(
+                                                                            'http',
+                                                                        )
+                                                                            ? bid.cv
+                                                                            : '#'
+                                                                    }
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="flex-1 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-[10px] text-center font-bold text-slate-600 dark:text-indigo-300 truncate"
+                                                                    className="flex-1 truncate rounded bg-slate-100 py-1 text-center text-[10px] font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-indigo-300 dark:hover:bg-slate-800"
                                                                 >
                                                                     CV Link
                                                                 </a>
                                                                 <a
-                                                                    href={bid.portfolio.startsWith("http") ? bid.portfolio : "#"}
+                                                                    href={
+                                                                        bid.portfolio.startsWith(
+                                                                            'http',
+                                                                        )
+                                                                            ? bid.portfolio
+                                                                            : '#'
+                                                                    }
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="flex-1 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-[10px] text-center font-bold text-slate-600 dark:text-indigo-300 truncate"
+                                                                    className="flex-1 truncate rounded bg-slate-100 py-1 text-center text-[10px] font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-indigo-300 dark:hover:bg-slate-800"
                                                                 >
                                                                     Portfolio
                                                                 </a>
@@ -1224,30 +1620,52 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex gap-2 w-full pt-1">
-                                                        {canAccept && bid.status === 'pending' && (
-                                                            <button
-                                                                onClick={() => handleAcceptBid(bid._id)}
-                                                                className="flex-1 py-1.5 rounded-lg text-[10px] font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-green-600 hover:bg-green-700 shadow-sm transition-all duration-300 cursor-pointer animate-pulse"
-                                                            >
-                                                                Terima
-                                                            </button>
-                                                        )}
+                                                    <div className="flex w-full gap-2 pt-1">
+                                                        {canAccept &&
+                                                            bid.status ===
+                                                                'pending' && (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleAcceptBid(
+                                                                            bid._id,
+                                                                        )
+                                                                    }
+                                                                    className="flex-1 animate-pulse cursor-pointer rounded-lg bg-green-600 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase shadow-sm transition-all duration-300 hover:bg-green-700"
+                                                                >
+                                                                    Terima
+                                                                </button>
+                                                            )}
                                                         <button
-                                                            onClick={() => handleDeleteBid(bid._id)}
-                                                            className="px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 dark:hover:bg-red-950/20 bg-slate-100 dark:bg-slate-800 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                                                            onClick={() =>
+                                                                handleDeleteBid(
+                                                                    bid._id,
+                                                                )
+                                                            }
+                                                            className="flex shrink-0 cursor-pointer items-center justify-center rounded-lg bg-slate-100 px-2.5 py-1.5 text-slate-500 transition-colors hover:bg-red-500/10 hover:text-red-500 dark:bg-slate-800 dark:hover:bg-red-950/20"
                                                             title="Hapus Bid Penawaran"
                                                         >
                                                             <Trash2 size={12} />
                                                         </button>
                                                         <button
-                                                            onClick={() => setSelectedChatBid({ id: bid._id, name: bid.student.name })}
-                                                            className="flex-1 py-1.5 rounded-lg text-[10px] font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all duration-300 cursor-pointer relative"
+                                                            onClick={() =>
+                                                                setSelectedChatBid(
+                                                                    {
+                                                                        id: bid._id,
+                                                                        name: bid
+                                                                            .student
+                                                                            .name,
+                                                                    },
+                                                                )
+                                                            }
+                                                            className="relative flex-1 cursor-pointer rounded-lg bg-indigo-600 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase shadow-sm transition-all duration-300 hover:bg-indigo-700"
                                                         >
                                                             Chat
-                                                            {bid.unread_messages_count > 0 && (
-                                                                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
-                                                                    {bid.unread_messages_count}
+                                                            {bid.unread_messages_count >
+                                                                0 && (
+                                                                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 animate-pulse items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900">
+                                                                    {
+                                                                        bid.unread_messages_count
+                                                                    }
                                                                 </span>
                                                             )}
                                                         </button>
@@ -1263,67 +1681,103 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                             {activeTab === 'arbitration' && (
                                 <div className="space-y-6">
                                     {/* Action Control Panel */}
-                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-6">
-                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                                            <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider flex items-center gap-2">
-                                                <TrendingUp size={16} className="text-indigo-500" />
+                                    <div className="space-y-6 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                        <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                            <h3 className="flex items-center gap-2 font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
+                                                <TrendingUp
+                                                    size={16}
+                                                    className="text-indigo-500"
+                                                />
                                                 Pusat Kontrol Administratif
                                             </h3>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-['Oxanium']">
+                                        <div className="grid grid-cols-1 gap-6 font-['Oxanium'] md:grid-cols-2">
                                             {/* Extend Deadline Form */}
-                                            <form onSubmit={handleExtendDeadline} className="space-y-4 bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                                                <h4 className="text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-slate-300">
+                                            <form
+                                                onSubmit={handleExtendDeadline}
+                                                className="space-y-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800/50 dark:bg-black/20"
+                                            >
+                                                <h4 className="font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
                                                     Perpanjang Tenggat Waktu
                                                 </h4>
                                                 <p className="text-[11px] text-slate-400">
-                                                    Ubah batas akhir pengiriman untuk memberikan waktu tambahan kepada pekerja.
+                                                    Ubah batas akhir pengiriman
+                                                    untuk memberikan waktu
+                                                    tambahan kepada pekerja.
                                                 </p>
                                                 <div className="space-y-2">
                                                     <input
                                                         type="datetime-local"
-                                                        value={extendDeadlineForm.data.deadline}
-                                                        onChange={(e) => extendDeadlineForm.setData('deadline', e.target.value)}
-                                                        className="w-full px-3 py-2 bg-white dark:bg-[#0c122c] border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs text-slate-850 dark:text-white"
+                                                        value={
+                                                            extendDeadlineForm
+                                                                .data.deadline
+                                                        }
+                                                        onChange={(e) =>
+                                                            extendDeadlineForm.setData(
+                                                                'deadline',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="text-slate-850 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-[#0c122c] dark:text-white"
                                                     />
-                                                    {extendDeadlineForm.errors.deadline && (
-                                                        <p className="text-xs text-red-500 font-semibold">{extendDeadlineForm.errors.deadline}</p>
+                                                    {extendDeadlineForm.errors
+                                                        .deadline && (
+                                                        <p className="text-xs font-semibold text-red-500">
+                                                            {
+                                                                extendDeadlineForm
+                                                                    .errors
+                                                                    .deadline
+                                                            }
+                                                        </p>
                                                     )}
                                                 </div>
                                                 <button
                                                     type="submit"
-                                                    disabled={extendDeadlineForm.processing}
-                                                    className="w-full py-2 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition-colors cursor-pointer"
+                                                    disabled={
+                                                        extendDeadlineForm.processing
+                                                    }
+                                                    className="w-full cursor-pointer rounded-xl bg-indigo-600 py-2 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-indigo-700 disabled:opacity-50"
                                                 >
-                                                    {extendDeadlineForm.processing ? 'Memperbarui...' : 'Perpanjang Deadline'}
+                                                    {extendDeadlineForm.processing
+                                                        ? 'Memperbarui...'
+                                                        : 'Perpanjang Deadline'}
                                                 </button>
                                             </form>
 
                                             {/* Quick Recovery Actions */}
-                                            <div className="space-y-4 bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50 flex flex-col justify-between">
+                                            <div className="flex flex-col justify-between space-y-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800/50 dark:bg-black/20">
                                                 <div>
-                                                    <h4 className="text-xs font-bold uppercase font-['Orbitron'] tracking-wider text-slate-700 dark:text-slate-300">
+                                                    <h4 className="font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
                                                         Tindakan Pemulihan Cepat
                                                     </h4>
-                                                    <p className="text-[11px] text-slate-400 mt-1">
-                                                        Gunakan opsi di bawah ini jika terjadi kemacetan pengerjaan atau perselisihan sepihak.
+                                                    <p className="mt-1 text-[11px] text-slate-400">
+                                                        Gunakan opsi di bawah
+                                                        ini jika terjadi
+                                                        kemacetan pengerjaan
+                                                        atau perselisihan
+                                                        sepihak.
                                                     </p>
                                                 </div>
                                                 <div className="grid grid-cols-1 gap-2 pt-2">
                                                     <button
                                                         type="button"
-                                                        onClick={handleReopenBidding}
-                                                        className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-amber-600 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all cursor-pointer text-center"
+                                                        onClick={
+                                                            handleReopenBidding
+                                                        }
+                                                        className="w-full cursor-pointer rounded-xl border border-amber-500/20 bg-amber-500/10 py-2.5 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase transition-all hover:bg-amber-500/20 dark:text-amber-300"
                                                     >
                                                         Buka Kembali Bidding
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        onClick={handleForceCancel}
-                                                        className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-red-600 dark:text-red-300 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all cursor-pointer text-center"
+                                                        onClick={
+                                                            handleForceCancel
+                                                        }
+                                                        className="w-full cursor-pointer rounded-xl border border-red-500/20 bg-red-500/10 py-2.5 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase transition-all hover:bg-red-500/20 dark:text-red-300"
                                                     >
-                                                        Batalkan Quest & Refund Escrow
+                                                        Batalkan Quest & Refund
+                                                        Escrow
                                                     </button>
                                                 </div>
                                             </div>
@@ -1331,234 +1785,525 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     </div>
 
                                     {/* Dispute & Arbitration Panel */}
-                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-6">
-                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                                            <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider flex items-center gap-2">
-                                                <ShieldAlert size={16} className="text-red-500" />
-                                                Arbitrase Penyelidikan & Sengketa
+                                    <div className="space-y-6 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                        <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                            <h3 className="flex items-center gap-2 font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
+                                                <ShieldAlert
+                                                    size={16}
+                                                    className="text-red-500"
+                                                />
+                                                Arbitrase Penyelidikan &
+                                                Sengketa
                                             </h3>
-                                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
-                                                quest.status === 'disputed' 
-                                                    ? 'bg-red-500/10 border border-red-500/20 text-red-650 dark:text-red-405 animate-pulse'
-                                                    : quest.dispute?.status?.startsWith('resolved')
-                                                    ? 'bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400'
-                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
-                                            }`}>
-                                                {quest.status === 'disputed' ? 'Dispute Aktif' : quest.dispute?.status?.startsWith('resolved') ? 'Selesai' : 'Tidak Ada Sengketa'}
+                                            <span
+                                                className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
+                                                    quest.status === 'disputed'
+                                                        ? 'text-red-650 dark:text-red-405 animate-pulse border border-red-500/20 bg-red-500/10'
+                                                        : quest.dispute?.status?.startsWith(
+                                                                'resolved',
+                                                            )
+                                                          ? 'border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
+                                                          : 'bg-slate-100 text-slate-400 dark:bg-slate-800'
+                                                }`}
+                                            >
+                                                {quest.status === 'disputed'
+                                                    ? 'Dispute Aktif'
+                                                    : quest.dispute?.status?.startsWith(
+                                                            'resolved',
+                                                        )
+                                                      ? 'Selesai'
+                                                      : 'Tidak Ada Sengketa'}
                                             </span>
                                         </div>
 
                                         {quest.dispute ? (
                                             <div className="space-y-6 font-['Oxanium']">
-                                                <div className="p-4 rounded-xl bg-red-500/5 dark:bg-red-950/10 border border-red-200/20 dark:border-red-500/10 space-y-2">
+                                                <div className="space-y-2 rounded-xl border border-red-200/20 bg-red-500/5 p-4 dark:border-red-500/10 dark:bg-red-950/10">
                                                     <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                                        <span>Diajukan oleh: <strong className="text-slate-700 dark:text-white">{quest.dispute.filer_name}</strong></span>
-                                                        <span>Tanggal: {quest.dispute.ruled_at ? formatDate(quest.dispute.ruled_at) : 'Baru saja'}</span>
+                                                        <span>
+                                                            Diajukan oleh:{' '}
+                                                            <strong className="text-slate-700 dark:text-white">
+                                                                {
+                                                                    quest
+                                                                        .dispute
+                                                                        .filer_name
+                                                                }
+                                                            </strong>
+                                                        </span>
+                                                        <span>
+                                                            Tanggal:{' '}
+                                                            {quest.dispute
+                                                                .ruled_at
+                                                                ? formatDate(
+                                                                      quest
+                                                                          .dispute
+                                                                          .ruled_at,
+                                                                  )
+                                                                : 'Baru saja'}
+                                                        </span>
                                                     </div>
-                                                    <p className="text-xs text-slate-650 dark:text-red-305 italic bg-white/40 dark:bg-black/10 p-3 rounded-lg border border-slate-100 dark:border-red-500/5">
+                                                    <p className="text-slate-650 dark:text-red-305 rounded-lg border border-slate-100 bg-white/40 p-3 text-xs italic dark:border-red-500/5 dark:bg-black/10">
                                                         "{quest.dispute.reason}"
                                                     </p>
                                                 </div>
 
-                                                {quest.dispute.status?.startsWith('resolved') ? (
-                                                    <div className="p-4 rounded-xl bg-green-500/5 dark:bg-green-950/10 border border-green-200/20 dark:border-green-500/10 space-y-3">
-                                                        <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-green-600 dark:text-green-400">
-                                                            Keputusan Arbitrase Admin
+                                                {quest.dispute.status?.startsWith(
+                                                    'resolved',
+                                                ) ? (
+                                                    <div className="space-y-3 rounded-xl border border-green-200/20 bg-green-500/5 p-4 dark:border-green-500/10 dark:bg-green-950/10">
+                                                        <h4 className="font-['Orbitron'] text-xs font-bold text-green-600 uppercase dark:text-green-400">
+                                                            Keputusan Arbitrase
+                                                            Admin
                                                         </h4>
                                                         <div className="grid grid-cols-2 gap-4 text-xs">
                                                             <div>
-                                                                <span className="block text-slate-400 text-[10px] uppercase font-bold">Ruling</span>
-                                                                <span className="font-bold text-slate-800 dark:text-white uppercase">
-                                                                    {['refund', 'refund_creator'].includes(quest.dispute.ruling ?? '') && 'Refund Penuh Ke Pembuat'}
-                                                                    {['pay_worker', 'release_payout'].includes(quest.dispute.ruling ?? '') && 'Bayar Penuh Ke Pekerja'}
-                                                                    {quest.dispute.ruling === 'split' && `Bagi Hasil (${quest.dispute.split_percentage}% Pekerja)`}
+                                                                <span className="block text-[10px] font-bold text-slate-400 uppercase">
+                                                                    Ruling
+                                                                </span>
+                                                                <span className="font-bold text-slate-800 uppercase dark:text-white">
+                                                                    {[
+                                                                        'refund',
+                                                                        'refund_creator',
+                                                                    ].includes(
+                                                                        quest
+                                                                            .dispute
+                                                                            .ruling ??
+                                                                            '',
+                                                                    ) &&
+                                                                        'Refund Penuh Ke Pembuat'}
+                                                                    {[
+                                                                        'pay_worker',
+                                                                        'release_payout',
+                                                                    ].includes(
+                                                                        quest
+                                                                            .dispute
+                                                                            .ruling ??
+                                                                            '',
+                                                                    ) &&
+                                                                        'Bayar Penuh Ke Pekerja'}
+                                                                    {quest
+                                                                        .dispute
+                                                                        .ruling ===
+                                                                        'split' &&
+                                                                        `Bagi Hasil (${quest.dispute.split_percentage}% Pekerja)`}
                                                                 </span>
                                                             </div>
-                                                            {quest.dispute.split_percentage !== undefined && (
+                                                            {quest.dispute
+                                                                .split_percentage !==
+                                                                undefined && (
                                                                 <div>
-                                                                    <span className="block text-slate-400 text-[10px] uppercase font-bold">Split Persentase</span>
+                                                                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
+                                                                        Split
+                                                                        Persentase
+                                                                    </span>
                                                                     <span className="font-bold text-slate-800 dark:text-white">
-                                                                        {quest.dispute.split_percentage}% Pekerja / {100 - (quest.dispute.split_percentage ?? 0)}% Pembuat
+                                                                        {
+                                                                            quest
+                                                                                .dispute
+                                                                                .split_percentage
+                                                                        }
+                                                                        %
+                                                                        Pekerja
+                                                                        /{' '}
+                                                                        {100 -
+                                                                            (quest
+                                                                                .dispute
+                                                                                .split_percentage ??
+                                                                                0)}
+                                                                        %
+                                                                        Pembuat
                                                                     </span>
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="pt-2 border-t border-green-500/10 text-xs">
-                                                            <span className="block text-slate-400 text-[10px] uppercase font-bold mb-1">Catatan Keputusan</span>
-                                                            <p className="text-slate-600 dark:text-green-300 italic font-medium">"{quest.dispute.note}"</p>
+                                                        <div className="border-t border-green-500/10 pt-2 text-xs">
+                                                            <span className="mb-1 block text-[10px] font-bold text-slate-400 uppercase">
+                                                                Catatan
+                                                                Keputusan
+                                                            </span>
+                                                            <p className="font-medium text-slate-600 italic dark:text-green-300">
+                                                                "
+                                                                {
+                                                                    quest
+                                                                        .dispute
+                                                                        .note
+                                                                }
+                                                                "
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <form onSubmit={handleArbitrate} className="space-y-4 bg-slate-50/50 dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                                                        <h4 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-slate-350 tracking-wider">
-                                                            Formulir Penyelesaian Sengketa (Verdict)
+                                                    <form
+                                                        onSubmit={
+                                                            handleArbitrate
+                                                        }
+                                                        className="space-y-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800/50 dark:bg-black/20"
+                                                    >
+                                                        <h4 className="dark:text-slate-350 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-800 uppercase">
+                                                            Formulir
+                                                            Penyelesaian
+                                                            Sengketa (Verdict)
                                                         </h4>
 
-                                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                                            <label className={`p-3 rounded-xl border text-center cursor-pointer transition-all ${
-                                                                arbitrateForm.data.ruling === 'refund'
-                                                                    ? 'bg-red-500/10 border-red-500 text-red-650 dark:text-red-300 font-bold shadow-sm'
-                                                                    : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-500'
-                                                            }`}>
+                                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                                            <label
+                                                                className={`cursor-pointer rounded-xl border p-3 text-center transition-all ${
+                                                                    arbitrateForm
+                                                                        .data
+                                                                        .ruling ===
+                                                                    'refund'
+                                                                        ? 'text-red-650 border-red-500 bg-red-500/10 font-bold shadow-sm dark:text-red-300'
+                                                                        : 'border-slate-200 bg-white text-slate-500 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                                }`}
+                                                            >
                                                                 <input
                                                                     type="radio"
                                                                     name="ruling"
                                                                     value="refund"
-                                                                    checked={arbitrateForm.data.ruling === 'refund'}
-                                                                    onChange={() => arbitrateForm.setData('ruling', 'refund')}
+                                                                    checked={
+                                                                        arbitrateForm
+                                                                            .data
+                                                                            .ruling ===
+                                                                        'refund'
+                                                                    }
+                                                                    onChange={() =>
+                                                                        arbitrateForm.setData(
+                                                                            'ruling',
+                                                                            'refund',
+                                                                        )
+                                                                    }
                                                                     className="sr-only"
                                                                 />
-                                                                <span className="block text-xs font-['Orbitron'] uppercase">Refund Pembuat</span>
-                                                                <span className="text-[10px] text-slate-400 block mt-0.5">100% dana ke pembuat</span>
+                                                                <span className="block font-['Orbitron'] text-xs uppercase">
+                                                                    Refund
+                                                                    Pembuat
+                                                                </span>
+                                                                <span className="mt-0.5 block text-[10px] text-slate-400">
+                                                                    100% dana ke
+                                                                    pembuat
+                                                                </span>
                                                             </label>
 
-                                                            <label className={`p-3 rounded-xl border text-center cursor-pointer transition-all ${
-                                                                arbitrateForm.data.ruling === 'pay_worker'
-                                                                    ? 'bg-green-500/10 border-green-500 text-green-600 dark:text-green-300 font-bold shadow-sm'
-                                                                    : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-500'
-                                                            }`}>
+                                                            <label
+                                                                className={`cursor-pointer rounded-xl border p-3 text-center transition-all ${
+                                                                    arbitrateForm
+                                                                        .data
+                                                                        .ruling ===
+                                                                    'pay_worker'
+                                                                        ? 'border-green-500 bg-green-500/10 font-bold text-green-600 shadow-sm dark:text-green-300'
+                                                                        : 'border-slate-200 bg-white text-slate-500 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                                }`}
+                                                            >
                                                                 <input
                                                                     type="radio"
                                                                     name="ruling"
                                                                     value="pay_worker"
-                                                                    checked={arbitrateForm.data.ruling === 'pay_worker'}
-                                                                    onChange={() => arbitrateForm.setData('ruling', 'pay_worker')}
+                                                                    checked={
+                                                                        arbitrateForm
+                                                                            .data
+                                                                            .ruling ===
+                                                                        'pay_worker'
+                                                                    }
+                                                                    onChange={() =>
+                                                                        arbitrateForm.setData(
+                                                                            'ruling',
+                                                                            'pay_worker',
+                                                                        )
+                                                                    }
                                                                     className="sr-only"
                                                                 />
-                                                                <span className="block text-xs font-['Orbitron'] uppercase">Bayar Pekerja</span>
-                                                                <span className="text-[10px] text-slate-400 block mt-0.5">100% dana ke pekerja</span>
+                                                                <span className="block font-['Orbitron'] text-xs uppercase">
+                                                                    Bayar
+                                                                    Pekerja
+                                                                </span>
+                                                                <span className="mt-0.5 block text-[10px] text-slate-400">
+                                                                    100% dana ke
+                                                                    pekerja
+                                                                </span>
                                                             </label>
 
-                                                            <label className={`p-3 rounded-xl border text-center cursor-pointer transition-all ${
-                                                                arbitrateForm.data.ruling === 'split'
-                                                                    ? 'bg-indigo-500/10 border-indigo-500 text-indigo-600 dark:text-indigo-300 font-bold shadow-sm'
-                                                                    : 'bg-white dark:bg-[#0c122c] border-slate-200 dark:border-slate-800 text-slate-500'
-                                                            }`}>
+                                                            <label
+                                                                className={`cursor-pointer rounded-xl border p-3 text-center transition-all ${
+                                                                    arbitrateForm
+                                                                        .data
+                                                                        .ruling ===
+                                                                    'split'
+                                                                        ? 'border-indigo-500 bg-indigo-500/10 font-bold text-indigo-600 shadow-sm dark:text-indigo-300'
+                                                                        : 'border-slate-200 bg-white text-slate-500 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                                }`}
+                                                            >
                                                                 <input
                                                                     type="radio"
                                                                     name="ruling"
                                                                     value="split"
-                                                                    checked={arbitrateForm.data.ruling === 'split'}
-                                                                    onChange={() => arbitrateForm.setData('ruling', 'split')}
+                                                                    checked={
+                                                                        arbitrateForm
+                                                                            .data
+                                                                            .ruling ===
+                                                                        'split'
+                                                                    }
+                                                                    onChange={() =>
+                                                                        arbitrateForm.setData(
+                                                                            'ruling',
+                                                                            'split',
+                                                                        )
+                                                                    }
                                                                     className="sr-only"
                                                                 />
-                                                                <span className="block text-xs font-['Orbitron'] uppercase">Bagi Hasil</span>
-                                                                <span className="text-[10px] text-slate-400 block mt-0.5">Bagi dengan rasio custom</span>
+                                                                <span className="block font-['Orbitron'] text-xs uppercase">
+                                                                    Bagi Hasil
+                                                                </span>
+                                                                <span className="mt-0.5 block text-[10px] text-slate-400">
+                                                                    Bagi dengan
+                                                                    rasio custom
+                                                                </span>
                                                             </label>
                                                         </div>
 
-                                                        {arbitrateForm.data.ruling === 'split' && (
-                                                            <div className="space-y-1.5 animate-fadeIn">
-                                                                <label className="text-[10px] font-bold uppercase text-slate-400">
-                                                                    Persentase untuk Pekerja (%) <span className="text-red-500">*</span>
+                                                        {arbitrateForm.data
+                                                            .ruling ===
+                                                            'split' && (
+                                                            <div className="animate-fadeIn space-y-1.5">
+                                                                <label className="text-[10px] font-bold text-slate-400 uppercase">
+                                                                    Persentase
+                                                                    untuk
+                                                                    Pekerja (%){' '}
+                                                                    <span className="text-red-500">
+                                                                        *
+                                                                    </span>
                                                                 </label>
                                                                 <input
                                                                     type="number"
                                                                     min="1"
                                                                     max="99"
-                                                                    value={arbitrateForm.data.split_percentage}
-                                                                    onChange={(e) => arbitrateForm.setData('split_percentage', parseInt(e.target.value) || 50)}
-                                                                    className="w-full px-3 py-2 bg-white dark:bg-[#0c122c] border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs text-slate-800 dark:text-white font-['Orbitron']"
+                                                                    value={
+                                                                        arbitrateForm
+                                                                            .data
+                                                                            .split_percentage
+                                                                    }
+                                                                    onChange={(
+                                                                        e,
+                                                                    ) =>
+                                                                        arbitrateForm.setData(
+                                                                            'split_percentage',
+                                                                            parseInt(
+                                                                                e
+                                                                                    .target
+                                                                                    .value,
+                                                                            ) ||
+                                                                                50,
+                                                                        )
+                                                                    }
+                                                                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-['Orbitron'] text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-[#0c122c] dark:text-white"
                                                                 />
-                                                                <span className="text-[10px] text-slate-400 block mt-0.5">
-                                                                    Sisa ({100 - arbitrateForm.data.split_percentage}%) akan dikembalikan kepada pembuat quest.
+                                                                <span className="mt-0.5 block text-[10px] text-slate-400">
+                                                                    Sisa (
+                                                                    {100 -
+                                                                        arbitrateForm
+                                                                            .data
+                                                                            .split_percentage}
+                                                                    %) akan
+                                                                    dikembalikan
+                                                                    kepada
+                                                                    pembuat
+                                                                    quest.
                                                                 </span>
-                                                                {arbitrateForm.errors.split_percentage && (
-                                                                    <p className="text-xs text-red-500 font-semibold">{arbitrateForm.errors.split_percentage}</p>
+                                                                {arbitrateForm
+                                                                    .errors
+                                                                    .split_percentage && (
+                                                                    <p className="text-xs font-semibold text-red-500">
+                                                                        {
+                                                                            arbitrateForm
+                                                                                .errors
+                                                                                .split_percentage
+                                                                        }
+                                                                    </p>
                                                                 )}
                                                             </div>
                                                         )}
 
                                                         <div className="space-y-1.5">
-                                                            <label className="text-[10px] font-bold uppercase text-slate-400">
-                                                                Catatan Keputusan / Alasan Arbitrase <span className="text-red-500">*</span>
+                                                            <label className="text-[10px] font-bold text-slate-400 uppercase">
+                                                                Catatan
+                                                                Keputusan /
+                                                                Alasan Arbitrase{' '}
+                                                                <span className="text-red-500">
+                                                                    *
+                                                                </span>
                                                             </label>
                                                             <textarea
                                                                 required
                                                                 placeholder="Berikan penjelasan atau dasar dari keputusan arbitrase Anda..."
                                                                 rows={3}
-                                                                value={arbitrateForm.data.note}
-                                                                onChange={(e) => arbitrateForm.setData('note', e.target.value)}
-                                                                className="w-full px-3 py-2 bg-white dark:bg-[#0c122c] border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-xs text-slate-800 dark:text-white"
+                                                                value={
+                                                                    arbitrateForm
+                                                                        .data
+                                                                        .note
+                                                                }
+                                                                onChange={(e) =>
+                                                                    arbitrateForm.setData(
+                                                                        'note',
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-[#0c122c] dark:text-white"
                                                             />
-                                                            {arbitrateForm.errors.note && (
-                                                                <p className="text-xs text-red-500 font-semibold">{arbitrateForm.errors.note}</p>
+                                                            {arbitrateForm
+                                                                .errors
+                                                                .note && (
+                                                                <p className="text-xs font-semibold text-red-500">
+                                                                    {
+                                                                        arbitrateForm
+                                                                            .errors
+                                                                            .note
+                                                                    }
+                                                                </p>
                                                             )}
                                                         </div>
 
                                                         <button
                                                             type="submit"
-                                                            disabled={arbitrateForm.processing}
-                                                            className="w-full py-2.5 rounded-xl text-xs font-bold font-['Orbitron'] uppercase tracking-wider text-white bg-red-650 hover:bg-red-750 disabled:opacity-50 transition-all cursor-pointer shadow-lg"
+                                                            disabled={
+                                                                arbitrateForm.processing
+                                                            }
+                                                            className="bg-red-650 hover:bg-red-750 w-full cursor-pointer rounded-xl py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-lg transition-all disabled:opacity-50"
                                                         >
-                                                            {arbitrateForm.processing ? 'Memproses Keputusan...' : 'Kirim Verdict Arbitrase'}
+                                                            {arbitrateForm.processing
+                                                                ? 'Memproses Keputusan...'
+                                                                : 'Kirim Verdict Arbitrase'}
                                                         </button>
                                                     </form>
                                                 )}
                                             </div>
                                         ) : (
-                                            <div className="py-8 text-center text-slate-400 dark:text-blue-300/30 font-['Oxanium'] bg-slate-50/50 dark:bg-black/10 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
-                                                <ShieldAlert className="w-8 h-8 mx-auto mb-2 opacity-40 text-slate-400" />
-                                                <p className="text-xs uppercase font-['Orbitron'] font-bold">Tidak Ada Sengketa Aktif</p>
-                                                <p className="text-[10px] text-slate-500">Quest ini berjalan dengan normal dan tidak berada dalam status banding/dispute.</p>
+                                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-8 text-center font-['Oxanium'] text-slate-400 dark:border-slate-800 dark:bg-black/10 dark:text-blue-300/30">
+                                                <ShieldAlert className="mx-auto mb-2 h-8 w-8 text-slate-400 opacity-40" />
+                                                <p className="font-['Orbitron'] text-xs font-bold uppercase">
+                                                    Tidak Ada Sengketa Aktif
+                                                </p>
+                                                <p className="text-[10px] text-slate-500">
+                                                    Quest ini berjalan dengan
+                                                    normal dan tidak berada
+                                                    dalam status
+                                                    banding/dispute.
+                                                </p>
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Quest Transaction Ledger */}
-                                    <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-5">
-                                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                                            <h3 className="text-sm font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-blue-200 tracking-wider flex items-center gap-2">
-                                                <FolderGit size={16} className="text-purple-500" />
-                                                Buku Besar Transaksi Koin Gold (Quest Ledger)
+                                    <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                        <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                            <h3 className="flex items-center gap-2 font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
+                                                <FolderGit
+                                                    size={16}
+                                                    className="text-purple-500"
+                                                />
+                                                Buku Besar Transaksi Koin Gold
+                                                (Quest Ledger)
                                             </h3>
-                                            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300">
+                                            <span className="rounded-md border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-600 dark:text-indigo-300">
                                                 {transactions.length} Transaksi
                                             </span>
                                         </div>
 
                                         {transactions.length === 0 ? (
-                                            <div className="py-8 text-center text-slate-400 dark:text-blue-300/30 font-['Oxanium']">
-                                                <p className="text-xs uppercase font-['Orbitron'] font-bold">Belum Ada Catatan Transaksi</p>
-                                                <p className="text-[10px] text-slate-500">Belum ada transaksi dana/escrow koin Gold yang tercatat pada quest ini.</p>
+                                            <div className="py-8 text-center font-['Oxanium'] text-slate-400 dark:text-blue-300/30">
+                                                <p className="font-['Orbitron'] text-xs font-bold uppercase">
+                                                    Belum Ada Catatan Transaksi
+                                                </p>
+                                                <p className="text-[10px] text-slate-500">
+                                                    Belum ada transaksi
+                                                    dana/escrow koin Gold yang
+                                                    tercatat pada quest ini.
+                                                </p>
                                             </div>
                                         ) : (
                                             <div className="overflow-x-auto">
-                                                <table className="w-full text-left border-collapse font-['Oxanium'] text-xs">
+                                                <table className="w-full border-collapse text-left font-['Oxanium'] text-xs">
                                                     <thead>
-                                                        <tr className="border-b border-slate-100 dark:border-slate-800/80 text-[10px] font-bold uppercase text-slate-400">
-                                                            <th className="py-2.5">Tanggal</th>
-                                                            <th className="py-2.5">Tipe</th>
-                                                            <th className="py-2.5">Pihak Terkait</th>
-                                                            <th className="py-2.5">Jumlah</th>
-                                                            <th className="py-2.5">Deskripsi</th>
+                                                        <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase dark:border-slate-800/80">
+                                                            <th className="py-2.5">
+                                                                Tanggal
+                                                            </th>
+                                                            <th className="py-2.5">
+                                                                Tipe
+                                                            </th>
+                                                            <th className="py-2.5">
+                                                                Pihak Terkait
+                                                            </th>
+                                                            <th className="py-2.5">
+                                                                Jumlah
+                                                            </th>
+                                                            <th className="py-2.5">
+                                                                Deskripsi
+                                                            </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                                                        {transactions.map((t) => (
-                                                            <tr key={t._id} className="hover:bg-slate-50/50 dark:hover:bg-black/10">
-                                                                <td className="py-2.5 text-slate-500 dark:text-slate-400 font-semibold">{formatDate(t.created_at)}</td>
-                                                                <td className="py-2.5 font-bold uppercase text-[10px]">
-                                                                     <span className={`px-2 py-0.5 rounded ${
-                                                                         t.type === 'hold_escrow'
-                                                                             ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20'
-                                                                             : t.type === 'release_payout'
-                                                                             ? 'bg-green-500/10 text-green-600 dark:text-green-350 border border-green-500/20'
-                                                                             : 'bg-indigo-500/10 text-indigo-650 dark:text-indigo-350 border border-indigo-500/20'
-                                                                     }`}>
-                                                                         {t.type === 'hold_escrow' && 'Hold Escrow'}
-                                                                         {t.type === 'release_payout' && 'Release Payout'}
-                                                                         {t.type === 'refund_escrow' && 'Refund Escrow'}
-                                                                         {!['hold_escrow', 'release_payout', 'refund_escrow'].includes(t.type) && t.type}
-                                                                     </span>
-                                                                 </td>
-                                                                <td className="py-2.5 font-semibold text-slate-700 dark:text-slate-350">{t.user?.name ?? 'Sistem / Escrow'}</td>
-                                                                <td className="py-2.5 font-black text-amber-500 font-['Orbitron']">
-                                                                    {t.amount > 0 ? `+${t.amount}` : t.amount} G
-                                                                </td>
-                                                                <td className="py-2.5 text-slate-500 dark:text-slate-450 italic">{t.description}</td>
-                                                            </tr>
-                                                        ))}
+                                                        {transactions.map(
+                                                            (t) => (
+                                                                <tr
+                                                                    key={t._id}
+                                                                    className="hover:bg-slate-50/50 dark:hover:bg-black/10"
+                                                                >
+                                                                    <td className="py-2.5 font-semibold text-slate-500 dark:text-slate-400">
+                                                                        {formatDate(
+                                                                            t.created_at,
+                                                                        )}
+                                                                    </td>
+                                                                    <td className="py-2.5 text-[10px] font-bold uppercase">
+                                                                        <span
+                                                                            className={`rounded px-2 py-0.5 ${
+                                                                                t.type ===
+                                                                                'hold_escrow'
+                                                                                    ? 'border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-300'
+                                                                                    : t.type ===
+                                                                                        'release_payout'
+                                                                                      ? 'dark:text-green-350 border border-green-500/20 bg-green-500/10 text-green-600'
+                                                                                      : 'text-indigo-650 dark:text-indigo-350 border border-indigo-500/20 bg-indigo-500/10'
+                                                                            }`}
+                                                                        >
+                                                                            {t.type ===
+                                                                                'hold_escrow' &&
+                                                                                'Hold Escrow'}
+                                                                            {t.type ===
+                                                                                'release_payout' &&
+                                                                                'Release Payout'}
+                                                                            {t.type ===
+                                                                                'refund_escrow' &&
+                                                                                'Refund Escrow'}
+                                                                            {![
+                                                                                'hold_escrow',
+                                                                                'release_payout',
+                                                                                'refund_escrow',
+                                                                            ].includes(
+                                                                                t.type,
+                                                                            ) &&
+                                                                                t.type}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="dark:text-slate-350 py-2.5 font-semibold text-slate-700">
+                                                                        {t.user
+                                                                            ?.name ??
+                                                                            'Sistem / Escrow'}
+                                                                    </td>
+                                                                    <td className="py-2.5 font-['Orbitron'] font-black text-amber-500">
+                                                                        {t.amount >
+                                                                        0
+                                                                            ? `+${t.amount}`
+                                                                            : t.amount}{' '}
+                                                                        G
+                                                                    </td>
+                                                                    <td className="dark:text-slate-450 py-2.5 text-slate-500 italic">
+                                                                        {
+                                                                            t.description
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            ),
+                                                        )}
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1569,23 +2314,24 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                         </div>
 
                         {/* RIGHT COLUMN: SIDEBAR METADATA INFO (lg:col-span-4) */}
-                        <div className="lg:col-span-4 space-y-6">
-                            
+                        <div className="space-y-6 lg:col-span-4">
                             {/* QUEST METADATA DETAILS */}
-                            <div className="bg-white/70 dark:bg-[#0c122c]/40 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-md transition-all duration-300 space-y-5 font-['Oxanium']">
-                                <h3 className="text-xs font-bold uppercase font-['Orbitron'] text-slate-700 dark:text-blue-200 tracking-wider border-b border-slate-100 dark:border-slate-800 pb-3">
+                            <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                <h3 className="border-b border-slate-100 pb-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-blue-200">
                                     Rincian Quest
                                 </h3>
 
                                 <div className="space-y-4">
                                     {/* Creator info */}
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                                            <User className="w-5 h-5" />
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                            <User className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Diposting Oleh</span>
-                                            <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">
+                                            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                Diposting Oleh
+                                            </span>
+                                            <span className="text-xs font-bold text-slate-800 sm:text-sm dark:text-white">
                                                 {quest.creator.name}
                                             </span>
                                         </div>
@@ -1593,25 +2339,35 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                     {/* Budget spec */}
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
-                                            <DollarSign className="w-5 h-5" />
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                            <DollarSign className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Gaji / Anggaran</span>
-                                            <span className="text-sm font-bold text-slate-800 dark:text-white font-['Orbitron']">
-                                                {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
+                                            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                Gaji / Anggaran
+                                            </span>
+                                            <span className="font-['Orbitron'] text-sm font-bold text-slate-800 dark:text-white">
+                                                {formatCurrency(
+                                                    quest.min_salary,
+                                                )}{' '}
+                                                -{' '}
+                                                {formatCurrency(
+                                                    quest.max_salary,
+                                                )}
                                             </span>
                                         </div>
                                     </div>
 
                                     {/* Deadline Spec */}
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-650 dark:text-indigo-400 shrink-0">
-                                            <Calendar className="w-5 h-5" />
+                                        <div className="text-indigo-650 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 dark:text-indigo-400">
+                                            <Calendar className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tenggat Waktu</span>
-                                            <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">
+                                            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                Tenggat Waktu
+                                            </span>
+                                            <span className="text-xs font-bold text-slate-800 sm:text-sm dark:text-white">
                                                 {formatDate(quest.deadline)}
                                             </span>
                                         </div>
@@ -1619,25 +2375,37 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 </div>
 
                                 {/* RPG Rewards */}
-                                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
-                                    <span className="block text-[10px] font-bold uppercase font-['Orbitron'] tracking-wider text-purple-600 dark:text-purple-450">
+                                <div className="space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+                                    <span className="dark:text-purple-450 block font-['Orbitron'] text-[10px] font-bold tracking-wider text-purple-600 uppercase">
                                         🎁 RPG Quest Rewards
                                     </span>
-                                    <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold font-['Orbitron']">
-                                        <div className="py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-605 dark:text-purple-300 flex flex-col items-center hover:scale-[1.03] transition-transform">
-                                            <Award className="w-3.5 h-3.5 text-purple-500 mb-1" />
-                                            <span className="text-[9px] text-slate-400 font-semibold font-['Oxanium']">EXP</span>
-                                            <span className="text-[11px] font-black">+250</span>
+                                    <div className="grid grid-cols-3 gap-2 text-center font-['Orbitron'] text-xs font-bold">
+                                        <div className="text-purple-605 flex flex-col items-center rounded-xl border border-purple-500/20 bg-purple-500/10 py-2.5 transition-transform hover:scale-[1.03] dark:text-purple-300">
+                                            <Award className="mb-1 h-3.5 w-3.5 text-purple-500" />
+                                            <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                                EXP
+                                            </span>
+                                            <span className="text-[11px] font-black">
+                                                +250
+                                            </span>
                                         </div>
-                                        <div className="py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex flex-col items-center hover:scale-[1.03] transition-transform">
-                                            <Award className="w-3.5 h-3.5 text-amber-500 mb-1" />
-                                            <span className="text-[9px] text-slate-400 font-semibold font-['Oxanium']">GOLD</span>
-                                            <span className="text-[11px] font-black">+150</span>
+                                        <div className="flex flex-col items-center rounded-xl border border-amber-500/20 bg-amber-500/10 py-2.5 text-amber-600 transition-transform hover:scale-[1.03] dark:text-amber-400">
+                                            <Award className="mb-1 h-3.5 w-3.5 text-amber-500" />
+                                            <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                                GOLD
+                                            </span>
+                                            <span className="text-[11px] font-black">
+                                                +150
+                                            </span>
                                         </div>
-                                        <div className="py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-305 flex flex-col items-center hover:scale-[1.03] transition-transform">
-                                            <Award className="w-3.5 h-3.5 text-indigo-500 mb-1" />
-                                            <span className="text-[9px] text-slate-400 font-semibold font-['Oxanium']">ERP</span>
-                                            <span className="text-[11px] font-black">+100</span>
+                                        <div className="dark:text-indigo-305 flex flex-col items-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 py-2.5 text-indigo-600 transition-transform hover:scale-[1.03]">
+                                            <Award className="mb-1 h-3.5 w-3.5 text-indigo-500" />
+                                            <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                                ERP
+                                            </span>
+                                            <span className="text-[11px] font-black">
+                                                +100
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -1645,15 +2413,19 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                             {/* WORKER SUMMARY (Right column status card) */}
                             {quest.worker && (
-                                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3 font-['Oxanium'] shadow-sm">
-                                    <div className="flex items-center gap-2.5 min-w-0">
-                                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                                <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
+                                    <div className="flex min-w-0 items-center gap-2.5">
+                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
                                         <div className="min-w-0">
-                                            <span className="block text-[8px] text-slate-400 uppercase tracking-wider font-semibold">Status Pekerja</span>
-                                            <span className="font-bold text-slate-800 dark:text-white text-xs truncate block">{quest.worker.name}</span>
+                                            <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                Status Pekerja
+                                            </span>
+                                            <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
+                                                {quest.worker.name}
+                                            </span>
                                         </div>
                                     </div>
-                                    <span className="text-[9px] font-bold uppercase bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-['Orbitron'] shrink-0">
+                                    <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
                                         Aktif
                                     </span>
                                 </div>
@@ -1668,27 +2440,27 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
                     <div
                         onClick={() => setPreviewImage(null)}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-md transition-all cursor-pointer"
+                        className="absolute inset-0 cursor-pointer bg-black/80 backdrop-blur-md transition-all"
                     />
-                    
-                    <div className="relative max-w-4xl w-full max-h-[85vh] bg-slate-900/90 dark:bg-slate-950/95 border border-white/10 rounded-2xl p-4 flex flex-col items-center shadow-2xl z-10 overflow-hidden font-['Oxanium']">
-                        <div className="w-full flex justify-between items-center pb-2 mb-3 border-b border-white/10">
-                            <span className="text-sm font-bold text-white truncate max-w-xs sm:max-w-md">
+
+                    <div className="relative z-10 flex max-h-[85vh] w-full max-w-4xl flex-col items-center overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 p-4 font-['Oxanium'] shadow-2xl dark:bg-slate-950/95">
+                        <div className="mb-3 flex w-full items-center justify-between border-b border-white/10 pb-2">
+                            <span className="max-w-xs truncate text-sm font-bold text-white sm:max-w-md">
                                 {previewImage.name}
                             </span>
                             <button
                                 onClick={() => setPreviewImage(null)}
-                                className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
                             >
                                 ✕
                             </button>
                         </div>
-                        
-                        <div className="w-full flex-1 flex items-center justify-center min-h-0">
+
+                        <div className="flex min-h-0 w-full flex-1 items-center justify-center">
                             <img
                                 src={previewImage.url}
                                 alt={previewImage.name}
-                                className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-md"
+                                className="max-h-[70vh] max-w-full rounded-lg object-contain shadow-md"
                             />
                         </div>
                     </div>
@@ -1717,7 +2489,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 variant="primary"
                 onConfirm={() => {
                     if (acceptBidId) {
-                        router.post(`/admin/quests/${quest._id}/accept-bid/${acceptBidId}`);
+                        router.post(
+                            `/admin/quests/${quest._id}/accept-bid/${acceptBidId}`,
+                        );
                     }
                 }}
                 onClose={() => setAcceptBidId(null)}
@@ -1733,7 +2507,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 variant="danger"
                 onConfirm={() => {
                     if (deleteBidId) {
-                        router.delete(`/admin/quests/${quest._id}/bids/${deleteBidId}`);
+                        router.delete(
+                            `/admin/quests/${quest._id}/bids/${deleteBidId}`,
+                        );
                     }
                 }}
                 onClose={() => setDeleteBidId(null)}
@@ -1756,48 +2532,59 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
                     <div
                         onClick={() => setShowRejectPostForm(false)}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+                        className="absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm"
                     />
-                    <div className="relative max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl z-10 font-['Oxanium']">
-                        <h3 className="text-base sm:text-lg font-bold uppercase font-['Orbitron'] text-slate-800 dark:text-red-405 tracking-wider mb-2">
+                    <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 font-['Oxanium'] shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+                        <h3 className="dark:text-red-405 mb-2 font-['Orbitron'] text-base font-bold tracking-wider text-slate-800 uppercase sm:text-lg">
                             Tolak Quest
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                            Berikan umpan balik atau alasan penolakan agar pembuat quest tahu apa yang harus diperbaiki.
+                        <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
+                            Berikan umpan balik atau alasan penolakan agar
+                            pembuat quest tahu apa yang harus diperbaiki.
                         </p>
 
                         <form onSubmit={handleRejectPost} className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">
-                                    Catatan Penolakan <span className="text-red-500">*</span>
+                                <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
+                                    Catatan Penolakan{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
                                     required
                                     placeholder="Tulis alasan penolakan quest disini..."
                                     rows={4}
                                     value={rejectPostForm.data.rejection_note}
-                                    onChange={(e) => rejectPostForm.setData('rejection_note', e.target.value)}
-                                    className="w-full px-3 py-2 bg-slate-55 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-red-500 text-xs text-slate-800 dark:text-white"
+                                    onChange={(e) =>
+                                        rejectPostForm.setData(
+                                            'rejection_note',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="bg-slate-55 w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
                                 />
                                 {rejectPostForm.errors.rejection_note && (
-                                    <p className="text-xs text-red-500 font-semibold">{rejectPostForm.errors.rejection_note}</p>
+                                    <p className="text-xs font-semibold text-red-500">
+                                        {rejectPostForm.errors.rejection_note}
+                                    </p>
                                 )}
                             </div>
 
-                            <div className="flex gap-2 justify-end pt-2">
+                            <div className="flex justify-end gap-2 pt-2">
                                 <button
                                     type="button"
                                     onClick={() => setShowRejectPostForm(false)}
-                                    className="px-4 py-2 rounded-xl text-xs font-semibold uppercase bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
+                                    className="cursor-pointer rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 uppercase transition-all hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={rejectPostForm.processing}
-                                    className="px-4 py-2 rounded-xl text-xs font-semibold uppercase bg-red-650 hover:bg-red-750 text-white transition-all cursor-pointer disabled:opacity-50 font-['Orbitron']"
+                                    className="bg-red-650 hover:bg-red-750 cursor-pointer rounded-xl px-4 py-2 font-['Orbitron'] text-xs font-semibold text-white uppercase transition-all disabled:opacity-50"
                                 >
-                                    {rejectPostForm.processing ? 'Mengirim...' : 'Tolak Quest'}
+                                    {rejectPostForm.processing
+                                        ? 'Mengirim...'
+                                        : 'Tolak Quest'}
                                 </button>
                             </div>
                         </form>
