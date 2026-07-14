@@ -200,7 +200,6 @@ export default function Create({ template }: { template?: any }) {
                             Kembali ke Quest Board
                         </Link>
                         <h2 className="flex items-center gap-2 font-['Oxanium'] text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
-                            <Sparkles className="h-6 w-6 animate-pulse text-indigo-500" />
                             POSTING QUEST BARU
                         </h2>
                     </div>
