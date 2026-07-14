@@ -270,4 +270,121 @@ class QuestArbitrationTest extends TestCase
             ->first();
         $this->assertNull($transaction);
     }
+
+    public function test_student_can_file_dispute_when_status_is_approved(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Freelance Web Design',
+            'description' => 'Create web portfolio',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'approved',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+        ]);
+
+        $response = $this->actingAs($worker)
+            ->post("/student/quests/{$quest->_id}/dispute", [
+                'reason' => 'Worker disputes work on approved state before final ZIP upload.',
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('disputed', $quest->status);
+        $this->assertNotNull($quest->dispute);
+        $this->assertEquals('pending', $quest->dispute['status']);
+        $this->assertEquals('Worker disputes work on approved state before final ZIP upload.', $quest->dispute['reason']);
+    }
+
+    public function test_admin_force_cancel_resolves_pending_dispute(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Freelance Web Design',
+            'description' => 'Create web portfolio',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'disputed',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+            'dispute' => [
+                'status' => 'pending',
+                'reason' => 'Dispute reason',
+                'disputer_id' => (string) $worker->_id,
+                'filer_name' => $worker->name,
+                'ruled_at' => now()->toIso8601String(),
+            ],
+        ]);
+
+        $admin = $this->createAdmin();
+
+        $response = $this->actingAs($admin)
+            ->post("/admin/quests/{$quest->_id}/force-cancel");
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('cancelled', $quest->status);
+        $this->assertNotNull($quest->dispute);
+        $this->assertEquals('resolved_cancelled', $quest->dispute['status']);
+        $this->assertEquals('refund', $quest->dispute['ruling']);
+        $this->assertEquals('Quest dibatalkan secara paksa oleh Admin.', $quest->dispute['note']);
+    }
+
+    public function test_admin_reopen_bidding_clears_pending_dispute(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Freelance Web Design',
+            'description' => 'Create web portfolio',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'disputed',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+            'dispute' => [
+                'status' => 'pending',
+                'reason' => 'Dispute reason',
+                'disputer_id' => (string) $worker->_id,
+                'filer_name' => $worker->name,
+                'ruled_at' => now()->toIso8601String(),
+            ],
+        ]);
+
+        $bid = QuestBid::create([
+            'quest_id' => $quest->_id,
+            'student_id' => $worker->_id,
+            'bid_amount' => 1500,
+            'status' => 'accepted',
+        ]);
+
+        $admin = $this->createAdmin();
+
+        $response = $this->actingAs($admin)
+            ->post("/admin/quests/{$quest->_id}/reopen-bidding");
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('open', $quest->status);
+        $this->assertNull($quest->worker_id);
+        $this->assertNull($quest->dispute);
+
+        $bid->refresh();
+        $this->assertEquals('rejected', $bid->status);
+    }
 }
