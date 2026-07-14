@@ -465,9 +465,19 @@ class QuestController extends Controller
     {
         $quest = Quest::findOrFail($questId);
 
+        $dispute = $quest->dispute;
+        if ($dispute && isset($dispute['status']) && $dispute['status'] === 'pending') {
+            $dispute['status'] = 'resolved_cancelled';
+            $dispute['ruling'] = 'refund';
+            $dispute['note'] = 'Quest dibatalkan secara paksa oleh Admin.';
+            $dispute['resolved_at'] = now()->toIso8601String();
+            $dispute['ruled_at'] = now()->toIso8601String();
+        }
+
         $quest->update([
             'status' => 'cancelled',
             'completed_at' => now(),
+            'dispute' => $dispute,
         ]);
 
         return redirect()->route('admin.quests.show', $quest->_id)
@@ -523,6 +533,7 @@ class QuestController extends Controller
             'completed_at' => null,
             'revision_note' => null,
             'submission_file' => null,
+            'dispute' => null,
         ]);
 
         return redirect()->route('admin.quests.show', $quest->_id)

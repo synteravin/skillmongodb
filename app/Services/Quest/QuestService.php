@@ -442,7 +442,7 @@ class QuestService
      */
     public function fileDispute(Quest $quest, User $user, string $reason): void
     {
-        if (! in_array($quest->status, ['submitted', 'ongoing'])) {
+        if (! in_array($quest->status, ['submitted', 'ongoing', 'approved'])) {
             abort(400, 'Quest tidak dalam status aktif atau peninjauan untuk diajukan dispute.');
         }
 
