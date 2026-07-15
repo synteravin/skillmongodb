@@ -14,42 +14,41 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Head title="SkillVentura — Forgot Password" />
 
             {/* ================= FULL BACKGROUND ================= */}
-            <div className="relative flex min-h-screen items-center justify-center bg-gray-100 px-4 py-8 transition-colors sm:px-6 lg:px-8 dark:bg-[#0b0b14]">
+            <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-6 transition-colors duration-300 sm:px-6 md:px-8 lg:px-10">
                 {/* Background Image */}
                 <img
-                    src="/images/background-login.png"
+                    src="/images/background-login.webp"
                     alt="Background"
                     className="absolute inset-0 h-full w-full object-cover"
                 />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] dark:bg-black/60" />
-
                 {/* ================= CARD ================= */}
-                <div className="relative w-full max-w-sm rounded-[30px] bg-white p-6 shadow-xl sm:max-w-sm sm:p-8 lg:max-w-lg lg:p-10 dark:bg-[#0f0f1a]">
+                <div
+                    className="relative w-[96%] max-w-md sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl rounded-3xl border border-white/20 bg-white/20 p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 sm:p-7 md:p-8 lg:p-9 xl:p-10 2xl:p-12 dark:border-white/10 dark:bg-slate-900/35 dark:backdrop-blur-xl">
+                    
                     {/* Neon Border */}
-                    <div className="pointer-events-none absolute inset-0 rounded-[30px] border-2 border-yellow-400/70 dark:border-yellow-400" />
+                    <div className="pointer-events-none absolute inset-0 rounded-3xl border-2 border-yellow-400/70" />
 
-                    {/* HEADER */}
-                    <div className="mb-6 text-center text-gray-900 dark:text-white">
-                        <h2 className="text-xl font-semibold sm:text-2xl lg:text-3xl">
+                    {/* ================= HEADER ================= */}
+                    <div className="mb-6 text-center text-white">
+                        <h2 className="text-2xl font-semibold sm:text-3xl">
                             Forgot Password
                         </h2>
 
-                        <p className="mt-2 text-xs text-gray-500 sm:text-sm dark:text-slate-400">
+                        <p className="mt-3 text-sm leading-relaxed text-white/80">
                             Enter your email to receive a password reset link.
                         </p>
                     </div>
 
-                    {/* STATUS */}
+                    {/* ================= STATUS ================= */}
                     {status && (
-                        <div className="mb-4 rounded-lg bg-emerald-500/10 px-4 py-2 text-center text-sm text-emerald-500 ring-1 ring-emerald-500/20">
+                        <div className="mb-5 rounded-xl border border-emerald-400/30 bg-emerald-500/15 px-4 py-3 text-center text-sm text-emerald-100 backdrop-blur-md">
                             {status}
                         </div>
                     )}
 
-                    {/* FORM */}
-                    <Form {...email.form()} className="space-y-4 sm:space-y-5">
+                    {/* ================= FORM ================= */}
+                    <Form {...email.form()} className="space-y-5">
                         {({ processing, errors }) => (
                             <>
                                 {/* EMAIL */}
@@ -59,7 +58,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                         type="email"
                                         placeholder="Email"
                                         autoFocus
-                                        className="border border-gray-200 bg-gray-50 text-gray-900 transition-all duration-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
+                                        className="border border-white/20 bg-white/10 text-white placeholder:text-white/60 backdrop-blur-md transition-all duration-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500 dark:bg-white/5"
                                     />
                                     <InputError message={errors.email} />
                                 </div>
@@ -67,7 +66,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 {/* SUBMIT BUTTON */}
                                 <Button
                                     disabled={processing}
-                                    className="w-full bg-indigo-600 text-white hover:bg-indigo-700"
+                                    className="w-full bg-indigo-600 py-2.5 text-white transition-all duration-300 hover:bg-indigo-700"
                                 >
                                     {processing && (
                                         <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -78,7 +77,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 {/* LOGIN LINK */}
                                 <TextLink
                                     href={login()}
-                                    className="block w-full rounded-lg border-2 border-indigo-500 py-2 text-center text-indigo-600 transition-all duration-300 hover:bg-indigo-500/10 dark:text-white"
+                                    className="block w-full rounded-xl border border-white/20 py-2.5 text-center text-white transition-all duration-300 hover:bg-white/10"
                                 >
                                     Or, return to Log in
                                 </TextLink>

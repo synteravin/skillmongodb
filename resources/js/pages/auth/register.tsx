@@ -169,8 +169,8 @@ export default function Register() {
                         alt="Background"
                     />
 
-                    <div className="relative z-10 rounded-3xl bg-white/40 px-44 py-55 shadow-2xl backdrop-blur-lg dark:bg-white/10">
-                        <div className="text-center text-gray-900 dark:text-white">
+                    <div className="relative z-10 rounded-3xl bg-white/10 px-44 py-55 shadow-2xl backdrop-blur-lg dark:bg-white/10">
+                        <div className="text-center text-white">
                             <h1 className="text-3xl font-semibold xl:text-4xl">
                                 Let's Get <br /> Started
                             </h1>
