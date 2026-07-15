@@ -243,7 +243,7 @@ const SortableContent = ({
                             <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <button
                                     onClick={() => setEditingId(null)}
-                                    className="dark:hover:bg-slate-850 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 sm:flex-none sm:border-transparent sm:py-1.5 dark:border-slate-700 dark:text-slate-400 dark:hover:text-white"
+                                    className="dark:hover:bg-slate-800 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 sm:flex-none sm:border-transparent sm:py-1.5 dark:border-slate-700 dark:text-slate-400 dark:hover:text-white"
                                 >
                                     <X
                                         size={16}
@@ -1046,7 +1046,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                                 <Trash2 size={16} />
                                             </button>
                                             <div
-                                                className={`rounded-full p-2 transition-all duration-300 ${isOpen ? 'dark:bg-slate-850 rotate-180 bg-slate-100 text-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+                                                className={`rounded-full p-2 transition-all duration-300 ${isOpen ? 'dark:bg-slate-800 rotate-180 bg-slate-100 text-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
                                             >
                                                 <ChevronDown size={20} />
                                             </div>

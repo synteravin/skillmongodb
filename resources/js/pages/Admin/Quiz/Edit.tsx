@@ -361,7 +361,7 @@ function QuestionCard({
                             onChange({ ...data, question_text: e.target.value })
                         }
                         rows={3}
-                        className="dark:bg-slate-955/50 focus:border-indigo-505 focus:ring-indigo-505 w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:ring-1 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-600"
+                        className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
                     />
                 </div>
 
@@ -397,7 +397,7 @@ function QuestionCard({
                                     className={`flex items-center justify-center rounded-lg px-3 transition-colors sm:px-4 ${
                                         a.is_correct
                                             ? 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                            : 'bg-slate-205 text-slate-400 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700'
+                                            : 'bg-slate-200 text-slate-400 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700'
                                     }`}
                                     title="Mark as correct answer"
                                 >
