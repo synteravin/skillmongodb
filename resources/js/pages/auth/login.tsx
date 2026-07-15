@@ -175,7 +175,7 @@ export default function Login({
 
                     {/* Center Glass Card */}
                     <div className="relative z-10 rounded-3xl bg-white/10 px-42 py-55 shadow-2xl backdrop-blur-lg xl:px-42 xl:py-55">
-                        <div className="text-center text-gray-900 dark:text-white">
+                        <div className="text-center text-white">
                             <h1 className="text-3xl font-semibold xl:text-4xl">
                                 Welcome <br /> Back
                             </h1>
