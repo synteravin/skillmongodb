@@ -306,4 +306,19 @@ class QuestTest extends TestCase
         $questD = Quest::where('title', 'Tier D Quest')->first();
         $this->assertEquals('D', $questD->tier);
     }
+
+    public function test_student_can_visit_quest_history(): void
+    {
+        $student = $this->createStudent('Student 1');
+        $this->actingAs($student);
+
+        $response = $this->get('/student/quests/history');
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Student/Quests/History')
+            ->has('quests')
+            ->has('stats')
+            ->has('filters')
+        );
+    }
 }

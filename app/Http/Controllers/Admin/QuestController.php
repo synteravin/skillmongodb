@@ -19,13 +19,30 @@ class QuestController extends Controller
 {
     public function index(Request $request)
     {
-        $rawQuests = Quest::with(['creator', 'worker'])->latest()->get();
+        $search = $request->input('search');
+        $status = $request->input('status');
+
+        $query = Quest::with(['creator', 'worker'])->latest();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $paginatedQuests = $query->paginate(10)->withQueryString();
+
         $acceptedBids = QuestBid::where('status', 'accepted')
-            ->whereIn('quest_id', $rawQuests->pluck('_id')->toArray())
+            ->whereIn('quest_id', $paginatedQuests->pluck('_id')->toArray())
             ->get()
             ->keyBy('quest_id');
 
-        $quests = $rawQuests->map(function ($quest) use ($acceptedBids) {
+        $quests = $paginatedQuests->through(function ($quest) use ($acceptedBids) {
             $acceptedBid = $acceptedBids->get($quest->_id);
 
             return [
@@ -50,6 +67,10 @@ class QuestController extends Controller
 
         return Inertia::render('Admin/Quests/Index', [
             'quests' => $quests,
+            'filters' => [
+                'search' => $search,
+                'status' => $status ?? 'all',
+            ],
         ]);
     }
 
