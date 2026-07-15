@@ -2,17 +2,33 @@
 
 namespace App\Services\Quest;
 
+use App\Actions\Quest\AcceptQuestBidAction;
+use App\Actions\Quest\AwardQuestRewardsAction;
+use App\Actions\Quest\CreateQuestAction;
+use App\Actions\Quest\FileQuestDisputeAction;
+use App\Actions\Quest\PlaceQuestBidAction;
+use App\Actions\Quest\RecordQuestTransactionAction;
+use App\Actions\Quest\ResolveQuestArbitrationAction;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
 use App\Models\User;
-use App\Models\UserStat;
 use Illuminate\Support\Facades\Storage;
 
 class QuestService
 {
+    public function __construct(
+        protected CreateQuestAction $createQuestAction,
+        protected PlaceQuestBidAction $placeQuestBidAction,
+        protected AcceptQuestBidAction $acceptQuestBidAction,
+        protected AwardQuestRewardsAction $awardQuestRewardsAction,
+        protected FileQuestDisputeAction $fileQuestDisputeAction,
+        protected ResolveQuestArbitrationAction $resolveQuestArbitrationAction,
+        protected RecordQuestTransactionAction $recordQuestTransactionAction
+    ) {}
+
     /**
      * Get list of quests with filters.
      */
@@ -94,6 +110,27 @@ class QuestService
                         'title' => $quest->title,
                         'message' => "Quest Anda '{$quest->title}' telah kadaluarsa karena tidak ada pekerja yang dipilih hingga melewati batas tenggat waktu.",
                         'type' => 'quest_expired_creator',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+        }
+
+        if ($quest->status === 'ongoing' && $quest->deadline < now()) {
+            $alreadyNotified = Notification::where('notifiable_id', $quest->creator_id)
+                ->where('data.quest_id', $quest->_id)
+                ->where('data.type', 'quest_overdue_creator')
+                ->exists();
+
+            if (! $alreadyNotified && $quest->creator_id) {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => $quest->creator_id,
+                    'data' => [
+                        'quest_id' => $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Pengerjaan quest '{$quest->title}' telah melewati batas tenggat waktu. Apakah Anda ingin memperpanjang tenggat waktu atau mengajukan dispute?",
+                        'type' => 'quest_overdue_creator',
                     ],
                     'read_at' => null,
                 ]);
@@ -244,7 +281,14 @@ class QuestService
 
         if (empty($resolvedDispute['ruling']) && isset($quest->dispute['status']) && str_starts_with($quest->dispute['status'], 'resolved_')) {
             $rulingRaw = substr($quest->dispute['status'], 9);
-            $resolvedDispute['ruling'] = $rulingRaw === 'release_payout' ? 'pay_worker' : ($rulingRaw === 'refund_creator' ? 'refund' : $rulingRaw);
+            $resolvedDispute['ruling'] = $rulingRaw;
+        }
+
+        if (($resolvedDispute['ruling'] ?? '') === 'pay_worker') {
+            $resolvedDispute['ruling'] = 'release_payout';
+        }
+        if (($resolvedDispute['ruling'] ?? '') === 'refund') {
+            $resolvedDispute['ruling'] = 'refund_creator';
         }
 
         return $resolvedDispute;
@@ -255,57 +299,7 @@ class QuestService
      */
     public function createQuest(User $creator, array $data): Quest
     {
-        $status = $creator->isAdmin() ? 'open' : 'draft';
-
-        $maxSalary = (int) $data['max_salary'];
-        $minSalary = (int) $data['min_salary'];
-        if ($maxSalary >= 10000000) {
-            $tier = 'S';
-        } elseif ($maxSalary >= 5000000) {
-            $tier = 'A';
-        } elseif ($maxSalary >= 2500000) {
-            $tier = 'B';
-        } elseif ($maxSalary >= 1000000) {
-            $tier = 'C';
-        } else {
-            $tier = 'D';
-        }
-
-        $avgBudget = ($minSalary + $maxSalary) / 2;
-
-        $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
-        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
-        $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
-
-        $calculatedRewards = [
-            'exp' => $exp,
-            'gold' => $gold,
-            'erp' => $erp,
-        ];
-
-        if (isset($data['custom_rewards']) && $data['custom_rewards']) {
-            $calculatedRewards = [
-                'exp' => (int) ($data['custom_rewards']['exp'] ?? $calculatedRewards['exp']),
-                'gold' => (int) ($data['custom_rewards']['gold'] ?? $calculatedRewards['gold']),
-                'erp' => (int) ($data['custom_rewards']['erp'] ?? $calculatedRewards['erp']),
-            ];
-        }
-
-        return Quest::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'min_salary' => $minSalary,
-            'max_salary' => $maxSalary,
-            'deadline' => now()->parse($data['deadline']),
-            'status' => $status,
-            'creator_id' => $creator->_id,
-            'images' => $data['images'] ?? [],
-            'files' => $data['files'] ?? [],
-            'tier' => $tier,
-            'custom_rewards' => $data['custom_rewards'] ?? null,
-            'rewards' => $calculatedRewards,
-            'submission_history' => [],
-        ]);
+        return $this->createQuestAction->execute($creator, $data);
     }
 
     /**
@@ -313,15 +307,7 @@ class QuestService
      */
     public function placeBid(User $student, Quest $quest, array $data): QuestBid
     {
-        return QuestBid::create([
-            'quest_id' => $quest->_id,
-            'student_id' => $student->_id,
-            'bid_amount' => (int) $data['bid_amount'],
-            'cv' => $data['cv'],
-            'portfolio' => $data['portfolio'],
-            'proposal' => $data['proposal'],
-            'status' => 'pending',
-        ]);
+        return $this->placeQuestBidAction->execute($student, $quest, $data);
     }
 
     /**
@@ -329,25 +315,7 @@ class QuestService
      */
     public function acceptBid(User $creator, Quest $quest, string $bidId): void
     {
-        $acceptedBid = QuestBid::findOrFail($bidId);
-
-        if ($acceptedBid->quest_id !== $quest->_id) {
-            abort(400, 'Bid tidak cocok dengan Quest ini.');
-        }
-
-        // Accept the chosen bid
-        $acceptedBid->update(['status' => 'accepted']);
-
-        // Reject all other bids for this quest
-        QuestBid::where('quest_id', $quest->_id)
-            ->where('_id', '!=', $bidId)
-            ->update(['status' => 'rejected']);
-
-        // Update quest worker and status
-        $quest->update([
-            'status' => 'ongoing',
-            'worker_id' => $acceptedBid->student_id,
-        ]);
+        $this->acceptQuestBidAction->execute($creator, $quest, $bidId);
     }
 
     /**
@@ -355,36 +323,7 @@ class QuestService
      */
     public function getRewardsForQuest(Quest $quest): array
     {
-        if ($quest->rewards) {
-            return [
-                'exp' => (int) ($quest->rewards['exp'] ?? 250),
-                'gold' => (int) ($quest->rewards['gold'] ?? 150),
-                'erp' => (int) ($quest->rewards['erp'] ?? 100),
-            ];
-        }
-
-        if ($quest->custom_rewards) {
-            return [
-                'exp' => (int) ($quest->custom_rewards['exp'] ?? 250),
-                'gold' => (int) ($quest->custom_rewards['gold'] ?? 150),
-                'erp' => (int) ($quest->custom_rewards['erp'] ?? 100),
-            ];
-        }
-
-        // Fallback to formula-based calculation for backward compatibility
-        $maxSalary = (int) $quest->max_salary;
-        $minSalary = (int) $quest->min_salary;
-        $avgBudget = ($minSalary + $maxSalary) / 2;
-
-        $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
-        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
-        $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
-
-        return [
-            'exp' => $exp,
-            'gold' => $gold,
-            'erp' => $erp,
-        ];
+        return $this->awardQuestRewardsAction->getRewardsForQuest($quest);
     }
 
     /**
@@ -392,49 +331,7 @@ class QuestService
      */
     public function awardQuestRewards(Quest $quest, string $workerId): void
     {
-        $progress = UserStat::firstOrCreate([
-            'user_id' => $workerId,
-            'course_id' => 'quest_rewards',
-        ], [
-            'completed_modules' => [],
-            'completed_paths' => [],
-            'exp' => 0,
-            'gold' => 0,
-            'erp' => 0,
-            'level' => 1,
-            'path_stats' => [],
-        ]);
-
-        $pathStats = $progress->path_stats ?? [];
-        if (is_string($pathStats)) {
-            $pathStats = json_decode($pathStats, true) ?: [];
-        } else {
-            $pathStats = (array) $pathStats;
-        }
-
-        $questKey = (string) $quest->_id;
-        if (isset($pathStats[$questKey])) {
-            return;
-        }
-
-        $rewards = $this->getRewardsForQuest($quest);
-
-        $pathStats[$questKey] = [
-            'exp' => $rewards['exp'],
-            'gold' => $rewards['gold'],
-            'quiz_score' => $rewards['erp'], // quiz_score represents ERP
-        ];
-
-        $progress->path_stats = $pathStats;
-
-        $progress->exp = (int) ($progress->exp ?? 0) + $rewards['exp'];
-        $progress->erp = (int) ($progress->erp ?? 0) + $rewards['erp'];
-        $progress->level = (int) max(($progress->level ?? 1), floor($progress->exp / 500) + 1);
-
-        $progress->save();
-
-        // Record Gold transaction: release_payout to worker
-        $this->recordTransaction($quest->_id, $workerId, $rewards['gold'], 'release_payout', "Escrow payout release for quest completion: {$quest->title}");
+        $this->awardQuestRewardsAction->execute($quest, $workerId);
     }
 
     /**
@@ -442,54 +339,7 @@ class QuestService
      */
     public function fileDispute(Quest $quest, User $user, string $reason): void
     {
-        if (! in_array($quest->status, ['submitted', 'ongoing', 'approved'])) {
-            abort(400, 'Quest tidak dalam status aktif atau peninjauan untuk diajukan dispute.');
-        }
-
-        $quest->update([
-            'status' => 'disputed',
-            'dispute' => [
-                'disputed_at' => now()->toIso8601String(),
-                'disputer_id' => $user->_id,
-                'filer_id' => $user->_id,
-                'filer_name' => $user->name,
-                'reason' => $reason,
-                'status' => 'pending',
-                'resolved_at' => null,
-                'ruled_at' => null,
-                'ruling_note' => null,
-                'note' => null,
-                'ruling' => null,
-            ],
-        ]);
-
-        if ($quest->creator_id) {
-            Notification::create([
-                'notifiable_type' => User::class,
-                'notifiable_id' => $quest->creator_id,
-                'data' => [
-                    'quest_id' => $quest->_id,
-                    'title' => $quest->title,
-                    'message' => "Perselisihan (dispute) telah diajukan pada quest '{$quest->title}' oleh {$user->name}. Status ditangguhkan menunggu keputusan Admin.",
-                    'type' => 'quest_disputed',
-                ],
-                'read_at' => null,
-            ]);
-        }
-
-        if ($quest->worker_id && $quest->worker_id !== $user->_id) {
-            Notification::create([
-                'notifiable_type' => User::class,
-                'notifiable_id' => $quest->worker_id,
-                'data' => [
-                    'quest_id' => $quest->_id,
-                    'title' => $quest->title,
-                    'message' => "Perselisihan (dispute) telah diajukan pada quest '{$quest->title}' oleh {$user->name}. Status ditangguhkan menunggu keputusan Admin.",
-                    'type' => 'quest_disputed',
-                ],
-                'read_at' => null,
-            ]);
-        }
+        $this->fileQuestDisputeAction->execute($quest, $user, $reason);
     }
 
     /**
@@ -497,123 +347,7 @@ class QuestService
      */
     public function resolveArbitration(Quest $quest, string $ruling, ?string $note, ?int $splitPercentage = null): void
     {
-        if ($quest->status !== 'disputed') {
-            abort(400, 'Hanya quest berstatus disputed yang dapat diarbiatrase.');
-        }
-
-        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
-        $bidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : (int) $quest->max_salary;
-
-        $dispute = $quest->dispute ?? [];
-        $dispute['status'] = 'resolved_'.$ruling;
-        $dispute['ruling'] = $ruling === 'release_payout' ? 'pay_worker' : ($ruling === 'refund_creator' ? 'refund' : $ruling);
-        $dispute['ruling_note'] = $note;
-        $dispute['note'] = $note;
-        $dispute['resolved_at'] = now()->toIso8601String();
-        $dispute['ruled_at'] = now()->toIso8601String();
-        if ($ruling === 'split') {
-            $dispute['split_percentage'] = (int) $splitPercentage;
-        }
-
-        if ($ruling === 'release_payout') {
-            $quest->update([
-                'status' => 'completed',
-                'completed_at' => now(),
-                'dispute' => $dispute,
-            ]);
-
-            if ($quest->worker_id) {
-                $this->awardQuestRewards($quest, $quest->worker_id);
-            }
-        } elseif ($ruling === 'refund_creator') {
-            $quest->update([
-                'status' => 'cancelled',
-                'completed_at' => now(),
-                'dispute' => $dispute,
-            ]);
-        } elseif ($ruling === 'split') {
-            $splitPercentage = (int) $splitPercentage;
-
-            $quest->update([
-                'status' => 'completed',
-                'completed_at' => now(),
-                'dispute' => $dispute,
-            ]);
-
-            if ($quest->worker_id) {
-                $progress = UserStat::firstOrCreate([
-                    'user_id' => $quest->worker_id,
-                    'course_id' => 'quest_rewards',
-                ], [
-                    'completed_modules' => [],
-                    'completed_paths' => [],
-                    'exp' => 0,
-                    'gold' => 0,
-                    'erp' => 0,
-                    'level' => 1,
-                    'path_stats' => [],
-                ]);
-
-                $pathStats = $progress->path_stats ?? [];
-                if (is_string($pathStats)) {
-                    $pathStats = json_decode($pathStats, true) ?: [];
-                } else {
-                    $pathStats = (array) $pathStats;
-                }
-
-                $questKey = (string) $quest->_id;
-                if (isset($pathStats[$questKey])) {
-                    return;
-                }
-
-                $rewards = $this->getRewardsForQuest($quest);
-                $partialExp = (int) round(($rewards['exp'] * $splitPercentage) / 100);
-                $partialGold = (int) round(($rewards['gold'] * $splitPercentage) / 100);
-                $partialErp = (int) round(($rewards['erp'] * $splitPercentage) / 100);
-
-                $pathStats[$questKey] = [
-                    'exp' => $partialExp,
-                    'gold' => $partialGold,
-                    'quiz_score' => $partialErp,
-                ];
-
-                $progress->path_stats = $pathStats;
-                $progress->exp = (int) ($progress->exp ?? 0) + $partialExp;
-                $progress->erp = (int) ($progress->erp ?? 0) + $partialErp;
-                $progress->level = (int) max(($progress->level ?? 1), floor($progress->exp / 500) + 1);
-                $progress->save();
-
-                $this->recordTransaction($quest->_id, $quest->worker_id, $partialGold, 'release_payout', "Split payout release (Share: {$splitPercentage}%) for quest: {$quest->title}");
-            }
-        }
-
-        if ($quest->creator_id) {
-            Notification::create([
-                'notifiable_type' => User::class,
-                'notifiable_id' => $quest->creator_id,
-                'data' => [
-                    'quest_id' => $quest->_id,
-                    'title' => $quest->title,
-                    'message' => "Arbitrase quest '{$quest->title}' telah diputuskan oleh Admin: ".strtoupper(str_replace('_', ' ', $ruling)).'.',
-                    'type' => 'quest_arbitrated',
-                ],
-                'read_at' => null,
-            ]);
-        }
-
-        if ($quest->worker_id) {
-            Notification::create([
-                'notifiable_type' => User::class,
-                'notifiable_id' => $quest->worker_id,
-                'data' => [
-                    'quest_id' => $quest->_id,
-                    'title' => $quest->title,
-                    'message' => "Arbitrase quest '{$quest->title}' telah diputuskan oleh Admin: ".strtoupper(str_replace('_', ' ', $ruling)).'.',
-                    'type' => 'quest_arbitrated',
-                ],
-                'read_at' => null,
-            ]);
-        }
+        $this->resolveQuestArbitrationAction->execute($quest, $ruling, $note, $splitPercentage);
     }
 
     /**
@@ -621,35 +355,7 @@ class QuestService
      */
     public function recordTransaction(string $questId, string $userId, int $amount, string $type, string $description): QuestTransaction
     {
-        $transaction = QuestTransaction::create([
-            'quest_id' => $questId,
-            'user_id' => $userId,
-            'amount' => $amount,
-            'type' => $type,
-            'description' => $description,
-        ]);
-
-        $user = User::find($userId);
-        if ($user) {
-            $userStat = UserStat::firstOrCreate([
-                'user_id' => $userId,
-                'course_id' => 'quest_rewards',
-            ], [
-                'completed_modules' => [],
-                'completed_paths' => [],
-                'exp' => 0,
-                'gold' => 0,
-                'erp' => 0,
-                'level' => 1,
-                'path_stats' => [],
-            ]);
-
-            $currentGold = (int) ($userStat->gold ?? 0);
-            $userStat->gold = max(0, $currentGold + $amount);
-            $userStat->save();
-        }
-
-        return $transaction;
+        return $this->recordQuestTransactionAction->execute($questId, $userId, $amount, $type, $description);
     }
 
     /**

@@ -26,6 +26,11 @@ class QuestMessageController extends Controller
             return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
         }
 
+        // Block access if bid is rejected
+        if ($bid->status === 'rejected') {
+            return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
+        }
+
         // Mark messages as read by the current user
         $unreadMessages = QuestMessage::where('quest_bid_id', $bidId)
             ->where('sender_id', '!=', $user->_id)
@@ -84,6 +89,11 @@ class QuestMessageController extends Controller
         $isAdmin = $user->isAdmin();
 
         if (! $isCreator && ! $isApplicant && ! $isAdmin) {
+            return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
+        }
+
+        // Block access if bid is rejected
+        if ($bid->status === 'rejected') {
             return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
         }
 
