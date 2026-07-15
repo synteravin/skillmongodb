@@ -2,51 +2,44 @@ import { Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
 import {
     Search,
-    Calendar,
-    DollarSign,
-    Users,
-    Plus,
-    Briefcase,
-    History,
-    X,
-    ExternalLink,
-    FileArchive,
-    Download,
-    Star,
-    ArrowLeft,
-    Award,
-    User,
     Compass,
     Activity,
     Info,
     CheckCircle2,
+    Plus,
+    History,
+    ArrowLeft,
+    Briefcase,
 } from 'lucide-react';
 
-import { Quest, HistoryQuest } from '@/types/quest';
+import { Quest } from '@/types/quest';
 import QuestItemCard from '@/components/Quest/QuestItemCard';
 
 interface Props {
     quests: Quest[];
-    historyQuests: HistoryQuest[];
+    totalQuests: number;
+    currentLimit: number;
+    completedQuestsCount: number;
     filters: {
         search?: string;
         status?: string;
+        limit?: number;
     };
 }
 
-export default function Index({ quests, historyQuests, filters }: Props) {
+export default function Index({
+    quests,
+    totalQuests,
+    currentLimit,
+    completedQuestsCount,
+    filters,
+}: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [status, setStatus] = useState(filters.status || '');
     const [sortBy, setSortBy] = useState<
         'latest' | 'highest_salary' | 'closest_deadline'
     >('latest');
-    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-    const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
-
-    // Inner filter for History Drawer
-    const [historyRoleFilter, setHistoryRoleFilter] = useState<
-        'all' | 'creator' | 'worker' | 'bidder'
-    >('all');
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
 
     const sortedQuests = [...quests].sort((a, b) => {
         if (sortBy === 'highest_salary') {
@@ -64,7 +57,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
         e.preventDefault();
         router.get(
             '/student/quests',
-            { search, status },
+            { search, status, limit: 12 },
             { preserveState: true, replace: true },
         );
     };
@@ -73,52 +66,36 @@ export default function Index({ quests, historyQuests, filters }: Props) {
         setStatus(newStatus);
         router.get(
             '/student/quests',
-            { search, status: newStatus },
+            { search, status: newStatus, limit: 12 },
             { preserveState: true, replace: true },
         );
     };
 
-    const formatCurrency = (num: number) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-        }).format(num);
-    };
-
-    const formatDate = (dateStr: string) => {
-        const d = new Date(dateStr);
-        const datePart = d.toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-        const timePart = d.toLocaleTimeString('id-ID', {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-        return `${datePart} pukul ${timePart}`;
-    };
-
-    const formatBytes = (bytes: number) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = 2;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return (
-            parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+    const handleLoadMore = () => {
+        setIsLoadingMore(true);
+        router.get(
+            '/student/quests',
+            { search, status, limit: currentLimit + 12 },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onFinish: () => setIsLoadingMore(false),
+            },
         );
     };
 
-    // Filter history by role tab
-    const filteredHistoryQuests = historyQuests.filter((item) => {
-        if (historyRoleFilter === 'creator') return item.is_creator;
-        if (historyRoleFilter === 'worker') return item.is_worker;
-        if (historyRoleFilter === 'bidder')
-            return !item.is_creator && !item.is_worker;
-        return true;
-    });
+    const handleLoadLess = () => {
+        setIsLoadingMore(true);
+        router.get(
+            '/student/quests',
+            { search, status, limit: 12 },
+            {
+                preserveScroll: false,
+                preserveState: true,
+                onFinish: () => setIsLoadingMore(false),
+            },
+        );
+    };
 
     return (
         <div
@@ -164,14 +141,13 @@ export default function Index({ quests, historyQuests, filters }: Props) {
 
                         {/* Actions */}
                         <div className="flex flex-wrap items-center gap-3">
-                            <button
-                                type="button"
-                                onClick={() => setIsHistoryOpen(true)}
-                                className="inline-flex transform cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4.5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase shadow-sm transition-all duration-300 hover:bg-slate-100 active:scale-95 dark:border-blue-500/25 dark:bg-[#0c122c]/40 dark:text-blue-200 dark:hover:bg-blue-950/40"
+                            <Link
+                                href="/student/quests/history"
+                                className="inline-flex transform items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4.5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase shadow-sm transition-all duration-305 hover:bg-slate-100 active:scale-95 dark:border-blue-500/25 dark:bg-[#0c122c]/40 dark:text-blue-200 dark:hover:bg-blue-955/40"
                             >
-                                <History className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                                <History className="h-4 w-4 text-purple-650 dark:text-purple-400" />
                                 Riwayat Quest
-                            </button>
+                            </Link>
 
                             <Link
                                 href="/student/quests/create"
@@ -215,9 +191,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                             },
                             {
                                 label: 'Quest Diselesaikan',
-                                val: historyQuests.filter(
-                                    (q) => q.status === 'completed',
-                                ).length,
+                                val: completedQuestsCount,
                                 icon: CheckCircle2,
                                 color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
                             },
@@ -258,7 +232,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-4 pl-11 font-['Oxanium'] text-xs text-slate-800 transition-colors focus:border-indigo-500 focus:outline-none sm:text-sm dark:border-slate-800 dark:bg-black/20 dark:text-white"
                             />
-                            <Search className="absolute top-3 left-3.5 h-5 w-5 text-slate-400 dark:text-slate-500" />
+                            <Search className="absolute top-3 left-3.5 h-5 w-5 text-slate-400 dark:text-slate-505" />
                         </div>
 
                         {/* Sort Selector */}
@@ -268,7 +242,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                 onChange={(e) =>
                                     setSortBy(e.target.value as any)
                                 }
-                                className="w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-bold tracking-wider text-slate-600 uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-slate-300"
+                                className="w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-bold tracking-wider text-slate-655 uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-slate-300"
                             >
                                 <option
                                     value="latest"
@@ -322,7 +296,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                 {sortedQuests.length === 0 ? (
                     <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white/40 py-20 text-center font-['Oxanium'] shadow-sm backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#0c122c]/20">
                         <Briefcase className="mb-4 h-14 w-14 animate-pulse text-slate-300 dark:text-blue-900/40" />
-                        <p className="text-base font-bold text-slate-600 dark:text-blue-200">
+                        <p className="text-base font-bold text-slate-650 dark:text-blue-205">
                             Tidak ada quest yang tersedia
                         </p>
                         <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-slate-400 dark:text-slate-500">
@@ -332,709 +306,52 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-6 pb-12 md:grid-cols-2">
-                        {sortedQuests.map((quest) => (
-                            <QuestItemCard key={quest._id} quest={quest} />
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Quest History Drawer */}
-            {isHistoryOpen && (
-                <div className="fixed inset-0 z-[100] flex justify-end font-['Oxanium']">
-                    {/* Backdrop */}
-                    <div
-                        className="absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-md transition-opacity duration-300"
-                        onClick={() => setIsHistoryOpen(false)}
-                    />
-
-                    {/* Drawer Content */}
-                    <div className="relative z-10 flex h-full w-full max-w-lg translate-x-0 transform flex-col border-l border-slate-200 bg-white shadow-2xl backdrop-blur-lg transition-transform duration-300 md:max-w-xl dark:border-slate-800/80 dark:bg-[#070b19]/95">
-                        {/* Drawer Header */}
-                        <div className="bg-slate-55 flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800 dark:bg-black/20">
-                            <div className="flex items-center gap-2.5">
-                                <History className="text-indigo-550 h-5 w-5 dark:text-indigo-400" />
-                                <h2 className="font-['Orbitron'] text-sm font-extrabold tracking-wider text-slate-900 uppercase sm:text-base dark:text-white">
-                                    Riwayat Quest Saya
-                                </h2>
-                            </div>
-                            <button
-                                onClick={() => setIsHistoryOpen(false)}
-                                className="cursor-pointer rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-
-                        {/* Quick filter tabs inside history drawer */}
-                        <div className="flex scrollbar-none gap-2 overflow-x-auto border-b border-slate-200 bg-slate-50/30 px-5 py-2.5 font-['Orbitron'] text-[9px] font-black tracking-wider uppercase dark:border-slate-800 dark:bg-black/10">
-                            {[
-                                { key: 'all', label: 'Semua' },
-                                { key: 'creator', label: 'Pembuat' },
-                                { key: 'worker', label: 'Pekerja' },
-                                { key: 'bidder', label: 'Bidder' },
-                            ].map((roleTab) => (
-                                <button
-                                    key={roleTab.key}
-                                    onClick={() => {
-                                        setHistoryRoleFilter(
-                                            roleTab.key as any,
-                                        );
-                                        setExpandedQuestId(null);
-                                    }}
-                                    className={`cursor-pointer rounded-lg border px-3 py-1.5 whitespace-nowrap transition-all ${
-                                        historyRoleFilter === roleTab.key
-                                            ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
-                                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-white/5 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white'
-                                    }`}
-                                >
-                                    {roleTab.label}
-                                </button>
+                    <>
+                        <div className="grid grid-cols-1 gap-6 pb-12 md:grid-cols-2 lg:grid-cols-3">
+                            {sortedQuests.map((quest) => (
+                                <QuestItemCard key={quest._id} quest={quest} />
                             ))}
                         </div>
 
-                        {/* List / Content */}
-                        <div className="flex-1 scrollbar-thin space-y-4 overflow-y-auto p-5">
-                            {filteredHistoryQuests.length === 0 ? (
-                                <div className="py-20 text-center text-slate-500">
-                                    <Briefcase className="mx-auto mb-3 h-12 w-12 animate-pulse text-indigo-500 opacity-30" />
-                                    <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
-                                        Tidak ada riwayat quest
-                                    </p>
-                                    <p className="mx-auto mt-1 max-w-[280px] text-[11px] leading-relaxed text-slate-400 dark:text-slate-400">
-                                        Anda tidak memiliki catatan quest dengan
-                                        filter peran "
-                                        {historyRoleFilter === 'all'
-                                            ? 'Semua'
-                                            : historyRoleFilter === 'creator'
-                                              ? 'Pembuat'
-                                              : historyRoleFilter === 'worker'
-                                                ? 'Pekerja'
-                                                : 'Bidder'}
-                                        ".
-                                    </p>
-                                </div>
-                            ) : (
-                                filteredHistoryQuests.map((item) => {
-                                    const isExpanded =
-                                        expandedQuestId === item._id;
-                                    return (
-                                        <div
-                                            key={item._id}
-                                            className={`rounded-2xl border border-slate-200 bg-slate-50/50 transition-all duration-300 dark:bg-black/25 ${
-                                                isExpanded
-                                                    ? 'border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.12)]'
-                                                    : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
-                                            }`}
-                                        >
-                                            {/* Accordion Trigger/Header */}
-                                            <div
-                                                onClick={() =>
-                                                    setExpandedQuestId(
-                                                        isExpanded
-                                                            ? null
-                                                            : item._id,
-                                                    )
-                                                }
-                                                className="flex cursor-pointer items-center justify-between gap-4 p-4 select-none"
-                                            >
-                                                <div className="min-w-0 space-y-1">
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <span
-                                                            className={`rounded px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider uppercase ${
-                                                                item.status ===
-                                                                'completed'
-                                                                    ? 'border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
-                                                                    : item.status ===
-                                                                        'approved'
-                                                                      ? 'border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
-                                                                      : item.status ===
-                                                                          'submitted'
-                                                                        ? 'border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                                                        : item.status ===
-                                                                            'ongoing'
-                                                                          ? 'border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                                                          : item.status ===
-                                                                              'expired'
-                                                                            ? 'border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
-                                                                            : 'border border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
-                                                            }`}
-                                                        >
-                                                            {item.status ===
-                                                            'completed'
-                                                                ? 'Selesai'
-                                                                : item.status ===
-                                                                    'approved'
-                                                                  ? 'Disetujui'
-                                                                  : item.status ===
-                                                                      'submitted'
-                                                                    ? 'Ditinjau'
-                                                                    : item.status ===
-                                                                        'ongoing'
-                                                                      ? 'Berjalan'
-                                                                      : item.status ===
-                                                                          'expired'
-                                                                        ? 'Kadaluarsa'
-                                                                        : 'Bidding'}
-                                                        </span>
+                        {(quests.length < totalQuests || currentLimit > 12) && (
+                            <div className="flex flex-wrap items-center justify-center gap-4 pb-16">
+                                {/* Show Less Button */}
+                                {currentLimit > 12 && (
+                                    <button
+                                        onClick={handleLoadLess}
+                                        disabled={isLoadingMore}
+                                        className="cursor-pointer group flex items-center gap-2 rounded-xl border border-rose-200 bg-white/80 px-6 py-3 font-['Orbitron'] text-xs font-bold tracking-wider uppercase text-rose-600 transition-all duration-300 hover:border-rose-505 hover:bg-rose-600 hover:text-white hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] disabled:opacity-50 dark:border-rose-500/30 dark:bg-rose-950/20 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
+                                    >
+                                        <span className="transition-transform duration-300 group-hover:-translate-y-0.5">↑</span>
+                                        Tampilkan Lebih Sedikit
+                                    </button>
+                                )}
 
-                                                        {item.is_creator ? (
-                                                            <span className="rounded border border-purple-500/20 bg-purple-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-purple-600 uppercase dark:text-purple-400">
-                                                                Pembuat
-                                                            </span>
-                                                        ) : item.is_worker ? (
-                                                            <span className="rounded border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
-                                                                Pekerja
-                                                            </span>
-                                                        ) : (
-                                                            <span className="rounded border border-slate-200 bg-slate-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                                                Bidder
-                                                            </span>
-                                                        )}
-                                                    </div>
-
-                                                    <h3 className="truncate text-xs font-bold text-slate-800 dark:text-slate-200">
-                                                        {item.title}
-                                                    </h3>
-
-                                                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                                                        {item.is_creator
-                                                            ? item.worker
-                                                                ? `Pekerja: ${item.worker.name}`
-                                                                : 'Belum Ada Pekerja'
-                                                            : `Pembuat: ${item.creator.name}`}
-                                                    </p>
-                                                </div>
-
-                                                <div className="flex shrink-0 items-center gap-1.5">
-                                                    <span className="font-['Orbitron'] text-[10px] font-bold text-purple-600 dark:text-purple-400">
-                                                        {item.is_creator
-                                                            ? `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
-                                                            : item.my_bid
-                                                              ? formatCurrency(
-                                                                    item.my_bid
-                                                                        .bid_amount,
-                                                                )
-                                                              : formatCurrency(
-                                                                    item.min_salary,
-                                                                )}
-                                                    </span>
-                                                    <svg
-                                                        className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-300 dark:text-slate-500 ${
-                                                            isExpanded
-                                                                ? 'rotate-180 transform'
-                                                                : ''
-                                                        }`}
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth="2.5"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                            </div>
-
-                                            {/* Accordion Content */}
-                                            {isExpanded && (
-                                                <div className="space-y-4 rounded-b-2xl border-t border-slate-200 bg-slate-50/30 px-4 pt-4 pb-4 font-['Oxanium'] text-xs dark:border-slate-800/60 dark:bg-black/10">
-                                                    {/* Stepper Progress Horizontal Timeline */}
-                                                    <div className="space-y-3.5 rounded-xl border border-slate-200 bg-slate-100/50 p-3.5 font-['Orbitron'] text-[8px] font-bold tracking-wider dark:border-slate-800/80 dark:bg-black/20">
-                                                        <span className="block border-b border-slate-200 pb-1.5 text-[8px] font-bold tracking-wider text-slate-500 uppercase dark:border-slate-800">
-                                                            Progress Alur Quest
-                                                        </span>
-                                                        <div className="relative flex items-center justify-between pt-1.5">
-                                                            <div className="absolute top-1/2 right-0 left-0 z-0 h-0.5 -translate-y-1/2 bg-slate-200 dark:bg-slate-800" />
-                                                            <div
-                                                                className="absolute top-1/2 left-0 z-0 h-0.5 -translate-y-1/2 bg-indigo-500 transition-all duration-350"
-                                                                style={{
-                                                                    width:
-                                                                        item.status ===
-                                                                        'open'
-                                                                            ? '0%'
-                                                                            : item.status ===
-                                                                                'ongoing'
-                                                                              ? '25%'
-                                                                              : item.status ===
-                                                                                  'submitted'
-                                                                                ? '50%'
-                                                                                : item.status ===
-                                                                                    'approved'
-                                                                                  ? '75%'
-                                                                                  : '100%',
-                                                                }}
-                                                            />
-
-                                                            {[
-                                                                {
-                                                                    key: 'open',
-                                                                    label: 'Bidding',
-                                                                },
-                                                                {
-                                                                    key: 'ongoing',
-                                                                    label: 'Proyek',
-                                                                },
-                                                                {
-                                                                    key: 'submitted',
-                                                                    label: 'Tinjau',
-                                                                },
-                                                                {
-                                                                    key: 'approved',
-                                                                    label: 'Setuju',
-                                                                },
-                                                                {
-                                                                    key: 'completed',
-                                                                    label: 'Selesai',
-                                                                },
-                                                            ].map(
-                                                                (step, idx) => {
-                                                                    const statuses =
-                                                                        [
-                                                                            'open',
-                                                                            'ongoing',
-                                                                            'submitted',
-                                                                            'approved',
-                                                                            'completed',
-                                                                        ];
-                                                                    const currentIdx =
-                                                                        statuses.indexOf(
-                                                                            item.status,
-                                                                        );
-                                                                    const stepIdx =
-                                                                        statuses.indexOf(
-                                                                            step.key,
-                                                                        );
-                                                                    const isCompleted =
-                                                                        stepIdx <
-                                                                            currentIdx ||
-                                                                        item.status ===
-                                                                            'completed';
-                                                                    const isActive =
-                                                                        item.status ===
-                                                                        step.key;
-
-                                                                    return (
-                                                                        <div
-                                                                            key={
-                                                                                step.key
-                                                                            }
-                                                                            className="relative z-10 flex flex-col items-center"
-                                                                        >
-                                                                            <div
-                                                                                className={`flex h-5 w-5 items-center justify-center rounded-full border text-[8px] transition-all duration-300 ${
-                                                                                    isCompleted
-                                                                                        ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
-                                                                                        : isActive
-                                                                                          ? 'border-purple-500 bg-purple-600 text-white shadow-sm'
-                                                                                          : 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500'
-                                                                                }`}
-                                                                            >
-                                                                                {isCompleted
-                                                                                    ? '✓'
-                                                                                    : idx +
-                                                                                      1}
-                                                                            </div>
-                                                                            <span
-                                                                                className={`mt-1 text-[7px] tracking-widest uppercase ${
-                                                                                    isActive ||
-                                                                                    isCompleted
-                                                                                        ? 'font-black text-indigo-500 dark:text-indigo-400'
-                                                                                        : 'text-slate-400 dark:text-slate-500'
-                                                                                }`}
-                                                                            >
-                                                                                {
-                                                                                    step.label
-                                                                                }
-                                                                            </span>
-                                                                        </div>
-                                                                    );
-                                                                },
-                                                            )}
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Description overview */}
-                                                    <div className="space-y-1 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800/80 dark:bg-black/15">
-                                                        <span className="block text-[8px] font-semibold text-slate-400 uppercase">
-                                                            Deskripsi Quest
-                                                        </span>
-                                                        <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300">
-                                                            {item.description}
-                                                        </p>
-                                                    </div>
-
-                                                    {/* Details Budget */}
-                                                    <div className="grid grid-cols-2 gap-3 text-[11px]">
-                                                        <div>
-                                                            <span className="block text-[8px] font-semibold text-slate-400 uppercase">
-                                                                Anggaran Gaji
-                                                            </span>
-                                                            <p className="font-bold text-slate-800 dark:text-slate-200">
-                                                                {formatCurrency(
-                                                                    item.min_salary,
-                                                                )}{' '}
-                                                                -{' '}
-                                                                {formatCurrency(
-                                                                    item.max_salary,
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="block text-[8px] font-semibold text-slate-400 uppercase">
-                                                                Tenggat Waktu
-                                                            </span>
-                                                            <p className="font-bold text-slate-800 dark:text-slate-200">
-                                                                {formatDate(
-                                                                    item.deadline,
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Bid Info */}
-                                                    {item.my_bid && (
-                                                        <div className="space-y-2 border-t border-slate-800/40 pt-3">
-                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-400 uppercase">
-                                                                Detail Penawaran
-                                                                (Bid) Anda
-                                                            </h4>
-                                                            <div className="grid grid-cols-2 gap-2 text-[11px]">
-                                                                <div>
-                                                                    <span className="block text-[8px] text-slate-500">
-                                                                        Jumlah
-                                                                        Bid
-                                                                    </span>
-                                                                    <p className="font-bold text-purple-600 dark:text-purple-400">
-                                                                        {formatCurrency(
-                                                                            item
-                                                                                .my_bid
-                                                                                .bid_amount,
-                                                                        )}
-                                                                    </p>
-                                                                </div>
-                                                                <div>
-                                                                    <span className="block text-[8px] text-slate-500">
-                                                                        Status
-                                                                        Bid
-                                                                    </span>
-                                                                    <span
-                                                                        className={`inline-block rounded border px-1.5 py-0.5 font-['Orbitron'] text-[8px] font-black tracking-wider ${
-                                                                            item
-                                                                                .my_bid
-                                                                                .status ===
-                                                                            'accepted'
-                                                                                ? 'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
-                                                                                : item
-                                                                                        .my_bid
-                                                                                        .status ===
-                                                                                    'rejected'
-                                                                                  ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
-                                                                                  : 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                                                        }`}
-                                                                    >
-                                                                        {item
-                                                                            .my_bid
-                                                                            .status ===
-                                                                        'accepted'
-                                                                            ? 'Diterima'
-                                                                            : item
-                                                                                    .my_bid
-                                                                                    .status ===
-                                                                                'rejected'
-                                                                              ? 'Ditolak'
-                                                                              : 'Menunggu'}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            {item.my_bid
-                                                                .proposal && (
-                                                                <div>
-                                                                    <span className="block text-[8px] text-slate-500">
-                                                                        Proposal
-                                                                        Anda
-                                                                    </span>
-                                                                    <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300">
-                                                                        {
-                                                                            item
-                                                                                .my_bid
-                                                                                .proposal
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            )}
-                                                            {(item.my_bid.cv ||
-                                                                item.my_bid
-                                                                    .portfolio) && (
-                                                                <div className="flex flex-wrap gap-2.5 pt-1">
-                                                                    {item.my_bid
-                                                                        .cv && (
-                                                                        <a
-                                                                            href={
-                                                                                item
-                                                                                    .my_bid
-                                                                                    .cv
-                                                                            }
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                            className="inline-flex items-center gap-1 text-[10px] text-indigo-600 hover:underline dark:text-indigo-400"
-                                                                        >
-                                                                            CV
-                                                                            Lampiran{' '}
-                                                                            <ExternalLink className="h-3 w-3" />
-                                                                        </a>
-                                                                    )}
-                                                                    {item.my_bid
-                                                                        .portfolio && (
-                                                                        <a
-                                                                            href={
-                                                                                item
-                                                                                    .my_bid
-                                                                                    .portfolio
-                                                                            }
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                            className="inline-flex items-center gap-1 text-[10px] text-indigo-600 hover:underline dark:text-indigo-400"
-                                                                        >
-                                                                            Portofolio
-                                                                            Lampiran{' '}
-                                                                            <ExternalLink className="h-3 w-3" />
-                                                                        </a>
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-
-                                                    {/* Revision Notes if ongoing */}
-                                                    {item.status ===
-                                                        'ongoing' &&
-                                                        item.revision_note && (
-                                                            <div className="space-y-1 rounded-xl border border-red-500/20 bg-red-500/10 p-3">
-                                                                <span className="block font-['Orbitron'] text-[8px] font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
-                                                                    {item.is_creator
-                                                                        ? 'Feedback Revisi Anda:'
-                                                                        : 'Minta Revisi Dari Pembuat:'}
-                                                                </span>
-                                                                <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-red-800 italic dark:text-red-200">
-                                                                    "
-                                                                    {
-                                                                        item.revision_note
-                                                                    }
-                                                                    "
-                                                                </p>
-                                                            </div>
-                                                        )}
-
-                                                    {/* Work Submission Details */}
-                                                    {(item.status ===
-                                                        'submitted' ||
-                                                        item.status ===
-                                                            'approved' ||
-                                                        item.status ===
-                                                            'completed') && (
-                                                        <div className="space-y-3 border-t border-slate-200 pt-3 dark:border-slate-800/40">
-                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                                                {item.is_creator
-                                                                    ? 'Hasil Pekerjaan Pekerja'
-                                                                    : 'Hasil Pekerjaan yang Dikirim'}
-                                                            </h4>
-
-                                                            {item.submission_file && (
-                                                                <div className="space-y-1">
-                                                                    <span className="block text-[8px] text-slate-500">
-                                                                        Berkas
-                                                                        ZIP
-                                                                        Utama
-                                                                    </span>
-                                                                    <div className="flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/5 p-2.5">
-                                                                        <div className="flex min-w-0 items-center gap-2.5">
-                                                                            <FileArchive className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-500" />
-                                                                            <div className="min-w-0">
-                                                                                <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">
-                                                                                    {
-                                                                                        item
-                                                                                            .submission_file
-                                                                                            .name
-                                                                                    }
-                                                                                </p>
-                                                                                <p className="text-[10px] text-slate-500">
-                                                                                    {formatBytes(
-                                                                                        item
-                                                                                            .submission_file
-                                                                                            .size,
-                                                                                    )}
-                                                                                </p>
-                                                                            </div>
-                                                                        </div>
-                                                                        <a
-                                                                            href={
-                                                                                item
-                                                                                    .submission_file
-                                                                                    .url
-                                                                            }
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                            className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-500"
-                                                                            title="Unduh ZIP di Tab Baru"
-                                                                        >
-                                                                            <Download className="h-4 w-4" />
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-
-                                                            {item.submission_link && (
-                                                                <div>
-                                                                    <span className="block text-[8px] text-slate-500">
-                                                                        Link
-                                                                        Pekerjaan
-                                                                        Pendukung
-                                                                    </span>
-                                                                    <a
-                                                                        href={
-                                                                            item.submission_link
-                                                                        }
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="mt-0.5 block text-[11px] font-semibold break-all text-indigo-600 hover:underline dark:text-indigo-400"
-                                                                    >
-                                                                        {
-                                                                            item.submission_link
-                                                                        }
-                                                                    </a>
-                                                                </div>
-                                                            )}
-
-                                                            {item.submission_note && (
-                                                                <div>
-                                                                    <span className="block text-[8px] text-slate-500">
-                                                                        Catatan
-                                                                        Pengiriman
-                                                                    </span>
-                                                                    <p className="rounded-lg border border-slate-200 bg-white p-2.5 text-[11px] leading-relaxed whitespace-pre-wrap text-slate-700 dark:border-slate-800 dark:bg-slate-950/20 dark:text-slate-300">
-                                                                        {
-                                                                            item.submission_note
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-
-                                                    {/* Rating, Review Comment, and Gamification Rewards for Completed */}
-                                                    {item.status ===
-                                                        'completed' && (
-                                                        <div className="space-y-3 border-t border-slate-200 pt-3 dark:border-slate-800/40">
-                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                                                {item.is_creator
-                                                                    ? 'Hasil Ulasan & Hadiah Pekerja'
-                                                                    : 'Hasil Ulasan & Hadiah'}
-                                                            </h4>
-
-                                                            {item.rating && (
-                                                                <div className="space-y-1.5 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800/80 dark:bg-slate-950/20">
-                                                                    <div className="flex gap-0.5">
-                                                                        {[
-                                                                            1,
-                                                                            2,
-                                                                            3,
-                                                                            4,
-                                                                            5,
-                                                                        ].map(
-                                                                            (
-                                                                                star,
-                                                                            ) => (
-                                                                                <Star
-                                                                                    key={
-                                                                                        star
-                                                                                    }
-                                                                                    className={`h-4 w-4 ${
-                                                                                        star <=
-                                                                                        (item.rating ??
-                                                                                            0)
-                                                                                            ? 'fill-amber-400 text-amber-400'
-                                                                                            : 'text-slate-300 dark:text-slate-600'
-                                                                                    }`}
-                                                                                />
-                                                                            ),
-                                                                        )}
-                                                                    </div>
-                                                                    {item.rating_comment && (
-                                                                        <p className="text-xs leading-relaxed text-slate-600 italic dark:text-slate-300">
-                                                                            "
-                                                                            {
-                                                                                item.rating_comment
-                                                                            }
-                                                                            "
-                                                                        </p>
-                                                                    )}
-                                                                </div>
-                                                            )}
-
-                                                            <div className="grid grid-cols-3 gap-2 pt-1 text-center font-['Orbitron'] text-[9px] font-black">
-                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-purple-500/20 bg-purple-500/10 p-2 text-purple-600 dark:text-purple-300">
-                                                                    <span className="font-sans text-[7.5px] text-slate-500">
-                                                                        EXP{' '}
-                                                                        {item.is_creator
-                                                                            ? '(Pek)'
-                                                                            : ''}
-                                                                    </span>
-                                                                    <span>
-                                                                        +250 EXP
-                                                                    </span>
-                                                                </div>
-                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-amber-500/20 bg-amber-500/10 p-2 text-amber-600 dark:text-amber-400">
-                                                                    <span className="font-sans text-[7.5px] text-slate-500">
-                                                                        GOLD{' '}
-                                                                        {item.is_creator
-                                                                            ? '(Pek)'
-                                                                            : ''}
-                                                                    </span>
-                                                                    <span>
-                                                                        +150
-                                                                        GOLD
-                                                                    </span>
-                                                                </div>
-                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-2 text-indigo-600 dark:text-indigo-300">
-                                                                    <span className="font-sans text-[7.5px] text-slate-500">
-                                                                        ERP{' '}
-                                                                        {item.is_creator
-                                                                            ? '(Pek)'
-                                                                            : ''}
-                                                                    </span>
-                                                                    <span>
-                                                                        +100 ERP
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-
-                                                    {/* Link to detail page */}
-                                                    <div className="pt-2">
-                                                        <Link
-                                                            href={`/student/quests/${item._id}`}
-                                                            className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 text-center font-['Orbitron'] text-[9px] font-bold tracking-wider text-white uppercase transition-colors hover:from-indigo-700 hover:to-purple-700"
-                                                        >
-                                                            Buka Halaman Quest{' '}
-                                                            <ExternalLink className="h-3.5 w-3.5" />
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+                                {/* Show More Button */}
+                                {quests.length < totalQuests && (
+                                    <button
+                                        onClick={handleLoadMore}
+                                        disabled={isLoadingMore}
+                                        className="cursor-pointer group flex items-center gap-2.5 rounded-xl border border-indigo-200 bg-white/80 px-6 py-3 font-['Orbitron'] text-xs font-bold tracking-wider uppercase text-indigo-600 transition-all duration-300 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white hover:shadow-[0_0_15px_rgba(99,102,241,0.4)] disabled:opacity-50 dark:border-indigo-500/30 dark:bg-indigo-950/20 dark:text-indigo-400 dark:hover:bg-indigo-600 dark:hover:text-white"
+                                    >
+                                        {isLoadingMore ? (
+                                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        ) : (
+                                            <>
+                                                Tampilkan Lebih Banyak
+                                                <span className="transition-transform duration-300 group-hover:translate-y-0.5">↓</span>
+                                            </>
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 }

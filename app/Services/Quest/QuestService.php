@@ -32,7 +32,7 @@ class QuestService
     /**
      * Get list of quests with filters.
      */
-    public function listQuests(?string $search = null, ?string $status = null)
+    public function listQuests(?string $search = null, ?string $status = null, ?int $limit = null): array
     {
         // On-the-fly expiration check for open quests
         $expiredQuests = Quest::where('status', 'open')
@@ -72,7 +72,13 @@ class QuestService
             $query->where('status', $status);
         }
 
-        return $query->latest()->get()->map(function ($quest) {
+        $total = $query->count();
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        $items = $query->latest()->get()->map(function ($quest) {
             return [
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
@@ -87,7 +93,12 @@ class QuestService
                 ],
                 'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
             ];
-        });
+        })->toArray();
+
+        return [
+            'items' => $items,
+            'total' => $total,
+        ];
     }
 
     /**
