@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Character;
 use App\Models\Quest;
 use App\Models\QuestBid;
+use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
 use App\Models\User;
 use App\Models\UserStat;
@@ -337,7 +338,7 @@ class QuestArbitrationTest extends TestCase
         $this->assertEquals('cancelled', $quest->status);
         $this->assertNotNull($quest->dispute);
         $this->assertEquals('resolved_cancelled', $quest->dispute['status']);
-        $this->assertEquals('refund', $quest->dispute['ruling']);
+        $this->assertEquals('refund_creator', $quest->dispute['ruling']);
         $this->assertEquals('Quest dibatalkan secara paksa oleh Admin.', $quest->dispute['note']);
     }
 
@@ -386,5 +387,154 @@ class QuestArbitrationTest extends TestCase
 
         $bid->refresh();
         $this->assertEquals('rejected', $bid->status);
+    }
+
+    public function test_rejected_bidder_cannot_access_chat(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $rejectedWorker = $this->createStudent('Rejected Worker');
+
+        $quest = Quest::create([
+            'title' => 'Quest title',
+            'description' => 'Desc',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'ongoing',
+            'creator_id' => (string) $creator->_id,
+        ]);
+
+        $bid = QuestBid::create([
+            'quest_id' => $quest->_id,
+            'student_id' => $rejectedWorker->_id,
+            'bid_amount' => 1500,
+            'status' => 'rejected',
+        ]);
+
+        $response = $this->actingAs($rejectedWorker)
+            ->getJson("/quests/bids/{$bid->_id}/messages");
+        $response->assertStatus(403);
+
+        $responsePost = $this->actingAs($rejectedWorker)
+            ->postJson("/quests/bids/{$bid->_id}/messages", ['message' => 'spam']);
+        $responsePost->assertStatus(403);
+    }
+
+    public function test_submission_clears_revision_note(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Quest title',
+            'description' => 'Desc',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'ongoing',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+            'revision_note' => 'Please fix the CSS.',
+        ]);
+
+        $response = $this->actingAs($worker)
+            ->post("/student/quests/{$quest->_id}/submit", [
+                'submission_link' => 'https://github.com/test',
+                'submission_note' => 'I fixed it.',
+            ]);
+
+        $response->assertRedirect();
+
+        $quest->refresh();
+        $this->assertEquals('submitted', $quest->status);
+        $this->assertNull($quest->revision_note);
+    }
+
+    public function test_cascading_delete_removes_messages_and_transactions(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $quest = Quest::create([
+            'title' => 'Quest title',
+            'description' => 'Desc',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'open',
+            'creator_id' => (string) $creator->_id,
+        ]);
+
+        $bid = QuestBid::create([
+            'quest_id' => (string) $quest->_id,
+            'student_id' => (string) $worker->_id,
+            'bid_amount' => 1500,
+            'status' => 'pending',
+        ]);
+
+        $message = QuestMessage::create([
+            'quest_bid_id' => (string) $bid->_id,
+            'sender_id' => (string) $worker->_id,
+            'message' => 'Hello',
+        ]);
+
+        $transaction = QuestTransaction::create([
+            'quest_id' => (string) $quest->_id,
+            'user_id' => (string) $worker->_id,
+            'amount' => 1500,
+            'type' => 'release_payout',
+            'description' => 'Virtual Escrow release',
+        ]);
+
+        $admin = $this->createAdmin();
+
+        $response = $this->actingAs($admin)
+            ->delete("/admin/quests/{$quest->_id}");
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertNull(Quest::find($quest->_id));
+        $this->assertNull(QuestBid::find($bid->_id));
+        $this->assertNull(QuestMessage::find($message->_id));
+        $this->assertNull(QuestTransaction::find($transaction->_id));
+    }
+
+    public function test_admin_cannot_reopen_bidding_on_completed_or_cancelled_quest(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+
+        $questCompleted = Quest::create([
+            'title' => 'Quest completed',
+            'description' => 'Desc',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'completed',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+        ]);
+
+        $questCancelled = Quest::create([
+            'title' => 'Quest cancelled',
+            'description' => 'Desc',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5),
+            'status' => 'cancelled',
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+        ]);
+
+        $admin = $this->createAdmin();
+
+        $responseCompleted = $this->actingAs($admin)
+            ->post("/admin/quests/{$questCompleted->_id}/reopen-bidding");
+        $responseCompleted->assertStatus(400);
+
+        $responseCancelled = $this->actingAs($admin)
+            ->post("/admin/quests/{$questCancelled->_id}/reopen-bidding");
+        $responseCancelled->assertStatus(400);
     }
 }

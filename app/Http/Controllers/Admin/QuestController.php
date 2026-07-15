@@ -53,33 +53,14 @@ class QuestController extends Controller
         ]);
     }
 
-    public function store(StoreQuestRequest $request)
+    public function store(StoreQuestRequest $request, QuestService $questService)
     {
         $data = $request->validated();
 
-        $maxSalary = (int) $data['max_salary'];
-        if ($maxSalary >= 10000000) {
-            $tier = 'S';
-        } elseif ($maxSalary >= 5000000) {
-            $tier = 'A';
-        } elseif ($maxSalary >= 2500000) {
-            $tier = 'B';
-        } elseif ($maxSalary >= 1000000) {
-            $tier = 'C';
-        } else {
-            $tier = 'D';
-        }
-
-        Quest::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'min_salary' => (int) $data['min_salary'],
-            'max_salary' => (int) $data['max_salary'],
-            'deadline' => now()->parse($data['deadline']),
-            'status' => 'open',
-            'creator_id' => auth()->id(),
-            'tier' => $tier,
-        ]);
+        $questService->createQuest(
+            $request->user(),
+            $data
+        );
 
         return redirect()->route('admin.quests.index')->with('success', 'Quest berhasil dibuat!');
     }
@@ -283,11 +264,18 @@ class QuestController extends Controller
         $quest = Quest::findOrFail($id);
 
         // Delete associated bids
-        QuestBid::where('quest_id', $quest->_id)->delete();
+        $bidIds = QuestBid::where('quest_id', (string) $quest->_id)->pluck('id')->toArray();
+        QuestBid::where('quest_id', (string) $quest->_id)->delete();
+
+        // Delete associated messages
+        QuestMessage::whereIn('quest_bid_id', $bidIds)->delete();
+
+        // Delete associated transactions
+        QuestTransaction::where('quest_id', (string) $quest->_id)->delete();
 
         $quest->delete();
 
-        return redirect()->route('admin.quests.index')->with('success', 'Quest dan penawaran terkait berhasil dihapus!');
+        return redirect()->route('admin.quests.index')->with('success', 'Quest dan data terkait berhasil dihapus!');
     }
 
     public function destroyBid(string $questId, string $bidId)
@@ -468,7 +456,7 @@ class QuestController extends Controller
         $dispute = $quest->dispute;
         if ($dispute && isset($dispute['status']) && $dispute['status'] === 'pending') {
             $dispute['status'] = 'resolved_cancelled';
-            $dispute['ruling'] = 'refund';
+            $dispute['ruling'] = 'refund_creator';
             $dispute['note'] = 'Quest dibatalkan secara paksa oleh Admin.';
             $dispute['resolved_at'] = now()->toIso8601String();
             $dispute['ruled_at'] = now()->toIso8601String();
@@ -518,6 +506,10 @@ class QuestController extends Controller
     public function reopenBidding(Request $request, string $questId, QuestService $questService)
     {
         $quest = Quest::findOrFail($questId);
+
+        if (in_array($quest->status, ['completed', 'cancelled'])) {
+            abort(400, 'Quest yang sudah selesai atau dibatalkan tidak dapat dibuka kembali bidding-nya.');
+        }
 
         $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
         if ($acceptedBid) {

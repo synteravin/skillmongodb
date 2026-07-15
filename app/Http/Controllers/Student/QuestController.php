@@ -236,6 +236,7 @@ class QuestController extends Controller
             'submission_note' => $request->submission_note,
             'submitted_at' => now(),
             'status' => 'submitted',
+            'revision_note' => null, // clear active revision alert
         ];
 
         $submissionFile = null;

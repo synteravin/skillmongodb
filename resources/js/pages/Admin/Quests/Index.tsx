@@ -16,24 +16,7 @@ import React, { useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
-interface Quest {
-    _id: string;
-    title: string;
-    description: string;
-    min_salary: number;
-    max_salary: number;
-    deadline: string;
-    status: string;
-    creator: {
-        name: string;
-        role: string;
-    };
-    worker?: {
-        name: string;
-    } | null;
-    bids_count: number;
-    accepted_bid_amount?: number | null;
-}
+import { Quest } from '@/types/quest';
 
 interface Props {
     quests: Quest[];
