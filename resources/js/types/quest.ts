@@ -121,4 +121,10 @@ export interface HistoryQuest {
     rating?: number;
     rating_comment?: string;
     revision_note?: string;
+    rewards?: {
+        exp?: number;
+        gold?: number;
+        erp?: number;
+    };
+    bids_count?: number;
 }

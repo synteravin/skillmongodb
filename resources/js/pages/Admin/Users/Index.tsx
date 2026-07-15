@@ -20,6 +20,8 @@ import {
     Save,
     GraduationCap,
     ShieldCheck,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react';
 
 interface User {
@@ -47,7 +49,7 @@ export default function Index({
     stats,
 }: {
     users: PaginatedUsers;
-    filters?: { search?: string };
+    filters?: { search?: string; role?: string };
     stats?: {
         total: number;
         students: number;
@@ -152,12 +154,11 @@ export default function Index({
             _method: 'post',
         });
 
-    /* ================= HANDLE SEARCH & FILTER ================= */
-    const isFirstRender = useRef(true);
-
     useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
+        const hasSearchChanged = searchQuery !== (filters?.search || '');
+        const hasRoleChanged = selectedRole !== (filters?.role || 'all');
+
+        if (!hasSearchChanged && !hasRoleChanged) {
             return;
         }
 
@@ -179,7 +180,7 @@ export default function Index({
         }, 300);
 
         return () => clearTimeout(timeout);
-    }, [searchQuery, selectedRole]);
+    }, [searchQuery, selectedRole, filters]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -846,31 +847,39 @@ export default function Index({
                             </span>
 
                             <div className="flex items-center gap-1">
-                                {users.links.map((link, i) =>
-                                    link.url ? (
+                                {users.links.map((link, i) => {
+                                    const labelLower = link.label.toLowerCase();
+                                    const isPrev = labelLower.includes('previous') || labelLower.includes('&laquo;') || labelLower.includes('laquo');
+                                    const isNext = labelLower.includes('next') || labelLower.includes('&raquo;') || labelLower.includes('raquo');
+                                    
+                                    const renderLabel = () => {
+                                        if (isPrev) return <ChevronLeft size={14} className="shrink-0" />;
+                                        if (isNext) return <ChevronRight size={14} className="shrink-0" />;
+                                        return link.label;
+                                    };
+
+                                    return link.url ? (
                                         <Link
                                             key={i}
                                             href={link.url}
                                             preserveScroll
-                                            className={`rounded-lg px-3 py-1.5 text-xs font-medium tabular-nums transition-colors ${
+                                            className={`flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-xs font-semibold tabular-nums transition-colors ${
                                                 link.active
                                                     ? 'border border-indigo-300 bg-indigo-50 text-indigo-600 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-400'
                                                     : 'border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-800 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200'
                                             }`}
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                        />
+                                        >
+                                            {renderLabel()}
+                                        </Link>
                                     ) : (
                                         <span
                                             key={i}
-                                            className="cursor-not-allowed rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                        />
-                                    ),
-                                )}
+                                            className="cursor-not-allowed flex h-7 min-w-7 items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
+                                        >
+                                            {renderLabel()}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}

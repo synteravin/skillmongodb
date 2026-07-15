@@ -470,6 +470,7 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
     ->name('student.')
     ->group(function () {
         Route::get('/quests', [QuestController::class, 'index'])->name('quests.index');
+        Route::get('/quests/history', [QuestController::class, 'history'])->name('quests.history');
         Route::get('/quests/create', [QuestController::class, 'create'])->name('quests.create');
         Route::post('/quests', [QuestController::class, 'store'])->name('quests.store');
         Route::get('/quests/{quest}', [QuestController::class, 'show'])->name('quests.show');
