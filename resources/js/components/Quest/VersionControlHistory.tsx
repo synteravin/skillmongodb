@@ -34,21 +34,21 @@ export default function VersionControlHistory({ quest }: Props) {
                 {quest.submission_history.map((historyItem) => (
                     <div
                         key={historyItem.version}
-                        className="flex items-center justify-between gap-4 rounded-xl border border-slate-150 bg-slate-50/50 p-3 dark:border-slate-800 dark:bg-black/10"
+                        className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-3 dark:border-slate-800 dark:bg-black/10"
                     >
                         <div className="min-w-0 space-y-1">
                             <div className="flex items-center gap-2">
-                                <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 font-['Orbitron'] text-[10px] font-bold text-indigo-650 uppercase dark:text-indigo-400">
+                                <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 font-['Orbitron'] text-[10px] font-bold text-indigo-600 uppercase dark:text-indigo-400">
                                     v{historyItem.version}
                                 </span>
-                                <span className="text-[10px] text-slate-405">
+                                <span className="text-[10px] text-slate-400">
                                     {historyItem.submitted_at
                                         ? formatDate(historyItem.submitted_at)
                                         : ''}
                                 </span>
                             </div>
                             {historyItem.submission_note && (
-                                <p className="truncate text-xs text-slate-650 dark:text-slate-350">
+                                <p className="truncate text-xs text-slate-600 dark:text-slate-300">
                                     {historyItem.submission_note}
                                 </p>
                             )}
@@ -57,7 +57,7 @@ export default function VersionControlHistory({ quest }: Props) {
                                     href={historyItem.submission_link}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="block truncate text-[11px] text-indigo-550 hover:underline"
+                                    className="block truncate text-[11px] text-indigo-500 hover:underline"
                                 >
                                     {historyItem.submission_link}
                                 </a>

@@ -15,6 +15,7 @@ class QuestMessage extends Model
         'sender_id',
         'message',
         'read_by',
+        'file',
     ];
 
     protected function casts(): array
@@ -24,6 +25,7 @@ class QuestMessage extends Model
             'quest_bid_id' => 'string',
             'sender_id' => 'string',
             'read_by' => 'array',
+            'file' => 'array',
         ];
     }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { Star, Trash2, Check, MessageSquare, Briefcase } from 'lucide-react';
+import { Star, Archive, Check, MessageSquare, Briefcase } from 'lucide-react';
 import ConfirmModal from '../ConfirmModal';
 import { Quest, Bid } from '@/types/quest';
 
@@ -87,7 +87,7 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                 }`}
                             >
                                 <div className="space-y-3 font-['Oxanium']">
-                                    <div className="flex items-start justify-between">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                         <div className="flex min-w-0 items-center gap-2.5">
                                             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-xs font-bold text-white">
                                                 {bid.student.name.substring(0, 2).toUpperCase()}
@@ -101,7 +101,7 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="ml-2 flex shrink-0 items-center gap-1">
+                                        <div className="flex shrink-0 items-center gap-1.5 self-end sm:self-auto">
                                             <span className="mr-1 font-['Orbitron'] text-xs font-black text-purple-600 dark:text-purple-300">
                                                 {formatCurrency(bid.bid_amount)}
                                             </span>
@@ -172,7 +172,7 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                                                 : 'Arsipkan (Sembunyikan)'
                                                         }
                                                     >
-                                                        <Trash2 size={11} />
+                                                        <Archive size={11} />
                                                     </button>
                                                 </>
                                             )}
@@ -183,7 +183,7 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                         <span className="block text-[8px] font-bold tracking-wider text-slate-400 uppercase">
                                             Proposal Penawaran
                                         </span>
-                                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600 dark:text-slate-350">
+                                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
                                             {bid.proposal}
                                         </p>
                                     </div>
@@ -212,12 +212,12 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                     </div>
                                 </div>
 
-                                <div className="flex gap-2 border-t border-slate-100/60 pt-3 dark:border-slate-800/60">
+                                <div className="flex flex-col gap-2 min-[400px]:flex-row border-t border-slate-100/60 pt-3 dark:border-slate-800/60">
                                     {bid.status === 'pending' && (
                                         <button
                                             type="button"
                                             onClick={() => handleAcceptBid(bid._id)}
-                                            className="flex-1 flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-indigo-650 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-colors hover:bg-indigo-700"
+                                            className="flex-1 flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-indigo-600 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-colors hover:bg-indigo-700"
                                         >
                                             <Check size={12} />
                                             Terima Pekerja
@@ -236,7 +236,7 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                             className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase transition-colors ${
                                                 bid.status === 'accepted'
                                                     ? 'flex-1 bg-green-600 text-white hover:bg-green-700'
-                                                    : 'w-full bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                                                    : 'w-full min-[400px]:flex-1 bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                                             }`}
                                         >
                                             <MessageSquare size={11} />

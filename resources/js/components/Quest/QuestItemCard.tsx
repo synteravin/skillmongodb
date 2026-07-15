@@ -77,12 +77,18 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                             ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
                             : quest.status === 'ongoing'
                             ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
+                            : quest.status === 'approved' || quest.status === 'payment' || quest.status === 'submitted'
+                            ? 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400'
                             : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
                     }`}>
                         {quest.status === 'open'
                             ? 'Tersedia'
                             : quest.status === 'ongoing'
                             ? 'Berjalan'
+                            : quest.status === 'approved' || quest.status === 'payment'
+                            ? 'Pelunasan'
+                            : quest.status === 'submitted'
+                            ? 'Ditinjau'
                             : 'Selesai'}
                     </span>
                 </div>
@@ -93,7 +99,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 </h2>
 
                 {/* Description */}
-                <p className="dark:text-slate-350 mb-4 line-clamp-3 font-['Oxanium'] text-xs leading-relaxed text-slate-500">
+                <p className="dark:text-slate-300 mb-4 line-clamp-3 font-['Oxanium'] text-xs leading-relaxed text-slate-500">
                     {quest.description}
                 </p>
 
@@ -131,7 +137,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                     <span className="text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
                         Diposting Oleh
                     </span>
-                    <span className="text-xs font-bold text-slate-600 dark:text-slate-350">
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
                         {quest.creator.name}
                         <span className="ml-1 text-[10px] font-medium text-slate-400">
                             ({quest.creator.role === 'admin' ? 'Admin' : 'Siswa'})
@@ -140,14 +146,14 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 font-['Oxanium'] text-xs font-semibold text-slate-400 dark:text-slate-550">
+                    <div className="flex items-center gap-1 font-['Oxanium'] text-xs font-semibold text-slate-400 dark:text-slate-500">
                         <Users className="h-4 w-4" />
                         <span>{quest.bids_count} Bid</span>
                     </div>
 
                     <Link
                         href={`/student/quests/${quest._id}`}
-                        className="rounded-xl bg-slate-900 px-3.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-indigo-650 hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] dark:bg-blue-950/40 dark:hover:bg-indigo-600"
+                        className="rounded-xl bg-slate-900 px-3.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-indigo-600 hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] dark:bg-blue-950/40 dark:hover:bg-indigo-600"
                     >
                         Detail
                     </Link>

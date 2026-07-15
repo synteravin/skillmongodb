@@ -6,7 +6,6 @@ import {
     Home,
     Menu,
     X,
-    Sparkles,
     Users,
     LogOut,
     Settings,

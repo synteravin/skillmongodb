@@ -57,8 +57,8 @@ export default function VisitorBidPanel({
                     <div
                         className={`flex flex-col gap-1.5 rounded-xl border p-4 text-center ${
                             myBid.status === 'rejected'
-                                ? 'border-red-500/25 bg-red-500/10 text-red-605 dark:text-red-400'
-                                : 'border-amber-500/25 bg-amber-500/10 text-amber-605 dark:text-amber-400'
+                                ? 'border-red-500/25 bg-red-500/10 text-red-600 dark:text-red-400'
+                                : 'border-amber-500/25 bg-amber-500/10 text-amber-600 dark:text-amber-400'
                         }`}
                     >
                         <span className="block font-['Orbitron'] text-xs font-bold tracking-wider uppercase">
@@ -108,7 +108,7 @@ export default function VisitorBidPanel({
                                     href={myBid.cv.startsWith('http') ? myBid.cv : '#'}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="rounded bg-slate-100 py-1.5 text-center text-[10px] font-bold text-slate-650 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-indigo-300"
+                                    className="rounded bg-slate-100 py-1.5 text-center text-[10px] font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-indigo-300"
                                 >
                                     Tautan CV
                                 </a>
@@ -122,7 +122,7 @@ export default function VisitorBidPanel({
                                     }
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="rounded bg-slate-100 py-1.5 text-center text-[10px] font-bold text-slate-650 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-indigo-300"
+                                    className="rounded bg-slate-100 py-1.5 text-center text-[10px] font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-indigo-300"
                                 >
                                     Tautan Portofolio
                                 </a>
@@ -151,7 +151,7 @@ export default function VisitorBidPanel({
                 <form onSubmit={handleBidSubmit} className="space-y-4 font-['Oxanium']">
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
-                            Harga Penawaran (IDR) <span className="text-red-505">*</span>
+                            Harga Penawaran (IDR) <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="number"
@@ -171,7 +171,7 @@ export default function VisitorBidPanel({
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
                             Proposal / Penjelasan Kemampuan{' '}
-                            <span className="text-red-505">*</span>
+                            <span className="text-red-500">*</span>
                         </label>
                         <textarea
                             required
@@ -191,7 +191,7 @@ export default function VisitorBidPanel({
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
-                                Tautan CV <span className="text-red-505">*</span>
+                                Tautan CV <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="url"
@@ -210,7 +210,7 @@ export default function VisitorBidPanel({
 
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
-                                Tautan Portofolio <span className="text-red-505">*</span>
+                                Tautan Portofolio <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="url"

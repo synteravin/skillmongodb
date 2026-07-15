@@ -225,7 +225,7 @@ export default function AdminArbitrationTabPanel({
                             <h4 className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
                                 Tindakan Pemulihan Cepat
                             </h4>
-                            <p className="text-slate-455 mt-1 text-[11px] dark:text-slate-400">
+                            <p className="text-slate-500 mt-1 text-[11px] dark:text-slate-400">
                                 Gunakan opsi di bawah ini jika terjadi kemacetan pengerjaan atau perselisihan sepihak.
                             </p>
                         </div>
@@ -259,10 +259,10 @@ export default function AdminArbitrationTabPanel({
                     <span
                         className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase ${
                             quest.status === 'disputed'
-                                ? 'text-red-605 animate-pulse border-red-500/20 bg-red-500/10 dark:text-red-400'
+                                ? 'text-red-600 animate-pulse border-red-500/20 bg-red-500/10 dark:text-red-400'
                                 : quest.dispute?.status?.startsWith('resolved')
                                   ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                  : 'text-slate-455 border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800'
+                                  : 'text-slate-500 border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800'
                         }`}
                     >
                         {quest.status === 'disputed'
@@ -276,16 +276,16 @@ export default function AdminArbitrationTabPanel({
                 {quest.dispute ? (
                     <div className="space-y-6">
                         {/* Case Details Card */}
-                        <div className="space-y-2 rounded-xl border border-red-200/20 bg-red-500/5 p-4 dark:border-red-500/10 dark:bg-red-955/10">
-                            <div className="text-slate-505 flex items-center justify-between text-xs font-semibold dark:text-slate-400">
+                        <div className="space-y-2 rounded-xl border border-red-200/20 bg-red-500/5 p-4 dark:border-red-500/10 dark:bg-red-950/10">
+                            <div className="text-slate-500 flex items-center justify-between text-xs font-semibold dark:text-slate-400">
                                 <span>
-                                    Diajukan oleh: <strong className="text-slate-755 dark:text-white">{quest.dispute.filer_name}</strong>
+                                    Diajukan oleh: <strong className="text-slate-700 dark:text-white">{quest.dispute.filer_name}</strong>
                                 </span>
                                 <span>
                                     Tanggal Pengajuan: {quest.dispute.ruled_at ? formatDate(quest.dispute.ruled_at) : 'Baru saja'}
                                 </span>
                             </div>
-                            <p className="text-slate-655 rounded-lg border border-slate-100 bg-white/40 p-3 text-xs italic dark:border-red-500/5 dark:bg-black/10">
+                            <p className="text-slate-600 rounded-lg border border-slate-100 bg-white/40 p-3 text-xs italic dark:border-red-500/5 dark:bg-black/10">
                                 "{quest.dispute.reason}"
                             </p>
 
@@ -310,7 +310,7 @@ export default function AdminArbitrationTabPanel({
                                                         name: `Mediasi: ${otherPartyName}`,
                                                     })
                                                 }
-                                                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold text-white uppercase transition-colors hover:bg-red-700 bg-red-605 bg-red-600"
+                                                className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold text-white uppercase transition-colors hover:bg-red-700 bg-red-600"
                                             >
                                                 <MessageSquare size={11} />
                                                 Buka Ruang Mediasi
@@ -404,7 +404,7 @@ export default function AdminArbitrationTabPanel({
                                         className={`flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border p-4 text-center transition-all ${
                                             arbitrateForm.data.ruling === 'refund'
                                                 ? 'border-red-500 bg-red-500/10 font-bold text-red-600 shadow-sm dark:text-red-300'
-                                                : 'text-slate-550 border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                : 'text-slate-500 border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[#0c122c]'
                                         }`}
                                     >
                                         <input
@@ -427,7 +427,7 @@ export default function AdminArbitrationTabPanel({
                                         className={`flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border p-4 text-center transition-all ${
                                             arbitrateForm.data.ruling === 'pay_worker'
                                                 ? 'border-emerald-500 bg-emerald-500/10 font-bold text-emerald-600 shadow-sm'
-                                                : 'text-slate-555 border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                : 'text-slate-500 border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[#0c122c]'
                                         }`}
                                     >
                                         <input
@@ -450,7 +450,7 @@ export default function AdminArbitrationTabPanel({
                                         className={`flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border p-4 text-center transition-all ${
                                             arbitrateForm.data.ruling === 'split'
                                                 ? 'border-indigo-500 bg-indigo-500/10 font-bold text-indigo-600 shadow-sm dark:text-indigo-300'
-                                                : 'text-slate-555 border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[#0c122c]'
+                                                : 'text-slate-500 border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[#0c122c]'
                                         }`}
                                     >
                                         <input
@@ -533,7 +533,7 @@ export default function AdminArbitrationTabPanel({
                         )}
                     </div>
                 ) : (
-                    <div className="text-slate-405 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-8 text-center dark:border-slate-800 dark:bg-black/10 dark:text-blue-300/30">
+                    <div className="text-slate-400 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-8 text-center dark:border-slate-800 dark:bg-black/10 dark:text-blue-300/30">
                         <ShieldAlert className="mx-auto mb-2 h-8 w-8 animate-pulse text-slate-400 opacity-40" />
                         <p className="text-xs font-bold uppercase">
                             Tidak Ada Sengketa Aktif

@@ -11,7 +11,6 @@ import {
     Award,
     X,
     Zap,
-    Sparkles,
     Quote,
     BookOpen,
 } from 'lucide-react';
@@ -871,7 +870,7 @@ export default function AssetsPage({
                                         ?.gold_boost) && (
                                     <div className="border-slate-150 space-y-1 rounded-xl border bg-slate-50 p-4 dark:border-white/8 dark:bg-white/[0.02]">
                                         <h4 className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
-                                            <Sparkles size={14} /> System Bonus
+                                            System Bonus
                                         </h4>
                                         <div className="text-slate-650 flex gap-4 text-xs font-medium dark:text-slate-300">
                                             {selectedCharacter.system_bonus

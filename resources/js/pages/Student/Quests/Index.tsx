@@ -15,7 +15,6 @@ import {
     Star,
     ArrowLeft,
     Award,
-    Sparkles,
     User,
     Compass,
     Activity,
@@ -112,8 +111,6 @@ export default function Index({ quests, historyQuests, filters }: Props) {
         );
     };
 
-
-
     // Filter history by role tab
     const filteredHistoryQuests = historyQuests.filter((item) => {
         if (historyRoleFilter === 'creator') return item.is_creator;
@@ -132,44 +129,118 @@ export default function Index({ quests, historyQuests, filters }: Props) {
             <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none" />
 
             <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col space-y-6">
-                {/* HEADER */}
-                <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href="/student/dashboard"
-                            className="shrink-0 cursor-pointer rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 shadow-sm transition-colors hover:text-indigo-600 dark:border-slate-800 dark:bg-[#0c122c]/40 dark:text-slate-400 dark:hover:text-indigo-400"
-                            title="Kembali ke Dashboard"
-                        >
-                            <ArrowLeft size={16} />
-                        </Link>
-                        <div>
-                            <h2 className="font-['Oxanium'] text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
-                                QUEST BOARD
-                            </h2>
-                            <p className="text-xs font-medium text-slate-400">
-                                Cari dan selesaikan berbagai quest menantang
-                                untuk menaikkan reputasi RPG Anda.
-                            </p>
+                {/* HERO BANNER & HEADER */}
+                <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent p-6 shadow-md dark:border-slate-800/80 dark:from-indigo-950/20 dark:via-purple-950/10 dark:to-transparent">
+                    {/* Decorative abstract glows */}
+                    <div className="absolute top-0 right-0 -z-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
+                    <div className="absolute bottom-0 left-0 -z-10 h-24 w-24 rounded-full bg-purple-500/10 blur-xl" />
+
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                        {/* Title & Description */}
+                        <div className="flex items-start gap-4">
+                            <Link
+                                href="/student/dashboard"
+                                className="mt-1 shrink-0 cursor-pointer rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 shadow-sm transition-all hover:border-indigo-500/30 hover:text-indigo-600 dark:border-slate-800 dark:bg-[#0c122c]/40 dark:text-slate-400 dark:hover:text-indigo-400"
+                                title="Kembali ke Dashboard"
+                            >
+                                <ArrowLeft size={16} />
+                            </Link>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-['Orbitron'] text-[10px] font-black tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
+                                        Quest Hub
+                                    </span>
+                                </div>
+                                <h1 className="mt-1 font-['Oxanium'] text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+                                    QUEST BOARD
+                                </h1>
+                                <p className="mt-1 max-w-xl text-xs leading-relaxed font-medium text-slate-500 dark:text-slate-400">
+                                    Cari lowongan pekerjaan, selesaikan quest,
+                                    kumpulkan EXP & Gold untuk menaikkan
+                                    reputasi karakter RPG Anda di SkillMongo.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setIsHistoryOpen(true)}
+                                className="inline-flex transform cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4.5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase shadow-sm transition-all duration-300 hover:bg-slate-100 active:scale-95 dark:border-blue-500/25 dark:bg-[#0c122c]/40 dark:text-blue-200 dark:hover:bg-blue-950/40"
+                            >
+                                <History className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                                Riwayat Quest
+                            </button>
+
+                            <Link
+                                href="/student/quests/create"
+                                className="inline-flex transform items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_20px_rgba(124,58,237,0.3)] transition-all duration-300 hover:scale-[1.02] hover:from-purple-700 hover:to-indigo-700 active:scale-98"
+                            >
+                                <Plus className="h-4 w-4" />
+                                Tambah Quest
+                            </Link>
                         </div>
                     </div>
 
-                    <div className="flex shrink-0 flex-wrap gap-2.5">
-                        <button
-                            type="button"
-                            onClick={() => setIsHistoryOpen(true)}
-                            className="inline-flex transform cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4.5 py-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase shadow-sm transition-all duration-300 hover:bg-slate-100 active:scale-95 dark:border-blue-500/20 dark:bg-blue-950/20 dark:text-blue-100 dark:hover:bg-blue-950/40"
-                        >
-                            <History className="text-purple-550 h-4 w-4 dark:text-purple-400" />
-                            Riwayat Quest
-                        </button>
-
-                        <Link
-                            href="/student/quests/create"
-                            className="inline-flex transform items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all duration-300 hover:scale-[1.02] hover:from-purple-700 hover:to-indigo-700 active:scale-98"
-                        >
-                            <Plus className="h-4 w-4" />
-                            Tambah Quest
-                        </Link>
+                    {/* Stats Grid inside Hero */}
+                    <div className="mt-6 grid grid-cols-2 gap-3 border-t border-slate-200/60 pt-6 sm:grid-cols-4 dark:border-slate-800/60">
+                        {[
+                            {
+                                label: 'Quest Tersedia',
+                                val: quests.filter((q) => q.status === 'open')
+                                    .length,
+                                icon: Compass,
+                                color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+                            },
+                            {
+                                label: 'Dalam Pengerjaan',
+                                val: quests.filter(
+                                    (q) => q.status === 'ongoing',
+                                ).length,
+                                icon: Activity,
+                                color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+                            },
+                            {
+                                label: 'Menunggu Review',
+                                val: quests.filter((q) =>
+                                    [
+                                        'submitted',
+                                        'approved',
+                                        'payment',
+                                    ].includes(q.status),
+                                ).length,
+                                icon: Info,
+                                color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+                            },
+                            {
+                                label: 'Quest Diselesaikan',
+                                val: historyQuests.filter(
+                                    (q) => q.status === 'completed',
+                                ).length,
+                                icon: CheckCircle2,
+                                color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+                            },
+                        ].map((statItem, index) => (
+                            <div
+                                key={index}
+                                className="flex items-center gap-3 rounded-2xl border border-slate-200/50 bg-white/40 p-3 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10"
+                            >
+                                <div
+                                    className={`flex h-9 w-9 items-center justify-center rounded-xl border ${statItem.color}`}
+                                >
+                                    <statItem.icon size={16} />
+                                </div>
+                                <div>
+                                    <span className="block text-[9px] font-bold tracking-widest text-slate-400 uppercase">
+                                        {statItem.label}
+                                    </span>
+                                    <span className="font-['Orbitron'] text-sm font-extrabold text-slate-900 dark:text-white">
+                                        {statItem.val}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
@@ -197,7 +268,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                 onChange={(e) =>
                                     setSortBy(e.target.value as any)
                                 }
-                                className="dark:text-slate-350 w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-bold tracking-wider text-slate-600 uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20"
+                                className="w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-bold tracking-wider text-slate-600 uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-slate-300"
                             >
                                 <option
                                     value="latest"
@@ -221,7 +292,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                         </div>
 
                         {/* Status Pills */}
-                        <div className="scrollbar-thin flex w-full gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
+                        <div className="flex w-full scrollbar-thin gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
                             {[
                                 { val: '', label: 'Semua' },
                                 { val: 'open', label: 'Tersedia' },
@@ -251,7 +322,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                 {sortedQuests.length === 0 ? (
                     <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white/40 py-20 text-center font-['Oxanium'] shadow-sm backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#0c122c]/20">
                         <Briefcase className="mb-4 h-14 w-14 animate-pulse text-slate-300 dark:text-blue-900/40" />
-                        <p className="text-slate-650 text-base font-bold dark:text-blue-200">
+                        <p className="text-base font-bold text-slate-600 dark:text-blue-200">
                             Tidak ada quest yang tersedia
                         </p>
                         <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-slate-400 dark:text-slate-500">
@@ -279,25 +350,25 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                     />
 
                     {/* Drawer Content */}
-                    <div className="relative z-10 flex h-full w-full max-w-lg translate-x-0 transform flex-col border-l border-slate-800 bg-slate-900/90 shadow-2xl backdrop-blur-lg transition-transform duration-300 md:max-w-xl dark:bg-[#070b19]/95">
+                    <div className="relative z-10 flex h-full w-full max-w-lg translate-x-0 transform flex-col border-l border-slate-200 bg-white shadow-2xl backdrop-blur-lg transition-transform duration-300 md:max-w-xl dark:border-slate-800/80 dark:bg-[#070b19]/95">
                         {/* Drawer Header */}
-                        <div className="flex items-center justify-between border-b border-slate-800 bg-black/20 p-5">
+                        <div className="bg-slate-55 flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800 dark:bg-black/20">
                             <div className="flex items-center gap-2.5">
-                                <History className="h-5 w-5 text-indigo-400" />
-                                <h2 className="font-['Orbitron'] text-sm font-extrabold tracking-wider text-white uppercase sm:text-base">
+                                <History className="text-indigo-550 h-5 w-5 dark:text-indigo-400" />
+                                <h2 className="font-['Orbitron'] text-sm font-extrabold tracking-wider text-slate-900 uppercase sm:text-base dark:text-white">
                                     Riwayat Quest Saya
                                 </h2>
                             </div>
                             <button
                                 onClick={() => setIsHistoryOpen(false)}
-                                className="cursor-pointer rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                                className="cursor-pointer rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
 
                         {/* Quick filter tabs inside history drawer */}
-                        <div className="scrollbar-none flex gap-2 overflow-x-auto border-b border-slate-800 bg-black/10 px-5 py-2.5 font-['Orbitron'] text-[9px] font-black tracking-wider uppercase">
+                        <div className="flex scrollbar-none gap-2 overflow-x-auto border-b border-slate-200 bg-slate-50/30 px-5 py-2.5 font-['Orbitron'] text-[9px] font-black tracking-wider uppercase dark:border-slate-800 dark:bg-black/10">
                             {[
                                 { key: 'all', label: 'Semua' },
                                 { key: 'creator', label: 'Pembuat' },
@@ -315,7 +386,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                     className={`cursor-pointer rounded-lg border px-3 py-1.5 whitespace-nowrap transition-all ${
                                         historyRoleFilter === roleTab.key
                                             ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
-                                            : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
+                                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-white/5 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white'
                                     }`}
                                 >
                                     {roleTab.label}
@@ -324,14 +395,14 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                         </div>
 
                         {/* List / Content */}
-                        <div className="scrollbar-thin flex-1 space-y-4 overflow-y-auto p-5">
+                        <div className="flex-1 scrollbar-thin space-y-4 overflow-y-auto p-5">
                             {filteredHistoryQuests.length === 0 ? (
                                 <div className="py-20 text-center text-slate-500">
-                                    <Briefcase className="text-indigo-450 mx-auto mb-3 h-12 w-12 animate-pulse opacity-30" />
-                                    <p className="text-slate-350 text-sm font-bold">
+                                    <Briefcase className="mx-auto mb-3 h-12 w-12 animate-pulse text-indigo-500 opacity-30" />
+                                    <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
                                         Tidak ada riwayat quest
                                     </p>
-                                    <p className="text-slate-450 mx-auto mt-1 max-w-[280px] text-[11px] leading-relaxed">
+                                    <p className="mx-auto mt-1 max-w-[280px] text-[11px] leading-relaxed text-slate-400 dark:text-slate-400">
                                         Anda tidak memiliki catatan quest dengan
                                         filter peran "
                                         {historyRoleFilter === 'all'
@@ -351,10 +422,10 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                     return (
                                         <div
                                             key={item._id}
-                                            className={`rounded-2xl border bg-white/5 transition-all duration-300 dark:bg-black/25 ${
+                                            className={`rounded-2xl border border-slate-200 bg-slate-50/50 transition-all duration-300 dark:bg-black/25 ${
                                                 isExpanded
                                                     ? 'border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.12)]'
-                                                    : 'border-slate-800 hover:border-slate-700'
+                                                    : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
                                             }`}
                                         >
                                             {/* Accordion Trigger/Header */}
@@ -374,20 +445,20 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                             className={`rounded px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider uppercase ${
                                                                 item.status ===
                                                                 'completed'
-                                                                    ? 'border border-green-500/20 bg-green-500/10 text-green-400'
+                                                                    ? 'border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
                                                                     : item.status ===
                                                                         'approved'
-                                                                      ? 'text-indigo-405 border border-indigo-500/20 bg-indigo-500/10'
+                                                                      ? 'border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
                                                                       : item.status ===
                                                                           'submitted'
-                                                                        ? 'border border-amber-500/20 bg-amber-500/10 text-amber-400'
+                                                                        ? 'border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
                                                                         : item.status ===
                                                                             'ongoing'
-                                                                          ? 'border border-blue-500/20 bg-blue-500/10 text-blue-400'
+                                                                          ? 'border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
                                                                           : item.status ===
                                                                               'expired'
-                                                                            ? 'border border-red-500/20 bg-red-500/10 text-red-400'
-                                                                            : 'border border-slate-500/20 bg-slate-500/10 text-slate-400'
+                                                                            ? 'border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
+                                                                            : 'border border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
                                                             }`}
                                                         >
                                                             {item.status ===
@@ -409,25 +480,25 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                         </span>
 
                                                         {item.is_creator ? (
-                                                            <span className="rounded border border-purple-500/20 bg-purple-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-purple-400 uppercase">
+                                                            <span className="rounded border border-purple-500/20 bg-purple-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-purple-600 uppercase dark:text-purple-400">
                                                                 Pembuat
                                                             </span>
                                                         ) : item.is_worker ? (
-                                                            <span className="rounded border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-indigo-400 uppercase">
+                                                            <span className="rounded border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
                                                                 Pekerja
                                                             </span>
                                                         ) : (
-                                                            <span className="border-slate-550/20 rounded border bg-slate-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-slate-400 uppercase">
+                                                            <span className="rounded border border-slate-200 bg-slate-500/10 px-2 py-0.5 font-['Orbitron'] text-[8px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                                 Bidder
                                                             </span>
                                                         )}
                                                     </div>
 
-                                                    <h3 className="truncate text-xs font-bold text-slate-200">
+                                                    <h3 className="truncate text-xs font-bold text-slate-800 dark:text-slate-200">
                                                         {item.title}
                                                     </h3>
 
-                                                    <p className="text-slate-450 text-[10px]">
+                                                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
                                                         {item.is_creator
                                                             ? item.worker
                                                                 ? `Pekerja: ${item.worker.name}`
@@ -437,7 +508,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                 </div>
 
                                                 <div className="flex shrink-0 items-center gap-1.5">
-                                                    <span className="font-['Orbitron'] text-[10px] font-bold text-purple-400">
+                                                    <span className="font-['Orbitron'] text-[10px] font-bold text-purple-600 dark:text-purple-400">
                                                         {item.is_creator
                                                             ? `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
                                                             : item.my_bid
@@ -450,7 +521,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                 )}
                                                     </span>
                                                     <svg
-                                                        className={`h-3.5 w-3.5 text-slate-500 transition-transform duration-300 ${
+                                                        className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-300 dark:text-slate-500 ${
                                                             isExpanded
                                                                 ? 'rotate-180 transform'
                                                                 : ''
@@ -471,14 +542,14 @@ export default function Index({ quests, historyQuests, filters }: Props) {
 
                                             {/* Accordion Content */}
                                             {isExpanded && (
-                                                <div className="space-y-4 rounded-b-2xl border-t border-slate-800/60 bg-black/10 px-4 pt-4 pb-4 font-['Oxanium'] text-xs">
+                                                <div className="space-y-4 rounded-b-2xl border-t border-slate-200 bg-slate-50/30 px-4 pt-4 pb-4 font-['Oxanium'] text-xs dark:border-slate-800/60 dark:bg-black/10">
                                                     {/* Stepper Progress Horizontal Timeline */}
-                                                    <div className="space-y-3.5 rounded-xl border border-slate-800/80 bg-black/20 p-3.5 font-['Orbitron'] text-[8px] font-bold tracking-wider">
-                                                        <span className="block border-b border-slate-800 pb-1.5 text-[8px] font-bold tracking-wider text-slate-500 uppercase">
+                                                    <div className="space-y-3.5 rounded-xl border border-slate-200 bg-slate-100/50 p-3.5 font-['Orbitron'] text-[8px] font-bold tracking-wider dark:border-slate-800/80 dark:bg-black/20">
+                                                        <span className="block border-b border-slate-200 pb-1.5 text-[8px] font-bold tracking-wider text-slate-500 uppercase dark:border-slate-800">
                                                             Progress Alur Quest
                                                         </span>
                                                         <div className="relative flex items-center justify-between pt-1.5">
-                                                            <div className="absolute top-1/2 right-0 left-0 z-0 h-0.5 -translate-y-1/2 bg-slate-800" />
+                                                            <div className="absolute top-1/2 right-0 left-0 z-0 h-0.5 -translate-y-1/2 bg-slate-200 dark:bg-slate-800" />
                                                             <div
                                                                 className="absolute top-1/2 left-0 z-0 h-0.5 -translate-y-1/2 bg-indigo-500 transition-all duration-350"
                                                                 style={{
@@ -560,7 +631,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                                         ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
                                                                                         : isActive
                                                                                           ? 'border-purple-500 bg-purple-600 text-white shadow-sm'
-                                                                                          : 'border-slate-800 bg-slate-900 text-slate-500'
+                                                                                          : 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500'
                                                                                 }`}
                                                                             >
                                                                                 {isCompleted
@@ -572,8 +643,8 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                                 className={`mt-1 text-[7px] tracking-widest uppercase ${
                                                                                     isActive ||
                                                                                     isCompleted
-                                                                                        ? 'font-black text-indigo-400'
-                                                                                        : 'text-slate-500'
+                                                                                        ? 'font-black text-indigo-500 dark:text-indigo-400'
+                                                                                        : 'text-slate-400 dark:text-slate-500'
                                                                                 }`}
                                                                             >
                                                                                 {
@@ -588,11 +659,11 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                     </div>
 
                                                     {/* Description overview */}
-                                                    <div className="space-y-1 rounded-xl border border-slate-800/80 bg-black/15 p-3">
-                                                        <span className="text-slate-405 block text-[8px] font-semibold uppercase">
+                                                    <div className="space-y-1 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800/80 dark:bg-black/15">
+                                                        <span className="block text-[8px] font-semibold text-slate-400 uppercase">
                                                             Deskripsi Quest
                                                         </span>
-                                                        <p className="text-slate-350 text-[11px] leading-relaxed whitespace-pre-wrap">
+                                                        <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300">
                                                             {item.description}
                                                         </p>
                                                     </div>
@@ -600,10 +671,10 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                     {/* Details Budget */}
                                                     <div className="grid grid-cols-2 gap-3 text-[11px]">
                                                         <div>
-                                                            <span className="text-slate-450 block text-[8px] font-semibold uppercase">
+                                                            <span className="block text-[8px] font-semibold text-slate-400 uppercase">
                                                                 Anggaran Gaji
                                                             </span>
-                                                            <p className="text-slate-205 font-bold">
+                                                            <p className="font-bold text-slate-800 dark:text-slate-200">
                                                                 {formatCurrency(
                                                                     item.min_salary,
                                                                 )}{' '}
@@ -614,10 +685,10 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                             </p>
                                                         </div>
                                                         <div>
-                                                            <span className="text-slate-450 block text-[8px] font-semibold uppercase">
+                                                            <span className="block text-[8px] font-semibold text-slate-400 uppercase">
                                                                 Tenggat Waktu
                                                             </span>
-                                                            <p className="text-slate-205 font-bold">
+                                                            <p className="font-bold text-slate-800 dark:text-slate-200">
                                                                 {formatDate(
                                                                     item.deadline,
                                                                 )}
@@ -634,11 +705,11 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                             </h4>
                                                             <div className="grid grid-cols-2 gap-2 text-[11px]">
                                                                 <div>
-                                                                    <span className="text-slate-455 block text-[8px]">
+                                                                    <span className="block text-[8px] text-slate-500">
                                                                         Jumlah
                                                                         Bid
                                                                     </span>
-                                                                    <p className="font-bold text-purple-400">
+                                                                    <p className="font-bold text-purple-600 dark:text-purple-400">
                                                                         {formatCurrency(
                                                                             item
                                                                                 .my_bid
@@ -647,7 +718,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                     </p>
                                                                 </div>
                                                                 <div>
-                                                                    <span className="text-slate-455 block text-[8px]">
+                                                                    <span className="block text-[8px] text-slate-500">
                                                                         Status
                                                                         Bid
                                                                     </span>
@@ -657,13 +728,13 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                                 .my_bid
                                                                                 .status ===
                                                                             'accepted'
-                                                                                ? 'border-green-500/20 bg-green-500/10 text-green-400'
+                                                                                ? 'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
                                                                                 : item
                                                                                         .my_bid
                                                                                         .status ===
                                                                                     'rejected'
-                                                                                  ? 'border-red-500/20 bg-red-500/10 text-red-400'
-                                                                                  : 'border-amber-500/20 bg-amber-500/10 text-amber-400'
+                                                                                  ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
+                                                                                  : 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
                                                                         }`}
                                                                     >
                                                                         {item
@@ -683,11 +754,11 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                             {item.my_bid
                                                                 .proposal && (
                                                                 <div>
-                                                                    <span className="text-slate-455 block text-[8px]">
+                                                                    <span className="block text-[8px] text-slate-500">
                                                                         Proposal
                                                                         Anda
                                                                     </span>
-                                                                    <p className="text-slate-350 text-[11px] leading-relaxed whitespace-pre-wrap">
+                                                                    <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300">
                                                                         {
                                                                             item
                                                                                 .my_bid
@@ -710,7 +781,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                             }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="inline-flex items-center gap-1 text-[10px] text-indigo-400 hover:underline"
+                                                                            className="inline-flex items-center gap-1 text-[10px] text-indigo-600 hover:underline dark:text-indigo-400"
                                                                         >
                                                                             CV
                                                                             Lampiran{' '}
@@ -727,7 +798,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                             }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="inline-flex items-center gap-1 text-[10px] text-indigo-400 hover:underline"
+                                                                            className="inline-flex items-center gap-1 text-[10px] text-indigo-600 hover:underline dark:text-indigo-400"
                                                                         >
                                                                             Portofolio
                                                                             Lampiran{' '}
@@ -744,12 +815,12 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                         'ongoing' &&
                                                         item.revision_note && (
                                                             <div className="space-y-1 rounded-xl border border-red-500/20 bg-red-500/10 p-3">
-                                                                <span className="block font-['Orbitron'] text-[8px] font-bold tracking-wider text-red-500 uppercase">
+                                                                <span className="block font-['Orbitron'] text-[8px] font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
                                                                     {item.is_creator
                                                                         ? 'Feedback Revisi Anda:'
                                                                         : 'Minta Revisi Dari Pembuat:'}
                                                                 </span>
-                                                                <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-slate-300 italic">
+                                                                <p className="text-[11px] leading-relaxed whitespace-pre-wrap text-red-800 italic dark:text-red-200">
                                                                     "
                                                                     {
                                                                         item.revision_note
@@ -766,8 +837,8 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                             'approved' ||
                                                         item.status ===
                                                             'completed') && (
-                                                        <div className="space-y-3 border-t border-slate-800/40 pt-3">
-                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-400 uppercase">
+                                                        <div className="space-y-3 border-t border-slate-200 pt-3 dark:border-slate-800/40">
+                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                                 {item.is_creator
                                                                     ? 'Hasil Pekerjaan Pekerja'
                                                                     : 'Hasil Pekerjaan yang Dikirim'}
@@ -775,23 +846,23 @@ export default function Index({ quests, historyQuests, filters }: Props) {
 
                                                             {item.submission_file && (
                                                                 <div className="space-y-1">
-                                                                    <span className="text-slate-455 block text-[8px]">
+                                                                    <span className="block text-[8px] text-slate-500">
                                                                         Berkas
                                                                         ZIP
                                                                         Utama
                                                                     </span>
                                                                     <div className="flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/5 p-2.5">
                                                                         <div className="flex min-w-0 items-center gap-2.5">
-                                                                            <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
+                                                                            <FileArchive className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-500" />
                                                                             <div className="min-w-0">
-                                                                                <p className="truncate text-xs font-semibold text-slate-200">
+                                                                                <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">
                                                                                     {
                                                                                         item
                                                                                             .submission_file
                                                                                             .name
                                                                                     }
                                                                                 </p>
-                                                                                <p className="text-[10px] text-slate-400">
+                                                                                <p className="text-[10px] text-slate-500">
                                                                                     {formatBytes(
                                                                                         item
                                                                                             .submission_file
@@ -808,7 +879,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                             }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-400 transition-colors hover:bg-amber-500/10 hover:text-amber-500"
+                                                                            className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-500"
                                                                             title="Unduh ZIP di Tab Baru"
                                                                         >
                                                                             <Download className="h-4 w-4" />
@@ -819,7 +890,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
 
                                                             {item.submission_link && (
                                                                 <div>
-                                                                    <span className="text-slate-455 block text-[8px]">
+                                                                    <span className="block text-[8px] text-slate-500">
                                                                         Link
                                                                         Pekerjaan
                                                                         Pendukung
@@ -830,7 +901,7 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                         }
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
-                                                                        className="mt-0.5 block text-[11px] font-semibold break-all text-indigo-400 hover:underline"
+                                                                        className="mt-0.5 block text-[11px] font-semibold break-all text-indigo-600 hover:underline dark:text-indigo-400"
                                                                     >
                                                                         {
                                                                             item.submission_link
@@ -841,11 +912,11 @@ export default function Index({ quests, historyQuests, filters }: Props) {
 
                                                             {item.submission_note && (
                                                                 <div>
-                                                                    <span className="text-slate-455 block text-[8px]">
+                                                                    <span className="block text-[8px] text-slate-500">
                                                                         Catatan
                                                                         Pengiriman
                                                                     </span>
-                                                                    <p className="text-slate-350 rounded-lg border border-slate-800 bg-slate-950/20 p-2.5 text-[11px] leading-relaxed whitespace-pre-wrap">
+                                                                    <p className="rounded-lg border border-slate-200 bg-white p-2.5 text-[11px] leading-relaxed whitespace-pre-wrap text-slate-700 dark:border-slate-800 dark:bg-slate-950/20 dark:text-slate-300">
                                                                         {
                                                                             item.submission_note
                                                                         }
@@ -858,15 +929,15 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                     {/* Rating, Review Comment, and Gamification Rewards for Completed */}
                                                     {item.status ===
                                                         'completed' && (
-                                                        <div className="space-y-3 border-t border-slate-800/40 pt-3">
-                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-400 uppercase">
+                                                        <div className="space-y-3 border-t border-slate-200 pt-3 dark:border-slate-800/40">
+                                                            <h4 className="font-['Orbitron'] text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                                 {item.is_creator
                                                                     ? 'Hasil Ulasan & Hadiah Pekerja'
                                                                     : 'Hasil Ulasan & Hadiah'}
                                                             </h4>
 
                                                             {item.rating && (
-                                                                <div className="space-y-1.5 rounded-xl border border-slate-800/80 bg-slate-950/20 p-3">
+                                                                <div className="space-y-1.5 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800/80 dark:bg-slate-950/20">
                                                                     <div className="flex gap-0.5">
                                                                         {[
                                                                             1,
@@ -887,14 +958,14 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                                         (item.rating ??
                                                                                             0)
                                                                                             ? 'fill-amber-400 text-amber-400'
-                                                                                            : 'text-slate-650'
+                                                                                            : 'text-slate-300 dark:text-slate-600'
                                                                                     }`}
                                                                                 />
                                                                             ),
                                                                         )}
                                                                     </div>
                                                                     {item.rating_comment && (
-                                                                        <p className="text-xs leading-relaxed text-slate-300 italic">
+                                                                        <p className="text-xs leading-relaxed text-slate-600 italic dark:text-slate-300">
                                                                             "
                                                                             {
                                                                                 item.rating_comment
@@ -906,8 +977,8 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                             )}
 
                                                             <div className="grid grid-cols-3 gap-2 pt-1 text-center font-['Orbitron'] text-[9px] font-black">
-                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-purple-500/20 bg-purple-500/10 p-2 text-purple-300">
-                                                                    <span className="text-slate-450 font-sans text-[7.5px]">
+                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-purple-500/20 bg-purple-500/10 p-2 text-purple-600 dark:text-purple-300">
+                                                                    <span className="font-sans text-[7.5px] text-slate-500">
                                                                         EXP{' '}
                                                                         {item.is_creator
                                                                             ? '(Pek)'
@@ -917,8 +988,8 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                         +250 EXP
                                                                     </span>
                                                                 </div>
-                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-amber-500/20 bg-amber-500/10 p-2 text-amber-400">
-                                                                    <span className="text-slate-450 font-sans text-[7.5px]">
+                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-amber-500/20 bg-amber-500/10 p-2 text-amber-600 dark:text-amber-400">
+                                                                    <span className="font-sans text-[7.5px] text-slate-500">
                                                                         GOLD{' '}
                                                                         {item.is_creator
                                                                             ? '(Pek)'
@@ -929,8 +1000,8 @@ export default function Index({ quests, historyQuests, filters }: Props) {
                                                                         GOLD
                                                                     </span>
                                                                 </div>
-                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-2 text-indigo-300">
-                                                                    <span className="text-slate-455 font-sans text-[7.5px]">
+                                                                <div className="flex flex-col gap-0.5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-2 text-indigo-600 dark:text-indigo-300">
+                                                                    <span className="font-sans text-[7.5px] text-slate-500">
                                                                         ERP{' '}
                                                                         {item.is_creator
                                                                             ? '(Pek)'

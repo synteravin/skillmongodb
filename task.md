@@ -17,6 +17,12 @@
     - [x] Terapkan timeline tracker horizontal mini di dalam accordion
     - [x] Sempurnakan detail ulasan bintang, berkas unduhan ZIP, dan badge RPG rewards di riwayat
 
+- [x] Peningkatan Keresponsifan Garis Stepper & Halaman Admin
+  - [x] Rancang ulang QuestStepper dengan CSS Grid 6-kolom (`grid grid-cols-6`) agar lebar kolom selalu 100% konsisten, mencegah deviasi akibat teks label panjang.
+  - [x] Posisi garis progress linear dihitung secara presisi dari titik tengah kolom pertama (8.33%) hingga kolom terakhir (91.67%).
+  - [x] Integrasikan pratinjau bukti transfer gambar yang rapi di panel admin dan perbaiki dark/light mode obrolan chat.
+
 - [x] Pengujian & Verifikasi
   - [x] Jalankan kompilasi `npm run build` untuk memvalidasi tidak ada error TypeScript/Vite
-  - [x] Jalankan pengujian otomatis `php artisan test --filter=Quest` untuk memastikan integritas
+  - [x] Jalankan pengujian otomatis `php artisan test` untuk memastikan integritas
+

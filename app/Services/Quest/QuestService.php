@@ -192,6 +192,15 @@ class QuestService
             ];
         }
 
+        $resolvedPaymentProof = null;
+        if ($quest->payment_proof) {
+            $resolvedPaymentProof = [
+                'name' => $quest->payment_proof['name'] ?? 'receipt.png',
+                'url' => $disk->url($quest->payment_proof['path']),
+                'size' => $quest->payment_proof['size'] ?? 0,
+            ];
+        }
+
         $resolvedSubmissionHistory = array_map(function ($sub) use ($disk) {
             return [
                 'version' => $sub['version'] ?? 1,
@@ -248,6 +257,9 @@ class QuestService
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
                 'accepted_bid_amount' => $acceptedBidAmount,
+                'payment_proof' => $resolvedPaymentProof,
+                'payment_uploaded_at' => $quest->payment_uploaded_at ? $quest->payment_uploaded_at->toISOString() : null,
+                'payment_confirmed_at' => $quest->payment_confirmed_at ? $quest->payment_confirmed_at->toISOString() : null,
             ],
             'bids' => $bids,
         ];

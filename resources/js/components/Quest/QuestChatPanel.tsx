@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { Send, X, MessageSquare, ShieldAlert } from 'lucide-react';
+import { Send, X, MessageSquare, ShieldAlert, Paperclip, Download, FileText, Image as ImageIcon } from 'lucide-react';
 
 interface Message {
     id: string;
@@ -12,6 +12,11 @@ interface Message {
         name: string;
         role: string;
     };
+    file?: {
+        name: string;
+        url: string;
+        size: number;
+    } | null;
 }
 
 interface Props {
@@ -40,9 +45,19 @@ export default function QuestChatPanel({
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
+    const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const pollingIntervalRef = useRef<any>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    };
 
     // Scroll to bottom
     const scrollToBottom = () => {
@@ -120,7 +135,7 @@ export default function QuestChatPanel({
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newMessage.trim() || sending) return;
+        if ((!newMessage.trim() && !attachmentFile) || sending) return;
 
         setSending(true);
         try {
@@ -129,20 +144,32 @@ export default function QuestChatPanel({
                     'meta[name="csrf-token"]',
                 ) as HTMLMetaElement
             )?.content;
+
+            const formData = new FormData();
+            if (newMessage.trim()) {
+                formData.append('message', newMessage);
+            }
+            if (attachmentFile) {
+                formData.append('file', attachmentFile);
+            }
+
             const response = await fetch(`/quests/bids/${bidId}/messages`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken || '',
                     Accept: 'application/json',
                 },
-                body: JSON.stringify({ message: newMessage }),
+                body: formData,
             });
 
             if (response.ok) {
                 const newMsg = await response.json();
                 setMessages((prev) => [...prev, newMsg]);
                 setNewMessage('');
+                setAttachmentFile(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
             }
         } catch (error) {
             console.error('Failed to send message', error);
@@ -189,12 +216,12 @@ export default function QuestChatPanel({
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/50 p-4 dark:bg-[#080a10]">
+            <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/50 p-4 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800 dark:bg-[#080a10]">
                 {isDisputed && (
                     <div className="flex gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 p-3.5 text-xs text-amber-800 dark:text-amber-300">
                         <ShieldAlert className="h-4 w-4 shrink-0 text-amber-500 animate-pulse mt-0.5" />
                         <div className="space-y-0.5">
-                            <span className="block font-bold uppercase tracking-wider text-[10px]">Ruang Mediasi Aktif</span>
+                            <span className="block font-bold uppercase tracking-wider text-[10px]">Ruang Mediasi Mediasi</span>
                             <p className="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
                                 Admin hadir sebagai mediator resmi untuk menyelesaikan sengketa ini. Silakan lampirkan argumen dan bukti pekerjaan Anda di bawah ini.
                             </p>
@@ -235,11 +262,11 @@ export default function QuestChatPanel({
                                             Mediator
                                         </span>
                                     ) : msg.sender.id === creatorId || msg.sender._id === creatorId ? (
-                                        <span className="rounded bg-blue-500/10 border border-blue-500/20 px-1 py-0.5 text-[8px] font-bold text-blue-505 uppercase tracking-wider dark:text-blue-400">
+                                        <span className="rounded bg-blue-500/10 border border-blue-500/20 px-1 py-0.5 text-[8px] font-bold text-blue-600 uppercase tracking-wider dark:text-blue-400">
                                             Pembuat Quest
                                         </span>
                                     ) : msg.sender.id === workerId || msg.sender._id === workerId ? (
-                                        <span className="rounded bg-emerald-500/10 border border-emerald-500/20 px-1 py-0.5 text-[8px] font-bold text-emerald-505 uppercase tracking-wider dark:text-emerald-400">
+                                        <span className="rounded bg-emerald-500/10 border border-emerald-500/20 px-1 py-0.5 text-[8px] font-bold text-emerald-600 uppercase tracking-wider dark:text-emerald-400">
                                             Pekerja
                                         </span>
                                     ) : (
@@ -249,19 +276,77 @@ export default function QuestChatPanel({
                                     )}
                                 </span>
                                 <div
-                                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
+                                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
                                         isSelf
-                                            ? 'rounded-tr-none bg-[#3B28F6] text-white'
+                                            ? 'rounded-tr-none bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
                                             : 'rounded-tl-none border border-slate-200 bg-white text-slate-800 dark:border-slate-800 dark:bg-[#121625] dark:text-slate-200'
                                     }`}
                                 >
-                                    <p className="leading-relaxed break-words whitespace-pre-wrap">
-                                        {msg.message}
-                                    </p>
+                                    {msg.message && (
+                                        <p className="leading-relaxed break-words whitespace-pre-wrap">
+                                            {msg.message}
+                                        </p>
+                                    )}
+
+                                    {msg.file && (
+                                        <div className={`mt-2 ${msg.message ? 'border-t border-white/10 pt-2 dark:border-slate-800' : ''}`}>
+                                            {msg.file.name.match(/\.(jpeg|jpg|gif|png)$/i) ? (
+                                                <div className="relative group overflow-hidden rounded-lg border border-slate-200/30 dark:border-slate-800 bg-black/5 dark:bg-black/40 max-w-[240px]">
+                                                    <img
+                                                        src={msg.file.url}
+                                                        alt={msg.file.name}
+                                                        className="max-h-40 w-auto object-cover rounded-lg"
+                                                    />
+                                                    <a
+                                                        href={msg.file.url}
+                                                        download
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity text-white rounded-lg"
+                                                    >
+                                                        <Download size={18} />
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                <div className={`flex items-center justify-between gap-3 rounded-xl border p-2 text-xs ${
+                                                    isSelf
+                                                        ? 'border-white/10 bg-white/10 text-white'
+                                                        : 'border-slate-200/40 bg-black/5 dark:border-slate-800 dark:bg-black/20 text-slate-800 dark:text-slate-200'
+                                                }`}>
+                                                    <div className="flex min-w-0 items-center gap-2">
+                                                        <FileText className={`h-5 w-5 shrink-0 ${isSelf ? 'text-white' : 'text-indigo-400'}`} />
+                                                        <div className="min-w-0">
+                                                            <p className={`truncate text-xs font-semibold ${isSelf ? 'text-white' : 'text-slate-700 dark:text-slate-200'}`}>
+                                                                {msg.file.name}
+                                                            </p>
+                                                            <p className={`text-[9px] ${isSelf ? 'text-indigo-200/80' : 'text-slate-400'}`}>
+                                                                {formatFileSize(msg.file.size)}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <a
+                                                        href={msg.file.url}
+                                                        download
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg transition-colors ${
+                                                            isSelf
+                                                                ? 'bg-white/20 text-white hover:bg-white/30'
+                                                                : 'bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400'
+                                                        }`}
+                                                        title="Unduh Berkas"
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     <span
                                         className={`mt-1.5 block text-right text-[9px] ${
                                             isSelf
-                                                ? 'text-indigo-200'
+                                                ? 'text-indigo-200/80'
                                                 : 'text-slate-400'
                                         }`}
                                     >
@@ -275,11 +360,48 @@ export default function QuestChatPanel({
                 <div ref={messagesEndRef} />
             </div>
 
+            {/* Selected File Preview */}
+            {attachmentFile && (
+                <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-[#0f1322] dark:text-slate-300">
+                    <div className="flex items-center gap-2 min-w-0">
+                        <FileText className="h-4 w-4 text-indigo-500 shrink-0" />
+                        <span className="truncate font-semibold">{attachmentFile.name}</span>
+                        <span className="text-[10px] text-slate-400">({formatFileSize(attachmentFile.size)})</span>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setAttachmentFile(null)}
+                        className="text-slate-400 hover:text-red-500 cursor-pointer"
+                    >
+                        <X size={16} />
+                    </button>
+                </div>
+            )}
+
             {/* Input Area */}
             <form
                 onSubmit={handleSendMessage}
                 className="flex items-center gap-2 border-t border-slate-200 bg-[#f8fafc] p-4 dark:border-slate-800 dark:bg-[#0f1322]"
             >
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                            setAttachmentFile(file);
+                        }
+                    }}
+                    className="hidden"
+                />
+                <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
+                    title="Lampirkan File"
+                >
+                    <Paperclip size={16} />
+                </button>
                 <input
                     type="text"
                     value={newMessage}
@@ -289,8 +411,8 @@ export default function QuestChatPanel({
                 />
                 <button
                     type="submit"
-                    disabled={!newMessage.trim() || sending}
-                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#3B28F6] text-white shadow-sm transition-colors hover:bg-[#2a1ce0] disabled:opacity-50"
+                    disabled={(!newMessage.trim() && !attachmentFile) || sending}
+                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                 >
                     <Send size={16} />
                 </button>

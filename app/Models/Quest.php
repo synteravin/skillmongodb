@@ -36,6 +36,9 @@ class Quest extends Model
         'rewards',
         'dispute',
         'submission_history',
+        'payment_proof',
+        'payment_uploaded_at',
+        'payment_confirmed_at',
     ];
 
     protected function casts(): array
@@ -49,10 +52,13 @@ class Quest extends Model
             'worker_id' => 'string',
             'submitted_at' => 'datetime',
             'completed_at' => 'datetime',
+            'payment_uploaded_at' => 'datetime',
+            'payment_confirmed_at' => 'datetime',
             'rating' => 'integer',
             'images' => 'array',
             'files' => 'array',
             'submission_file' => 'array',
+            'payment_proof' => 'array',
             'rejection_note' => 'string',
             'revisions' => 'array',
             'tier' => 'string',
