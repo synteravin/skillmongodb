@@ -486,7 +486,7 @@ function QuestionCard({
                                     className={`flex items-center justify-center rounded-lg px-3 transition-colors sm:px-4 ${
                                         a.is_correct
                                             ? 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                            : 'dark:bg-slate-805 bg-slate-200/60 text-slate-400 hover:bg-slate-300/80 dark:hover:bg-slate-700'
+                                            : 'dark:bg-slate-800 bg-slate-200/60 text-slate-400 hover:bg-slate-300/80 dark:hover:bg-slate-700'
                                     }`}
                                     title="Mark as correct answer"
                                 >

@@ -42,7 +42,7 @@ const menu: MenuItem[] = [
     },
     {
         name: 'Courses',
-        icon: UserCheckIcon,
+        icon: BookOpen,
         href: '/admin/courses',
         roles: ['admin'],
     },
