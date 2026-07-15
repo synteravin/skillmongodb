@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { Star, Download, FileArchive, MessageSquare, Check } from 'lucide-react';
+import { Star, Download, FileArchive, MessageSquare, Check, FileImage } from 'lucide-react';
 import RevisionHistory from './RevisionHistory';
 import { Quest, Bid } from '@/types/quest';
 
@@ -51,6 +51,28 @@ export default function CreatorProjectPanel({
                 setShowRejectForm(false);
                 reviewForm.reset();
             },
+        });
+    };
+
+    const extendForm = useForm({
+        deadline: '',
+    });
+
+    const handleExtendDeadline = (e: React.FormEvent) => {
+        e.preventDefault();
+        extendForm.post(`/student/quests/${quest._id}/extend-deadline`, {
+            onSuccess: () => extendForm.reset(),
+        });
+    };
+
+    const paymentForm = useForm({
+        payment_proof: null as File | null,
+    });
+
+    const handleUploadPaymentProof = (e: React.FormEvent) => {
+        e.preventDefault();
+        paymentForm.post(`/student/quests/${quest._id}/upload-payment`, {
+            onSuccess: () => paymentForm.reset(),
         });
     };
 
@@ -118,16 +140,107 @@ export default function CreatorProjectPanel({
             )}
 
             {quest.status === 'approved' && (
-                <div className="flex flex-col gap-2 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-4 text-center font-['Oxanium']">
-                    <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
-                        Disetujui & Menunggu Berkas Final
-                    </span>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-300">
-                        Anda telah menyetujui hasil review pekerjaan ini. Saat
-                        ini, sistem sedang menunggu pekerja mengunggah berkas
-                        proyek ZIP final agar quest selesai dan rewards RPG
-                        dikirimkan secara otomatis.
-                    </p>
+                <div className="space-y-4 font-['Oxanium']">
+                    <div className="flex flex-col gap-2 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-4 text-center">
+                        <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
+                            Pekerjaan Disetujui! Silakan Lakukan Pembayaran
+                        </span>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-355 leading-relaxed">
+                            Anda telah menyetujui hasil pengerjaan. Langkah berikutnya adalah melakukan transfer dana pembayaran secara offline ke pekerja (sesuai kesepakatan bid) dan mengunggah bukti transfer di bawah ini untuk mengaktifkan fase Pembayaran.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleUploadPaymentProof} className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
+                                Bukti Transfer Pembayaran <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="file"
+                                required
+                                accept="image/png, image/jpeg, image/jpg"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        paymentForm.setData('payment_proof', file);
+                                    }
+                                }}
+                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                            />
+                            {paymentForm.errors.payment_proof && (
+                                <p className="text-xs font-semibold text-red-500">
+                                    {paymentForm.errors.payment_proof}
+                                </p>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={paymentForm.processing}
+                            className="w-full cursor-pointer rounded-xl bg-indigo-600 hover:bg-indigo-700 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-colors disabled:opacity-50"
+                        >
+                            {paymentForm.processing ? 'Mengirim...' : 'Kirim Bukti Pembayaran'}
+                        </button>
+                    </form>
+                </div>
+            )}
+
+            {quest.status === 'payment' && (
+                <div className="space-y-4 font-['Oxanium']">
+                    <div className="flex flex-col gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-center">
+                        <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
+                            Menunggu Konfirmasi Pekerja
+                        </span>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-355 leading-relaxed">
+                            Bukti transfer pembayaran Anda telah diunggah. Saat ini sistem menunggu pekerja memverifikasi penerimaan dana di rekeningnya dan menyerahkan Berkas Proyek Final (ZIP) untuk menyelesaikan quest ini.
+                        </p>
+                    </div>
+
+                    {quest.payment_proof && (
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800/60 dark:bg-black/20">
+                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                Bukti Transfer Anda
+                            </span>
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex min-w-0 items-center gap-2">
+                                        <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
+                                        <span className="text-xs font-semibold text-slate-750 dark:text-slate-200 truncate">
+                                            {quest.payment_proof.name}
+                                        </span>
+                                    </div>
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400"
+                                        title="Unduh Bukti Transfer"
+                                    >
+                                        <Download size={14} />
+                                    </a>
+                                </div>
+                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs">
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block group"
+                                    >
+                                        <img
+                                            src={quest.payment_proof.url}
+                                            alt="Bukti Transfer Pembayaran"
+                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                                Perbesar Gambar 🔍
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -446,7 +559,97 @@ export default function CreatorProjectPanel({
                                 </a>
                             </div>
                         )}
+
+                        {quest.payment_proof && (
+                            <div className="mt-2.5 space-y-2">
+                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
+                                    Bukti Transfer Pembayaran
+                                </strong>
+                                <div className="flex items-center justify-between rounded-xl border border-indigo-200/40 bg-indigo-500/5 p-2.5 dark:border-indigo-500/20 dark:bg-indigo-950/10">
+                                    <div className="flex min-w-0 items-center gap-2.5">
+                                        <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
+                                        <div className="min-w-0">
+                                            <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                                {quest.payment_proof.name}
+                                            </p>
+                                            <p className="text-[10px] text-slate-450">
+                                                {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-indigo-600 transition-colors hover:bg-indigo-500/10 hover:text-indigo-700"
+                                        title="Unduh Bukti Transfer"
+                                    >
+                                        <Download className="h-4.5 w-4.5" />
+                                    </a>
+                                </div>
+                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs">
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block group"
+                                    >
+                                        <img
+                                            src={quest.payment_proof.url}
+                                            alt="Bukti Transfer Pembayaran"
+                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                                Perbesar Gambar 🔍
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        )}
                     </div>
+                </div>
+            )}
+
+            {quest.status === 'expired' && (
+                <div className="space-y-4 font-['Oxanium'] border-t border-slate-100/60 pt-4 dark:border-slate-800/60">
+                    <div className="rounded-xl border border-red-500/15 bg-red-500/5 p-4 dark:bg-red-950/10">
+                        <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
+                            ⏳ Perpanjang Tenggat Waktu (Re-open)
+                        </span>
+                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                            Quest ini telah kadaluarsa karena melewati batas waktu pengerjaan. Sebagai pembuat quest, Anda dapat menentukan tenggat waktu baru di bawah ini untuk membuka kembali pendaftaran quest (jika belum ada pekerja) atau melanjutkan pengerjaan proyek.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleExtendDeadline} className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
+                                Tenggat Waktu Baru <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="datetime-local"
+                                required
+                                value={extendForm.data.deadline}
+                                onChange={(e) => extendForm.setData('deadline', e.target.value)}
+                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                            />
+                            {extendForm.errors.deadline && (
+                                <p className="text-xs font-semibold text-red-500">
+                                    {extendForm.errors.deadline}
+                                </p>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={extendForm.processing}
+                            className="w-full cursor-pointer rounded-xl bg-indigo-600 hover:bg-indigo-700 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-sm transition-colors disabled:opacity-50"
+                        >
+                            {extendForm.processing ? 'Memproses...' : 'Aktifkan Kembali Quest'}
+                        </button>
+                    </form>
                 </div>
             )}
         </div>

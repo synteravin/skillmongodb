@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Briefcase, FileArchive, Download, Star, Check } from 'lucide-react';
+import { MessageSquare, Briefcase, FileArchive, Download, Star, Check, FileImage } from 'lucide-react';
 import { Quest, Bid } from '@/types/quest';
 import RevisionHistory from '@/components/Quest/RevisionHistory';
 
@@ -115,11 +115,75 @@ export default function AdminProjectTabPanel({
             {quest.status === 'approved' && (
                 <div className="flex flex-col gap-2 rounded-xl border border-slate-100 bg-indigo-500/10 p-4 pt-4 text-center font-['Oxanium'] dark:border-slate-800/50">
                     <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
-                        Disetujui & Menunggu Berkas ZIP Final
+                        Disetujui & Menunggu Pembayaran
                     </span>
                     <p className="text-[11px] text-slate-500 dark:text-slate-300">
-                        Ulasan pengerjaan telah disetujui. Menunggu pekerja menyerahkan berkas proyek ZIP final agar quest ditutup dan rewards RPG didistribusikan.
+                        Hasil pekerjaan disetujui. Saat ini sistem menunggu pembuat quest mengunggah bukti transfer pembayaran secara offline.
                     </p>
+                </div>
+            )}
+
+            {quest.status === 'payment' && (
+                <div className="space-y-4 border-t border-slate-100 pt-4 font-['Oxanium'] dark:border-slate-800/50">
+                    <div className="flex flex-col gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 pt-4 text-center font-['Oxanium'] dark:border-slate-800/50">
+                        <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
+                            Bukti Pembayaran Diunggah & Menunggu Berkas ZIP Final
+                        </span>
+                        <p className="text-[11px] text-slate-505 dark:text-slate-300">
+                            Pembuat quest telah mengunggah bukti transfer pembayaran. Sistem menunggu pekerja mengirim berkas proyek final (.zip) untuk menyelesaikan quest.
+                        </p>
+                    </div>
+
+                    {quest.payment_proof && (
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800/60 dark:bg-black/20 text-xs">
+                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                Bukti Transfer Pembuat
+                            </span>
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex min-w-0 items-center gap-2">
+                                        <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
+                                        <div className="min-w-0">
+                                            <p className="truncate text-xs font-semibold text-slate-750 dark:text-slate-200">
+                                                {quest.payment_proof.name}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400">
+                                                Diunggah pada: {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400"
+                                        title="Unduh Bukti Transfer"
+                                    >
+                                        <Download size={16} />
+                                    </a>
+                                </div>
+                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs shadow-sm">
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block group"
+                                    >
+                                        <img
+                                            src={quest.payment_proof.url}
+                                            alt="Bukti Transfer Pembayaran"
+                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                                Perbesar Gambar 🔍
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -406,6 +470,55 @@ export default function AdminProjectTabPanel({
                                 >
                                     {quest.submission_link}
                                 </a>
+                            </div>
+                        )}
+
+                        {quest.payment_proof && (
+                            <div className="mt-2.5 space-y-2">
+                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
+                                    Bukti Transfer Pembayaran
+                                </strong>
+                                <div className="flex items-center justify-between rounded-xl border border-indigo-200/40 bg-indigo-500/5 p-2.5 dark:border-indigo-500/20 dark:bg-indigo-950/10">
+                                    <div className="flex min-w-0 items-center gap-2.5">
+                                        <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
+                                        <div className="min-w-0">
+                                            <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                                {quest.payment_proof.name}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400">
+                                                {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-indigo-600 transition-colors hover:bg-indigo-500/10 hover:text-indigo-700"
+                                        title="Unduh Bukti Transfer"
+                                    >
+                                        <Download className="h-4.5 w-4.5" />
+                                    </a>
+                                </div>
+                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs">
+                                    <a
+                                        href={quest.payment_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block group"
+                                    >
+                                        <img
+                                            src={quest.payment_proof.url}
+                                            alt="Bukti Transfer Pembayaran"
+                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                                Perbesar Gambar 🔍
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         )}
                     </div>

@@ -303,33 +303,19 @@ class QuestController extends Controller
             'rating.max' => 'Rating maksimal 5 bintang.',
         ]);
 
-        $hasFile = $quest->submission_file && isset($quest->submission_file['path']);
-        $newStatus = $hasFile ? 'completed' : 'approved';
-
         $updateData = [
-            'status' => $newStatus,
+            'status' => 'approved',
             'rating' => (int) $request->rating,
             'rating_comment' => $request->rating_comment,
             'revision_note' => null, // clear any past revision note
         ];
 
-        if ($hasFile) {
-            $updateData['completed_at'] = now();
-        }
-
         $quest->update($updateData);
 
-        // Award gamification rewards to worker (Student) only if completed
-        if ($hasFile && $quest->worker_id) {
-            $this->questService->awardQuestRewards($quest, $quest->worker_id);
-        }
-
-        $msg = $hasFile
-            ? 'Pekerjaan disetujui! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.'
-            : 'Pekerjaan disetujui! Status menjadi disetujui, menunggu pekerja mengunggah berkas ZIP final untuk menyelesaikan quest.';
+        $msg = 'Hasil tinjauan pekerjaan disetujui! Silakan lanjutkan dengan melakukan transfer pembayaran dan unggah bukti transfer.';
 
         return redirect()->route('student.quests.show', $quest->_id)
-            ->with($hasFile ? 'success' : 'warning', $msg);
+            ->with('success', $msg);
     }
 
     /**
@@ -384,9 +370,9 @@ class QuestController extends Controller
             abort(403, 'Hanya pekerja terpilih yang dapat mengunggah berkas final.');
         }
 
-        // Must be approved status
-        if ($quest->status !== 'approved') {
-            abort(400, 'Berkas ZIP final hanya dapat diunggah setelah pekerjaan disetujui.');
+        // Must be payment status
+        if ($quest->status !== 'payment') {
+            abort(400, 'Berkas ZIP final hanya dapat diunggah setelah bukti transfer pembayaran diunggah.');
         }
 
         $request->validate([
@@ -416,13 +402,14 @@ class QuestController extends Controller
             'version' => $nextVersion,
             'submitted_at' => now()->toIso8601String(),
             'submission_link' => $quest->submission_link,
-            'submission_note' => 'Final ZIP Deliverable Uploaded',
+            'submission_note' => 'Final ZIP Deliverable Uploaded and Payment Confirmed',
             'submission_file' => $submissionFile,
         ];
 
         $quest->update([
             'submission_file' => $submissionFile,
             'completed_at' => now(),
+            'payment_confirmed_at' => now(),
             'status' => 'completed',
             'submission_history' => $history,
         ]);
@@ -433,7 +420,55 @@ class QuestController extends Controller
         }
 
         return redirect()->route('student.quests.show', $quest->_id)
-            ->with('success', 'Berkas final berhasil diunggah! Quest selesai dan hadiah telah ditambahkan ke profil Anda.');
+            ->with('success', 'Konfirmasi pembayaran berhasil! Berkas final berhasil diunggah, quest selesai, dan hadiah telah ditambahkan ke profil Anda.');
+    }
+
+    /**
+     * Upload payment proof receipt by the creator.
+     */
+    public function uploadPaymentProof(Request $request, Quest $quest)
+    {
+        $user = $request->user();
+
+        // Must be the quest creator or admin
+        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Hanya pembuat quest atau admin yang dapat mengunggah bukti transfer.');
+        }
+
+        // Must be in approved status
+        if ($quest->status !== 'approved') {
+            abort(400, 'Bukti transfer hanya dapat diunggah setelah pekerjaan disetujui.');
+        }
+
+        $request->validate([
+            'payment_proof' => 'required|file|image|max:5120',
+        ], [
+            'payment_proof.required' => 'Bukti transfer wajib diunggah.',
+            'payment_proof.file' => 'Bukti transfer harus berupa file valid.',
+            'payment_proof.image' => 'Bukti transfer harus berupa gambar (JPG, JPEG, PNG).',
+            'payment_proof.max' => 'Ukuran bukti transfer maksimal adalah 5MB.',
+        ]);
+
+        // Upload to S3
+        $file = $request->file('payment_proof');
+        $originalName = $file->getClientOriginalName();
+        $path = $file->store('quests/payments', 's3');
+        $size = $file->getSize();
+
+        $paymentProof = [
+            'name' => $originalName,
+            'path' => $path,
+            'size' => $size,
+        ];
+
+        $quest->update([
+            'payment_proof' => $paymentProof,
+            'payment_uploaded_at' => now(),
+            'status' => 'payment',
+        ]);
+
+        return redirect()->route('student.quests.show', $quest->_id)
+            ->with('success', 'Bukti transfer pembayaran berhasil diunggah! Menunggu konfirmasi dari pekerja.');
     }
 
     /**

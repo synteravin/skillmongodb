@@ -7,12 +7,6 @@ import {
     Briefcase,
     FileText,
     User,
-    Check,
-    Trash2,
-    Mail,
-    Sparkles,
-    UserCheck,
-    FolderGit,
     FileSpreadsheet,
     MessageSquare,
     TrendingUp,
@@ -250,7 +244,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             return {
                 text: 'Selesai',
                 className:
-                    'bg-emerald-500/10 text-emerald-655 dark:text-emerald-400 border border-emerald-500/20',
+                    'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
                 isExpired: false,
                 isLate: false,
             };
@@ -260,7 +254,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             return {
                 text: 'Dibatalkan',
                 className:
-                    'bg-red-500/10 text-red-650 dark:text-red-400 border border-red-500/20',
+                    'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
                 isExpired: false,
                 isLate: false,
             };
@@ -285,7 +279,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             return {
                 text: timeStr,
                 className:
-                    'bg-indigo-500/10 text-indigo-650 dark:text-indigo-400 border border-indigo-500/20',
+                    'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20',
                 isExpired: false,
                 isLate: false,
             };
@@ -307,7 +301,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 return {
                     text: 'Pendaftaran Ditutup (Expired)',
                     className:
-                        'bg-slate-500/10 text-slate-600 dark:text-slate-455 border border-slate-500/20',
+                        'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20',
                     isExpired: true,
                     isLate: false,
                 };
@@ -315,7 +309,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 return {
                     text: `Terlambat ${lateStr}`,
                     className:
-                        'bg-rose-500/10 text-rose-650 dark:text-rose-455 border border-rose-500/20 font-bold',
+                        'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 font-bold',
                     isExpired: true,
                     isLate: true,
                 };
@@ -345,114 +339,158 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none" />
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
-                    {/* BACK LINK & BADGE */}
-                    <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
-                        <div className="space-y-1">
-                            <Link
-                                href="/admin/quests"
-                                className="inline-flex items-center gap-1.5 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
-                            >
-                                <ArrowLeft size={14} />
-                                Kembali ke Daftar Quest
-                            </Link>
-                            <h2 className="font-['Oxanium'] text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
-                                {quest.title}
-                            </h2>
-                        </div>
+                    {/* 1. RPG HERO QUEST HEADER */}
+                    <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-6 shadow-xl dark:border-[#1d2645] dark:from-[#0d1226]/85 dark:to-[#090d1a]/95">
+                        {/* Decorative abstract glows */}
+                        <div className="absolute top-0 right-0 -z-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
+                        <div className="absolute bottom-0 left-0 -z-10 h-24 w-24 rounded-full bg-purple-500/10 blur-xl" />
 
-                        <div className="flex items-center gap-3">
-                            <span
-                                className={`shrink-0 rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
-                                    quest.status === 'open'
-                                        ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
-                                        : quest.status === 'draft'
-                                          ? 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400'
-                                          : quest.status === 'rejected'
-                                            ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
-                                            : quest.status === 'expired'
-                                              ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
-                                              : quest.status === 'ongoing'
-                                                ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
-                                                : quest.status === 'approved'
-                                                  ? 'border-purple-500/20 bg-purple-500/10 text-purple-700 dark:text-purple-400'
-                                                  : quest.status === 'submitted'
-                                                    ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400'
-                                                    : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
-                                }`}
-                            >
-                                {quest.status === 'open'
-                                    ? 'Tersedia'
-                                    : quest.status === 'draft'
-                                      ? 'Menunggu Review'
-                                      : quest.status === 'rejected'
-                                        ? 'Ditolak'
-                                        : quest.status === 'expired'
-                                          ? 'Kadaluarsa'
-                                          : quest.status === 'ongoing'
-                                            ? 'Pengerjaan'
-                                            : quest.status === 'approved'
-                                              ? 'Disetujui'
-                                              : quest.status === 'submitted'
-                                                ? 'Ditinjau'
-                                                : 'Selesai'}
-                            </span>
-                        </div>
-                    </div>
+                        <div className="space-y-6">
+                            {/* Breadcrumbs & Badge */}
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <Link
+                                    href="/admin/quests"
+                                    className="inline-flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                                >
+                                    <ArrowLeft size={14} />
+                                    Kembali ke Daftar Quest
+                                </Link>
 
-                    {/* METRICS / STATS OVERVIEW */}
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-slate-800 dark:bg-[#0c122c]/40">
-                            <div className="shrink-0 rounded-xl bg-indigo-500/10 p-3 text-indigo-600 dark:text-indigo-400">
-                                <TrendingUp className="h-5 w-5" />
+                                <div>
+                                    <span
+                                        className={`rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
+                                            quest.status === 'open'
+                                                ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
+                                                : quest.status === 'draft'
+                                                  ? 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                                  : quest.status === 'rejected'
+                                                    ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
+                                                    : quest.status === 'expired'
+                                                      ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
+                                                      : quest.status ===
+                                                          'ongoing'
+                                                        ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
+                                                        : quest.status ===
+                                                            'approved'
+                                                          ? 'border-purple-500/20 bg-purple-500/10 text-purple-700 dark:text-purple-400'
+                                                          : quest.status ===
+                                                              'payment'
+                                                            ? 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                                            : quest.status ===
+                                                                'submitted'
+                                                              ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400'
+                                                              : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
+                                        }`}
+                                    >
+                                        {quest.status === 'open'
+                                            ? 'Tersedia'
+                                            : quest.status === 'draft'
+                                              ? 'Menunggu Review'
+                                              : quest.status === 'rejected'
+                                                ? 'Ditolak'
+                                                : quest.status === 'expired'
+                                                  ? 'Kadaluarsa'
+                                                  : quest.status === 'ongoing'
+                                                    ? 'Pengerjaan'
+                                                    : quest.status ===
+                                                        'approved'
+                                                      ? 'Disetujui'
+                                                      : quest.status ===
+                                                          'payment'
+                                                        ? 'Pembayaran'
+                                                        : quest.status ===
+                                                            'submitted'
+                                                          ? 'Ditinjau'
+                                                          : 'Selesai'}
+                                    </span>
+                                </div>
                             </div>
-                            <div>
-                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Total Penawaran
-                                </span>
-                                <span className="text-base font-extrabold text-slate-900 dark:text-white">
-                                    {bids.length} Bid
-                                </span>
-                            </div>
-                        </div>
 
-                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-slate-800 dark:bg-[#0c122c]/40">
-                            <div className="shrink-0 rounded-xl bg-purple-500/10 p-3 text-purple-600 dark:text-purple-400">
-                                <DollarSign className="h-5 w-5" />
-                            </div>
-                            <div>
-                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Rata-Rata Penawaran
-                                </span>
-                                <span className="text-base font-extrabold text-slate-900 dark:text-white">
-                                    {averageBid > 0
-                                        ? formatCurrency(averageBid)
-                                        : 'Rp 0'}
-                                </span>
-                            </div>
-                        </div>
+                            {/* Title and Creator Info */}
+                            <div className="space-y-3 font-['Oxanium']">
+                                <div className="flex items-center gap-2">
+                                    <span className="font-['Orbitron'] text-[10px] font-black tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
+                                        Quest Moderation Portal
+                                    </span>
+                                </div>
+                                <h1 className="text-2xl leading-tight font-extrabold tracking-tight text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
+                                    {quest.title}
+                                </h1>
 
-                        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-slate-800 dark:bg-[#0c122c]/40">
-                            <div className="shrink-0 rounded-xl bg-blue-500/10 p-3 text-blue-600 dark:text-blue-400">
-                                <Briefcase className="h-5 w-5" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Rentang Anggaran
-                                </span>
-                                <span className="text-xs font-black text-slate-900 dark:text-white">
-                                    {formatCurrency(quest.min_salary)} -{' '}
-                                    {formatCurrency(quest.max_salary)}
-                                </span>
-                                {quest.accepted_bid_amount && (
-                                    <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                        <span>Kontrak:</span>
-                                        <span>
-                                            {formatCurrency(
-                                                quest.accepted_bid_amount,
-                                            )}
+                                <div className="flex items-center gap-2.5 text-xs text-slate-500 sm:text-sm dark:text-blue-300/80">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                        <User className="h-3.5 w-3.5" />
+                                    </div>
+                                    <div>
+                                        <span className="mr-1 text-[10px] font-semibold text-slate-400 uppercase">
+                                            Pembuat:
+                                        </span>
+                                        <span className="font-bold text-slate-800 dark:text-white">
+                                            {quest.creator?.name ?? 'Unknown'}
                                         </span>
                                     </div>
-                                )}
+                                </div>
+                            </div>
+
+                            {/* Stepper Progress Timeline */}
+                            <QuestStepper status={quest.status} />
+
+                            {/* Stats Metrics Subgrid */}
+                            <div className="grid grid-cols-1 gap-4 border-t border-slate-200/60 pt-6 sm:grid-cols-3 dark:border-slate-800/60">
+                                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/50 bg-white/40 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10">
+                                    <div className="shrink-0 rounded-xl bg-indigo-500/10 p-3 text-indigo-600 dark:text-indigo-400">
+                                        <TrendingUp className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                            Total Penawaran
+                                        </span>
+                                        <span className="text-base font-extrabold text-slate-900 dark:text-white">
+                                            {bids.length} Bid
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/50 bg-white/40 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10">
+                                    <div className="shrink-0 rounded-xl bg-purple-500/10 p-3 text-purple-600 dark:text-purple-400">
+                                        <DollarSign className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                            Rata-Rata Penawaran
+                                        </span>
+                                        <span className="text-base font-extrabold text-slate-900 dark:text-white">
+                                            {averageBid > 0
+                                                ? formatCurrency(averageBid)
+                                                : 'Rp 0'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/50 bg-white/40 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10">
+                                    <div className="shrink-0 rounded-xl bg-blue-500/10 p-3 text-blue-600 dark:text-blue-400">
+                                        <Briefcase className="h-5 w-5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                            Rentang Anggaran
+                                        </span>
+                                        <span className="text-xs font-black text-slate-900 dark:text-white">
+                                            {formatCurrency(quest.min_salary)} -{' '}
+                                            {formatCurrency(quest.max_salary)}
+                                        </span>
+                                        {quest.accepted_bid_amount && (
+                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                                <span>Kontrak:</span>
+                                                <span>
+                                                    {formatCurrency(
+                                                        quest.accepted_bid_amount,
+                                                    )}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -464,7 +502,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                             {/* Moderation Post Card */}
                             <AdminModerationCard
                                 quest={quest}
-                                setShowApprovePostConfirm={setShowApprovePostConfirm}
+                                setShowApprovePostConfirm={
+                                    setShowApprovePostConfirm
+                                }
                                 setShowRejectPostForm={setShowRejectPostForm}
                             />
 
@@ -617,6 +657,25 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                         {/* RIGHT COLUMN: SIDEBAR METADATA INFO (lg:col-span-4) */}
                         <div className="space-y-6 lg:col-span-4">
+                            {/* WORKER SUMMARY (Right column status card) */}
+                            {quest.worker && (
+                                <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
+                                    <div className="flex min-w-0 items-center gap-2.5">
+                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
+                                        <div className="min-w-0">
+                                            <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
+                                                Status Pekerja
+                                            </span>
+                                            <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
+                                                {quest.worker.name}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
+                                        Aktif
+                                    </span>
+                                </div>
+                            )}
                             {/* QUEST METADATA DETAILS */}
                             <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
                                 <h3 className="border-b border-slate-100 pb-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-blue-200">
@@ -662,7 +721,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                     {/* Deadline Spec */}
                                     <div className="flex items-center gap-3">
-                                        <div className="text-indigo-650 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 dark:text-indigo-400">
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                                             <Calendar className="h-5 w-5" />
                                         </div>
                                         <div>
@@ -708,26 +767,6 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 {/* RPG Rewards */}
                                 <QuestRewardsCard rewards={quest.rewards} />
                             </div>
-
-                            {/* WORKER SUMMARY (Right column status card) */}
-                            {quest.worker && (
-                                <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
-                                    <div className="flex min-w-0 items-center gap-2.5">
-                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
-                                        <div className="min-w-0">
-                                            <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
-                                                Status Pekerja
-                                            </span>
-                                            <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
-                                                {quest.worker.name}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
-                                        Aktif
-                                    </span>
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -883,7 +922,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                             e.target.value,
                                         )
                                     }
-                                    className="bg-slate-55 w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
                                 />
                                 {rejectPostForm.errors.rejection_note && (
                                     <p className="text-xs font-semibold text-red-500">
@@ -903,7 +942,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 <button
                                     type="submit"
                                     disabled={rejectPostForm.processing}
-                                    className="bg-red-650 hover:bg-red-750 cursor-pointer rounded-xl px-4 py-2 font-['Orbitron'] text-xs font-semibold text-white uppercase transition-all disabled:opacity-50"
+                                    className="cursor-pointer rounded-xl bg-red-600 px-4 py-2 font-['Orbitron'] text-xs font-semibold text-white uppercase transition-all hover:bg-red-700 disabled:opacity-50"
                                 >
                                     {rejectPostForm.processing
                                         ? 'Mengirim...'

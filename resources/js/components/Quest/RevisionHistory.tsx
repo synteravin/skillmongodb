@@ -38,7 +38,7 @@ export default function RevisionHistory({ quest, viewType }: RevisionHistoryProp
                 <span className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
                     ⚠️ {label}
                 </span>
-                <p className="text-slate-650 dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap italic">
+                <p className="text-slate-600 dark:text-slate-300 mt-1 text-xs leading-relaxed whitespace-pre-wrap italic">
                     "{quest.revision_note}"
                 </p>
             </div>
@@ -68,7 +68,7 @@ export default function RevisionHistory({ quest, viewType }: RevisionHistoryProp
                 <span className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
                     ⚠️ {mainLabel}
                 </span>
-                <p className="dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
+                <p className="dark:text-slate-300 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
                     "{latestRevision.note}"
                 </p>
                 <div className="text-slate-450 mt-1 flex items-center gap-1 font-sans text-[9px] dark:text-slate-500">
@@ -112,7 +112,7 @@ export default function RevisionHistory({ quest, viewType }: RevisionHistoryProp
                                         >
                                             <div className="flex items-center justify-between font-['Orbitron'] text-[9px] font-bold text-slate-500 dark:text-slate-400">
                                                 <span>REVISI #{revNum}</span>
-                                                <span className="text-slate-450 dark:text-slate-550 font-sans font-normal">
+                                                <span className="text-slate-500 dark:text-slate-400 font-sans font-normal">
                                                     {new Date(
                                                         rev.created_at,
                                                     ).toLocaleString('id-ID', {
@@ -121,12 +121,12 @@ export default function RevisionHistory({ quest, viewType }: RevisionHistoryProp
                                                     })}
                                                 </span>
                                             </div>
-                                            <p className="dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
+                                            <p className="dark:text-slate-300 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
                                                 "{rev.note}"
                                             </p>
-                                            <div className="text-slate-455 dark:text-slate-555 font-sans text-[9px]">
+                                            <div className="text-slate-500 dark:text-slate-400 font-sans text-[9px]">
                                                 Diminta oleh:{' '}
-                                                <span className="dark:text-slate-455 font-semibold text-slate-500">
+                                                <span className="dark:text-slate-400 font-semibold text-slate-500">
                                                     {rev.author_name}
                                                 </span>
                                             </div>

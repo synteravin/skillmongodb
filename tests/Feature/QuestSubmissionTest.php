@@ -114,10 +114,39 @@ class QuestSubmissionTest extends TestCase
         $response->assertSessionHas('success');
 
         $quest->refresh();
-        $this->assertEquals('completed', $quest->status);
+        $this->assertEquals('approved', $quest->status);
         $this->assertEquals(5, $quest->rating);
         $this->assertEquals('Great work!', $quest->rating_comment);
+
+        // Upload payment proof
+        $file = UploadedFile::fake()->image('receipt.png');
+        $responseUpload = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/upload-payment", [
+                'payment_proof' => $file,
+            ]);
+
+        $responseUpload->assertRedirect();
+        $responseUpload->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('payment', $quest->status);
+        $this->assertNotNull($quest->payment_proof);
+        $this->assertNotNull($quest->payment_uploaded_at);
+
+        // Worker submits final ZIP and completes payment
+        $zipFile = UploadedFile::fake()->create('final.zip', 100, 'application/zip');
+        $responseFinal = $this->actingAs($worker)
+            ->post("/student/quests/{$quest->_id}/submit-final-zip", [
+                'submission_file' => $zipFile,
+            ]);
+
+        $responseFinal->assertRedirect();
+        $responseFinal->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('completed', $quest->status);
         $this->assertNotNull($quest->completed_at);
+        $this->assertNotNull($quest->payment_confirmed_at);
 
         // Check gamification rewards
         $stat = UserStat::where('user_id', (string) $worker->_id)
@@ -418,7 +447,7 @@ class QuestSubmissionTest extends TestCase
             ]);
 
         $response2->assertRedirect();
-        $response2->assertSessionHas('warning'); // warning stands for pending final zip
+        $response2->assertSessionHas('success');
 
         $quest->refresh();
         $this->assertEquals('approved', $quest->status);
@@ -430,6 +459,19 @@ class QuestSubmissionTest extends TestCase
             ->where('course_id', 'quest_rewards')
             ->first();
         $this->assertNull($stat);
+
+        // 2.5 Creator uploads payment proof
+        $file = UploadedFile::fake()->image('receipt.png');
+        $responseUpload = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/upload-payment", [
+                'payment_proof' => $file,
+            ]);
+
+        $responseUpload->assertRedirect();
+        $responseUpload->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('payment', $quest->status);
 
         // 3. Worker uploads final ZIP deliverable
         $zipFile = UploadedFile::fake()->create('final.zip', 500, 'application/zip');
@@ -505,5 +547,50 @@ class QuestSubmissionTest extends TestCase
         $this->assertEquals('Please fix the footer.', $quest->revisions[0]['note']);
         $this->assertEquals('Header is still broken.', $quest->revisions[1]['note']);
         $this->assertEquals($creator->name, $quest->revisions[1]['author_name']);
+    }
+
+    public function test_payment_proof_upload_validation(): void
+    {
+        $creator = $this->createStudent('Creator');
+        $worker = $this->createStudent('Worker');
+        $otherStudent = $this->createStudent('Other');
+
+        $quest = Quest::create([
+            'title' => 'Freelance Web Design',
+            'description' => 'Create web portfolio',
+            'min_salary' => 1000,
+            'max_salary' => 3000,
+            'deadline' => now()->addDays(5)->toIso8601String(),
+            'status' => 'ongoing', // Not approved yet
+            'creator_id' => (string) $creator->_id,
+            'worker_id' => (string) $worker->_id,
+        ]);
+
+        $file = UploadedFile::fake()->image('receipt.png');
+
+        // 1. Fails if not approved status
+        $response1 = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/upload-payment", [
+                'payment_proof' => $file,
+            ]);
+        $response1->assertStatus(400);
+
+        // Transition to approved
+        $quest->update(['status' => 'approved']);
+
+        // 2. Fails if not the creator or admin
+        $response2 = $this->actingAs($otherStudent)
+            ->post("/student/quests/{$quest->_id}/upload-payment", [
+                'payment_proof' => $file,
+            ]);
+        $response2->assertStatus(403);
+
+        // 3. Success for creator
+        $response3 = $this->actingAs($creator)
+            ->post("/student/quests/{$quest->_id}/upload-payment", [
+                'payment_proof' => $file,
+            ]);
+        $response3->assertRedirect();
+        $response3->assertSessionHas('success');
     }
 }

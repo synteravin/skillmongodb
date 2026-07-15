@@ -6,6 +6,7 @@ use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class QuestMessageController extends Controller
 {
@@ -60,6 +61,8 @@ class QuestMessageController extends Controller
         }
 
         $data = $messages->map(function ($msg) {
+            $disk = Storage::disk('s3');
+
             return [
                 'id' => (string) $msg->_id,
                 'message' => $msg->message,
@@ -69,6 +72,11 @@ class QuestMessageController extends Controller
                     'name' => $msg->sender?->name ?? 'Unknown User',
                     'role' => $msg->sender?->role ?? 'unknown',
                 ],
+                'file' => $msg->file ? [
+                    'name' => $msg->file['name'],
+                    'url' => $disk->url($msg->file['path']),
+                    'size' => $msg->file['size'],
+                ] : null,
             ];
         });
 
@@ -98,15 +106,37 @@ class QuestMessageController extends Controller
         }
 
         $request->validate([
-            'message' => 'required|string|max:10000',
+            'message' => 'nullable|string|max:10000',
+            'file' => 'nullable|file|max:10240',
         ]);
+
+        if (empty($request->message) && ! $request->hasFile('file')) {
+            return response()->json(['error' => 'Pesan atau file wajib diisi.'], 422);
+        }
+
+        $fileData = null;
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $originalName = $file->getClientOriginalName();
+            $path = $file->store('quests/chats', 's3');
+            $size = $file->getSize();
+
+            $fileData = [
+                'name' => $originalName,
+                'path' => $path,
+                'size' => $size,
+            ];
+        }
 
         $msg = QuestMessage::create([
             'quest_bid_id' => $bidId,
             'sender_id' => $user->_id,
-            'message' => $request->message,
+            'message' => $request->message ?? '',
             'read_by' => [(string) $user->_id],
+            'file' => $fileData,
         ]);
+
+        $disk = Storage::disk('s3');
 
         return response()->json([
             'id' => (string) $msg->_id,
@@ -117,6 +147,11 @@ class QuestMessageController extends Controller
                 'name' => $user->name,
                 'role' => $user->role,
             ],
+            'file' => $msg->file ? [
+                'name' => $msg->file['name'],
+                'url' => $disk->url($msg->file['path']),
+                'size' => $msg->file['size'],
+            ] : null,
         ]);
     }
 }

@@ -6,7 +6,6 @@ import {
     Image as ImageIcon,
     ArrowLeft,
     BookOpen,
-    Sparkles,
     AlertCircle,
 } from 'lucide-react';
 
@@ -85,7 +84,6 @@ export default function Edit({ course }: { course: Course }) {
                             </Link>
                             <div className="h-8 w-px bg-slate-200 dark:bg-slate-800/60" />
                             <div className="flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-2 text-[#3B28F6] dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
-                                <Sparkles size={16} />
                                 <span className="text-xs font-semibold tracking-wide uppercase">
                                     Edit Course
                                 </span>
@@ -302,10 +300,6 @@ export default function Edit({ course }: { course: Course }) {
                                             </>
                                         ) : (
                                             <>
-                                                <Sparkles
-                                                    size={16}
-                                                    className="text-indigo-200 group-hover:animate-pulse"
-                                                />
                                                 <span>Save Changes</span>
                                             </>
                                         )}

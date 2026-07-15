@@ -62,6 +62,9 @@ export interface Quest {
     };
     accepted_bid_amount?: number | null;
     bids_count?: number;
+    payment_proof?: { name: string; url: string; size: number } | null;
+    payment_uploaded_at?: string | null;
+    payment_confirmed_at?: string | null;
 }
 
 export interface Bid {

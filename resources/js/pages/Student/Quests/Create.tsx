@@ -14,10 +14,6 @@ import {
     Paperclip,
     FileArchive,
     AlertCircle,
-    Award,
-    Sparkles,
-    CheckCircle,
-    Info,
 } from 'lucide-react';
 
 export default function Create({ template }: { template?: any }) {
@@ -35,8 +31,6 @@ export default function Create({ template }: { template?: any }) {
         images?: string;
         files?: string;
     }>({});
-
-
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;

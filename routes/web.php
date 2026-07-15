@@ -481,6 +481,7 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
         Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
         Route::post('/quests/{quest}/extend-deadline', [QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
+        Route::post('/quests/{quest}/upload-payment', [QuestController::class, 'uploadPaymentProof'])->name('quests.upload-payment');
     });
 
 /*

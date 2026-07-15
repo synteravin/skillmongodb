@@ -1,5 +1,3 @@
-import { Sparkles } from 'lucide-react';
-
 export default function VisionMissionSection() {
     return (
         <section className="relative -mt-24 py-12 md:py-20 lg:-mt-34 lg:py-24 2xl:py-32">
@@ -8,18 +6,12 @@ export default function VisionMissionSection() {
                     {/* ================= MOBILE TITLE (SM ONLY) ================= */}
                     <div className="mt-10 flex justify-center md:hidden">
                         <div className="relative flex items-center justify-center">
-                            <Sparkles className="absolute -top-7 h-8 w-8 animate-pulse text-purple-400 drop-shadow-[0_0_16px_rgba(168,85,247,1)] drop-shadow-[0_0_32px_rgba(96,165,250,1)]" />
-                            <Sparkles className="absolute -left-9 h-7 w-7 animate-pulse text-blue-400 drop-shadow-[0_0_16px_rgba(96,165,250,1)] drop-shadow-[0_0_32px_rgba(168,85,247,1)]" />
-
                             <h2
                                 className="bg-gradient-to-r from-purple-500 via-violet-400 to-blue-500 bg-clip-text px-4 text-3xl font-bold text-transparent drop-shadow-[0_0_18px_rgba(168,85,247,0.9)] drop-shadow-[0_0_30px_rgba(96,165,250,0.9)]"
                                 style={{ fontFamily: 'Orbitron' }}
                             >
                                 Vision & Mission
                             </h2>
-
-                            <Sparkles className="absolute -right-9 h-7 w-7 animate-pulse text-purple-400 drop-shadow-[0_0_16px_rgba(168,85,247,1)] drop-shadow-[0_0_32px_rgba(96,165,250,1)]" />
-                            <Sparkles className="absolute -bottom-7 h-8 w-8 animate-pulse text-blue-400 drop-shadow-[0_0_16px_rgba(96,165,250,1)] drop-shadow-[0_0_32px_rgba(168,85,247,1)]" />
                         </div>
                     </div>
 

@@ -99,9 +99,85 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
     // Calculate days remaining
     const calculateDaysRemaining = () => {
-        const diff = new Date(quest.deadline).getTime() - new Date().getTime();
-        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-        return days > 0 ? `${days} Hari Tersisa` : 'Tenggat Waktu Habis';
+        const now = new Date();
+        const deadlineDate = new Date(quest.deadline);
+        const diff = deadlineDate.getTime() - now.getTime();
+
+        if (['completed', 'approved'].includes(quest.status)) {
+            return {
+                text: 'Selesai',
+                className:
+                    'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+                isExpired: false,
+                isLate: false,
+            };
+        }
+
+        if (quest.status === 'cancelled') {
+            return {
+                text: 'Dibatalkan',
+                className:
+                    'bg-red-500/10 text-red-650 dark:text-red-400 border border-red-500/20',
+                isExpired: false,
+                isLate: false,
+            };
+        }
+
+        if (diff > 0) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+                (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+            );
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            let timeStr = '';
+            if (days > 0) {
+                timeStr = `${days}h ${hours}j Tersisa`;
+            } else if (hours > 0) {
+                timeStr = `${hours}j ${minutes}m ...`;
+            } else {
+                timeStr = `${minutes}m Tersisa`;
+            }
+
+            return {
+                text: timeStr,
+                className:
+                    'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20',
+                isExpired: false,
+                isLate: false,
+            };
+        } else {
+            const absDiff = Math.abs(diff);
+            const days = Math.floor(absDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+                (absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+            );
+
+            let lateStr = '';
+            if (days > 0) {
+                lateStr = `${days}h ${hours}j`;
+            } else {
+                lateStr = `${hours}j`;
+            }
+
+            if (quest.status === 'open' || quest.status === 'draft') {
+                return {
+                    text: 'Pendaftaran Ditutup (Expired)',
+                    className:
+                        'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20',
+                    isExpired: true,
+                    isLate: false,
+                };
+            } else {
+                return {
+                    text: `Terlambat ${lateStr}`,
+                    className:
+                        'bg-rose-500/10 text-rose-650 dark:text-rose-400 border border-rose-500/20 font-bold',
+                    isExpired: true,
+                    isLate: true,
+                };
+            }
+        }
     };
 
     return (
@@ -113,120 +189,87 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             </div>
 
             <div className="z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6">
-                {/* 1. TOP HEADER & BREADCRUMB */}
-                <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
-                    <div className="space-y-1">
-                        <Link
-                            href="/student/quests"
-                            className="inline-flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
-                        >
-                            <ArrowLeft size={14} />
-                            Kembali ke Board
-                        </Link>
-                        <h2 className="font-['Oxanium'] text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
-                            {quest.title}
-                        </h2>
-                    </div>
+                {/* 1. RPG HERO QUEST HEADER */}
+                <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-6 shadow-xl dark:border-[#1d2645] dark:from-[#0d1226]/85 dark:to-[#090d1a]/95">
+                    {/* Decorative abstract glows */}
+                    <div className="absolute top-0 right-0 -z-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
+                    <div className="absolute bottom-0 left-0 -z-10 h-24 w-24 rounded-full bg-purple-500/10 blur-xl" />
 
-                    <div className="flex items-center gap-3">
-                        <span
-                            className={`rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
-                                quest.status === 'open'
-                                    ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                    : quest.status === 'draft'
-                                      ? 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                      : quest.status === 'rejected'
-                                        ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
-                                        : quest.status === 'ongoing'
-                                          ? 'border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
-                                          : quest.status === 'approved'
-                                            ? 'border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400'
-                                            : quest.status === 'submitted'
-                                              ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
-                                              : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
-                            }`}
-                        >
-                            {quest.status === 'open'
-                                ? 'Tersedia'
-                                : quest.status === 'draft'
-                                  ? 'Menunggu Review'
-                                  : quest.status === 'rejected'
-                                    ? 'Ditolak'
-                                    : quest.status === 'ongoing'
-                                      ? 'Pengerjaan'
-                                      : quest.status === 'approved'
-                                        ? 'Disetujui'
-                                        : quest.status === 'submitted'
-                                          ? 'Ditinjau'
-                                          : 'Selesai'}
-                        </span>
-                    </div>
-                </div>
+                    <div className="space-y-6">
+                        {/* Breadcrumbs & Badge */}
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <Link
+                                href="/student/quests"
+                                className="inline-flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                            >
+                                <ArrowLeft size={14} />
+                                Kembali ke Board
+                            </Link>
 
-                {/* 2. OVERVIEW BANNER */}
-                <div className="relative space-y-6 overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-6 shadow-xl dark:border-[#1d2645] dark:from-[#0d1226]/85 dark:to-[#090d1a]/95">
-                    {/* Banners */}
-                    {quest.status === 'draft' && (
-                        <div className="flex gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 font-['Oxanium']">
-                            <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
                             <div>
-                                <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
-                                    ⏳ Menunggu Persetujuan Admin
+                                <span
+                                    className={`rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
+                                        quest.status === 'open'
+                                            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                            : quest.status === 'draft'
+                                              ? 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                              : quest.status === 'rejected'
+                                                ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
+                                                : quest.status === 'expired'
+                                                  ? 'text-red-650 border-red-500/20 bg-red-500/10 dark:text-red-400'
+                                                  : quest.status === 'ongoing'
+                                                    ? 'border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+                                                    : quest.status ===
+                                                        'approved'
+                                                      ? 'border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                                                      : quest.status ===
+                                                          'payment'
+                                                        ? 'text-amber-650 border-amber-500/25 bg-amber-500/10 dark:text-amber-400'
+                                                        : quest.status ===
+                                                            'submitted'
+                                                          ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
+                                                          : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
+                                    }`}
+                                >
+                                    {quest.status === 'open'
+                                        ? 'Tersedia'
+                                        : quest.status === 'draft'
+                                          ? 'Menunggu Review'
+                                          : quest.status === 'rejected'
+                                            ? 'Ditolak'
+                                            : quest.status === 'expired'
+                                              ? 'Kadaluarsa'
+                                              : quest.status === 'ongoing'
+                                                ? 'Pengerjaan'
+                                                : quest.status === 'approved'
+                                                  ? 'Disetujui'
+                                                  : quest.status === 'payment'
+                                                    ? 'Pembayaran'
+                                                    : quest.status ===
+                                                        'submitted'
+                                                      ? 'Ditinjau'
+                                                      : 'Selesai'}
                                 </span>
-                                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
-                                    Quest Anda telah berhasil diajukan and
-                                    sedang menunggu moderasi/persetujuan dari
-                                    pihak Admin sebelum dipublikasikan ke papan
-                                    quest umum.
-                                </p>
                             </div>
                         </div>
-                    )}
 
-                    {quest.status === 'rejected' && (
-                        <div className="space-y-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
-                            <div className="flex gap-3">
-                                <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                        {/* Title and Creator Info */}
+                        <div className="space-y-3 font-['Oxanium']">
+                            <h1 className="text-2xl leading-tight font-extrabold tracking-tight text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
+                                {quest.title}
+                            </h1>
+
+                            <div className="flex items-center gap-2.5 text-xs text-slate-500 sm:text-sm dark:text-blue-300/80">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                    <User className="h-3.5 w-3.5" />
+                                </div>
                                 <div>
-                                    <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
-                                        ❌ Quest Ditolak Oleh Admin
+                                    <span className="mr-1 text-[10px] font-semibold text-slate-400 uppercase">
+                                        Pembuat:
                                     </span>
-                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
-                                        Pihak administrator telah menolak
-                                        pengajuan quest ini. Anda dapat
-                                        memperbaiki detail quest di bawah ini
-                                        sesuai alasan penolakannya.
-                                    </p>
-                                </div>
-                            </div>
-                            {quest.rejection_note && (
-                                <div className="rounded-lg border border-red-500/10 bg-red-500/5 p-3">
-                                    <strong className="block font-['Orbitron'] text-[10px] tracking-wider text-red-500 uppercase">
-                                        Alasan Penolakan:
-                                    </strong>
-                                    <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300">
-                                        {quest.rejection_note}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Stepper Progress Timeline */}
-                    <QuestStepper status={quest.status} />
-
-                    {/* Metadata & Creator */}
-                    <div className="flex flex-col justify-between gap-4 font-['Oxanium'] md:flex-row md:items-center">
-                        <div className="flex items-center gap-3.5 text-xs text-slate-500 sm:text-sm dark:text-blue-300/80">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                <User className="h-4 w-4" />
-                            </div>
-                            <div>
-                                <span className="block text-[10px] font-semibold text-slate-400 uppercase">
-                                    Pemilik Quest
-                                </span>
-                                <span className="text-sm font-bold text-slate-800 dark:text-white">
-                                    {quest.creator.name}
+                                    <span className="font-bold text-slate-800 dark:text-white">
+                                        {quest.creator.name}
+                                    </span>
                                     <span className="ml-1.5 text-xs font-normal text-slate-400">
                                         (
                                         {quest.creator.role === 'admin'
@@ -234,9 +277,95 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                             : 'Siswa'}
                                         )
                                     </span>
-                                </span>
+                                </div>
                             </div>
                         </div>
+
+                        {/* Status Banners */}
+                        {quest.status === 'draft' && (
+                            <div className="flex gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 font-['Oxanium']">
+                                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+                                <div>
+                                    <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
+                                        ⏳ Menunggu Persetujuan Admin
+                                    </span>
+                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                                        Quest Anda telah berhasil diajukan and
+                                        sedang menunggu moderasi/persetujuan
+                                        dari pihak Admin sebelum dipublikasikan
+                                        ke papan quest umum.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {quest.status === 'rejected' && (
+                            <div className="space-y-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
+                                <div className="flex gap-3">
+                                    <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                                    <div>
+                                        <span className="text-red-650 block font-['Orbitron'] text-xs font-bold tracking-wider uppercase dark:text-red-400">
+                                            ❌ Quest Ditolak Oleh Admin
+                                        </span>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                                            Pihak administrator telah menolak
+                                            pengajuan quest ini. Anda dapat
+                                            memperbaiki detail quest di bawah
+                                            ini sesuai alasan penolakannya.
+                                        </p>
+                                    </div>
+                                </div>
+                                {quest.rejection_note && (
+                                    <div className="rounded-lg border border-red-500/10 bg-red-500/5 p-3">
+                                        <strong className="block font-['Orbitron'] text-[10px] tracking-wider text-red-500 uppercase">
+                                            Alasan Penolakan:
+                                        </strong>
+                                        <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300">
+                                            {quest.rejection_note}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {quest.status === 'expired' && (
+                            <div className="flex gap-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
+                                <Clock className="text-red-650 mt-0.5 h-5 w-5 shrink-0 dark:text-red-400" />
+                                <div>
+                                    <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
+                                        🚨 Quest Kadaluarsa (Expired)
+                                    </span>
+                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                                        Quest ini telah kadaluarsa karena
+                                        melewati tenggat waktu pengerjaan
+                                        sebelum selesai. Pekerja dibebaskan dari
+                                        tugas ini secara otomatis oleh sistem.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {['open', 'ongoing'].includes(quest.status) &&
+                            new Date(quest.deadline).getTime() <
+                                new Date().getTime() && (
+                                <div className="flex gap-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
+                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 animate-pulse text-red-600 dark:text-red-400" />
+                                    <div>
+                                        <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
+                                            ⚠️ Peringatan: Tenggat Waktu
+                                            Terlewati
+                                        </span>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                                            {quest.status === 'open'
+                                                ? 'Batas waktu pendaftaran untuk quest ini telah berakhir.'
+                                                : 'Pekerja telah melewati batas waktu pengerjaan proyek. Harap hubungi admin atau lakukan arbitrase jika diperlukan.'}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                        {/* Stepper Progress Timeline */}
+                        <QuestStepper status={quest.status} />
                     </div>
                 </div>
 
@@ -303,7 +432,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 </button>
                             )}
                         </div>
-
                         {/* TAB 1: DETAILS */}
                         {activeTab === 'detail' && (
                             <div className="space-y-6 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
@@ -323,7 +451,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     onPreviewImage={setPreviewImage}
                                 />
                             </div>
-                        )}                        {/* TAB 2: PROJECT MANAGEMENT */}
+                        )}{' '}
+                        {/* TAB 2: PROJECT MANAGEMENT */}
                         {activeTab === 'project' && (
                             <div className="space-y-6">
                                 {/* DISPUTE STATUS ALERT */}
@@ -370,7 +499,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         </div>
                                     </div>
                                 )}
-                                {/* REPLACE_ME_WORKFLOW */ }
+                                {/* REPLACE_ME_WORKFLOW */}
                                 {isCreator ? (
                                     <CreatorProjectPanel
                                         quest={quest}
@@ -403,7 +532,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 />
                             </div>
                         )}
-
                         {/* TAB 3: BIDS / APPLICANTS LIST (Creator Only, Quest Open) */}
                         {activeTab === 'bids' &&
                             isCreator &&
@@ -418,6 +546,25 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                     {/* RIGHT COLUMN: SIDEBAR SPECIFICATION CARDS (col-span-4) */}
                     <div className="space-y-6 lg:col-span-4">
+                        {/* WORKER SUMMARY (Right column shortcut) */}
+                        {quest.worker && (
+                            <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
+                                <div className="flex min-w-0 items-center gap-2.5">
+                                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
+                                    <div className="min-w-0">
+                                        <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
+                                            Status Pekerja
+                                        </span>
+                                        <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
+                                            {quest.worker.name}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
+                                    Aktif
+                                </span>
+                            </div>
+                        )}
                         {/* SPECIFICATION CARD */}
                         <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
                             <h3 className="border-b border-slate-100 pb-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-blue-200">
@@ -456,63 +603,69 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </div>
 
                             {/* Countdown Progress */}
-                            {quest.status === 'open' && (
-                                <div className="pt-2">
-                                    <div className="mb-1 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                                        <span>Estimasi Waktu</span>
-                                        <span className="font-['Orbitron'] text-indigo-600 dark:text-indigo-400">
-                                            {calculateDaysRemaining()}
-                                        </span>
-                                    </div>
-                                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                                    </div>
-                                </div>
-                            )}
+                            {[
+                                'open',
+                                'ongoing',
+                                'submitted',
+                                'disputed',
+                                'expired',
+                            ].includes(quest.status) &&
+                                (() => {
+                                    const remaining = calculateDaysRemaining();
+                                    return (
+                                        <div className="pt-2">
+                                            <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
+                                                <span>
+                                                    {remaining.isLate
+                                                        ? 'Status Keterlambatan'
+                                                        : 'Sisa Waktu'}
+                                                </span>
+                                                <span
+                                                    className={`rounded px-2 py-0.5 font-['Orbitron'] text-[10px] font-bold tracking-wider ${remaining.className}`}
+                                                >
+                                                    {remaining.text}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
 
                             {/* RPG Rewards Container */}
                             <div className="space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
                                 <span className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-purple-600 uppercase dark:text-purple-400">
-                                    🎁 RPG Quest Rewards
+                                    RPG Quest Rewards
                                 </span>
-                                <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold font-['Orbitron']">
-                                    <div className="py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 flex flex-col items-center hover:scale-[1.03] transition-transform">
-                                        <Award className="w-3.5 h-3.5 text-purple-500 mb-1" />
-                                        <span className="text-[9px] text-slate-400 font-semibold font-['Oxanium']">EXP</span>
-                                        <span className="text-[11px] font-black">+{quest.rewards?.exp ?? 250}</span>
+                                <div className="grid grid-cols-3 gap-2 text-center font-['Orbitron'] text-xs font-bold">
+                                    <div className="flex flex-col items-center rounded-xl border border-purple-500/20 bg-purple-500/10 py-2.5 text-purple-600 transition-transform hover:scale-[1.03] dark:text-purple-300">
+                                        <Award className="mb-1 h-3.5 w-3.5 text-purple-500" />
+                                        <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                            EXP
+                                        </span>
+                                        <span className="text-[11px] font-black">
+                                            +{quest.rewards?.exp ?? 250}
+                                        </span>
                                     </div>
-                                    <div className="py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex flex-col items-center hover:scale-[1.03] transition-transform">
-                                        <Award className="w-3.5 h-3.5 text-amber-500 mb-1" />
-                                        <span className="text-[9px] text-slate-400 font-semibold font-['Oxanium']">GOLD</span>
-                                        <span className="text-[11px] font-black">+{quest.rewards?.gold ?? 150}</span>
+                                    <div className="flex flex-col items-center rounded-xl border border-amber-500/20 bg-amber-500/10 py-2.5 text-amber-600 transition-transform hover:scale-[1.03] dark:text-amber-400">
+                                        <Award className="mb-1 h-3.5 w-3.5 text-amber-500" />
+                                        <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                            GOLD
+                                        </span>
+                                        <span className="text-[11px] font-black">
+                                            +{quest.rewards?.gold ?? 150}
+                                        </span>
                                     </div>
-                                    <div className="py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 flex flex-col items-center hover:scale-[1.03] transition-transform">
-                                        <Award className="w-3.5 h-3.5 text-indigo-500 mb-1" />
-                                        <span className="text-[9px] text-slate-400 font-semibold font-['Oxanium']">ERP</span>
-                                        <span className="text-[11px] font-black">+{quest.rewards?.erp ?? 100}</span>
+                                    <div className="flex flex-col items-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 py-2.5 text-indigo-600 transition-transform hover:scale-[1.03] dark:text-indigo-300">
+                                        <Award className="mb-1 h-3.5 w-3.5 text-indigo-500" />
+                                        <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                            ERP
+                                        </span>
+                                        <span className="text-[11px] font-black">
+                                            +{quest.rewards?.erp ?? 100}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        {/* WORKER SUMMARY (Right column shortcut) */}
-                        {quest.worker && (
-                            <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
-                                <div className="flex min-w-0 items-center gap-2.5">
-                                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
-                                    <div className="min-w-0">
-                                        <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
-                                            Status Pekerja
-                                        </span>
-                                        <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
-                                            {quest.worker.name}
-                                        </span>
-                                    </div>
-                                </div>
-                                <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
-                                    Aktif
-                                </span>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
@@ -532,9 +685,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                     }}
                 />
             )}
-
-
-
 
             {/* Image Preview Modal */}
             {previewImage && (
