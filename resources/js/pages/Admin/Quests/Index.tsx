@@ -11,6 +11,8 @@ import {
     Users,
     Eye,
     FileText,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import Modal from '@/components/ui/Modal';
@@ -18,32 +20,61 @@ import ConfirmModal from '@/components/ui/ConfirmModal';
 
 import { Quest } from '@/types/quest';
 
-interface Props {
-    quests: Quest[];
+interface PaginatedQuests {
+    data: Quest[];
+    links: { url: string | null; label: string; active: boolean }[];
+    current_page: number;
+    last_page: number;
+    total: number;
+    from: number;
+    to: number;
 }
 
-export default function Index({ quests }: Props) {
+interface Props {
+    quests: PaginatedQuests;
+    filters: {
+        search?: string;
+        status?: string;
+    };
+}
+
+export default function Index({ quests, filters }: Props) {
     const [openModal, setOpenModal] = useState<'create' | 'edit' | null>(null);
     const [editingQuest, setEditingQuest] = useState<Quest | null>(null);
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<
-        'all' | 'draft' | 'open' | 'rejected' | 'ongoing' | 'completed'
-    >('all');
+    const [searchQuery, setSearchQuery] = useState(filters?.search || '');
+    const [statusFilter, setStatusFilter] = useState<string>(filters?.status || 'all');
     const [sortBy, setSortBy] = useState<
         'latest' | 'highest_salary' | 'closest_deadline'
     >('latest');
 
-    const filteredQuests = quests.filter((quest) => {
-        const matchesSearch =
-            quest.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            quest.description.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus =
-            statusFilter === 'all' || quest.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
+    React.useEffect(() => {
+        const hasSearchChanged = searchQuery !== (filters?.search || '');
+        const hasStatusChanged = statusFilter !== (filters?.status || 'all');
 
-    const sortedFilteredQuests = [...filteredQuests].sort((a, b) => {
+        if (!hasSearchChanged && !hasStatusChanged) {
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            router.get(
+                '/admin/quests',
+                {
+                    search: searchQuery || undefined,
+                    status: statusFilter !== 'all' ? statusFilter : undefined,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                },
+            );
+        }, 300);
+
+        return () => clearTimeout(timeout);
+    }, [searchQuery, statusFilter, filters]);
+
+    const sortedFilteredQuests = [...quests.data].sort((a, b) => {
         if (sortBy === 'highest_salary') {
             return b.max_salary - a.max_salary;
         }
@@ -428,6 +459,63 @@ export default function Index({ quests }: Props) {
                                         ))}
                                     </tbody>
                                 </table>
+                            </div>
+                        )}
+
+                        {/* Pagination Footer */}
+                        {quests.last_page > 1 && (
+                            <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200/80 px-6 py-4 sm:flex-row dark:border-slate-800 dark:bg-slate-900/10">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Menampilkan{' '}
+                                    <span className="font-semibold text-slate-800 dark:text-white">
+                                        {quests.from}
+                                    </span>{' '}
+                                    –{' '}
+                                    <span className="font-semibold text-slate-800 dark:text-white">
+                                        {quests.to}
+                                    </span>{' '}
+                                    dari{' '}
+                                    <span className="font-semibold text-slate-800 dark:text-white">
+                                        {quests.total}
+                                    </span>{' '}
+                                    quest
+                                </span>
+
+                                <div className="flex items-center gap-1">
+                                    {quests.links.map((link, i) => {
+                                        const labelLower = link.label.toLowerCase();
+                                        const isPrev = labelLower.includes('previous') || labelLower.includes('&laquo;') || labelLower.includes('laquo');
+                                        const isNext = labelLower.includes('next') || labelLower.includes('&raquo;') || labelLower.includes('raquo');
+                                        
+                                        const renderLabel = () => {
+                                            if (isPrev) return <ChevronLeft size={14} className="shrink-0" />;
+                                            if (isNext) return <ChevronRight size={14} className="shrink-0" />;
+                                            return link.label;
+                                        };
+
+                                        return link.url ? (
+                                            <Link
+                                                key={i}
+                                                href={link.url}
+                                                preserveScroll
+                                                className={`flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-xs font-semibold tabular-nums transition-colors ${
+                                                    link.active
+                                                        ? 'border border-indigo-300 bg-indigo-50 text-indigo-600 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-400'
+                                                        : 'border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-800 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200'
+                                                }`}
+                                            >
+                                                {renderLabel()}
+                                            </Link>
+                                        ) : (
+                                            <span
+                                                key={i}
+                                                className="cursor-not-allowed flex h-7 min-w-7 items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
+                                            >
+                                                {renderLabel()}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         )}
                     </div>

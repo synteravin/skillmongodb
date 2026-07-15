@@ -19,23 +19,32 @@ class QuestController extends Controller
 {
     public function __construct(protected QuestService $questService) {}
 
-    /**
-     * Display a listing of the quests.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
         $status = $request->input('status');
+        $limit = (int) $request->input('limit', 12);
 
-        $quests = $this->questService->listQuests($search, $status);
-        $historyQuests = $this->questService->getStudentQuestHistory($request->user());
+        $questsData = $this->questService->listQuests($search, $status, $limit);
+
+        $user = $request->user();
+        $bids = QuestBid::where('student_id', (string) $user->_id)->get();
+        $biddedQuestIds = $bids->pluck('quest_id')->toArray();
+        $completedQuestsCount = Quest::where(function ($query) use ($user, $biddedQuestIds) {
+            $query->where('worker_id', (string) $user->_id)
+                ->orWhere('creator_id', (string) $user->_id)
+                ->orWhereIn('_id', $biddedQuestIds);
+        })->where('status', 'completed')->count();
 
         return Inertia::render('Student/Quests/Index', [
-            'quests' => $quests,
-            'historyQuests' => $historyQuests,
+            'quests' => $questsData['items'],
+            'totalQuests' => $questsData['total'],
+            'currentLimit' => $limit,
+            'completedQuestsCount' => $completedQuestsCount,
             'filters' => [
                 'search' => $search,
                 'status' => $status,
+                'limit' => $limit,
             ],
         ]);
     }
@@ -524,5 +533,131 @@ class QuestController extends Controller
 
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Tenggat waktu quest berhasil diperpanjang!');
+    }
+
+    public function history(Request $request)
+    {
+        $user = $request->user();
+        $search = $request->input('search');
+        $role = $request->input('role', 'all');
+        $status = $request->input('status', 'all');
+
+        $bids = QuestBid::where('student_id', (string) $user->_id)->get();
+        $biddedQuestIds = $bids->pluck('quest_id')->toArray();
+
+        $query = Quest::with(['creator', 'worker']);
+
+        // Filter by Role
+        if ($role === 'creator') {
+            $query->where('creator_id', (string) $user->_id);
+        } elseif ($role === 'worker') {
+            $query->where('worker_id', (string) $user->_id);
+        } elseif ($role === 'bidder') {
+            $query->whereIn('_id', $biddedQuestIds)
+                ->where('worker_id', '!=', (string) $user->_id)
+                ->where('creator_id', '!=', (string) $user->_id);
+        } else {
+            $query->where(function ($q) use ($user, $biddedQuestIds) {
+                $q->where('worker_id', (string) $user->_id)
+                    ->orWhere('creator_id', (string) $user->_id)
+                    ->orWhereIn('_id', $biddedQuestIds);
+            });
+        }
+
+        // Filter by Status
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        // Filter by Search Query
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $paginatedQuests = $query->latest()->paginate(10)->withQueryString();
+
+        $paginatedQuestIds = $paginatedQuests->pluck('_id')->map(fn($id) => (string) $id)->toArray();
+        $allBidsCounts = QuestBid::whereIn('quest_id', $paginatedQuestIds)
+            ->select('quest_id')
+            ->get()
+            ->groupBy('quest_id')
+            ->map(fn($groupedBids) => $groupedBids->count());
+
+        // Calculate Accumulative Stats for RPG HUD
+        // Completed Quests count
+        $completedQuestsCount = Quest::where('worker_id', (string) $user->_id)
+            ->where('status', 'completed')
+            ->count();
+
+        // Total Anggaran Bid (Pekerja & Pembuat)
+        $totalBidsPlaced = QuestBid::where('student_id', (string) $user->_id)->sum('bid_amount');
+        
+        $myCreatedQuestIds = Quest::where('creator_id', (string) $user->_id)->pluck('_id')->map(fn($id) => (string) $id)->toArray();
+        $totalBidsReceived = empty($myCreatedQuestIds) ? 0 : QuestBid::whereIn('quest_id', $myCreatedQuestIds)->sum('bid_amount');
+
+        // Map items
+        $quests = $paginatedQuests->through(function ($quest) use ($user, $bids, $allBidsCounts) {
+            $myBid = $bids->firstWhere('quest_id', (string) $quest->_id);
+
+            $submissionFile = null;
+            if ($quest->submission_file) {
+                $subFile = $quest->submission_file;
+                $submissionFile = [
+                    'name' => $subFile['name'] ?? 'project.zip',
+                    'size' => $subFile['size'] ?? 0,
+                    'url' => isset($subFile['path']) ? Storage::disk('s3')->temporaryUrl($subFile['path'], now()->addMinutes(30)) : null,
+                ];
+            }
+
+            $rewards = $this->questService->getRewardsForQuest($quest);
+
+            return [
+                '_id' => (string) $quest->_id,
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_salary' => $quest->min_salary,
+                'max_salary' => $quest->max_salary,
+                'deadline' => $quest->deadline?->toISOString(),
+                'status' => $quest->status,
+                'creator' => [
+                    'name' => $quest->creator?->name ?? 'Unknown User',
+                    'role' => $quest->creator?->role ?? 'unknown',
+                ],
+                'worker' => $quest->worker ? [
+                    'name' => $quest->worker->name,
+                    'email' => $quest->worker->email,
+                ] : null,
+                'worker_id' => $quest->worker_id,
+                'is_worker' => $quest->worker_id === (string) $user->_id,
+                'is_creator' => $quest->creator_id === (string) $user->_id,
+                'my_bid' => $myBid ? [
+                    'bid_amount' => $myBid->bid_amount,
+                    'status' => $myBid->status,
+                    'proposal' => $myBid->proposal,
+                    'cv' => $myBid->cv,
+                    'portfolio' => $myBid->portfolio,
+                ] : null,
+                'bids_count' => $allBidsCounts[(string) $quest->_id] ?? 0,
+                'rewards' => $rewards,
+                'submission_file' => $submissionFile,
+            ];
+        });
+
+        return Inertia::render('Student/Quests/History', [
+            'quests' => $quests,
+            'stats' => [
+                'completed_quests_count' => $completedQuestsCount,
+                'total_bids_placed' => $totalBidsPlaced,
+                'total_bids_received' => $totalBidsReceived,
+            ],
+            'filters' => [
+                'search' => $search,
+                'role' => $role,
+                'status' => $status,
+            ],
+        ]);
     }
 }
