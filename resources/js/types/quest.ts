@@ -127,4 +127,5 @@ export interface HistoryQuest {
         erp?: number;
     };
     bids_count?: number;
+    accepted_bid_amount?: number | null;
 }
