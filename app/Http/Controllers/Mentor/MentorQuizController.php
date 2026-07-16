@@ -98,6 +98,7 @@ class MentorQuizController extends Controller
                 'difficulty' => $quiz->difficulty,
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
+                        'id' => (string) $q->_id,
                         'question_text' => $q->question_text,
                         'media_url' => $q->media_url
                             ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
