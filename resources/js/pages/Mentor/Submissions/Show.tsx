@@ -109,7 +109,7 @@ export default function SubmissionShow({
                 </div>
 
                 {/* Collapsible Assignment Details Card */}
-                <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
+                <div className="relative overflow-hidden rounded-2xl border border-slate-200/30 bg-white/75 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-white/5 dark:bg-transparent dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
 
                     <button
@@ -177,7 +177,7 @@ export default function SubmissionShow({
                 {/* Overview Stats Grid */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                     {/* Card: Total Submissions */}
-                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
+                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/30 bg-white/75 p-5 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-white/5 dark:bg-transparent dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
                         <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                         <div className="flex items-center justify-between">
                             <div>
@@ -195,7 +195,7 @@ export default function SubmissionShow({
                     </div>
 
                     {/* Card: Graded Submissions */}
-                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
+                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/30 bg-white/75 p-5 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-white/5 dark:bg-transparent dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
                         <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                         <div className="flex items-center justify-between">
                             <div>
@@ -213,7 +213,7 @@ export default function SubmissionShow({
                     </div>
 
                     {/* Card: Completion Rate */}
-                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 p-5 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
+                    <div className="relative overflow-hidden rounded-2xl border border-slate-200/30 bg-white/75 p-5 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-white/5 dark:bg-transparent dark:bg-gradient-to-b dark:from-[#0e0e1a]/85 dark:to-[#090910]/40">
                         <div className="absolute top-0 right-4 left-4 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
                         <div>
                             <div className="mb-2 flex items-center justify-between">
@@ -235,7 +235,7 @@ export default function SubmissionShow({
                 </div>
 
                 {/* Panel Tabel Tugas Siswa */}
-                <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                <div className="overflow-hidden rounded-2xl border border-slate-200/30 bg-white/75 shadow-sm shadow-slate-100/50 backdrop-blur-xs dark:border-white/5 dark:bg-transparent dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                     {/* Header Kontrol: Tab Filter & Cari */}
                     <div className="flex flex-col justify-between gap-4 border-b border-slate-100 px-6 py-5 md:flex-row md:items-center dark:border-slate-800/60">
                         {/* Tab Filter */}
