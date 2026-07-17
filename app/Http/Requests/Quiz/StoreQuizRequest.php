@@ -23,7 +23,11 @@ class StoreQuizRequest extends FormRequest
             /* ================= QUESTIONS ================= */
             'questions' => ['required', 'array', 'min:1'],
 
+            'questions.*.id' => ['nullable', 'string'],
+
             'questions.*.media' => ['nullable', 'file'],
+
+            'questions.*.media_url' => ['nullable', 'string'],
 
             'questions.*.question_text' => ['required', 'string'],
 

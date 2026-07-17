@@ -36,11 +36,40 @@ class QuestController extends Controller
                 ->orWhereIn('_id', $biddedQuestIds);
         })->where('status', 'completed')->count();
 
+        $myQuests = Quest::with('creator')
+            ->where(function ($query) use ($user) {
+                $query->where('creator_id', (string) $user->_id)
+                    ->orWhere('worker_id', (string) $user->_id);
+            })
+            ->whereNotIn('status', ['draft', 'rejected'])
+            ->latest()
+            ->get()
+            ->map(function ($quest) {
+                return [
+                    '_id' => (string) $quest->_id,
+                    'title' => $quest->title,
+                    'description' => $quest->description,
+                    'min_salary' => $quest->min_salary,
+                    'max_salary' => $quest->max_salary,
+                    'deadline' => $quest->deadline->toISOString(),
+                    'status' => $quest->status,
+                    'creator_id' => $quest->creator_id ? (string) $quest->creator_id : null,
+                    'worker_id' => $quest->worker_id ? (string) $quest->worker_id : null,
+                    'creator' => [
+                        'name' => $quest->creator?->name ?? 'Unknown User',
+                        'role' => $quest->creator?->role ?? 'unknown',
+                    ],
+                    'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
+                ];
+            })
+            ->toArray();
+
         return Inertia::render('Student/Quests/Index', [
             'quests' => $questsData['items'],
             'totalQuests' => $questsData['total'],
             'currentLimit' => $limit,
             'completedQuestsCount' => $completedQuestsCount,
+            'myQuests' => $myQuests,
             'filters' => [
                 'search' => $search,
                 'status' => $status,
@@ -579,12 +608,17 @@ class QuestController extends Controller
 
         $paginatedQuests = $query->latest()->paginate(10)->withQueryString();
 
-        $paginatedQuestIds = $paginatedQuests->pluck('_id')->map(fn($id) => (string) $id)->toArray();
+        $paginatedQuestIds = $paginatedQuests->pluck('id')->toArray();
         $allBidsCounts = QuestBid::whereIn('quest_id', $paginatedQuestIds)
             ->select('quest_id')
             ->get()
             ->groupBy('quest_id')
-            ->map(fn($groupedBids) => $groupedBids->count());
+            ->map(fn ($groupedBids) => $groupedBids->count());
+
+        $acceptedBids = QuestBid::whereIn('quest_id', $paginatedQuestIds)
+            ->where('status', 'accepted')
+            ->get()
+            ->keyBy('quest_id');
 
         // Calculate Accumulative Stats for RPG HUD
         // Completed Quests count
@@ -592,14 +626,18 @@ class QuestController extends Controller
             ->where('status', 'completed')
             ->count();
 
-        // Total Anggaran Bid (Pekerja & Pembuat)
-        $totalBidsPlaced = QuestBid::where('student_id', (string) $user->_id)->sum('bid_amount');
-        
-        $myCreatedQuestIds = Quest::where('creator_id', (string) $user->_id)->pluck('_id')->map(fn($id) => (string) $id)->toArray();
-        $totalBidsReceived = empty($myCreatedQuestIds) ? 0 : QuestBid::whereIn('quest_id', $myCreatedQuestIds)->sum('bid_amount');
+        // Total Anggaran Bid (Pekerja & Pembuat) yang disetujui (accepted)
+        $totalBidsPlaced = QuestBid::where('student_id', (string) $user->_id)
+            ->where('status', 'accepted')
+            ->sum('bid_amount');
+
+        $myCreatedQuestIds = Quest::where('creator_id', (string) $user->_id)->pluck('id')->toArray();
+        $totalBidsReceived = empty($myCreatedQuestIds) ? 0 : QuestBid::whereIn('quest_id', $myCreatedQuestIds)
+            ->where('status', 'accepted')
+            ->sum('bid_amount');
 
         // Map items
-        $quests = $paginatedQuests->through(function ($quest) use ($user, $bids, $allBidsCounts) {
+        $quests = $paginatedQuests->through(function ($quest) use ($user, $bids, $allBidsCounts, $acceptedBids) {
             $myBid = $bids->firstWhere('quest_id', (string) $quest->_id);
 
             $submissionFile = null;
@@ -641,6 +679,7 @@ class QuestController extends Controller
                     'portfolio' => $myBid->portfolio,
                 ] : null,
                 'bids_count' => $allBidsCounts[(string) $quest->_id] ?? 0,
+                'accepted_bid_amount' => ($acceptedBid = $acceptedBids->get((string) $quest->_id)) ? (int) $acceptedBid->bid_amount : null,
                 'rewards' => $rewards,
                 'submission_file' => $submissionFile,
             ];

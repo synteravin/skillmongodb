@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
-import { DollarSign, Calendar, Users } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { DollarSign, Calendar, Users, Lock } from 'lucide-react';
 import { Quest } from '@/types/quest';
 
 interface QuestItemCardProps {
@@ -8,6 +8,13 @@ interface QuestItemCardProps {
 }
 
 export default function QuestItemCard({ quest }: QuestItemCardProps) {
+    const { props } = usePage<any>();
+    const currentUser = props.auth?.user;
+    const isMyWorker = currentUser?.id === quest.worker_id;
+    const isMyCreator = currentUser?.id === quest.creator_id;
+    const isOngoingByOthers =
+        quest.worker_id && quest.worker_id !== currentUser?.id;
+
     const formatCurrency = (num: number) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -64,42 +71,92 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
     const rankInfo = getQuestRank(quest.max_salary);
 
     return (
-        <div className="group relative flex transform flex-col justify-between rounded-2xl border border-slate-200 bg-white/70 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/45 hover:shadow-[0_0_20px_rgba(99,102,241,0.08)] dark:border-slate-800/80 dark:bg-[#0c122c]/40 dark:hover:border-indigo-500/40">
+        <div
+            className={`group relative flex transform flex-col justify-between rounded-2xl border p-5 shadow-sm backdrop-blur-md transition-all duration-300 ${
+                isMyWorker
+                    ? 'border-emerald-500/50 bg-emerald-500/[0.03] hover:-translate-y-1 hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.08)] dark:border-emerald-500/30 dark:bg-emerald-950/10 dark:hover:border-emerald-500/50'
+                    : isMyCreator
+                      ? 'border-purple-500/50 bg-purple-500/[0.03] hover:-translate-y-1 hover:border-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.08)] dark:border-purple-500/30 dark:bg-purple-950/10 dark:hover:border-purple-500/50'
+                      : isOngoingByOthers
+                        ? 'cursor-not-allowed border-slate-200 bg-slate-100/50 opacity-65 dark:border-slate-800/80 dark:bg-[#0c122c]/10'
+                        : 'border-slate-200 bg-white/70 hover:-translate-y-1 hover:border-indigo-500/45 hover:shadow-[0_0_20px_rgba(99,102,241,0.08)] dark:border-slate-800/80 dark:bg-[#0c122c]/40 dark:hover:border-indigo-500/40'
+            }`}
+        >
             <div>
                 {/* Badge header */}
-                <div className="mb-3 flex items-start justify-between gap-3 font-['Orbitron']">
-                    <span className={`rounded border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase ${rankInfo.color}`}>
-                        Rank: {rankInfo.rank}
-                    </span>
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 font-['Orbitron']">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        <span
+                            className={`rounded border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase ${rankInfo.color}`}
+                        >
+                            Rank: {rankInfo.rank}
+                        </span>
 
-                    <span className={`rounded-full border px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase ${
-                        quest.status === 'open'
-                            ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
-                            : quest.status === 'ongoing'
-                            ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
-                            : quest.status === 'approved' || quest.status === 'payment' || quest.status === 'submitted'
-                            ? 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400'
-                            : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
-                    }`}>
+                        {isMyWorker && (
+                            <span className="flex items-center gap-1 rounded bg-emerald-500/20 px-2 py-0.5 text-[9px] font-black tracking-wider text-emerald-700 uppercase dark:text-emerald-400">
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                </span>
+                                Pekerjaan Anda
+                            </span>
+                        )}
+
+                        {isMyCreator && (
+                            <span className="flex items-center gap-1 rounded bg-purple-500/20 px-2 py-0.5 text-[9px] font-black tracking-wider text-purple-700 uppercase dark:text-purple-400">
+                                Quest Anda
+                            </span>
+                        )}
+
+                        {isOngoingByOthers && (
+                            <span className="flex items-center gap-1 rounded border border-slate-300 bg-slate-200 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                                <Lock size={9} />
+                                Terisi
+                            </span>
+                        )}
+                    </div>
+
+                    <span
+                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase ${
+                            quest.status === 'open'
+                                ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
+                                : quest.status === 'ongoing'
+                                  ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
+                                  : quest.status === 'approved' ||
+                                      quest.status === 'payment' ||
+                                      quest.status === 'submitted'
+                                    ? 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                    : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
+                        }`}
+                    >
                         {quest.status === 'open'
                             ? 'Tersedia'
                             : quest.status === 'ongoing'
-                            ? 'Berjalan'
-                            : quest.status === 'approved' || quest.status === 'payment'
-                            ? 'Pelunasan'
-                            : quest.status === 'submitted'
-                            ? 'Ditinjau'
-                            : 'Selesai'}
+                              ? 'Berjalan'
+                              : quest.status === 'approved' ||
+                                  quest.status === 'payment'
+                                ? 'Pelunasan'
+                                : quest.status === 'submitted'
+                                  ? 'Ditinjau'
+                                  : 'Selesai'}
                     </span>
                 </div>
 
                 {/* Title */}
-                <h2 className="mb-2 line-clamp-1 font-['Oxanium'] text-sm font-extrabold tracking-tight text-slate-900 transition-colors group-hover:text-indigo-600 sm:text-base dark:text-white dark:group-hover:text-indigo-400">
+                <h2
+                    className={`mb-2 line-clamp-1 font-['Oxanium'] text-sm font-extrabold tracking-tight transition-colors sm:text-base ${
+                        isMyWorker
+                            ? 'text-slate-900 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400'
+                            : isMyCreator
+                              ? 'text-slate-900 group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400'
+                              : 'text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400'
+                    }`}
+                >
                     {quest.title}
                 </h2>
 
                 {/* Description */}
-                <p className="dark:text-slate-300 mb-4 line-clamp-3 font-['Oxanium'] text-xs leading-relaxed text-slate-500">
+                <p className="mb-4 line-clamp-3 font-['Oxanium'] text-xs leading-relaxed text-slate-500 dark:text-slate-300">
                     {quest.description}
                 </p>
 
@@ -112,7 +169,8 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                                 Rentang Gaji
                             </span>
                             <span className="font-bold text-slate-700 dark:text-white">
-                                {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
+                                {formatCurrency(quest.min_salary)} -{' '}
+                                {formatCurrency(quest.max_salary)}
                             </span>
                         </div>
                     </div>
@@ -140,7 +198,9 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
                         {quest.creator.name}
                         <span className="ml-1 text-[10px] font-medium text-slate-400">
-                            ({quest.creator.role === 'admin' ? 'Admin' : 'Siswa'})
+                            (
+                            {quest.creator.role === 'admin' ? 'Admin' : 'Siswa'}
+                            )
                         </span>
                     </span>
                 </div>
@@ -153,9 +213,17 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
 
                     <Link
                         href={`/student/quests/${quest._id}`}
-                        className="rounded-xl bg-slate-900 px-3.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-indigo-600 hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] dark:bg-blue-950/40 dark:hover:bg-indigo-600"
+                        className={`rounded-xl px-3.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-all duration-300 ${
+                            isMyWorker
+                                ? 'bg-emerald-600 hover:bg-emerald-700 hover:shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                                : isMyCreator
+                                  ? 'bg-purple-600 hover:bg-purple-700 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)]'
+                                  : isOngoingByOthers
+                                    ? 'pointer-events-none cursor-not-allowed bg-slate-300 text-slate-500 hover:bg-slate-300 dark:bg-slate-800'
+                                    : 'bg-slate-900 hover:bg-indigo-600 hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] dark:bg-blue-950/40 dark:hover:bg-indigo-600'
+                        }`}
                     >
-                        Detail
+                        {isMyCreator ? 'Kelola' : 'Detail'}
                     </Link>
                 </div>
             </div>

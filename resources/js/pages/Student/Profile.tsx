@@ -1,14 +1,9 @@
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
     Power,
-    Camera,
     UserCog,
-    ArrowRightLeft,
-    Loader2,
 } from 'lucide-react';
-import { useState, useRef } from 'react';
-import AvatarCropper from '@/components/AvatarCropper';
 
 type Props = {
     user: {
@@ -46,60 +41,13 @@ type Props = {
 };
 
 export default function ProfilePage({ user }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
-        name: user.name,
-        username: user.username || user.name,
-        email: user.email,
-        avatar: null as File | null,
-        linkedin: user.linkedin || '',
-    });
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const [cropSrc, setCropSrc] = useState<string | null>(null);
-
-    const handleAvatarClick = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setCropSrc(URL.createObjectURL(e.target.files[0]));
-            e.target.value = '';
-        }
-    };
-
-    const handleCropConfirm = (croppedFile: File) => {
-        setData('avatar', croppedFile);
-        setCropSrc(null);
-    };
-
-    const handleCropCancel = () => {
-        setCropSrc(null);
-    };
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post('/student/profile', {
-            preserveScroll: true,
-        });
-    };
-
     const progress =
         ((user.exp - user.exp_min) / (user.exp_max - user.exp_min)) * 100;
 
     const starProgress = ((user.total_score % 500) / 500) * 100;
 
     return (
-        <div className="flex min-h-screen w-screen flex-col overflow-y-auto bg-[#f0f2fa] text-gray-900 transition-colors duration-300 lg:h-screen lg:overflow-hidden dark:bg-[#0c0c14] dark:text-white">
-            {/* AvatarCropper Modal */}
-            {cropSrc && (
-                <AvatarCropper
-                    imageSrc={cropSrc}
-                    onConfirm={handleCropConfirm}
-                    onCancel={handleCropCancel}
-                />
-            )}
+        <div className="flex min-h-screen w-full flex-col overflow-y-auto bg-[#f0f2fa] text-gray-900 transition-colors duration-300 lg:h-screen lg:overflow-hidden dark:bg-[#0c0c14] dark:text-white">
             {/* BG GLOW */}
             <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
                 <div className="h-[400px] w-[700px] rounded-full bg-blue-600 opacity-5 blur-[160px] dark:opacity-10" />
@@ -121,18 +69,17 @@ export default function ProfilePage({ user }: Props) {
                     </div>
                 </Link>
 
-                {/* SWITCH */}
+                {/* EDIT */}
                 <Link
-                    href="/student/profile/switch"
+                    href="/student/profile/edit"
                     className="flex h-9 w-9 items-center justify-center border border-[#3B28F6] text-[#3B28F6] transition-all hover:border-cyan-500 hover:text-cyan-600 hover:shadow-[0_0_12px_rgba(0,180,220,0.2)] dark:hover:border-cyan-400 dark:hover:text-cyan-400 dark:hover:shadow-[0_0_12px_rgba(0,212,255,0.4)]"
-                    title="Switch Account"
+                    title="Edit Profile"
                 >
-                    <ArrowRightLeft size={16} strokeWidth={2} />
+                    <UserCog size={16} strokeWidth={2} />
                 </Link>
             </div>
 
-            <form
-                onSubmit={submit}
+            <div
                 className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 overflow-visible px-4 pb-4 sm:flex-row md:gap-4 md:px-8 lg:overflow-hidden"
             >
                 {/* ══════════ LEFT PANEL ══════════ */}
@@ -142,45 +89,17 @@ export default function ProfilePage({ user }: Props) {
                         {/* AVATAR */}
                         <div
                             className="relative mb-3 shrink-0"
-                            style={{ width: '130px', height: '148px' }}
+                            style={{ width: '140px', height: '140px' }}
                         >
                             <div
-                                className="h-full w-full cursor-pointer overflow-hidden"
-                                style={{
-                                    clipPath:
-                                        'polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%)',
-                                }}
-                                onClick={handleAvatarClick}
+                                className="h-full w-full overflow-hidden rounded-full border-2 border-[#FACC15]"
                             >
                                 <img
-                                    src={
-                                        data.avatar
-                                            ? URL.createObjectURL(data.avatar)
-                                            : (user.avatar ??
-                                              '/images/default-avatar.svg')
-                                    }
+                                    src={user.avatar ?? '/images/default-avatar.svg'}
                                     className="h-full w-full object-cover"
                                     alt="avatar"
                                 />
                             </div>
-                            <button
-                                type="button"
-                                onClick={handleAvatarClick}
-                                className="absolute right-2 bottom-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-[#FACC15] shadow-lg transition hover:scale-110"
-                            >
-                                <Camera
-                                    size={13}
-                                    strokeWidth={3}
-                                    className="text-black"
-                                />
-                            </button>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="hidden"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                            />
                         </div>
 
                         {/* NAME */}
@@ -307,15 +226,15 @@ export default function ProfilePage({ user }: Props) {
                         {/* CONTENT BODY */}
                         <div className="flex flex-1 flex-col justify-between gap-3 overflow-visible pr-1 md:pr-0 lg:overflow-hidden xl:gap-2">
                             {/* RANK CARD */}
-                            <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/25 bg-[#3B28F6]/[0.04] p-2.5 md:p-3 xl:p-6 dark:border-[#3B28F6]/60 dark:bg-[#3B28F6]/5">
+                            <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/80 bg-[#3B28F6]/[0.04] p-2.5 md:p-3 xl:p-6 dark:border-[#3B28F6]/80 dark:bg-[#3B28F6]/5">
                                 <div className="h-[48px] w-[48px] shrink-0 md:h-[50px] md:w-[50px] xl:h-[56px] xl:w-[56px]">
                                     <svg
                                         viewBox="0 0 80 80"
                                         className="h-full w-full"
                                     >
                                         <defs>
-                                            <clipPath id="rankHexClip">
-                                                <polygon points="40,4 74,22 74,58 40,76 6,58 6,22" />
+                                            <clipPath id="rankCircleClip">
+                                                <circle cx="40" cy="40" r="36" />
                                             </clipPath>
                                         </defs>
                                         <image
@@ -328,10 +247,12 @@ export default function ProfilePage({ user }: Props) {
                                             width="60"
                                             height="60"
                                             preserveAspectRatio="xMidYMid slice"
-                                            clipPath="url(#rankHexClip)"
+                                            clipPath="url(#rankCircleClip)"
                                         />
-                                        <polygon
-                                            points="40,4 74,22 74,58 40,76 6,58 6,22"
+                                        <circle
+                                            cx="40"
+                                            cy="40"
+                                            r="36"
                                             fill="none"
                                             stroke="#FACC15"
                                             strokeWidth="1.5"
@@ -397,82 +318,49 @@ export default function ProfilePage({ user }: Props) {
                             {/* FIELDS */}
                             <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2 md:gap-y-3 xl:gap-y-4">
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <span className="mb-1 text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         USERNAME
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={data.username}
-                                        onChange={(e) =>
-                                            setData('username', e.target.value)
-                                        }
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
-                                    />
-                                    {errors.username && (
-                                        <span className="mt-1 text-xs text-red-500">
-                                            {errors.username}
-                                        </span>
-                                    )}
+                                    </span>
+                                    <div className="w-full border border-[#3B28F6]/80 bg-gray-50/50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400">
+                                        {user.username}
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <span className="mb-1 text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         EMAIL
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={data.email}
-                                        onChange={(e) =>
-                                            setData('email', e.target.value)
-                                        }
-                                        placeholder=""
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
-                                    />
-                                    {errors.email && (
-                                        <span className="mt-1 text-xs text-red-500">
-                                            {errors.email}
-                                        </span>
-                                    )}
+                                    </span>
+                                    <div className="w-full border border-[#3B28F6]/80 bg-gray-50/50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400">
+                                        {user.email}
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <span className="mb-1 text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         LINKEDIN
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={data.linkedin}
-                                        onChange={(e) =>
-                                            setData('linkedin', e.target.value)
-                                        }
-                                        placeholder="https://linkedin.com/in/username"
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
-                                    />
-                                    {errors.linkedin && (
-                                        <span className="mt-1 text-xs text-red-500">
-                                            {errors.linkedin}
-                                        </span>
-                                    )}
+                                    </span>
+                                    <div className="w-full border border-[#3B28F6]/80 bg-gray-50/50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400">
+                                        {user.linkedin || 'Not Set'}
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <span className="mb-1 text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         FAV COURSE
-                                    </label>
-                                    <input
-                                        placeholder=""
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
-                                    />
+                                    </span>
+                                    <div className="w-full border border-[#3B28F6]/80 bg-gray-50/50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400">
+                                        {user.last_course?.course_name || 'Not Set'}
+                                    </div>
                                 </div>
                             </div>
 
                             {/* LAST MISSION */}
                             <div className="flex flex-col">
-                                <p className="mb-1 text-[9px] tracking-[3px] text-yellow-600 dark:text-yellow-400">
+                                <p className="mb-1 text-[11px] tracking-[3px] text-yellow-500 dark:text-yellow-400">
                                     LAST MISSION / COURSE
                                 </p>
                                 {user.last_course ? (
-                                    <div className="flex items-center gap-2.5 border border-[#3B28F6]/25 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/40 dark:bg-[rgba(0,0,20,0.5)]">
+                                    <div className="flex items-center gap-2.5 border border-[#3B28F6]/80 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/80 dark:bg-[rgba(0,0,20,0.5)]">
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
                                             {user.last_course.thumbnail ? (
                                                 <img
@@ -520,35 +408,11 @@ export default function ProfilePage({ user }: Props) {
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div className="border border-[#3B28F6]/25 p-2 text-center font-['Orbitron'] text-xs tracking-widest text-gray-400 uppercase md:p-3 dark:border-[#3B28F6]/40 dark:text-gray-600">
+                                    <div className="border border-[#3B28F6]/80 p-2 text-center font-['Orbitron'] text-xs tracking-widest text-gray-400 uppercase md:p-3 dark:border-[#3B28F6]/80 dark:text-gray-600">
                                         NO ACTIVE COURSE
                                     </div>
                                 )}
                             </div>
-                        </div>
-
-                        {/* SAVE BUTTON */}
-                        <div className="mt-auto flex shrink-0 justify-end pt-2 md:pt-3 xl:pt-4">
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="flex items-center justify-center gap-2 px-8 py-2 font-['Orbitron'] text-xs font-bold tracking-widest text-white transition-all hover:shadow-[0_0_24px_rgba(59,40,246,0.7)] disabled:cursor-not-allowed disabled:opacity-50 md:py-2.5 xl:px-12 xl:py-3 xl:text-sm"
-                                style={{
-                                    background:
-                                        'linear-gradient(90deg,#3B28F6,#1a10b0)',
-                                    clipPath:
-                                        'polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%)',
-                                    boxShadow: '0 0 16px rgba(59,40,246,0.35)',
-                                }}
-                            >
-                                {processing ? (
-                                    <Loader2
-                                        className="animate-spin"
-                                        size={18}
-                                    />
-                                ) : null}
-                                SAVE CHANGES
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -562,7 +426,7 @@ export default function ProfilePage({ user }: Props) {
                     <Power size={16} strokeWidth={3} />
                     SYSTEM LOG OUT
                 </button>
-            </form>
+            </div>
         </div>
     );
 }

@@ -7,6 +7,7 @@ use App\Models\Rank;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -207,6 +208,28 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function edit()
+    {
+        $user = auth()->user();
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+
+        $userAvatar = null;
+        if ($user->avatar) {
+            $userAvatar = str_starts_with($user->avatar, 'http') ? $user->avatar : $disk->url($user->avatar);
+        }
+
+        return Inertia::render('Student/EditProfile', [
+            'user' => [
+                'name' => $user->name,
+                'username' => $user->username ?? strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $user->name)),
+                'email' => $user->email,
+                'linkedin' => $user->linkedin ?? '',
+                'avatar' => $userAvatar,
+            ],
+        ]);
+    }
+
     public function update(Request $request)
     {
         $user = auth()->user();
@@ -229,5 +252,19 @@ class ProfileController extends Controller
         $user->update($validated);
 
         return back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'string', Password::default(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => $validated['password'],
+        ]);
+
+        return back()->with('success', 'Password updated successfully.');
     }
 }
