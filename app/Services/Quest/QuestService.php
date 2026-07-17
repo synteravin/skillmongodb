@@ -87,6 +87,8 @@ class QuestService
                 'max_salary' => $quest->max_salary,
                 'deadline' => $quest->deadline->toISOString(),
                 'status' => $quest->status,
+                'creator_id' => $quest->creator_id ? (string) $quest->creator_id : null,
+                'worker_id' => $quest->worker_id ? (string) $quest->worker_id : null,
                 'creator' => [
                     'name' => $quest->creator?->name ?? 'Unknown User',
                     'role' => $quest->creator?->role ?? 'unknown',

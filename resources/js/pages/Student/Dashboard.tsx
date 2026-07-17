@@ -583,14 +583,7 @@ function TopBar({
 function StoreButton() {
     return (
         <div className="absolute top-1/2 left-2 z-20 hidden -translate-y-1/2 bg-blue-200/40 shadow-lg backdrop-blur-sm md:left-3 md:block lg:left-4 xl:left-6 dark:bg-[#1D215D]/30">
-            <button className="relative flex w-16 flex-col items-center justify-center gap-1 py-3 text-[10px] font-semibold tracking-wider md:w-20 md:gap-2 md:py-4 md:text-xs lg:w-24 lg:py-6 lg:text-sm xl:w-28 xl:text-base 2xl:w-32">
-                <Store className="h-4 w-4 text-yellow-400 md:h-6 md:w-6 lg:h-7 lg:w-7 xl:h-8 xl:w-8 2xl:h-8 2xl:w-8" />
 
-                <span>Store</span>
-
-                <div className="absolute top-0 right-0 h-16 w-full border-t-2 border-r-2 border-blue-500 md:h-20 lg:h-26 xl:h-28"></div>
-                <div className="absolute bottom-0 left-0 h-16 w-full border-b-2 border-l-2 border-yellow-400 md:h-20 lg:h-26 xl:h-28"></div>
-            </button>
         </div>
     );
 }
