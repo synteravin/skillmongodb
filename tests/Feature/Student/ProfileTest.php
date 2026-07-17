@@ -55,7 +55,7 @@ class ProfileTest extends TestCase
 
         $linkedinUrl = 'https://linkedin.com/in/profile-student-test';
 
-        $response = $this->post('/student/profile', [
+        $response = $this->post('/student/profile/edit', [
             'name' => 'Updated Name',
             'username' => 'updated_username_'.uniqid(),
             'email' => $user->email,
@@ -66,5 +66,50 @@ class ProfileTest extends TestCase
 
         $user->refresh();
         $this->assertEquals($linkedinUrl, $user->linkedin);
+    }
+
+    public function test_student_can_visit_profile_edit_page(): void
+    {
+        $user = $this->createStudentWithCharacter();
+
+        $this->actingAs($user);
+
+        $response = $this->get('/student/profile/edit');
+        $response->assertOk();
+    }
+
+    public function test_student_can_update_password(): void
+    {
+        $user = $this->createStudentWithCharacter();
+
+        $this->actingAs($user);
+
+        $response = $this->put('/student/profile/password', [
+            'current_password' => 'password',
+            'password' => 'NewSecurePassword123!',
+            'password_confirmation' => 'NewSecurePassword123!',
+        ]);
+
+        $response->assertRedirect();
+        $user->refresh();
+        $this->assertTrue(auth()->validate([
+            'email' => $user->email,
+            'password' => 'NewSecurePassword123!',
+        ]));
+    }
+
+    public function test_student_password_update_requires_correct_current_password(): void
+    {
+        $user = $this->createStudentWithCharacter();
+
+        $this->actingAs($user);
+
+        $response = $this->put('/student/profile/password', [
+            'current_password' => 'wrong_current_password',
+            'password' => 'NewSecurePassword123!',
+            'password_confirmation' => 'NewSecurePassword123!',
+        ]);
+
+        $response->assertSessionHasErrors(['current_password']);
     }
 }

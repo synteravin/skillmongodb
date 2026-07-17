@@ -15,7 +15,6 @@ import {
     ChevronDown,
     CheckCircle2,
     Lock,
-    Sparkles,
     MessageSquare,
     ExternalLink,
     Download,
@@ -169,7 +168,9 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
         const dm = decimals < 0 ? 0 : decimals;
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        return (
+            parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+        );
     };
 
     const getDeadlineCountdown = (deadlineStr?: string) => {
@@ -179,7 +180,9 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
             return 'Melewati Batas';
         }
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
         if (days > 0) {
             return `${days} hari ${hours} jam`;
         }
@@ -199,7 +202,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                     <div className="flex items-center gap-3">
                         <Link
                             href="/student/quests"
-                            className="text-slate-600 flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white transition-all hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-[#0c122c]/40 dark:text-slate-400 dark:hover:border-indigo-500/30 dark:hover:text-white"
+                            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-[#0c122c]/40 dark:text-slate-400 dark:hover:border-indigo-500/30 dark:hover:text-white"
                         >
                             <ArrowLeft size={16} />
                         </Link>
@@ -220,7 +223,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                     <div className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6 backdrop-blur-md dark:border-emerald-500/10 dark:bg-emerald-950/15">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="dark:text-emerald-400 font-['Orbitron'] text-[10px] font-extrabold tracking-wider text-emerald-600 uppercase">
+                                <p className="font-['Orbitron'] text-[10px] font-extrabold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
                                     Quest Selesai
                                 </p>
                                 <p className="mt-2 font-['Orbitron'] text-3xl font-black text-slate-900 dark:text-white">
@@ -240,14 +243,14 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                     <div className="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-6 backdrop-blur-md dark:border-indigo-500/10 dark:bg-indigo-950/15">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-indigo-600 font-['Orbitron'] text-[10px] font-extrabold tracking-wider uppercase dark:text-indigo-400">
+                                <p className="font-['Orbitron'] text-[10px] font-extrabold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
                                     Total Bid (Pekerja)
                                 </p>
                                 <p className="mt-2 font-['Orbitron'] text-2xl font-black text-slate-900 dark:text-white">
                                     {formatCurrency(stats.total_bids_placed)}
                                 </p>
                             </div>
-                            <div className="text-indigo-600 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 dark:text-indigo-400">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
                                 <DollarSign size={24} />
                             </div>
                         </div>
@@ -260,7 +263,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                     <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6 backdrop-blur-md dark:border-amber-500/10 dark:bg-amber-950/15">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="dark:text-amber-400 font-['Orbitron'] text-[10px] font-extrabold tracking-wider text-amber-600 uppercase">
+                                <p className="font-['Orbitron'] text-[10px] font-extrabold tracking-wider text-amber-600 uppercase dark:text-amber-400">
                                     Total Bid (Pembuat Quest)
                                 </p>
                                 <p className="mt-2 font-['Orbitron'] text-2xl font-black text-slate-900 dark:text-white">
@@ -323,7 +326,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                 onChange={(e) =>
                                     setStatusFilter(e.target.value)
                                 }
-                                className="text-slate-600 w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-semibold uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
+                                className="w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-semibold text-slate-600 uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
                             >
                                 <option value="all">Semua Status</option>
                                 <option value="open">Bidding</option>
@@ -346,7 +349,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                         <p className="dark:text-slate-350 text-base font-bold text-slate-700">
                             Tidak ada quest dalam riwayat
                         </p>
-                        <p className="dark:text-slate-400 mt-1.5 text-xs text-slate-400">
+                        <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-400">
                             Coba ubah pencarian atau filter peran/status Anda
                         </p>
                     </div>
@@ -378,28 +381,41 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                 {/* Status Badge */}
                                                 <span
                                                     className={`rounded px-2.5 py-0.5 font-['Orbitron'] text-[9px] font-black tracking-wider uppercase ${
-                                                        item.status === 'completed'
+                                                        item.status ===
+                                                        'completed'
                                                             ? 'border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                                            : item.status === 'approved' || item.status === 'payment'
+                                                            : item.status ===
+                                                                    'approved' ||
+                                                                item.status ===
+                                                                    'payment'
                                                               ? 'border border-cyan-500/20 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400'
-                                                              : item.status === 'submitted'
+                                                              : item.status ===
+                                                                  'submitted'
                                                                 ? 'border border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400'
-                                                                : item.status === 'ongoing'
+                                                                : item.status ===
+                                                                    'ongoing'
                                                                   ? 'border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                                                  : item.status === 'expired'
+                                                                  : item.status ===
+                                                                      'expired'
                                                                     ? 'border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
                                                                     : 'border border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
                                                     }`}
                                                 >
                                                     {item.status === 'completed'
                                                         ? 'Selesai'
-                                                        : item.status === 'approved' || item.status === 'payment'
+                                                        : item.status ===
+                                                                'approved' ||
+                                                            item.status ===
+                                                                'payment'
                                                           ? 'Pembayaran'
-                                                          : item.status === 'submitted'
+                                                          : item.status ===
+                                                              'submitted'
                                                             ? 'Ditinjau'
-                                                            : item.status === 'ongoing'
+                                                            : item.status ===
+                                                                'ongoing'
                                                               ? 'Berjalan'
-                                                              : item.status === 'expired'
+                                                              : item.status ===
+                                                                  'expired'
                                                                 ? 'Kadaluarsa'
                                                                 : 'Bidding'}
                                                 </span>
@@ -432,43 +448,68 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                             : 'Belum Ada Pekerja'
                                                         : `Pembuat: ${item.creator.name}`}
                                                 </span>
-                                                {item.bids_count !== undefined && item.status === 'open' && (
-                                                    <div className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                                                        <Users size={10} className="text-indigo-500 dark:text-indigo-400" />
-                                                        {item.bids_count} Bid
-                                                    </div>
-                                                )}
-                                                {['ongoing', 'submitted'].includes(item.status) && (
+                                                {item.bids_count !==
+                                                    undefined &&
+                                                    item.status === 'open' && (
+                                                        <div className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                                            <Users
+                                                                size={10}
+                                                                className="text-indigo-500 dark:text-indigo-400"
+                                                            />
+                                                            {item.bids_count}{' '}
+                                                            Bid
+                                                        </div>
+                                                    )}
+                                                {[
+                                                    'ongoing',
+                                                    'submitted',
+                                                ].includes(item.status) && (
                                                     <span className="flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
-                                                        <Clock size={11} className="text-amber-500 animate-pulse" />
-                                                        {getDeadlineCountdown(item.deadline)}
+                                                        <Clock
+                                                            size={11}
+                                                            className="animate-pulse text-amber-500"
+                                                        />
+                                                        {getDeadlineCountdown(
+                                                            item.deadline,
+                                                        )}
                                                     </span>
                                                 )}
                                             </div>
                                         </div>
 
                                         <div className="flex w-full shrink-0 items-center justify-between gap-4 border-t border-slate-100 pt-3 sm:w-auto sm:justify-end sm:border-0 sm:pt-0 dark:border-slate-800">
-                                            <span className={`font-['Orbitron'] text-xs font-black ${
-                                                item.is_worker
-                                                    ? 'text-emerald-600 dark:text-emerald-400'
-                                                    : item.is_creator
-                                                      ? 'text-purple-600 dark:text-purple-400'
-                                                      : 'text-indigo-600 dark:text-indigo-400'
-                                            }`}>
+                                            <span
+                                                className={`font-['Orbitron'] text-xs font-black ${
+                                                    item.is_worker
+                                                        ? 'text-emerald-600 dark:text-emerald-400'
+                                                        : item.is_creator
+                                                          ? 'text-purple-600 dark:text-purple-400'
+                                                          : 'text-indigo-600 dark:text-indigo-400'
+                                                }`}
+                                            >
                                                 {item.is_creator
                                                     ? item.accepted_bid_amount
-                                                        ? formatCurrency(item.accepted_bid_amount)
+                                                        ? formatCurrency(
+                                                              item.accepted_bid_amount,
+                                                          )
                                                         : `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
                                                     : item.my_bid
-                                                      ? formatCurrency(item.my_bid.bid_amount)
-                                                      : formatCurrency(item.min_salary)}
+                                                      ? formatCurrency(
+                                                            item.my_bid
+                                                                .bid_amount,
+                                                        )
+                                                      : formatCurrency(
+                                                            item.min_salary,
+                                                        )}
                                             </span>
                                             <div
                                                 className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${isExpanded ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'}`}
                                             >
                                                 <motion.div
                                                     animate={{
-                                                        rotate: isExpanded ? 180 : 0,
+                                                        rotate: isExpanded
+                                                            ? 180
+                                                            : 0,
                                                     }}
                                                     transition={{
                                                         duration: 0.3,
@@ -500,32 +541,50 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                 }}
                                                 className="overflow-hidden"
                                             >
-                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-5 border-t border-slate-200 dark:border-slate-800/80 bg-white/40 dark:bg-black/10 font-['Oxanium'] text-xs">
-                                                    
+                                                <div className="grid grid-cols-1 gap-6 border-t border-slate-200 bg-white/40 p-5 font-['Oxanium'] text-xs md:grid-cols-3 dark:border-slate-800/80 dark:bg-black/10">
                                                     {/* Kolom 1 & 2: Informasi Quest & Stepper Progress */}
-                                                    <div className="md:col-span-2 space-y-4">
+                                                    <div className="space-y-4 md:col-span-2">
                                                         {/* Deskripsi */}
                                                         <div className="space-y-1.5">
-                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
                                                                 Deskripsi Quest
                                                             </span>
-                                                            <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-350 whitespace-pre-wrap">
-                                                                {item.description}
+                                                            <p className="dark:text-slate-350 text-xs leading-relaxed whitespace-pre-wrap text-slate-700">
+                                                                {
+                                                                    item.description
+                                                                }
                                                             </p>
                                                         </div>
 
                                                         {/* Stepper Progress Horizontal Timeline */}
                                                         <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 font-['Orbitron'] text-[9px] font-bold tracking-wider dark:border-slate-800/80 dark:bg-black/20">
-                                                            <span className="block border-b border-slate-100 dark:border-slate-800 pb-2 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
-                                                                Progress Alur Quest
+                                                            <span className="block border-b border-slate-100 pb-2 text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:border-slate-800">
+                                                                Progress Alur
+                                                                Quest
                                                             </span>
                                                             <div className="scrollbar-none overflow-x-auto pb-1">
-                                                                 <div className="relative mx-auto grid grid-cols-6 gap-0 w-full min-w-[450px] max-w-2xl pt-2">
+                                                                <div className="relative mx-auto grid w-full max-w-2xl min-w-[450px] grid-cols-6 gap-0 pt-2">
                                                                     {(() => {
-                                                                        const historyStatuses = ['open', 'ongoing', 'submitted', 'approved', 'payment', 'completed'];
-                                                                        const mappedStatus = item.status;
-                                                                        const currentIdx = historyStatuses.indexOf(mappedStatus);
-                                                                        const lineWidth = currentIdx >= 0 ? `${(currentIdx / (historyStatuses.length - 1)) * 100}%` : '0%';
+                                                                        const historyStatuses =
+                                                                            [
+                                                                                'open',
+                                                                                'ongoing',
+                                                                                'submitted',
+                                                                                'approved',
+                                                                                'payment',
+                                                                                'completed',
+                                                                            ];
+                                                                        const mappedStatus =
+                                                                            item.status;
+                                                                        const currentIdx =
+                                                                            historyStatuses.indexOf(
+                                                                                mappedStatus,
+                                                                            );
+                                                                        const lineWidth =
+                                                                            currentIdx >=
+                                                                            0
+                                                                                ? `${(currentIdx / (historyStatuses.length - 1)) * 100}%`
+                                                                                : '0%';
 
                                                                         return (
                                                                             <>
@@ -543,48 +602,92 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                                 </div>
 
                                                                                 {[
-                                                                                    { key: 'open', label: 'Bidding' },
-                                                                                    { key: 'ongoing', label: 'Pengerjaan' },
-                                                                                    { key: 'submitted', label: 'Tinjauan' },
-                                                                                    { key: 'approved', label: 'Disetujui' },
-                                                                                    { key: 'payment', label: 'Pembayaran' },
-                                                                                    { key: 'completed', label: 'Selesai' },
-                                                                                ].map((step, idx) => {
-                                                                                    const stepIdx = historyStatuses.indexOf(step.key);
-                                                                                    const isCompleted = currentIdx !== -1 && (stepIdx < currentIdx || item.status === 'completed');
-                                                                                    const isActive = currentIdx !== -1 && mappedStatus === step.key;
+                                                                                    {
+                                                                                        key: 'open',
+                                                                                        label: 'Bidding',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'ongoing',
+                                                                                        label: 'Pengerjaan',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'submitted',
+                                                                                        label: 'Tinjauan',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'approved',
+                                                                                        label: 'Disetujui',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'payment',
+                                                                                        label: 'Pembayaran',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'completed',
+                                                                                        label: 'Selesai',
+                                                                                    },
+                                                                                ].map(
+                                                                                    (
+                                                                                        step,
+                                                                                        idx,
+                                                                                    ) => {
+                                                                                        const stepIdx =
+                                                                                            historyStatuses.indexOf(
+                                                                                                step.key,
+                                                                                            );
+                                                                                        const isCompleted =
+                                                                                            currentIdx !==
+                                                                                                -1 &&
+                                                                                            (stepIdx <
+                                                                                                currentIdx ||
+                                                                                                item.status ===
+                                                                                                    'completed');
+                                                                                        const isActive =
+                                                                                            currentIdx !==
+                                                                                                -1 &&
+                                                                                            mappedStatus ===
+                                                                                                step.key;
 
-                                                                                    return (
-                                                                                        <div key={step.key} className="relative z-10 flex w-full min-w-0 flex-col items-center">
+                                                                                        return (
                                                                                             <div
-                                                                                                className={`flex h-6 w-6 items-center justify-center rounded-full border text-[9px] transition-all duration-300 ${
-                                                                                                    isCompleted
-                                                                                                        ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
-                                                                                                        : isActive
-                                                                                                          ? 'border-purple-500 bg-purple-600 text-white shadow-sm'
-                                                                                                          : 'border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
-                                                                                                }`}
+                                                                                                key={
+                                                                                                    step.key
+                                                                                                }
+                                                                                                className="relative z-10 flex w-full min-w-0 flex-col items-center"
                                                                                             >
-                                                                                                {isCompleted ? (
-                                                                                                    <Check className="h-3 w-3 stroke-[3.5]" />
-                                                                                                ) : (
-                                                                                                    idx + 1
-                                                                                                )}
+                                                                                                <div
+                                                                                                    className={`flex h-6 w-6 items-center justify-center rounded-full border text-[9px] transition-all duration-300 ${
+                                                                                                        isCompleted
+                                                                                                            ? 'border-indigo-500 bg-indigo-600 text-white shadow-sm'
+                                                                                                            : isActive
+                                                                                                              ? 'border-purple-500 bg-purple-600 text-white shadow-sm'
+                                                                                                              : 'border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
+                                                                                                    }`}
+                                                                                                >
+                                                                                                    {isCompleted ? (
+                                                                                                        <Check className="h-3 w-3 stroke-[3.5]" />
+                                                                                                    ) : (
+                                                                                                        idx +
+                                                                                                        1
+                                                                                                    )}
+                                                                                                </div>
+                                                                                                <span
+                                                                                                    className={`mt-2 w-full px-0.5 text-center text-[7.5px] leading-tight font-black tracking-widest break-words uppercase transition-all duration-300 sm:text-[9px] ${
+                                                                                                        isActive
+                                                                                                            ? 'text-purple-600 dark:text-purple-400'
+                                                                                                            : isCompleted
+                                                                                                              ? 'text-indigo-600 dark:text-indigo-400'
+                                                                                                              : 'text-slate-500 dark:text-slate-400'
+                                                                                                    }`}
+                                                                                                >
+                                                                                                    {
+                                                                                                        step.label
+                                                                                                    }
+                                                                                                </span>
                                                                                             </div>
-                                                                                            <span
-                                                                                                className={`mt-2 w-full px-0.5 text-center text-[7.5px] leading-tight font-black tracking-widest break-words uppercase transition-all duration-300 sm:text-[9px] ${
-                                                                                                    isActive
-                                                                                                        ? 'text-purple-600 dark:text-purple-400'
-                                                                                                        : isCompleted
-                                                                                                          ? 'text-indigo-600 dark:text-indigo-400'
-                                                                                                          : 'text-slate-500 dark:text-slate-400'
-                                                                                                }`}
-                                                                                            >
-                                                                                                {step.label}
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    );
-                                                                                })}
+                                                                                        );
+                                                                                    },
+                                                                                )}
                                                                             </>
                                                                         );
                                                                     })()}
@@ -593,10 +696,14 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         </div>
 
                                                         {/* Informasi Pengiriman Pekerjaan (Tinjau/Selesai) */}
-                                                        {(item.submission_link || item.submission_file || item.submission_note) && (
-                                                            <div className="space-y-3 rounded-xl border border-slate-200/60 bg-white/60 p-4 dark:border-slate-850 dark:bg-[#0c122c]/10">
-                                                                <span className="block text-[9px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
-                                                                    Hasil Pengiriman Pekerjaan
+                                                        {(item.submission_link ||
+                                                            item.submission_file ||
+                                                            item.submission_note) && (
+                                                            <div className="dark:border-slate-850 space-y-3 rounded-xl border border-slate-200/60 bg-white/60 p-4 dark:bg-[#0c122c]/10">
+                                                                <span className="block text-[9px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                                                    Hasil
+                                                                    Pengiriman
+                                                                    Pekerjaan
                                                                 </span>
 
                                                                 {item.submission_file && (
@@ -604,16 +711,28 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                         <div className="flex min-w-0 items-center gap-2.5">
                                                                             <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
                                                                             <div className="min-w-0">
-                                                                                <p className="truncate text-xs font-semibold text-slate-750 dark:text-slate-200">
-                                                                                    {item.submission_file.name}
+                                                                                <p className="text-slate-750 truncate text-xs font-semibold dark:text-slate-200">
+                                                                                    {
+                                                                                        item
+                                                                                            .submission_file
+                                                                                            .name
+                                                                                    }
                                                                                 </p>
                                                                                 <p className="text-[10px] text-slate-400">
-                                                                                    {formatBytes(item.submission_file.size)}
+                                                                                    {formatBytes(
+                                                                                        item
+                                                                                            .submission_file
+                                                                                            .size,
+                                                                                    )}
                                                                                 </p>
                                                                             </div>
                                                                         </div>
                                                                         <a
-                                                                            href={item.submission_file.url}
+                                                                            href={
+                                                                                item
+                                                                                    .submission_file
+                                                                                    .url
+                                                                            }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
                                                                             className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
@@ -626,24 +745,42 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
 
                                                                 {item.submission_link && (
                                                                     <div className="space-y-0.5">
-                                                                        <span className="block text-[8px] font-semibold text-slate-400 uppercase">Tautan Repositori / Demo</span>
+                                                                        <span className="block text-[8px] font-semibold text-slate-400 uppercase">
+                                                                            Tautan
+                                                                            Repositori
+                                                                            /
+                                                                            Demo
+                                                                        </span>
                                                                         <a
-                                                                            href={item.submission_link}
+                                                                            href={
+                                                                                item.submission_link
+                                                                            }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
                                                                             className="inline-flex items-center gap-1 text-xs font-bold text-indigo-500 hover:underline"
                                                                         >
-                                                                            {item.submission_link}
-                                                                            <ExternalLink size={10} />
+                                                                            {
+                                                                                item.submission_link
+                                                                            }
+                                                                            <ExternalLink
+                                                                                size={
+                                                                                    10
+                                                                                }
+                                                                            />
                                                                         </a>
                                                                     </div>
                                                                 )}
 
                                                                 {item.submission_note && (
                                                                     <div className="space-y-0.5">
-                                                                        <span className="block text-[8px] font-semibold text-slate-400 uppercase">Catatan Pekerja</span>
+                                                                        <span className="block text-[8px] font-semibold text-slate-400 uppercase">
+                                                                            Catatan
+                                                                            Pekerja
+                                                                        </span>
                                                                         <p className="rounded-lg border border-slate-200/50 bg-white/40 p-2.5 text-xs leading-relaxed text-slate-700 dark:border-slate-800/40 dark:bg-black/15 dark:text-slate-300">
-                                                                            {item.submission_note}
+                                                                            {
+                                                                                item.submission_note
+                                                                            }
                                                                         </p>
                                                                     </div>
                                                                 )}
@@ -651,60 +788,82 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         )}
 
                                                         {/* Status Penjelasan Dinamis Berdasarkan Kondisi */}
-                                                        <div className="rounded-xl bg-slate-50/50 p-4 border border-slate-200/60 dark:border-slate-800/40 dark:bg-black/15 space-y-1">
-                                                            <span className="block text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status Fase Saat Ini</span>
+                                                        <div className="space-y-1 rounded-xl border border-slate-200/60 bg-slate-50/50 p-4 dark:border-slate-800/40 dark:bg-black/15">
+                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                                                Status Fase Saat
+                                                                Ini
+                                                            </span>
                                                             <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                                                                {item.status === 'open' ? (
-                                                                    item.is_creator 
-                                                                        ? `Quest Anda sedang berada dalam tahap bidding pasar. Pelamar dapat menaruh penawaran harga. Anda memiliki ${item.bids_count || 0} pelamar saat ini.` 
-                                                                        : item.my_bid 
-                                                                            ? `Anda telah menaruh penawaran bid sebesar ${formatCurrency(item.my_bid.bid_amount)} untuk quest ini. Status tawaran Anda: ${item.my_bid.status === 'pending' ? 'Menunggu Review' : item.my_bid.status}.`
-                                                                            : 'Quest dalam masa penawaran bid terbuka bagi seluruh siswa.'
-                                                                ) : item.status === 'ongoing' ? (
-                                                                    item.is_worker 
-                                                                        ? 'Anda telah disetujui sebagai pekerja quest! Silakan selesaikan proyek sebelum tenggat waktu dan kirim repositori/berkas di halaman detail.' 
-                                                                        : item.is_creator 
+                                                                {item.status ===
+                                                                'open'
+                                                                    ? item.is_creator
+                                                                        ? `Quest Anda sedang berada dalam tahap bidding pasar. Pelamar dapat menaruh penawaran harga. Anda memiliki ${item.bids_count || 0} pelamar saat ini.`
+                                                                        : item.my_bid
+                                                                          ? `Anda telah menaruh penawaran bid sebesar ${formatCurrency(item.my_bid.bid_amount)} untuk quest ini. Status tawaran Anda: ${item.my_bid.status === 'pending' ? 'Menunggu Review' : item.my_bid.status}.`
+                                                                          : 'Quest dalam masa penawaran bid terbuka bagi seluruh siswa.'
+                                                                    : item.status ===
+                                                                        'ongoing'
+                                                                      ? item.is_worker
+                                                                          ? 'Anda telah disetujui sebagai pekerja quest! Silakan selesaikan proyek sebelum tenggat waktu dan kirim repositori/berkas di halaman detail.'
+                                                                          : item.is_creator
                                                                             ? `Quest Anda sedang aktif dikerjakan oleh pekerja ${item.worker?.name || ''}. Tunggu penyerahan berkas tugas dari mereka.`
                                                                             : 'Quest ini sedang berjalan aktif dikerjakan oleh pelamar terpilih.'
-                                                                ) : item.status === 'submitted' ? (
-                                                                    item.is_creator 
-                                                                        ? 'Pekerja telah menyerahkan hasil pekerjaan. Silakan lakukan review persetujuan atau minta revisi berkas di halaman detail.'
-                                                                        : item.is_worker 
-                                                                            ? 'Hasil pekerjaan Anda telah dikirim dan sedang dalam proses review peninjauan oleh pembuat quest.'
-                                                                            : 'Hasil pengerjaan dikirim dan sedang ditinjau.'
-                                                                ) : item.status === 'approved' || item.status === 'payment' ? (
-                                                                    item.is_creator 
-                                                                        ? 'Pekerjaan disetujui! Lakukan transfer dana kesepakatan secara offline ke pekerja, lalu unggah bukti transfer di halaman detail.'
-                                                                        : item.is_worker 
-                                                                            ? 'Pekerjaan Anda disetujui! Silakan verifikasi dana masuk ke rekening Anda. Unggah ZIP final setelah dana lunas.'
-                                                                            : 'Pekerjaan disetujui, dalam proses rilis dana pembayaran.'
-                                                                ) : item.status === 'expired' ? (
-                                                                    item.is_creator 
-                                                                        ? 'Quest ini telah kadaluarsa karena melewati batas waktu. Anda dapat mengubah tenggat waktu dan membukanya kembali.'
-                                                                        : 'Quest ini telah kadaluarsa melewati batas waktu.'
-                                                                ) : (
-                                                                    'Quest telah diselesaikan secara resmi. Dana telah ditransfer ke pekerja dan rewards karakter telah didistribusikan.'
-                                                                )}
+                                                                      : item.status ===
+                                                                          'submitted'
+                                                                        ? item.is_creator
+                                                                            ? 'Pekerja telah menyerahkan hasil pekerjaan. Silakan lakukan review persetujuan atau minta revisi berkas di halaman detail.'
+                                                                            : item.is_worker
+                                                                              ? 'Hasil pekerjaan Anda telah dikirim dan sedang dalam proses review peninjauan oleh pembuat quest.'
+                                                                              : 'Hasil pengerjaan dikirim dan sedang ditinjau.'
+                                                                        : item.status ===
+                                                                                'approved' ||
+                                                                            item.status ===
+                                                                                'payment'
+                                                                          ? item.is_creator
+                                                                              ? 'Pekerjaan disetujui! Lakukan transfer dana kesepakatan secara offline ke pekerja, lalu unggah bukti transfer di halaman detail.'
+                                                                              : item.is_worker
+                                                                                ? 'Pekerjaan Anda disetujui! Silakan verifikasi dana masuk ke rekening Anda. Unggah ZIP final setelah dana lunas.'
+                                                                                : 'Pekerjaan disetujui, dalam proses rilis dana pembayaran.'
+                                                                          : item.status ===
+                                                                              'expired'
+                                                                            ? item.is_creator
+                                                                                ? 'Quest ini telah kadaluarsa karena melewati batas waktu. Anda dapat mengubah tenggat waktu dan membukanya kembali.'
+                                                                                : 'Quest ini telah kadaluarsa melewati batas waktu.'
+                                                                            : 'Quest telah diselesaikan secara resmi. Dana telah ditransfer ke pekerja dan rewards karakter telah didistribusikan.'}
                                                             </p>
                                                         </div>
                                                     </div>
 
                                                     {/* Kolom 3: Finansial, RPG Rewards, & Aksi Cepat */}
-                                                    <div className="space-y-4 border-t md:border-t-0 md:border-l border-dashed border-slate-200 dark:border-slate-800/80 pt-4 md:pt-0 md:pl-5">
+                                                    <div className="space-y-4 border-t border-dashed border-slate-200 pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-5 dark:border-slate-800/80">
                                                         {/* RPG Rewards */}
                                                         <div className="space-y-2">
-                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
                                                                 Hadiah RPG Quest
                                                             </span>
                                                             <div className="flex flex-wrap gap-2">
-                                                                {item.rewards?.gold && (
-                                                                    <div className="flex items-center gap-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-xl font-['Orbitron'] text-xs font-bold shadow-sm">
-                                                                        💰 +{item.rewards.gold} Gold
+                                                                {item.rewards
+                                                                    ?.gold && (
+                                                                    <div className="flex items-center gap-1.5 rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 font-['Orbitron'] text-xs font-bold text-amber-600 shadow-sm dark:text-amber-400">
+                                                                        💰 +
+                                                                        {
+                                                                            item
+                                                                                .rewards
+                                                                                .gold
+                                                                        }{' '}
+                                                                        Gold
                                                                     </div>
                                                                 )}
-                                                                {item.rewards?.exp && (
-                                                                    <div className="flex items-center gap-1.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 px-3 py-1.5 rounded-xl font-['Orbitron'] text-xs font-bold shadow-sm">
-                                                                        ✨ +{item.rewards.exp} XP
+                                                                {item.rewards
+                                                                    ?.exp && (
+                                                                    <div className="flex items-center gap-1.5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-3 py-1.5 font-['Orbitron'] text-xs font-bold text-indigo-600 shadow-sm dark:text-indigo-400">
+                                                                        ✨ +
+                                                                        {
+                                                                            item
+                                                                                .rewards
+                                                                                .exp
+                                                                        }{' '}
+                                                                        XP
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -712,84 +871,134 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
 
                                                         {/* Detail Kontrak */}
                                                         <div className="space-y-2">
-                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
                                                                 Detail Kontrak
                                                             </span>
-                                                            <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5 space-y-2 text-[11px] dark:border-slate-800/60 dark:bg-black/20">
-                                                                <div className="flex justify-between items-center">
-                                                                    <span className="text-slate-400 font-semibold uppercase text-[9px]">Nilai Kontrak</span>
+                                                            <div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50/50 p-3.5 text-[11px] dark:border-slate-800/60 dark:bg-black/20">
+                                                                <div className="flex items-center justify-between">
+                                                                    <span className="text-[9px] font-semibold text-slate-400 uppercase">
+                                                                        Nilai
+                                                                        Kontrak
+                                                                    </span>
                                                                     <span className="font-bold text-slate-800 dark:text-white">
                                                                         {item.is_creator
                                                                             ? item.accepted_bid_amount
-                                                                                ? formatCurrency(item.accepted_bid_amount)
+                                                                                ? formatCurrency(
+                                                                                      item.accepted_bid_amount,
+                                                                                  )
                                                                                 : `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
                                                                             : item.my_bid
-                                                                              ? formatCurrency(item.my_bid.bid_amount)
-                                                                              : formatCurrency(item.min_salary)}
+                                                                              ? formatCurrency(
+                                                                                    item
+                                                                                        .my_bid
+                                                                                        .bid_amount,
+                                                                                )
+                                                                              : formatCurrency(
+                                                                                    item.min_salary,
+                                                                                )}
                                                                     </span>
                                                                 </div>
-                                                                <div className="flex justify-between items-center border-t border-slate-100/60 dark:border-slate-800/40 pt-2">
-                                                                    <span className="text-slate-400 font-semibold uppercase text-[9px]">Status Escrow</span>
-                                                                    <span className={`font-bold ${item.status === 'completed' ? 'text-emerald-500' : 'text-amber-500 animate-pulse'}`}>
-                                                                        {item.status === 'completed' ? 'Tuntas / Cair' : 'Terkunci (Escrow)'}
+                                                                <div className="flex items-center justify-between border-t border-slate-100/60 pt-2 dark:border-slate-800/40">
+                                                                    <span className="text-[9px] font-semibold text-slate-400 uppercase">
+                                                                        Status
+                                                                        Escrow
+                                                                    </span>
+                                                                    <span
+                                                                        className={`font-bold ${item.status === 'completed' ? 'text-emerald-500' : 'animate-pulse text-amber-500'}`}
+                                                                    >
+                                                                        {item.status ===
+                                                                        'completed'
+                                                                            ? 'Tuntas / Cair'
+                                                                            : 'Terkunci (Escrow)'}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                         {/* Feedback Ulasan (jika selesai) */}
-                                                        {item.status === 'completed' && item.rating && (
-                                                            <div className="space-y-2 bg-indigo-500/[0.02] border border-indigo-500/10 p-3.5 rounded-xl text-center">
-                                                                <span className="block text-[8px] font-bold text-slate-400 dark:text-indigo-400 uppercase tracking-widest">
-                                                                    Feedback Ulasan
-                                                                </span>
-                                                                <div className="flex justify-center gap-1">
-                                                                    {[1, 2, 3, 4, 5].map((starVal) => (
-                                                                        <Star
-                                                                            key={starVal}
-                                                                            className={`h-4 w-4 ${
-                                                                                starVal <= (item.rating ?? 0)
-                                                                                    ? 'fill-amber-400 text-amber-400'
-                                                                                    : 'text-slate-200 dark:text-slate-750'
-                                                                            }`}
-                                                                        />
-                                                                    ))}
+                                                        {item.status ===
+                                                            'completed' &&
+                                                            item.rating && (
+                                                                <div className="space-y-2 rounded-xl border border-indigo-500/10 bg-indigo-500/[0.02] p-3.5 text-center">
+                                                                    <span className="block text-[8px] font-bold tracking-widest text-slate-400 uppercase dark:text-indigo-400">
+                                                                        Feedback
+                                                                        Ulasan
+                                                                    </span>
+                                                                    <div className="flex justify-center gap-1">
+                                                                        {[
+                                                                            1,
+                                                                            2,
+                                                                            3,
+                                                                            4,
+                                                                            5,
+                                                                        ].map(
+                                                                            (
+                                                                                starVal,
+                                                                            ) => (
+                                                                                <Star
+                                                                                    key={
+                                                                                        starVal
+                                                                                    }
+                                                                                    className={`h-4 w-4 ${
+                                                                                        starVal <=
+                                                                                        (item.rating ??
+                                                                                            0)
+                                                                                            ? 'fill-amber-400 text-amber-400'
+                                                                                            : 'dark:text-slate-750 text-slate-200'
+                                                                                    }`}
+                                                                                />
+                                                                            ),
+                                                                        )}
+                                                                    </div>
+                                                                    {item.rating_comment && (
+                                                                        <p className="dark:text-slate-350 mt-1 text-[11px] leading-relaxed text-slate-600 italic">
+                                                                            "
+                                                                            {
+                                                                                item.rating_comment
+                                                                            }
+                                                                            "
+                                                                        </p>
+                                                                    )}
                                                                 </div>
-                                                                {item.rating_comment && (
-                                                                    <p className="text-[11px] text-slate-600 dark:text-slate-350 italic mt-1 leading-relaxed">
-                                                                        "{item.rating_comment}"
-                                                                    </p>
-                                                                )}
-                                                            </div>
-                                                        )}
+                                                            )}
 
                                                         {/* RPG Stamp */}
-                                                        {item.status === 'completed' && (
+                                                        {item.status ===
+                                                            'completed' && (
                                                             <div className="relative flex justify-center py-2">
-                                                                <div className="border-4 border-double border-emerald-500/35 bg-emerald-500/5 text-emerald-500 font-['Orbitron'] text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-lg rotate-[-6deg] shadow-sm transform select-none">
-                                                                    ⭐ QUEST CLEAR ⭐
+                                                                <div className="rotate-[-6deg] transform rounded-lg border-4 border-double border-emerald-500/35 bg-emerald-500/5 px-4 py-1.5 font-['Orbitron'] text-[10px] font-black tracking-widest text-emerald-500 uppercase shadow-sm select-none">
+                                                                    ⭐ QUEST
+                                                                    CLEAR ⭐
                                                                 </div>
                                                             </div>
                                                         )}
 
                                                         {/* Aksi Cepat */}
-                                                        <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800/40">
-                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                                                        <div className="space-y-2 border-t border-slate-100 pt-2 dark:border-slate-800/40">
+                                                            <span className="block text-[9px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
                                                                 Aksi Cepat
                                                             </span>
                                                             <div className="flex gap-2">
                                                                 <Link
                                                                     href={`/student/quests/${item._id}`}
-                                                                    className="flex-1 flex justify-center items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-['Orbitron'] text-[9px] font-bold uppercase py-2.5 rounded-xl transition-all shadow-sm hover:shadow"
+                                                                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-indigo-600 py-2.5 font-['Orbitron'] text-[9px] font-bold text-white uppercase shadow-sm transition-all hover:bg-indigo-700 hover:shadow"
                                                                 >
-                                                                    <MessageSquare size={11} />
+                                                                    <MessageSquare
+                                                                        size={
+                                                                            11
+                                                                        }
+                                                                    />
                                                                     Chat
                                                                 </Link>
                                                                 <Link
                                                                     href={`/student/quests/${item._id}`}
-                                                                    className="flex-1 flex justify-center items-center gap-1.5 border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-['Orbitron'] text-[9px] font-bold uppercase py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 transition-all"
+                                                                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-300 py-2.5 font-['Orbitron'] text-[9px] font-bold text-slate-700 uppercase transition-all hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900"
                                                                 >
-                                                                    <Eye size={11} />
+                                                                    <Eye
+                                                                        size={
+                                                                            11
+                                                                        }
+                                                                    />
                                                                     Detail
                                                                 </Link>
                                                             </div>
