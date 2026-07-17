@@ -184,21 +184,21 @@ export default function Edit({ character }: { character: Character }) {
 
                     <form
                         onSubmit={submit}
-                        className="grid gap-6 lg:grid-cols-3"
+                        className="grid gap-6 lg:grid-cols-2"
                     >
                         {/* LEFT COLUMN */}
-                        <div className="space-y-5 lg:col-span-2">
+                        <div className="space-y-5">
                             {/* Basic Info Card */}
                             <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
-                                    <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
+                                <div className="border-b border-slate-200 px-5 py-3.5 dark:border-white/5">
+                                    <h2 className="text-xs font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
                                         Basic Information
                                     </h2>
                                 </div>
-                                <div className="space-y-5 p-4 sm:p-6">
+                                <div className="space-y-4 p-4 sm:p-5">
                                     <div>
-                                        <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                             Character Name
                                         </label>
                                         <input
@@ -208,12 +208,12 @@ export default function Edit({ character }: { character: Character }) {
                                                 setData('name', e.target.value)
                                             }
                                             placeholder="e.g. Orion The Sage"
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                         />
                                     </div>
-                                    <div className="grid gap-5 sm:grid-cols-2">
+                                    <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Tagline
                                             </label>
                                             <input
@@ -226,11 +226,11 @@ export default function Edit({ character }: { character: Character }) {
                                                     )
                                                 }
                                                 placeholder="e.g. Master of the Arcane"
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Quote
                                             </label>
                                             <input
@@ -242,14 +242,14 @@ export default function Edit({ character }: { character: Character }) {
                                                         e.target.value,
                                                     )
                                                 }
-                                                placeholder="e.g. Magic is merely science we don't understand yet."
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                                placeholder="e.g. Magic is merely science..."
+                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                             />
                                         </div>
                                     </div>
-                                    <div className="grid gap-5 sm:grid-cols-2">
+                                    <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Guide Power Title
                                             </label>
                                             <input
@@ -262,11 +262,11 @@ export default function Edit({ character }: { character: Character }) {
                                                     )
                                                 }
                                                 placeholder="e.g. Arcane Insight"
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Guide Power Description
                                             </label>
                                             <input
@@ -280,13 +280,13 @@ export default function Edit({ character }: { character: Character }) {
                                                         e.target.value,
                                                     )
                                                 }
-                                                placeholder="e.g. Reveals hidden clues in challenges."
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                                placeholder="e.g. Reveals hidden clues..."
+                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                             />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                             Backstory
                                         </label>
                                         <textarea
@@ -299,23 +299,89 @@ export default function Edit({ character }: { character: Character }) {
                                                 )
                                             }
                                             placeholder="Write the character's origins and lore..."
-                                            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                         />
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN */}
+                        <div className="space-y-5">
+                            {/* Avatar Card */}
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                <div className="border-b border-slate-200 px-5 py-3 dark:border-white/5">
+                                    <h2 className="text-xs font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
+                                        Avatar
+                                    </h2>
+                                </div>
+                                <div className="p-4">
+                                    <div
+                                        onDragOver={(e) => {
+                                            e.preventDefault();
+                                            setDragActive(true);
+                                        }}
+                                        onDragLeave={() => setDragActive(false)}
+                                        onDrop={handleDrop}
+                                        onClick={() => fileRef.current?.click()}
+                                        className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-4 text-center transition-all ${
+                                            dragActive
+                                                ? 'border-slate-400 bg-slate-50 dark:border-slate-500 dark:bg-white/5'
+                                                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-white/[0.03]'
+                                        }`}
+                                    >
+                                        <div className="relative flex h-32 w-full items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-1 dark:border-white/10 dark:bg-white/5">
+                                            <div className="absolute inset-0 z-10 rounded-lg bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
+                                            <img
+                                                src={
+                                                    preview ??
+                                                    character.avatar_url ??
+                                                    character.avatar
+                                                }
+                                                alt="Avatar"
+                                                className="h-full max-w-full rounded-lg object-contain"
+                                            />
+                                            <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                                                <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-950 shadow-sm backdrop-blur-sm dark:bg-black/70 dark:text-white">
+                                                    Change Image
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-3">
+                                            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                                Replace or drag image here
+                                            </p>
+                                            <p className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">
+                                                Leave empty to keep current
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <input
+                                        ref={fileRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files?.[0])
+                                                handleFile(e.target.files[0]);
+                                        }}
+                                    />
                                 </div>
                             </div>
 
                             {/* Traits & Abilities Card */}
                             <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
-                                    <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
+                                <div className="border-b border-slate-200 px-5 py-3.5 dark:border-white/5">
+                                    <h2 className="text-xs font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
                                         Traits &amp; Abilities
                                     </h2>
                                 </div>
-                                <div className="space-y-5 p-4 sm:p-6">
+                                <div className="space-y-4 p-4 sm:p-5">
                                     <div>
-                                        <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                             Character Types
                                         </label>
                                         <TagInput
@@ -323,11 +389,11 @@ export default function Edit({ character }: { character: Character }) {
                                             onChange={(tags) =>
                                                 setData('character_type', tags)
                                             }
-                                            placeholder="Press enter to add types (e.g. Mage, Support)"
+                                            placeholder="Add types (e.g. Mage, Support)"
                                         />
                                     </div>
                                     <div>
-                                        <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                             Abilities
                                         </label>
                                         <TagInput
@@ -335,11 +401,11 @@ export default function Edit({ character }: { character: Character }) {
                                             onChange={(tags) =>
                                                 setData('abilities', tags)
                                             }
-                                            placeholder="Press enter to add abilities"
+                                            placeholder="Add abilities"
                                         />
                                     </div>
                                     <div>
-                                        <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                             Personality Traits
                                         </label>
                                         <TagInput
@@ -347,7 +413,7 @@ export default function Edit({ character }: { character: Character }) {
                                             onChange={(tags) =>
                                                 setData('personality', tags)
                                             }
-                                            placeholder="Press enter to add traits (e.g. Wise, Calm)"
+                                            placeholder="Add traits (e.g. Wise, Calm)"
                                         />
                                     </div>
                                 </div>
@@ -356,15 +422,15 @@ export default function Edit({ character }: { character: Character }) {
                             {/* Bonuses Card */}
                             <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
-                                    <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
+                                <div className="border-b border-slate-200 px-5 py-3.5 dark:border-white/5">
+                                    <h2 className="text-xs font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
                                         Bonuses
                                     </h2>
                                 </div>
-                                <div className="p-4 sm:p-6">
-                                    <div className="grid gap-5 sm:grid-cols-2">
+                                <div className="p-4 sm:p-5">
+                                    <div className="grid gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 EXP Boost (%)
                                             </label>
                                             <input
@@ -380,11 +446,11 @@ export default function Edit({ character }: { character: Character }) {
                                                     })
                                                 }
                                                 placeholder="e.g. 15"
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                             />
                                         </div>
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Gold Boost (%)
                                             </label>
                                             <input
@@ -400,11 +466,11 @@ export default function Edit({ character }: { character: Character }) {
                                                     })
                                                 }
                                                 placeholder="e.g. 10"
-                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                                                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 transition outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 dark:border-slate-700 dark:bg-white/5 dark:text-white dark:placeholder-slate-600 dark:focus:border-slate-500 dark:focus:ring-slate-500"
                                             />
                                         </div>
                                         <div className="sm:col-span-2">
-                                            <label className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                            <label className="mb-1 block text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Cosmetic Bonuses
                                             </label>
                                             <TagInput
@@ -415,78 +481,10 @@ export default function Edit({ character }: { character: Character }) {
                                                         tags,
                                                     )
                                                 }
-                                                placeholder="Press enter to add cosmetic bonuses"
+                                                placeholder="Add cosmetic bonuses"
                                             />
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* RIGHT COLUMN */}
-                        <div className="space-y-5">
-                            {/* Avatar Card */}
-                            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                <div className="border-b border-slate-200 px-6 py-4 dark:border-white/5">
-                                    <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase dark:text-white">
-                                        Avatar
-                                    </h2>
-                                </div>
-                                <div className="p-4 sm:p-6">
-                                    <div
-                                        onDragOver={(e) => {
-                                            e.preventDefault();
-                                            setDragActive(true);
-                                        }}
-                                        onDragLeave={() => setDragActive(false)}
-                                        onDrop={handleDrop}
-                                        onClick={() => fileRef.current?.click()}
-                                        className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-6 text-center transition-all sm:p-8 ${
-                                            dragActive
-                                                ? 'border-slate-400 bg-slate-50 dark:border-slate-500 dark:bg-white/5'
-                                                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-white/[0.03]'
-                                        }`}
-                                    >
-                                        <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-white/10 dark:bg-white/5">
-                                            <div className="absolute inset-0 z-10 rounded-lg bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
-                                            <img
-                                                src={
-                                                    preview ??
-                                                    character.avatar_url ??
-                                                    character.avatar
-                                                }
-                                                alt="Avatar"
-                                                className="h-full max-w-full rounded-lg object-contain"
-                                            />
-                                            <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                                                <span className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm backdrop-blur-sm dark:bg-black/70 dark:text-white">
-                                                    Change Image
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-4">
-                                            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                                Click to replace or drag and
-                                                drop
-                                            </p>
-                                            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                                                Leave empty to keep current
-                                                image
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <input
-                                        ref={fileRef}
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                            if (e.target.files?.[0])
-                                                handleFile(e.target.files[0]);
-                                        }}
-                                    />
                                 </div>
                             </div>
 
