@@ -142,22 +142,17 @@ export default function ProfilePage({ user }: Props) {
                         {/* AVATAR */}
                         <div
                             className="relative mb-3 shrink-0"
-                            style={{ width: '130px', height: '148px' }}
+                            style={{ width: '140px', height: '140px' }}
                         >
                             <div
-                                className="h-full w-full cursor-pointer overflow-hidden"
-                                style={{
-                                    clipPath:
-                                        'polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%)',
-                                }}
+                                className="h-full w-full cursor-pointer overflow-hidden rounded-full border-2 border-[#FACC15]"
                                 onClick={handleAvatarClick}
                             >
                                 <img
                                     src={
                                         data.avatar
                                             ? URL.createObjectURL(data.avatar)
-                                            : (user.avatar ??
-                                              '/images/default-avatar.svg')
+                                            : (user.avatar ?? '/images/default-avatar.svg')
                                     }
                                     className="h-full w-full object-cover"
                                     alt="avatar"
@@ -307,15 +302,15 @@ export default function ProfilePage({ user }: Props) {
                         {/* CONTENT BODY */}
                         <div className="flex flex-1 flex-col justify-between gap-3 overflow-visible pr-1 md:pr-0 lg:overflow-hidden xl:gap-2">
                             {/* RANK CARD */}
-                            <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/25 bg-[#3B28F6]/[0.04] p-2.5 md:p-3 xl:p-6 dark:border-[#3B28F6]/60 dark:bg-[#3B28F6]/5">
+                            <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-[#3B28F6]/80 bg-[#3B28F6]/[0.04] p-2.5 md:p-3 xl:p-6 dark:border-[#3B28F6]/80 dark:bg-[#3B28F6]/5">
                                 <div className="h-[48px] w-[48px] shrink-0 md:h-[50px] md:w-[50px] xl:h-[56px] xl:w-[56px]">
                                     <svg
                                         viewBox="0 0 80 80"
                                         className="h-full w-full"
                                     >
                                         <defs>
-                                            <clipPath id="rankHexClip">
-                                                <polygon points="40,4 74,22 74,58 40,76 6,58 6,22" />
+                                            <clipPath id="rankCircleClip">
+                                                <circle cx="40" cy="40" r="36" />
                                             </clipPath>
                                         </defs>
                                         <image
@@ -328,10 +323,12 @@ export default function ProfilePage({ user }: Props) {
                                             width="60"
                                             height="60"
                                             preserveAspectRatio="xMidYMid slice"
-                                            clipPath="url(#rankHexClip)"
+                                            clipPath="url(#rankCircleClip)"
                                         />
-                                        <polygon
-                                            points="40,4 74,22 74,58 40,76 6,58 6,22"
+                                        <circle
+                                            cx="40"
+                                            cy="40"
+                                            r="36"
                                             fill="none"
                                             stroke="#FACC15"
                                             strokeWidth="1.5"
@@ -397,7 +394,7 @@ export default function ProfilePage({ user }: Props) {
                             {/* FIELDS */}
                             <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2 md:gap-y-3 xl:gap-y-4">
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <label className="mb-1 block text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         USERNAME
                                     </label>
                                     <input
@@ -406,7 +403,7 @@ export default function ProfilePage({ user }: Props) {
                                         onChange={(e) =>
                                             setData('username', e.target.value)
                                         }
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
+                                        className="w-full border border-[#3B28F6]/80 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
                                     />
                                     {errors.username && (
                                         <span className="mt-1 text-xs text-red-500">
@@ -416,7 +413,7 @@ export default function ProfilePage({ user }: Props) {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <label className="mb-1 block text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         EMAIL
                                     </label>
                                     <input
@@ -426,7 +423,7 @@ export default function ProfilePage({ user }: Props) {
                                             setData('email', e.target.value)
                                         }
                                         placeholder=""
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
+                                        className="w-full border border-[#3B28F6]/80 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
                                     />
                                     {errors.email && (
                                         <span className="mt-1 text-xs text-red-500">
@@ -436,7 +433,7 @@ export default function ProfilePage({ user }: Props) {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <label className="mb-1 block text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         LINKEDIN
                                     </label>
                                     <input
@@ -446,7 +443,7 @@ export default function ProfilePage({ user }: Props) {
                                             setData('linkedin', e.target.value)
                                         }
                                         placeholder="https://linkedin.com/in/username"
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
+                                        className="w-full border border-[#3B28F6]/80 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
                                     />
                                     {errors.linkedin && (
                                         <span className="mt-1 text-xs text-red-500">
@@ -456,23 +453,23 @@ export default function ProfilePage({ user }: Props) {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="mb-1 block text-[9px] tracking-[2px] text-yellow-600 dark:text-yellow-400">
+                                    <label className="mb-1 block text-[11px] tracking-[2px] text-yellow-500 dark:text-yellow-400">
                                         FAV COURSE
                                     </label>
                                     <input
                                         placeholder=""
-                                        className="w-full border border-[#3B28F6]/30 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
+                                        className="w-full border border-[#3B28F6]/80 bg-gray-50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.2)] md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400"
                                     />
                                 </div>
                             </div>
 
                             {/* LAST MISSION */}
                             <div className="flex flex-col">
-                                <p className="mb-1 text-[9px] tracking-[3px] text-yellow-600 dark:text-yellow-400">
+                                <p className="mb-1 text-[11px] tracking-[3px] text-yellow-500 dark:text-yellow-400">
                                     LAST MISSION / COURSE
                                 </p>
                                 {user.last_course ? (
-                                    <div className="flex items-center gap-2.5 border border-[#3B28F6]/25 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/40 dark:bg-[rgba(0,0,20,0.5)]">
+                                    <div className="flex items-center gap-2.5 border border-[#3B28F6]/80 bg-blue-50/40 p-2 md:p-2.5 xl:p-3 dark:border-[#3B28F6]/80 dark:bg-[rgba(0,0,20,0.5)]">
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-[#3B28F6] bg-gradient-to-br from-[#eef0ff] to-[#e0e4ff] xl:h-12 xl:w-12 dark:from-[#0a0a2a] dark:to-[#1a1040]">
                                             {user.last_course.thumbnail ? (
                                                 <img
@@ -520,7 +517,7 @@ export default function ProfilePage({ user }: Props) {
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div className="border border-[#3B28F6]/25 p-2 text-center font-['Orbitron'] text-xs tracking-widest text-gray-400 uppercase md:p-3 dark:border-[#3B28F6]/40 dark:text-gray-600">
+                                    <div className="border border-[#3B28F6]/80 p-2 text-center font-['Orbitron'] text-xs tracking-widest text-gray-400 uppercase md:p-3 dark:border-[#3B28F6]/80 dark:text-gray-600">
                                         NO ACTIVE COURSE
                                     </div>
                                 )}
