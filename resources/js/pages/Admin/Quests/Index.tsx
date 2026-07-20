@@ -427,7 +427,7 @@ export default function Index({ quests, filters }: Props) {
                                                             Detail
                                                         </Link>
                                                         <button
-                                                            onClick={() => handleDeleteQuest(quest._id)}
+                                                            onClick={() => handleDelete(quest._id)}
                                                             className="cursor-pointer rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
                                                             title="Hapus Quest"
                                                         >
@@ -499,7 +499,7 @@ export default function Index({ quests, filters }: Props) {
                             </div>
                         )}
                     </div>
-                </div>v>
+                </div>
             </div>
 
             {/* CREATE/EDIT MODAL */}
