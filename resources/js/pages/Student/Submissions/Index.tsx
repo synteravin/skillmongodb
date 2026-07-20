@@ -22,7 +22,6 @@ interface Submission {
     description: string;
     submission_type: string;
     attachment?: string;
-    deadline?: string;
     created_at: string;
 }
 
@@ -51,11 +50,6 @@ export default function Index({
     const getStatusInfo = (submission: Submission) => {
         const studentSub =
             studentSubmissions[submission.id || (submission._id as string)];
-        const now = new Date();
-        const deadline = submission.deadline
-            ? new Date(submission.deadline)
-            : null;
-        const isPastDeadline = deadline && now > deadline;
 
         if (studentSub) {
             if (studentSub.status === 'graded') {
@@ -65,13 +59,6 @@ export default function Index({
                     icon: <CheckCircle2 className="h-4 w-4" />,
                 };
             }
-            if (studentSub.status === 'late') {
-                return {
-                    label: 'Submitted Late',
-                    color: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/20',
-                    icon: <Clock className="h-4 w-4" />,
-                };
-            }
             return {
                 label: 'Submitted',
                 color: 'text-[#2563EB] dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30',
@@ -79,17 +66,9 @@ export default function Index({
             };
         }
 
-        if (isPastDeadline) {
-            return {
-                label: 'Missing',
-                color: 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20',
-                icon: <AlertCircle className="h-4 w-4" />,
-            };
-        }
-
         return {
-            label: 'Pending',
-            color: 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-500/10 border-slate-200 dark:border-slate-500/20',
+            label: 'Not Submitted',
+            color: 'text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700',
             icon: <Clock className="h-4 w-4" />,
         };
     };
@@ -337,27 +316,6 @@ export default function Index({
                                                 </div>
 
                                                 <div className="flex items-center gap-4">
-                                                    <div className="flex flex-col items-start md:items-end">
-                                                        <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
-                                                            Deadline
-                                                        </span>
-                                                        <span className="flex items-center gap-1.5 font-['Oxanium'] text-xs font-medium text-slate-700 dark:text-gray-300">
-                                                            <Calendar className="h-3.5 w-3.5 text-amber-500 dark:text-amber-400" />
-                                                            {submission.deadline
-                                                                ? new Date(
-                                                                      submission.deadline,
-                                                                  ).toLocaleDateString(
-                                                                      'en-US',
-                                                                      {
-                                                                          month: 'short',
-                                                                          day: 'numeric',
-                                                                          hour: '2-digit',
-                                                                          minute: '2-digit',
-                                                                      },
-                                                                  )
-                                                                : 'No Deadline'}
-                                                        </span>
-                                                    </div>
                                                     <div className="rounded-lg border border-blue-200 bg-blue-50 p-2 text-blue-600 dark:border-blue-500/30 dark:bg-blue-500/20 dark:text-blue-400">
                                                         <svg
                                                             className={`h-4 w-4 transform transition-transform duration-300 ${

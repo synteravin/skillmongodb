@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Actions\Submission\NotifyMentorOfSubmissionAction;
 use App\Http\Controllers\Controller;
 use App\Models\CareerGroup;
 use App\Models\StudentSubmission;
@@ -75,11 +76,6 @@ class SubmissionController extends Controller
             'status' => 'submitted',
         ];
 
-        // Determine if late
-        if ($submission->deadline && now()->gt($submission->deadline)) {
-            $data['status'] = 'late';
-        }
-
         if ($request->hasFile('file')) {
             $data['file_path'] = $request->file('file')->store("student_submissions/{$submission->id}");
         }
@@ -98,7 +94,7 @@ class SubmissionController extends Controller
         );
 
         // Notify Mentors
-        app(\App\Actions\Submission\NotifyMentorOfSubmissionAction::class)->execute($studentSubmission, auth()->user());
+        app(NotifyMentorOfSubmissionAction::class)->execute($studentSubmission, auth()->user());
 
         return back()->with('success', 'Your work has been submitted successfully.');
     }

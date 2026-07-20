@@ -12,8 +12,7 @@ class PublishSubmissionAction
         if (
             empty($submission->title) ||
             empty($submission->description) ||
-            empty($submission->submission_type) ||
-            empty($submission->deadline)
+            empty($submission->submission_type)
         ) {
             throw new Exception('Submission data incomplete.');
         }

@@ -14,14 +14,11 @@ class Submission extends Model
         'description',
         'submission_type',
         'attachment',
-        'deadline',
         'status',
         'created_by',
     ];
 
-    protected $casts = [
-        'deadline' => 'datetime',
-    ];
+    protected $casts = [];
 
     public function group()
     {

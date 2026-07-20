@@ -24,7 +24,6 @@ class CreateSubmissionAction
             'description' => $data['description'],
             'submission_type' => $data['submission_type'],
             'attachment' => $data['attachment'] ?? null,
-            'deadline' => $data['deadline'],
             'status' => $this->submissionService->defaultStatus(),
             'created_by' => $user->id,
         ]);

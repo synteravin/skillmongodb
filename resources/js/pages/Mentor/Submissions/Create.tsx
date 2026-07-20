@@ -25,7 +25,6 @@ export default function CreateSubmission({ group }: Props) {
         description: '',
         submission_type: 'file',
         attachment: null as File | null,
-        deadline: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -129,7 +128,7 @@ export default function CreateSubmission({ group }: Props) {
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                            <div>
                                 {/* Submission Type */}
                                 <div>
                                     <label className="mb-2 ml-1 flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
@@ -177,28 +176,6 @@ export default function CreateSubmission({ group }: Props) {
                                         <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-500">
                                             <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
                                             {errors.submission_type}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Deadline */}
-                                <div>
-                                    <label className="mb-2 ml-1 flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                        <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
-                                        Deadline
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        value={data.deadline}
-                                        onChange={(e) =>
-                                            setData('deadline', e.target.value)
-                                        }
-                                        className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 [color-scheme:light] shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:[color-scheme:dark] dark:focus:bg-[#0d0f17]"
-                                    />
-                                    {errors.deadline && (
-                                        <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-500">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
-                                            {errors.deadline}
                                         </p>
                                     )}
                                 </div>

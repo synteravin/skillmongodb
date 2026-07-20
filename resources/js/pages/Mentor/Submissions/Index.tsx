@@ -18,7 +18,6 @@ type Submission = {
     title: string;
     description: string;
     submission_type: string;
-    deadline: string;
     status: 'draft' | 'published';
 };
 
@@ -66,8 +65,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                 {group.name}
                             </h1>
                             <p className="text-base leading-relaxed text-slate-500 dark:text-slate-400">
-                                Manage assignments, track deadlines, and review
-                                student progress for this career branch.
+                                Manage assignments and review student progress for this career branch.
                             </p>
                         </div>
 
@@ -145,7 +143,6 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                             <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-400">
                                                 {submission.description}
                                             </p>
-
                                             <div className="flex flex-wrap items-center gap-2 pt-1">
                                                 <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-400">
                                                     <FileText className="h-3.5 w-3.5" />
@@ -155,14 +152,6 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                                         }{' '}
                                                         Format
                                                     </span>
-                                                </span>
-                                                <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-400">
-                                                    <Calendar className="h-3.5 w-3.5" />
-                                                    {submission.deadline
-                                                        ? new Date(
-                                                              submission.deadline,
-                                                          ).toLocaleString()
-                                                        : 'No deadline'}
                                                 </span>
                                             </div>
                                         </div>
