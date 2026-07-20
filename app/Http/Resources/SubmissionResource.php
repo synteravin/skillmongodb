@@ -16,7 +16,6 @@ class SubmissionResource extends JsonResource
             'description' => $this->description,
             'submission_type' => $this->submission_type,
             'attachment' => $this->attachment,
-            'deadline' => $this->deadline,
             'status' => $this->status,
         ];
     }

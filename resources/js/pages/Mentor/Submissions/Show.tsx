@@ -19,7 +19,6 @@ type Submission = {
     group_id?: string;
     title: string;
     description: string;
-    deadline: string;
     status: 'draft' | 'published';
 };
 
@@ -148,28 +147,6 @@ export default function SubmissionShow({
                             <p className="dark:text-slate-355 text-sm leading-relaxed whitespace-pre-line text-slate-600">
                                 {submission.description}
                             </p>
-
-                            <div className="flex flex-wrap gap-4 pt-1">
-                                <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1 shadow-xs dark:border-slate-800/80 dark:bg-slate-900/60">
-                                    <Calendar className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
-                                    <span className="text-slate-505 text-[11px] font-semibold dark:text-slate-400">
-                                        Deadline:
-                                    </span>
-                                    <span className="text-[11px] font-bold text-slate-800 dark:text-white">
-                                        {submission.deadline
-                                            ? new Date(
-                                                  submission.deadline,
-                                              ).toLocaleString('id-ID', {
-                                                  day: 'numeric',
-                                                  month: 'short',
-                                                  year: 'numeric',
-                                                  hour: '2-digit',
-                                                  minute: '2-digit',
-                                              })
-                                            : 'Not Set'}
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     )}
                 </div>

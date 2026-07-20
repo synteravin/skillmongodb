@@ -18,7 +18,6 @@ class StoreSubmissionRequest extends FormRequest
             'description' => ['required', 'string'],
             'submission_type' => ['required', 'in:file,link,both'],
             'attachment' => ['nullable', 'file', 'max:10240'],
-            'deadline' => ['required', 'date', 'after:now'],
         ];
     }
 }

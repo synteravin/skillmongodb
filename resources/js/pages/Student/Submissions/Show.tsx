@@ -28,7 +28,6 @@ interface Submission {
     description: string;
     submission_type: 'file' | 'link';
     attachment?: string;
-    deadline?: string;
     mentor?: User;
     group?: CareerGroup;
 }
