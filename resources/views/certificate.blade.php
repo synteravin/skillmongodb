@@ -46,44 +46,45 @@
         /* Semi-transparent center card */
         .card {
             position: absolute;
-            top: 11%;
+            top: 13%;
             left: 9%;
             right: 9%;
-            height: 48%;
-            background: rgba(255, 255, 255, 0.90);
+            height: 46%;
+            background: rgba(255, 255, 255, 0.94);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            padding: 20px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 18px 40px;
             text-align: center;
             box-sizing: border-box;
         }
 
         .logo-container {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-align: center;
             width: 100%;
         }
 
         .logo-container img {
-            width: 90px;
-            height: auto;
+            height: 105px;
+            width: auto;
+            max-width: 250px;
         }
 
         .cert-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
             color: #0f294a;
-            letter-spacing: 5px;
-            margin-top: 5px;
-            margin-bottom: 2px;
+            letter-spacing: 6px;
+            margin-top: 2px;
+            margin-bottom: 4px;
             text-transform: uppercase;
         }
 
         .divider-container {
             width: 100%;
             text-align: center;
-            margin: 8px 0;
+            margin: 6px 0 10px 0;
         }
 
         .divider-line {
@@ -106,29 +107,29 @@
 
         .awarded-to {
             font-size: 11px;
-            color: #5D7290;
+            color: #64748b;
             font-weight: 600;
-            letter-spacing: 2px;
-            margin-top: 12px;
+            letter-spacing: 2.5px;
+            margin-top: 6px;
             text-transform: uppercase;
         }
 
         .name {
             font-family: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', serif;
-            font-size: 50px;
+            font-size: 48px;
             font-weight: 700;
             color: #1e3a8a;
-            line-height: 1.2;
+            line-height: 1.15;
             font-style: italic;
-            margin-top: 4px;
-            margin-bottom: 8px;
+            margin-top: 6px;
+            margin-bottom: 10px;
         }
 
         .description {
             font-size: 14px;
             color: #475569;
-            line-height: 1.6;
-            max-width: 80%;
+            line-height: 1.5;
+            max-width: 88%;
             margin: 0 auto;
         }
 
@@ -139,63 +140,63 @@
 
         .signature-block-left {
             position: absolute;
-            bottom: 11%;
-            left: 12%;
-            width: 240px;
+            bottom: 8%;
+            left: 10%;
+            width: 250px;
             text-align: center;
         }
 
         .signature-block-right {
             position: absolute;
-            bottom: 11%;
-            right: 12%;
-            width: 240px;
+            bottom: 8%;
+            right: 10%;
+            width: 250px;
             text-align: center;
         }
 
         .date-block-center {
             position: absolute;
-            bottom: 11%;
+            bottom: 8%;
             left: 50%;
-            width: 200px;
-            margin-left: -100px;
+            width: 210px;
+            margin-left: -105px;
             text-align: center;
         }
 
         .signature-box {
-            height: 55px;
-            line-height: 55px;
+            height: 75px;
+            line-height: 75px;
             vertical-align: bottom;
             text-align: center;
             margin-bottom: 2px;
         }
 
         .signature-img {
-            max-height: 52px;
-            max-width: 180px;
+            max-height: 70px;
+            max-width: 220px;
             display: inline-block;
             vertical-align: bottom;
         }
 
         .signature-fallback-text {
             font-family: 'Dancing Script', 'Alex Brush', cursive, serif;
-            font-size: 28px;
+            font-size: 38px;
             font-weight: 700;
-            color: #0f294a;
+            color: #1e293b;
             display: inline-block;
-            line-height: 50px;
+            line-height: 70px;
         }
 
         .signature-line {
             width: 100%;
-            border-top: 1.5px solid #bda88e;
+            border-top: 1.5px solid #cbd5e1;
             margin-top: 2px;
             margin-bottom: 6px;
         }
 
         .signer-name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             color: #0f294a;
         }
@@ -208,7 +209,7 @@
         }
 
         .signer-title {
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 600;
             color: #64748B;
             letter-spacing: 2px;
@@ -217,7 +218,7 @@
 
         .date-text {
             font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             color: #0f294a;
         }
@@ -225,7 +226,9 @@
 </head>
 
 <body>
-    @if(file_exists(public_path('images/Sertifikat Course LMS SkillVentura.png')))
+    @if(isset($backgroundImage) && $backgroundImage)
+        <img src="{{ $backgroundImage }}" class="background" alt="Certificate Background">
+    @elseif(file_exists(public_path('images/Sertifikat Course LMS SkillVentura.png')))
         <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.png') }}" class="background" alt="Certificate Background">
     @else
         <img src="{{ public_path('images/Sertifikat Course LMS SkillVentura.jpg') }}" class="background" alt="Certificate Background">
@@ -235,7 +238,11 @@
 
         <!-- Semi-transparent Center Card -->
         <div class="card">
-            @if(file_exists(public_path('images/[WithoutBG]SVLogo (2).png')))
+            @if(isset($logoImage) && $logoImage)
+                <div class="logo-container">
+                    <img src="{{ $logoImage }}" alt="Certificate Logo">
+                </div>
+            @elseif(file_exists(public_path('images/[WithoutBG]SVLogo (2).png')))
                 <div class="logo-container">
                     <img src="{{ public_path('images/[WithoutBG]SVLogo (2).png') }}" alt="SkillVentura Logo">
                 </div>
@@ -265,6 +272,8 @@
                 <div class="signature-box">
                     @if(isset($adminSignature) && $adminSignature)
                         <img src="{{ $adminSignature }}" class="signature-img" alt="Admin Signature">
+                    @else
+                        <span class="signature-fallback-text">{{ $adminName ?? 'Guild Master' }}</span>
                     @endif
                 </div>
                 <div class="signature-line"></div>
@@ -285,6 +294,8 @@
                 <div class="signature-box">
                     @if(isset($mentorSignature) && $mentorSignature)
                         <img src="{{ $mentorSignature }}" class="signature-img" alt="Mentor Signature">
+                    @else
+                        <span class="signature-fallback-text">{{ $mentorName }}</span>
                     @endif
                 </div>
                 <div class="signature-line"></div>

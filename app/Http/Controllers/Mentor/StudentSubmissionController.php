@@ -6,11 +6,9 @@ use App\Enums\CourseStatus;
 use App\Http\Controllers\Controller;
 use App\Models\CourseStudent;
 use App\Models\StudentSubmission;
-use App\Models\User;
 use App\Models\UserStat;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\CertificateService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class StudentSubmissionController extends Controller
@@ -37,40 +35,12 @@ class StudentSubmissionController extends Controller
             'grade' => $validated['grade'],
             'feedback' => $validated['feedback'],
             'status' => 'graded',
+            'graded_by' => auth()->id(),
         ];
-
-        $mentor = auth()->user();
-        $admin = User::where('role', 'admin')->first();
-
-        $mentorSignature = $this->getSignatureBase64($mentor?->signature_path);
-        $adminSignature = $this->getSignatureBase64($admin?->signature_path);
-
-        $certificateId = strtoupper(substr(md5((string) $studentSubmission->id), 0, 12));
-
-        // Generate Certificate
-        $pdfData = [
-            'studentName' => $studentSubmission->student->name,
-            'assignmentTitle' => $studentSubmission->submission->title,
-            'groupName' => $studentSubmission->submission->group->name ?? 'SkillMongo',
-            'grade' => $validated['grade'],
-            'date' => now()->format('F j, Y'),
-            'mentorName' => $mentor->name,
-            'adminName' => $admin->name ?? 'Guild Master',
-            'mentorSignature' => $mentorSignature,
-            'adminSignature' => $adminSignature,
-            'certificateId' => $certificateId,
-        ];
-
-        $pdf = Pdf::loadView('certificate', $pdfData)->setPaper('a4', 'landscape');
-
-        $filename = 'certificates/'.$studentSubmission->id.'_certificate.pdf';
-        Storage::disk('s3')->put($filename, $pdf->output(), [
-            'visibility' => 'public',
-        ]);
-
-        $updateData['certificate_path'] = $filename;
 
         $studentSubmission->update($updateData);
+
+        (new CertificateService)->generateForSubmission($studentSubmission, auth()->user());
 
         $courseId = $studentSubmission->submission->group->course_id;
         $groupId = $studentSubmission->submission->group_id;
@@ -98,26 +68,5 @@ class StudentSubmissionController extends Controller
         }
 
         return back()->with('success', 'Review submitted successfully.');
-    }
-
-    private function getSignatureBase64(?string $path): ?string
-    {
-        if (! $path) {
-            return null;
-        }
-
-        $disk = Storage::disk('s3');
-        if ($disk->exists($path)) {
-            $content = $disk->get($path);
-            if ($content) {
-                // Determine mime type from extension
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $mime = 'image/'.($ext === 'jpg' ? 'jpeg' : $ext);
-
-                return 'data:'.$mime.';base64,'.base64_encode($content);
-            }
-        }
-
-        return null;
     }
 }

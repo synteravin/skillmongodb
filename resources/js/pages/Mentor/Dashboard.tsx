@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePoll } from '@inertiajs/react';
 import { ArrowRight, Clock, FileText } from 'lucide-react';
 
 type CareerGroup = {
@@ -28,6 +28,11 @@ export default function Dashboard({
     notifications?: any[];
 }) {
     const groups = mentor?.careerGroups ?? [];
+
+    // Poll for notifications and stats every 30 seconds
+    usePoll(30000, {
+        only: ['notifications', 'mentor'],
+    });
 
     return (
         <AppLayout>

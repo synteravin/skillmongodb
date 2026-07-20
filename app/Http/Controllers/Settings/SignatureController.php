@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Services\CertificateService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -81,6 +82,8 @@ class SignatureController extends Controller
             'signature_path' => $filename,
         ]);
 
+        (new CertificateService)->regenerateAllForUser($user);
+
         return back()->with('success', 'Signature updated successfully.');
     }
 
@@ -94,6 +97,8 @@ class SignatureController extends Controller
             $user->update([
                 'signature_path' => null,
             ]);
+
+            (new CertificateService)->regenerateAllForUser($user);
         }
 
         return back()->with('success', 'Signature removed successfully.');

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 use MongoDB\Laravel\Eloquent\Model;
 
 class StudentSubmission extends Model
@@ -18,6 +20,7 @@ class StudentSubmission extends Model
         'grade',
         'feedback',
         'certificate_path',
+        'graded_by',
     ];
 
     protected $appends = ['certificate_url'];
@@ -29,10 +32,13 @@ class StudentSubmission extends Model
                 return $this->certificate_path;
             }
 
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-            $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+            /** @var FilesystemAdapter $disk */
+            $disk = Storage::disk('s3');
 
-            return $disk->url($this->certificate_path);
+            $url = $disk->url($this->certificate_path);
+            $timestamp = $this->updated_at ? $this->updated_at->timestamp : time();
+
+            return $url.'?v='.$timestamp;
         }
 
         return null;
