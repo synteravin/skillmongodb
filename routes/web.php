@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AssetsController;
 use App\Http\Controllers\Admin\CareerGroupController;
+use App\Http\Controllers\Admin\CertificateDesignController;
 use App\Http\Controllers\Admin\CharacterController;
 use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
@@ -74,6 +75,14 @@ Route::middleware(['auth', 'role:admin'])
                 Route::resource('badges', LevelBadgeController::class);
                 Route::post('badges/reorder', [LevelBadgeController::class, 'reorder'])
                     ->name('badges.reorder');
+
+                // CERTIFICATE DESIGN
+                Route::post('certificate-designs', [CertificateDesignController::class, 'store'])
+                    ->name('certificates.store');
+                Route::post('certificate-designs/{id}/active', [CertificateDesignController::class, 'setActive'])
+                    ->name('certificates.active');
+                Route::delete('certificate-designs/{id}', [CertificateDesignController::class, 'destroy'])
+                    ->name('certificates.destroy');
 
             });
         /* ---------------- DASHBOARD ---------------- */

@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CertificateDesign;
 use App\Models\Character;
 use App\Models\LevelBadge;
 use App\Models\Rank;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class AssetsController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $ranks = Rank::orderBy('order')->get()->map(fn ($r) => [
             'id' => (string) $r->_id,
@@ -46,15 +48,29 @@ class AssetsController extends Controller
             'order' => $b->order,
         ]);
 
+        $certificateDesigns = CertificateDesign::latest()->get()->map(fn ($cd) => [
+            'id' => (string) $cd->_id,
+            '_id' => (string) $cd->_id,
+            'title' => $cd->title,
+            'background_path' => $cd->background_path,
+            'background_url' => $cd->background_url,
+            'logo_path' => $cd->logo_path,
+            'logo_url' => $cd->logo_url,
+            'is_active' => (bool) $cd->is_active,
+            'created_at' => $cd->created_at?->format('d M Y H:i'),
+        ]);
+
         return Inertia::render('Admin/Assets/Index', [
             'stats' => [
                 'ranks' => $ranks->count(),
                 'characters' => $characters->count(),
                 'badges' => $badges->count(),
+                'certificates' => $certificateDesigns->count(),
             ],
             'ranks' => $ranks,
             'characters' => $characters,
             'badges' => $badges,
+            'certificates' => $certificateDesigns,
         ]);
     }
 }

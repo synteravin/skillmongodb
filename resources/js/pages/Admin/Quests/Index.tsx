@@ -422,8 +422,6 @@ export default function Index({ quests, filters }: Props) {
                                                         <Link
                                                             href={`/admin/quests/${quest._id}`}
                                                             title="Detail & Bid"
-                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 transition-all hover:bg-indigo-100 hover:text-indigo-700 dark:text-slate-400 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400"
-                                                        >
                                                             className="rounded-lg bg-indigo-50 px-3 py-1.5 text-[11px] font-bold text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/60 transition-colors"
                                                         >
                                                             Detail
@@ -438,13 +436,22 @@ export default function Index({ quests, filters }: Props) {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
 
                         {/* Pagination Footer */}
+                        {quests.last_page > 1 && (
+                            <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 px-6 py-4 dark:border-slate-800 sm:flex-row">
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    Menampilkan{' '}
+                                    <span className="font-bold text-slate-900 dark:text-white">
+                                        {quests.from}
+                                    </span>{' '}
+                                    sampai{' '}
+                                    <span className="font-bold text-slate-900 dark:text-white">
                                         {quests.to}
                                     </span>{' '}
                                     dari{' '}
