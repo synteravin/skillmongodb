@@ -332,25 +332,35 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     return (
         <AppLayout>
             <div
-                className="relative min-h-screen overflow-hidden bg-slate-50 px-2 py-4 text-slate-800 transition-colors duration-205 sm:px-3 lg:px-5 dark:bg-[#060813] dark:text-white"
+                className="relative min-h-screen overflow-hidden bg-[#f8fafc] px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-[#030712] dark:text-white"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Ambient top-center glow */}
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none" />
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
-                    {/* 1. RPG HERO QUEST HEADER */}
-                    <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-6 shadow-xl dark:border-[#1d2645] dark:from-[#0d1226]/85 dark:to-[#090d1a]/95">
-                        {/* Decorative abstract glows */}
-                        <div className="absolute top-0 right-0 -z-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
-                        <div className="absolute bottom-0 left-0 -z-10 h-24 w-24 rounded-full bg-purple-500/10 blur-xl" />
+                    {/* 1. HERO QUEST HEADER */}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17]">
+                        {/* Grid Pattern Motif */}
+                        <div
+                            className="pointer-events-none absolute inset-0 z-0"
+                            style={{
+                                backgroundImage: `
+                                    linear-gradient(rgba(59, 40, 246, 0.04) 1px, transparent 1px),
+                                    linear-gradient(90deg, rgba(59, 40, 246, 0.04) 1px, transparent 1px)
+                                `,
+                                backgroundSize: '40px 40px',
+                            }}
+                        />
 
-                        <div className="space-y-6">
+                        <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                        <div className="relative z-10 space-y-6">
                             {/* Breadcrumbs & Badge */}
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <Link
                                     href="/admin/quests"
-                                    className="inline-flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-white"
                                 >
                                     <ArrowLeft size={14} />
                                     Kembali ke Daftar Quest
@@ -358,28 +368,24 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                 <div>
                                     <span
-                                        className={`rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
+                                        className={`rounded-lg border px-3.5 py-1 text-xs font-bold uppercase ${
                                             quest.status === 'open'
-                                                ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
+                                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
                                                 : quest.status === 'draft'
-                                                  ? 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
                                                   : quest.status === 'rejected'
-                                                    ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
+                                                    ? 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400'
                                                     : quest.status === 'expired'
-                                                      ? 'border-red-500/20 bg-red-500/10 text-red-700 dark:text-red-400'
-                                                      : quest.status ===
-                                                          'ongoing'
-                                                        ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
-                                                        : quest.status ===
-                                                            'approved'
-                                                          ? 'border-purple-500/20 bg-purple-500/10 text-purple-700 dark:text-purple-400'
-                                                          : quest.status ===
-                                                              'payment'
-                                                            ? 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400'
-                                                            : quest.status ===
-                                                                'submitted'
-                                                              ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400'
-                                                              : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
+                                                      ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
+                                                      : quest.status === 'ongoing'
+                                                        ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
+                                                        : quest.status === 'approved'
+                                                          ? 'border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/20 dark:text-purple-400'
+                                                          : quest.status === 'payment'
+                                                            ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
+                                                            : quest.status === 'submitted'
+                                                              ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
+                                                              : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }`}
                                     >
                                         {quest.status === 'open'
@@ -392,14 +398,11 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                   ? 'Kadaluarsa'
                                                   : quest.status === 'ongoing'
                                                     ? 'Pengerjaan'
-                                                    : quest.status ===
-                                                        'approved'
+                                                    : quest.status === 'approved'
                                                       ? 'Disetujui'
-                                                      : quest.status ===
-                                                          'payment'
+                                                      : quest.status === 'payment'
                                                         ? 'Pembayaran'
-                                                        : quest.status ===
-                                                            'submitted'
+                                                        : quest.status === 'submitted'
                                                           ? 'Ditinjau'
                                                           : 'Selesai'}
                                     </span>
@@ -407,96 +410,77 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                             </div>
 
                             {/* Title and Creator Info */}
-                            <div className="space-y-3 font-['Oxanium']">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-['Orbitron'] text-[10px] font-black tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
-                                        Quest Moderation Portal
-                                    </span>
-                                </div>
-                                <h1 className="text-2xl leading-tight font-extrabold tracking-tight text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
+                            <div className="space-y-2">
+                                <span className="text-[10px] font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
+                                    Quest Moderation Portal
+                                </span>
+                                <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
                                     {quest.title}
                                 </h1>
 
-                                <div className="flex items-center gap-2.5 text-xs text-slate-500 sm:text-sm dark:text-blue-300/80">
-                                    <div className="flex h-7 w-7 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                        <User className="h-3.5 w-3.5" />
-                                    </div>
-                                    <div>
-                                        <span className="mr-1 text-[10px] font-semibold text-slate-400 uppercase">
-                                            Pembuat:
-                                        </span>
-                                        <span className="font-bold text-slate-800 dark:text-white">
-                                            {quest.creator?.name ?? 'Unknown'}
-                                        </span>
-                                    </div>
+                                <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
+                                        Pembuat:
+                                    </span>
+                                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                                        {quest.creator?.name ?? 'Unknown'}
+                                    </span>
                                 </div>
                             </div>
 
                             {/* Stepper Progress Timeline */}
                             <QuestStepper status={quest.status} />
 
-                            {/* Stats Metrics Subgrid */}
-                            <div className="grid grid-cols-1 gap-4 border-t border-slate-200/60 pt-6 sm:grid-cols-3 dark:border-slate-800/60">
-                                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/50 bg-white/40 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10">
-                                    <div className="shrink-0 rounded-xl bg-indigo-500/10 p-3 text-indigo-600 dark:text-indigo-400">
-                                        <TrendingUp className="h-5 w-5" />
-                                    </div>
-                                    <div>
-                                        <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                            Total Penawaran
-                                        </span>
-                                        <span className="text-base font-extrabold text-slate-900 dark:text-white">
-                                            {bids.length} Bid
-                                        </span>
-                                    </div>
+                            {/* Stats Metrics Subgrid - Dashboard Card Style */}
+                            <div className="grid grid-cols-1 gap-3 border-t border-slate-200/80 pt-6 sm:grid-cols-3 dark:border-slate-800/80">
+                                <div className="relative overflow-hidden flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                    <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        Total Penawaran
+                                    </span>
+                                    <span className="mt-1 text-base font-extrabold text-slate-900 dark:text-white">
+                                        {bids.length} Bid
+                                    </span>
                                 </div>
 
-                                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/50 bg-white/40 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10">
-                                    <div className="shrink-0 rounded-xl bg-purple-500/10 p-3 text-purple-600 dark:text-purple-400">
-                                        <DollarSign className="h-5 w-5" />
-                                    </div>
-                                    <div>
-                                        <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                            Rata-Rata Penawaran
-                                        </span>
-                                        <span className="text-base font-extrabold text-slate-900 dark:text-white">
-                                            {averageBid > 0
-                                                ? formatCurrency(averageBid)
-                                                : 'Rp 0'}
-                                        </span>
-                                    </div>
+                                <div className="relative overflow-hidden flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                    <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        Rata-Rata Penawaran
+                                    </span>
+                                    <span className="mt-1 text-base font-extrabold text-slate-900 dark:text-white">
+                                        {averageBid > 0
+                                            ? formatCurrency(averageBid)
+                                            : 'Rp 0'}
+                                    </span>
                                 </div>
 
-                                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/50 bg-white/40 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10">
-                                    <div className="shrink-0 rounded-xl bg-blue-500/10 p-3 text-blue-600 dark:text-blue-400">
-                                        <Briefcase className="h-5 w-5" />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                            Rentang Anggaran
-                                        </span>
-                                        <span className="text-xs font-black text-slate-900 dark:text-white">
-                                            {formatCurrency(quest.min_salary)} -{' '}
-                                            {formatCurrency(quest.max_salary)}
-                                        </span>
-                                        {quest.accepted_bid_amount && (
-                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                                <span>Kontrak:</span>
-                                                <span>
-                                                    {formatCurrency(
-                                                        quest.accepted_bid_amount,
-                                                    )}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
+                                <div className="relative overflow-hidden flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                    <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                        Rentang Anggaran
+                                    </span>
+                                    <span className="mt-1 text-base font-extrabold text-slate-900 dark:text-white">
+                                        {formatCurrency(quest.min_salary)} -{' '}
+                                        {formatCurrency(quest.max_salary)}
+                                    </span>
+                                    {quest.accepted_bid_amount && (
+                                        <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                            <span>Kontrak:</span>
+                                            <span>
+                                                {formatCurrency(
+                                                    quest.accepted_bid_amount,
+                                                )}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* MAIN TWO-COLUMN LAYOUT */}
-                    <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+                    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
                         {/* LEFT COLUMN: TABS & CONTENT PANELS (lg:col-span-8) */}
                         <div className="space-y-6 lg:col-span-8">
                             {/* Moderation Post Card */}
@@ -515,21 +499,18 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                             />
 
                             {/* Tab Buttons */}
-                            <div className="flex shrink-0 gap-6 border-b border-slate-200 font-['Orbitron'] text-xs font-black tracking-wider dark:border-slate-800/80">
+                            <div className="flex shrink-0 gap-4 border-b border-slate-200 text-xs font-bold tracking-wider dark:border-slate-800">
                                 <button
                                     onClick={() => setActiveTab('detail')}
                                     className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'detail'
-                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                            ? 'font-extrabold text-indigo-600 dark:text-white'
+                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                                     }`}
                                 >
-                                    <span className="flex items-center gap-1.5 font-['Orbitron']">
-                                        <FileText size={14} />
-                                        Spesifikasi Quest
-                                    </span>
+                                    <span>Spesifikasi Quest</span>
                                     {activeTab === 'detail' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                                     )}
                                 </button>
 
@@ -537,16 +518,13 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     onClick={() => setActiveTab('project')}
                                     className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'project'
-                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                            ? 'font-extrabold text-indigo-600 dark:text-white'
+                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                                     }`}
                                 >
-                                    <span className="flex items-center gap-1.5 font-['Orbitron']">
-                                        <Briefcase size={14} />
-                                        Manajemen Pengerjaan
-                                    </span>
+                                    <span>Manajemen Pengerjaan</span>
                                     {activeTab === 'project' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                                     )}
                                 </button>
 
@@ -554,16 +532,13 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     onClick={() => setActiveTab('bids')}
                                     className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'bids'
-                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                            ? 'font-extrabold text-indigo-600 dark:text-white'
+                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                                     }`}
                                 >
-                                    <span className="flex items-center gap-1.5 font-['Orbitron']">
-                                        <MessageSquare size={14} />
-                                        Pelamar ({bids.length})
-                                    </span>
+                                    <span>Pelamar ({bids.length})</span>
                                     {activeTab === 'bids' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                                     )}
                                 </button>
 
@@ -571,28 +546,26 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     onClick={() => setActiveTab('arbitration')}
                                     className={`relative cursor-pointer pb-3 transition-colors ${
                                         activeTab === 'arbitration'
-                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                            ? 'font-extrabold text-indigo-600 dark:text-white'
+                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                                     }`}
                                 >
-                                    <span className="flex items-center gap-1.5 font-['Orbitron']">
-                                        <ShieldAlert size={14} />
-                                        Arbitrase & Kontrol
-                                    </span>
+                                    <span>Arbitrase & Kontrol</span>
                                     {activeTab === 'arbitration' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                                     )}
                                 </button>
                             </div>
 
                             {/* TAB 1: DETAILS */}
                             {activeTab === 'detail' && (
-                                <div className="space-y-6 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                                     <div className="space-y-3">
-                                        <h3 className="font-['Orbitron'] text-xs font-bold tracking-wider text-slate-400 uppercase dark:text-blue-300/60">
+                                        <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                             Deskripsi Pekerjaan
                                         </h3>
-                                        <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 font-['Oxanium'] text-sm leading-relaxed whitespace-pre-wrap text-slate-700 sm:text-base dark:border-slate-800/40 dark:bg-black/10 dark:text-slate-200">
+                                        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-sm leading-relaxed whitespace-pre-wrap text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-200">
                                             {quest.description}
                                         </div>
                                     </div>
@@ -659,40 +632,41 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                         <div className="space-y-6 lg:col-span-4">
                             {/* WORKER SUMMARY (Right column status card) */}
                             {quest.worker && (
-                                <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
+                                <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 shadow-sm">
                                     <div className="flex min-w-0 items-center gap-2.5">
-                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
+                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                                         <div className="min-w-0">
-                                            <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
+                                            <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                                 Status Pekerja
                                             </span>
-                                            <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
+                                            <span className="block truncate text-xs font-bold text-slate-900 dark:text-white">
                                                 {quest.worker.name}
                                             </span>
                                         </div>
                                     </div>
-                                    <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
+                                    <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase dark:text-emerald-300">
                                         Aktif
                                     </span>
                                 </div>
                             )}
                             {/* QUEST METADATA DETAILS */}
-                            <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                                <h3 className="border-b border-slate-100 pb-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-blue-200">
+                            <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                <h3 className="border-b border-slate-200 pb-3 text-xs font-bold tracking-wider text-slate-900 uppercase dark:border-slate-800 dark:text-white">
                                     Rincian Quest
                                 </h3>
 
                                 <div className="space-y-4">
                                     {/* Creator info */}
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                            <User className="h-5 w-5" />
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                            <User className="h-4 w-4" />
                                         </div>
                                         <div>
-                                            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                            <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                                 Diposting Oleh
                                             </span>
-                                            <span className="text-xs font-bold text-slate-800 sm:text-sm dark:text-white">
+                                            <span className="text-xs font-bold text-slate-900 dark:text-white">
                                                 {quest.creator.name}
                                             </span>
                                         </div>
@@ -700,14 +674,14 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                     {/* Budget spec */}
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400">
-                                            <DollarSign className="h-5 w-5" />
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                            <DollarSign className="h-4 w-4" />
                                         </div>
                                         <div>
-                                            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                            <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                                 Gaji / Anggaran
                                             </span>
-                                            <span className="font-['Orbitron'] text-sm font-bold text-slate-800 dark:text-white">
+                                            <span className="text-xs font-bold text-slate-900 dark:text-white">
                                                 {formatCurrency(
                                                     quest.min_salary,
                                                 )}{' '}
@@ -721,14 +695,14 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                                     {/* Deadline Spec */}
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                            <Calendar className="h-5 w-5" />
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                            <Calendar className="h-4 w-4" />
                                         </div>
                                         <div>
-                                            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                                            <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                                 Tenggat Waktu
                                             </span>
-                                            <span className="text-xs font-bold text-slate-800 sm:text-sm dark:text-white">
+                                            <span className="text-xs font-bold text-slate-900 dark:text-white">
                                                 {formatDate(quest.deadline)}
                                             </span>
                                         </div>
@@ -747,14 +721,14 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                 calculateDaysRemaining();
                                             return (
                                                 <div className="pt-2">
-                                                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
+                                                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 uppercase dark:text-slate-400">
                                                         <span>
                                                             {remaining.isLate
                                                                 ? 'Status Keterlambatan'
                                                                 : 'Sisa Waktu'}
                                                         </span>
                                                         <span
-                                                            className={`rounded px-2 py-0.5 font-['Orbitron'] text-[10px] font-bold tracking-wider ${remaining.className}`}
+                                                            className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-wider ${remaining.className}`}
                                                         >
                                                             {remaining.text}
                                                         </span>

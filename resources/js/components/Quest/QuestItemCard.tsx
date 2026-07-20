@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { DollarSign, Calendar, Users, Lock } from 'lucide-react';
+import { DollarSign, Calendar, Lock } from 'lucide-react';
 import { Quest } from '@/types/quest';
 
 interface QuestItemCardProps {
@@ -34,66 +34,70 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
             hour: '2-digit',
             minute: '2-digit',
         });
-        return `${datePart} pukul ${timePart}`;
+        return `${datePart} ${timePart}`;
     };
 
     const getQuestRank = (maxSalary: number) => {
         if (maxSalary >= 10000000) {
             return {
-                rank: 'Mythic',
-                color: 'border-purple-500/20 bg-purple-500/10 text-purple-700 dark:text-purple-400',
+                rank: 'Enterprise',
+                color: 'border-blue-500/30 bg-blue-500/10 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/20 dark:text-blue-400',
             };
         }
         if (maxSalary >= 5000000) {
             return {
-                rank: 'Diamond',
-                color: 'border-cyan-500/20 bg-cyan-500/10 text-cyan-700 dark:text-cyan-400',
+                rank: 'Expert',
+                color: 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400',
             };
         }
         if (maxSalary >= 2500000) {
             return {
-                rank: 'Gold',
-                color: 'border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
+                rank: 'Intermediate',
+                color: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
             };
         }
         if (maxSalary >= 1000000) {
             return {
-                rank: 'Silver',
-                color: 'border-slate-500/20 bg-slate-500/10 text-slate-700 dark:text-slate-400',
+                rank: 'Entry-Level',
+                color: 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300',
             };
         }
         return {
-            rank: 'Bronze',
-            color: 'border-orange-500/20 bg-orange-500/10 text-orange-700 dark:text-orange-400',
+            rank: 'Basic',
+            color: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
         };
     };
 
+    const isCompleted = quest.status === 'completed';
     const rankInfo = getQuestRank(quest.max_salary);
 
     return (
         <div
-            className={`group relative flex transform flex-col justify-between rounded-2xl border p-5 shadow-sm backdrop-blur-md transition-all duration-300 ${
-                isMyWorker
-                    ? 'border-emerald-500/50 bg-emerald-500/[0.03] hover:-translate-y-1 hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.08)] dark:border-emerald-500/30 dark:bg-emerald-950/10 dark:hover:border-emerald-500/50'
-                    : isMyCreator
-                      ? 'border-purple-500/50 bg-purple-500/[0.03] hover:-translate-y-1 hover:border-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.08)] dark:border-purple-500/30 dark:bg-purple-950/10 dark:hover:border-purple-500/50'
-                      : isOngoingByOthers
-                        ? 'cursor-not-allowed border-slate-200 bg-slate-100/50 opacity-65 dark:border-slate-800/80 dark:bg-[#0c122c]/10'
-                        : 'border-slate-200 bg-white/70 hover:-translate-y-1 hover:border-indigo-500/45 hover:shadow-[0_0_20px_rgba(99,102,241,0.08)] dark:border-slate-800/80 dark:bg-[#0c122c]/40 dark:hover:border-indigo-500/40'
+            className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-5 transition-all duration-200 ${
+                isCompleted
+                    ? 'cursor-default border-emerald-500/30 bg-emerald-50/20 dark:border-emerald-950/60 dark:bg-gradient-to-b dark:from-[#061512] dark:to-[#030807]'
+                    : isMyWorker
+                      ? 'border-emerald-400/60 bg-emerald-50/40 hover:border-emerald-500 hover:shadow-sm dark:border-emerald-500/40 dark:bg-gradient-to-b dark:from-[#081b16] dark:to-[#030a08]'
+                      : isMyCreator
+                        ? 'border-indigo-400/60 bg-indigo-50/40 hover:border-indigo-500 hover:shadow-sm dark:border-indigo-500/40 dark:bg-gradient-to-b dark:from-[#0e0e24] dark:to-[#090914]'
+                        : isOngoingByOthers
+                          ? 'border-slate-300 bg-slate-100/90 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0a0d17] dark:to-[#06080f]'
+                          : 'border-slate-300 bg-white hover:border-indigo-400 hover:shadow-md dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:hover:border-slate-700'
             }`}
         >
-            <div>
-                {/* Badge header */}
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 font-['Orbitron']">
-                    <div className="flex flex-wrap items-center gap-1.5">
+            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+            <div className="relative z-10 flex h-full flex-col justify-between">
+                {/* Badge Header */}
+                <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2 text-[10px]">
+                    <div className="flex flex-wrap items-center gap-1.5 font-medium">
                         <span
-                            className={`rounded border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase ${rankInfo.color}`}
+                            className={`rounded border px-2 py-0.5 font-semibold ${rankInfo.color}`}
                         >
-                            Rank: {rankInfo.rank}
+                            {rankInfo.rank}
                         </span>
 
-                        {isMyWorker && (
-                            <span className="flex items-center gap-1 rounded bg-emerald-500/20 px-2 py-0.5 text-[9px] font-black tracking-wider text-emerald-700 uppercase dark:text-emerald-400">
+                        {isMyWorker && !isCompleted && (
+                            <span className="flex items-center gap-1.5 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400">
                                 <span className="relative flex h-1.5 w-1.5">
                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
@@ -102,31 +106,31 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                             </span>
                         )}
 
-                        {isMyCreator && (
-                            <span className="flex items-center gap-1 rounded bg-purple-500/20 px-2 py-0.5 text-[9px] font-black tracking-wider text-purple-700 uppercase dark:text-purple-400">
-                                Quest Anda
+                        {isMyCreator && !isCompleted && (
+                            <span className="rounded border border-indigo-500/30 bg-indigo-500/10 px-2 py-0.5 font-bold text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400">
+                                Proyek Anda
                             </span>
                         )}
 
-                        {isOngoingByOthers && (
-                            <span className="flex items-center gap-1 rounded border border-slate-300 bg-slate-200 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
-                                <Lock size={9} />
+                        {isOngoingByOthers && !isCompleted && (
+                            <span className="flex items-center gap-1 rounded border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400">
+                                <Lock size={10} />
                                 Terisi
                             </span>
                         )}
                     </div>
 
                     <span
-                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-black tracking-wider uppercase ${
+                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${
                             quest.status === 'open'
-                                ? 'border-green-500/20 bg-green-500/10 text-green-700 dark:text-green-400'
+                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
                                 : quest.status === 'ongoing'
-                                  ? 'border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-400'
+                                  ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
                                   : quest.status === 'approved' ||
                                       quest.status === 'payment' ||
                                       quest.status === 'submitted'
-                                    ? 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400'
-                                    : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
+                                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
+                                    : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
                         }`}
                     >
                         {quest.status === 'open'
@@ -144,44 +148,68 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
 
                 {/* Title */}
                 <h2
-                    className={`mb-2 line-clamp-1 font-['Oxanium'] text-sm font-extrabold tracking-tight transition-colors sm:text-base ${
-                        isMyWorker
-                            ? 'text-slate-900 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400'
-                            : isMyCreator
-                              ? 'text-slate-900 group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400'
-                              : 'text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400'
+                    className={`mb-2 line-clamp-1 text-sm font-bold tracking-tight transition-colors sm:text-base ${
+                        isCompleted
+                            ? 'text-slate-500 dark:text-slate-400'
+                            : isMyWorker
+                              ? 'text-slate-900 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400'
+                              : isMyCreator
+                                ? 'text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400'
+                                : isOngoingByOthers
+                                  ? 'text-slate-800 dark:text-slate-300'
+                                  : 'text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400'
                     }`}
                 >
                     {quest.title}
                 </h2>
 
                 {/* Description */}
-                <p className="mb-4 line-clamp-3 font-['Oxanium'] text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                <p
+                    className={`mb-4.5 line-clamp-3 text-xs font-normal leading-relaxed ${
+                        isCompleted
+                            ? 'text-slate-500 dark:text-slate-500'
+                            : isOngoingByOthers
+                              ? 'text-slate-600 dark:text-slate-400'
+                              : 'text-slate-600 dark:text-slate-400'
+                    }`}
+                >
                     {quest.description}
                 </p>
 
                 {/* Specifications details */}
-                <div className="mb-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 font-['Oxanium'] text-[11px] dark:border-slate-800/40">
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                        <DollarSign className="h-4 w-4 shrink-0 text-indigo-500" />
+                <div className="mb-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-[11px] dark:border-slate-800">
+                    <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
+                        <DollarSign className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />
                         <div>
-                            <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
-                                Rentang Gaji
+                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                Anggaran
                             </span>
-                            <span className="font-bold text-slate-700 dark:text-white">
+                            <span
+                                className={`font-bold ${
+                                    isCompleted || isOngoingByOthers
+                                        ? 'text-slate-700 dark:text-slate-300'
+                                        : 'text-slate-900 dark:text-white'
+                                }`}
+                            >
                                 {formatCurrency(quest.min_salary)} -{' '}
                                 {formatCurrency(quest.max_salary)}
                             </span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                        <Calendar className="h-4 w-4 shrink-0 text-indigo-500" />
+                    <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
+                        <Calendar className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />
                         <div>
-                            <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
-                                Deadline
+                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                Batas Waktu
                             </span>
-                            <span className="font-bold text-slate-700 dark:text-white">
+                            <span
+                                className={`font-bold ${
+                                    isCompleted || isOngoingByOthers
+                                        ? 'text-slate-700 dark:text-slate-300'
+                                        : 'text-slate-900 dark:text-white'
+                                }`}
+                            >
                                 {formatDate(quest.deadline)}
                             </span>
                         </div>
@@ -189,43 +217,32 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 </div>
             </div>
 
-            {/* Card Footer */}
-            <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800/40">
-                <div className="flex flex-col font-['Oxanium']">
-                    <span className="text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
-                        Diposting Oleh
-                    </span>
-                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+            <div className="flex items-center justify-between border-t border-slate-200 pt-3 dark:border-slate-800">
+                <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 font-extrabold text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+                        {quest.creator.name.substring(0, 1).toUpperCase()}
+                    </div>
+                    <span className="truncate max-w-[100px] font-bold text-slate-800 dark:text-slate-200">
                         {quest.creator.name}
-                        <span className="ml-1 text-[10px] font-medium text-slate-400">
-                            (
-                            {quest.creator.role === 'admin' ? 'Admin' : 'Siswa'}
-                            )
-                        </span>
                     </span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 font-['Oxanium'] text-xs font-semibold text-slate-400 dark:text-slate-500">
-                        <Users className="h-4 w-4" />
-                        <span>{quest.bids_count} Bid</span>
-                    </div>
-
+                {isCompleted ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                        Selesai ✓
+                    </span>
+                ) : (
                     <Link
                         href={`/student/quests/${quest._id}`}
-                        className={`rounded-xl px-3.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-all duration-300 ${
-                            isMyWorker
-                                ? 'bg-emerald-600 hover:bg-emerald-700 hover:shadow-[0_0_12px_rgba(16,185,129,0.3)]'
-                                : isMyCreator
-                                  ? 'bg-purple-600 hover:bg-purple-700 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)]'
-                                  : isOngoingByOthers
-                                    ? 'pointer-events-none cursor-not-allowed bg-slate-300 text-slate-500 hover:bg-slate-300 dark:bg-slate-800'
-                                    : 'bg-slate-900 hover:bg-indigo-600 hover:shadow-[0_0_12px_rgba(99,102,241,0.3)] dark:bg-blue-950/40 dark:hover:bg-indigo-600'
+                        className={`inline-flex items-center gap-1 text-xs font-bold transition-colors ${
+                            isOngoingByOthers
+                                ? 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
+                                : 'text-indigo-700 hover:underline dark:text-indigo-400'
                         }`}
                     >
-                        {isMyCreator ? 'Kelola' : 'Detail'}
+                        Lihat Proyek →
                     </Link>
-                </div>
+                )}
             </div>
         </div>
     );

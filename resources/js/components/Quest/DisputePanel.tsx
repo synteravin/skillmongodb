@@ -31,23 +31,22 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
 
     return (
         <>
-            <div className="space-y-4 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                <h3 className="flex items-center gap-2 border-b border-slate-100 pb-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-blue-200">
+            <div className="relative overflow-hidden space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                <h3 className="relative z-10 flex items-center gap-2 border-b border-slate-100 pb-3 text-sm font-bold text-slate-850 dark:border-slate-800 dark:text-slate-200">
                     <ShieldAlert
                         size={15}
-                        className="animate-pulse text-amber-500"
+                        className="text-amber-500"
                     />
                     Pusat Bantuan & Penyelesaian Sengketa
                 </h3>
-                <p className="text-xs font-medium leading-relaxed text-slate-500 dark:text-blue-300/60">
-                    Apakah ada kendala besar, ketidaksesuaian deliverables, atau
-                    wanprestasi dari pihak lawan? Anda dapat mengajukan banding agar
-                    Admin masuk sebagai mediator (arbitrase).
+                <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                    Apakah terjadi kendala dalam pengerjaan proyek, ketidaksesuaian hasil kerja (deliverables), atau pelanggaran kesepakatan? Anda dapat mengajukan banding agar administrator bertindak sebagai mediator arbitrase.
                 </p>
                 <button
                     type="button"
                     onClick={() => setShowDisputeModal(true)}
-                    className="w-full cursor-pointer rounded-xl border border-amber-500/20 bg-amber-500/10 py-2.5 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase transition-all hover:bg-amber-500/20 dark:text-amber-300"
+                    className="w-full cursor-pointer rounded-lg border border-amber-200 bg-amber-50/50 py-2.5 text-center text-xs font-bold text-amber-700 transition-colors hover:bg-amber-100/50 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-400"
                 >
                     Ajukan Banding (Dispute)
                 </button>
@@ -60,32 +59,30 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
                         onClick={() => setShowDisputeModal(false)}
                         className="absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm"
                     />
-                    <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 font-['Oxanium'] shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-                        <h3 className="mb-2 flex items-center gap-2 font-['Orbitron'] text-base font-bold tracking-wider text-slate-800 uppercase sm:text-lg dark:text-amber-400">
+                    <div className="relative overflow-hidden z-10 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                        <h3 className="relative z-10 mb-2 flex items-center gap-2 text-base font-bold text-slate-800 dark:text-amber-400">
                             <ShieldAlert className="text-amber-500" />
                             Ajukan Dispute / Banding
                         </h3>
                         <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
-                            Jelaskan kendala atau dasar perselisihan yang Anda alami.
-                            Laporan ini akan dipelajari oleh Admin untuk dilakukan
-                            arbitrase.
+                            Jelaskan detail kendala atau dasar perselisihan yang Anda alami. Laporan ini akan ditinjau oleh mediator admin untuk diproses lebih lanjut.
                         </p>
 
                         <form onSubmit={handleDisputeSubmit} className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
-                                    Alasan & Kronologi Banding{' '}
-                                    <span className="text-red-500">*</span>
+                                <label className="text-[10px] font-bold text-slate-450 uppercase">
+                                    Alasan & Kronologi Banding <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
                                     required
-                                    placeholder="Tuliskan detail kronologi dan alasan mengapa Anda mengajukan dispute..."
+                                    placeholder="Tuliskan secara rinci kronologi kejadian dan alasan pengajuan banding..."
                                     rows={4}
                                     value={disputeForm.data.reason}
                                     onChange={(e) =>
                                         disputeForm.setData('reason', e.target.value)
                                     }
-                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-amber-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-amber-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
                                 {disputeForm.errors.reason && (
                                     <p className="text-xs font-semibold text-red-500">
@@ -98,14 +95,14 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
                                 <button
                                     type="button"
                                     onClick={() => setShowDisputeModal(false)}
-                                    className="cursor-pointer rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 uppercase transition-all hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                                    className="cursor-pointer rounded-lg bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200 dark:bg-[#0d1117] dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={disputeForm.processing}
-                                    className="cursor-pointer rounded-xl bg-amber-600 px-4 py-2 font-['Orbitron'] text-xs font-semibold text-white uppercase transition-all hover:bg-amber-700 disabled:opacity-50"
+                                    className="cursor-pointer rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-amber-700 disabled:opacity-50"
                                 >
                                     {disputeForm.processing ? 'Mengirim...' : 'Kirim Laporan'}
                                 </button>

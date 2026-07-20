@@ -184,14 +184,14 @@ export default function Index({ quests, filters }: Props) {
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
                     {/* HEADER */}
-                    <div className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17]">
+                    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                         {/* Grid Pattern Motif */}
                         <div
                             className="pointer-events-none absolute inset-0 z-0"
                             style={{
                                 backgroundImage: `
-                                    linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
-                                    linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                                    linear-gradient(rgba(59, 40, 246, 0.04) 1px, transparent 1px),
+                                    linear-gradient(90deg, rgba(59, 40, 246, 0.04) 1px, transparent 1px)
                                 `,
                                 backgroundSize: '40px 40px',
                             }}
@@ -200,14 +200,14 @@ export default function Index({ quests, filters }: Props) {
                         <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
                         <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="max-w-2xl space-y-3">
-                                <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
+                            <div className="max-w-2xl space-y-2">
+                                <span className="inline-block text-[10px] font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
                                     Freelance Platform
                                 </span>
-                                <h1 className="text-2xl leading-snug font-semibold tracking-tight text-slate-800 md:text-[28px] dark:text-white">
+                                <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl dark:text-white">
                                     Quest Management (Freelance)
                                 </h1>
-                                <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
+                                <p className="text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400">
                                     Kelola lowongan pekerjaan freelance,
                                     moderasi penawaran masuk dari siswa, dan
                                     pantau proyek yang berjalan.
@@ -216,104 +216,97 @@ export default function Index({ quests, filters }: Props) {
 
                             <button
                                 onClick={openCreate}
-                                className="relative z-10 inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#3B28F6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#2a1ce0]"
+                                className="relative z-10 inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition-all hover:bg-indigo-700 cursor-pointer"
                             >
-                                <Plus size={18} />
+                                <Plus size={16} className="stroke-[2.5]" />
                                 Buat Quest Baru
                             </button>
                         </div>
                     </div>
 
                     {/* FILTERS & SEARCH */}
-                    <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm md:flex-row dark:border-slate-800 dark:bg-[#0d1117]">
-                        <div className="flex w-full flex-col items-center gap-3 sm:flex-row md:w-auto">
-                            <div className="relative w-full sm:w-64 md:w-80">
-                                <input
-                                    type="text"
-                                    placeholder="Cari judul atau deskripsi..."
-                                    value={searchQuery}
+                    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none" />
+                        <div className="relative z-10 flex flex-col items-center justify-between gap-4 md:flex-row">
+                            <div className="flex w-full flex-col items-center gap-3 sm:flex-row md:w-auto">
+                                <div className="relative w-full sm:w-64 md:w-80">
+                                    <input
+                                        type="text"
+                                        placeholder="Cari judul atau deskripsi..."
+                                        value={searchQuery}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/80 py-2 pr-4 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-500 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
+                                    />
+                                    <Search className="absolute top-2.5 left-3 h-4 w-4 text-slate-500 dark:text-slate-400" />
+                                </div>
+
+                                {/* Sort Selector */}
+                                <select
+                                    value={sortBy}
                                     onChange={(e) =>
-                                        setSearchQuery(e.target.value)
+                                        setSortBy(e.target.value as any)
                                     }
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pr-4 pl-10 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-900"
-                                />
-                                <Search className="absolute top-2.5 left-3 h-4.5 w-4.5 text-slate-400" />
+                                    className="w-full cursor-pointer rounded-lg border border-slate-300 bg-slate-50/80 px-3.5 py-2 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none sm:w-48 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
+                                >
+                                    <option value="latest">Urutan: Terbaru</option>
+                                    <option value="highest_salary">
+                                        Urutan: Gaji Tertinggi
+                                    </option>
+                                    <option value="closest_deadline">
+                                        Urutan: Deadline Terdekat
+                                    </option>
+                                </select>
                             </div>
 
-                            {/* Sort Selector */}
-                            <select
-                                value={sortBy}
-                                onChange={(e) =>
-                                    setSortBy(e.target.value as any)
-                                }
-                                className="dark:text-slate-350 w-full cursor-pointer rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 uppercase focus:border-indigo-500 focus:outline-none sm:w-44 dark:border-slate-800 dark:bg-slate-900"
-                            >
-                                <option value="latest">Urutan: Terbaru</option>
-                                <option value="highest_salary">
-                                    Urutan: Gaji Tertinggi
-                                </option>
-                                <option value="closest_deadline">
-                                    Urutan: Deadline Terdekat
-                                </option>
-                            </select>
-                        </div>
-
-                        <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
-                            {[
-                                'all',
-                                'draft',
-                                'open',
-                                'rejected',
-                                'ongoing',
-                                'completed',
-                            ].map((statusOption) => (
-                                <button
-                                    key={statusOption}
-                                    type="button"
-                                    onClick={() =>
-                                        setStatusFilter(statusOption as any)
-                                    }
-                                    className={`rounded-lg border px-4 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all ${
-                                        statusFilter === statusOption
-                                            ? statusOption === 'draft'
-                                                ? 'border-amber-500 bg-amber-600 text-white shadow-sm'
-                                                : statusOption === 'open'
-                                                  ? 'border-emerald-500 bg-emerald-600 text-white shadow-sm'
-                                                  : statusOption === 'rejected'
-                                                    ? 'border-red-500 bg-red-650 text-white shadow-sm'
-                                                    : statusOption === 'ongoing'
-                                                      ? 'border-sky-500 bg-sky-655 text-white shadow-sm'
-                                                      : statusOption === 'completed'
-                                                        ? 'border-slate-500 bg-slate-650 text-white shadow-sm'
-                                                        : 'border-[#3B28F6] bg-[#3B28F6] text-white shadow-sm'
-                                            : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-800/60 dark:bg-slate-900/40 dark:text-slate-350'
-                                    }`}
-                                >
-                                    {statusOption === 'all'
-                                        ? 'Semua'
-                                        : statusOption === 'draft'
-                                          ? 'Draft'
-                                          : statusOption === 'open'
-                                            ? 'Tersedia'
-                                            : statusOption === 'rejected'
-                                              ? 'Ditolak'
-                                              : statusOption === 'ongoing'
-                                                ? 'Berjalan'
-                                                : 'Selesai'}
-                                </button>
-                            ))}
+                            <div className="flex w-full items-center gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0 scrollbar-none">
+                                {[
+                                    'all',
+                                    'draft',
+                                    'open',
+                                    'rejected',
+                                    'ongoing',
+                                    'completed',
+                                ].map((statusOption) => (
+                                    <button
+                                        key={statusOption}
+                                        type="button"
+                                        onClick={() =>
+                                            setStatusFilter(statusOption as any)
+                                        }
+                                        className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                                            statusFilter === statusOption
+                                                ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                                                : 'border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400 dark:hover:text-white'
+                                        }`}
+                                    >
+                                        {statusOption === 'all'
+                                            ? 'Semua'
+                                            : statusOption === 'draft'
+                                              ? 'Draft'
+                                              : statusOption === 'open'
+                                                ? 'Tersedia'
+                                                : statusOption === 'rejected'
+                                                  ? 'Ditolak'
+                                                  : statusOption === 'ongoing'
+                                                    ? 'Berjalan'
+                                                    : 'Selesai'}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
                     {/* QUEST TABLE */}
-                    <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-[#0d1117]">
+                    <div className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm dark:border-slate-800 dark:bg-[#0d1117]">
                         {sortedFilteredQuests.length === 0 ? (
                             <div className="py-20 text-center text-slate-500">
-                                <Briefcase className="mx-auto mb-3 h-12 w-12 text-slate-300" />
-                                <p className="text-base font-semibold">
+                                <Briefcase className="mx-auto mb-3 h-10 w-10 text-slate-400 dark:text-slate-600" />
+                                <p className="text-sm font-extrabold text-slate-900 dark:text-slate-300">
                                     Tidak ada Quest yang ditemukan
                                 </p>
-                                <p className="mt-1 text-sm text-slate-400">
+                                <p className="mt-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
                                     Coba sesuaikan filter atau tambahkan quest
                                     baru.
                                 </p>
@@ -322,61 +315,58 @@ export default function Index({ quests, filters }: Props) {
                             <div className="overflow-x-auto">
                                 <table className="w-full border-collapse text-left">
                                     <thead>
-                                        <tr className="border-b border-slate-200/80 bg-slate-50 text-[10px] font-extrabold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-900/50">
-                                            <th className="px-6 py-4">Quest</th>
-                                            <th className="px-6 py-4">Gaji / Anggaran</th>
-                                            <th className="px-6 py-4">Deadline</th>
-                                            <th className="px-6 py-4">Pembuat</th>
-                                            <th className="px-6 py-4">Pekerja</th>
-                                            <th className="px-6 py-4">Bids</th>
-                                            <th className="px-6 py-4">Status</th>
-                                            <th className="px-6 py-4 text-right">Aksi</th>
+                                        <tr className="border-b border-slate-300 bg-slate-100/80 text-[10px] font-extrabold tracking-wider text-slate-600 uppercase dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-400">
+                                            <th className="px-6 py-3.5">Quest</th>
+                                            <th className="px-6 py-3.5">Gaji / Anggaran</th>
+                                            <th className="px-6 py-3.5">Deadline</th>
+                                            <th className="px-6 py-3.5">Pembuat</th>
+                                            <th className="px-6 py-3.5">Pekerja</th>
+                                            <th className="px-6 py-3.5">Bids</th>
+                                            <th className="px-6 py-3.5">Status</th>
+                                            <th className="px-6 py-3.5 text-right">Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-200/60 text-sm dark:divide-slate-800/60">
+                                    <tbody className="divide-y divide-slate-200/80 text-xs dark:divide-slate-800/60">
                                         {sortedFilteredQuests.map((quest) => (
                                             <tr
                                                 key={quest._id}
-                                                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/20"
+                                                className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/40"
                                             >
                                                 <td className="px-6 py-4">
                                                     <span className="block max-w-xs truncate font-bold text-slate-900 dark:text-white">
                                                         {quest.title}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-350 whitespace-nowrap">
+                                                <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
                                                     {quest.accepted_bid_amount ? (
-                                                        <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                                                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
                                                             {formatCurrency(quest.accepted_bid_amount)}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-xs font-bold">
+                                                        <span className="font-bold">
                                                             {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                                                        <Calendar size={13} className="shrink-0 text-indigo-500" />
-                                                        <span>{formatDate(quest.deadline)}</span>
-                                                    </div>
+                                                    <span className="font-semibold text-slate-600 dark:text-slate-400">
+                                                        {formatDate(quest.deadline)}
+                                                    </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-600 uppercase border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700/50">
+                                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-200 text-[10px] font-extrabold text-slate-700 uppercase border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
                                                             {quest.creator.name.charAt(0)}
                                                         </div>
-                                                        <div>
-                                                            <span className="block font-semibold text-slate-800 dark:text-slate-200">
-                                                                {quest.creator.name}
-                                                            </span>
-                                                        </div>
+                                                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                                            {quest.creator.name}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {quest.worker ? (
                                                         <div className="flex items-center gap-2">
-                                                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 uppercase border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/30">
+                                                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-extrabold text-emerald-800 uppercase border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800">
                                                                 {quest.worker.name.charAt(0)}
                                                             </div>
                                                             <span className="font-semibold text-slate-800 dark:text-slate-200">
@@ -384,7 +374,7 @@ export default function Index({ quests, filters }: Props) {
                                                             </span>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center gap-1.5 text-slate-400">
+                                                        <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
                                                             <span className="relative flex h-1.5 w-1.5 shrink-0">
                                                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-400 opacity-75"></span>
                                                                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-slate-400"></span>
@@ -394,27 +384,24 @@ export default function Index({ quests, filters }: Props) {
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Users size={14} className="text-slate-400" />
-                                                        <span className="font-bold text-slate-700 dark:text-slate-300">
-                                                            {quest.bids_count}
-                                                        </span>
-                                                    </div>
+                                                    <span className="font-bold text-slate-900 dark:text-slate-200">
+                                                        {quest.bids_count}
+                                                    </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span
-                                                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-extrabold tracking-wider uppercase border ${
+                                                        className={`inline-flex items-center rounded-md px-2.5 py-1 text-[10px] font-extrabold tracking-wider uppercase border ${
                                                             quest.status === 'open'
-                                                                ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-450 dark:bg-emerald-955/20 dark:border-emerald-900/30'
+                                                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
                                                                 : quest.status === 'draft'
-                                                                  ? 'bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-450 dark:bg-amber-955/20 dark:border-amber-900/30'
+                                                                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
                                                                   : quest.status === 'rejected'
-                                                                    ? 'bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-450 dark:bg-red-955/20 dark:border-red-900/30'
+                                                                    ? 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400'
                                                                     : quest.status === 'expired'
-                                                                      ? 'bg-rose-500/10 text-rose-700 border-rose-500/20 dark:text-rose-450 dark:bg-rose-955/20 dark:border-rose-900/30'
+                                                                      ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
                                                                       : quest.status === 'ongoing'
-                                                                        ? 'bg-sky-500/10 text-sky-700 border-sky-500/20 dark:text-sky-450 dark:bg-sky-955/20 dark:border-sky-900/30'
-                                                                        : 'bg-slate-500/10 text-slate-700 border-slate-500/20 dark:text-slate-400 dark:bg-slate-900/60 dark:border-slate-800'
+                                                                        ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
+                                                                        : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                                         }`}
                                                     >
                                                         {quest.status === 'open'
@@ -435,53 +422,39 @@ export default function Index({ quests, filters }: Props) {
                                                         <Link
                                                             href={`/admin/quests/${quest._id}`}
                                                             title="Detail & Bid"
-                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 transition-all hover:bg-indigo-100 hover:text-indigo-700 dark:text-slate-400 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400"
                                                         >
-                                                            <Eye size={15} />
+                                                            className="rounded-lg bg-indigo-50 px-3 py-1.5 text-[11px] font-bold text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/60 transition-colors"
+                                                        >
+                                                            Detail
                                                         </Link>
                                                         <button
-                                                            onClick={() => openEdit(quest)}
-                                                            title="Edit"
-                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400"
+                                                            onClick={() => handleDeleteQuest(quest._id)}
+                                                            className="cursor-pointer rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                                                            title="Hapus Quest"
                                                         >
-                                                            <Pencil size={15} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(quest._id)}
-                                                            title="Delete"
-                                                            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-600"
-                                                        >
-                                                            <Trash2 size={15} />
+                                                            <Trash2 size={14} />
                                                         </button>
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
                         {/* Pagination Footer */}
-                        {quests.last_page > 1 && (
-                            <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200/80 px-6 py-4 sm:flex-row dark:border-slate-800 dark:bg-slate-900/10">
-                                <span className="text-xs text-slate-500 dark:text-slate-400">
-                                    Menampilkan{' '}
-                                    <span className="font-semibold text-slate-800 dark:text-white">
-                                        {quests.from}
-                                    </span>{' '}
-                                    –{' '}
-                                    <span className="font-semibold text-slate-800 dark:text-white">
                                         {quests.to}
                                     </span>{' '}
                                     dari{' '}
-                                    <span className="font-semibold text-slate-800 dark:text-white">
+                                    <span className="font-bold text-slate-900 dark:text-white">
                                         {quests.total}
                                     </span>{' '}
                                     quest
                                 </span>
 
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1.5">
                                     {quests.links.map((link, i) => {
                                         const labelLower = link.label.toLowerCase();
                                         const isPrev = labelLower.includes('previous') || labelLower.includes('&laquo;') || labelLower.includes('laquo');
@@ -498,10 +471,10 @@ export default function Index({ quests, filters }: Props) {
                                                 key={i}
                                                 href={link.url}
                                                 preserveScroll
-                                                className={`flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-xs font-semibold tabular-nums transition-colors ${
+                                                className={`flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-xs font-bold tabular-nums transition-colors ${
                                                     link.active
-                                                        ? 'border border-indigo-300 bg-indigo-50 text-indigo-600 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-400'
-                                                        : 'border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-800 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200'
+                                                        ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                                                        : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300 dark:hover:text-white'
                                                 }`}
                                             >
                                                 {renderLabel()}
@@ -509,7 +482,7 @@ export default function Index({ quests, filters }: Props) {
                                         ) : (
                                             <span
                                                 key={i}
-                                                className="cursor-not-allowed flex h-7 min-w-7 items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
+                                                className="cursor-not-allowed flex h-7 min-w-7 items-center justify-center rounded-lg border border-slate-300 bg-slate-100 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-60 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-600"
                                             >
                                                 {renderLabel()}
                                             </span>
@@ -519,7 +492,7 @@ export default function Index({ quests, filters }: Props) {
                             </div>
                         )}
                     </div>
-                </div>
+                </div>v>
             </div>
 
             {/* CREATE/EDIT MODAL */}

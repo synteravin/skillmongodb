@@ -88,7 +88,7 @@ export default function CreateSubmission({ group }: Props) {
                                     onChange={(e) =>
                                         setData('title', e.target.value)
                                     }
-                                    className="w-full rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3.5 text-slate-900 shadow-sm transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder-slate-500 dark:focus:bg-[#0d0f17]"
                                     placeholder="e.g. Final Project: E-commerce Dashboard"
                                     autoFocus
                                 />
@@ -118,7 +118,7 @@ export default function CreateSubmission({ group }: Props) {
                                     onChange={(e) =>
                                         setData('description', e.target.value)
                                     }
-                                    className="w-full resize-none rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3.5 text-slate-900 shadow-sm transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800"
+                                    className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder-slate-500 dark:focus:bg-[#0d0f17]"
                                     placeholder="Describe the task requirements, instructions, and grading criteria..."
                                 />
                                 {errors.description && (
@@ -145,16 +145,16 @@ export default function CreateSubmission({ group }: Props) {
                                                     e.target.value,
                                                 )
                                             }
-                                            className="w-full appearance-none rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3.5 text-slate-900 shadow-sm transition-colors focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:bg-slate-800"
+                                            className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 pr-10 text-slate-900 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:focus:bg-[#0d0f17]"
                                         >
-                                            <option value="file">
+                                            <option value="file" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
                                                 File Upload Only
                                             </option>
-                                            <option value="link">
+                                            <option value="link" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
                                                 URL Link Only
                                             </option>
-                                            <option value="both">
-                                                Both (File & Link)
+                                            <option value="both" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
+                                                Both (File &amp; Link)
                                             </option>
                                         </select>
                                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 dark:text-slate-500">
@@ -193,7 +193,7 @@ export default function CreateSubmission({ group }: Props) {
                                         onChange={(e) =>
                                             setData('deadline', e.target.value)
                                         }
-                                        className="w-full rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3 text-slate-900 [color-scheme:light] shadow-sm transition-colors focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:[color-scheme:dark] dark:focus:bg-slate-800"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 [color-scheme:light] shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:[color-scheme:dark] dark:focus:bg-[#0d0f17]"
                                     />
                                     {errors.deadline && (
                                         <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-500">

@@ -75,7 +75,7 @@ export default function EditSubmission({ submission }: Props) {
                         >
                             {/* Section Header */}
                             <div className="flex items-center gap-3">
-                                <div className="rounded-xl border border-slate-200 bg-slate-100 p-2.5 text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
+                                <div className="rounded-xl border border-slate-200 bg-slate-100 p-2.5 text-slate-600 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300">
                                     <Edit className="h-5 w-5" />
                                 </div>
                                 <h2 className="text-lg font-bold text-slate-800 dark:text-white">
@@ -96,7 +96,7 @@ export default function EditSubmission({ submission }: Props) {
                                         setData('title', e.target.value)
                                     }
                                     placeholder="Enter submission title..."
-                                    className="dark:placeholder:text-slate-605 w-full rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:text-slate-100"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder-slate-500 dark:focus:bg-[#0d0f17]"
                                 />
                                 {errors.title && (
                                     <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-500">
@@ -125,7 +125,7 @@ export default function EditSubmission({ submission }: Props) {
                                         setData('description', e.target.value)
                                     }
                                     placeholder="Describe the assignment requirements..."
-                                    className="dark:placeholder:text-slate-655 w-full resize-none rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:text-slate-100"
+                                    className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder-slate-500 dark:focus:bg-[#0d0f17]"
                                 />
                                 {errors.description && (
                                     <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-500">
@@ -152,15 +152,15 @@ export default function EditSubmission({ submission }: Props) {
                                                     e.target.value,
                                                 )
                                             }
-                                            className="w-full appearance-none rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3 pr-10 text-slate-900 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:text-slate-100"
+                                            className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 pr-10 text-slate-900 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:focus:bg-[#0d0f17]"
                                         >
-                                            <option value="file">
+                                            <option value="file" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
                                                 File Upload Only
                                             </option>
-                                            <option value="link">
+                                            <option value="link" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
                                                 URL Link Only
                                             </option>
-                                            <option value="both">
+                                            <option value="both" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
                                                 Both (File &amp; Link)
                                             </option>
                                         </select>
@@ -200,7 +200,7 @@ export default function EditSubmission({ submission }: Props) {
                                         onChange={(e) =>
                                             setData('deadline', e.target.value)
                                         }
-                                        className="w-full rounded-xl border border-slate-200/90 bg-slate-50/80 px-4 py-3 text-slate-900 [color-scheme:light] shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:ring-1 focus:ring-indigo-500/20 focus:outline-none dark:border-slate-800 dark:text-slate-100 dark:[color-scheme:dark]"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-slate-900 [color-scheme:light] shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:[color-scheme:dark] dark:focus:bg-[#0d0f17]"
                                     />
                                     {errors.deadline && (
                                         <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-500">
@@ -212,7 +212,7 @@ export default function EditSubmission({ submission }: Props) {
                             </div>
 
                             {/* Replace Attachment */}
-                            <div className="border-t border-slate-100 pt-4 dark:border-slate-800">
+                            <div className="border-t border-slate-200 pt-4 dark:border-slate-800">
                                 <label className="mb-3 ml-1 flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                     <Paperclip className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
                                     Replace Attachment{' '}
@@ -220,16 +220,16 @@ export default function EditSubmission({ submission }: Props) {
                                         (Optional)
                                     </span>
                                 </label>
-                                <div className="flex justify-center rounded-xl border border-dashed border-slate-300 bg-slate-100/40 px-6 py-10 transition-colors hover:border-slate-400 hover:bg-slate-100/70 dark:border-slate-700 dark:bg-slate-950/40 dark:hover:border-slate-600 dark:hover:bg-slate-900/50">
+                                <div className="flex justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50/80 px-6 py-10 transition-colors hover:border-slate-400 hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:hover:border-slate-700 dark:hover:bg-[#0a0d17]">
                                     <div className="text-center">
                                         <Paperclip
-                                            className="mx-auto mb-3 h-10 w-10 text-slate-300 dark:text-slate-500"
+                                            className="mx-auto mb-3 h-10 w-10 text-slate-400 dark:text-slate-500"
                                             aria-hidden="true"
                                         />
                                         <div className="flex justify-center text-sm leading-6 text-slate-600 dark:text-slate-400">
                                             <label
                                                 htmlFor="file-upload"
-                                                className="relative cursor-pointer rounded-md font-semibold text-slate-700 underline decoration-slate-300 underline-offset-2 focus-within:ring-1 focus-within:ring-slate-400 focus-within:outline-none hover:text-slate-900 dark:text-slate-200 dark:decoration-slate-600 dark:hover:text-white"
+                                                className="relative cursor-pointer rounded-md font-semibold text-slate-800 underline decoration-slate-300 underline-offset-2 hover:text-indigo-600 dark:text-slate-200 dark:decoration-slate-600 dark:hover:text-white"
                                             >
                                                 <span>Select new file</span>
                                                 <input
@@ -267,17 +267,17 @@ export default function EditSubmission({ submission }: Props) {
                             </div>
 
                             {/* Actions */}
-                            <div className="flex flex-col-reverse items-center justify-end gap-3 border-t border-slate-100 pt-4 sm:flex-row dark:border-slate-800">
+                            <div className="flex flex-col-reverse items-center justify-end gap-3 border-t border-slate-200 pt-4 sm:flex-row dark:border-slate-800">
                                 <Link
                                     href={`/mentor/career-groups/${submission.group_id}/submissions`}
-                                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-6 py-2.5 font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-white"
+                                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-slate-100 px-6 py-2.5 font-medium text-slate-700 transition-colors hover:bg-slate-200 sm:w-auto dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                                 >
                                     Cancel
                                 </Link>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-2.5 font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:text-slate-900 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
+                                    className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                                 >
                                     <Save className="h-4 w-4" />
                                     {processing

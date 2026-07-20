@@ -1,29 +1,18 @@
-import { useForm, Link, router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import {
-    ArrowLeft,
-    Send,
-    Check,
     Calendar,
     DollarSign,
     Briefcase,
     FileText,
     User,
-    Star,
-    Paperclip,
-    Download,
-    Image as ImageIcon,
-    FileArchive,
     CheckCircle2,
     MessageSquare,
-    Eye,
-    EyeOff,
     Clock,
     Award,
     ShieldAlert,
 } from 'lucide-react';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
-import ConfirmModal from '@/components/ConfirmModal';
 import RevisionHistory from '@/components/Quest/RevisionHistory';
 import QuestStepper from '@/components/Quest/QuestStepper';
 import QuestAttachments from '@/components/Quest/QuestAttachments';
@@ -94,7 +83,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             hour: '2-digit',
             minute: '2-digit',
         });
-        return `${datePart} pukul ${timePart}`;
+        return `${datePart} ${timePart}`;
     };
 
     // Calculate days remaining
@@ -107,7 +96,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             return {
                 text: 'Selesai',
                 className:
-                    'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+                    'bg-emerald-50 text-emerald-700 dark:bg-slate-950 dark:text-emerald-450 border border-slate-205 dark:border-slate-800',
                 isExpired: false,
                 isLate: false,
             };
@@ -117,7 +106,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             return {
                 text: 'Dibatalkan',
                 className:
-                    'bg-red-500/10 text-red-650 dark:text-red-400 border border-red-500/20',
+                    'bg-red-55 text-red-700 dark:bg-slate-950 dark:text-red-400 border border-slate-205 dark:border-slate-800',
                 isExpired: false,
                 isLate: false,
             };
@@ -132,17 +121,17 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
             let timeStr = '';
             if (days > 0) {
-                timeStr = `${days}h ${hours}j Tersisa`;
+                timeStr = `${days} Hari ${hours} Jam`;
             } else if (hours > 0) {
-                timeStr = `${hours}j ${minutes}m ...`;
+                timeStr = `${hours} Jam ${minutes} Menit`;
             } else {
-                timeStr = `${minutes}m Tersisa`;
+                timeStr = `${minutes} Menit`;
             }
 
             return {
-                text: timeStr,
+                text: `${timeStr} Tersisa`,
                 className:
-                    'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20',
+                    'bg-indigo-50 text-indigo-700 dark:bg-slate-950 dark:text-indigo-400 border border-slate-205 dark:border-slate-800',
                 isExpired: false,
                 isLate: false,
             };
@@ -155,16 +144,16 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
             let lateStr = '';
             if (days > 0) {
-                lateStr = `${days}h ${hours}j`;
+                lateStr = `${days} Hari ${hours} Jam`;
             } else {
-                lateStr = `${hours}j`;
+                lateStr = `${hours} Jam`;
             }
 
             if (quest.status === 'open' || quest.status === 'draft') {
                 return {
-                    text: 'Pendaftaran Ditutup (Expired)',
+                    text: 'Pendaftaran Ditutup',
                     className:
-                        'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20',
+                        'bg-slate-100 text-slate-700 dark:bg-slate-950 dark:text-slate-400 border border-slate-205 dark:border-slate-800',
                     isExpired: true,
                     isLate: false,
                 };
@@ -172,7 +161,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                 return {
                     text: `Terlambat ${lateStr}`,
                     className:
-                        'bg-rose-500/10 text-rose-650 dark:text-rose-400 border border-rose-500/20 font-bold',
+                        'bg-red-50 text-red-705 dark:bg-slate-950 dark:text-red-400 border border-slate-205 dark:border-slate-800 font-semibold',
                     isExpired: true,
                     isLate: true,
                 };
@@ -181,146 +170,177 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     };
 
     return (
-        <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-slate-50 p-4 font-sans text-slate-800 transition-colors duration-300 sm:p-6 md:p-8 dark:bg-[#060813] dark:text-slate-100">
-            {/* Ambient Background Glows */}
-            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-                <div className="absolute top-0 right-1/4 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-[150px]" />
-                <div className="absolute bottom-10 left-1/4 h-[400px] w-[400px] rounded-full bg-purple-500/10 blur-[150px]" />
+        <div
+            className="flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8fafc] text-slate-800 transition-colors duration-250 dark:bg-[#030712] dark:text-white"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+            {/* HEADER - Gaming style, consistent with other pages */}
+            <div className="w-full flex-shrink-0 px-1 pt-0.5">
+                <div
+                    className="relative rounded-md p-[2px] md:p-[3px]"
+                    style={{
+                        backgroundImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
+                    }}
+                >
+                    <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
+                        {/* Back Button */}
+                        <Link
+                            href="/student/quests"
+                            className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
+                        >
+                            <svg
+                                viewBox="0 0 48 48"
+                                className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
+                            >
+                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
+                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
+                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
+                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                            </svg>
+                        </Link>
+
+                        {/* Title */}
+                        <h1 className="flex-1 text-center font-['Orbitron'] text-sm font-bold tracking-[0.05em] text-[#1e3a8a] uppercase min-[390px]:text-base min-[390px]:tracking-[0.1em] sm:text-xl md:text-2xl md:tracking-[0.15em] lg:text-3xl 2xl:text-4xl dark:text-white">
+                            DETAIL PROYEK
+                        </h1>
+
+                        {/* Spacer to center title on mobile */}
+                        <div className="h-10 w-10 shrink-0 md:hidden" />
+                    </div>
+                </div>
             </div>
 
-            <div className="z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6">
-                {/* 1. RPG HERO QUEST HEADER */}
-                <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-6 shadow-xl dark:border-[#1d2645] dark:from-[#0d1226]/85 dark:to-[#090d1a]/95">
-                    {/* Decorative abstract glows */}
-                    <div className="absolute top-0 right-0 -z-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
-                    <div className="absolute bottom-0 left-0 -z-10 h-24 w-24 rounded-full bg-purple-500/10 blur-xl" />
+            <div className="relative z-10 flex min-h-0 w-full max-w-none flex-1 flex-col space-y-6 px-4 py-4 sm:px-6 lg:px-10">
+                
+                {/* 1. CONTRACT HEADER CARD */}
+                <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-slate-50/70 p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                    {/* Grid Pattern Motif */}
+                    <div
+                        className="pointer-events-none absolute inset-0 z-0"
+                        style={{
+                            backgroundImage: `
+                                linear-gradient(rgba(59, 40, 246, 0.05) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(59, 40, 246, 0.05) 1px, transparent 1px)
+                            `,
+                            backgroundSize: '35px 35px',
+                        }}
+                    />
 
-                    <div className="space-y-6">
-                        {/* Breadcrumbs & Badge */}
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <Link
-                                href="/student/quests"
-                                className="inline-flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
-                            >
-                                <ArrowLeft size={14} />
-                                Kembali ke Board
-                            </Link>
+                    <div className="relative z-10 space-y-4">
+                        
+                        {/* Status pill top row */}
+                        <div className="flex items-center justify-between gap-4">
+                            <span className="text-[10px] font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
+                                PROYEK FREELANCE
+                            </span>
 
                             <div>
                                 <span
-                                    className={`rounded-xl border px-4 py-1.5 font-['Orbitron'] text-xs font-black tracking-wider uppercase ${
+                                    className={`rounded-lg border px-3 py-1 text-xs font-bold uppercase ${
                                         quest.status === 'open'
-                                            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                            ? 'border-emerald-250 bg-emerald-50 text-emerald-705 dark:border-slate-800 dark:bg-slate-950 dark:text-emerald-400'
                                             : quest.status === 'draft'
-                                              ? 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                              ? 'border-amber-250 bg-amber-50 text-amber-705 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
                                               : quest.status === 'rejected'
-                                                ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
+                                                ? 'border-red-255 bg-red-50 text-red-705 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
                                                 : quest.status === 'expired'
-                                                  ? 'text-red-650 border-red-500/20 bg-red-500/10 dark:text-red-400'
+                                                  ? 'border-red-255 bg-red-50 text-red-705 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
                                                   : quest.status === 'ongoing'
-                                                    ? 'border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
-                                                    : quest.status ===
-                                                        'approved'
-                                                      ? 'border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400'
-                                                      : quest.status ===
-                                                          'payment'
-                                                        ? 'text-amber-650 border-amber-500/25 bg-amber-500/10 dark:text-amber-400'
-                                                        : quest.status ===
-                                                            'submitted'
-                                                          ? 'border-yellow-500/20 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
-                                                          : 'border-slate-500/20 bg-slate-500/10 text-slate-600 dark:text-slate-400'
+                                                    ? 'border-indigo-250 bg-indigo-50 text-indigo-707 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
+                                                    : quest.status === 'approved'
+                                                      ? 'border-purple-250 bg-purple-50 text-purple-707 dark:border-slate-800 dark:bg-slate-950 dark:text-purple-400'
+                                                      : quest.status === 'payment'
+                                                        ? 'border-amber-250 bg-amber-50 text-amber-750 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
+                                                        : quest.status === 'submitted'
+                                                          ? 'border-yellow-255 bg-yellow-50 text-yellow-750 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
+                                                          : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
                                     }`}
                                 >
                                     {quest.status === 'open'
-                                        ? 'Tersedia'
+                                        ? 'Pendaftaran Dibuka'
                                         : quest.status === 'draft'
-                                          ? 'Menunggu Review'
+                                          ? 'Menunggu Moderasi'
                                           : quest.status === 'rejected'
                                             ? 'Ditolak'
                                             : quest.status === 'expired'
                                               ? 'Kadaluarsa'
                                               : quest.status === 'ongoing'
-                                                ? 'Pengerjaan'
+                                                ? 'Pengerjaan Proyek'
                                                 : quest.status === 'approved'
-                                                  ? 'Disetujui'
+                                                  ? 'Draf Disetujui'
                                                   : quest.status === 'payment'
-                                                    ? 'Pembayaran'
-                                                    : quest.status ===
-                                                        'submitted'
-                                                      ? 'Ditinjau'
-                                                      : 'Selesai'}
+                                                    ? 'Proses Transfer'
+                                                    : quest.status === 'submitted'
+                                                      ? 'Ditinjau Klien'
+                                                      : 'Proyek Selesai'}
                                 </span>
                             </div>
                         </div>
 
-                        {/* Title and Creator Info */}
-                        <div className="space-y-3 font-['Oxanium']">
-                            <h1 className="text-2xl leading-tight font-extrabold tracking-tight text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
-                                {quest.title}
+                        {/* Title and Client Details */}
+                        <div className="space-y-3">
+                            <h1 className="w-full text-xl font-extrabold tracking-tight text-slate-900 break-words whitespace-normal leading-snug sm:text-2xl md:text-3xl dark:text-white">
+                                {quest.title} 
                             </h1>
 
-                            <div className="flex items-center gap-2.5 text-xs text-slate-500 sm:text-sm dark:text-blue-300/80">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                            <div className="flex items-center gap-2.5 text-xs text-slate-505 dark:text-slate-400">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-655 dark:bg-slate-950 dark:text-slate-300">
                                     <User className="h-3.5 w-3.5" />
                                 </div>
                                 <div>
-                                    <span className="mr-1 text-[10px] font-semibold text-slate-400 uppercase">
-                                        Pembuat:
+                                    <span className="mr-1 text-[10px] font-bold text-slate-400 uppercase">
+                                        Pemilik Lowongan:
                                     </span>
                                     <span className="font-bold text-slate-800 dark:text-white">
                                         {quest.creator.name}
                                     </span>
                                     <span className="ml-1.5 text-xs font-normal text-slate-400">
-                                        (
-                                        {quest.creator.role === 'admin'
-                                            ? 'Administrator'
-                                            : 'Siswa'}
-                                        )
+                                        ({quest.creator.role === 'admin' ? 'Administrator' : 'Siswa'})
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Status Banners */}
+                        {/* Warning/Status Cards */}
                         {quest.status === 'draft' && (
-                            <div className="flex gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-4 font-['Oxanium']">
-                                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+                            <div className="flex gap-3 rounded-lg border border-amber-250 bg-amber-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
+                                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 animate-pulse" />
                                 <div>
-                                    <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
-                                        ⏳ Menunggu Persetujuan Admin
+                                    <span className="block text-xs font-bold text-amber-705 dark:text-amber-400">
+                                        Menunggu Persetujuan Admin
                                     </span>
-                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
-                                        Quest Anda telah berhasil diajukan and
-                                        sedang menunggu moderasi/persetujuan
-                                        dari pihak Admin sebelum dipublikasikan
-                                        ke papan quest umum.
+                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                        Papan proyek ini masih dalam tahap pengajuan. Administrator akan memeriksa deskripsi dan budget penawaran sebelum lowongan ini dipublikasikan secara umum.
                                     </p>
                                 </div>
                             </div>
                         )}
 
                         {quest.status === 'rejected' && (
-                            <div className="space-y-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
+                            <div className="space-y-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
                                 <div className="flex gap-3">
-                                    <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                                    <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
                                     <div>
-                                        <span className="text-red-650 block font-['Orbitron'] text-xs font-bold tracking-wider uppercase dark:text-red-400">
-                                            ❌ Quest Ditolak Oleh Admin
+                                        <span className="block text-xs font-bold text-red-750 dark:text-red-400">
+                                            Pengajuan Proyek Ditolak Administrator
                                         </span>
-                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
-                                            Pihak administrator telah menolak
-                                            pengajuan quest ini. Anda dapat
-                                            memperbaiki detail quest di bawah
-                                            ini sesuai alasan penolakannya.
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-505 dark:text-slate-400">
+                                            Pihak administrator telah membatalkan atau menolak rilis lowongan proyek ini. Silakan perbaiki parameter proyek di bawah sesuai catatan alasan penolakan.
                                         </p>
                                     </div>
                                 </div>
                                 {quest.rejection_note && (
-                                    <div className="rounded-lg border border-red-500/10 bg-red-500/5 p-3">
-                                        <strong className="block font-['Orbitron'] text-[10px] tracking-wider text-red-500 uppercase">
-                                            Alasan Penolakan:
+                                    <div className="rounded border border-slate-205 bg-red-50/10 p-3 dark:border-slate-800 dark:bg-[#040812]">
+                                        <strong className="block text-[10px] tracking-wider text-red-600 uppercase">
+                                            Catatan Penolakan:
                                         </strong>
-                                        <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300">
+                                        <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-655 dark:text-slate-300">
                                             {quest.rejection_note}
                                         </p>
                                     </div>
@@ -329,17 +349,14 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         )}
 
                         {quest.status === 'expired' && (
-                            <div className="flex gap-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
-                                <Clock className="text-red-650 mt-0.5 h-5 w-5 shrink-0 dark:text-red-400" />
+                            <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
+                                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
                                 <div>
-                                    <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
-                                        🚨 Quest Kadaluarsa (Expired)
+                                    <span className="block text-xs font-bold text-red-705 dark:text-red-400">
+                                        Proyek Kadaluarsa (Expired)
                                     </span>
-                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
-                                        Quest ini telah kadaluarsa karena
-                                        melewati tenggat waktu pengerjaan
-                                        sebelum selesai. Pekerja dibebaskan dari
-                                        tugas ini secara otomatis oleh sistem.
+                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-405">
+                                        Proyek ini telah melewati batas masa pendaftaran atau tenggat kerja tanpa adanya deliverables diserahkan. Kontrak dibatalkan secara otomatis oleh sistem.
                                     </p>
                                 </div>
                             </div>
@@ -348,158 +365,156 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         {['open', 'ongoing'].includes(quest.status) &&
                             new Date(quest.deadline).getTime() <
                                 new Date().getTime() && (
-                                <div className="flex gap-3 rounded-xl border border-red-500/25 bg-red-500/10 p-4 font-['Oxanium']">
-                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 animate-pulse text-red-600 dark:text-red-400" />
+                                <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
+                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 text-red-650 animate-pulse" />
                                     <div>
-                                        <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
-                                            ⚠️ Peringatan: Tenggat Waktu
-                                            Terlewati
+                                        <span className="block text-xs font-bold text-red-700 dark:text-red-400">
+                                            Batas Waktu Telah Terlewati
                                         </span>
-                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-300">
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-505 dark:text-slate-400">
                                             {quest.status === 'open'
-                                                ? 'Batas waktu pendaftaran untuk quest ini telah berakhir.'
-                                                : 'Pekerja telah melewati batas waktu pengerjaan proyek. Harap hubungi admin atau lakukan arbitrase jika diperlukan.'}
+                                                ? 'Pendaftaran proyek ini sudah berakhir karena melewati deadline yang ditentukan.'
+                                                : 'Pekerja telah melewati batas pengerjaan proyek. Hubungi admin atau buat laporan dispute jika dibutuhkan.'}
                                         </p>
                                     </div>
                                 </div>
                             )}
-
-                        {/* Stepper Progress Timeline */}
-                        <QuestStepper status={quest.status} />
                     </div>
                 </div>
 
-                {/* 3. MAIN CONTENT GRID */}
-                <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-                    {/* LEFT COLUMN: TAB NAVIGATION & TAB PANELS (col-span-8) */}
+                {/* 2. STEPPER TIMELINE BOX (SEPARATED CARD) */}
+                <QuestStepper status={quest.status} />
+
+                {/* 3. MAIN WORKSPACE GRID */}
+                <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+                    
+                    {/* LEFT AREA: WORKSPACE CONTROL (col-span-8) */}
                     <div className="space-y-6 lg:col-span-8">
-                        {/* Tab Buttons */}
-                        <div className="flex shrink-0 gap-6 border-b border-slate-200 font-['Orbitron'] text-xs font-black tracking-wider dark:border-slate-800/80">
+                        
+                        {/* Tabs */}
+                        <div className="flex shrink-0 gap-6 border-b border-slate-205 pb-px text-xs font-bold dark:border-slate-800">
                             <button
                                 onClick={() => setActiveTab('detail')}
-                                className={`relative cursor-pointer pb-3 transition-colors ${
+                                className={`relative cursor-pointer pb-2.5 transition-colors ${
                                     activeTab === 'detail'
-                                        ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                        ? 'text-indigo-650 dark:text-indigo-400'
+                                        : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                 }`}
                             >
                                 <span className="flex items-center gap-1.5">
-                                    <FileText size={14} />
-                                    Deskripsi Quest
+                                    <FileText size={13} />
+                                    Spesifikasi Proyek
                                 </span>
                                 {activeTab === 'detail' && (
-                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded bg-indigo-650 dark:bg-indigo-400" />
                                 )}
                             </button>
 
                             <button
                                 onClick={() => setActiveTab('project')}
-                                className={`relative cursor-pointer pb-3 transition-colors ${
+                                className={`relative cursor-pointer pb-2.5 transition-colors ${
                                     activeTab === 'project'
-                                        ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                        ? 'text-indigo-650 dark:text-indigo-400'
+                                        : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                 }`}
                             >
-                                <span className="flex items-center gap-1.5 font-['Orbitron']">
-                                    <Briefcase size={14} />
+                                <span className="flex items-center gap-1.5">
+                                    <Briefcase size={13} />
                                     {isCreator
                                         ? 'Manajemen Proyek'
                                         : isWorker
-                                          ? 'Pengerjaan Proyek'
-                                          : 'Status & Penawaran'}
+                                          ? 'Workspace Pengerjaan'
+                                          : 'Status & Pengajuan'}
                                 </span>
                                 {activeTab === 'project' && (
-                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded bg-indigo-650 dark:bg-indigo-400" />
                                 )}
                             </button>
 
                             {isCreator && quest.status === 'open' && (
                                 <button
                                     onClick={() => setActiveTab('bids')}
-                                    className={`relative cursor-pointer pb-3 transition-colors ${
+                                    className={`relative cursor-pointer pb-2.5 transition-colors ${
                                         activeTab === 'bids'
-                                            ? 'font-extrabold text-indigo-600 dark:text-indigo-400'
-                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
-                                    }`}
-                                >
-                                    <span className="flex items-center gap-1.5">
-                                        <MessageSquare size={14} />
-                                        Pelamar ({bids.length})
-                                    </span>
-                                    {activeTab === 'bids' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
-                                    )}
-                                </button>
+                                            ? 'text-indigo-650 dark:text-indigo-400'
+                                            : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                }`}
+                            >
+                                <span className="flex items-center gap-1.5">
+                                    <MessageSquare size={13} />
+                                    Pelamar Kerja ({bids.length})
+                                </span>
+                                {activeTab === 'bids' && (
+                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded bg-indigo-650 dark:bg-indigo-400" />
+                                )}
+                            </button>
                             )}
                         </div>
-                        {/* TAB 1: DETAILS */}
+
+                        {/* TAB CONTENT: DETAIL */}
                         {activeTab === 'detail' && (
-                            <div className="space-y-6 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                                <div className="space-y-3">
-                                    <h3 className="font-['Orbitron'] text-xs font-bold tracking-wider text-slate-400 uppercase dark:text-blue-300/60">
-                                        Deskripsi Pekerjaan
+                            <div className="relative overflow-hidden space-y-6 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                                <div className="relative z-10 space-y-3">
+                                    <h3 className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
+                                        Detail Penugasan & Deskripsi
                                     </h3>
-                                    <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 font-['Oxanium'] text-sm leading-relaxed whitespace-pre-wrap text-slate-700 sm:text-base dark:border-slate-800/40 dark:bg-black/10 dark:text-slate-200">
+                                    <div className="rounded-lg border border-slate-200/60 bg-slate-50/50 p-4 text-xs leading-relaxed whitespace-pre-wrap text-slate-755 dark:border-slate-800 dark:bg-[#030712]/40 dark:text-slate-250">
                                         {quest.description}
                                     </div>
                                 </div>
 
-                                {/* Lampiran Quest (Gambar & File) */}
                                 <QuestAttachments
                                     images={quest.images}
                                     files={quest.files}
                                     onPreviewImage={setPreviewImage}
                                 />
                             </div>
-                        )}{' '}
-                        {/* TAB 2: PROJECT MANAGEMENT */}
+                        )}
+
+                        {/* TAB CONTENT: PROJECT MANAGEMENT */}
                         {activeTab === 'project' && (
                             <div className="space-y-6">
-                                {/* DISPUTE STATUS ALERT */}
                                 {quest.dispute && (
                                     <div
-                                        className={`flex gap-3 rounded-xl border p-4 font-['Oxanium'] ${
+                                        className={`flex gap-3 rounded-lg border p-4 ${
                                             quest.status === 'disputed'
-                                                ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
-                                                : 'border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400'
+                                                ? 'border-red-200 bg-red-50/15 text-red-655 dark:border-slate-800 dark:bg-slate-950/40 dark:text-red-400'
+                                                : 'border-green-200 bg-green-50/15 text-green-700 dark:border-slate-800 dark:bg-slate-950/40 dark:text-green-400'
                                         }`}
                                     >
-                                        <ShieldAlert className="h-5 w-5 shrink-0 text-red-500" />
+                                        <ShieldAlert className="h-5 w-5 shrink-0 text-red-600" />
                                         <div className="space-y-1 text-xs">
-                                            <span className="block font-['Orbitron'] font-bold tracking-wider uppercase">
+                                            <span className="block font-bold tracking-wider uppercase">
                                                 {quest.status === 'disputed'
-                                                    ? 'Quest Ditangguhkan (Dispute Diajukan)'
-                                                    : 'Arbitrase Sengketa Selesai'}
+                                                    ? 'Proyek Ditangguhkan (Dalam Proses Banding)'
+                                                    : 'Arbitrase Diselesaikan'}
                                             </span>
-                                            <p className="leading-relaxed text-slate-500 dark:text-slate-400">
+                                            <p className="leading-relaxed text-slate-505 dark:text-slate-400">
                                                 {quest.status === 'disputed'
-                                                    ? `Dispute diajukan oleh ${quest.dispute.filer_name} dengan alasan: "${quest.dispute.reason}". Pemberian reward ditangguhkan sementara menunggu keputusan arbitrase admin.`
-                                                    : `Perselisihan telah diselesaikan oleh Admin dengan putusan: ${
+                                                    ? `Dispute diajukan oleh ${quest.dispute.filer_name} dengan alasan: "${quest.dispute.reason}". Penyerahan poin/hadiah ditangguhkan sementara menunggu peninjauan administrator.`
+                                                    : `Perselisihan diselesaikan dengan keputusan mediator: ${
                                                           [
                                                               'refund',
                                                               'refund_creator',
                                                           ].includes(
-                                                              quest.dispute
-                                                                  .ruling ?? '',
+                                                              quest.dispute.ruling ?? '',
                                                           )
-                                                              ? 'Pembatalan quest dan seluruh reward dibatalkan.'
+                                                              ? 'Proyek dibatalkan dan seluruh budget/hadiah dikembalikan ke klien.'
                                                               : [
-                                                                      'pay_worker',
-                                                                      'release_payout',
-                                                                  ].includes(
-                                                                      quest
-                                                                          .dispute
-                                                                          .ruling ??
-                                                                          '',
-                                                                  )
-                                                                ? 'Pemberian reward penuh diserahkan kepada pekerja.'
-                                                                : `Bagi hasil (${quest.dispute.split_percentage}% untuk pekerja).`
-                                                      } Catatan: "${quest.dispute.note}".`}
+                                                                    'pay_worker',
+                                                                    'release_payout',
+                                                                ].includes(
+                                                                    quest.dispute.ruling ?? '',
+                                                                )
+                                                              ? 'Seluruh poin & reputasi penuh diserahkan kepada pekerja.'
+                                                              : `Bagi hasil (Kontraktor mendapat ${quest.dispute.split_percentage}%).`
+                                                      } Penjelasan: "${quest.dispute.note}".`}
                                             </p>
                                         </div>
                                     </div>
                                 )}
-                                {/* REPLACE_ME_WORKFLOW */}
+
                                 {isCreator ? (
                                     <CreatorProjectPanel
                                         quest={quest}
@@ -532,96 +547,90 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 />
                             </div>
                         )}
-                        {/* TAB 3: BIDS / APPLICANTS LIST (Creator Only, Quest Open) */}
-                        {activeTab === 'bids' &&
-                            isCreator &&
-                            quest.status === 'open' && (
-                                <BidsTabPanel
-                                    quest={quest}
-                                    bids={bids}
-                                    setSelectedChatBid={setSelectedChatBid}
-                                />
-                            )}
+
+                        {/* TAB CONTENT: BIDS / APPLICANTS LIST */}
+                        {activeTab === 'bids' && isCreator && quest.status === 'open' && (
+                            <BidsTabPanel
+                                quest={quest}
+                                bids={bids}
+                                setSelectedChatBid={setSelectedChatBid}
+                            />
+                        )}
                     </div>
 
-                    {/* RIGHT COLUMN: SIDEBAR SPECIFICATION CARDS (col-span-4) */}
+                    {/* RIGHT AREA: SPECIFICATIONS SIDEBAR (col-span-4) */}
                     <div className="space-y-6 lg:col-span-4">
-                        {/* WORKER SUMMARY (Right column shortcut) */}
+                        
+                        {/* Worker assigned info shortcut */}
                         {quest.worker && (
-                            <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 font-['Oxanium'] shadow-sm">
-                                <div className="flex min-w-0 items-center gap-2.5">
-                                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
+                            <div className="relative overflow-hidden flex items-center justify-between gap-3 rounded-xl border border-emerald-300 bg-emerald-50/50 p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                                <div className="relative z-10 flex min-w-0 items-center gap-2.5">
+                                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-650" />
                                     <div className="min-w-0">
-                                        <span className="block text-[8px] font-semibold tracking-wider text-slate-400 uppercase">
-                                            Status Pekerja
+                                        <span className="block text-[8px] font-bold tracking-wider text-slate-400 uppercase">
+                                            Kontraktor Ditunjuk
                                         </span>
                                         <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
                                             {quest.worker.name}
                                         </span>
                                     </div>
                                 </div>
-                                <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 font-['Orbitron'] text-[9px] font-bold text-emerald-600 uppercase dark:text-emerald-400">
+                                <span className="relative z-10 shrink-0 rounded bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700 uppercase dark:bg-[#030712] dark:text-emerald-400">
                                     Aktif
                                 </span>
                             </div>
                         )}
-                        {/* SPECIFICATION CARD */}
-                        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                            <h3 className="border-b border-slate-100 pb-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-blue-200">
-                                Rincian Quest
+
+                        {/* Rincian Quest Side Panel */}
+                        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                            <h3 className="relative z-10 border-b border-slate-100 pb-3 text-xs font-bold text-slate-800 uppercase dark:border-slate-800 dark:text-slate-200">
+                                Detail Spesifikasi
                             </h3>
 
                             {/* Budget Spec */}
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-650 dark:bg-slate-950 dark:text-indigo-400">
                                     <DollarSign className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                                        Gaji / Anggaran
+                                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
+                                        Estimasi Anggaran
                                     </span>
-                                    <span className="font-['Orbitron'] text-sm font-bold text-slate-800 dark:text-white">
-                                        {formatCurrency(quest.min_salary)} -{' '}
-                                        {formatCurrency(quest.max_salary)}
+                                    <span className="text-xs font-bold text-slate-800 dark:text-white">
+                                        {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Deadline Spec */}
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-655 dark:bg-slate-955 dark:text-indigo-400">
                                     <Calendar className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <span className="text-slate-405 block text-[10px] font-semibold tracking-wider uppercase">
+                                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
                                         Tenggat Waktu
                                     </span>
-                                    <span className="text-xs font-bold text-slate-800 sm:text-sm dark:text-white">
+                                    <span className="text-xs font-bold text-slate-805 dark:text-white">
                                         {formatDate(quest.deadline)}
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Countdown Progress */}
-                            {[
-                                'open',
-                                'ongoing',
-                                'submitted',
-                                'disputed',
-                                'expired',
-                            ].includes(quest.status) &&
+                            {/* Remaining Time */}
+                            {['open', 'ongoing', 'submitted', 'disputed', 'expired'].includes(quest.status) &&
                                 (() => {
                                     const remaining = calculateDaysRemaining();
                                     return (
-                                        <div className="pt-2">
+                                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                                             <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
                                                 <span>
-                                                    {remaining.isLate
-                                                        ? 'Status Keterlambatan'
-                                                        : 'Sisa Waktu'}
+                                                    {remaining.isLate ? 'Keterlambatan' : 'Sisa Waktu'}
                                                 </span>
                                                 <span
-                                                    className={`rounded px-2 py-0.5 font-['Orbitron'] text-[10px] font-bold tracking-wider ${remaining.className}`}
+                                                    className={`rounded px-2.5 py-0.5 text-[9px] font-bold tracking-wider uppercase ${remaining.className}`}
                                                 >
                                                     {remaining.text}
                                                 </span>
@@ -630,36 +639,36 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     );
                                 })()}
 
-                            {/* RPG Rewards Container */}
+                            {/* Project Contribution & Value Metrics (EXP/GOLD/ERP) */}
                             <div className="space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
-                                <span className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-purple-600 uppercase dark:text-purple-400">
-                                    RPG Quest Rewards
+                                <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                    Metrik Kontribusi & Reputasi
                                 </span>
-                                <div className="grid grid-cols-3 gap-2 text-center font-['Orbitron'] text-xs font-bold">
-                                    <div className="flex flex-col items-center rounded-xl border border-purple-500/20 bg-purple-500/10 py-2.5 text-purple-600 transition-transform hover:scale-[1.03] dark:text-purple-300">
-                                        <Award className="mb-1 h-3.5 w-3.5 text-purple-500" />
-                                        <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold">
+                                    <div className="flex flex-col items-center rounded-lg border border-slate-200/65 bg-slate-50 py-2.5 dark:border-slate-800/80 dark:bg-[#030712]/40">
+                                        <Award className="mb-1 h-3.5 w-3.5 text-purple-650" />
+                                        <span className="text-[9px] font-semibold text-slate-400 uppercase">
                                             EXP
                                         </span>
-                                        <span className="text-[11px] font-black">
+                                        <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
                                             +{quest.rewards?.exp ?? 250}
                                         </span>
                                     </div>
-                                    <div className="flex flex-col items-center rounded-xl border border-amber-500/20 bg-amber-500/10 py-2.5 text-amber-600 transition-transform hover:scale-[1.03] dark:text-amber-400">
+                                    <div className="flex flex-col items-center rounded-lg border border-slate-200/65 bg-slate-50 py-2.5 dark:border-slate-800/80 dark:bg-[#030712]/40">
                                         <Award className="mb-1 h-3.5 w-3.5 text-amber-500" />
-                                        <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                        <span className="text-[9px] font-semibold text-slate-400 uppercase">
                                             GOLD
                                         </span>
-                                        <span className="text-[11px] font-black">
+                                        <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
                                             +{quest.rewards?.gold ?? 150}
                                         </span>
                                     </div>
-                                    <div className="flex flex-col items-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 py-2.5 text-indigo-600 transition-transform hover:scale-[1.03] dark:text-indigo-300">
-                                        <Award className="mb-1 h-3.5 w-3.5 text-indigo-500" />
-                                        <span className="font-['Oxanium'] text-[9px] font-semibold text-slate-400">
+                                    <div className="flex flex-col items-center rounded-lg border border-slate-200/65 bg-slate-50 py-2.5 dark:border-slate-800/80 dark:bg-[#030712]/40">
+                                        <Award className="mb-1 h-3.5 w-3.5 text-indigo-550" />
+                                        <span className="text-[9px] font-semibold text-slate-400 uppercase">
                                             ERP
                                         </span>
-                                        <span className="text-[11px] font-black">
+                                        <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
                                             +{quest.rewards?.erp ?? 100}
                                         </span>
                                     </div>
@@ -670,7 +679,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                 </div>
             </div>
 
-            {/* Chat Panel Overlay */}
+            {/* Chat Panel Modal Overlay */}
             {selectedChatBid && (
                 <QuestChatPanel
                     bidId={selectedChatBid.id}
@@ -694,14 +703,14 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         className="absolute inset-0 cursor-pointer bg-black/80 backdrop-blur-md transition-all"
                     />
 
-                    <div className="relative z-10 flex max-h-[85vh] w-full max-w-4xl flex-col items-center overflow-hidden rounded-2xl border border-white/10 bg-slate-900/90 p-4 font-['Oxanium'] shadow-2xl dark:bg-slate-950/95">
-                        <div className="mb-3 flex w-full items-center justify-between border-b border-white/10 pb-2">
-                            <span className="max-w-xs truncate text-sm font-bold text-white sm:max-w-md">
+                    <div className="relative z-10 flex max-h-[85vh] w-full max-w-4xl flex-col items-center overflow-hidden rounded-xl border border-slate-800 bg-[#0d1117] p-4 shadow-2xl">
+                        <div className="mb-3 flex w-full items-center justify-between border-b border-slate-800/80 pb-2">
+                            <span className="max-w-xs truncate text-xs font-bold text-white sm:max-w-md">
                                 {previewImage.name}
                             </span>
                             <button
                                 onClick={() => setPreviewImage(null)}
-                                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded text-slate-400 hover:bg-white/10 hover:text-white"
                             >
                                 ✕
                             </button>
@@ -711,7 +720,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             <img
                                 src={previewImage.url}
                                 alt={previewImage.name}
-                                className="max-h-[70vh] max-w-full rounded-lg object-contain shadow-md"
+                                className="max-h-[70vh] max-w-full rounded object-contain"
                             />
                         </div>
                     </div>

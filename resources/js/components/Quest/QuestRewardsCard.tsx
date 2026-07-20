@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface QuestRewardsCardProps {
     rewards?: {
@@ -16,35 +16,41 @@ const QuestRewardsCard: React.FC<QuestRewardsCardProps> = ({ rewards }) => {
 
     return (
         <div className="space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
-            <span className="block text-[10px] font-bold tracking-wider text-purple-600 uppercase dark:text-purple-400">
-                RPG Quest Rewards
+            <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                Poin Kontribusi & Nilai Proyek
             </span>
-            <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold">
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
                 {/* EXP Card */}
-                <div className="flex flex-col items-center rounded-xl border border-purple-500/20 bg-purple-500/10 py-2.5 text-purple-600 transition-transform hover:scale-[1.03] dark:text-purple-300">
-                    <Award className="mb-1 h-3.5 w-3.5 text-purple-500" />
-                    <span className="text-[9px] font-semibold text-slate-400">
-                        EXP
+                <div className="flex flex-col items-center rounded-xl border border-slate-100 bg-slate-50/50 py-2 dark:border-slate-800 dark:bg-[#030712]">
+                    <Sparkles className="mb-1 h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+                    <span className="text-[9px] font-medium text-slate-405">
+                        XP Kerja
                     </span>
-                    <span className="text-[11px] font-black">+{exp}</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-white">
+                        +{exp}
+                    </span>
                 </div>
 
                 {/* GOLD Card */}
-                <div className="flex flex-col items-center rounded-xl border border-amber-500/20 bg-amber-500/10 py-2.5 text-amber-600 transition-transform hover:scale-[1.03] dark:text-amber-400">
-                    <Award className="mb-1 h-3.5 w-3.5 text-amber-500" />
-                    <span className="text-[9px] font-semibold text-slate-400">
-                        GOLD
+                <div className="flex flex-col items-center rounded-xl border border-slate-100 bg-slate-50/50 py-2 dark:border-slate-800 dark:bg-[#030712]">
+                    <Sparkles className="mb-1 h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+                    <span className="text-[9px] font-medium text-slate-405">
+                        Gold Token
                     </span>
-                    <span className="text-[11px] font-black">+{gold}</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-white">
+                        +{gold}
+                    </span>
                 </div>
 
                 {/* ERP Card */}
-                <div className="flex flex-col items-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 py-2.5 text-indigo-600 transition-transform hover:scale-[1.03] dark:text-indigo-300">
-                    <Award className="mb-1 h-3.5 w-3.5 text-indigo-500" />
-                    <span className="text-[9px] font-semibold text-slate-400">
-                        ERP
+                <div className="flex flex-col items-center rounded-xl border border-slate-100 bg-slate-50/50 py-2 dark:border-slate-800 dark:bg-[#030712]">
+                    <Sparkles className="mb-1 h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+                    <span className="text-[9px] font-medium text-slate-405">
+                        Reputasi (ERP)
                     </span>
-                    <span className="text-[11px] font-black">+{erp}</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-white">
+                        +{erp}
+                    </span>
                 </div>
             </div>
         </div>
