@@ -1,510 +1,378 @@
-import { useForm, Link } from '@inertiajs/react';
-import React, { useState, useEffect } from 'react';
-import QuestRewardsEstimator from '@/components/Quest/QuestRewardsEstimator';
+import { Link, useForm } from '@inertiajs/react';
+import React, { useRef, useState } from 'react';
 import {
-    ArrowLeft,
-    Save,
-    Briefcase,
+    Plus,
+    X,
+    FileText,
     DollarSign,
     Calendar,
-    FileText,
-    Image as ImageIcon,
-    Plus,
-    Trash2,
-    Paperclip,
-    FileArchive,
-    AlertCircle,
+    Award,
+    CloudUpload,
 } from 'lucide-react';
+import QuestRewardsEstimator from '@/components/Quest/QuestRewardsEstimator';
 
-export default function Create({ template }: { template?: any }) {
-    const { data, setData, post, processing, errors, transform } = useForm({
-        title: template?.title ?? '',
-        description: template?.description ?? '',
-        min_salary: template?.min_salary ? String(template.min_salary) : '',
-        max_salary: template?.max_salary ? String(template.max_salary) : '',
+export default function Create() {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [dragActive, setDragActive] = useState(false);
+    const [attachmentPreviews, setAttachmentPreviews] = useState<{
+        images: { name: string; url: string; file: File }[];
+        files: { name: string; size: number; file: File }[];
+    }>({ images: [], files: [] });
+
+    // Inertia form hook
+    const { data, setData, post, processing, errors } = useForm({
+        title: '',
+        description: '',
+        min_salary: 0,
+        max_salary: 0,
         deadline: '',
-        images: [] as File[],
-        files: [] as File[],
+        attachments: [] as File[],
     });
 
-    const [clientErrors, setClientErrors] = useState<{
-        images?: string;
-        files?: string;
-    }>({});
+    const handleFileAdd = (filesList: FileList) => {
+        const addedFiles = Array.from(filesList);
+        const imagesList = [...attachmentPreviews.images];
+        const docsList = [...attachmentPreviews.files];
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-        const selected = Array.from(e.target.files);
-        const validImages: File[] = [];
-        let errorMsg = '';
-
-        selected.forEach((file) => {
-            if (file.size > 2 * 1024 * 1024) {
-                errorMsg = `Gambar "${file.name}" melebihi batas 2MB.`;
-            } else if (!file.type.startsWith('image/')) {
-                errorMsg = `Berkas "${file.name}" harus berupa gambar.`;
+        addedFiles.forEach((file) => {
+            if (file.type.startsWith('image/')) {
+                const url = URL.createObjectURL(file);
+                imagesList.push({ name: file.name, url, file });
             } else {
-                validImages.push(file);
+                docsList.push({ name: file.name, size: file.size, file });
             }
         });
 
-        if (errorMsg) {
-            setClientErrors((prev) => ({ ...prev, images: errorMsg }));
+        setAttachmentPreviews({ images: imagesList, files: docsList });
+
+        // Update form state
+        const allFiles = [...imagesList.map((i) => i.file), ...docsList.map((d) => d.file)];
+        setData('attachments', allFiles);
+    };
+
+    // Remove file handler
+    const handleRemoveFile = (type: 'images' | 'files', idx: number) => {
+        const newImages = [...attachmentPreviews.images];
+        const newFiles = [...attachmentPreviews.files];
+
+        if (type === 'images') {
+            URL.revokeObjectURL(newImages[idx].url);
+            newImages.splice(idx, 1);
         } else {
-            setClientErrors((prev) => ({ ...prev, images: undefined }));
+            newFiles.splice(idx, 1);
         }
 
-        if (validImages.length > 0) {
-            setData('images', [...data.images, ...validImages]);
+        setAttachmentPreviews({ images: newImages, files: newFiles });
+
+        const allFiles = [...newImages.map((i) => i.file), ...newFiles.map((d) => d.file)];
+        setData('attachments', allFiles);
+    };
+
+    const handleDrag = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragenter' || e.type === 'dragover') {
+            setDragActive(true);
+        } else if (e.type === 'dragleave') {
+            setDragActive(false);
         }
-        e.target.value = '';
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-        const selected = Array.from(e.target.files);
-        const validFiles: File[] = [];
-        let errorMsg = '';
-        const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip'];
-
-        selected.forEach((file) => {
-            const ext = file.name.split('.').pop()?.toLowerCase();
-            if (file.size > 10 * 1024 * 1024) {
-                errorMsg = `Berkas "${file.name}" melebihi batas 10MB.`;
-            } else if (!ext || !allowedExtensions.includes(ext)) {
-                errorMsg = `Ekstensi berkas "${file.name}" tidak diizinkan. Gunakan PDF, Word, Excel, atau ZIP.`;
-            } else {
-                validFiles.push(file);
-            }
-        });
-
-        if (errorMsg) {
-            setClientErrors((prev) => ({ ...prev, files: errorMsg }));
-        } else {
-            setClientErrors((prev) => ({ ...prev, files: undefined }));
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFileAdd(e.dataTransfer.files);
         }
-
-        if (validFiles.length > 0) {
-            setData('files', [...data.files, ...validFiles]);
-        }
-        e.target.value = '';
-    };
-
-    const removeImage = (index: number) => {
-        const updated = [...data.images];
-        updated.splice(index, 1);
-        setData('images', updated);
-    };
-
-    const removeFile = (index: number) => {
-        const updated = [...data.files];
-        updated.splice(index, 1);
-        setData('files', updated);
-    };
-
-    const formatBytes = (bytes: number) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = 2;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return (
-            parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
-        );
-    };
-
-    const getFileIcon = (fileName: string) => {
-        const ext = fileName.split('.').pop()?.toLowerCase();
-        if (ext === 'zip')
-            return <FileArchive className="h-5 w-5 text-amber-500" />;
-        return <FileText className="h-5 w-5 text-indigo-500" />;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        transform((data) => ({
-            ...data,
-            deadline: data.deadline
-                ? new Date(data.deadline).toISOString()
-                : '',
-        }));
         post('/student/quests');
     };
 
     return (
         <div
-            className="relative flex min-h-screen flex-col overflow-x-hidden bg-slate-50 p-3 text-slate-800 transition-colors duration-205 sm:p-6 md:p-8 dark:bg-[#060813] dark:text-white"
+            className="flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8fafc] text-slate-800 transition-colors duration-200 dark:bg-[#030712] dark:text-white"
             style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-            {/* Ambient top-center glow */}
-            <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none" />
-
-            <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col space-y-6">
-                {/* HEADER */}
-                <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
-                    <div className="space-y-1">
+            {/* HEADER - Gaming style, consistent with other pages */}
+            <div className="w-full flex-shrink-0 px-1 pt-0.5">
+                <div
+                    className="relative rounded-md p-[2px] md:p-[3px]"
+                    style={{
+                        backgroundImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
+                    }}
+                >
+                    <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
+                        {/* Back Button */}
                         <Link
                             href="/student/quests"
-                            className="hover:text-indigo-650 inline-flex items-center gap-1.5 font-['Orbitron'] text-xs font-bold tracking-widest text-slate-500 uppercase transition-colors dark:text-slate-400 dark:hover:text-indigo-400"
+                            className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
-                            <ArrowLeft size={14} />
-                            Kembali ke Quest Board
+                            <svg
+                                viewBox="0 0 48 48"
+                                className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
+                            >
+                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
+                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
+                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
+                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                            </svg>
                         </Link>
-                        <h2 className="flex items-center gap-2 font-['Oxanium'] text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
-                            POSTING QUEST BARU
-                        </h2>
+
+                        {/* Title */}
+                        <h1 className="flex-1 text-center font-['Orbitron'] text-sm font-bold tracking-[0.05em] text-[#1e3a8a] uppercase min-[390px]:text-base min-[390px]:tracking-[0.1em] sm:text-xl md:text-2xl md:tracking-[0.15em] lg:text-3xl 2xl:text-4xl dark:text-white">
+                            POSTING PROYEK BARU
+                        </h1>
+
+                        {/* Spacer to center title on mobile */}
+                        <div className="h-10 w-10 shrink-0 md:hidden" />
                     </div>
                 </div>
+            </div>
 
-                {/* TWO-COLUMN FORM LAYOUT */}
+            <div className="relative z-10 flex min-h-0 w-full max-w-none flex-1 flex-col space-y-6 px-4 py-8 sm:px-6 lg:px-10">
+
+                {/* Form Body Split Layout */}
                 <form
                     onSubmit={handleSubmit}
-                    className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12"
+                    className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12"
                 >
-                    {/* LEFT COLUMN: Main Form details (lg:col-span-8) */}
+                    {/* Left Column: Inputs (col-span-8) */}
                     <div className="space-y-6 lg:col-span-8">
-                        {/* Card 1: Informasi Utama */}
-                        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                                <Briefcase className="h-5 w-5 text-indigo-500" />
-                                <h3 className="font-['Orbitron'] text-xs font-black tracking-wider text-slate-700 uppercase dark:text-blue-200">
-                                    Informasi Utama Pekerjaan
-                                </h3>
-                            </div>
-
-                            {/* Job Title */}
-                            <div className="space-y-2">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Judul Quest / Pekerjaan{' '}
-                                    <span className="text-red-500">*</span>
+                        <div className="space-y-5 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            
+                            {/* Input: Judul Proyek */}
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                    Judul Proyek Kerja
                                 </label>
                                 <input
                                     type="text"
                                     required
-                                    placeholder="Contoh: Membuat Landing Page Next.js dengan Tailwind CSS"
+                                    placeholder="Contoh: Pembuatan UI/UX Aplikasi E-Learning Sederhana"
                                     value={data.title}
-                                    onChange={(e) =>
-                                        setData('title', e.target.value)
-                                    }
-                                    className="text-slate-805 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-['Oxanium'] text-xs transition-colors focus:border-indigo-500 focus:outline-none sm:text-sm dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                                    onChange={(e) => setData('title', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 px-3.5 text-xs font-semibold text-slate-900 placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
                                 />
                                 {errors.title && (
-                                    <p className="mt-1 font-['Oxanium'] text-xs font-semibold text-red-500">
+                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
                                         {errors.title}
-                                    </p>
+                                    </span>
                                 )}
                             </div>
 
-                            {/* Job Description */}
-                            <div className="space-y-2">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Detail Kebutuhan Pekerjaan{' '}
-                                    <span className="text-red-500">*</span>
+                            {/* Input: Deskripsi */}
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                    Deskripsi & Spesifikasi Penugasan
                                 </label>
                                 <textarea
                                     required
-                                    placeholder="Jelaskan secara rinci spesifikasi pekerjaan, teknologi yang digunakan, serta kriteria hasil pengerjaan (output) yang diharapkan..."
                                     rows={8}
+                                    placeholder="Tuliskan secara detail mengenai kebutuhan proyek, deliverables yang diharapkan, serta repositori/kriteria peninjauan pengerjaan..."
                                     value={data.description}
-                                    onChange={(e) =>
-                                        setData('description', e.target.value)
-                                    }
-                                    className="text-slate-805 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-['Oxanium'] text-xs leading-relaxed transition-colors focus:border-indigo-500 focus:outline-none sm:text-sm dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                                    onChange={(e) => setData('description', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 px-3.5 text-xs font-semibold text-slate-900 placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
                                 />
                                 {errors.description && (
-                                    <p className="mt-1 font-['Oxanium'] text-xs font-semibold text-red-500">
+                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
                                         {errors.description}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Card 2: Berkas Pendukung & Lampiran */}
-                        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                                <Paperclip className="h-5 w-5 text-indigo-500" />
-                                <h3 className="font-['Orbitron'] text-xs font-black tracking-wider text-slate-700 uppercase dark:text-blue-200">
-                                    Berkas & Lampiran Pendukung
-                                </h3>
-                            </div>
-
-                            {/* Image Uploader */}
-                            <div className="space-y-3 font-['Oxanium']">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Unggah Gambar (Maks. 2MB per gambar)
-                                </label>
-
-                                {/* Image Preview Grid */}
-                                {data.images.length > 0 && (
-                                    <div className="mb-3 grid grid-cols-2 gap-3.5 sm:grid-cols-3">
-                                        {data.images.map((file, index) => (
-                                            <div
-                                                key={index}
-                                                className="group relative flex flex-col items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-800 dark:bg-black/20"
-                                            >
-                                                <img
-                                                    src={URL.createObjectURL(
-                                                        file,
-                                                    )}
-                                                    alt={file.name}
-                                                    className="h-20 w-full rounded-lg object-cover"
-                                                />
-                                                <span className="mt-1 w-full truncate px-1 text-center text-[9px] text-slate-500 dark:text-slate-400">
-                                                    {file.name}
-                                                </span>
-                                                <span className="text-[8px] text-slate-400">
-                                                    {formatBytes(file.size)}
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        removeImage(index)
-                                                    }
-                                                    className="bg-red-650 absolute top-2 right-2 cursor-pointer rounded-full p-1 text-white opacity-90 transition-all hover:scale-105 hover:bg-red-700"
-                                                >
-                                                    <Trash2 className="h-3 w-3" />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <div className="relative">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleImageChange}
-                                        id="quest-images-input"
-                                        className="hidden"
-                                    />
-                                    <label
-                                        htmlFor="quest-images-input"
-                                        className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 px-4 py-5 text-xs text-slate-500 transition-all duration-300 hover:border-indigo-500 dark:border-slate-800 dark:bg-black/15 dark:text-slate-400 dark:hover:border-indigo-500/50"
-                                    >
-                                        <ImageIcon className="h-5 w-5 animate-bounce text-indigo-500" />
-                                        <span className="dark:text-slate-350 font-bold text-slate-700">
-                                            Seret atau pilih gambar Anda
-                                        </span>
-                                        <span className="text-[10px] text-slate-400">
-                                            Format JPEG, PNG, WEBP
-                                        </span>
-                                    </label>
-                                </div>
-
-                                {clientErrors.images && (
-                                    <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-red-500">
-                                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />{' '}
-                                        {clientErrors.images}
-                                    </p>
-                                )}
-                                {errors.images && (
-                                    <p className="mt-1 text-xs font-semibold text-red-500">
-                                        {errors.images}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Document Uploader */}
-                            <div className="space-y-3 border-t border-slate-100 pt-4 font-['Oxanium'] dark:border-slate-800/60">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Dokumen Penunjang (PDF, Word, Excel, ZIP -
-                                    Maks. 10MB)
-                                </label>
-
-                                {/* Selected Documents List */}
-                                {data.files.length > 0 && (
-                                    <div className="mb-3 space-y-2">
-                                        {data.files.map((file, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-800/80 dark:bg-black/20"
-                                            >
-                                                <div className="flex min-w-0 items-center gap-3">
-                                                    {getFileIcon(file.name)}
-                                                    <div className="min-w-0">
-                                                        <p className="text-slate-705 truncate text-xs font-semibold dark:text-slate-200">
-                                                            {file.name}
-                                                        </p>
-                                                        <p className="text-[10px] text-slate-400">
-                                                            {formatBytes(
-                                                                file.size,
-                                                            )}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        removeFile(index)
-                                                    }
-                                                    className="hover:text-red-650 cursor-pointer rounded-lg p-1.5 text-red-500 transition-colors hover:bg-red-500/10"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <div className="relative">
-                                    <input
-                                        type="file"
-                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.zip"
-                                        multiple
-                                        onChange={handleFileChange}
-                                        id="quest-files-input"
-                                        className="hidden"
-                                    />
-                                    <label
-                                        htmlFor="quest-files-input"
-                                        className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 px-4 py-5 text-xs text-slate-500 transition-all duration-300 hover:border-indigo-500 dark:border-slate-800 dark:bg-black/15 dark:text-slate-400 dark:hover:border-indigo-500/50"
-                                    >
-                                        <FileArchive className="h-5 w-5 animate-bounce text-indigo-500" />
-                                        <span className="dark:text-slate-350 font-bold text-slate-700">
-                                            Seret atau pilih dokumen tugas
-                                        </span>
-                                        <span className="text-[10px] text-slate-400">
-                                            Format PDF, DOC, DOCX, XLS, XLSX,
-                                            ZIP
-                                        </span>
-                                    </label>
-                                </div>
-
-                                {clientErrors.files && (
-                                    <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-red-500">
-                                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />{' '}
-                                        {clientErrors.files}
-                                    </p>
-                                )}
-                                {errors.files && (
-                                    <p className="mt-1 text-xs font-semibold text-red-500">
-                                        {errors.files}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* RIGHT COLUMN: Budget, deadline & Live Estimation widgets (lg:col-span-4) */}
-                    <div className="space-y-6 lg:col-span-4">
-                        {/* Card 3: Financial settings & Deadline */}
-                        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white/70 p-6 font-['Oxanium'] shadow-md backdrop-blur-md dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-                            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                                <DollarSign className="h-5 w-5 text-indigo-500" />
-                                <h3 className="font-['Orbitron'] text-xs font-black tracking-wider text-slate-700 uppercase dark:text-blue-200">
-                                    Anggaran & Deadline
-                                </h3>
-                            </div>
-
-                            {/* Min Budget */}
-                            <div className="space-y-1.5">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Gaji Minimal (IDR){' '}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute top-3 left-3 text-xs font-bold text-slate-400">
-                                        Rp
                                     </span>
-                                    <input
-                                        type="number"
-                                        required
-                                        placeholder="Contoh: 500000"
-                                        value={data.min_salary}
-                                        onChange={(e) =>
-                                            setData(
-                                                'min_salary',
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-3 pl-9 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
-                                    />
-                                </div>
-                                {errors.min_salary && (
-                                    <p className="mt-0.5 text-xs font-semibold text-red-500">
-                                        {errors.min_salary}
-                                    </p>
                                 )}
                             </div>
 
-                            {/* Max Budget */}
+                            {/* Input: Anggaran (Salary) */}
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Anggaran Minimal (IDR)
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            required
+                                            min={0}
+                                            value={data.min_salary || ''}
+                                            onChange={(e) => setData('min_salary', parseInt(e.target.value) || 0)}
+                                            className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                        />
+                                        <DollarSign className="absolute top-3 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
+                                    </div>
+                                    {errors.min_salary && (
+                                        <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                            {errors.min_salary}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Anggaran Maksimal (IDR)
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            required
+                                            min={0}
+                                            value={data.max_salary || ''}
+                                            onChange={(e) => setData('max_salary', parseInt(e.target.value) || 0)}
+                                            className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                        />
+                                        <DollarSign className="absolute top-3 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
+                                    </div>
+                                    {errors.max_salary && (
+                                        <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                            {errors.max_salary}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Input: Deadline */}
                             <div className="space-y-1.5">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Gaji Maksimal (IDR){' '}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute top-3 left-3 text-xs font-bold text-slate-400">
-                                        Rp
-                                    </span>
-                                    <input
-                                        type="number"
-                                        required
-                                        placeholder="Contoh: 1500000"
-                                        value={data.max_salary}
-                                        onChange={(e) =>
-                                            setData(
-                                                'max_salary',
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-3 pl-9 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
-                                    />
-                                </div>
-                                {errors.max_salary && (
-                                    <p className="mt-0.5 text-xs font-semibold text-red-500">
-                                        {errors.max_salary}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Deadline */}
-                            <div className="space-y-1.5 border-t border-slate-100 pt-2 dark:border-slate-800/40">
-                                <label className="block font-['Orbitron'] text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Tenggat Waktu{' '}
-                                    <span className="text-red-500">*</span>
+                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                    Batas Tanggat Waktu (Deadline)
                                 </label>
                                 <div className="relative">
                                     <input
                                         type="datetime-local"
                                         required
                                         value={data.deadline}
-                                        onChange={(e) =>
-                                            setData('deadline', e.target.value)
-                                        }
-                                        className="w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                                        onChange={(e) => setData('deadline', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                     />
+                                    <Calendar className="absolute top-3 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
                                 </div>
                                 {errors.deadline && (
-                                    <p className="mt-0.5 text-xs font-semibold text-red-500">
+                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
                                         {errors.deadline}
-                                    </p>
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Uploader Referensi Berkas */}
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                    Lampiran Referensi File & Gambar
+                                </label>
+
+                                <div
+                                    onDragEnter={handleDrag}
+                                    onDragOver={handleDrag}
+                                    onDragLeave={handleDrag}
+                                    onDrop={handleDrop}
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className={`flex flex-col items-center justify-center rounded-xl border border-dashed py-8 px-4 text-center transition-all ${
+                                        dragActive
+                                            ? 'border-indigo-600 bg-indigo-500/10'
+                                            : 'border-slate-300 bg-slate-50/90 hover:border-indigo-400 hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:hover:bg-slate-900/40'
+                                    }`}
+                                >
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        multiple
+                                        onChange={(e) => e.target.files && handleFileAdd(e.target.files)}
+                                        className="hidden"
+                                    />
+                                    <CloudUpload className="mb-2 h-7 w-7 text-indigo-600 dark:text-indigo-400" />
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-300">
+                                        Klik untuk unggah berkas, atau seret file ke sini
+                                    </span>
+                                    <span className="mt-1 text-[10px] font-medium text-slate-500">
+                                        Mendukung Gambar (PNG, JPG), berkas dokumen, dan arsip ZIP (Max. 5MB)
+                                    </span>
+                                </div>
+
+                                {/* Previews List */}
+                                {(attachmentPreviews.images.length > 0 || attachmentPreviews.files.length > 0) && (
+                                    <div className="space-y-2.5 rounded-lg border border-slate-300 p-4 dark:border-slate-800 dark:bg-[#030712]/40">
+                                        {/* Images Preview Grid */}
+                                        {attachmentPreviews.images.length > 0 && (
+                                            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+                                                {attachmentPreviews.images.map((img, idx) => (
+                                                    <div
+                                                        key={`img_${idx}`}
+                                                        className="group relative aspect-square overflow-hidden rounded-lg border border-slate-300 dark:border-slate-800"
+                                                    >
+                                                        <img
+                                                            src={img.url}
+                                                            alt={img.name}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveFile('images', idx)}
+                                                            className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded bg-slate-900/80 text-white hover:bg-slate-900"
+                                                        >
+                                                            <X size={12} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Documents List */}
+                                        {attachmentPreviews.files.length > 0 && (
+                                            <div className="space-y-1.5">
+                                                {attachmentPreviews.files.map((fileItem, idx) => (
+                                                    <div
+                                                        key={`file_${idx}`}
+                                                        className="flex items-center justify-between rounded border border-slate-300 bg-white p-2 text-xs dark:border-slate-800 dark:bg-[#0d1117]"
+                                                    >
+                                                        <div className="flex items-center gap-2">
+                                                            <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                                                            <span className="truncate max-w-[200px] font-bold text-slate-800 dark:text-slate-300">
+                                                                {fileItem.name}
+                                                            </span>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveFile('files', idx)}
+                                                            className="text-red-600 hover:text-red-800 font-bold"
+                                                        >
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </div>
+                    </div>
 
-                        {/* Card 4: RPG Rewards Estimator */}
-                        <QuestRewardsEstimator
-                            minSalary={data.min_salary}
-                            maxSalary={data.max_salary}
-                        />
+                    {/* Right Column: Calculations & Estimations (col-span-4) */}
+                    <div className="space-y-6 lg:col-span-4">
+                        <div className="space-y-5 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            
+                            {/* Reputation & ERP Estimations */}
+                            <QuestRewardsEstimator maxSalary={data.max_salary} />
 
-                        {/* Action buttons */}
-                        <div className="flex gap-3 pt-2">
-                            <Link
-                                href="/student/quests"
-                                className="flex-1 rounded-xl border border-slate-200 bg-slate-100/50 py-3 text-center font-['Orbitron'] text-xs font-black tracking-wider text-slate-600 uppercase transition-colors hover:bg-slate-200/50 dark:border-slate-800 dark:bg-blue-950/20 dark:text-slate-400 dark:hover:bg-blue-900/10"
-                            >
-                                Batal
-                            </Link>
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="flex-1 transform cursor-pointer rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 py-3 text-center font-['Orbitron'] text-xs font-black tracking-wider text-white uppercase shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all duration-300 hover:from-purple-700 hover:to-indigo-700 active:scale-[0.98] disabled:opacity-50"
-                            >
-                                {processing ? 'Mengirim...' : 'Publikasikan'}
-                            </button>
+                            {/* Submision Submit Action */}
+                            <div className="border-t border-slate-200 pt-4 dark:border-slate-805">
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/20 transition-colors hover:bg-indigo-700 border border-indigo-700/30"
+                                >
+                                    {processing ? 'Menyimpan...' : 'Posting Lowongan'}
+                                    <Plus className="h-4.5 w-4.5 stroke-[3]" />
+                                </button>
+                                <p className="mt-2 text-[10px] text-center text-slate-400">
+                                    Mengklik tombol di atas menyetujui bahwa dana proyek offline disetujui bersama pekerja.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </form>

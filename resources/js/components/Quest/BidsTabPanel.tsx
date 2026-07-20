@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { Star, Archive, Check, MessageSquare, Briefcase } from 'lucide-react';
+import { Star, Archive, Check, MessageSquare, Briefcase, Award, FileText, ExternalLink } from 'lucide-react';
 import ConfirmModal from '../ConfirmModal';
 import { Quest, Bid } from '@/types/quest';
 
@@ -45,24 +45,25 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
     });
 
     return (
-        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
-                <h3 className="font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
-                    Pelamar yang Mendaftar
+        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+            <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    Proposal Pelamar yang Masuk
                 </h3>
-                <span className="rounded-md border border-purple-500/20 bg-purple-500/10 px-2 py-0.5 text-xs font-semibold text-purple-600 dark:text-purple-300">
-                    {bids.length} Pelamar
+                <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-400">
+                    {bids.length} Proposal
                 </span>
             </div>
 
             {bids.length === 0 ? (
-                <div className="py-12 text-center font-['Oxanium'] text-slate-400 dark:text-blue-300/40">
-                    <Briefcase className="mx-auto mb-2 h-10 w-10 text-indigo-500 opacity-50" />
-                    <p className="font-['Orbitron'] text-xs font-bold uppercase">
-                        Belum ada pelamar.
+                <div className="py-12 text-center text-slate-400 dark:text-slate-500">
+                    <Briefcase className="mx-auto mb-2 h-9 w-9 text-slate-300 dark:text-slate-700" />
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Belum ada proposal masuk
                     </p>
-                    <p className="text-[11px] text-slate-500">
-                        Siswa belum mengajukan proposal penawaran untuk quest ini.
+                    <p className="text-[11px] text-slate-400">
+                        Siswa belum ada yang mengajukan penawaran harga untuk proyek ini.
                     </p>
                 </div>
             ) : (
@@ -74,35 +75,42 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                         return (
                             <div
                                 key={bid._id}
-                                className={`group relative flex flex-col justify-between gap-3.5 rounded-xl border p-4 transition-all duration-350 ${
+                                className={`group relative flex flex-col justify-between gap-3.5 rounded-xl border p-4.5 transition-all duration-200 ${
                                     bid.status === 'accepted'
-                                        ? 'border-green-500/35 bg-green-500/10'
+                                        ? 'border-emerald-500/50 bg-[#061512] dark:border-emerald-500/60 dark:bg-[#061512] shadow-md shadow-emerald-950/20'
                                         : bid.status === 'rejected'
-                                          ? 'border-slate-200/50 bg-slate-100/50 opacity-65 dark:border-slate-800/40 dark:bg-slate-900/40'
+                                          ? 'border-slate-800 bg-[#04060d] opacity-75 dark:border-slate-800 dark:bg-[#04060d]'
                                           : isShortlisted
-                                            ? 'border-purple-500/40 bg-purple-500/10 shadow-[0_0_12px_rgba(124,58,237,0.15)]'
+                                            ? 'border-blue-500 bg-[#040a1c] ring-1 ring-blue-500/40 dark:border-blue-500/80 dark:bg-[#040a1c] shadow-md shadow-blue-950/30'
                                             : isArchived
-                                              ? 'border-slate-200 bg-slate-100/30 opacity-30 dark:border-slate-800/20 dark:bg-slate-900/10'
-                                              : 'border-slate-200 bg-slate-50/50 hover:border-purple-500/50 dark:border-slate-800/60 dark:bg-black/20'
+                                              ? 'border-slate-800/80 bg-[#03050c] opacity-90 dark:border-slate-800/80 dark:bg-[#03050c]'
+                                              : 'border-slate-200/80 bg-[#f8fafc] hover:border-indigo-400 dark:border-slate-800/80 dark:bg-[#040714] dark:hover:border-slate-700 shadow-sm'
                                 }`}
                             >
-                                <div className="space-y-3 font-['Oxanium']">
+                                <div className="space-y-3">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                         <div className="flex min-w-0 items-center gap-2.5">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-xs font-bold text-white">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                                                 {bid.student.name.substring(0, 2).toUpperCase()}
                                             </div>
                                             <div className="min-w-0">
-                                                <span className="block truncate text-xs font-extrabold text-slate-800 dark:text-white">
-                                                    {bid.student.name}
-                                                </span>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="block truncate text-xs font-semibold text-slate-800 dark:text-white">
+                                                        {bid.student.name}
+                                                    </span>
+                                                    {isArchived && (
+                                                        <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[9px] font-bold text-slate-400 border border-slate-700">
+                                                            Diarsipkan
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <span className="block truncate text-[10px] text-slate-400">
                                                     {bid.student.email}
                                                 </span>
                                             </div>
                                         </div>
                                         <div className="flex shrink-0 items-center gap-1.5 self-end sm:self-auto">
-                                            <span className="mr-1 font-['Orbitron'] text-xs font-black text-purple-600 dark:text-purple-300">
+                                            <span className="mr-1 text-xs font-bold text-indigo-600 dark:text-indigo-400">
                                                 {formatCurrency(bid.bid_amount)}
                                             </span>
                                             {bid.status === 'pending' && (
@@ -124,22 +132,22 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                                                 );
                                                             }
                                                         }}
-                                                        className={`cursor-pointer rounded-lg border p-1 transition-colors ${
+                                                        className={`cursor-pointer rounded-lg border p-1.5 transition-all ${
                                                             isShortlisted
-                                                                ? 'border-amber-400 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20'
-                                                                : 'border-slate-200 bg-slate-50 text-slate-400 hover:text-amber-500 dark:border-slate-800 dark:bg-slate-800'
+                                                                ? 'border-blue-500 bg-blue-500/20 text-blue-400 shadow-sm ring-2 ring-blue-500/20'
+                                                                : 'border-slate-200/80 bg-slate-50 text-slate-400 hover:border-blue-500 hover:text-blue-500 dark:border-slate-750 dark:bg-[#0b1021] dark:hover:border-blue-500 dark:hover:text-blue-400'
                                                         }`}
                                                         title={
                                                             isShortlisted
-                                                                ? 'Batal Unggul'
-                                                                : 'Shortlist (Unggulan)'
+                                                                ? 'Batal Favorit'
+                                                                : 'Favoritkan (Tandai Biru)'
                                                         }
                                                     >
                                                         <Star
-                                                            size={11}
+                                                            size={13}
                                                             className={
                                                                 isShortlisted
-                                                                    ? 'fill-amber-500 text-amber-500'
+                                                                    ? 'fill-blue-400 text-blue-400'
                                                                     : ''
                                                             }
                                                         />
@@ -161,18 +169,18 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                                                 );
                                                             }
                                                         }}
-                                                        className={`cursor-pointer rounded-lg border p-1 transition-colors ${
+                                                        className={`cursor-pointer rounded-lg border p-1.5 transition-all ${
                                                             isArchived
-                                                                ? 'border-red-400 bg-red-500/10 text-red-500 hover:bg-red-500/20'
-                                                                : 'border-slate-200 bg-slate-50 text-slate-400 hover:text-red-500 dark:border-slate-800 dark:bg-slate-800'
+                                                                ? 'border-red-500/60 bg-red-500/20 text-red-400 shadow-sm ring-2 ring-red-500/20'
+                                                                : 'border-slate-200/80 bg-slate-50 text-slate-400 hover:border-red-500 hover:text-red-500 dark:border-slate-750 dark:bg-[#0b1021] dark:hover:border-red-500 dark:hover:text-red-400'
                                                         }`}
                                                         title={
                                                             isArchived
                                                                 ? 'Batal Arsipkan'
-                                                                : 'Arsipkan (Sembunyikan)'
+                                                                : 'Arsipkan'
                                                         }
                                                     >
-                                                        <Archive size={11} />
+                                                        <Archive size={13} />
                                                     </button>
                                                 </>
                                             )}
@@ -180,22 +188,23 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                     </div>
 
                                     <div>
-                                        <span className="block text-[8px] font-bold tracking-wider text-slate-400 uppercase">
-                                            Proposal Penawaran
+                                        <span className="block text-[9px] font-medium tracking-wider text-slate-400 uppercase">
+                                            Proposal
                                         </span>
-                                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600 dark:text-slate-350">
                                             {bid.proposal}
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-2 dark:border-slate-800/40">
+                                    <div className="grid grid-cols-2 gap-2 border-t border-slate-100/80 pt-3 dark:border-slate-800/80">
                                         {bid.cv && (
                                             <a
                                                 href={bid.cv.startsWith('http') ? bid.cv : '#'}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="rounded bg-slate-100/60 py-1 text-center text-[10px] font-bold text-slate-500 hover:bg-slate-100 dark:bg-slate-800/40 dark:text-indigo-400"
+                                                className="flex items-center justify-center gap-1.5 rounded-lg border border-indigo-200/80 bg-indigo-50/50 py-1.5 px-2.5 text-center text-[11px] font-bold text-indigo-600 transition-all hover:border-indigo-400 hover:bg-indigo-100 dark:border-indigo-800/60 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:border-indigo-500 dark:hover:bg-indigo-900/60"
                                             >
+                                                <FileText size={12} className="text-indigo-500 dark:text-indigo-400" />
                                                 Berkas CV
                                             </a>
                                         )}
@@ -204,23 +213,24 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                                 href={bid.portfolio.startsWith('http') ? bid.portfolio : '#'}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="rounded bg-slate-100/60 py-1 text-center text-[10px] font-bold text-slate-500 hover:bg-slate-100 dark:bg-slate-800/40 dark:text-indigo-400"
+                                                className="flex items-center justify-center gap-1.5 rounded-lg border border-purple-200/80 bg-purple-50/50 py-1.5 px-2.5 text-center text-[11px] font-bold text-purple-600 transition-all hover:border-purple-400 hover:bg-purple-100 dark:border-purple-800/60 dark:bg-purple-950/40 dark:text-purple-300 dark:hover:border-purple-500 dark:hover:bg-purple-900/60"
                                             >
+                                                <ExternalLink size={12} className="text-purple-500 dark:text-purple-400" />
                                                 Portofolio
                                             </a>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col gap-2 min-[400px]:flex-row border-t border-slate-100/60 pt-3 dark:border-slate-800/60">
+                                <div className="flex flex-col gap-2 min-[400px]:flex-row border-t border-slate-100/80 pt-3 dark:border-slate-800/80">
                                     {bid.status === 'pending' && (
                                         <button
                                             type="button"
                                             onClick={() => handleAcceptBid(bid._id)}
-                                            className="flex-1 flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-indigo-600 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider text-white uppercase transition-colors hover:bg-indigo-700"
+                                            className="flex-1 flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-2 text-xs font-bold text-white uppercase tracking-wider shadow-md shadow-emerald-950/20 transition-all hover:from-emerald-500 hover:to-teal-500 border border-emerald-400/30 active:scale-[0.98]"
                                         >
-                                            <Check size={12} />
-                                            Terima Pekerja
+                                            <Check size={14} className="stroke-[3]" />
+                                            Terima Proposal
                                         </button>
                                     )}
 
@@ -233,14 +243,14 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
                                                     name: bid.student.name,
                                                 })
                                             }
-                                            className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase transition-colors ${
+                                            className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider shadow-sm transition-all active:scale-[0.98] ${
                                                 bid.status === 'accepted'
-                                                    ? 'flex-1 bg-green-600 text-white hover:bg-green-700'
-                                                    : 'w-full min-[400px]:flex-1 bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                                                    ? 'flex-1 bg-emerald-600 text-white hover:bg-emerald-500 border border-emerald-400/30'
+                                                    : 'w-full min-[400px]:flex-1 border border-indigo-500/40 bg-indigo-600 text-white hover:bg-indigo-500 dark:border-indigo-400/40 dark:bg-indigo-600 dark:hover:bg-indigo-500'
                                             }`}
                                         >
-                                            <MessageSquare size={11} />
-                                            Chat Pelamar
+                                            <MessageSquare size={13} />
+                                            Hubungi Pelamar
                                         </button>
                                     )}
                                 </div>
@@ -252,9 +262,9 @@ export default function BidsTabPanel({ quest, bids, setSelectedChatBid }: Props)
 
             <ConfirmModal
                 open={!!acceptBidId}
-                title="Pilih Pekerja"
-                message="Apakah Anda yakin ingin memilih pekerja ini? Tindakan ini akan menutup bidding quest."
-                confirmText="Pilih Pekerja"
+                title="Terima Proposal Kontrak"
+                message="Apakah Anda yakin ingin menerima proposal penawaran dari pelamar ini? Tindakan ini akan menutup pendaftaran dan memulai kontrak pengerjaan."
+                confirmText="Terima Proposal"
                 cancelText="Batal"
                 variant="primary"
                 onConfirm={handleConfirmAccept}

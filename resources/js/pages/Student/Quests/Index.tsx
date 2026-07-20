@@ -8,8 +8,8 @@ import {
     CheckCircle2,
     Plus,
     History,
-    ArrowLeft,
     Briefcase,
+    ChevronDown,
 } from 'lucide-react';
 
 import { Quest } from '@/types/quest';
@@ -64,10 +64,8 @@ export default function Index({
         return 0;
     });
 
-    // Bursa Quest: Tampilkan semua quest tanpa mengecualikan quest buatan sendiri
     const bursaQuests = sortedQuests;
 
-    // My Quests: Quests grouped by role
     const myWorkerQuests = myQuests.filter(
         (quest) => quest.worker_id === currentUser?.id,
     );
@@ -124,198 +122,183 @@ export default function Index({
 
     return (
         <div
-            className="relative flex min-h-screen flex-col overflow-x-hidden bg-slate-50 p-3 text-slate-800 transition-colors duration-200 sm:p-6 md:p-8 dark:bg-[#060813] dark:text-white"
+            className="flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8fafc] text-slate-800 transition-colors duration-200 dark:bg-[#030712] dark:text-white"
             style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-            {/* Ambient top-center glow */}
-            <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none" />
-
-            <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col space-y-6">
-                {/* HERO BANNER & HEADER */}
-                <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent p-6 shadow-md dark:border-slate-800/80 dark:from-indigo-950/20 dark:via-purple-950/10 dark:to-transparent">
-                    {/* Decorative abstract glows */}
-                    <div className="absolute top-0 right-0 -z-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
-                    <div className="absolute bottom-0 left-0 -z-10 h-24 w-24 rounded-full bg-purple-500/10 blur-xl" />
-
-                    <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                        {/* Title & Description */}
-                        <div className="flex items-start gap-4">
-                            <Link
-                                href="/student/dashboard"
-                                className="hover:text-indigo-650 mt-1 shrink-0 cursor-pointer rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 shadow-sm transition-all hover:border-indigo-500/30 dark:border-slate-800 dark:bg-[#0c122c]/40 dark:text-slate-400 dark:hover:text-indigo-400"
-                                title="Kembali ke Dashboard"
+            {/* HEADER - Gaming style, consistent with other pages */}
+            <div className="w-full flex-shrink-0 px-1 pt-0.5">
+                <div
+                    className="relative rounded-md p-[2px] md:p-[3px]"
+                    style={{
+                        backgroundImage:
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
+                    }}
+                >
+                    <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
+                        {/* Back Button */}
+                        <Link
+                            href="/student/dashboard"
+                            className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
+                        >
+                            <svg
+                                viewBox="0 0 48 48"
+                                className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
-                                <ArrowLeft size={16} />
-                            </Link>
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <span className="font-['Orbitron'] text-[10px] font-black tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
-                                        Quest Hub
-                                    </span>
-                                </div>
-                                <h1 className="mt-1 font-['Oxanium'] text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
-                                    QUEST BOARD
-                                </h1>
-                                <p className="mt-1 max-w-xl text-xs leading-relaxed font-medium text-slate-500 dark:text-slate-400">
-                                    Cari lowongan pekerjaan, selesaikan quest,
-                                    kumpulkan EXP & Gold untuk menaikkan
-                                    reputasi karakter RPG Anda di SkillMongo.
-                                </p>
-                            </div>
-                        </div>
+                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
+                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
+                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
+                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
+                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
+                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
+                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                            </svg>
+                        </Link>
 
-                        {/* Actions */}
-                        <div className="flex flex-wrap items-center gap-3">
-                            <Link
-                                href="/student/quests/history"
-                                className="dark:hover:bg-blue-955/40 inline-flex transform items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4.5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase shadow-sm transition-all duration-305 hover:bg-slate-100 active:scale-95 dark:border-blue-500/25 dark:bg-[#0c122c]/40 dark:text-blue-200"
-                            >
-                                <History className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                                Riwayat Quest
-                            </Link>
+                        {/* Title */}
+                        <h1 className="flex-1 text-center font-['Orbitron'] text-sm font-bold tracking-[0.05em] text-[#1e3a8a] uppercase min-[390px]:text-base min-[390px]:tracking-[0.1em] sm:text-xl md:text-2xl md:tracking-[0.15em] lg:text-3xl 2xl:text-4xl dark:text-white">
+                            QUEST BOARD
+                        </h1>
 
-                            <Link
-                                href="/student/quests/create"
-                                className="inline-flex transform items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_20px_rgba(124,58,237,0.3)] transition-all duration-300 hover:scale-[1.02] hover:from-purple-700 hover:to-indigo-700 active:scale-98"
-                            >
-                                <Plus className="h-4 w-4" />
-                                Tambah Quest
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Stats Grid inside Hero */}
-                    <div className="mt-6 grid grid-cols-2 gap-3 border-t border-slate-200/60 pt-6 sm:grid-cols-4 dark:border-slate-800/60">
-                        {[
-                            {
-                                label: 'Quest Tersedia',
-                                val: quests.filter((q) => q.status === 'open')
-                                    .length,
-                                icon: Compass,
-                                color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
-                            },
-                            {
-                                label: 'Pekerjaan Saya',
-                                val: myWorkerQuests.filter(
-                                    (q) => q.status === 'ongoing',
-                                ).length,
-                                icon: Activity,
-                                color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
-                            },
-                            {
-                                label: 'Quest Saya',
-                                val: myCreatorQuests.length,
-                                icon: Info,
-                                color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
-                            },
-                            {
-                                label: 'Quest Diselesaikan',
-                                val: completedQuestsCount,
-                                icon: CheckCircle2,
-                                color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
-                            },
-                        ].map((statItem, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-3 rounded-2xl border border-slate-200/50 bg-white/40 p-3 shadow-sm backdrop-blur-sm dark:border-slate-800/40 dark:bg-black/10"
-                            >
-                                <div
-                                    className={`flex h-9 w-9 items-center justify-center rounded-xl border ${statItem.color}`}
-                                >
-                                    <statItem.icon size={16} />
-                                </div>
-                                <div>
-                                    <span className="block text-[9px] font-bold tracking-widest text-slate-400 uppercase">
-                                        {statItem.label}
-                                    </span>
-                                    <span className="font-['Orbitron'] text-sm font-extrabold text-slate-900 dark:text-white">
-                                        {statItem.val}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
+                        {/* Spacer to center title on mobile */}
+                        <div className="h-10 w-10 shrink-0 md:hidden" />
                     </div>
                 </div>
+            </div>
 
-                {/* TAB SWITCHER UTAMA */}
-                <div className="flex gap-2 self-start rounded-2xl bg-slate-200/40 p-1.5 backdrop-blur-sm dark:bg-slate-900/40">
-                    <button
-                        onClick={() => setActiveMainTab('bursa')}
-                        className={`flex cursor-pointer items-center gap-2 rounded-xl px-6 py-2.5 font-['Orbitron'] text-xs font-black tracking-widest uppercase transition-all duration-300 ${
-                            activeMainTab === 'bursa'
-                                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
-                                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                        }`}
-                    >
-                        <Compass size={14} />
-                        Bursa Quest ({bursaQuests.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveMainTab('saya')}
-                        className={`flex cursor-pointer items-center gap-2 rounded-xl px-6 py-2.5 font-['Orbitron'] text-xs font-black tracking-widest uppercase transition-all duration-300 ${
-                            activeMainTab === 'saya'
-                                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
-                                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                        }`}
-                    >
-                        <Briefcase size={14} />
-                        Quest Saya ({myQuests.length})
-                    </button>
+            <div className="relative z-10 flex min-h-0 w-full max-w-none flex-1 flex-col space-y-4 px-4 py-4 sm:px-6 lg:px-10">
+
+                {/* STATS */}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {[
+                        {
+                            label: 'Proyek Tersedia',
+                            val: quests.filter((q) => q.status === 'open').length,
+                            icon: Compass,
+                            accent: 'text-emerald-600 dark:text-emerald-400',
+                        },
+                        {
+                            label: 'Kontrak Berjalan',
+                            val: myWorkerQuests.filter((q) => q.status === 'ongoing').length,
+                            icon: Activity,
+                            accent: 'text-indigo-600 dark:text-indigo-400',
+                        },
+                        {
+                            label: 'Tugas Saya Rilis',
+                            val: myCreatorQuests.length,
+                            icon: Info,
+                            accent: 'text-amber-600 dark:text-amber-400',
+                        },
+                        {
+                            label: 'Kontrak Selesai',
+                            val: completedQuestsCount,
+                            icon: CheckCircle2,
+                            accent: 'text-slate-500 dark:text-slate-400',
+                        },
+                    ].map((statItem, index) => (
+                        <div
+                            key={index}
+                            className="flex items-center gap-3 rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-[#0d0f17]"
+                        >
+                            <statItem.icon size={18} className={`shrink-0 ${statItem.accent}`} strokeWidth={2} />
+                            <div className="min-w-0">
+                                <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                    {statItem.label}
+                                </span>
+                                <span className="text-base font-extrabold text-slate-900 dark:text-white">
+                                    {statItem.val}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* TAB SWITCHER + ACTION BUTTONS — satu baris */}
+                <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+                    {/* Tab Switcher */}
+                    <div className="flex gap-1.5 rounded-lg border border-slate-300 bg-slate-200/80 p-1 dark:border-slate-800 dark:bg-[#0d1117]">
+                        <button
+                            onClick={() => setActiveMainTab('bursa')}
+                            className={`flex cursor-pointer items-center gap-2 rounded-md px-4 py-2 text-xs font-bold tracking-wide transition-all ${
+                                activeMainTab === 'bursa'
+                                    ? 'border border-indigo-500/40 bg-white text-indigo-700 shadow-sm dark:border-indigo-500/40 dark:bg-[#030712] dark:text-white'
+                                    : 'text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                            }`}
+                        >
+                            <Compass size={14} />
+                            Bursa Lowongan ({bursaQuests.length})
+                        </button>
+                        <button
+                            onClick={() => setActiveMainTab('saya')}
+                            className={`flex cursor-pointer items-center gap-2 rounded-md px-4 py-2 text-xs font-bold tracking-wide transition-all ${
+                                activeMainTab === 'saya'
+                                    ? 'border border-indigo-500/40 bg-white text-indigo-700 shadow-sm dark:border-indigo-500/40 dark:bg-[#030712] dark:text-white'
+                                    : 'text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                            }`}
+                        >
+                            <Briefcase size={14} />
+                            Proyek Saya ({myQuests.length})
+                        </button>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Link
+                            href="/student/quests/history"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white"
+                        >
+                            <History className="h-3.5 w-3.5" />
+                            Riwayat Pekerjaan
+                        </Link>
+
+                        <Link
+                            href="/student/quests/create"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-indigo-700/30 bg-indigo-600 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-600/40"
+                        >
+                            <Plus className="h-4 w-4 stroke-[3]" />
+                            Posting Proyek Baru
+                        </Link>
+                    </div>
                 </div>
 
                 {activeMainTab === 'bursa' ? (
                     <>
                         {/* FILTERS & SEARCH */}
-                        <div className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-[#0c122c]/40">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
                             <form
                                 onSubmit={handleSearch}
-                                className="flex flex-col items-center gap-4 md:flex-row"
+                                className="relative z-10 flex flex-col items-center gap-3.5 md:flex-row"
                             >
+                                {/* Search Input */}
                                 <div className="relative w-full md:flex-1">
                                     <input
                                         type="text"
-                                        placeholder="Cari lowongan quest..."
+                                        placeholder="Cari lowongan proyek..."
                                         value={search}
-                                        onChange={(e) =>
-                                            setSearch(e.target.value)
-                                        }
-                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-4 pl-11 font-['Oxanium'] text-xs text-slate-800 transition-colors focus:border-indigo-500 focus:outline-none sm:text-sm dark:border-slate-800 dark:bg-black/20 dark:text-white"
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/80 py-2 pr-4 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-500 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
                                     />
-                                    <Search className="absolute top-3 left-3.5 h-5 w-5 text-slate-400 dark:text-slate-500" />
+                                    <Search className="absolute top-2.5 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
                                 </div>
 
-                                {/* Sort Selector */}
-                                <div className="w-full font-['Oxanium'] md:w-48">
+                                {/* Sort Dropdown */}
+                                <div className="relative w-full md:w-48">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) =>
-                                            setSortBy(e.target.value as any)
-                                        }
-                                        className="text-slate-650 w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-bold tracking-wider uppercase focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-black/20 dark:text-slate-300"
+                                        onChange={(e) => setSortBy(e.target.value as any)}
+                                        className="w-full cursor-pointer appearance-none rounded-lg border border-slate-300 bg-slate-50/80 px-3.5 py-2 pr-8 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
                                     >
-                                        <option
-                                            value="latest"
-                                            className="bg-white dark:bg-[#060813]"
-                                        >
-                                            Urutan: Terbaru
-                                        </option>
-                                        <option
-                                            value="highest_salary"
-                                            className="bg-white dark:bg-[#060813]"
-                                        >
-                                            Gaji Tertinggi
-                                        </option>
-                                        <option
-                                            value="closest_deadline"
-                                            className="bg-white dark:bg-[#060813]"
-                                        >
-                                            Deadline Terdekat
-                                        </option>
+                                        <option value="latest">Terbaru</option>
+                                        <option value="highest_salary">Anggaran Tertinggi</option>
+                                        <option value="closest_deadline">Deadline Terdekat</option>
                                     </select>
+                                    <ChevronDown className="pointer-events-none absolute top-3 right-3 h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
                                 </div>
 
-                                {/* Status Pills */}
-                                <div className="flex w-full scrollbar-thin gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
+                                {/* Status Filters */}
+                                <div className="flex w-full gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0 scrollbar-none">
                                     {[
                                         { val: '', label: 'Semua' },
                                         { val: 'open', label: 'Tersedia' },
@@ -325,15 +308,11 @@ export default function Index({
                                         <button
                                             key={statusOption.val}
                                             type="button"
-                                            onClick={() =>
-                                                handleStatusFilter(
-                                                    statusOption.val,
-                                                )
-                                            }
-                                            className={`cursor-pointer rounded-xl border px-4 py-2 font-['Orbitron'] text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 ${
+                                            onClick={() => handleStatusFilter(statusOption.val)}
+                                            className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold transition-all whitespace-nowrap ${
                                                 status === statusOption.val
-                                                    ? 'border-indigo-500 bg-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.4)]'
-                                                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-indigo-500/50 hover:bg-indigo-500/5 dark:border-slate-800 dark:bg-black/20 dark:text-slate-400'
+                                                    ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                                                    : 'border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
                                             }`}
                                         >
                                             {statusOption.label}
@@ -345,20 +324,21 @@ export default function Index({
 
                         {/* QUEST LIST */}
                         {bursaQuests.length === 0 ? (
-                            <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white/40 py-20 text-center font-['Oxanium'] shadow-sm backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#0c122c]/20">
-                                <Briefcase className="mb-4 h-14 w-14 animate-pulse text-slate-300 dark:text-blue-900/40" />
-                                <p className="text-base font-bold text-slate-600 dark:text-blue-300">
-                                    Tidak ada quest yang tersedia
+                            <div className="relative overflow-hidden flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white py-16 text-center shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                                <div className="relative z-10 flex flex-col items-center justify-center">
+                                    <Briefcase className="mb-3 h-10 w-10 text-slate-500 dark:text-slate-700" />
+                                <p className="text-sm font-extrabold text-slate-900 dark:text-slate-300">
+                                    Tidak ada lowongan proyek tersedia
                                 </p>
-                                <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-slate-400 dark:text-slate-500">
-                                    Coba ubah kata kunci pencarian Anda atau
-                                    periksa filter status lainnya untuk melihat
-                                    lowongan quest.
+                                <p className="mx-auto mt-1 max-w-xs text-xs font-semibold text-slate-600">
+                                    Coba ubah kata kunci pencarian atau sesuaikan filter status untuk melihat lowongan lain.
                                 </p>
+                                </div>
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 gap-6 pb-12 md:grid-cols-2 lg:grid-cols-3">
+                                <div className="grid grid-cols-1 gap-5 pb-8 md:grid-cols-2 lg:grid-cols-3">
                                     {bursaQuests.map((quest) => (
                                         <QuestItemCard
                                             key={quest._id}
@@ -367,33 +347,29 @@ export default function Index({
                                     ))}
                                 </div>
 
-                                {(quests.length < totalQuests ||
-                                    currentLimit > 12) && (
-                                    <div className="flex flex-wrap items-center justify-center gap-4 pb-16">
-                                        {/* Show Less Button */}
+                                {(quests.length < totalQuests || currentLimit > 12) && (
+                                    <div className="flex flex-wrap items-center justify-center gap-3 pb-16">
+                                        {/* Show Less */}
                                         {currentLimit > 12 && (
                                             <button
                                                 onClick={handleLoadLess}
                                                 disabled={isLoadingMore}
-                                                className="group flex cursor-pointer items-center gap-2 rounded-xl border border-rose-200 bg-white/80 px-6 py-3 font-['Orbitron'] text-xs font-bold tracking-wider text-rose-600 uppercase transition-all duration-300 hover:border-rose-500 hover:bg-rose-600 hover:text-white hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] disabled:opacity-50 dark:border-rose-500/30 dark:bg-rose-950/20 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
+                                                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-red-300 bg-white px-4 py-2 text-xs font-bold text-red-700 shadow-sm transition-all hover:bg-red-50 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400"
                                             >
-                                                <span className="transition-transform duration-300 group-hover:-translate-y-0.5">
-                                                    ↑
-                                                </span>
                                                 Tampilkan Lebih Sedikit
                                             </button>
                                         )}
 
-                                        {/* Show More Button */}
+                                        {/* Show More */}
                                         {quests.length < totalQuests && (
                                             <button
                                                 onClick={handleLoadMore}
                                                 disabled={isLoadingMore}
-                                                className="group flex cursor-pointer items-center gap-2.5 rounded-xl border border-indigo-200 bg-white/80 px-6 py-3 font-['Orbitron'] text-xs font-bold tracking-wider text-indigo-600 uppercase transition-all duration-300 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white hover:shadow-[0_0_15px_rgba(99,102,241,0.4)] disabled:opacity-50 dark:border-indigo-500/30 dark:bg-indigo-950/20 dark:text-indigo-400 dark:hover:bg-indigo-600 dark:hover:text-white"
+                                                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-indigo-700 shadow-sm transition-all hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:text-indigo-400"
                                             >
                                                 {isLoadingMore ? (
                                                     <svg
-                                                        className="mr-2 -ml-1 h-4 w-4 animate-spin text-current"
+                                                        className="mr-1.5 h-3.5 w-3.5 animate-spin text-current"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
@@ -413,12 +389,7 @@ export default function Index({
                                                         ></path>
                                                     </svg>
                                                 ) : (
-                                                    <>
-                                                        Tampilkan Lebih Banyak
-                                                        <span className="transition-transform duration-300 group-hover:translate-y-0.5">
-                                                            ↓
-                                                        </span>
-                                                    </>
+                                                    'Tampilkan Lebih Banyak'
                                                 )}
                                             </button>
                                         )}
@@ -429,36 +400,34 @@ export default function Index({
                     </>
                 ) : (
                     <div className="space-y-8 pb-16">
+                        
                         {/* Sebagai Pekerja */}
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
-                                <h2 className="flex items-center gap-2 border-l-2 border-emerald-500 pl-2.5 font-['Orbitron'] text-sm font-black tracking-wider text-slate-900 uppercase dark:text-white">
-                                    Sebagai Pekerja ({myWorkerQuests.length})
+                            <div className="flex items-center justify-between border-b border-slate-300 pb-2 dark:border-slate-800">
+                                <h2 className="flex items-center gap-2 pl-1 text-sm font-extrabold text-slate-900 uppercase dark:text-white">
+                                    Sebagai Kontraktor / Pekerja ({myWorkerQuests.length})
                                 </h2>
-                                <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Pekerjaan Aktif & Kontrak Anda
+                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider dark:text-slate-400">
+                                    Proyek Kerja Aktif Anda
                                 </span>
                             </div>
 
                             {myWorkerQuests.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/40 py-12 text-center font-['Oxanium'] dark:border-slate-800/80 dark:bg-black/10">
-                                    <Briefcase className="dark:text-slate-755 mb-3 h-10 w-10 text-slate-300" />
-                                    <p className="dark:text-slate-350 text-sm font-bold text-slate-600">
-                                        Anda belum mengambil atau diterima di
-                                        quest mana pun.
+                                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50/70 py-10 text-center dark:border-slate-800 dark:bg-[#0d1117]/30">
+                                    <Briefcase className="mb-2.5 h-8 w-8 text-slate-500 dark:text-slate-700" />
+                                    <p className="text-xs font-bold text-slate-800 dark:text-slate-300">
+                                        Anda belum mengambil proyek apa pun.
                                     </p>
                                     <button
-                                        onClick={() =>
-                                            setActiveMainTab('bursa')
-                                        }
-                                        className="mt-2.5 font-['Orbitron'] text-xs font-black text-indigo-600 uppercase hover:underline dark:text-indigo-400"
+                                        onClick={() => setActiveMainTab('bursa')}
+                                        className="mt-2 text-xs font-extrabold text-indigo-700 hover:underline dark:text-indigo-400"
                                     >
                                         Cari Lowongan Kerja →
                                     </button>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                                         {displayedWorkerQuests.map((quest) => (
                                             <QuestItemCard
                                                 key={quest._id}
@@ -467,34 +436,26 @@ export default function Index({
                                         ))}
                                     </div>
 
-                                    {(myWorkerQuests.length > 3 ||
-                                        myWorkerLimit > 3) && (
-                                        <div className="flex justify-center gap-3 pt-4">
-                                            {myWorkerLimit <
-                                                myWorkerQuests.length && (
+                                    {(myWorkerQuests.length > 3 || myWorkerLimit > 3) && (
+                                        <div className="flex justify-center gap-2 pt-3">
+                                            {myWorkerLimit < myWorkerQuests.length && (
                                                 <button
                                                     onClick={() =>
-                                                        setMyWorkerLimit(
-                                                            (prev) =>
-                                                                Math.min(
-                                                                    prev + 6,
-                                                                    myWorkerQuests.length,
-                                                                ),
+                                                        setMyWorkerLimit((prev) =>
+                                                            Math.min(prev + 6, myWorkerQuests.length),
                                                         )
                                                     }
-                                                    className="group flex cursor-pointer items-center gap-1.5 rounded-xl border border-indigo-200 bg-white/80 px-4 py-2 font-['Orbitron'] text-[10px] font-bold tracking-wider text-indigo-600 uppercase transition-all duration-300 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white dark:border-indigo-500/30 dark:bg-indigo-950/20 dark:text-indigo-400 dark:hover:bg-indigo-600 dark:hover:text-white"
+                                                    className="rounded-lg border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-sm hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
                                                 >
-                                                    Tampilkan Lebih Banyak ↓
+                                                    Selengkapnya ↓
                                                 </button>
                                             )}
                                             {myWorkerLimit > 3 && (
                                                 <button
-                                                    onClick={() =>
-                                                        setMyWorkerLimit(3)
-                                                    }
-                                                    className="group flex cursor-pointer items-center gap-1.5 rounded-xl border border-rose-200 bg-white/80 px-4 py-2 font-['Orbitron'] text-[10px] font-bold tracking-wider text-rose-600 uppercase transition-all duration-300 hover:border-rose-500 hover:bg-rose-600 hover:text-white dark:border-rose-500/30 dark:bg-rose-950/20 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
+                                                    onClick={() => setMyWorkerLimit(3)}
+                                                    className="rounded-lg border border-red-300 bg-white px-3.5 py-1.5 text-xs font-bold text-red-700 shadow-sm hover:bg-red-50 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400"
                                                 >
-                                                    Tampilkan Lebih Sedikit ↑
+                                                    Sembunyikan ↑
                                                 </button>
                                             )}
                                         </div>
@@ -505,31 +466,29 @@ export default function Index({
 
                         {/* Sebagai Pembuat */}
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
-                                <h2 className="flex items-center gap-2 border-l-2 border-purple-500 pl-2.5 font-['Orbitron'] text-sm font-black tracking-wider text-slate-900 uppercase dark:text-white">
-                                    Sebagai Pembuat ({myCreatorQuests.length})
+                            <div className="flex items-center justify-between border-b border-slate-300 pb-2 dark:border-slate-800">
+                                <h2 className="flex items-center gap-2 pl-1 text-sm font-extrabold text-slate-900 uppercase dark:text-white">
+                                    Sebagai Klien / Pemilik Proyek ({myCreatorQuests.length})
                                 </h2>
-                                <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Quest yang Anda rilis ke publik
+                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider dark:text-slate-400">
+                                    Proyek yang Anda posting
                                 </span>
                             </div>
-
                             {myCreatorQuests.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/40 py-12 text-center font-['Oxanium'] dark:border-slate-800/80 dark:bg-black/10">
-                                    <p className="dark:text-slate-350 text-sm font-bold text-slate-600">
-                                        Anda belum merilis lowongan quest apa
-                                        pun.
+                                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50/70 py-10 text-center dark:border-slate-800 dark:bg-[#0d1117]/30">
+                                    <p className="text-xs font-bold text-slate-800 dark:text-slate-300">
+                                        Anda belum merilis lowongan proyek apa pun.
                                     </p>
                                     <Link
                                         href="/student/quests/create"
-                                        className="mt-2.5 font-['Orbitron'] text-xs font-black text-purple-600 uppercase hover:underline dark:text-purple-400"
+                                        className="mt-2 text-xs font-extrabold text-indigo-700 hover:underline dark:text-indigo-400"
                                     >
-                                        Buat Quest Sekarang →
+                                        Buat Lowongan Sekarang →
                                     </Link>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                                         {displayedCreatorQuests.map((quest) => (
                                             <QuestItemCard
                                                 key={quest._id}
@@ -538,34 +497,26 @@ export default function Index({
                                         ))}
                                     </div>
 
-                                    {(myCreatorQuests.length > 3 ||
-                                        myCreatorLimit > 3) && (
-                                        <div className="flex justify-center gap-3 pt-4">
-                                            {myCreatorLimit <
-                                                myCreatorQuests.length && (
+                                    {(myCreatorQuests.length > 3 || myCreatorLimit > 3) && (
+                                        <div className="flex justify-center gap-2 pt-3">
+                                            {myCreatorLimit < myCreatorQuests.length && (
                                                 <button
                                                     onClick={() =>
-                                                        setMyCreatorLimit(
-                                                            (prev) =>
-                                                                Math.min(
-                                                                    prev + 6,
-                                                                    myCreatorQuests.length,
-                                                                ),
+                                                        setMyCreatorLimit((prev) =>
+                                                            Math.min(prev + 6, myCreatorQuests.length),
                                                         )
                                                     }
-                                                    className="group flex cursor-pointer items-center gap-1.5 rounded-xl border border-indigo-200 bg-white/80 px-4 py-2 font-['Orbitron'] text-[10px] font-bold tracking-wider text-indigo-600 uppercase transition-all duration-305 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white dark:border-indigo-500/30 dark:bg-indigo-950/20 dark:text-indigo-400 dark:hover:bg-indigo-600 dark:hover:text-white"
+                                                    className="rounded-lg border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-sm hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
                                                 >
-                                                    Tampilkan Lebih Banyak ↓
+                                                    Selengkapnya ↓
                                                 </button>
                                             )}
                                             {myCreatorLimit > 3 && (
                                                 <button
-                                                    onClick={() =>
-                                                        setMyCreatorLimit(3)
-                                                    }
-                                                    className="group flex cursor-pointer items-center gap-1.5 rounded-xl border border-rose-200 bg-white/80 px-4 py-2 font-['Orbitron'] text-[10px] font-bold tracking-wider text-rose-600 uppercase transition-all duration-305 hover:border-rose-500 hover:bg-rose-600 hover:text-white dark:border-rose-500/30 dark:bg-rose-950/20 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
+                                                    onClick={() => setMyCreatorLimit(3)}
+                                                    className="rounded-lg border border-red-300 bg-white px-3.5 py-1.5 text-xs font-bold text-red-700 shadow-sm hover:bg-red-50 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400"
                                                 >
-                                                    Tampilkan Lebih Sedikit ↑
+                                                    Sembunyikan ↑
                                                 </button>
                                             )}
                                         </div>
