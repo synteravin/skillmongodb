@@ -599,7 +599,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         Estimasi Anggaran
                                     </span>
                                     <span className="text-xs font-bold text-slate-800 dark:text-white">
-                                        {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
+                                        {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} - {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
                                     </span>
                                 </div>
                             </div>

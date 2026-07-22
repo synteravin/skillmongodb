@@ -64,7 +64,7 @@ export default function AdminArbitrationTabPanel({
                                 Quest Dipublikasikan
                             </span>
                             <p className="mt-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                                Quest dibuat oleh <strong className="font-bold text-slate-900 dark:text-white">{quest.creator.name}</strong> dengan estimasi budget {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}.
+                                Quest dibuat oleh <strong className="font-bold text-slate-900 dark:text-white">{quest.creator.name}</strong> dengan estimasi budget {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} - {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}.
                             </p>
                         </div>
                     </div>

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Quest;
 
+use App\Enums\QuestBidStatus;
+use App\Enums\QuestStatus;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
@@ -20,16 +22,16 @@ class AcceptQuestBidAction
         }
 
         // Accept the chosen bid
-        $acceptedBid->update(['status' => 'accepted']);
+        $acceptedBid->update(['status' => QuestBidStatus::ACCEPTED->value]);
 
         // Reject all other bids for this quest
         QuestBid::where('quest_id', $quest->_id)
             ->where('_id', '!=', $bidId)
-            ->update(['status' => 'rejected']);
+            ->update(['status' => QuestBidStatus::REJECTED->value]);
 
         // Update quest worker and status
         $quest->update([
-            'status' => 'ongoing',
+            'status' => QuestStatus::ONGOING->value,
             'worker_id' => $acceptedBid->student_id,
         ]);
     }

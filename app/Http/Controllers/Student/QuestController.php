@@ -39,9 +39,11 @@ class QuestController extends Controller
         $myQuests = Quest::with('creator')
             ->where(function ($query) use ($user) {
                 $query->where('creator_id', (string) $user->_id)
-                    ->orWhere('worker_id', (string) $user->_id);
+                    ->orWhere(function ($q) use ($user) {
+                        $q->where('worker_id', (string) $user->_id)
+                            ->whereNotIn('status', ['draft', 'rejected']);
+                    });
             })
-            ->whereNotIn('status', ['draft', 'rejected'])
             ->latest()
             ->get()
             ->map(function ($quest) {
@@ -49,12 +51,15 @@ class QuestController extends Controller
                     '_id' => (string) $quest->_id,
                     'title' => $quest->title,
                     'description' => $quest->description,
-                    'min_salary' => $quest->min_salary,
-                    'max_salary' => $quest->max_salary,
-                    'deadline' => $quest->deadline->toISOString(),
+                    'min_budget' => $quest->min_budget,
+                    'max_budget' => $quest->max_budget,
+                    'min_salary' => $quest->min_budget,
+                    'max_salary' => $quest->max_budget,
+                    'deadline' => $quest->deadline?->toISOString(),
                     'status' => $quest->status,
                     'creator_id' => $quest->creator_id ? (string) $quest->creator_id : null,
                     'worker_id' => $quest->worker_id ? (string) $quest->worker_id : null,
+                    'rejection_note' => $quest->rejection_note,
                     'creator' => [
                         'name' => $quest->creator?->name ?? 'Unknown User',
                         'role' => $quest->creator?->role ?? 'unknown',
@@ -399,7 +404,7 @@ class QuestController extends Controller
     /**
      * Submit final ZIP deliverable for an approved quest.
      */
-    public function submitFinalZIP(Request $request, Quest $quest)
+    public function submitFinalZip(Request $request, Quest $quest)
     {
         $user = $request->user();
 

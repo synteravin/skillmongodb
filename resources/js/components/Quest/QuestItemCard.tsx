@@ -68,8 +68,65 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
         };
     };
 
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'open':
+                return {
+                    label: 'Tersedia',
+                    className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
+                };
+            case 'draft':
+                return {
+                    label: 'Review Admin',
+                    className: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                };
+            case 'rejected':
+                return {
+                    label: 'Ditolak Admin',
+                    className: 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400',
+                };
+            case 'ongoing':
+                return {
+                    label: 'Berjalan',
+                    className: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400',
+                };
+            case 'submitted':
+                return {
+                    label: 'Ditinjau',
+                    className: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                };
+            case 'approved':
+            case 'payment':
+                return {
+                    label: 'Pelunasan',
+                    className: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                };
+            case 'completed':
+                return {
+                    label: 'Selesai',
+                    className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
+                };
+            case 'expired':
+                return {
+                    label: 'Kadaluarsa',
+                    className: 'border-slate-300 bg-slate-100 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400',
+                };
+            case 'disputed':
+                return {
+                    label: 'Dispute',
+                    className: 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400',
+                };
+            default:
+                return {
+                    label: status,
+                    className: 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300',
+                };
+        }
+    };
+
     const isCompleted = quest.status === 'completed';
     const rankInfo = getQuestRank(quest.max_salary);
+    const statusBadge = getStatusBadge(quest.status);
 
     return (
         <div
@@ -121,28 +178,9 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                     </div>
 
                     <span
-                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${
-                            quest.status === 'open'
-                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                : quest.status === 'ongoing'
-                                  ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
-                                  : quest.status === 'approved' ||
-                                      quest.status === 'payment' ||
-                                      quest.status === 'submitted'
-                                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
-                                    : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
-                        }`}
+                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${statusBadge.className}`}
                     >
-                        {quest.status === 'open'
-                            ? 'Tersedia'
-                            : quest.status === 'ongoing'
-                              ? 'Berjalan'
-                              : quest.status === 'approved' ||
-                                  quest.status === 'payment'
-                                ? 'Pelunasan'
-                                : quest.status === 'submitted'
-                                  ? 'Ditinjau'
-                                  : 'Selesai'}
+                        {statusBadge.label}
                     </span>
                 </div>
 
@@ -191,8 +229,8 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                                         : 'text-slate-900 dark:text-white'
                                 }`}
                             >
-                                {formatCurrency(quest.min_salary)} -{' '}
-                                {formatCurrency(quest.max_salary)}
+                                {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} -{' '}
+                                {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
                             </span>
                         </div>
                     </div>

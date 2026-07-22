@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
 
 class QuestBid extends Model
@@ -27,17 +28,18 @@ class QuestBid extends Model
             'quest_id' => 'string',
             'student_id' => 'string',
             'bid_amount' => 'integer',
+            'status' => 'string',
         ];
     }
 
     /* ================= RELATIONS ================= */
 
-    public function quest()
+    public function quest(): BelongsTo
     {
         return $this->belongsTo(Quest::class, 'quest_id', '_id');
     }
 
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'student_id', '_id');
     }

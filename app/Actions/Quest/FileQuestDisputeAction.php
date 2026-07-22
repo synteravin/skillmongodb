@@ -2,6 +2,8 @@
 
 namespace App\Actions\Quest;
 
+use App\Enums\DisputeStatus;
+use App\Enums\QuestStatus;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\User;
@@ -13,19 +15,21 @@ class FileQuestDisputeAction
      */
     public function execute(Quest $quest, User $user, string $reason): void
     {
-        if (! in_array($quest->status, ['submitted', 'ongoing', 'approved'])) {
+        $currentStatus = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+
+        if (! in_array($currentStatus, [QuestStatus::SUBMITTED->value, QuestStatus::ONGOING->value, QuestStatus::APPROVED->value])) {
             abort(400, 'Quest tidak dalam status aktif atau peninjauan untuk diajukan dispute.');
         }
 
         $quest->update([
-            'status' => 'disputed',
+            'status' => QuestStatus::DISPUTED->value,
             'dispute' => [
                 'disputed_at' => now()->toIso8601String(),
                 'disputer_id' => $user->_id,
                 'filer_id' => $user->_id,
                 'filer_name' => $user->name,
                 'reason' => $reason,
-                'status' => 'pending',
+                'status' => DisputeStatus::PENDING->value,
                 'resolved_at' => null,
                 'ruled_at' => null,
                 'ruling_note' => null,

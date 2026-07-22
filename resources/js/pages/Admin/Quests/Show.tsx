@@ -461,8 +461,8 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         Rentang Anggaran
                                     </span>
                                     <span className="mt-1 text-base font-extrabold text-slate-900 dark:text-white">
-                                        {formatCurrency(quest.min_salary)} -{' '}
-                                        {formatCurrency(quest.max_salary)}
+                                        {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} -{' '}
+                                        {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
                                     </span>
                                     {quest.accepted_bid_amount && (
                                         <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -683,11 +683,11 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                             </span>
                                             <span className="text-xs font-bold text-slate-900 dark:text-white">
                                                 {formatCurrency(
-                                                    quest.min_salary,
+                                                    quest.min_budget ?? quest.min_salary ?? 0,
                                                 )}{' '}
                                                 -{' '}
                                                 {formatCurrency(
-                                                    quest.max_salary,
+                                                    quest.max_budget ?? quest.max_salary ?? 0,
                                                 )}
                                             </span>
                                         </div>
