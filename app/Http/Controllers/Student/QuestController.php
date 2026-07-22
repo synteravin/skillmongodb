@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\QuestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Quest\FileDisputeRequest;
 use App\Http\Requests\Quest\StoreQuestBidRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
+use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
@@ -142,6 +144,28 @@ class QuestController extends Controller
             }
         }
 
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $att) {
+                if ($att->isValid()) {
+                    $mime = $att->getMimeType() ?? '';
+                    if (str_starts_with($mime, 'image/')) {
+                        $path = $att->store('quests/images', 's3');
+                        $images[] = [
+                            'path' => $path,
+                            'name' => $att->getClientOriginalName(),
+                        ];
+                    } else {
+                        $path = $att->store('quests/files', 's3');
+                        $files[] = [
+                            'path' => $path,
+                            'name' => $att->getClientOriginalName(),
+                            'size' => $att->getSize(),
+                        ];
+                    }
+                }
+            }
+        }
+
         $data['images'] = $images;
         $data['files'] = $files;
 
@@ -152,6 +176,230 @@ class QuestController extends Controller
 
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Quest berhasil dikirim dan menunggu persetujuan admin!');
+    }
+
+    /**
+     * Show form for editing an unapproved/rejected quest.
+     */
+    public function edit(string $id)
+    {
+        $quest = Quest::findOrFail($id);
+        $user = auth()->user();
+
+        if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengedit quest ini.');
+        }
+
+        $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+        if (! in_array($statusVal, [QuestStatus::DRAFT->value, QuestStatus::REJECTED->value])) {
+            abort(400, 'Hanya quest berstatus Draf atau Ditolak yang dapat diperbaiki.');
+        }
+
+        $disk = Storage::disk('s3');
+        $resolvedImages = array_map(function ($img) use ($disk) {
+            return [
+                'name' => $img['name'] ?? 'image.jpg',
+                'path' => $img['path'] ?? '',
+                'url' => isset($img['path']) ? $disk->url($img['path']) : '',
+            ];
+        }, $quest->images ?? []);
+
+        $resolvedFiles = array_map(function ($file) use ($disk) {
+            return [
+                'name' => $file['name'] ?? 'file.dat',
+                'path' => $file['path'] ?? '',
+                'url' => isset($file['path']) ? $disk->url($file['path']) : '',
+                'size' => $file['size'] ?? 0,
+            ];
+        }, $quest->files ?? []);
+
+        return Inertia::render('Student/Quests/Edit', [
+            'quest' => [
+                '_id' => (string) $quest->_id,
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
+                'deadline' => $quest->deadline?->toISOString() ? explode('T', $quest->deadline->toISOString())[0] : '',
+                'status' => $statusVal,
+                'rejection_note' => $quest->rejection_note,
+                'images' => $resolvedImages,
+                'files' => $resolvedFiles,
+            ],
+        ]);
+    }
+
+    /**
+     * Update an existing draft/rejected quest and resubmit to admin.
+     */
+    public function update(StoreQuestRequest $request, string $id)
+    {
+        $quest = Quest::findOrFail($id);
+        $user = $request->user();
+
+        if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengedit quest ini.');
+        }
+
+        $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+        if (! in_array($statusVal, [QuestStatus::DRAFT->value, QuestStatus::REJECTED->value])) {
+            abort(400, 'Hanya quest berstatus Draf atau Ditolak yang dapat diperbaiki.');
+        }
+
+        $data = $request->validated();
+        $minBudget = (int) ($data['min_budget'] ?? $data['min_salary'] ?? 0);
+        $maxBudget = (int) ($data['max_budget'] ?? $data['max_salary'] ?? 0);
+
+        // Retain requested existing images
+        $existingImagesInput = $request->input('retained_images', []);
+        if (is_string($existingImagesInput)) {
+            $existingImagesInput = json_decode($existingImagesInput, true) ?: [];
+        }
+        $retainedImages = [];
+        $currentImages = $quest->images ?? [];
+        if (! empty($existingImagesInput) && is_array($existingImagesInput)) {
+            foreach ($currentImages as $img) {
+                if (in_array($img['path'] ?? '', $existingImagesInput)) {
+                    $retainedImages[] = $img;
+                }
+            }
+        } else {
+            $retainedImages = $currentImages;
+        }
+
+        // Retain requested existing files
+        $existingFilesInput = $request->input('retained_files', []);
+        if (is_string($existingFilesInput)) {
+            $existingFilesInput = json_decode($existingFilesInput, true) ?: [];
+        }
+        $retainedFiles = [];
+        $currentFiles = $quest->files ?? [];
+        if (! empty($existingFilesInput) && is_array($existingFilesInput)) {
+            foreach ($currentFiles as $file) {
+                if (in_array($file['path'] ?? '', $existingFilesInput)) {
+                    $retainedFiles[] = $file;
+                }
+            }
+        } else {
+            $retainedFiles = $currentFiles;
+        }
+
+        // Process newly uploaded images & files
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                if ($image->isValid()) {
+                    $path = $image->store('quests/images', 's3');
+                    $retainedImages[] = [
+                        'path' => $path,
+                        'name' => $image->getClientOriginalName(),
+                    ];
+                }
+            }
+        }
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                if ($file->isValid()) {
+                    $path = $file->store('quests/files', 's3');
+                    $retainedFiles[] = [
+                        'path' => $path,
+                        'name' => $file->getClientOriginalName(),
+                        'size' => $file->getSize(),
+                    ];
+                }
+            }
+        }
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $att) {
+                if ($att->isValid()) {
+                    $mime = $att->getMimeType() ?? '';
+                    if (str_starts_with($mime, 'image/')) {
+                        $path = $att->store('quests/images', 's3');
+                        $retainedImages[] = [
+                            'path' => $path,
+                            'name' => $att->getClientOriginalName(),
+                        ];
+                    } else {
+                        $path = $att->store('quests/files', 's3');
+                        $retainedFiles[] = [
+                            'path' => $path,
+                            'name' => $att->getClientOriginalName(),
+                            'size' => $att->getSize(),
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Calculate Tier & Rewards
+        if ($maxBudget >= 10000000) {
+            $tier = 'S';
+        } elseif ($maxBudget >= 5000000) {
+            $tier = 'A';
+        } elseif ($maxBudget >= 2500000) {
+            $tier = 'B';
+        } elseif ($maxBudget >= 1000000) {
+            $tier = 'C';
+        } else {
+            $tier = 'D';
+        }
+
+        $avgBudget = ($minBudget + $maxBudget) / 2;
+        $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
+        $gold = (int) min(500, max(50, round(50 + $maxBudget * 0.00005)));
+        $rep = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
+
+        $calculatedRewards = [
+            'exp' => $exp,
+            'gold' => $gold,
+            'rep' => $rep,
+            'erp' => $rep,
+        ];
+
+        $quest->update([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'min_budget' => $minBudget,
+            'max_budget' => $maxBudget,
+            'min_salary' => $minBudget,
+            'max_salary' => $maxBudget,
+            'deadline' => now()->parse($data['deadline']),
+            'images' => $retainedImages,
+            'files' => $retainedFiles,
+            'tier' => $tier,
+            'rewards' => $calculatedRewards,
+            'status' => QuestStatus::DRAFT->value,
+            'rejection_note' => null,
+        ]);
+
+        return redirect()->route('student.quests.show', $quest->_id)
+            ->with('success', 'Quest berhasil diperbarui dan dikirim ulang ke admin untuk ditinjau!');
+    }
+
+    /**
+     * Delete/cancel a draft or rejected quest.
+     */
+    public function destroy(Request $request, string $id)
+    {
+        $quest = Quest::findOrFail($id);
+        $user = $request->user();
+
+        if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Anda tidak memiliki hak akses untuk menghapus quest ini.');
+        }
+
+        $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+        if (! in_array($statusVal, [QuestStatus::DRAFT->value, QuestStatus::REJECTED->value])) {
+            abort(400, 'Hanya quest berstatus Draf atau Ditolak yang dapat dibatalkan/dihapus.');
+        }
+
+        $quest->delete();
+
+        return redirect()->route('student.quests.index')
+            ->with('success', 'Draf quest berhasil dibatalkan dan dihapus.');
     }
 
     /**
@@ -218,10 +466,29 @@ class QuestController extends Controller
     {
         Gate::authorize('bid', $quest);
 
+        $validated = $request->validated();
+        $disk = Storage::disk('s3');
+
+        if ($request->hasFile('cv_file') && $request->file('cv_file')->isValid()) {
+            $path = $request->file('cv_file')->store('quests/bids/cv', 's3');
+            $validated['cv'] = $disk->url($path);
+        } elseif ($request->hasFile('cv') && $request->file('cv')->isValid()) {
+            $path = $request->file('cv')->store('quests/bids/cv', 's3');
+            $validated['cv'] = $disk->url($path);
+        }
+
+        if ($request->hasFile('portfolio_file') && $request->file('portfolio_file')->isValid()) {
+            $path = $request->file('portfolio_file')->store('quests/bids/portfolio', 's3');
+            $validated['portfolio'] = $disk->url($path);
+        } elseif ($request->hasFile('portfolio') && $request->file('portfolio')->isValid()) {
+            $path = $request->file('portfolio')->store('quests/bids/portfolio', 's3');
+            $validated['portfolio'] = $disk->url($path);
+        }
+
         $this->questService->placeBid(
             $request->user(),
             $quest,
-            $request->validated()
+            $validated
         );
 
         return redirect()->route('student.quests.show', $quest->_id)
@@ -319,6 +586,24 @@ class QuestController extends Controller
 
         $quest->update($updateData);
 
+        if ($quest->creator_id) {
+            try {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->creator_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Pekerja '{$user->name}' telah mengunggah hasil pekerjaan untuk quest '{$quest->title}'. Silakan tinjau pekerjaan tersebut.",
+                        'type' => 'work_submitted',
+                    ],
+                    'read_at' => null,
+                ]);
+            } catch (\Throwable $e) {
+                // Ignored for testing DB driver fallback
+            }
+        }
+
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Hasil pekerjaan berhasil dikirim dan menunggu tinjauan!');
     }
@@ -354,6 +639,24 @@ class QuestController extends Controller
         ];
 
         $quest->update($updateData);
+
+        if ($quest->worker_id) {
+            try {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->worker_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Selamat! Pemilik proyek telah menyetujui hasil pekerjaan Anda untuk quest '{$quest->title}' ({$request->rating}/5⭐).",
+                        'type' => 'work_approved',
+                    ],
+                    'read_at' => null,
+                ]);
+            } catch (\Throwable $e) {
+                // Ignored for testing DB driver fallback
+            }
+        }
 
         $msg = 'Hasil tinjauan pekerjaan disetujui! Silakan lanjutkan dengan melakukan transfer pembayaran dan unggah bukti transfer.';
 
@@ -396,6 +699,24 @@ class QuestController extends Controller
             'revision_note' => $request->revision_note,
             'revisions' => $revisions,
         ]);
+
+        if ($quest->worker_id) {
+            try {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->worker_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Pemilik proyek meminta revisi untuk quest '{$quest->title}'. Catatan revisi: '{$request->revision_note}'",
+                        'type' => 'work_rejected',
+                    ],
+                    'read_at' => null,
+                ]);
+            } catch (\Throwable $e) {
+                // Ignored for testing DB driver fallback
+            }
+        }
 
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('warning', 'Pekerjaan ditolak dan revisi diminta dari pekerja.');
@@ -462,6 +783,38 @@ class QuestController extends Controller
             $this->questService->awardQuestRewards($quest, $quest->worker_id);
         }
 
+        // Notify Worker & Creator
+        try {
+            if ($quest->worker_id) {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->worker_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Quest '{$quest->title}' telah resmi selesai! Berkas final dikonfirmasi dan hadiah EXP & Gold telah diterima.",
+                        'type' => 'quest_completed',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+            if ($quest->creator_id) {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->creator_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Pekerja telah mengunggah berkas ZIP final untuk quest '{$quest->title}'. Seluruh rangkaian quest telah resmi selesai!",
+                        'type' => 'quest_completed',
+                    ],
+                    'read_at' => null,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Ignored for DB fallback
+        }
+
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Konfirmasi pembayaran berhasil! Berkas final berhasil diunggah, quest selesai, dan hadiah telah ditambahkan ke profil Anda.');
     }
@@ -509,6 +862,24 @@ class QuestController extends Controller
             'payment_uploaded_at' => now(),
             'status' => 'payment',
         ]);
+
+        if ($quest->worker_id) {
+            try {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->worker_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Pemilik proyek telah mengunggah bukti transfer pembayaran untuk quest '{$quest->title}'. Silakan unggah berkas final ZIP Anda.",
+                        'type' => 'payment_uploaded',
+                    ],
+                    'read_at' => null,
+                ]);
+            } catch (\Throwable $e) {
+                // Ignored for DB fallback
+            }
+        }
 
         return redirect()->route('student.quests.show', $quest->_id)
             ->with('success', 'Bukti transfer pembayaran berhasil diunggah! Menunggu konfirmasi dari pekerja.');
@@ -703,5 +1074,25 @@ class QuestController extends Controller
                 'status' => $status,
             ],
         ]);
+    }
+
+    /**
+     * Mark notification as read.
+     */
+    public function markNotificationAsRead(Request $request, string $id)
+    {
+        try {
+            $notification = Notification::where('_id', $id)
+                ->where('notifiable_id', (string) $request->user()->_id)
+                ->first();
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        } catch (\Throwable $e) {
+            // Ignored on non-mongo DB connections
+        }
+
+        return back();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -65,7 +66,25 @@ class DashboardController extends Controller
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
+        try {
+            $notifications = Notification::where('notifiable_id', (string) $user->_id)
+                ->latest()
+                ->take(15)
+                ->get()
+                ->map(function ($n) {
+                    return [
+                        'id' => (string) $n->_id,
+                        'data' => $n->data,
+                        'read_at' => $n->read_at ? $n->read_at->toISOString() : null,
+                        'created_at' => $n->created_at ? $n->created_at->diffForHumans() : '',
+                    ];
+                });
+        } catch (\Throwable $e) {
+            $notifications = collect();
+        }
+
         return Inertia::render('Student/Dashboard', [
+            'notifications' => $notifications,
             'user' => [
                 'name' => $user->name,
                 'username' => $user->username ?? strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $user->name)),

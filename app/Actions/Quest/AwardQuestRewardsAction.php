@@ -82,12 +82,12 @@ class AwardQuestRewardsAction
             ];
         }
 
-        $maxSalary = (int) $quest->max_salary;
-        $minSalary = (int) $quest->min_salary;
-        $avgBudget = ($minSalary + $maxSalary) / 2;
+        $maxBudget = (int) ($quest->max_budget ?? $quest->max_salary ?? 0);
+        $minBudget = (int) ($quest->min_budget ?? $quest->min_salary ?? 0);
+        $avgBudget = ($minBudget + $maxBudget) / 2;
 
         $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
-        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
+        $gold = (int) min(500, max(50, round(50 + $maxBudget * 0.00005)));
         $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
 
         return [

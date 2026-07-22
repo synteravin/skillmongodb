@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use MongoDB\Laravel\Eloquent\Model;
 
@@ -21,7 +22,7 @@ class Rank extends Model
 
     public function getImageUrlAttribute()
     {
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         return $this->image ? $disk->url($this->image) : null;

@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Quest\ResolveArbitrationRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
+use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestFlag;
 use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
+use App\Models\User;
 use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -49,8 +51,10 @@ class QuestController extends Controller
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
                 'description' => $quest->description,
-                'min_salary' => $quest->min_salary,
-                'max_salary' => $quest->max_salary,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
                 'deadline' => $quest->deadline->toISOString(),
                 'status' => $quest->status,
                 'creator' => [
@@ -193,8 +197,10 @@ class QuestController extends Controller
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
                 'description' => $quest->description,
-                'min_salary' => $quest->min_salary,
-                'max_salary' => $quest->max_salary,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
                 'deadline' => $quest->deadline->toISOString(),
                 'status' => $quest->status,
                 'creator_id' => $quest->creator_id,
@@ -238,31 +244,33 @@ class QuestController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'min_salary' => ['required', 'integer', 'min:0'],
-            'max_salary' => ['required', 'integer', 'gte:min_salary'],
+            'min_budget' => ['required_without:min_salary', 'nullable', 'integer', 'min:0'],
+            'max_budget' => ['required_without:max_salary', 'nullable', 'integer', 'gte:min_budget'],
+            'min_salary' => ['nullable', 'integer', 'min:0'],
+            'max_salary' => ['nullable', 'integer'],
             'deadline' => ['required', 'date'],
         ], [
-            'max_salary.gte' => 'Gaji maksimal harus lebih besar atau sama dengan gaji minimal.',
+            'max_budget.gte' => 'Anggaran maksimal harus lebih besar atau sama dengan anggaran minimal.',
         ]);
 
-        $maxSalary = (int) $data['max_salary'];
-        $minSalary = (int) $data['min_salary'];
-        if ($maxSalary >= 10000000) {
+        $maxBudget = (int) ($data['max_budget'] ?? $data['max_salary'] ?? 0);
+        $minBudget = (int) ($data['min_budget'] ?? $data['min_salary'] ?? 0);
+        if ($maxBudget >= 10000000) {
             $tier = 'S';
-        } elseif ($maxSalary >= 5000000) {
+        } elseif ($maxBudget >= 5000000) {
             $tier = 'A';
-        } elseif ($maxSalary >= 2500000) {
+        } elseif ($maxBudget >= 2500000) {
             $tier = 'B';
-        } elseif ($maxSalary >= 1000000) {
+        } elseif ($maxBudget >= 1000000) {
             $tier = 'C';
         } else {
             $tier = 'D';
         }
 
-        $avgBudget = ($minSalary + $maxSalary) / 2;
+        $avgBudget = ($minBudget + $maxBudget) / 2;
 
         $exp = (int) min(1000, max(100, round(100 + $avgBudget * 0.0001)));
-        $gold = (int) min(500, max(50, round(50 + $maxSalary * 0.00005)));
+        $gold = (int) min(500, max(50, round(50 + $maxBudget * 0.00005)));
         $erp = (int) min(200, max(20, round(20 + $avgBudget * 0.00002)));
 
         $calculatedRewards = [
@@ -282,8 +290,10 @@ class QuestController extends Controller
         $quest->update([
             'title' => $data['title'],
             'description' => $data['description'],
-            'min_salary' => $minSalary,
-            'max_salary' => $maxSalary,
+            'min_budget' => $minBudget,
+            'max_budget' => $maxBudget,
+            'min_salary' => $minBudget,
+            'max_salary' => $maxBudget,
             'deadline' => now()->parse($data['deadline']),
             'tier' => $tier,
             'rewards' => $calculatedRewards,
@@ -429,6 +439,20 @@ class QuestController extends Controller
             'rejection_note' => null,
         ]);
 
+        if ($quest->creator_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->creator_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Quest Anda '{$quest->title}' telah disetujui Admin dan kini tayang di Bursa Lowongan!",
+                    'type' => 'quest_approved',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
         return redirect()->route('admin.quests.show', $quest->_id)
             ->with('success', 'Quest berhasil disetujui dan dipublikasikan!');
     }
@@ -459,6 +483,20 @@ class QuestController extends Controller
             'status' => 'rejected',
             'rejection_note' => $request->rejection_note,
         ]);
+
+        if ($quest->creator_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->creator_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Quest Anda '{$quest->title}' memerlukan perbaikan. Catatan Admin: {$request->rejection_note}",
+                    'type' => 'quest_rejected',
+                ],
+                'read_at' => null,
+            ]);
+        }
 
         return redirect()->route('admin.quests.show', $quest->_id)
             ->with('warning', 'Quest ditolak dan catatan penolakan telah dikirimkan ke pembuat.');

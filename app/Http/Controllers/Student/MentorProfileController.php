@@ -7,6 +7,7 @@ use App\Http\Responses\Mentor\MentorProfileResponse;
 use App\Models\User;
 use App\Services\Mentor\MentorProfileService;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class MentorProfileController extends Controller
 {
@@ -17,7 +18,7 @@ class MentorProfileController extends Controller
     /**
      * Display the specified mentor's profile.
      *
-     * @return \Inertia\Response
+     * @return Response
      */
     public function show(string $mentorId)
     {

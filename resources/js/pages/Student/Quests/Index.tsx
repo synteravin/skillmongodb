@@ -54,7 +54,10 @@ export default function Index({
     // Sort original quests list
     const sortedQuests = [...quests].sort((a, b) => {
         if (sortBy === 'highest_salary') {
-            return b.max_salary - a.max_salary;
+            return (
+                (b.max_budget ?? b.max_salary ?? 0) -
+                (a.max_budget ?? a.max_salary ?? 0)
+            );
         }
         if (sortBy === 'closest_deadline') {
             return (

@@ -309,38 +309,96 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                         {/* Warning/Status Cards */}
                         {quest.status === 'draft' && (
-                            <div className="flex gap-3 rounded-lg border border-amber-250 bg-amber-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
-                                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 animate-pulse" />
-                                <div>
-                                    <span className="block text-xs font-bold text-amber-705 dark:text-amber-400">
-                                        Menunggu Persetujuan Admin
-                                    </span>
-                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                                        Papan proyek ini masih dalam tahap pengajuan. Administrator akan memeriksa deskripsi dan budget penawaran sebelum lowongan ini dipublikasikan secara umum.
-                                    </p>
+                            <div className="flex flex-col gap-3 rounded-xl border border-amber-250 bg-amber-50/20 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-amber-900/40 dark:bg-amber-950/20">
+                                <div className="flex items-start gap-3">
+                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 animate-pulse dark:text-amber-400" />
+                                    <div>
+                                        <span className="block text-xs font-bold text-amber-800 dark:text-amber-300">
+                                            Menunggu Persetujuan Admin
+                                        </span>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                                            Papan proyek ini masih dalam tahap pengajuan. Administrator akan memeriksa deskripsi dan budget penawaran sebelum lowongan ini dipublikasikan secara umum.
+                                        </p>
+                                    </div>
                                 </div>
+                                {isCreator && (
+                                    <div className="flex shrink-0 items-center gap-2 pt-2 sm:pt-0">
+                                        <Link
+                                            href={`/student/quests/${quest._id}/edit`}
+                                            className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-amber-700"
+                                        >
+                                            Edit Draf Quest
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                if (
+                                                    confirm(
+                                                        'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?'
+                                                    )
+                                                ) {
+                                                    router.delete(
+                                                        `/student/quests/${quest._id}`
+                                                    );
+                                                }
+                                            }}
+                                            className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/50 dark:bg-[#030712] dark:text-red-400 dark:hover:bg-red-950/40"
+                                        >
+                                            Hapus Draf
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )}
 
                         {quest.status === 'rejected' && (
-                            <div className="space-y-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
-                                <div className="flex gap-3">
-                                    <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
-                                    <div>
-                                        <span className="block text-xs font-bold text-red-750 dark:text-red-400">
-                                            Pengajuan Proyek Ditolak Administrator
-                                        </span>
-                                        <p className="mt-1 text-xs leading-relaxed text-slate-505 dark:text-slate-400">
-                                            Pihak administrator telah membatalkan atau menolak rilis lowongan proyek ini. Silakan perbaiki parameter proyek di bawah sesuai catatan alasan penolakan.
-                                        </p>
+                            <div className="space-y-3 rounded-xl border border-red-200 bg-red-50/20 p-4 dark:border-red-900/40 dark:bg-red-950/20">
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex items-start gap-3">
+                                        <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+                                        <div>
+                                            <span className="block text-xs font-bold text-red-800 dark:text-red-300">
+                                                Pengajuan Proyek Ditolak Administrator
+                                            </span>
+                                            <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                                                Pihak administrator meminta perbaikan pada rilis lowongan proyek ini. Silakan perbaiki parameter quest atau tambahkan berkas sesuai catatan penolakan.
+                                            </p>
+                                        </div>
                                     </div>
+                                    {isCreator && (
+                                        <div className="flex shrink-0 items-center gap-2 pt-2 sm:pt-0">
+                                            <Link
+                                                href={`/student/quests/${quest._id}/edit`}
+                                                className="rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700"
+                                            >
+                                                Perbaiki & Ajukan Ulang
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (
+                                                        confirm(
+                                                            'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?'
+                                                        )
+                                                    ) {
+                                                        router.delete(
+                                                            `/student/quests/${quest._id}`
+                                                        );
+                                                    }
+                                                }}
+                                                className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/50 dark:bg-[#030712] dark:text-red-400 dark:hover:bg-red-950/40"
+                                            >
+                                                Hapus Draf
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                                 {quest.rejection_note && (
-                                    <div className="rounded border border-slate-205 bg-red-50/10 p-3 dark:border-slate-800 dark:bg-[#040812]">
-                                        <strong className="block text-[10px] tracking-wider text-red-600 uppercase">
-                                            Catatan Penolakan:
+                                    <div className="rounded-lg border border-red-200/60 bg-red-50/50 p-3 dark:border-red-900/30 dark:bg-[#040812]">
+                                        <strong className="block text-[10px] tracking-wider text-red-600 uppercase dark:text-red-400">
+                                            Catatan Alasan Penolakan Admin:
                                         </strong>
-                                        <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-655 dark:text-slate-300">
+                                        <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300">
                                             {quest.rejection_note}
                                         </p>
                                     </div>
@@ -453,7 +511,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                         {/* TAB CONTENT: DETAIL */}
                         {activeTab === 'detail' && (
-                            <div className="relative overflow-hidden space-y-6 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="relative overflow-hidden space-y-3 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
                                 <div className="relative z-10 space-y-3">
                                     <h3 className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
@@ -463,12 +521,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         {quest.description}
                                     </div>
                                 </div>
-
-                                <QuestAttachments
-                                    images={quest.images}
-                                    files={quest.files}
-                                    onPreviewImage={setPreviewImage}
-                                />
                             </div>
                         )}
 
@@ -675,6 +727,19 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Lampiran Pendukung Card (Positioned directly under Detail Spesifikasi) */}
+                        {((quest.images && quest.images.length > 0) ||
+                            (quest.files && quest.files.length > 0)) && (
+                            <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                                <QuestAttachments
+                                    images={quest.images}
+                                    files={quest.files}
+                                    onPreviewImage={setPreviewImage}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

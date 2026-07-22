@@ -3,6 +3,7 @@
 namespace App\Actions\Submission;
 
 use App\Models\CareerGroup;
+use App\Models\MentorCareerGroup;
 use App\Models\StudentSubmission;
 use App\Models\Submission;
 use App\Models\User;
@@ -23,7 +24,7 @@ class NotifyMentorOfSubmissionAction
         }
 
         // Ambil mentor dari MentorCareerGroup (karena belongsToMany terkadang bermasalah di MongoDB)
-        $mentorIds = \App\Models\MentorCareerGroup::where('career_group_id', $careerGroup->id)
+        $mentorIds = MentorCareerGroup::where('career_group_id', $careerGroup->id)
             ->pluck('mentor_id')
             ->toArray();
 

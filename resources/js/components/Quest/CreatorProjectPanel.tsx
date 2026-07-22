@@ -96,9 +96,9 @@ export default function CreatorProjectPanel({
                                 name: quest.worker?.name ?? 'Pekerja',
                             })
                         }
-                        className="relative inline-flex items-center gap-1.5 rounded-lg bg-indigo-650 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-indigo-700"
+                        className="relative inline-flex items-center gap-2 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
                     >
-                        <MessageSquare size={12} />
+                        <MessageSquare size={14} />
                         Chat Pekerja
                         {acceptedBid.unread_messages_count > 0 && (
                             <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white dark:ring-slate-950">
@@ -178,7 +178,7 @@ export default function CreatorProjectPanel({
                         <button
                             type="submit"
                             disabled={paymentForm.processing}
-                            className="w-full cursor-pointer rounded-lg bg-indigo-650 hover:bg-indigo-700 py-2.5 text-xs font-bold text-white uppercase tracking-wider transition-colors disabled:opacity-50"
+                            className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400 disabled:opacity-50"
                         >
                             {paymentForm.processing ? 'Mengirim...' : 'Kirim Bukti Pembayaran'}
                         </button>
@@ -632,7 +632,7 @@ export default function CreatorProjectPanel({
                                 required
                                 value={extendForm.data.deadline}
                                 onChange={(e) => extendForm.setData('deadline', e.target.value)}
-                                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 focus:border-indigo-650 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                             />
                             {extendForm.errors.deadline && (
                                 <p className="text-xs font-semibold text-red-500">
@@ -644,7 +644,7 @@ export default function CreatorProjectPanel({
                         <button
                             type="submit"
                             disabled={extendForm.processing}
-                            className="w-full cursor-pointer rounded-lg bg-indigo-650 hover:bg-indigo-700 py-2.5 text-xs font-bold text-white uppercase tracking-wider transition-colors disabled:opacity-50"
+                            className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400 disabled:opacity-50"
                         >
                             {extendForm.processing ? 'Memproses...' : 'Aktifkan Kembali Kontrak'}
                         </button>

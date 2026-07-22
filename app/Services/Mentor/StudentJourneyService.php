@@ -12,6 +12,7 @@ use App\Models\StudentSubmission;
 use App\Models\Submission;
 use App\Models\User;
 use App\Models\UserStat;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,7 +24,7 @@ class StudentJourneyService
             return null;
         }
 
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         return $disk->url($path);
