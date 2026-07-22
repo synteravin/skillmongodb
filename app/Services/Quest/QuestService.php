@@ -9,6 +9,8 @@ use App\Actions\Quest\FileQuestDisputeAction;
 use App\Actions\Quest\PlaceQuestBidAction;
 use App\Actions\Quest\RecordQuestTransactionAction;
 use App\Actions\Quest\ResolveQuestArbitrationAction;
+use App\Enums\QuestBidStatus;
+use App\Enums\QuestStatus;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
@@ -35,12 +37,12 @@ class QuestService
     public function listQuests(?string $search = null, ?string $status = null, ?int $limit = null): array
     {
         // On-the-fly expiration check for open quests
-        $expiredQuests = Quest::where('status', 'open')
+        $expiredQuests = Quest::where('status', QuestStatus::OPEN->value)
             ->where('deadline', '<', now())
             ->get();
 
         foreach ($expiredQuests as $eq) {
-            $eq->status = 'expired';
+            $eq->status = QuestStatus::EXPIRED->value;
             $eq->save();
 
             if ($eq->creator_id) {
@@ -59,7 +61,7 @@ class QuestService
         }
 
         $query = Quest::with('creator')
-            ->whereNotIn('status', ['draft', 'rejected']);
+            ->whereNotIn('status', [QuestStatus::DRAFT->value, QuestStatus::REJECTED->value]);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -79,14 +81,18 @@ class QuestService
         }
 
         $items = $query->latest()->get()->map(function ($quest) {
+            $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+
             return [
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
                 'description' => $quest->description,
-                'min_salary' => $quest->min_salary,
-                'max_salary' => $quest->max_salary,
-                'deadline' => $quest->deadline->toISOString(),
-                'status' => $quest->status,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
+                'deadline' => $quest->deadline?->toISOString(),
+                'status' => $statusVal,
                 'creator_id' => $quest->creator_id ? (string) $quest->creator_id : null,
                 'worker_id' => $quest->worker_id ? (string) $quest->worker_id : null,
                 'creator' => [
@@ -110,9 +116,12 @@ class QuestService
     {
         $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
 
-        if ($quest->status === 'open' && $quest->deadline < now()) {
-            $quest->status = 'expired';
+        $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+
+        if ($statusVal === QuestStatus::OPEN->value && $quest->deadline < now()) {
+            $quest->status = QuestStatus::EXPIRED->value;
             $quest->save();
+            $statusVal = QuestStatus::EXPIRED->value;
 
             if ($quest->creator_id) {
                 Notification::create([
@@ -129,7 +138,7 @@ class QuestService
             }
         }
 
-        if ($quest->status === 'ongoing' && $quest->deadline < now()) {
+        if ($statusVal === QuestStatus::ONGOING->value && $quest->deadline < now()) {
             $alreadyNotified = Notification::where('notifiable_id', $quest->creator_id)
                 ->where('data.quest_id', $quest->_id)
                 ->where('data.type', 'quest_overdue_creator')
@@ -163,13 +172,15 @@ class QuestService
                         ->count();
                 }
 
+                $bidStatusVal = $bid->status instanceof QuestBidStatus ? $bid->status->value : $bid->status;
+
                 return [
                     '_id' => (string) $bid->_id,
                     'bid_amount' => $bid->bid_amount,
                     'cv' => $bid->cv,
                     'portfolio' => $bid->portfolio,
                     'proposal' => $bid->proposal,
-                    'status' => $bid->status,
+                    'status' => $bidStatusVal,
                     'created_at' => $bid->created_at->toISOString(),
                     'student' => [
                         '_id' => (string) ($bid->student?->_id ?? ''),
@@ -230,7 +241,7 @@ class QuestService
 
         $rewards = $this->getRewardsForQuest($quest);
 
-        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', QuestBidStatus::ACCEPTED->value)->first();
         $acceptedBidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : null;
 
         return [
@@ -238,10 +249,12 @@ class QuestService
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
                 'description' => $quest->description,
-                'min_salary' => $quest->min_salary,
-                'max_salary' => $quest->max_salary,
-                'deadline' => $quest->deadline->toISOString(),
-                'status' => $quest->status,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
+                'deadline' => $quest->deadline?->toISOString(),
+                'status' => $statusVal,
                 'creator_id' => $quest->creator_id,
                 'creator' => [
                     'name' => $quest->creator?->name ?? 'Unknown User',
@@ -415,14 +428,19 @@ class QuestService
 
             $rewards = $this->getRewardsForQuest($quest);
 
+            $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+            $myBidStatusVal = $myBid?->status instanceof QuestBidStatus ? $myBid->status->value : $myBid?->status;
+
             return [
                 '_id' => (string) $quest->_id,
                 'title' => $quest->title,
                 'description' => $quest->description,
-                'min_salary' => $quest->min_salary,
-                'max_salary' => $quest->max_salary,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
                 'deadline' => $quest->deadline?->toISOString(),
-                'status' => $quest->status,
+                'status' => $statusVal,
                 'creator' => [
                     'name' => $quest->creator?->name ?? 'Unknown User',
                     'role' => $quest->creator?->role ?? 'unknown',
@@ -436,7 +454,7 @@ class QuestService
                 'is_creator' => $quest->creator_id === (string) $user->_id,
                 'my_bid' => $myBid ? [
                     'bid_amount' => $myBid->bid_amount,
-                    'status' => $myBid->status,
+                    'status' => $myBidStatusVal,
                     'proposal' => $myBid->proposal,
                     'cv' => $myBid->cv,
                     'portfolio' => $myBid->portfolio,

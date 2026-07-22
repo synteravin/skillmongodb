@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
 
 class QuestTransaction extends Model
@@ -34,12 +35,12 @@ class QuestTransaction extends Model
 
     /* ================= RELATIONS ================= */
 
-    public function quest()
+    public function quest(): BelongsTo
     {
         return $this->belongsTo(Quest::class, 'quest_id', '_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', '_id');
     }

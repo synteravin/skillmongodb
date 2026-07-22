@@ -453,10 +453,10 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                 {item.is_creator
                                                     ? item.accepted_bid_amount
                                                         ? formatCurrency(item.accepted_bid_amount)
-                                                        : `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
+                                                        : `${formatCurrency(item.min_budget ?? item.min_salary ?? 0)} - ${formatCurrency(item.max_budget ?? item.max_salary ?? 0)}`
                                                     : item.my_bid
                                                       ? formatCurrency(item.my_bid.bid_amount)
-                                                      : formatCurrency(item.min_salary)}
+                                                      : formatCurrency(item.min_budget ?? item.min_salary ?? 0)}
                                             </span>
                                             <div
                                                 className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all ${
@@ -713,12 +713,12 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                     </span>
                                                                     <span className="font-extrabold text-slate-900 dark:text-white">
                                                                         {item.is_creator
-                                                                            ? item.accepted_bid_amount
-                                                                                ? formatCurrency(item.accepted_bid_amount)
-                                                                                : `${formatCurrency(item.min_salary)} - ${formatCurrency(item.max_salary)}`
-                                                                            : item.my_bid
-                                                                              ? formatCurrency(item.my_bid.bid_amount)
-                                                                              : formatCurrency(item.min_salary)}
+                                                     ? item.accepted_bid_amount
+                                                         ? formatCurrency(item.accepted_bid_amount)
+                                                         : `${formatCurrency(item.min_budget ?? item.min_salary ?? 0)} - ${formatCurrency(item.max_budget ?? item.max_salary ?? 0)}`
+                                                     : item.my_bid
+                                                       ? formatCurrency(item.my_bid.bid_amount)
+                                                       : formatCurrency(item.min_budget ?? item.min_salary ?? 0)}
                                                                     </span>
                                                                 </div>
                                                                 <div className="flex items-center justify-between border-t border-slate-200 pt-2 dark:border-slate-800">

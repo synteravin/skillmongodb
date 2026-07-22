@@ -90,6 +90,8 @@ export default function Index({ quests, filters }: Props) {
         useForm({
             title: '',
             description: '',
+            min_budget: '',
+            max_budget: '',
             min_salary: '',
             max_salary: '',
             deadline: '',
@@ -108,12 +110,16 @@ export default function Index({ quests, filters }: Props) {
 
         // Format ISO string to YYYY-MM-DD for date input
         const deadlineDate = quest.deadline ? quest.deadline.split('T')[0] : '';
+        const minVal = (quest.min_budget ?? quest.min_salary ?? 0).toString();
+        const maxVal = (quest.max_budget ?? quest.max_salary ?? 0).toString();
 
         setData({
             title: quest.title,
             description: quest.description,
-            min_salary: quest.min_salary.toString(),
-            max_salary: quest.max_salary.toString(),
+            min_budget: minVal,
+            max_budget: maxVal,
+            min_salary: minVal,
+            max_salary: maxVal,
             deadline: deadlineDate,
         });
         setEditingQuest(quest);
@@ -344,7 +350,7 @@ export default function Index({ quests, filters }: Props) {
                                                         </span>
                                                     ) : (
                                                         <span className="font-bold">
-                                                            {formatCurrency(quest.min_salary)} - {formatCurrency(quest.max_salary)}
+                                                            {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} - {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
                                                         </span>
                                                     )}
                                                 </td>

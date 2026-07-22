@@ -416,7 +416,7 @@ class QuestController extends Controller
     /**
      * Approve a quest post, publishing it to the public quest board.
      */
-    public function approvePost(Request $request, string $questId)
+    public function approvePublish(Request $request, string $questId)
     {
         $quest = Quest::findOrFail($questId);
 
@@ -433,10 +433,15 @@ class QuestController extends Controller
             ->with('success', 'Quest berhasil disetujui dan dipublikasikan!');
     }
 
+    public function approvePost(Request $request, string $questId)
+    {
+        return $this->approvePublish($request, $questId);
+    }
+
     /**
      * Reject a quest post, giving feedback to the creator.
      */
-    public function rejectPost(Request $request, string $questId)
+    public function rejectPublish(Request $request, string $questId)
     {
         $quest = Quest::findOrFail($questId);
 
@@ -457,6 +462,11 @@ class QuestController extends Controller
 
         return redirect()->route('admin.quests.show', $quest->_id)
             ->with('warning', 'Quest ditolak dan catatan penolakan telah dikirimkan ke pembuat.');
+    }
+
+    public function rejectPost(Request $request, string $questId)
+    {
+        return $this->rejectPublish($request, $questId);
     }
 
     /**

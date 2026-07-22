@@ -5,12 +5,21 @@ export interface RevisionEntry {
     author_name: string;
 }
 
+export interface QuestRewards {
+    exp?: number;
+    gold?: number;
+    rep?: number;
+    erp?: number;
+}
+
 export interface Quest {
     _id: string;
     title: string;
     description: string;
-    min_salary: number;
-    max_salary: number;
+    min_budget: number;
+    max_budget: number;
+    min_salary?: number;
+    max_salary?: number;
     deadline: string;
     status: string;
     created_at?: string;
@@ -37,7 +46,7 @@ export interface Quest {
     files?: Array<{ name: string; url: string; size: number }>;
     submission_file?: { name: string; url: string; size: number } | null;
     tier?: string;
-    custom_rewards?: { exp?: number; gold?: number } | null;
+    custom_rewards?: { exp?: number; gold?: number; rep?: number } | null;
     dispute?: {
         status?: string;
         reason?: string;
@@ -55,11 +64,7 @@ export interface Quest {
         submission_note?: string | null;
         submission_file?: { name: string; url: string; size: number } | null;
     }>;
-    rewards?: {
-        exp?: number;
-        gold?: number;
-        erp?: number;
-    };
+    rewards?: QuestRewards;
     accepted_bid_amount?: number | null;
     bids_count?: number;
     payment_proof?: { name: string; url: string; size: number } | null;
@@ -83,25 +88,9 @@ export interface Bid {
     unread_messages_count: number;
 }
 
-export interface HistoryQuest {
-    _id: string;
-    title: string;
-    description: string;
-    min_salary: number;
-    max_salary: number;
-    deadline: string;
-    status: string;
-    creator: {
-        name: string;
-        role: string;
-    };
-    worker_id?: string;
+export interface HistoryQuest extends Quest {
     is_worker: boolean;
     is_creator: boolean;
-    worker?: {
-        name: string;
-        email: string;
-    } | null;
     my_bid?: {
         bid_amount: number;
         status: string;
@@ -109,23 +98,4 @@ export interface HistoryQuest {
         cv?: string;
         portfolio?: string;
     } | null;
-    submission_link?: string;
-    submission_note?: string;
-    submission_file?: {
-        name: string;
-        size: number;
-        url: string;
-    } | null;
-    submitted_at?: string;
-    completed_at?: string;
-    rating?: number;
-    rating_comment?: string;
-    revision_note?: string;
-    rewards?: {
-        exp?: number;
-        gold?: number;
-        erp?: number;
-    };
-    bids_count?: number;
-    accepted_bid_amount?: number | null;
 }

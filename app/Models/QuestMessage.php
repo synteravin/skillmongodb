@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
 
 class QuestMessage extends Model
@@ -31,12 +32,12 @@ class QuestMessage extends Model
 
     /* ================= RELATIONS ================= */
 
-    public function sender()
+    public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_id', '_id');
     }
 
-    public function bid()
+    public function bid(): BelongsTo
     {
         return $this->belongsTo(QuestBid::class, 'quest_bid_id', '_id');
     }

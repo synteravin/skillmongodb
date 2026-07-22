@@ -2,6 +2,8 @@
 
 namespace App\Actions\Quest;
 
+use App\Enums\QuestBidStatus;
+use App\Enums\QuestStatus;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
@@ -20,12 +22,14 @@ class ResolveQuestArbitrationAction
      */
     public function execute(Quest $quest, string $ruling, ?string $note, ?int $splitPercentage = null): void
     {
-        if ($quest->status !== 'disputed') {
+        $currentStatus = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
+
+        if ($currentStatus !== QuestStatus::DISPUTED->value) {
             abort(400, 'Hanya quest berstatus disputed yang dapat diarbiatrase.');
         }
 
-        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
-        $bidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : (int) $quest->max_salary;
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', QuestBidStatus::ACCEPTED->value)->first();
+        $bidAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : (int) $quest->max_budget;
 
         $dispute = $quest->dispute ?? [];
         $dispute['status'] = 'resolved_'.$ruling;
@@ -40,7 +44,7 @@ class ResolveQuestArbitrationAction
 
         if ($ruling === 'release_payout') {
             $quest->update([
-                'status' => 'completed',
+                'status' => QuestStatus::COMPLETED->value,
                 'completed_at' => now(),
                 'dispute' => $dispute,
             ]);
@@ -50,7 +54,7 @@ class ResolveQuestArbitrationAction
             }
         } elseif ($ruling === 'refund_creator') {
             $quest->update([
-                'status' => 'cancelled',
+                'status' => QuestStatus::CANCELLED->value,
                 'completed_at' => now(),
                 'dispute' => $dispute,
             ]);
@@ -58,7 +62,7 @@ class ResolveQuestArbitrationAction
             $splitPercentage = (int) $splitPercentage;
 
             $quest->update([
-                'status' => 'completed',
+                'status' => QuestStatus::COMPLETED->value,
                 'completed_at' => now(),
                 'dispute' => $dispute,
             ]);

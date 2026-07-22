@@ -2,6 +2,7 @@
 
 namespace App\Actions\Quest;
 
+use App\Enums\QuestBidStatus;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
@@ -20,7 +21,7 @@ class PlaceQuestBidAction
             'cv' => $data['cv'],
             'portfolio' => $data['portfolio'],
             'proposal' => $data['proposal'],
-            'status' => 'pending',
+            'status' => QuestBidStatus::PENDING->value,
         ]);
     }
 }

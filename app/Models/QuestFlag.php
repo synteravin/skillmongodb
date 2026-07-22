@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
 
 class QuestFlag extends Model
@@ -38,17 +39,17 @@ class QuestFlag extends Model
 
     /* ================= RELATIONS ================= */
 
-    public function reporter()
+    public function reporter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reporter_id', '_id');
     }
 
-    public function reportedUser()
+    public function reportedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reported_user_id', '_id');
     }
 
-    public function quest()
+    public function quest(): BelongsTo
     {
         return $this->belongsTo(Quest::class, 'quest_id', '_id');
     }

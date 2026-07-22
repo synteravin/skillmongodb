@@ -23,6 +23,8 @@ export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
+        min_budget: 0,
+        max_budget: 0,
         min_salary: 0,
         max_salary: 0,
         deadline: '',
@@ -201,15 +203,18 @@ export default function Create() {
                                             type="number"
                                             required
                                             min={0}
-                                            value={data.min_salary || ''}
-                                            onChange={(e) => setData('min_salary', parseInt(e.target.value) || 0)}
+                                            value={data.min_budget || data.min_salary || ''}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value) || 0;
+                                                setData((prev) => ({ ...prev, min_budget: val, min_salary: val }));
+                                            }}
                                             className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                         />
                                         <DollarSign className="absolute top-3 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
                                     </div>
-                                    {errors.min_salary && (
+                                    {(errors.min_budget || errors.min_salary) && (
                                         <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
-                                            {errors.min_salary}
+                                            {errors.min_budget || errors.min_salary}
                                         </span>
                                     )}
                                 </div>
@@ -223,8 +228,11 @@ export default function Create() {
                                             type="number"
                                             required
                                             min={0}
-                                            value={data.max_salary || ''}
-                                            onChange={(e) => setData('max_salary', parseInt(e.target.value) || 0)}
+                                            value={data.max_budget || data.max_salary || ''}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value) || 0;
+                                                setData((prev) => ({ ...prev, max_budget: val, max_salary: val }));
+                                            }}
                                             className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                         />
                                         <DollarSign className="absolute top-3 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />

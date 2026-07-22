@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
 
+use App\Http\Controllers\Controller;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use Illuminate\Http\JsonResponse;
