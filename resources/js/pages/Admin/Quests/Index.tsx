@@ -76,7 +76,10 @@ export default function Index({ quests, filters }: Props) {
 
     const sortedFilteredQuests = [...quests.data].sort((a, b) => {
         if (sortBy === 'highest_salary') {
-            return b.max_salary - a.max_salary;
+            return (
+                (b.max_budget ?? b.max_salary ?? 0) -
+                (a.max_budget ?? a.max_salary ?? 0)
+            );
         }
         if (sortBy === 'closest_deadline') {
             return (
@@ -567,40 +570,42 @@ export default function Index({ quests, filters }: Props) {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
-                                Gaji Min (Rp)
+                                Anggaran Min (Rp)
                             </label>
                             <input
                                 type="number"
-                                value={data.min_salary}
-                                onChange={(e) =>
-                                    setData('min_salary', e.target.value)
-                                }
+                                value={data.min_budget || data.min_salary || ''}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setData((prev) => ({ ...prev, min_budget: val, min_salary: val }));
+                                }}
                                 className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950"
                                 placeholder="Contoh: 1000000"
                             />
-                            {errors.min_salary && (
+                            {(errors.min_budget || errors.min_salary) && (
                                 <p className="text-xs font-semibold text-red-500">
-                                    {errors.min_salary}
+                                    {errors.min_budget || errors.min_salary}
                                 </p>
                             )}
                         </div>
 
                         <div className="space-y-1">
                             <label className="block text-xs font-bold tracking-wider text-slate-500 uppercase">
-                                Gaji Max (Rp)
+                                Anggaran Max (Rp)
                             </label>
                             <input
                                 type="number"
-                                value={data.max_salary}
-                                onChange={(e) =>
-                                    setData('max_salary', e.target.value)
-                                }
+                                value={data.max_budget || data.max_salary || ''}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setData((prev) => ({ ...prev, max_budget: val, max_salary: val }));
+                                }}
                                 className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950"
                                 placeholder="Contoh: 2500000"
                             />
-                            {errors.max_salary && (
+                            {(errors.max_budget || errors.max_salary) && (
                                 <p className="text-xs font-semibold text-red-500">
-                                    {errors.max_salary}
+                                    {errors.max_budget || errors.max_salary}
                                 </p>
                             )}
                         </div>

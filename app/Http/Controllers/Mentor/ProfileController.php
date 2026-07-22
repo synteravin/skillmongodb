@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Mentor\ProfileUpdateRequest;
 use App\Http\Responses\Mentor\MentorProfileResponse;
 use App\Services\Mentor\MentorProfileService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ProfileController extends Controller
 {
@@ -20,7 +22,7 @@ class ProfileController extends Controller
     /**
      * Show the mentor's profile edit page.
      *
-     * @return \Inertia\Response
+     * @return Response
      */
     public function edit(Request $request)
     {
@@ -37,7 +39,7 @@ class ProfileController extends Controller
     /**
      * Update the mentor's profile in storage.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(ProfileUpdateRequest $request)
     {

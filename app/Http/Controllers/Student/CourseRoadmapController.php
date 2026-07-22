@@ -7,6 +7,8 @@ use App\Models\Course;
 use App\Models\LevelBadge;
 use App\Models\User;
 use App\Models\UserStat;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CourseRoadmapController extends Controller
@@ -101,8 +103,8 @@ class CourseRoadmapController extends Controller
                 $groupId = (string) $group->_id;
                 $isGroupCompleted = in_array($groupId, $progress->completed_career_groups ?? []);
 
-                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-                $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
 
                 $groupThumbnail = $group->thumbnail
                     ? (str_starts_with($group->thumbnail, 'http') ? $group->thumbnail : $disk->url($group->thumbnail))

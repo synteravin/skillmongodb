@@ -4,6 +4,7 @@ namespace App\Actions\Quest;
 
 use App\Enums\QuestBidStatus;
 use App\Enums\QuestStatus;
+use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
@@ -24,15 +25,44 @@ class AcceptQuestBidAction
         // Accept the chosen bid
         $acceptedBid->update(['status' => QuestBidStatus::ACCEPTED->value]);
 
-        // Reject all other bids for this quest
-        QuestBid::where('quest_id', $quest->_id)
+        // Notify the accepted worker
+        Notification::create([
+            'notifiable_type' => User::class,
+            'notifiable_id' => (string) $acceptedBid->student_id,
+            'data' => [
+                'quest_id' => (string) $quest->_id,
+                'title' => $quest->title,
+                'message' => "Selamat! Proposal Anda untuk quest '{$quest->title}' telah diterima oleh pemilik proyek. Silakan mulai pengerjaan.",
+                'type' => 'bid_accepted',
+            ],
+            'read_at' => null,
+        ]);
+
+        // Reject all other bids for this quest and notify applicants
+        $otherBids = QuestBid::where('quest_id', $quest->_id)
             ->where('_id', '!=', $bidId)
-            ->update(['status' => QuestBidStatus::REJECTED->value]);
+            ->get();
+
+        foreach ($otherBids as $rejectedBid) {
+            $rejectedBid->update(['status' => QuestBidStatus::REJECTED->value]);
+
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => (string) $rejectedBid->student_id,
+                'data' => [
+                    'quest_id' => (string) $quest->_id,
+                    'title' => $quest->title,
+                    'message' => "Terima kasih atas penawaran Anda. Pemilik proyek telah memilih pelamar lain untuk quest '{$quest->title}'.",
+                    'type' => 'bid_rejected',
+                ],
+                'read_at' => null,
+            ]);
+        }
 
         // Update quest worker and status
         $quest->update([
             'status' => QuestStatus::ONGOING->value,
-            'worker_id' => $acceptedBid->student_id,
+            'worker_id' => (string) $acceptedBid->student_id,
         ]);
     }
 }

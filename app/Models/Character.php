@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use MongoDB\Laravel\Eloquent\Model;
 
@@ -51,7 +52,7 @@ class Character extends Model
 
     public function getAvatarUrlAttribute()
     {
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         return $this->avatar ? $disk->url($this->avatar) : null;

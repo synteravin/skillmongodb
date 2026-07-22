@@ -3,8 +3,13 @@
 namespace App\Services\Admin;
 
 use App\Models\CourseStudent;
+use App\Models\Path;
+use App\Models\QuizResult;
+use App\Models\Rank;
 use App\Models\StudentSubmission;
+use App\Models\Submission;
 use App\Models\User;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class UserDetailService
@@ -61,8 +66,8 @@ class UserDetailService
 
         // Get All Quizzes Detailed
         $recentQuizzes = [];
-        if (class_exists(\App\Models\QuizResult::class)) {
-            $recentQuizzes = \App\Models\QuizResult::where('user_id', (string) $user->_id)
+        if (class_exists(QuizResult::class)) {
+            $recentQuizzes = QuizResult::where('user_id', (string) $user->_id)
                 ->with(['quiz.path', 'quiz.questions.answers'])
                 ->latest()
                 ->get()
@@ -115,7 +120,7 @@ class UserDetailService
                     $totalScore += $quizScore;
 
                     if ($expVal > 0) {
-                        $pathName = \App\Models\Path::where('_id', $pId)->value('name') ?? 'Path '.substr((string) $pId, 0, 5);
+                        $pathName = Path::where('_id', $pId)->value('name') ?? 'Path '.substr((string) $pId, 0, 5);
                         if (! isset($pathStatsBreakdown[$pathName])) {
                             $pathStatsBreakdown[$pathName] = 0;
                         }
@@ -131,8 +136,8 @@ class UserDetailService
 
         // 2. Rank Level (Based on Quiz Score)
         $rankData = null;
-        if (class_exists(\App\Models\Rank::class)) {
-            $ranks = \App\Models\Rank::orderBy('order')->get();
+        if (class_exists(Rank::class)) {
+            $ranks = Rank::orderBy('order')->get();
             if ($ranks->isNotEmpty()) {
                 $step = floor($totalScore / 500);
                 $tierIndex = floor($step / 3);
@@ -174,7 +179,7 @@ class UserDetailService
     {
         $user->load(['mentorCareerGroups.careerGroup']);
 
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $signatureUrl = $user->signature_path && $disk->exists($user->signature_path)
             ? $disk->temporaryUrl($user->signature_path, now()->addMinutes(30))
@@ -215,8 +220,8 @@ class UserDetailService
         // Detailed Submissions Backlog
         $pendingSubmissionsCount = 0;
         $recentPending = [];
-        if (class_exists(StudentSubmission::class) && class_exists(\App\Models\Submission::class)) {
-            $submissionIds = \App\Models\Submission::whereIn('group_id', $careerGroupIds)->pluck('_id')->toArray();
+        if (class_exists(StudentSubmission::class) && class_exists(Submission::class)) {
+            $submissionIds = Submission::whereIn('group_id', $careerGroupIds)->pluck('_id')->toArray();
             if (! empty($submissionIds)) {
                 $query = StudentSubmission::whereIn('submission_id', $submissionIds)
                     ->whereIn('status', ['submitted', 'pending']);

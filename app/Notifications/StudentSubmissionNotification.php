@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class StudentSubmissionNotification extends Notification implements ShouldQueue
@@ -24,7 +25,7 @@ class StudentSubmissionNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable)
     {
-        return (new \Illuminate\Notifications\Messages\MailMessage)
+        return (new MailMessage)
             ->subject('Tugas Baru Menunggu Penilaian - '.$this->studentName)
             ->withSymfonyMessage(function ($message) {
                 // Menambahkan header High Priority agar Gmail membunyikan notifikasi HP

@@ -3,6 +3,7 @@
 namespace App\Services\Module;
 
 use App\Models\ModuleContent;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class ModuleContentService
@@ -91,7 +92,7 @@ class ModuleContentService
 
             $path = $file->storeAs($folder, $filename, 's3');
 
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            /** @var FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
 
             return [

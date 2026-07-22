@@ -487,6 +487,10 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::get('/quests/create', [QuestController::class, 'create'])->name('quests.create');
         Route::post('/quests', [QuestController::class, 'store'])->name('quests.store');
         Route::get('/quests/{quest}', [QuestController::class, 'show'])->name('quests.show');
+        Route::get('/quests/{quest}/edit', [QuestController::class, 'edit'])->name('quests.edit');
+        Route::match(['put', 'post'], '/quests/{quest}', [QuestController::class, 'update'])->name('quests.update');
+        Route::match(['put', 'post'], '/quests/{quest}/update', [QuestController::class, 'update']);
+        Route::delete('/quests/{quest}', [QuestController::class, 'destroy'])->name('quests.destroy');
         Route::post('/quests/{quest}/bid', [QuestController::class, 'storeBid'])->name('quests.store-bid');
         Route::post('/quests/{quest}/accept-bid/{bid}', [QuestController::class, 'acceptBid'])->name('quests.accept-bid');
         Route::post('/quests/{quest}/submit', [QuestController::class, 'submitWork'])->name('quests.submit-work');
@@ -496,6 +500,7 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
         Route::post('/quests/{quest}/extend-deadline', [QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
         Route::post('/quests/{quest}/upload-payment', [QuestController::class, 'uploadPaymentProof'])->name('quests.upload-payment');
+        Route::post('/notifications/{id}/read', [QuestController::class, 'markNotificationAsRead'])->name('notifications.read');
     });
 
 /*

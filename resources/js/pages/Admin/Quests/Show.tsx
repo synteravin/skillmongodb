@@ -569,13 +569,6 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                             {quest.description}
                                         </div>
                                     </div>
-
-                                    {/* Lampiran Quest (Gambar & File) */}
-                                    <QuestAttachments
-                                        images={quest.images}
-                                        files={quest.files}
-                                        onPreviewImage={setPreviewImage}
-                                    />
                                 </div>
                             )}
 
@@ -741,6 +734,19 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 {/* RPG Rewards */}
                                 <QuestRewardsCard rewards={quest.rewards} />
                             </div>
+
+                            {/* Lampiran Quest (Gambar & File) - Standalone Card under Rincian Quest */}
+                            {((quest.images && quest.images.length > 0) ||
+                                (quest.files && quest.files.length > 0)) && (
+                                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                    <QuestAttachments
+                                        images={quest.images}
+                                        files={quest.files}
+                                        onPreviewImage={setPreviewImage}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

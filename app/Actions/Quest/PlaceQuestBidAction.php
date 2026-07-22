@@ -3,6 +3,7 @@
 namespace App\Actions\Quest;
 
 use App\Enums\QuestBidStatus;
+use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
@@ -14,7 +15,7 @@ class PlaceQuestBidAction
      */
     public function execute(User $student, Quest $quest, array $data): QuestBid
     {
-        return QuestBid::create([
+        $bid = QuestBid::create([
             'quest_id' => $quest->_id,
             'student_id' => $student->_id,
             'bid_amount' => (int) $data['bid_amount'],
@@ -23,5 +24,25 @@ class PlaceQuestBidAction
             'proposal' => $data['proposal'],
             'status' => QuestBidStatus::PENDING->value,
         ]);
+
+        if ($quest->creator_id) {
+            try {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->creator_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'title' => $quest->title,
+                        'message' => "Pelamar '{$student->name}' telah mengajukan proposal penawaran baru (Rp ".number_format((int) $data['bid_amount'], 0, ',', '.').") untuk quest '{$quest->title}'. Silakan tinjau proposal tersebut.",
+                        'type' => 'bid_received',
+                    ],
+                    'read_at' => null,
+                ]);
+            } catch (\Throwable $e) {
+                // Ignored for DB fallback
+            }
+        }
+
+        return $bid;
     }
 }

@@ -1,8 +1,20 @@
-import { MessageSquareMore, MoonStar, SunMedium, Store } from 'lucide-react';
+import {
+    MessageSquareMore,
+    MoonStar,
+    SunMedium,
+    Store,
+    Bell,
+    X,
+    CheckCircle2,
+    XCircle,
+    Info,
+    ArrowRight,
+    Clock,
+} from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import SpeechBubble from '@/components/SpeechBubble';
 import BottomNav from '@/components/Student/BottomNav';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useAppearance } from '@/hooks/use-appearance';
 
 interface Character {
@@ -23,7 +35,27 @@ interface User {
     };
 }
 
-export default function Dashboard({ user }: { user: User }) {
+interface NotificationData {
+    quest_id?: string;
+    title?: string;
+    message?: string;
+    type?: string;
+}
+
+interface NotificationItem {
+    id: string;
+    data: NotificationData;
+    read_at: string | null;
+    created_at: string;
+}
+
+export default function Dashboard({
+    user,
+    notifications = [],
+}: {
+    user: User;
+    notifications?: NotificationItem[];
+}) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const dark = resolvedAppearance === 'dark';
 
@@ -39,7 +71,12 @@ export default function Dashboard({ user }: { user: User }) {
             {/* ── LIGHT MODE: hanya bg yang diganti, titik-titik warna warni ── */}
             <LightBackground />
 
-            <TopBar user={user} dark={dark} toggleTheme={toggleTheme} />
+            <TopBar
+                user={user}
+                notifications={notifications}
+                dark={dark}
+                toggleTheme={toggleTheme}
+            />
 
             <StoreButton />
 
@@ -492,13 +529,33 @@ function LightBackground() {
 
 function TopBar({
     user,
+    notifications = [],
     dark,
     toggleTheme,
 }: {
     user: User;
+    notifications?: NotificationItem[];
     dark: boolean;
     toggleTheme: () => void;
 }) {
+    const [showModal, setShowModal] = useState(false);
+    const unreadCount = notifications.filter((n) => !n.read_at).length;
+
+    const handleNotificationClick = (item: NotificationItem) => {
+        router.post(
+            `/student/notifications/${item.id}/read`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    if (item.data.quest_id) {
+                        router.visit(`/student/quests/${item.data.quest_id}`);
+                    }
+                },
+            },
+        );
+    };
+
     return (
         <header className="relative z-20 flex w-full items-center justify-between px-3 py-3 md:px-6 md:py-4 lg:px-10 lg:py-6">
             {/* LEFT */}
@@ -550,13 +607,108 @@ function TopBar({
                     </div>
                 </div>
 
-                <button
-                    className="relative inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-white/90 p-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-100 md:px-3 md:py-2 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
-                    aria-label="Messages"
-                >
-                    <MessageSquareMore className="h-5 w-5 text-slate-700 md:h-6 md:w-6 dark:text-sky-300" />
-                    <span className="absolute top-1.5 right-1.5 h-2 w-2 animate-pulse rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-950" />
-                </button>
+                {/* NOTIFICATION BUTTON & DROPDOWN */}
+                <div className="relative">
+                    <button
+                        onClick={() => setShowModal(!showModal)}
+                        className="relative inline-flex cursor-pointer items-center justify-center rounded-2xl border border-slate-200/80 bg-white/90 p-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-100 md:px-3 md:py-2 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                        aria-label="Messages"
+                    >
+                        <MessageSquareMore className="h-5 w-5 text-slate-700 md:h-6 md:w-6 dark:text-sky-300" />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-1.5 right-1.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-rose-500 text-[9px] font-black text-white ring-2 ring-white dark:ring-slate-950">
+                                {unreadCount}
+                            </span>
+                        )}
+                    </button>
+
+                    {showModal && (
+                        <>
+                            <div
+                                onClick={() => setShowModal(false)}
+                                className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs md:bg-transparent"
+                            />
+                            <div className="absolute right-0 top-full mt-2 z-50 w-80 sm:w-96 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur-md dark:border-slate-800 dark:bg-[#0c0e18]/95 font-sans">
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                    <div className="flex items-center gap-2">
+                                        <Bell className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
+                                            Pesan & Notifikasi
+                                        </h3>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowModal(false)}
+                                        className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+
+                                <div className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1">
+                                    {notifications.length === 0 ? (
+                                        <div className="py-8 text-center text-slate-400 dark:text-slate-500">
+                                            <Bell className="mx-auto mb-2 h-8 w-8 text-slate-300 dark:text-slate-700" />
+                                            <p className="text-xs font-semibold">Belum ada pesan atau notifikasi</p>
+                                        </div>
+                                    ) : (
+                                        notifications.map((item) => {
+                                            const isUnread = !item.read_at;
+                                            return (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => handleNotificationClick(item)}
+                                                    className={`group flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-all ${
+                                                        isUnread
+                                                            ? 'border-indigo-200 bg-indigo-50/60 dark:border-indigo-900/50 dark:bg-indigo-950/40'
+                                                            : 'border-slate-100 bg-slate-50/60 hover:bg-slate-100 dark:border-slate-800/60 dark:bg-slate-900/40 dark:hover:bg-slate-800/60'
+                                                    }`}
+                                                >
+                                                    <div className="mt-0.5 shrink-0">
+                                                        {item.data.type === 'bid_accepted' ||
+                                                        item.data.type === 'work_approved' ||
+                                                        item.data.type === 'quest_completed' ||
+                                                        item.data.type === 'quest_approved' ? (
+                                                            <CheckCircle2 size={16} className="text-emerald-500" />
+                                                        ) : item.data.type === 'bid_rejected' ||
+                                                          item.data.type === 'work_rejected' ||
+                                                          item.data.type === 'quest_rejected' ? (
+                                                            <XCircle size={16} className="text-red-500 font-bold" />
+                                                        ) : item.data.type === 'work_submitted' ||
+                                                          item.data.type === 'payment_uploaded' ||
+                                                          item.data.type === 'bid_received' ? (
+                                                            <Clock size={16} className="text-amber-500" />
+                                                        ) : (
+                                                            <Info size={16} className="text-indigo-500" />
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex items-center justify-between gap-1">
+                                                            <span className="truncate text-xs font-bold text-slate-800 dark:text-white">
+                                                                {item.data.title || 'Notifikasi Proyek'}
+                                                            </span>
+                                                            <span className="text-[9px] font-medium text-slate-400 shrink-0">
+                                                                {item.created_at}
+                                                            </span>
+                                                        </div>
+                                                        <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600 dark:text-slate-350 line-clamp-2">
+                                                            {item.data.message}
+                                                        </p>
+                                                        {item.data.quest_id && (
+                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                                                                <span>Buka Quest</span>
+                                                                <ArrowRight size={10} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
 
                 <button
                     onClick={toggleTheme}

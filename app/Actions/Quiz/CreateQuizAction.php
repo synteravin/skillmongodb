@@ -5,6 +5,8 @@ namespace App\Actions\Quiz;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 
 class CreateQuizAction
 {
@@ -41,8 +43,8 @@ class CreateQuizAction
                 $file = request()->file("questions.$qIndex.media");
                 $mediaS3Path = $file->store('quiz-images', 's3');
 
-                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-                $disk = \Illuminate\Support\Facades\Storage::disk('s3');
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
                 $mediaPath = $disk->url($mediaS3Path);
             }
 

@@ -39,7 +39,7 @@ export default function QuestAttachments({
     };
 
     return (
-        <div className="space-y-5 border-t border-slate-100 pt-5 dark:border-slate-800">
+        <div className="space-y-5">
             <h3 className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
                 Lampiran Pendukung
             </h3>

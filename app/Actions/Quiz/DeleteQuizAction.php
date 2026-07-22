@@ -5,6 +5,7 @@ namespace App\Actions\Quiz;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
+use Illuminate\Support\Facades\Storage;
 
 class DeleteQuizAction
 {
@@ -14,9 +15,9 @@ class DeleteQuizAction
 
         foreach ($questions as $q) {
             if (isset($q->media_path)) {
-                \Illuminate\Support\Facades\Storage::disk('s3')->delete($q->media_path);
+                Storage::disk('s3')->delete($q->media_path);
             } elseif ($q->media_url && ! str_starts_with($q->media_url, 'http')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($q->media_url);
+                Storage::disk('public')->delete($q->media_url);
             }
         }
 

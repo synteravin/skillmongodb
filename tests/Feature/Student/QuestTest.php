@@ -6,6 +6,8 @@ use App\Models\Character;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -74,8 +76,8 @@ class QuestTest extends TestCase
         $response = $this->post('/student/quests', [
             'title' => 'Test Freelance Job',
             'description' => 'Need a logo designer for our new app.',
-            'min_salary' => 500000,
-            'max_salary' => 1000000,
+            'min_budget' => 500000,
+            'max_budget' => 1000000,
             'deadline' => now()->addDays(5)->toDateString(),
         ]);
 
@@ -85,6 +87,99 @@ class QuestTest extends TestCase
 
         $this->assertEquals('draft', $quest->status);
         $this->assertEquals($student->_id, $quest->creator_id);
+    }
+
+    public function test_student_can_create_a_quest_with_attachments(): void
+    {
+        Storage::fake('s3');
+        $student = $this->createStudent('Student 1');
+        $this->actingAs($student);
+
+        $image = UploadedFile::fake()->image('mockup.png');
+        $file = UploadedFile::fake()->create('brief.pdf', 100);
+
+        $response = $this->post('/student/quests', [
+            'title' => 'Quest With Attachments',
+            'description' => 'Design request with attachments.',
+            'min_budget' => 1000000,
+            'max_budget' => 2000000,
+            'deadline' => now()->addDays(5)->toDateString(),
+            'images' => [$image],
+            'files' => [$file],
+        ]);
+
+        $quest = Quest::where('title', 'Quest With Attachments')->first();
+        $this->assertNotNull($quest);
+        $response->assertRedirect(route('student.quests.show', $quest->_id));
+
+        $this->assertNotEmpty($quest->images);
+        $this->assertNotEmpty($quest->files);
+        $this->assertEquals('mockup.png', $quest->images[0]['name']);
+        $this->assertEquals('brief.pdf', $quest->files[0]['name']);
+    }
+
+    public function test_student_can_edit_and_resubmit_rejected_quest(): void
+    {
+        Storage::fake('s3');
+        $student = $this->createStudent('Student Creator');
+        $quest = Quest::create([
+            'title' => 'Rejected Quest Title',
+            'description' => 'Original description',
+            'min_budget' => 500000,
+            'max_budget' => 1000000,
+            'deadline' => now()->addDays(5),
+            'status' => 'rejected',
+            'rejection_note' => 'Please add brief document.',
+            'creator_id' => $student->_id,
+        ]);
+
+        $this->actingAs($student);
+
+        // Access edit form
+        $editResponse = $this->get("/student/quests/{$quest->_id}/edit");
+        $editResponse->assertOk();
+
+        // Resubmit with new file
+        $file = UploadedFile::fake()->create('specification.pdf', 200);
+        $updateResponse = $this->post("/student/quests/{$quest->_id}/update", [
+            '_method' => 'put',
+            'title' => 'Updated & Resubmitted Quest',
+            'description' => 'Updated description with additional details.',
+            'min_budget' => 600000,
+            'max_budget' => 1200000,
+            'deadline' => now()->addDays(6)->toDateString(),
+            'files' => [$file],
+        ]);
+
+        $updateResponse->assertRedirect(route('student.quests.show', $quest->_id));
+
+        $quest->refresh();
+        $this->assertEquals('Updated & Resubmitted Quest', $quest->title);
+        $this->assertEquals('draft', $quest->status);
+        $this->assertNull($quest->rejection_note);
+        $this->assertNotEmpty($quest->files);
+        $this->assertEquals('specification.pdf', $quest->files[0]['name']);
+    }
+
+    public function test_student_can_delete_draft_quest(): void
+    {
+        $student = $this->createStudent('Student Creator');
+        $quest = Quest::create([
+            'title' => 'Draft Quest To Delete',
+            'description' => 'Description',
+            'min_budget' => 500000,
+            'max_budget' => 1000000,
+            'deadline' => now()->addDays(5),
+            'status' => 'draft',
+            'creator_id' => $student->_id,
+        ]);
+
+        $this->actingAs($student);
+
+        $response = $this->delete("/student/quests/{$quest->_id}");
+        $response->assertRedirect(route('student.quests.index'));
+
+        $this->assertNull(Quest::find($quest->_id));
     }
 
     public function test_student_can_bid_on_a_quest(): void
@@ -284,23 +379,23 @@ class QuestTest extends TestCase
         $student = $this->createStudent('Student 1');
         $this->actingAs($student);
 
-        // Tier S: max_salary >= 10,000,000
+        // Tier S: max_budget >= 10,000,000
         $this->post('/student/quests', [
             'title' => 'Tier S Quest',
             'description' => 'Description S',
-            'min_salary' => 8000000,
-            'max_salary' => 12000000,
+            'min_budget' => 8000000,
+            'max_budget' => 12000000,
             'deadline' => now()->addDays(5)->toDateString(),
         ]);
         $questS = Quest::where('title', 'Tier S Quest')->first();
         $this->assertEquals('S', $questS->tier);
 
-        // Tier D: max_salary < 1,000,000
+        // Tier D: max_budget < 1,000,000
         $this->post('/student/quests', [
             'title' => 'Tier D Quest',
             'description' => 'Description D',
-            'min_salary' => 100000,
-            'max_salary' => 500000,
+            'min_budget' => 100000,
+            'max_budget' => 500000,
             'deadline' => now()->addDays(5)->toDateString(),
         ]);
         $questD = Quest::where('title', 'Tier D Quest')->first();
