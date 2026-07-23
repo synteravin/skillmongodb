@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Models\Rank;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,7 @@ class DashboardController extends Controller
 
         $totalExp = 0;
         $totalGold = 0;
+        $totalScore = 0;
 
         // =========================
         // 🔥 LOOP USER STATS (1x saja)
@@ -45,12 +47,34 @@ class DashboardController extends Controller
 
                     $statExp += $item['exp'] ?? 0;
                     $statGold += $item['gold'] ?? 0;
+
+                    if (isset($item['quiz_score'])) {
+                        $totalScore += $item['quiz_score'];
+                    }
                 }
             }
 
             $totalExp += max((int) ($stat->exp ?? 0), $statExp);
             $totalGold += max((int) ($stat->gold ?? 0), $statGold);
         }
+
+        // =========================
+        // 🔥 RANK SYSTEM (ERP / Quiz Score)
+        // =========================
+        $ranks = Rank::orderBy('order')->get();
+        $step = floor($totalScore / 500);
+        $tierIndex = floor($step / 3);
+        $star = ($step % 3) + 1;
+        $tier = $ranks[$tierIndex] ?? $ranks->last();
+
+        $rankData = [
+            'name' => $tier->name ?? 'Unranked',
+            'image' => $tier->image_url ?? '/images/romawi.png',
+            'star' => (int) $star,
+            'total_score' => (int) $totalScore,
+            'current_score' => (int) ($totalScore % 500),
+            'max_score' => 500,
+        ];
 
         // =========================
         // 🔥 LEVEL SYSTEM (RPG)
@@ -95,6 +119,9 @@ class DashboardController extends Controller
                 'level' => $currentLevel,
                 'xp' => $currentExp,
                 'exp_max' => $expPerLevel,
+
+                // 🔥 RANK & ERP SYSTEM
+                'rank' => $rankData,
 
                 // 🔥 ECONOMY
                 'gold' => $totalGold,
