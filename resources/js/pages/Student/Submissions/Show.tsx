@@ -96,17 +96,17 @@ export default function Show({ submission, studentSubmission }: Props) {
                     className="relative rounded-md p-[2px] md:p-[3px]"
                     style={{
                         backgroundImage:
-                            'linear-gradient(to right, #2563EB 0%, #3b82f6 30%, #6366f1 50%, #facc15 100%)',
+                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
                     }}
                 >
-                    <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">
+                    <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 md:px-6 dark:bg-[#040812]">
                         <Link
                             href={`/student/career-groups/${submission.group_id}/submissions`}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-300 bg-[#eff6ff] p-2 transition-colors hover:border-blue-500 hover:bg-blue-100 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-800 bg-gray-200 p-2 transition-colors hover:border-blue-600 hover:bg-blue-900/40 md:h-12 md:w-12 dark:bg-[#0b1021]"
                         >
                             <svg
                                 viewBox="0 0 48 48"
-                                className="h-7 w-7 scale-125 text-blue-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
+                                className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
                                 <rect
                                     x="12"
@@ -173,7 +173,8 @@ export default function Show({ submission, studentSubmission }: Props) {
                                 />
                             </svg>
                         </Link>
-                        <h1 className="truncate font-['Orbitron'] text-xl font-bold tracking-[0.15em] text-[#1e3a8a] uppercase md:text-2xl lg:text-3xl dark:text-white">
+                        {/* Title */}
+                        <h1 className="truncate font-['Orbitron'] text-xl font-bold tracking-[0.1em] text-[#1e3a8a] uppercase md:text-2xl md:tracking-[0.15em] lg:text-3xl dark:text-white">
                             {submission.title}
                         </h1>
                     </div>
@@ -225,7 +226,7 @@ export default function Show({ submission, studentSubmission }: Props) {
                             </span>
                         </div>
                         <h2 className="font-['Orbitron'] text-xl font-extrabold text-[#1e3a8a] sm:text-2xl md:text-3xl dark:text-white">
-                            {submission.title} DIMANA INI
+                            {submission.title}
                         </h2>
                         <p className="mt-2 font-['Oxanium'] text-xs leading-relaxed whitespace-pre-line text-slate-700 sm:mt-3 sm:text-sm md:text-base dark:text-gray-300">
                             {submission.description}
