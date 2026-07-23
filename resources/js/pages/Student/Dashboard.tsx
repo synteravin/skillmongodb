@@ -29,6 +29,14 @@ interface User {
     xp: number;
     gold: number;
     avatar: string;
+    rank?: {
+        name: string;
+        image: string;
+        star: number;
+        total_score: number;
+        current_score: number;
+        max_score: number;
+    };
     character: {
         name: string;
         avatar: string;
@@ -77,6 +85,8 @@ export default function Dashboard({
                 dark={dark}
                 toggleTheme={toggleTheme}
             />
+
+            <LevelRankCard user={user} />
 
             <StoreButton />
 
@@ -725,6 +735,76 @@ function TopBar({
                 </button>
             </div>
         </header>
+    );
+}
+
+/* =========================================================
+   LEVEL RANK CARD (ERP / REPUTATION)
+========================================================= */
+
+function LevelRankCard({ user }: { user: User }) {
+    const rank = user.rank || {
+        name: 'Unranked',
+        image: '/images/romawi.png',
+        star: 1,
+        total_score: 0,
+        current_score: 0,
+        max_score: 500,
+    };
+
+    const progressPercent = Math.min(
+        100,
+        Math.max(0, (rank.current_score / rank.max_score) * 100),
+    );
+
+    return (
+        <div className="absolute top-20 left-3 z-20 flex w-48 flex-col gap-2 rounded-2xl border border-indigo-500/40 bg-white/85 p-3.5 shadow-lg shadow-indigo-500/10 backdrop-blur-md sm:top-24 sm:left-4 sm:w-60 md:top-28 md:left-6 dark:border-indigo-500/40 dark:bg-[#070918]/85 dark:shadow-black/30">
+            {/* Header: Unwrapped Larger Rank Logo, Name & Stars */}
+            <div className="flex items-center gap-3">
+                <img
+                    src={rank.image || '/images/romawi.png'}
+                    className="h-16 w-16 shrink-0 object-contain drop-shadow-md sm:h-20 sm:w-20"
+                    alt={rank.name}
+                />
+                <div className="min-w-0 flex-1">
+                    <span className="block font-['Orbitron'] text-[8px] font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
+                        LEVEL RANK
+                    </span>
+                    <h4 className="truncate font-['Orbitron'] text-xs font-black tracking-wide text-slate-900 sm:text-sm dark:text-white">
+                        {rank.name}
+                    </h4>
+                    {/* Stars */}
+                    <div className="mt-1 flex gap-0.5">
+                        {Array.from({
+                            length: Math.min(3, Math.max(1, rank.star)),
+                        }).map((_, i) => (
+                            <span key={i} className="text-xs text-amber-400">
+                                ★
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ERP Progress Bar */}
+            <div className="space-y-1 border-t border-slate-200/80 pt-2 dark:border-slate-800/80">
+                <div className="flex items-center justify-between text-[10px] font-bold">
+                    <span className="text-slate-500 dark:text-slate-400">ERP Reputasi</span>
+                    <span className="font-['Orbitron'] text-amber-500 dark:text-amber-400">
+                        {rank.current_score}{' '}
+                        <span className="text-slate-400 dark:text-slate-600">
+                            / {rank.max_score}
+                        </span>
+                    </span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200/90 dark:bg-slate-800">
+                    <div
+                        className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-400 transition-all duration-700"
+                        style={{ width: `${progressPercent}%` }}
+                    />
+                </div>
+            </div>
+        </div>
     );
 }
 
