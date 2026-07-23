@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { DollarSign, Calendar, Lock } from 'lucide-react';
+import { DollarSign, Calendar, Lock, Users } from 'lucide-react';
 import { Quest } from '@/types/quest';
 
 interface QuestItemCardProps {
@@ -225,8 +224,8 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 </p>
 
                 {/* Specifications details */}
-                <div className="mb-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-[11px] dark:border-slate-800">
-                    <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
+                <div className="mb-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-[11px] sm:grid-cols-3 dark:border-slate-800">
+                    <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
                         <div>
                             <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                 Anggaran
@@ -249,8 +248,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
-                        <Calendar className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />
+                    <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
                         <div>
                             <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                 Batas Waktu
@@ -263,6 +261,23 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                                 }`}
                             >
                                 {formatDate(quest.deadline)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="col-span-2 flex items-center gap-2 text-slate-700 sm:col-span-1 dark:text-slate-300">
+                        <div>
+                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                Pelamar
+                            </span>
+                            <span
+                                className={`font-bold ${
+                                    isCompleted || isOngoingByOthers
+                                        ? 'text-slate-700 dark:text-slate-300'
+                                        : 'text-indigo-600 dark:text-indigo-400'
+                                }`}
+                            >
+                                {quest.bids_count ?? 0} Penawaran
                             </span>
                         </div>
                     </div>
