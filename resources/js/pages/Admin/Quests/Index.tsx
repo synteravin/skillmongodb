@@ -7,7 +7,6 @@ import {
     Search,
     Briefcase,
     Calendar,
-    DollarSign,
     Users,
     Eye,
     FileText,
@@ -43,7 +42,9 @@ export default function Index({ quests, filters }: Props) {
     const [editingQuest, setEditingQuest] = useState<Quest | null>(null);
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
-    const [statusFilter, setStatusFilter] = useState<string>(filters?.status || 'all');
+    const [statusFilter, setStatusFilter] = useState<string>(
+        filters?.status || 'all',
+    );
     const [sortBy, setSortBy] = useState<
         'latest' | 'highest_salary' | 'closest_deadline'
     >('latest');
@@ -216,7 +217,7 @@ export default function Index({ quests, filters }: Props) {
                                 <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl dark:text-white">
                                     Quest Management (Freelance)
                                 </h1>
-                                <p className="text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400">
+                                <p className="text-xs leading-relaxed font-semibold text-slate-600 dark:text-slate-400">
                                     Kelola lowongan pekerjaan freelance,
                                     moderasi penawaran masuk dari siswa, dan
                                     pantau proyek yang berjalan.
@@ -225,7 +226,7 @@ export default function Index({ quests, filters }: Props) {
 
                             <button
                                 onClick={openCreate}
-                                className="relative z-10 inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition-all hover:bg-indigo-700 cursor-pointer"
+                                className="relative z-10 inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition-all hover:bg-indigo-700"
                             >
                                 <Plus size={16} className="stroke-[2.5]" />
                                 Buat Quest Baru
@@ -235,7 +236,7 @@ export default function Index({ quests, filters }: Props) {
 
                     {/* FILTERS & SEARCH */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                        <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none" />
+                        <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                         <div className="relative z-10 flex flex-col items-center justify-between gap-4 md:flex-row">
                             <div className="flex w-full flex-col items-center gap-3 sm:flex-row md:w-auto">
                                 <div className="relative w-full sm:w-64 md:w-80">
@@ -246,7 +247,7 @@ export default function Index({ quests, filters }: Props) {
                                         onChange={(e) =>
                                             setSearchQuery(e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/80 py-2 pr-4 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-500 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/80 py-2 pr-4 pl-10 text-xs font-semibold text-slate-900 transition-colors placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
                                     />
                                     <Search className="absolute top-2.5 left-3 h-4 w-4 text-slate-500 dark:text-slate-400" />
                                 </div>
@@ -259,7 +260,9 @@ export default function Index({ quests, filters }: Props) {
                                     }
                                     className="w-full cursor-pointer rounded-lg border border-slate-300 bg-slate-50/80 px-3.5 py-2 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none sm:w-48 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
                                 >
-                                    <option value="latest">Urutan: Terbaru</option>
+                                    <option value="latest">
+                                        Urutan: Terbaru
+                                    </option>
                                     <option value="highest_salary">
                                         Urutan: Gaji Tertinggi
                                     </option>
@@ -269,7 +272,7 @@ export default function Index({ quests, filters }: Props) {
                                 </select>
                             </div>
 
-                            <div className="flex w-full items-center gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0 scrollbar-none">
+                            <div className="flex w-full scrollbar-none items-center gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0">
                                 {[
                                     'all',
                                     'draft',
@@ -284,7 +287,7 @@ export default function Index({ quests, filters }: Props) {
                                         onClick={() =>
                                             setStatusFilter(statusOption as any)
                                         }
-                                        className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                                        className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold whitespace-nowrap transition-all ${
                                             statusFilter === statusOption
                                                 ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
                                                 : 'border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400 dark:hover:text-white'
@@ -325,14 +328,30 @@ export default function Index({ quests, filters }: Props) {
                                 <table className="w-full border-collapse text-left">
                                     <thead>
                                         <tr className="border-b border-slate-300 bg-slate-100/80 text-[10px] font-extrabold tracking-wider text-slate-600 uppercase dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-400">
-                                            <th className="px-6 py-3.5">Quest</th>
-                                            <th className="px-6 py-3.5">Gaji / Anggaran</th>
-                                            <th className="px-6 py-3.5">Deadline</th>
-                                            <th className="px-6 py-3.5">Pembuat</th>
-                                            <th className="px-6 py-3.5">Pekerja</th>
-                                            <th className="px-6 py-3.5">Bids</th>
-                                            <th className="px-6 py-3.5">Status</th>
-                                            <th className="px-6 py-3.5 text-right">Aksi</th>
+                                            <th className="px-6 py-3.5">
+                                                Quest
+                                            </th>
+                                            <th className="px-6 py-3.5">
+                                                Gaji / Anggaran
+                                            </th>
+                                            <th className="px-6 py-3.5">
+                                                Deadline
+                                            </th>
+                                            <th className="px-6 py-3.5">
+                                                Pembuat
+                                            </th>
+                                            <th className="px-6 py-3.5">
+                                                Pekerja
+                                            </th>
+                                            <th className="px-6 py-3.5">
+                                                Bids
+                                            </th>
+                                            <th className="px-6 py-3.5">
+                                                Status
+                                            </th>
+                                            <th className="px-6 py-3.5 text-right">
+                                                Aksi
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-200/80 text-xs dark:divide-slate-800/60">
@@ -346,26 +365,42 @@ export default function Index({ quests, filters }: Props) {
                                                         {quest.title}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                                                <td className="px-6 py-4 font-semibold whitespace-nowrap text-slate-800 dark:text-slate-200">
                                                     {quest.accepted_bid_amount ? (
                                                         <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                                                            {formatCurrency(quest.accepted_bid_amount)}
+                                                            {formatCurrency(
+                                                                quest.accepted_bid_amount,
+                                                            )}
                                                         </span>
                                                     ) : (
                                                         <span className="font-bold">
-                                                            {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} - {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
+                                                            {formatCurrency(
+                                                                quest.min_budget ??
+                                                                    quest.min_salary ??
+                                                                    0,
+                                                            )}{' '}
+                                                            -{' '}
+                                                            {formatCurrency(
+                                                                quest.max_budget ??
+                                                                    quest.max_salary ??
+                                                                    0,
+                                                            )}
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className="font-semibold text-slate-600 dark:text-slate-400">
-                                                        {formatDate(quest.deadline)}
+                                                        {formatDate(
+                                                            quest.deadline,
+                                                        )}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-200 text-[10px] font-extrabold text-slate-700 uppercase border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
-                                                            {quest.creator.name.charAt(0)}
+                                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-slate-200 text-[10px] font-extrabold text-slate-700 uppercase dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                                                            {quest.creator.name.charAt(
+                                                                0,
+                                                            )}
                                                         </div>
                                                         <span className="font-semibold text-slate-800 dark:text-slate-200">
                                                             {quest.creator.name}
@@ -375,11 +410,16 @@ export default function Index({ quests, filters }: Props) {
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {quest.worker ? (
                                                         <div className="flex items-center gap-2">
-                                                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-extrabold text-emerald-800 uppercase border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800">
-                                                                {quest.worker.name.charAt(0)}
+                                                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-emerald-300 bg-emerald-100 text-[10px] font-extrabold text-emerald-800 uppercase dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                                                                {quest.worker.name.charAt(
+                                                                    0,
+                                                                )}
                                                             </div>
                                                             <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                                                {quest.worker.name}
+                                                                {
+                                                                    quest.worker
+                                                                        .name
+                                                                }
                                                             </span>
                                                         </div>
                                                     ) : (
@@ -388,7 +428,9 @@ export default function Index({ quests, filters }: Props) {
                                                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-400 opacity-75"></span>
                                                                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-slate-400"></span>
                                                             </span>
-                                                            <span className="text-xs italic">Mencari Pelamar</span>
+                                                            <span className="text-xs italic">
+                                                                Mencari Pelamar
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </td>
@@ -399,29 +441,38 @@ export default function Index({ quests, filters }: Props) {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span
-                                                        className={`inline-flex items-center rounded-md px-2.5 py-1 text-[10px] font-extrabold tracking-wider uppercase border ${
-                                                            quest.status === 'open'
+                                                        className={`inline-flex items-center rounded-md border px-2.5 py-1 text-[10px] font-extrabold tracking-wider uppercase ${
+                                                            quest.status ===
+                                                            'open'
                                                                 ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                                                : quest.status === 'draft'
+                                                                : quest.status ===
+                                                                    'draft'
                                                                   ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
-                                                                  : quest.status === 'rejected'
+                                                                  : quest.status ===
+                                                                      'rejected'
                                                                     ? 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400'
-                                                                    : quest.status === 'expired'
+                                                                    : quest.status ===
+                                                                        'expired'
                                                                       ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
-                                                                      : quest.status === 'ongoing'
+                                                                      : quest.status ===
+                                                                          'ongoing'
                                                                         ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
                                                                         : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                                         }`}
                                                     >
                                                         {quest.status === 'open'
                                                             ? 'Tersedia'
-                                                            : quest.status === 'draft'
+                                                            : quest.status ===
+                                                                'draft'
                                                               ? 'Draft'
-                                                              : quest.status === 'rejected'
+                                                              : quest.status ===
+                                                                  'rejected'
                                                                 ? 'Ditolak'
-                                                                : quest.status === 'expired'
+                                                                : quest.status ===
+                                                                    'expired'
                                                                   ? 'Kadaluarsa'
-                                                                  : quest.status === 'ongoing'
+                                                                  : quest.status ===
+                                                                      'ongoing'
                                                                     ? 'Berjalan'
                                                                     : 'Selesai'}
                                                     </span>
@@ -431,13 +482,17 @@ export default function Index({ quests, filters }: Props) {
                                                         <Link
                                                             href={`/admin/quests/${quest._id}`}
                                                             title="Detail & Bid"
-                                                            className="rounded-lg bg-indigo-50 px-3 py-1.5 text-[11px] font-bold text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/60 transition-colors"
+                                                            className="rounded-lg bg-indigo-50 px-3 py-1.5 text-[11px] font-bold text-indigo-600 transition-colors hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/60"
                                                         >
                                                             Detail
                                                         </Link>
                                                         <button
-                                                            onClick={() => handleDelete(quest._id)}
-                                                            className="cursor-pointer rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    quest._id,
+                                                                )
+                                                            }
+                                                            className="cursor-pointer rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400"
                                                             title="Hapus Quest"
                                                         >
                                                             <Trash2 size={14} />
@@ -453,7 +508,7 @@ export default function Index({ quests, filters }: Props) {
 
                         {/* Pagination Footer */}
                         {quests.last_page > 1 && (
-                            <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 px-6 py-4 dark:border-slate-800 sm:flex-row">
+                            <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 px-6 py-4 sm:flex-row dark:border-slate-800">
                                 <span className="text-xs text-slate-500 dark:text-slate-400">
                                     Menampilkan{' '}
                                     <span className="font-bold text-slate-900 dark:text-white">
@@ -472,13 +527,32 @@ export default function Index({ quests, filters }: Props) {
 
                                 <div className="flex items-center gap-1.5">
                                     {quests.links.map((link, i) => {
-                                        const labelLower = link.label.toLowerCase();
-                                        const isPrev = labelLower.includes('previous') || labelLower.includes('&laquo;') || labelLower.includes('laquo');
-                                        const isNext = labelLower.includes('next') || labelLower.includes('&raquo;') || labelLower.includes('raquo');
-                                        
+                                        const labelLower =
+                                            link.label.toLowerCase();
+                                        const isPrev =
+                                            labelLower.includes('previous') ||
+                                            labelLower.includes('&laquo;') ||
+                                            labelLower.includes('laquo');
+                                        const isNext =
+                                            labelLower.includes('next') ||
+                                            labelLower.includes('&raquo;') ||
+                                            labelLower.includes('raquo');
+
                                         const renderLabel = () => {
-                                            if (isPrev) return <ChevronLeft size={14} className="shrink-0" />;
-                                            if (isNext) return <ChevronRight size={14} className="shrink-0" />;
+                                            if (isPrev)
+                                                return (
+                                                    <ChevronLeft
+                                                        size={14}
+                                                        className="shrink-0"
+                                                    />
+                                                );
+                                            if (isNext)
+                                                return (
+                                                    <ChevronRight
+                                                        size={14}
+                                                        className="shrink-0"
+                                                    />
+                                                );
                                             return link.label;
                                         };
 
@@ -498,7 +572,7 @@ export default function Index({ quests, filters }: Props) {
                                         ) : (
                                             <span
                                                 key={i}
-                                                className="cursor-not-allowed flex h-7 min-w-7 items-center justify-center rounded-lg border border-slate-300 bg-slate-100 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-60 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-600"
+                                                className="flex h-7 min-w-7 cursor-not-allowed items-center justify-center rounded-lg border border-slate-300 bg-slate-100 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-60 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-600"
                                             >
                                                 {renderLabel()}
                                             </span>
@@ -577,7 +651,11 @@ export default function Index({ quests, filters }: Props) {
                                 value={data.min_budget || data.min_salary || ''}
                                 onChange={(e) => {
                                     const val = e.target.value;
-                                    setData((prev) => ({ ...prev, min_budget: val, min_salary: val }));
+                                    setData((prev) => ({
+                                        ...prev,
+                                        min_budget: val,
+                                        min_salary: val,
+                                    }));
                                 }}
                                 className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950"
                                 placeholder="Contoh: 1000000"
@@ -598,7 +676,11 @@ export default function Index({ quests, filters }: Props) {
                                 value={data.max_budget || data.max_salary || ''}
                                 onChange={(e) => {
                                     const val = e.target.value;
-                                    setData((prev) => ({ ...prev, max_budget: val, max_salary: val }));
+                                    setData((prev) => ({
+                                        ...prev,
+                                        max_budget: val,
+                                        max_salary: val,
+                                    }));
                                 }}
                                 className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950"
                                 placeholder="Contoh: 2500000"

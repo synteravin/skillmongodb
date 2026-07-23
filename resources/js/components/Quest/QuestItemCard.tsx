@@ -37,7 +37,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
         return `${datePart} ${timePart}`;
     };
 
-    const getQuestRank = (maxSalary: number) => {
+    const getQuestRank = (maxSalary: number = 0) => {
         if (maxSalary >= 10000000) {
             return {
                 rank: 'Enterprise',
@@ -73,59 +73,69 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
             case 'open':
                 return {
                     label: 'Tersedia',
-                    className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
+                    className:
+                        'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
                 };
             case 'draft':
                 return {
                     label: 'Review Admin',
-                    className: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                    className:
+                        'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
                 };
             case 'rejected':
                 return {
                     label: 'Ditolak Admin',
-                    className: 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400',
+                    className:
+                        'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400',
                 };
             case 'ongoing':
                 return {
                     label: 'Berjalan',
-                    className: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400',
+                    className:
+                        'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400',
                 };
             case 'submitted':
                 return {
                     label: 'Ditinjau',
-                    className: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                    className:
+                        'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
                 };
             case 'approved':
             case 'payment':
                 return {
                     label: 'Pelunasan',
-                    className: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                    className:
+                        'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
                 };
             case 'completed':
                 return {
                     label: 'Selesai',
-                    className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
+                    className:
+                        'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400',
                 };
             case 'expired':
                 return {
                     label: 'Kadaluarsa',
-                    className: 'border-slate-300 bg-slate-100 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400',
+                    className:
+                        'border-slate-300 bg-slate-100 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400',
                 };
             case 'disputed':
                 return {
                     label: 'Dispute',
-                    className: 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400',
+                    className:
+                        'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400',
                 };
             default:
                 return {
                     label: status,
-                    className: 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300',
+                    className:
+                        'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300',
                 };
         }
     };
 
     const isCompleted = quest.status === 'completed';
-    const rankInfo = getQuestRank(quest.max_salary);
+    const rankInfo = getQuestRank(quest.max_salary ?? 0);
     const statusBadge = getStatusBadge(quest.status);
 
     return (
@@ -178,7 +188,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                     </div>
 
                     <span
-                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${statusBadge.className}`}
+                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-extrabold tracking-wider uppercase ${statusBadge.className}`}
                     >
                         {statusBadge.label}
                     </span>
@@ -203,7 +213,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
 
                 {/* Description */}
                 <p
-                    className={`mb-4.5 line-clamp-3 text-xs font-normal leading-relaxed ${
+                    className={`mb-4.5 line-clamp-3 text-xs leading-relaxed font-normal ${
                         isCompleted
                             ? 'text-slate-500 dark:text-slate-500'
                             : isOngoingByOthers
@@ -217,7 +227,6 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 {/* Specifications details */}
                 <div className="mb-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-[11px] dark:border-slate-800">
                     <div className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
-                        <DollarSign className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />
                         <div>
                             <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                 Anggaran
@@ -229,8 +238,13 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                                         : 'text-slate-900 dark:text-white'
                                 }`}
                             >
-                                {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} -{' '}
-                                {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
+                                {formatCurrency(
+                                    quest.min_budget ?? quest.min_salary ?? 0,
+                                )}{' '}
+                                -{' '}
+                                {formatCurrency(
+                                    quest.max_budget ?? quest.max_salary ?? 0,
+                                )}
                             </span>
                         </div>
                     </div>
@@ -260,14 +274,14 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 font-extrabold text-slate-800 dark:bg-slate-800 dark:text-slate-200">
                         {quest.creator.name.substring(0, 1).toUpperCase()}
                     </div>
-                    <span className="truncate max-w-[100px] font-bold text-slate-800 dark:text-slate-200">
+                    <span className="max-w-[100px] truncate font-bold text-slate-800 dark:text-slate-200">
                         {quest.creator.name}
                     </span>
                 </div>
 
                 {isCompleted ? (
                     <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                        Selesai ✓
+                        Selesai
                     </span>
                 ) : (
                     <Link
@@ -278,7 +292,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                                 : 'text-indigo-700 hover:underline dark:text-indigo-400'
                         }`}
                     >
-                        Lihat Proyek →
+                        Lihat Proyek
                     </Link>
                 )}
             </div>

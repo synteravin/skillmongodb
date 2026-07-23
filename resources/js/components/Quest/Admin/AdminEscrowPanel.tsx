@@ -27,7 +27,7 @@ export default function AdminEscrowPanel({
                     <span className="text-xl font-extrabold text-slate-900 dark:text-white">
                         {quest.accepted_bid_amount
                             ? formatCurrency(quest.accepted_bid_amount)
-                            : formatCurrency(quest.max_salary)}
+                            : formatCurrency(quest.max_salary || 0)}
                     </span>
                     <span className="mt-1 block text-[10px] font-semibold text-slate-500 dark:text-slate-400">
                         {quest.accepted_bid_amount
