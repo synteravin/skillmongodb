@@ -411,12 +411,12 @@ export default function QuestChatPanel({
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Tulis pesan..."
-                    className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs text-slate-900 focus:border-indigo-655 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                    className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder-slate-500"
                 />
                 <button
                     type="submit"
                     disabled={(!newMessage.trim() && !attachmentFile) || sending}
-                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-indigo-650 text-white shadow-sm transition-all hover:bg-indigo-700 disabled:opacity-50"
+                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
                 >
                     <Send size={16} />
                 </button>

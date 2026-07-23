@@ -83,7 +83,7 @@ export default function AdminArbitrationTabPanel({
                                     Kontrak Kerja Dimulai
                                 </span>
                                 <p className="mt-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                                    Bidding ditutup. Pekerja <strong className="font-bold text-slate-900 dark:text-white">{quest.worker.name}</strong> ditugaskan dengan nilai kontrak <strong>{formatCurrency(quest.accepted_bid_amount || quest.max_salary)}</strong>.
+                                    Bidding ditutup. Pekerja <strong className="font-bold text-slate-900 dark:text-white">{quest.worker.name}</strong> ditugaskan dengan nilai kontrak <strong>{formatCurrency(quest.accepted_bid_amount || quest.max_salary || 0)}</strong>.
                                 </p>
                             </div>
                         </div>

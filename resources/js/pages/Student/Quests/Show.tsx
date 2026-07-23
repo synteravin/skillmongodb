@@ -193,15 +193,69 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 viewBox="0 0 48 48"
                                 className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
-                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
-                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
-                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
-                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
-                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                                <rect
+                                    x="12"
+                                    y="20"
+                                    width="29"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="20"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="5"
+                                    y="20"
+                                    width="5"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="16"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="24"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="12"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="28"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="8"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="32"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
                             </svg>
                         </Link>
 
@@ -217,7 +271,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
             </div>
 
             <div className="relative z-10 flex min-h-0 w-full max-w-none flex-1 flex-col space-y-6 px-4 py-4 sm:px-6 lg:px-10">
-                
                 {/* 1. CONTRACT HEADER CARD */}
                 <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-slate-50/70 p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                     {/* Grid Pattern Motif */}
@@ -233,7 +286,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                     />
 
                     <div className="relative z-10 space-y-4">
-                        
                         {/* Status pill top row */}
                         <div className="flex items-center justify-between gap-4">
                             <span className="text-[10px] font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
@@ -244,21 +296,24 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 <span
                                     className={`rounded-lg border px-3 py-1 text-xs font-bold uppercase ${
                                         quest.status === 'open'
-                                            ? 'border-emerald-250 bg-emerald-50 text-emerald-705 dark:border-slate-800 dark:bg-slate-950 dark:text-emerald-400'
+                                            ? 'border-emerald-250 text-emerald-705 bg-emerald-50 dark:border-slate-800 dark:bg-slate-950 dark:text-emerald-400'
                                             : quest.status === 'draft'
-                                              ? 'border-amber-250 bg-amber-50 text-amber-705 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
+                                              ? 'border-amber-250 text-amber-705 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
                                               : quest.status === 'rejected'
-                                                ? 'border-red-255 bg-red-50 text-red-705 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
+                                                ? 'border-red-255 text-red-705 bg-red-50 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
                                                 : quest.status === 'expired'
-                                                  ? 'border-red-255 bg-red-50 text-red-705 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
+                                                  ? 'border-red-255 text-red-705 bg-red-50 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
                                                   : quest.status === 'ongoing'
-                                                    ? 'border-indigo-250 bg-indigo-50 text-indigo-707 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
-                                                    : quest.status === 'approved'
-                                                      ? 'border-purple-250 bg-purple-50 text-purple-707 dark:border-slate-800 dark:bg-slate-950 dark:text-purple-400'
-                                                      : quest.status === 'payment'
-                                                        ? 'border-amber-250 bg-amber-50 text-amber-750 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
-                                                        : quest.status === 'submitted'
-                                                          ? 'border-yellow-255 bg-yellow-50 text-yellow-750 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
+                                                    ? 'border-indigo-250 text-indigo-707 bg-indigo-50 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
+                                                    : quest.status ===
+                                                        'approved'
+                                                      ? 'border-purple-250 text-purple-707 bg-purple-50 dark:border-slate-800 dark:bg-slate-950 dark:text-purple-400'
+                                                      : quest.status ===
+                                                          'payment'
+                                                        ? 'border-amber-250 text-amber-750 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
+                                                        : quest.status ===
+                                                            'submitted'
+                                                          ? 'border-yellow-255 text-yellow-750 bg-yellow-50 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
                                                           : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
                                     }`}
                                 >
@@ -276,7 +331,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                   ? 'Draf Disetujui'
                                                   : quest.status === 'payment'
                                                     ? 'Proses Transfer'
-                                                    : quest.status === 'submitted'
+                                                    : quest.status ===
+                                                        'submitted'
                                                       ? 'Ditinjau Klien'
                                                       : 'Proyek Selesai'}
                                 </span>
@@ -285,12 +341,12 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                         {/* Title and Client Details */}
                         <div className="space-y-3">
-                            <h1 className="w-full text-xl font-extrabold tracking-tight text-slate-900 break-words whitespace-normal leading-snug sm:text-2xl md:text-3xl dark:text-white">
-                                {quest.title} 
+                            <h1 className="w-full text-xl leading-snug font-extrabold tracking-tight break-words whitespace-normal text-slate-900 sm:text-2xl md:text-3xl dark:text-white">
+                                {quest.title}
                             </h1>
 
-                            <div className="flex items-center gap-2.5 text-xs text-slate-505 dark:text-slate-400">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-655 dark:bg-slate-950 dark:text-slate-300">
+                            <div className="text-slate-505 flex items-center gap-2.5 text-xs dark:text-slate-400">
+                                <div className="text-slate-655 flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 font-bold dark:bg-slate-950 dark:text-slate-300">
                                     <User className="h-3.5 w-3.5" />
                                 </div>
                                 <div>
@@ -301,7 +357,11 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         {quest.creator.name}
                                     </span>
                                     <span className="ml-1.5 text-xs font-normal text-slate-400">
-                                        ({quest.creator.role === 'admin' ? 'Administrator' : 'Siswa'})
+                                        (
+                                        {quest.creator.role === 'admin'
+                                            ? 'Administrator'
+                                            : 'Siswa'}
+                                        )
                                     </span>
                                 </div>
                             </div>
@@ -309,15 +369,19 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                         {/* Warning/Status Cards */}
                         {quest.status === 'draft' && (
-                            <div className="flex flex-col gap-3 rounded-xl border border-amber-250 bg-amber-50/20 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-amber-900/40 dark:bg-amber-950/20">
+                            <div className="border-amber-250 flex flex-col gap-3 rounded-xl border bg-amber-50/20 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-amber-900/40 dark:bg-amber-950/20">
                                 <div className="flex items-start gap-3">
-                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 animate-pulse dark:text-amber-400" />
+                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 animate-pulse text-amber-600 dark:text-amber-400" />
                                     <div>
                                         <span className="block text-xs font-bold text-amber-800 dark:text-amber-300">
                                             Menunggu Persetujuan Admin
                                         </span>
                                         <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                                            Papan proyek ini masih dalam tahap pengajuan. Administrator akan memeriksa deskripsi dan budget penawaran sebelum lowongan ini dipublikasikan secara umum.
+                                            Papan proyek ini masih dalam tahap
+                                            pengajuan. Administrator akan
+                                            memeriksa deskripsi dan budget
+                                            penawaran sebelum lowongan ini
+                                            dipublikasikan secara umum.
                                         </p>
                                     </div>
                                 </div>
@@ -334,11 +398,11 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                             onClick={() => {
                                                 if (
                                                     confirm(
-                                                        'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?'
+                                                        'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?',
                                                     )
                                                 ) {
                                                     router.delete(
-                                                        `/student/quests/${quest._id}`
+                                                        `/student/quests/${quest._id}`,
                                                     );
                                                 }
                                             }}
@@ -358,10 +422,15 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
                                         <div>
                                             <span className="block text-xs font-bold text-red-800 dark:text-red-300">
-                                                Pengajuan Proyek Ditolak Administrator
+                                                Pengajuan Proyek Ditolak
+                                                Administrator
                                             </span>
                                             <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                                                Pihak administrator meminta perbaikan pada rilis lowongan proyek ini. Silakan perbaiki parameter quest atau tambahkan berkas sesuai catatan penolakan.
+                                                Pihak administrator meminta
+                                                perbaikan pada rilis lowongan
+                                                proyek ini. Silakan perbaiki
+                                                parameter quest atau tambahkan
+                                                berkas sesuai catatan penolakan.
                                             </p>
                                         </div>
                                     </div>
@@ -378,11 +447,11 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                 onClick={() => {
                                                     if (
                                                         confirm(
-                                                            'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?'
+                                                            'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?',
                                                         )
                                                     ) {
                                                         router.delete(
-                                                            `/student/quests/${quest._id}`
+                                                            `/student/quests/${quest._id}`,
                                                         );
                                                     }
                                                 }}
@@ -407,14 +476,17 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         )}
 
                         {quest.status === 'expired' && (
-                            <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
+                            <div className="dark:border-slate-805 flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:bg-slate-950">
                                 <Clock className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
                                 <div>
-                                    <span className="block text-xs font-bold text-red-705 dark:text-red-400">
+                                    <span className="text-red-705 block text-xs font-bold dark:text-red-400">
                                         Proyek Kadaluarsa (Expired)
                                     </span>
-                                    <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-405">
-                                        Proyek ini telah melewati batas masa pendaftaran atau tenggat kerja tanpa adanya deliverables diserahkan. Kontrak dibatalkan secara otomatis oleh sistem.
+                                    <p className="dark:text-slate-405 mt-1 text-xs leading-relaxed text-slate-500">
+                                        Proyek ini telah melewati batas masa
+                                        pendaftaran atau tenggat kerja tanpa
+                                        adanya deliverables diserahkan. Kontrak
+                                        dibatalkan secara otomatis oleh sistem.
                                     </p>
                                 </div>
                             </div>
@@ -423,13 +495,13 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         {['open', 'ongoing'].includes(quest.status) &&
                             new Date(quest.deadline).getTime() <
                                 new Date().getTime() && (
-                                <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:border-slate-805 dark:bg-slate-950">
-                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 text-red-650 animate-pulse" />
+                                <div className="dark:border-slate-805 flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:bg-slate-950">
+                                    <Clock className="text-red-650 mt-0.5 h-5 w-5 shrink-0 animate-pulse" />
                                     <div>
                                         <span className="block text-xs font-bold text-red-700 dark:text-red-400">
                                             Batas Waktu Telah Terlewati
                                         </span>
-                                        <p className="mt-1 text-xs leading-relaxed text-slate-505 dark:text-slate-400">
+                                        <p className="text-slate-505 mt-1 text-xs leading-relaxed dark:text-slate-400">
                                             {quest.status === 'open'
                                                 ? 'Pendaftaran proyek ini sudah berakhir karena melewati deadline yang ditentukan.'
                                                 : 'Pekerja telah melewati batas pengerjaan proyek. Hubungi admin atau buat laporan dispute jika dibutuhkan.'}
@@ -445,12 +517,10 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                 {/* 3. MAIN WORKSPACE GRID */}
                 <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
-                    
                     {/* LEFT AREA: WORKSPACE CONTROL (col-span-8) */}
                     <div className="space-y-6 lg:col-span-8">
-                        
                         {/* Tabs */}
-                        <div className="flex shrink-0 gap-6 border-b border-slate-205 pb-px text-xs font-bold dark:border-slate-800">
+                        <div className="border-slate-205 flex shrink-0 gap-6 border-b pb-px text-xs font-bold dark:border-slate-800">
                             <button
                                 onClick={() => setActiveTab('detail')}
                                 className={`relative cursor-pointer pb-2.5 transition-colors ${
@@ -464,7 +534,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     Spesifikasi Proyek
                                 </span>
                                 {activeTab === 'detail' && (
-                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded bg-indigo-650 dark:bg-indigo-400" />
+                                    <span className="bg-indigo-650 absolute right-0 bottom-0 left-0 h-0.5 rounded dark:bg-indigo-400" />
                                 )}
                             </button>
 
@@ -485,7 +555,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                           : 'Status & Pengajuan'}
                                 </span>
                                 {activeTab === 'project' && (
-                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded bg-indigo-650 dark:bg-indigo-400" />
+                                    <span className="bg-indigo-650 absolute right-0 bottom-0 left-0 h-0.5 rounded dark:bg-indigo-400" />
                                 )}
                             </button>
 
@@ -496,28 +566,28 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         activeTab === 'bids'
                                             ? 'text-indigo-650 dark:text-indigo-400'
                                             : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
-                                }`}
-                            >
-                                <span className="flex items-center gap-1.5">
-                                    <MessageSquare size={13} />
-                                    Pelamar Kerja ({bids.length})
-                                </span>
-                                {activeTab === 'bids' && (
-                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded bg-indigo-650 dark:bg-indigo-400" />
-                                )}
-                            </button>
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-1.5">
+                                        <MessageSquare size={13} />
+                                        Pelamar Kerja ({bids.length})
+                                    </span>
+                                    {activeTab === 'bids' && (
+                                        <span className="bg-indigo-650 absolute right-0 bottom-0 left-0 h-0.5 rounded dark:bg-indigo-400" />
+                                    )}
+                                </button>
                             )}
                         </div>
 
                         {/* TAB CONTENT: DETAIL */}
                         {activeTab === 'detail' && (
-                            <div className="relative overflow-hidden space-y-3 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                            <div className="relative space-y-3 overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                                 <div className="relative z-10 space-y-3">
                                     <h3 className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
                                         Detail Penugasan & Deskripsi
                                     </h3>
-                                    <div className="rounded-lg border border-slate-200/60 bg-slate-50/50 p-4 text-xs leading-relaxed whitespace-pre-wrap text-slate-755 dark:border-slate-800 dark:bg-[#030712]/40 dark:text-slate-250">
+                                    <div className="text-slate-755 dark:text-slate-250 rounded-lg border border-slate-200/60 bg-slate-50/50 p-4 text-xs leading-relaxed whitespace-pre-wrap dark:border-slate-800 dark:bg-[#030712]/40">
                                         {quest.description}
                                     </div>
                                 </div>
@@ -531,7 +601,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     <div
                                         className={`flex gap-3 rounded-lg border p-4 ${
                                             quest.status === 'disputed'
-                                                ? 'border-red-200 bg-red-50/15 text-red-655 dark:border-slate-800 dark:bg-slate-950/40 dark:text-red-400'
+                                                ? 'text-red-655 border-red-200 bg-red-50/15 dark:border-slate-800 dark:bg-slate-950/40 dark:text-red-400'
                                                 : 'border-green-200 bg-green-50/15 text-green-700 dark:border-slate-800 dark:bg-slate-950/40 dark:text-green-400'
                                         }`}
                                     >
@@ -542,7 +612,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                     ? 'Proyek Ditangguhkan (Dalam Proses Banding)'
                                                     : 'Arbitrase Diselesaikan'}
                                             </span>
-                                            <p className="leading-relaxed text-slate-505 dark:text-slate-400">
+                                            <p className="text-slate-505 leading-relaxed dark:text-slate-400">
                                                 {quest.status === 'disputed'
                                                     ? `Dispute diajukan oleh ${quest.dispute.filer_name} dengan alasan: "${quest.dispute.reason}". Penyerahan poin/hadiah ditangguhkan sementara menunggu peninjauan administrator.`
                                                     : `Perselisihan diselesaikan dengan keputusan mediator: ${
@@ -550,17 +620,21 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                               'refund',
                                                               'refund_creator',
                                                           ].includes(
-                                                              quest.dispute.ruling ?? '',
+                                                              quest.dispute
+                                                                  .ruling ?? '',
                                                           )
                                                               ? 'Proyek dibatalkan dan seluruh budget/hadiah dikembalikan ke klien.'
                                                               : [
-                                                                    'pay_worker',
-                                                                    'release_payout',
-                                                                ].includes(
-                                                                    quest.dispute.ruling ?? '',
-                                                                )
-                                                              ? 'Seluruh poin & reputasi penuh diserahkan kepada pekerja.'
-                                                              : `Bagi hasil (Kontraktor mendapat ${quest.dispute.split_percentage}%).`
+                                                                      'pay_worker',
+                                                                      'release_payout',
+                                                                  ].includes(
+                                                                      quest
+                                                                          .dispute
+                                                                          .ruling ??
+                                                                          '',
+                                                                  )
+                                                                ? 'Seluruh poin & reputasi penuh diserahkan kepada pekerja.'
+                                                                : `Bagi hasil (Kontraktor mendapat ${quest.dispute.split_percentage}%).`
                                                       } Penjelasan: "${quest.dispute.note}".`}
                                             </p>
                                         </div>
@@ -601,24 +675,25 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         )}
 
                         {/* TAB CONTENT: BIDS / APPLICANTS LIST */}
-                        {activeTab === 'bids' && isCreator && quest.status === 'open' && (
-                            <BidsTabPanel
-                                quest={quest}
-                                bids={bids}
-                                setSelectedChatBid={setSelectedChatBid}
-                            />
-                        )}
+                        {activeTab === 'bids' &&
+                            isCreator &&
+                            quest.status === 'open' && (
+                                <BidsTabPanel
+                                    quest={quest}
+                                    bids={bids}
+                                    setSelectedChatBid={setSelectedChatBid}
+                                />
+                            )}
                     </div>
 
                     {/* RIGHT AREA: SPECIFICATIONS SIDEBAR (col-span-4) */}
                     <div className="space-y-6 lg:col-span-4">
-                        
                         {/* Worker assigned info shortcut */}
                         {quest.worker && (
-                            <div className="relative overflow-hidden flex items-center justify-between gap-3 rounded-xl border border-emerald-300 bg-emerald-50/50 p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                            <div className="relative flex items-center justify-between gap-3 overflow-hidden rounded-xl border border-emerald-300 bg-emerald-50/50 p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                                 <div className="relative z-10 flex min-w-0 items-center gap-2.5">
-                                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-650" />
+                                    <CheckCircle2 className="text-emerald-650 h-5 w-5 shrink-0" />
                                     <div className="min-w-0">
                                         <span className="block text-[8px] font-bold tracking-wider text-slate-400 uppercase">
                                             Kontraktor Ditunjuk
@@ -635,51 +710,63 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         )}
 
                         {/* Rincian Quest Side Panel */}
-                        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                        <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                             <h3 className="relative z-10 border-b border-slate-100 pb-3 text-xs font-bold text-slate-800 uppercase dark:border-slate-800 dark:text-slate-200">
                                 Detail Spesifikasi
                             </h3>
 
                             {/* Budget Spec */}
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-650 dark:bg-slate-950 dark:text-indigo-400">
-                                    <DollarSign className="h-5 w-5" />
-                                </div>
                                 <div>
                                     <span className="block text-[10px] font-bold text-slate-400 uppercase">
                                         Estimasi Anggaran
                                     </span>
                                     <span className="text-xs font-bold text-slate-800 dark:text-white">
-                                        {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} - {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
+                                        {formatCurrency(
+                                            quest.min_budget ??
+                                                quest.min_salary ??
+                                                0,
+                                        )}{' '}
+                                        -{' '}
+                                        {formatCurrency(
+                                            quest.max_budget ??
+                                                quest.max_salary ??
+                                                0,
+                                        )}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Deadline Spec */}
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-655 dark:bg-slate-955 dark:text-indigo-400">
-                                    <Calendar className="h-5 w-5" />
-                                </div>
                                 <div>
                                     <span className="block text-[10px] font-bold text-slate-400 uppercase">
                                         Tenggat Waktu
                                     </span>
-                                    <span className="text-xs font-bold text-slate-805 dark:text-white">
+                                    <span className="text-slate-805 text-xs font-bold dark:text-white">
                                         {formatDate(quest.deadline)}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Remaining Time */}
-                            {['open', 'ongoing', 'submitted', 'disputed', 'expired'].includes(quest.status) &&
+                            {[
+                                'open',
+                                'ongoing',
+                                'submitted',
+                                'disputed',
+                                'expired',
+                            ].includes(quest.status) &&
                                 (() => {
                                     const remaining = calculateDaysRemaining();
                                     return (
-                                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                                        <div className="border-t border-slate-100 pt-2 dark:border-slate-800">
                                             <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
                                                 <span>
-                                                    {remaining.isLate ? 'Keterlambatan' : 'Sisa Waktu'}
+                                                    {remaining.isLate
+                                                        ? 'Keterlambatan'
+                                                        : 'Sisa Waktu'}
                                                 </span>
                                                 <span
                                                     className={`rounded px-2.5 py-0.5 text-[9px] font-bold tracking-wider uppercase ${remaining.className}`}
@@ -698,7 +785,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 </span>
                                 <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold">
                                     <div className="flex flex-col items-center rounded-lg border border-slate-200/65 bg-slate-50 py-2.5 dark:border-slate-800/80 dark:bg-[#030712]/40">
-                                        <Award className="mb-1 h-3.5 w-3.5 text-purple-650" />
                                         <span className="text-[9px] font-semibold text-slate-400 uppercase">
                                             EXP
                                         </span>
@@ -707,7 +793,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         </span>
                                     </div>
                                     <div className="flex flex-col items-center rounded-lg border border-slate-200/65 bg-slate-50 py-2.5 dark:border-slate-800/80 dark:bg-[#030712]/40">
-                                        <Award className="mb-1 h-3.5 w-3.5 text-amber-500" />
                                         <span className="text-[9px] font-semibold text-slate-400 uppercase">
                                             GOLD
                                         </span>
@@ -716,7 +801,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         </span>
                                     </div>
                                     <div className="flex flex-col items-center rounded-lg border border-slate-200/65 bg-slate-50 py-2.5 dark:border-slate-800/80 dark:bg-[#030712]/40">
-                                        <Award className="mb-1 h-3.5 w-3.5 text-indigo-550" />
                                         <span className="text-[9px] font-semibold text-slate-400 uppercase">
                                             ERP
                                         </span>
@@ -732,7 +816,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         {((quest.images && quest.images.length > 0) ||
                             (quest.files && quest.files.length > 0)) && (
                             <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                                 <QuestAttachments
                                     images={quest.images}
                                     files={quest.files}
