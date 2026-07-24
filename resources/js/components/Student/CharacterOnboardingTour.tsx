@@ -123,8 +123,8 @@ export default function CharacterOnboardingTour({
             {/* Backdrop Dimmer Overlay (Friendly for Light & Dark Mode, stops above BottomNav) */}
             <div className="absolute top-0 right-0 left-0 bottom-[44px] md:bottom-[64px] lg:bottom-[80px] bg-slate-900/35 dark:bg-slate-950/70 backdrop-blur-[2px] dark:backdrop-blur-[3px] transition-all duration-300" />
 
-            {/* Left-Side Container: Flex Row with Onboarding Character on LEFT and Dialogue Card on RIGHT */}
-            <div className="pointer-events-auto absolute bottom-[55px] sm:bottom-[65px] md:bottom-[75px] left-3 sm:left-6 md:left-8 lg:left-12 z-50 flex items-center gap-3 sm:gap-4">
+            {/* Left-Side Container: Flex Row with Onboarding Character on LEFT and Dialogue Card directly beside it */}
+            <div className="pointer-events-auto absolute bottom-[55px] sm:bottom-[65px] md:bottom-[75px] left-3 sm:left-6 md:left-8 lg:left-12 z-50 flex items-center gap-0 sm:gap-0.5">
                 {/* 1. Onboarding Character Sprite (Full-height, Left Side) */}
                 <img
                     src={character.avatar}
@@ -133,10 +133,10 @@ export default function CharacterOnboardingTour({
                     alt={`${character.name} Onboarding Guide`}
                 />
 
-                {/* 2. Onboarding Speech Bubble Dialogue Card (Positioned directly to the RIGHT of character) */}
+                {/* 2. Onboarding Speech Bubble Dialogue Card (Closer / mepet to the character sprite) */}
                 <SpeechBubble
                     tailPosition="left"
-                    className="animate-fadeIn relative mb-6 sm:mb-10 w-[72vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[380px] shadow-2xl !p-3 sm:!p-3.5 shrink-0 z-50"
+                    className="animate-fadeIn relative -ml-2 sm:-ml-3 mb-6 sm:mb-10 w-[72vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[380px] shadow-2xl !p-3 sm:!p-3.5 shrink-0 z-50"
                 >
                     <div className="space-y-1.5">
                         {/* Top Header: Step Counter & Skip */}
