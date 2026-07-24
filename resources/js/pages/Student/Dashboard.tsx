@@ -14,6 +14,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import SpeechBubble from '@/components/SpeechBubble';
 import BottomNav from '@/components/Student/BottomNav';
+import CharacterOnboardingTour from '@/components/Student/CharacterOnboardingTour';
 import { Link, router } from '@inertiajs/react';
 import { useAppearance } from '@/hooks/use-appearance';
 
@@ -29,6 +30,7 @@ interface User {
     xp: number;
     gold: number;
     avatar: string;
+    has_completed_onboarding?: boolean;
     rank?: {
         name: string;
         image: string;
@@ -66,6 +68,10 @@ export default function Dashboard({
 }) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const dark = resolvedAppearance === 'dark';
+    const [showTour, setShowTour] = useState(!user.has_completed_onboarding);
+    const [activeTargetId, setActiveTargetId] = useState<string | undefined>(
+        !user.has_completed_onboarding ? 'nav-item-my-course' : undefined,
+    );
 
     const toggleTheme = () => {
         updateAppearance(dark ? 'light' : 'dark');
@@ -92,7 +98,18 @@ export default function Dashboard({
 
             <CharacterSection avatar={user.character.avatar} />
 
-            <BottomNav />
+            {showTour && (
+                <CharacterOnboardingTour
+                    character={user.character}
+                    onStepChange={(targetId) => setActiveTargetId(targetId)}
+                    onClose={() => {
+                        setShowTour(false);
+                        setActiveTargetId(undefined);
+                    }}
+                />
+            )}
+
+            <BottomNav activeOnboardingTarget={showTour ? activeTargetId : undefined} />
         </div>
     );
 }
@@ -853,8 +870,8 @@ and dominate the game`;
         setDisplayText('');
 
         const interval = setInterval(() => {
-            setDisplayText((prev) => prev + fullText.charAt(i));
             i++;
+            setDisplayText(fullText.slice(0, i));
 
             if (i >= fullText.length) clearInterval(interval);
         }, 25);
@@ -864,12 +881,13 @@ and dominate the game`;
 
     return (
         <div className="pointer-events-none absolute inset-0 z-10">
-            {/* Mobile: centered horizontally, bottom-0 agar kaki tenggelam ke fixed BottomNav (z-30) */}
-            {/* Desktop md+: absolute right-positioned, bottom negatif agar tenggelam ke absolute BottomNav */}
-            <div className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2 md:right-[180px] md:bottom-[-90px] md:left-auto md:translate-x-24 lg:right-[220px] lg:bottom-[-120px] lg:translate-x-5 xl:right-[260px] 2xl:right-[370px]">
+            <div className="pointer-events-auto absolute bottom-[65px] right-[4%] sm:right-[6%] md:bottom-[75px] md:right-[140px] lg:right-[200px] xl:right-[280px]">
                 {showBubble && (
-                    <SpeechBubble className="animate-fadeIn absolute bottom-full left-1/2 mb-4 -translate-x-1/2 md:top-12 md:-right-56 md:bottom-auto md:left-auto md:translate-x-0 lg:-right-75">
-                        <p className="text-xs leading-relaxed whitespace-pre-line md:text-sm lg:text-base">
+                    <SpeechBubble
+                        tailPosition="right"
+                        className="animate-fadeIn absolute bottom-full left-1/2 mb-3 -translate-x-1/2 md:top-4 md:right-full md:mr-3 md:bottom-auto md:left-auto md:translate-x-0 w-52 sm:w-60 md:w-72 lg:w-80 shadow-2xl !px-3.5 !py-2.5"
+                    >
+                        <p className="text-xs leading-relaxed whitespace-pre-line">
                             {displayText}
                             <span className="animate-pulse">|</span>
                         </p>
@@ -879,7 +897,7 @@ and dominate the game`;
                 <img
                     src={avatar}
                     onClick={triggerBubble}
-                    className="relative z-50 h-[300px] cursor-pointer transition hover:scale-[1.02] sm:h-[340px] md:h-[420px] lg:h-[540px] xl:h-[600px] 2xl:h-[620px]"
+                    className="relative z-50 h-[180px] cursor-pointer transition hover:scale-[1.02] sm:h-[220px] md:h-[280px] lg:h-[340px] xl:h-[380px]"
                     style={{ animation: 'breathe 3s ease-in-out infinite' }}
                 />
             </div>

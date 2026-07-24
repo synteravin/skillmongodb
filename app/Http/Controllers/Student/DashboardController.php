@@ -139,7 +139,18 @@ class DashboardController extends Controller
                 'avatar' => $user->avatar
                     ? $disk->url($user->avatar)
                     : null,
+
+                'has_completed_onboarding' => (bool) ($user->has_completed_onboarding ?? false),
             ],
         ]);
+    }
+
+    public function completeOnboarding(Request $request)
+    {
+        $user = $request->user();
+        $user->has_completed_onboarding = true;
+        $user->save();
+
+        return response()->json(['success' => true]);
     }
 }

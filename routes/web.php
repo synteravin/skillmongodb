@@ -424,6 +424,9 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/dashboard', [StudentDashboard::class, 'index'])
             ->name('dashboard');
 
+        Route::post('/complete-onboarding', [StudentDashboard::class, 'completeOnboarding'])
+            ->name('complete-onboarding');
+
         Route::get('/certificates', [CertificateController::class, 'index'])
             ->name('student.certificates');
 
