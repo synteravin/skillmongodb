@@ -40,6 +40,9 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const isCreator = currentUser?.id === quest.creator_id;
     const isWorker = currentUser?.id === quest.worker_id;
 
+    const acceptedBid = bids.find((b) => b.status === 'accepted' || (quest.worker_id && b.student_id === quest.worker_id));
+    const agreedPrice = quest.accepted_bid_amount ?? acceptedBid?.bid_amount ?? null;
+
     // Define initial active tab
     const [activeTab, setActiveTab] = useState<'detail' | 'project' | 'bids'>(
         isCreator && quest.status === 'open' ? 'bids' : 'detail',
@@ -688,24 +691,46 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                     {/* RIGHT AREA: SPECIFICATIONS SIDEBAR (col-span-4) */}
                     <div className="space-y-6 lg:col-span-4">
-                        {/* Worker assigned info shortcut */}
+                        {/* Worker assigned & accepted bid info card */}
                         {quest.worker && (
-                            <div className="relative flex items-center justify-between gap-3 overflow-hidden rounded-xl border border-emerald-300 bg-emerald-50/50 p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
-                                <div className="relative z-10 flex min-w-0 items-center gap-2.5">
-                                    <CheckCircle2 className="text-emerald-650 h-5 w-5 shrink-0" />
-                                    <div className="min-w-0">
-                                        <span className="block text-[8px] font-bold tracking-wider text-slate-400 uppercase">
-                                            Kontraktor Ditunjuk
+                            <div className="relative overflow-hidden rounded-xl border border-emerald-300/80 bg-emerald-50/60 p-4 shadow-sm dark:border-emerald-800/80 dark:bg-gradient-to-b dark:from-[#0c1813] dark:to-[#070f0b]">
+                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent select-none dark:via-emerald-500/20" />
+                                <div className="relative z-10 space-y-3">
+                                    {/* Header Row: Check Icon, Header, Status Badge */}
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="flex items-center gap-1.5">
+                                            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                                            <span className="font-['Orbitron'] text-[10px] font-extrabold tracking-wider text-emerald-800 uppercase dark:text-emerald-300">
+                                                KONTRAKTOR DITUNJUK
+                                            </span>
+                                        </div>
+                                        <span className="shrink-0 rounded-full border border-emerald-300/80 bg-emerald-100/80 px-2.5 py-0.5 text-[9px] font-bold text-emerald-800 uppercase dark:border-emerald-800/80 dark:bg-emerald-950/80 dark:text-emerald-300">
+                                            Status: Aktif
                                         </span>
-                                        <span className="block truncate text-xs font-bold text-slate-800 dark:text-white">
+                                    </div>
+
+                                    {/* Student Name */}
+                                    <div className="flex items-center gap-2.5 pt-0.5">
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-200/80 text-xs font-bold text-emerald-900 dark:bg-emerald-900/80 dark:text-emerald-200">
+                                            {quest.worker.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="truncate text-sm font-extrabold text-slate-900 dark:text-white">
                                             {quest.worker.name}
                                         </span>
                                     </div>
+
+                                    {/* Agreed Price (Nilai Kontrak Disetujui) */}
+                                    {agreedPrice && (
+                                        <div className="border-t border-emerald-200/60 pt-2.5 dark:border-emerald-900/40">
+                                            <span className="block text-[9px] font-extrabold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                                NILAI KONTRAK DISETUJUI (AGREED PRICE)
+                                            </span>
+                                            <span className="font-['Orbitron'] text-sm font-black text-emerald-600 dark:text-emerald-400">
+                                                {formatCurrency(agreedPrice)}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
-                                <span className="relative z-10 shrink-0 rounded bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700 uppercase dark:bg-[#030712] dark:text-emerald-400">
-                                    Aktif
-                                </span>
                             </div>
                         )}
 
