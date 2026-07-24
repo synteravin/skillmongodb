@@ -123,12 +123,20 @@ export default function CharacterOnboardingTour({
             {/* Backdrop Dimmer Overlay (Friendly for Light & Dark Mode, stops above BottomNav) */}
             <div className="absolute top-0 right-0 left-0 bottom-[44px] md:bottom-[64px] lg:bottom-[80px] bg-slate-900/35 dark:bg-slate-950/70 backdrop-blur-[2px] dark:backdrop-blur-[3px] transition-all duration-300" />
 
-            {/* Left-Side Small Onboarding Character + Speech Bubble Container */}
-            <div className="pointer-events-auto absolute bottom-[55px] left-3 sm:left-6 md:bottom-[65px] md:left-8 lg:left-12 z-50">
-                {/* Onboarding Speech Bubble Dialogue Card aligned directly ABOVE small onboarding character */}
+            {/* Left-Side Container: Flex Row with Onboarding Character on LEFT and Dialogue Card on RIGHT */}
+            <div className="pointer-events-auto absolute bottom-[55px] sm:bottom-[65px] md:bottom-[75px] left-3 sm:left-6 md:left-8 lg:left-12 z-50 flex items-center gap-3 sm:gap-4">
+                {/* 1. Onboarding Character Sprite (Full-height, Left Side) */}
+                <img
+                    src={character.avatar}
+                    className="h-[190px] sm:h-[250px] md:h-[310px] lg:h-[370px] xl:h-[410px] max-h-[calc(100vh-140px)] w-auto shrink-0 object-contain drop-shadow-[0_0_25px_rgba(99,102,241,0.5)]"
+                    style={{ animation: 'breathe 3s ease-in-out infinite' }}
+                    alt={`${character.name} Onboarding Guide`}
+                />
+
+                {/* 2. Onboarding Speech Bubble Dialogue Card (Positioned directly to the RIGHT of character) */}
                 <SpeechBubble
-                    tailPosition="bottom-left"
-                    className="animate-fadeIn absolute bottom-full left-0 mb-2 w-[78vw] max-w-[260px] sm:max-w-[290px] md:max-w-[320px] shadow-xl !p-2.5 sm:!p-3"
+                    tailPosition="left"
+                    className="animate-fadeIn relative mb-6 sm:mb-10 w-[72vw] max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[380px] shadow-2xl !p-3 sm:!p-3.5 shrink-0 z-50"
                 >
                     <div className="space-y-1.5">
                         {/* Top Header: Step Counter & Skip */}
@@ -153,7 +161,7 @@ export default function CharacterOnboardingTour({
                             </button>
                         </div>
 
-                        {/* Title & Typewriter Message (Ultra-compact, realistic, small font size) */}
+                        {/* Title & Typewriter Message (Small, realistic font size) */}
                         <div className="space-y-0.5 min-w-0">
                             <div className="flex items-center gap-1">
                                 <StepIcon className="h-3 w-3 text-amber-500 dark:text-amber-400 shrink-0" />
@@ -206,14 +214,6 @@ export default function CharacterOnboardingTour({
                         </div>
                     </div>
                 </SpeechBubble>
-
-                {/* Onboarding Character Sprite standing tall in bottom left corner */}
-                <img
-                    src={character.avatar}
-                    className="h-[140px] sm:h-[180px] md:h-[220px] lg:h-[260px] object-contain drop-shadow-[0_0_20px_rgba(99,102,241,0.5)]"
-                    style={{ animation: 'breathe 3s ease-in-out infinite' }}
-                    alt={`${character.name} Onboarding Guide`}
-                />
             </div>
         </div>
     );
