@@ -15,8 +15,8 @@ export default function BottomNav({
 
     const isOnboardingActive = Boolean(activeOnboardingTarget);
 
-    // Transparent blur background friendly for both Light and Dark mode
-    const bgClasses = 'bg-blue-200/50 dark:bg-[#1D215D]/50 backdrop-blur-md';
+    // Transparent dark background without blur as requested by user
+    const bgClasses = 'bg-[#050a2e]/75 dark:bg-[#050a2e]/75';
 
     return (
         <>
@@ -97,18 +97,18 @@ function NavItem({
     isCurrentActive?: boolean;
     isOnboardingActive?: boolean;
 }) {
-    // Friendly Dark & Light Mode text lighting logic during onboarding:
+    // Text lighting logic for BottomNav
     let stateStyle =
-        'text-slate-900 dark:text-slate-100 transition-all duration-300 dark:hover:text-gray-300 hover:text-blue-900';
+        'text-white hover:text-amber-300 transition-all duration-300';
 
     if (isOnboardingActive) {
         if (isCurrentActive) {
-            // Active menu: Deep Indigo in Light Mode, Glowing Gold Amber in Dark Mode
+            // Active menu: Bold text without heavy shadow
             stateStyle =
-                'text-indigo-700 dark:text-amber-400 font-black drop-shadow-[0_0_10px_rgba(67,56,202,0.6)] dark:drop-shadow-[0_0_14px_rgba(250,204,21,1)] scale-110 opacity-100';
+                'text-amber-400 font-black scale-105 opacity-100';
         } else {
-            // Inactive menus: Muted slate in Light Mode, Muted gray in Dark Mode
-            stateStyle = 'text-slate-700/40 dark:text-slate-400/30 opacity-35 font-medium';
+            // Inactive menus
+            stateStyle = 'text-slate-300/40 opacity-35 font-medium';
         }
     }
 
