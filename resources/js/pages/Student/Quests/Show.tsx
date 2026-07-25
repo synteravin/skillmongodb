@@ -40,7 +40,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const isCreator = currentUser?.id === quest.creator_id;
     const isWorker = currentUser?.id === quest.worker_id;
 
-    const acceptedBid = bids.find((b) => b.status === 'accepted' || (quest.worker_id && b.student_id === quest.worker_id));
+    const acceptedBid = bids.find((b) => b.status === 'accepted' || (quest.worker_id && b.student?._id === quest.worker_id));
     const agreedPrice = quest.accepted_bid_amount ?? acceptedBid?.bid_amount ?? null;
 
     // Define initial active tab
