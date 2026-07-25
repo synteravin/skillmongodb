@@ -69,6 +69,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'has_completed_onboarding' => 'boolean',
         ];
     }
 

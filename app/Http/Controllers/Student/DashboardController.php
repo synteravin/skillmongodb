@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Rank;
+use App\Models\UserStat;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -148,9 +149,47 @@ class DashboardController extends Controller
     public function completeOnboarding(Request $request)
     {
         $user = $request->user();
-        $user->has_completed_onboarding = true;
-        $user->save();
+        $user->forceFill([
+            'has_completed_onboarding' => true,
+        ])->save();
 
-        return response()->json(['success' => true]);
+        $completed = (bool) $request->input('completed', false);
+        if ($completed) {
+            $progress = UserStat::firstOrCreate([
+                'user_id' => (string) $user->_id,
+                'course_id' => 'onboarding_rewards',
+            ], [
+                'completed_modules' => [],
+                'completed_paths' => [],
+                'exp' => 0,
+                'gold' => 0,
+                'erp' => 0,
+                'level' => 1,
+                'path_stats' => [],
+            ]);
+
+            $pathStats = $progress->path_stats ?? [];
+            if (is_string($pathStats)) {
+                $pathStats = json_decode($pathStats, true) ?: [];
+            } else {
+                $pathStats = (array) $pathStats;
+            }
+
+            if (! isset($pathStats['onboarding'])) {
+                $pathStats['onboarding'] = [
+                    'exp' => 60,
+                    'gold' => 60,
+                    'quiz_score' => 35,
+                ];
+
+                $progress->path_stats = $pathStats;
+                $progress->exp = (int) ($progress->exp ?? 0) + 60;
+                $progress->gold = (int) ($progress->gold ?? 0) + 60;
+                $progress->erp = (int) ($progress->erp ?? 0) + 35;
+                $progress->save();
+            }
+        }
+
+        return redirect()->back();
     }
 }

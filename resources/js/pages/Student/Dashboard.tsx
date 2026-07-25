@@ -68,7 +68,14 @@ export default function Dashboard({
 }) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const dark = resolvedAppearance === 'dark';
-    const [showTour, setShowTour] = useState(!user.has_completed_onboarding);
+    const [showTour, setShowTour] = useState(() => {
+        if (user.has_completed_onboarding) return false;
+        if (typeof window !== 'undefined') {
+            const localCompleted = localStorage.getItem(`onboarding_completed_${user.username || user.name}`);
+            if (localCompleted === 'true') return false;
+        }
+        return true;
+    });
     const [activeTargetId, setActiveTargetId] = useState<string | undefined>(
         !user.has_completed_onboarding ? 'nav-item-my-course' : undefined,
     );
@@ -94,9 +101,7 @@ export default function Dashboard({
 
             <LevelRankCard user={user} />
 
-            <StoreButton />
-
-            <CharacterSection avatar={user.character.avatar} />
+            {!showTour && <CharacterSection character={user.character} />}
 
             {showTour && (
                 <CharacterOnboardingTour
@@ -105,6 +110,9 @@ export default function Dashboard({
                     onClose={() => {
                         setShowTour(false);
                         setActiveTargetId(undefined);
+                        if (typeof window !== 'undefined') {
+                            localStorage.setItem(`onboarding_completed_${user.username || user.name}`, 'true');
+                        }
                     }}
                 />
             )}
@@ -826,43 +834,74 @@ function LevelRankCard({ user }: { user: User }) {
 }
 
 /* =========================================================
-   STORE BUTTON — original 100% tidak berubah
+   STORE BUTTON — match reference design
 ========================================================= */
 
 function StoreButton() {
     return (
-        <div className="absolute top-1/2 left-2 z-20 hidden -translate-y-1/2 bg-blue-200/40 shadow-lg backdrop-blur-sm md:left-3 md:block lg:left-4 xl:left-6 dark:bg-[#1D215D]/30">
-
-        </div>
+        <Link
+            href="/student/store"
+            className="absolute top-1/2 left-4 sm:left-6 z-20 hidden -translate-y-1/2 md:flex flex-col items-center justify-center w-20 h-24 sm:w-24 sm:h-28 bg-[#070b28]/80 hover:bg-[#0c1242]/90 border-2 border-blue-600 hover:border-amber-400 rounded-sm shadow-[0_0_15px_rgba(59,40,246,0.3)] transition duration-300 group cursor-pointer"
+        >
+            <Store className="h-7 w-7 text-amber-400 group-hover:scale-110 transition duration-300" />
+            <span className="mt-2 font-['Orbitron'] text-xs font-bold text-white tracking-wider">
+                Store
+            </span>
+            <div className="absolute inset-0 border border-amber-400/40 pointer-events-none" />
+        </Link>
     );
 }
 
 /* =========================================================
-   CHARACTER SECTION — original 100% tidak berubah
+   CHARACTER SECTION — match reference design
 ========================================================= */
 
-function CharacterSection({ avatar }: { avatar: string }) {
+function CharacterSection({
+    character,
+}: {
+    character: { name: string; avatar: string };
+}) {
     const [showBubble, setShowBubble] = useState(false);
     const [displayText, setDisplayText] = useState('');
+    const [messageIndex, setMessageIndex] = useState(0);
 
-    const fullText = `You're ready for battle!
-Check out these upgrades —
-they'll help you survive
-and dominate the game`;
+    // 5 pesan puitis & mendalam tentang belajar dan dunia kerja
+    const messages = [
+        'Belajar bukanlah tentang seberapa cepat kamu sampai, melainkan seberapa dalam kamu memahami setiap langkah. Di Ventura ini, kamu sedang menempa masa depanmu sendiri. ✨',
+        'Dunia kerja tak menanyakan dari mana kamu memulai, tetapi karya apa yang telah kamu ciptakan. Asah ilmumu dengan sungguh-sungguh, sebab keahlian sejati tak pernah berbohong. ⚔️',
+        'Kesalahan dalam belajar adalah batu pijakan menuju kedewasaan berpikir. Jangan takut gagal, karena dari setiap percobaan, lahir seorang profesional yang tangguh. 🌟',
+        'Ilmu yang kamu kumpulkan hari ini adalah senjata terbaikmu untuk menaklukkan setiap tantangan industri besok. Jadilah ahli yang bernilai dan berintegritas. 🚀',
+        'Setiap jam yang kamu dedikasikan untuk belajar adalah investasi abadi bagi impianmu. Teruslah melangkah, Master, puncak kejayaan sudah di depan mata. 🎓',
+    ];
 
+    const currentMessage = messages[messageIndex];
+
+    // Otomatis ganti kata-kata setiap 1 menit (60 detik)
     useEffect(() => {
         const interval = setInterval(() => {
-            triggerBubble();
+            triggerNextBubble();
         }, 60000);
 
         return () => clearInterval(interval);
     }, []);
 
-    const triggerBubble = () => {
+    const triggerNextBubble = () => {
+        setMessageIndex((prev) => (prev + 1) % messages.length);
         setShowBubble(true);
-        setTimeout(() => setShowBubble(false), 8000);
     };
 
+    // Auto-hide setelah 10 detik
+    useEffect(() => {
+        if (!showBubble) return;
+
+        const timer = setTimeout(() => {
+            setShowBubble(false);
+        }, 10000);
+
+        return () => clearTimeout(timer);
+    }, [showBubble, messageIndex]);
+
+    // Efek ketikan (Typewriter)
     useEffect(() => {
         if (!showBubble) return;
 
@@ -871,34 +910,53 @@ and dominate the game`;
 
         const interval = setInterval(() => {
             i++;
-            setDisplayText(fullText.slice(0, i));
+            setDisplayText(currentMessage.slice(0, i));
 
-            if (i >= fullText.length) clearInterval(interval);
-        }, 25);
+            if (i >= currentMessage.length) clearInterval(interval);
+        }, 22);
 
         return () => clearInterval(interval);
-    }, [showBubble]);
+    }, [showBubble, messageIndex]);
 
     return (
-        <div className="pointer-events-none absolute inset-0 z-10">
-            <div className="pointer-events-auto absolute bottom-[65px] right-[4%] sm:right-[6%] md:bottom-[75px] md:right-[140px] lg:right-[200px] xl:right-[280px]">
+        <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+            <div className="pointer-events-auto absolute -bottom-10 md:-bottom-14 lg:-bottom-16 xl:-bottom-20 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[32%] lg:right-[36%] xl:right-[38%]">
+                {/* Speech Bubble Spesial Dashboard (Melayang pas di atas kepala hero) */}
                 {showBubble && (
-                    <SpeechBubble
-                        tailPosition="right"
-                        className="animate-fadeIn absolute bottom-full left-1/2 mb-3 -translate-x-1/2 md:top-4 md:right-full md:mr-3 md:bottom-auto md:left-auto md:translate-x-0 w-52 sm:w-60 md:w-72 lg:w-80 shadow-2xl !px-3.5 !py-2.5"
-                    >
-                        <p className="text-xs leading-relaxed whitespace-pre-line">
-                            {displayText}
-                            <span className="animate-pulse">|</span>
-                        </p>
-                    </SpeechBubble>
+                    <div className="animate-fadeIn absolute bottom-[98%] sm:bottom-[100%] md:bottom-[102%] left-[35%] sm:left-[40%] md:left-[45%] w-56 sm:w-64 md:w-72 lg:w-80 z-50 pointer-events-auto">
+                        <div className="relative rounded-2xl border border-[#3B28F6]/50 bg-gradient-to-b from-[#0b0903]/95 via-[#070b24]/95 to-[#05081c]/95 backdrop-blur-md p-3 sm:p-4 text-slate-200 shadow-[0_0_25px_-3px_rgba(59,40,246,0.6),0_0_10px_rgba(251,191,36,0.2)]">
+                            {/* Top glowing accent line */}
+                            <div className="absolute top-0 left-4 right-4 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+
+                            {/* Header Spesial Dashboard - Nama karakter dinamis */}
+                            <div className="flex items-center gap-1.5 mb-2 pb-1 border-b border-[#3B28F6]/25">
+                                <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_3px_rgba(251,191,36,0.8)] animate-pulse" />
+                                <h4 className="font-['Orbitron'] font-extrabold text-[10px] sm:text-xs text-amber-400 uppercase tracking-widest flex items-center gap-1">
+                                    {character.name}
+                                </h4>
+                            </div>
+
+                            {/* Content dengan Typewriter */}
+                            <div className="min-h-[48px] sm:min-h-[56px] flex items-center">
+                                <p className="font-sans text-[9.5px] sm:text-xs font-medium leading-relaxed text-slate-200">
+                                    {displayText}
+                                    <span className="animate-pulse font-bold text-amber-400 ml-0.5">|</span>
+                                </p>
+                            </div>
+
+                            {/* Ekor Arrow (Pointer) di kiri bawah mengarah ke kepala/bahu Hero */}
+                            <div className="absolute -bottom-1.5 left-4 sm:left-6 h-3 sm:h-3.5 w-3 sm:w-3.5 rotate-45 border-r border-b border-[#3B28F6]/50 bg-[#05081c]" />
+                        </div>
+                    </div>
                 )}
 
+                {/* Karakter Hero */}
                 <img
-                    src={avatar}
-                    onClick={triggerBubble}
-                    className="relative z-50 h-[180px] cursor-pointer transition hover:scale-[1.02] sm:h-[220px] md:h-[280px] lg:h-[340px] xl:h-[380px]"
+                    src={character.avatar}
+                    onClick={triggerNextBubble}
+                    className="relative z-20 h-[300px] sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[540px] cursor-pointer transition hover:scale-[1.02]"
                     style={{ animation: 'breathe 3s ease-in-out infinite' }}
+                    title="Klik hero untuk kata-kata penyemangat!"
                 />
             </div>
         </div>
