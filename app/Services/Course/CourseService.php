@@ -15,27 +15,36 @@ class CourseService
             ->where('status', CourseStatus::ACTIVE->value)
             ->first();
 
-        return Course::where('status', 'published')->latest()->get()->map(function ($course) use ($user, $activeCourse) {
+        return Course::where('status', 'published')
+            ->with(['paths.modules'])
+            ->latest()
+            ->get()
+            ->map(function ($course) use ($user, $activeCourse) {
 
-            $courseStudent = CourseStudent::where('user_id', $user->_id)
-                ->where('course_id', $course->_id)
-                ->first();
+                $courseStudent = CourseStudent::where('user_id', $user->_id)
+                    ->where('course_id', $course->_id)
+                    ->first();
 
-            if ($courseStudent) {
-                $status = $courseStudent->status;
-            } else {
-                $status = $activeCourse ? CourseStatus::LOCKED->value : null;
-            }
+                if ($courseStudent) {
+                    $status = $courseStudent->status;
+                } else {
+                    $status = $activeCourse ? CourseStatus::LOCKED->value : null;
+                }
 
-            return [
-                '_id' => (string) $course->_id,
-                'title' => $course->title,
-                'description' => $course->description,
-                'thumbnail' => $course->thumbnail_url,
-                'slug' => $course->slug,
-                'status' => $status,
-            ];
-        });
+                $modulesCount = $course->paths->sum(function ($path) {
+                    return $path->modules->count();
+                });
+
+                return [
+                    '_id' => (string) $course->_id,
+                    'title' => $course->title,
+                    'description' => $course->description,
+                    'thumbnail' => $course->thumbnail_url,
+                    'slug' => $course->slug,
+                    'status' => $status,
+                    'modules_count' => $modulesCount,
+                ];
+            });
     }
 
     public function selectCourse(User $user, string $courseId)
