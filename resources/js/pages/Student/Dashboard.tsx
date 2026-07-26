@@ -71,7 +71,7 @@ export default function Dashboard({
     const [showTour, setShowTour] = useState(() => {
         if (user.has_completed_onboarding) return false;
         if (typeof window !== 'undefined') {
-            const localCompleted = localStorage.getItem(`onboarding_completed_${user.username || user.name}`);
+            const localCompleted = localStorage.getItem(`onboarding_completed_${user.id || user.username || user.name}`);
             if (localCompleted === 'true') return false;
         }
         return true;
@@ -111,7 +111,7 @@ export default function Dashboard({
                         setShowTour(false);
                         setActiveTargetId(undefined);
                         if (typeof window !== 'undefined') {
-                            localStorage.setItem(`onboarding_completed_${user.username || user.name}`, 'true');
+                            localStorage.setItem(`onboarding_completed_${user.id || user.username || user.name}`, 'true');
                         }
                     }}
                 />

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { router, Link } from '@inertiajs/react';
+import { router, Link, usePage } from '@inertiajs/react';
+import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
 import {
     Lock,
     Check,
@@ -157,12 +158,27 @@ export default function LearnShow({
     path,
     module,
     progress,
+    character,
 }: {
     course: Course;
     path: Path;
     module: Module;
     progress: Progress;
+    character?: { name: string; avatar: string };
 }) {
+    const { auth } = usePage<any>().props;
+    const activeCharacter = {
+        name: character?.name || 'Noctrun Voss',
+        avatar: character?.avatar || '/images/default-avatar.svg',
+    };
+
+    const [showLearnTour, setShowLearnTour] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const completed = localStorage.getItem(`course_guide_learn_completed_${auth?.user?.id || 'guest'}`);
+            return completed !== 'true';
+        }
+        return true;
+    });
     const modules = [...path.modules].sort(
         (a, b) => (a.order ?? 0) - (b.order ?? 0),
     );
@@ -727,6 +743,18 @@ export default function LearnShow({
                     </div>
                 </div>
             </div>
+            {showLearnTour && (
+                <CourseOnboardingTour
+                    character={activeCharacter}
+                    phase="learn"
+                    onClose={() => {
+                        setShowLearnTour(false);
+                        if (typeof window !== 'undefined') {
+                            localStorage.setItem(`course_guide_learn_completed_${auth?.user?.id || 'guest'}`, 'true');
+                        }
+                    }}
+                />
+            )}
         </div>
     );
 }

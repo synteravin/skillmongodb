@@ -78,7 +78,13 @@ class LearnController extends Controller
 
         /* ================= RESPONSE ================= */
 
+        $character = $user->character;
+
         return Inertia::render('Student/Learn/Show', [
+            'character' => $character ? [
+                'name' => $character->name,
+                'avatar' => $character->avatar_url,
+            ] : null,
 
             /* ================= COURSE ================= */
             'course' => [

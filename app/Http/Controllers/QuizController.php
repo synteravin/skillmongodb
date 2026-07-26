@@ -70,7 +70,14 @@ class QuizController extends Controller
         $currentLevel = floor($totalExp / $expPerLevel) + 1;
         $currentExp = $totalExp % $expPerLevel;
 
+        $user = auth()->user();
+        $character = $user->character;
+
         return Inertia::render('Student/Quiz/Play', [
+            'character' => $character ? [
+                'name' => $character->name,
+                'avatar' => $character->avatar_url,
+            ] : null,
             'has_submitted' => $hasPassed,
             'user_stats' => [
                 'level' => $currentLevel,

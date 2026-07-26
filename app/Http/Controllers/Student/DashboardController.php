@@ -111,6 +111,7 @@ class DashboardController extends Controller
         return Inertia::render('Student/Dashboard', [
             'notifications' => $notifications,
             'user' => [
+                'id' => (string) $user->_id,
                 'name' => $user->name,
                 'username' => $user->username ?? strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $user->name)),
                 'email' => $user->email,

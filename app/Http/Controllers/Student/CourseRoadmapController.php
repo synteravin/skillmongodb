@@ -182,7 +182,13 @@ class CourseRoadmapController extends Controller
 
         /* ================= RESPONSE ================= */
 
+        $character = $user->character;
+
         return Inertia::render('Student/Roadmap', [
+            'character' => $character ? [
+                'name' => $character->name,
+                'avatar' => $character->avatar_url,
+            ] : null,
             'course' => [
                 '_id' => (string) $course->_id,
                 'title' => $course->title,

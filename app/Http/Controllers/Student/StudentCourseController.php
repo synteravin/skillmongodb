@@ -10,10 +10,16 @@ class StudentCourseController extends Controller
 {
     public function index(CourseService $service)
     {
-        $courses = $service->getCoursesForUser(auth()->user());
+        $user = auth()->user();
+        $courses = $service->getCoursesForUser($user);
+        $character = $user->character;
 
         return Inertia::render('Student/Course/Index', [
             'courses' => $courses,
+            'character' => $character ? [
+                'name' => $character->name,
+                'avatar' => $character->avatar_url,
+            ] : null,
         ]);
     }
 }
