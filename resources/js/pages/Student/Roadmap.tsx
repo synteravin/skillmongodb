@@ -4,6 +4,7 @@ import StudentModuleNode from '@/components/Student/roadmap/StudentModuleNode';
 import StudentCareerBranch from '@/components/Student/roadmap/StudentCareerBranch';
 import { Link, router, usePage } from '@inertiajs/react';
 import { User, ChevronDown } from 'lucide-react';
+import RoadmapOnboardingTour from '@/components/Student/RoadmapOnboardingTour';
 
 /* ================= TYPES ================= */
 type Course = {
@@ -329,10 +330,12 @@ function MobileRoadmap({
     course,
     safeProgress,
     badges,
+    activeTour,
 }: {
     course: Course;
     safeProgress: Progress;
     badges: any[];
+    activeTour: 'fundamental' | 'career' | null;
 }) {
     const basicCompleted = course.basic_paths.every((p: any) => p.is_completed);
 
@@ -383,7 +386,9 @@ function MobileRoadmap({
                 {/* ══════════════════════════════════════════
                     SECTION 1 — FUNDAMENTALS
                 ══════════════════════════════════════════ */}
-                <div className="flex w-full flex-col items-center">
+                <div className={`flex w-full flex-col items-center ${
+                    activeTour === 'fundamental' ? 'relative z-[130]' : ''
+                }`}>
                     {/* Section badge */}
                     <div className="mb-3 flex items-center gap-2">
                         <div className="h-[1px] w-8 bg-gradient-to-l from-blue-500 to-transparent" />
@@ -419,10 +424,10 @@ function MobileRoadmap({
                 {/* ══════════════════════════════════════════
                     SECTION 2 — CAREER BRANCH SELECTOR CARD
                 ══════════════════════════════════════════ */}
-                {/* ══════════════════════════════════════════
-    SECTION 2 — CAREER BRANCH SELECTOR CARD
-══════════════════════════════════════════ */}
-                <div className="flex w-full flex-col items-center">
+                <div className={`w-full flex flex-col items-center ${
+                    activeTour === 'career' ? 'relative z-[130]' : ''
+                }`}>
+                    <div className="flex w-full flex-col items-center">
                     {/* Section badge */}
                     <div className="mb-3 flex items-center gap-2">
                         <div className="h-[1px] w-8 bg-gradient-to-l from-[#facc15] to-transparent" />
@@ -808,6 +813,7 @@ function MobileRoadmap({
                         )}
                     </div>
                 )}
+                </div>
             </div>
         </div>
     );
@@ -819,9 +825,11 @@ function MobileRoadmap({
 export default function Roadmap({
     course,
     progress,
+    character,
 }: {
     course: Course;
     progress: Progress | null;
+    character?: { name: string; avatar: string };
 }) {
     const safeProgress: Progress = progress ?? {
         stage: 'fundamental',
@@ -830,7 +838,40 @@ export default function Roadmap({
         completed_paths: [],
     };
 
-    const { badges } = usePage().props as any;
+    const { auth, badges } = usePage<any>().props;
+
+    const activeCharacter = {
+        name: character?.name || 'Noctrun Voss',
+        avatar: character?.avatar || '/images/default-avatar.svg',
+    };
+
+    const basicCompleted = course.basic_paths.every((p: any) => p.is_completed);
+
+    const [activeTour, setActiveTour] = useState<'fundamental' | 'career' | null>(() => {
+        if (typeof window !== 'undefined') {
+            const userId = auth?.user?.id || 'guest';
+            if (!basicCompleted) {
+                const completed = localStorage.getItem(`roadmap_fundamental_completed_${userId}`);
+                if (completed !== 'true') return 'fundamental';
+            } else {
+                const completed = localStorage.getItem(`roadmap_career_completed_${userId}`);
+                if (completed !== 'true') return 'career';
+            }
+        }
+        return null;
+    });
+
+    const handleCloseTour = () => {
+        if (typeof window !== 'undefined') {
+            const userId = auth?.user?.id || 'guest';
+            if (activeTour === 'fundamental') {
+                localStorage.setItem(`roadmap_fundamental_completed_${userId}`, 'true');
+            } else if (activeTour === 'career') {
+                localStorage.setItem(`roadmap_career_completed_${userId}`, 'true');
+            }
+        }
+        setActiveTour(null);
+    };
 
     const contentRef = useRef<HTMLDivElement>(null);
     const [contentHeight, setContentHeight] = useState(0);
@@ -978,12 +1019,15 @@ export default function Roadmap({
                         course={course}
                         safeProgress={safeProgress}
                         badges={badges ?? []}
+                        activeTour={activeTour}
                     />
 
                     {/* ── DESKTOP LAYOUT (md+) — original, completely unchanged ── */}
                     <div className="mx-auto hidden w-full max-w-screen-2xl px-4 pb-16 md:block md:px-8 lg:px-12 2xl:px-16">
                         {/* FUNDAMENTAL */}
-                        <div className="mt-4 flex w-full flex-col flex-nowrap items-center">
+                        <div className={`mt-4 flex w-full flex-col flex-nowrap items-center ${
+                            activeTour === 'fundamental' ? 'relative z-[130]' : ''
+                        }`}>
                             {course.basic_paths?.map((path: any) => {
                                 const done = path.is_completed;
                                 const locked = !path.is_unlocked;
@@ -1010,7 +1054,9 @@ export default function Roadmap({
 
                         {/* CAREER GROUPS */}
                         {course.career_groups?.length > 0 && (
-                            <div className="relative z-10 mt-0 flex w-full flex-col flex-wrap items-start justify-center gap-0 sm:flex-row">
+                            <div className={`mt-0 flex w-full flex-col flex-wrap items-start justify-center gap-0 sm:flex-row ${
+                                activeTour === 'career' ? 'relative z-[130]' : 'relative z-10'
+                            }`}>
                                 {course.career_groups.map(
                                     (group: any, idx: number) => {
                                         const isFirst = idx === 0;
@@ -1057,6 +1103,14 @@ export default function Roadmap({
                     </div>
                 </div>
             </div>
+
+            {activeTour && (
+                <RoadmapOnboardingTour
+                    character={activeCharacter}
+                    target={activeTour}
+                    onClose={handleCloseTour}
+                />
+            )}
         </div>
     );
 }

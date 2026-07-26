@@ -154,6 +154,19 @@ function NavItem({
 
     const navId = `${targetId}${mobile ? '-mobile' : ''}`;
 
+    if (isOnboardingActive) {
+        return (
+            <button
+                id={navId}
+                className={`${baseClass} pointer-events-none`}
+                style={{ fontFamily: 'Orbitron' }}
+                disabled
+            >
+                {content}
+            </button>
+        );
+    }
+
     if (href && href !== '#') {
         return (
             <Link

@@ -1,6 +1,7 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
 import {
     TriangleAlert,
     X,
@@ -19,11 +20,42 @@ type Course = {
     status?: 'locked' | 'active' | 'completed' | 'unlocked' | null;
 };
 
-export default function Index({ courses }: { courses: Course[] }) {
+export default function Index({
+    courses,
+    character,
+}: {
+    courses: Course[];
+    character?: { name: string; avatar: string };
+}) {
+    const { auth } = usePage<any>().props;
+    const activeCharacter = {
+        name: character?.name || 'Noctrun Voss',
+        avatar: character?.avatar || '/images/default-avatar.svg',
+    };
+
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [showDescModal, setShowDescModal] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [processing, setProcessing] = useState(false);
+
+    // Guide intro state
+    const [showIntroTour, setShowIntroTour] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const completed = localStorage.getItem(`course_guide_intro_completed_${auth?.user?.id || 'guest'}`);
+            return completed !== 'true';
+        }
+        return true;
+    });
+
+    // Guide warning state
+    const [showWarningTour, setShowWarningTour] = useState(false);
+    const [hasSeenWarningTour, setHasSeenWarningTour] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const completed = localStorage.getItem(`course_guide_warning_completed_${auth?.user?.id || 'guest'}`);
+            return completed === 'true';
+        }
+        return false;
+    });
 
     const contentRef = useRef<HTMLDivElement>(null);
     const [contentHeight, setContentHeight] = useState(0);
@@ -55,7 +87,22 @@ export default function Index({ courses }: { courses: Course[] }) {
 
     const handleLanjutKeConfirm = () => {
         setShowDescModal(false);
-        setTimeout(() => setShowConfirmModal(true), 200);
+        setTimeout(() => {
+            if (!hasSeenWarningTour) {
+                setShowWarningTour(true);
+            } else {
+                setShowConfirmModal(true);
+            }
+        }, 200);
+    };
+
+    const handleWarningTourClose = () => {
+        setShowWarningTour(false);
+        setHasSeenWarningTour(true);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(`course_guide_warning_completed_${auth?.user?.id || 'guest'}`, 'true');
+        }
+        setShowConfirmModal(true);
     };
 
     const handleConfirm = () => {
@@ -608,6 +655,27 @@ export default function Index({ courses }: { courses: Course[] }) {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {showIntroTour && (
+                <CourseOnboardingTour
+                    character={activeCharacter}
+                    phase="intro"
+                    onClose={() => {
+                        setShowIntroTour(false);
+                        if (typeof window !== 'undefined') {
+                            localStorage.setItem(`course_guide_intro_completed_${auth?.user?.id || 'guest'}`, 'true');
+                        }
+                    }}
+                />
+            )}
+
+            {showWarningTour && (
+                <CourseOnboardingTour
+                    character={activeCharacter}
+                    phase="warning"
+                    onClose={handleWarningTourClose}
+                />
+            )}
         </>
     );
 }

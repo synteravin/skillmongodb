@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Flag } from 'lucide-react';
+import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
 import MobilePlay from './MobilePlay';
 import './quizLandscape.css';
 
@@ -879,7 +880,26 @@ function AnswerButton({ label, text, selected, onClick }: any) {
     );
 }
 
-export default function Play({ quiz, has_submitted, user_stats }: any) {
+export default function Play({
+    quiz,
+    has_submitted,
+    user_stats,
+    character,
+}: any) {
+    const { auth } = usePage<any>().props;
+    const activeCharacter = {
+        name: character?.name || 'Noctrun Voss',
+        avatar: character?.avatar || '/images/default-avatar.svg',
+    };
+
+    const [showQuizTour, setShowQuizTour] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const completed = localStorage.getItem(`course_guide_quiz_completed_${auth?.user?.id || 'guest'}`);
+            return completed !== 'true';
+        }
+        return true;
+    });
+
     const [current, setCurrent] = useState(0);
     const [answers, setAnswers] = useState<any[]>([]);
     const [selected, setSelected] = useState<string | null>(null);
@@ -1038,6 +1058,19 @@ export default function Play({ quiz, has_submitted, user_stats }: any) {
                     }
                     onRetry={handleRetry}
                 />
+
+                {showQuizTour && (
+                    <CourseOnboardingTour
+                        character={activeCharacter}
+                        phase="quiz"
+                        onClose={() => {
+                            setShowQuizTour(false);
+                            if (typeof window !== 'undefined') {
+                                localStorage.setItem(`course_guide_quiz_completed_${auth?.user?.id || 'guest'}`, 'true');
+                            }
+                        }}
+                    />
+                )}
             </>
         );
     }
@@ -1107,6 +1140,19 @@ export default function Play({ quiz, has_submitted, user_stats }: any) {
                 }
                 onRetry={handleRetry}
             />
+
+            {showQuizTour && (
+                <CourseOnboardingTour
+                    character={activeCharacter}
+                    phase="quiz"
+                    onClose={() => {
+                        setShowQuizTour(false);
+                        if (typeof window !== 'undefined') {
+                            localStorage.setItem(`course_guide_quiz_completed_${auth?.user?.id || 'guest'}`, 'true');
+                        }
+                    }}
+                />
+            )}
         </>
     );
 }
