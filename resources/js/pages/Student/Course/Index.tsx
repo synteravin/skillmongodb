@@ -18,6 +18,7 @@ type Course = {
     thumbnail: string;
     slug: string;
     status?: 'locked' | 'active' | 'completed' | 'unlocked' | null;
+    modules_count?: number;
 };
 
 export default function Index({
@@ -471,7 +472,7 @@ export default function Index({
                                         <span className="xs:text-xs text-[11px] leading-none font-extrabold text-white sm:text-sm md:text-base lg:text-lg">
                                             Modul:{' '}
                                             <span className="font-bold text-white">
-                                                45
+                                                {selectedCourse.modules_count ?? 0}
                                             </span>
                                         </span>
                                     </div>
