@@ -47,3 +47,16 @@ test('correct password must be provided to update password', function () {
         ->assertSessionHasErrors('current_password')
         ->assertRedirect(route('user-password.edit'));
 });
+
+test('admin or mentor users are redirected to profile edit page', function () {
+    $admin = createUser(['role' => 'admin']);
+    $mentor = createUser(['role' => 'mentor']);
+
+    $this->actingAs($admin)
+        ->get(route('user-password.edit'))
+        ->assertRedirect(route('profile.edit'));
+
+    $this->actingAs($mentor)
+        ->get(route('user-password.edit'))
+        ->assertRedirect(route('profile.edit'));
+});

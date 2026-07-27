@@ -47,16 +47,22 @@ export default function TwoFactor({
             <h1 className="sr-only">Two-Factor Authentication Settings</h1>
 
             <SettingsLayout>
-                <div className="space-y-6">
-                    <Heading
-                        variant="small"
-                        title="Two-Factor Authentication"
-                        description="Manage your two-factor authentication settings"
-                    />
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+
+                    <div className="mb-6 border-b border-slate-100 pb-5 dark:border-slate-800/60">
+                        <h2 className="text-base font-semibold text-slate-800 dark:text-white">
+                            Two-Factor Authentication
+                        </h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400/60">
+                            Manage your two-factor authentication settings.
+                        </p>
+                    </div>
+
                     {twoFactorEnabled ? (
                         <div className="flex flex-col items-start justify-start space-y-4">
                             <Badge variant="default">Enabled</Badge>
-                            <p className="text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                                 With two-factor authentication enabled, you will
                                 be prompted for a secure, random pin during
                                 login, which you can retrieve from the
@@ -69,7 +75,7 @@ export default function TwoFactor({
                                 errors={errors}
                             />
 
-                            <div className="relative inline">
+                            <div className="relative inline pt-2">
                                 <Form {...disable.form()}>
                                     {({ processing }) => (
                                         <Button
@@ -86,14 +92,14 @@ export default function TwoFactor({
                     ) : (
                         <div className="flex flex-col items-start justify-start space-y-4">
                             <Badge variant="destructive">Disabled</Badge>
-                            <p className="text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                                 When you enable two-factor authentication, you
                                 will be prompted for a secure pin during login.
                                 This pin can be retrieved from a TOTP-supported
                                 application on your phone.
                             </p>
 
-                            <div>
+                            <div className="pt-2">
                                 {hasSetupData ? (
                                     <Button
                                         onClick={() => setShowSetupModal(true)}
