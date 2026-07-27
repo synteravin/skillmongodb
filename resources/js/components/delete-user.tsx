@@ -20,7 +20,7 @@ export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-red-200/50 bg-white/50 p-6 shadow-sm dark:border-red-950/30 dark:bg-gradient-to-b dark:from-[#0e0e1a]/40 dark:to-[#090910]/20">
+        <div className="relative overflow-hidden rounded-xl border border-red-200/50 bg-white p-6 shadow-sm dark:border-red-950/30 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-red-200/40 to-transparent dark:via-red-950/40" />
 
             <div className="mb-6 flex items-center gap-4 border-b border-red-50/50 pb-5 dark:border-red-950/20">

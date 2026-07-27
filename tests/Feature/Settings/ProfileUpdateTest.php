@@ -82,3 +82,16 @@ test('correct password must be provided to delete account', function () {
 
     expect($user->fresh())->not->toBeNull();
 });
+
+test('admin or mentor users are redirected to profile edit page from appearance settings', function () {
+    $admin = createUser(['role' => 'admin']);
+    $mentor = createUser(['role' => 'mentor']);
+
+    $this->actingAs($admin)
+        ->get(route('appearance.edit'))
+        ->assertRedirect(route('profile.edit'));
+
+    $this->actingAs($mentor)
+        ->get(route('appearance.edit'))
+        ->assertRedirect(route('profile.edit'));
+});
