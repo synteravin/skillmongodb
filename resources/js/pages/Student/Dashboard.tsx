@@ -585,6 +585,8 @@ function TopBar({
                 onSuccess: () => {
                     if (item.data.quest_id) {
                         router.visit(`/student/quests/${item.data.quest_id}`);
+                    } else if (item.data.type === 'submission_graded') {
+                        router.visit(`/student/certificates`);
                     }
                 },
             },
@@ -702,7 +704,8 @@ function TopBar({
                                                         {item.data.type === 'bid_accepted' ||
                                                         item.data.type === 'work_approved' ||
                                                         item.data.type === 'quest_completed' ||
-                                                        item.data.type === 'quest_approved' ? (
+                                                        item.data.type === 'quest_approved' ||
+                                                        item.data.type === 'submission_graded' ? (
                                                             <CheckCircle2 size={16} className="text-emerald-500" />
                                                         ) : item.data.type === 'bid_rejected' ||
                                                           item.data.type === 'work_rejected' ||
@@ -731,6 +734,12 @@ function TopBar({
                                                         {item.data.quest_id && (
                                                             <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
                                                                 <span>Buka Quest</span>
+                                                                <ArrowRight size={10} />
+                                                            </div>
+                                                        )}
+                                                        {item.data.type === 'submission_graded' && (
+                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                                                                <span>Buka Sertifikat</span>
                                                                 <ArrowRight size={10} />
                                                             </div>
                                                         )}
