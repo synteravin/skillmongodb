@@ -85,7 +85,7 @@ export default function Show({ submission, studentSubmission }: Props) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         const submissionId = submission.id || submission._id;
-        post(`/student/submissions/${submissionId}/submit`);
+        post(`/submissions/${submissionId}/submit`);
     };
 
     return (

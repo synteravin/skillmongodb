@@ -109,7 +109,7 @@ export default function Index({
     const handleConfirm = () => {
         if (!selectedCourse || processing) return;
         setProcessing(true);
-        router.post('/student/courses/select', {
+        router.post('/courses/select', {
             course_id: selectedCourse._id,
             slug: selectedCourse.slug,
         });

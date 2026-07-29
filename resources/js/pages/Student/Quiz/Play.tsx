@@ -973,7 +973,7 @@ export default function Play({
             const formatted = Object.fromEntries(
                 finalAnswers.map((a) => [a.question_id, a.answer_id]),
             );
-            const res = await fetch(`/student/quiz/${quiz.id}/submit`, {
+            const res = await fetch(`/quiz/${quiz.id}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1017,7 +1017,7 @@ export default function Play({
                     </p>
                     <button
                         onClick={() =>
-                            router.visit(`/student/courses/${quiz.course_slug}`)
+                            router.visit(`/courses/${quiz.course_slug}`)
                         }
                         className="bg-[#FACC15] px-8 py-3 font-bold text-black transition-colors hover:bg-yellow-300"
                         style={{
@@ -1054,7 +1054,7 @@ export default function Play({
                     open={showResult}
                     result={finalResult}
                     onClose={() =>
-                        router.visit(`/student/courses/${quiz.course_slug}`)
+                        router.visit(`/courses/${quiz.course_slug}`)
                     }
                     onRetry={handleRetry}
                 />
@@ -1136,7 +1136,7 @@ export default function Play({
                 open={showResult}
                 result={finalResult}
                 onClose={() =>
-                    router.visit(`/student/courses/${quiz.course_slug}`)
+                    router.visit(`/courses/${quiz.course_slug}`)
                 }
                 onRetry={handleRetry}
             />

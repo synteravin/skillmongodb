@@ -68,12 +68,12 @@ function MobileCareerCard({
         if (!firstPath?.modules?.[0]?._id || loading || isLocked) return;
         setLoading(true);
         router.post(
-            `/student/select-career/${firstPath._id}`,
+            `/select-career/${firstPath.slug || firstPath._id}`,
             {},
             {
                 onSuccess: () => {
                     router.visit(
-                        `/student/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`,
+                        `/learn/${course.slug || courseId}/${firstPath.slug || firstPath._id}/${firstPath.modules[0].slug || firstPath.modules[0]._id}`,
                     );
                 },
                 onFinish: () => setLoading(false),
@@ -403,7 +403,7 @@ function MobileRoadmap({
                         const locked = !path.is_unlocked;
                         const href =
                             !locked && path.first_module_id
-                                ? `/student/learn/${course._id}/${path._id}/${path.first_module_id}`
+                                ? `/learn/${course.slug || course._id}/${path.slug || path._id}/${path.first_module_slug || path.first_module_id}`
                                 : undefined;
 
                         return (
@@ -778,7 +778,7 @@ function MobileRoadmap({
                                                         badge={badge}
                                                         href={
                                                             p.modules?.[0]?._id
-                                                                ? `/student/learn/${course._id}/${p._id}/${p.modules[0]._id}`
+                                                                ? `/learn/${course.slug || course._id}/${p.slug || p._id}/${p.modules[0].slug || p.modules[0]._id}`
                                                                 : undefined
                                                         }
                                                     />
@@ -910,7 +910,7 @@ export default function Roadmap({
                     <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 md:px-6 dark:bg-[#040812]">
                         {/* Back Button */}
                         <Link
-                            href="/student/course"
+                            href="/course"
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-800 bg-gray-200 p-2 transition-colors hover:border-blue-600 hover:bg-blue-900/40 md:h-12 md:w-12 dark:bg-[#0b1021]"
                         >
                             <svg
@@ -1034,7 +1034,7 @@ export default function Roadmap({
 
                                 const href =
                                     !locked && path.first_module_id
-                                        ? `/student/learn/${course._id}/${path._id}/${path.first_module_id}`
+                                        ? `/learn/${course.slug || course._id}/${path.slug || path._id}/${path.first_module_slug || path.first_module_id}`
                                         : undefined;
 
                                 return (
