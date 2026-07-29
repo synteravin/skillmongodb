@@ -16,7 +16,7 @@ class ProfileTest extends TestCase
 
     public function test_guests_are_redirected_to_the_login_page_from_profile(): void
     {
-        $response = $this->get('/student/profile');
+        $response = $this->get('/profile');
         $response->assertRedirect(route('login'));
     }
 
@@ -43,7 +43,7 @@ class ProfileTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->get('/student/profile');
+        $response = $this->get('/profile');
         $response->assertOk();
     }
 
@@ -55,7 +55,7 @@ class ProfileTest extends TestCase
 
         $linkedinUrl = 'https://linkedin.com/in/profile-student-test';
 
-        $response = $this->post('/student/profile/edit', [
+        $response = $this->post('/profile/edit', [
             'name' => 'Updated Name',
             'username' => 'updated_username_'.uniqid(),
             'email' => $user->email,
@@ -74,7 +74,7 @@ class ProfileTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->get('/student/profile/edit');
+        $response = $this->get('/profile/edit');
         $response->assertOk();
     }
 
@@ -84,7 +84,7 @@ class ProfileTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->put('/student/profile/password', [
+        $response = $this->put('/profile/password', [
             'current_password' => 'password',
             'password' => 'NewSecurePassword123!',
             'password_confirmation' => 'NewSecurePassword123!',
@@ -104,7 +104,7 @@ class ProfileTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->put('/student/profile/password', [
+        $response = $this->put('/profile/password', [
             'current_password' => 'wrong_current_password',
             'password' => 'NewSecurePassword123!',
             'password_confirmation' => 'NewSecurePassword123!',

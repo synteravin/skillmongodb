@@ -181,9 +181,8 @@ class QuestController extends Controller
     /**
      * Show form for editing an unapproved/rejected quest.
      */
-    public function edit(string $id)
+    public function edit(Quest $quest)
     {
-        $quest = Quest::findOrFail($id);
         $user = auth()->user();
 
         if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
@@ -234,9 +233,8 @@ class QuestController extends Controller
     /**
      * Update an existing draft/rejected quest and resubmit to admin.
      */
-    public function update(StoreQuestRequest $request, string $id)
+    public function update(StoreQuestRequest $request, Quest $quest)
     {
-        $quest = Quest::findOrFail($id);
         $user = $request->user();
 
         if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
@@ -382,9 +380,8 @@ class QuestController extends Controller
     /**
      * Delete/cancel a draft or rejected quest.
      */
-    public function destroy(Request $request, string $id)
+    public function destroy(Request $request, Quest $quest)
     {
-        $quest = Quest::findOrFail($id);
         $user = $request->user();
 
         if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
@@ -405,12 +402,11 @@ class QuestController extends Controller
     /**
      * Display the specified quest details.
      */
-    public function show(string $id)
+    public function show(Quest $quest)
     {
+        $id = $quest->_id;
         $user = auth()->user();
         $details = $this->questService->getQuestDetails($id, $user);
-
-        $quest = Quest::findOrFail($id);
 
         if (in_array($quest->status, ['draft', 'rejected'])) {
             if ($quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {

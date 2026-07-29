@@ -119,7 +119,7 @@ export default function Leaderboard({
                         </svg>
 
                         <Link
-                            href="/student/dashboard"
+                            href="/dashboard"
                             className="absolute inset-0 flex items-center justify-center text-[#1e3a8a] dark:text-blue-200"
                         >
                             <svg

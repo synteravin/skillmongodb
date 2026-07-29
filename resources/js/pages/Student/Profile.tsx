@@ -56,7 +56,7 @@ export default function ProfilePage({ user }: Props) {
             {/* ── TOOLBAR ── */}
             <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-3 pb-2 md:px-8">
                 {/* BACK */}
-                <Link href="/student/dashboard">
+                <Link href="/dashboard">
                     <div
                         className="flex items-center gap-2 border border-[#3B28F6] px-4 py-1.5 font-['Orbitron'] text-[11px] tracking-widest text-[#3B28F6] transition-all hover:border-cyan-500 hover:text-cyan-600 hover:shadow-[0_0_10px_rgba(0,180,220,0.2)] dark:text-blue-400 dark:hover:border-cyan-400 dark:hover:text-cyan-400 dark:hover:shadow-[0_0_10px_rgba(0,212,255,0.35)]"
                         style={{
@@ -71,7 +71,7 @@ export default function ProfilePage({ user }: Props) {
 
                 {/* EDIT */}
                 <Link
-                    href="/student/profile/edit"
+                    href="/profile/edit"
                     className="flex h-9 w-9 items-center justify-center border border-[#3B28F6] text-[#3B28F6] transition-all hover:border-cyan-500 hover:text-cyan-600 hover:shadow-[0_0_12px_rgba(0,180,220,0.2)] dark:hover:border-cyan-400 dark:hover:text-cyan-400 dark:hover:shadow-[0_0_12px_rgba(0,212,255,0.4)]"
                     title="Edit Profile"
                 >

@@ -669,7 +669,7 @@ export default function Index({
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center justify-end gap-1">
                                                     <Link
-                                                        href={`/admin/users/${user._id}`}
+                                                        href={`/admin/users/${user.username}`}
                                                         className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
                                                         title="View"
                                                     >
@@ -782,7 +782,7 @@ export default function Index({
                                     <div className="flex shrink-0 items-center gap-2">
                                         <div className="flex items-center gap-0.5">
                                             <Link
-                                                href={`/admin/users/${user._id}`}
+                                                href={`/admin/users/${user.username}`}
                                                 className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
                                                 title="View"
                                             >

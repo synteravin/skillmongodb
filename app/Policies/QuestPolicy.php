@@ -19,7 +19,7 @@ class QuestPolicy extends BasePolicy
         }
 
         // Creator cannot bid on their own quest
-        if ($quest->creator_id === $user->_id) {
+        if ((string) $quest->creator_id === (string) $user->_id) {
             return false;
         }
 

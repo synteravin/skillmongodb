@@ -170,7 +170,7 @@ export default function CharacterOnboardingTour({
         setIsSubmitting(true);
 
         router.post(
-            '/student/complete-onboarding',
+            '/complete-onboarding',
             { completed },
             {
                 preserveScroll: true,

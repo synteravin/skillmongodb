@@ -248,7 +248,7 @@ function MobileCareerCard({
                     {/* MENTOR */}
                     {group.mentor ? (
                         <Link
-                            href={`/student/mentors/${group.mentor._id}`}
+                            href={`/mentors/${group.mentor.username}`}
                             className="group/mentor flex max-w-[58%] cursor-pointer items-center gap-2"
                         >
                             {group.mentor.avatar &&
@@ -793,7 +793,7 @@ function MobileRoadmap({
                                         title="Submission"
                                         index={selectedGroup.paths.length}
                                         isSubmission={true}
-                                        href={`/student/career-groups/${selectedGroup._id}/submissions`}
+                                        href={`/career-groups/${selectedGroup.slug}/submissions`}
                                         done={selectedGroup.is_completed}
                                         locked={
                                             !selectedGroup.is_completed &&

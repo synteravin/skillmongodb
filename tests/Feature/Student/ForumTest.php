@@ -100,7 +100,7 @@ class ForumTest extends TestCase
 
     public function test_guests_are_redirected_to_the_login_page_from_forum(): void
     {
-        $response = $this->get('/student/forum');
+        $response = $this->get('/forum');
         $response->assertRedirect(route('login'));
     }
 
@@ -115,7 +115,7 @@ class ForumTest extends TestCase
             'message' => 'Halo semuanya, selamat datang di kelas Laravel!',
         ]);
 
-        $response = $this->get('/student/forum/'.$this->course->slug);
+        $response = $this->get('/forum/'.$this->course->slug);
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
@@ -131,7 +131,7 @@ class ForumTest extends TestCase
     {
         $this->actingAs($this->unregisteredStudent);
 
-        $response = $this->get('/student/forum/'.$this->course->slug);
+        $response = $this->get('/forum/'.$this->course->slug);
 
         $response->assertStatus(403);
     }
@@ -140,7 +140,7 @@ class ForumTest extends TestCase
     {
         $this->actingAs($this->student);
 
-        $response = $this->post('/student/forum/'.$this->course->slug.'/messages', [
+        $response = $this->post('/forum/'.$this->course->slug.'/messages', [
             'message' => 'Halo mentor, ada pertanyaan terkait Eloquent.',
         ]);
 
@@ -158,11 +158,11 @@ class ForumTest extends TestCase
         $this->actingAs($this->mentor);
 
         // Mentor berkunjung ke forum
-        $response = $this->get('/student/forum/'.$this->course->slug);
+        $response = $this->get('/forum/'.$this->course->slug);
         $response->assertOk();
 
         // Mentor mengirim pesan
-        $postResponse = $this->post('/student/forum/'.$this->course->slug.'/messages', [
+        $postResponse = $this->post('/forum/'.$this->course->slug.'/messages', [
             'message' => 'Saya mentor, siap membantu menjawab pertanyaan Anda.',
         ]);
         $postResponse->assertRedirect();
@@ -186,7 +186,7 @@ class ForumTest extends TestCase
         ]);
 
         // Polling semua pesan
-        $response = $this->getJson('/student/forum/'.$this->course->slug.'/messages');
+        $response = $this->getJson('/forum/'.$this->course->slug.'/messages');
         $response->assertOk();
         $response->assertJsonCount(1);
 
@@ -198,7 +198,7 @@ class ForumTest extends TestCase
         ]);
 
         // Polling hanya pesan baru setelah pesan pertama
-        $responseNew = $this->getJson('/student/forum/'.$this->course->slug.'/messages?after_id='.$msg1->_id);
+        $responseNew = $this->getJson('/forum/'.$this->course->slug.'/messages?after_id='.$msg1->_id);
         $responseNew->assertOk();
         $responseNew->assertJsonCount(1);
 
@@ -218,7 +218,7 @@ class ForumTest extends TestCase
         ]);
 
         // Balas pesan
-        $response = $this->post('/student/forum/'.$this->course->slug.'/messages', [
+        $response = $this->post('/forum/'.$this->course->slug.'/messages', [
             'message' => 'Ini jawaban saya.',
             'parent_id' => $parent->_id,
         ]);
@@ -244,7 +244,7 @@ class ForumTest extends TestCase
         ]);
 
         // Berikan reaksi
-        $response = $this->postJson("/student/forum/messages/{$msg->_id}/reaction", [
+        $response = $this->postJson("/forum/messages/{$msg->_id}/reaction", [
             'emoji' => '👍',
         ]);
 
@@ -256,7 +256,7 @@ class ForumTest extends TestCase
         $this->assertEquals($this->student->_id, $msgFresh->reactions[0]['user_id']);
 
         // Batal reaksi (toggle reaction)
-        $responseToggle = $this->postJson("/student/forum/messages/{$msg->_id}/reaction", [
+        $responseToggle = $this->postJson("/forum/messages/{$msg->_id}/reaction", [
             'emoji' => '👍',
         ]);
         $responseToggle->assertRedirect();
@@ -276,14 +276,14 @@ class ForumTest extends TestCase
         ]);
 
         // Pin pesan
-        $response = $this->postJson("/student/forum/messages/{$msg->_id}/pin");
+        $response = $this->postJson("/forum/messages/{$msg->_id}/pin");
         $response->assertRedirect();
 
         $msgFresh = ForumMessage::find($msg->_id);
         $this->assertTrue($msgFresh->is_pinned);
 
         // Unpin pesan
-        $responseUnpin = $this->postJson("/student/forum/messages/{$msg->_id}/pin");
+        $responseUnpin = $this->postJson("/forum/messages/{$msg->_id}/pin");
         $responseUnpin->assertRedirect();
 
         $msgFresh = ForumMessage::find($msg->_id);
@@ -300,7 +300,7 @@ class ForumTest extends TestCase
             'message' => 'Pesan Mentor',
         ]);
 
-        $response = $this->postJson("/student/forum/messages/{$msg->_id}/pin");
+        $response = $this->postJson("/forum/messages/{$msg->_id}/pin");
         $response->assertStatus(403);
     }
 
@@ -314,7 +314,7 @@ class ForumTest extends TestCase
             'message' => 'Pesan asli',
         ]);
 
-        $response = $this->putJson("/student/forum/messages/{$msg->_id}", [
+        $response = $this->putJson("/forum/messages/{$msg->_id}", [
             'message' => 'Pesan teredit',
         ]);
 
@@ -341,7 +341,7 @@ class ForumTest extends TestCase
             'message' => 'Pesan orang lain',
         ]);
 
-        $response = $this->putJson("/student/forum/messages/{$msg->_id}", [
+        $response = $this->putJson("/forum/messages/{$msg->_id}", [
             'message' => 'Mencoba mengedit',
         ]);
 
@@ -361,7 +361,7 @@ class ForumTest extends TestCase
             'message' => 'Pesan yang ingin dihapus',
         ]);
 
-        $response = $this->deleteJson("/student/forum/messages/{$msg->_id}");
+        $response = $this->deleteJson("/forum/messages/{$msg->_id}");
         $response->assertRedirect();
 
         $this->assertNull(ForumMessage::find($msg->_id));
@@ -377,7 +377,7 @@ class ForumTest extends TestCase
             'message' => 'Pesan student untuk dimoderasi',
         ]);
 
-        $response = $this->deleteJson("/student/forum/messages/{$msg->_id}");
+        $response = $this->deleteJson("/forum/messages/{$msg->_id}");
         $response->assertRedirect();
 
         $this->assertNull(ForumMessage::find($msg->_id));
@@ -400,7 +400,7 @@ class ForumTest extends TestCase
             'message' => 'Pesan orang lain',
         ]);
 
-        $response = $this->deleteJson("/student/forum/messages/{$msg->_id}");
+        $response = $this->deleteJson("/forum/messages/{$msg->_id}");
         $response->assertStatus(403);
 
         $this->assertNotNull(ForumMessage::find($msg->_id));
@@ -410,7 +410,7 @@ class ForumTest extends TestCase
     {
         $this->actingAs($this->student);
 
-        $response = $this->getJson("/student/forum/user/{$this->student->_id}/profile");
+        $response = $this->getJson("/forum/user/{$this->student->_id}/profile");
 
         $response->assertOk()
             ->assertJsonStructure([

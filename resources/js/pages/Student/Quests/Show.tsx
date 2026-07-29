@@ -189,7 +189,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                     <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                         {/* Back Button */}
                         <Link
-                            href="/student/quests"
+                            href="/quests"
                             className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
                             <svg
@@ -391,7 +391,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 {isCreator && (
                                     <div className="flex shrink-0 items-center gap-2 pt-2 sm:pt-0">
                                         <Link
-                                            href={`/student/quests/${quest._id}/edit`}
+                                            href={`/quests/${quest.slug}/edit`}
                                             className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-amber-700"
                                         >
                                             Edit Draf Quest
@@ -405,7 +405,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                     )
                                                 ) {
                                                     router.delete(
-                                                        `/student/quests/${quest._id}`,
+                                                        `/quests/${quest.slug}`,
                                                     );
                                                 }
                                             }}
@@ -440,7 +440,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     {isCreator && (
                                         <div className="flex shrink-0 items-center gap-2 pt-2 sm:pt-0">
                                             <Link
-                                                href={`/student/quests/${quest._id}/edit`}
+                                                href={`/quests/${quest.slug}/edit`}
                                                 className="rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700"
                                             >
                                                 Perbaiki & Ajukan Ulang
@@ -454,7 +454,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         )
                                                     ) {
                                                         router.delete(
-                                                            `/student/quests/${quest._id}`,
+                                                            `/quests/${quest._id}`,
                                                         );
                                                     }
                                                 }}

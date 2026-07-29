@@ -886,7 +886,7 @@ export default function ModuleBuilder({
                         <div>
                             <div className="flex items-center gap-3">
                                 <Link
-                                    href={`/mentor/career-groups/${group.id}/paths`}
+                                    href={`/mentor/career-groups/${group.slug}/paths`}
                                     className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-indigo-300 hover:bg-slate-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-400"
                                 >
                                     <ArrowLeft size={18} />
@@ -924,7 +924,7 @@ export default function ModuleBuilder({
                                         );
                                     } else {
                                         router.get(
-                                            `/mentor/career-groups/${group.id}/paths/${getId(path)}/quiz/create`,
+                                            `/mentor/career-groups/${group.slug}/paths/${path.slug}/quiz/create`,
                                         );
                                     }
                                 }}

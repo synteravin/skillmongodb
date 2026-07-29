@@ -139,7 +139,7 @@ function SortablePathCard({
                 </button>
 
                 <Link
-                    href={`/mentor/career-groups/${group.id}/paths/${path.id}/modules`}
+                    href={`/mentor/career-groups/${group.slug}/paths/${path.slug}/modules`}
                     className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors ${
                         isFundamental
                             ? 'border-indigo-200 bg-indigo-50/50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-900 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60 dark:hover:text-indigo-100'
@@ -170,7 +170,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
     const handleToggleStatus = () => {
         const nextStatus = group.status === 'completed' ? 'draft' : 'completed';
         router.post(
-            `/mentor/career-groups/${group.id}/status`,
+            `/mentor/career-groups/${group.slug}/status`,
             {
                 status: nextStatus,
             },
@@ -229,7 +229,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
 
     const handleCreatePath = (e: React.FormEvent) => {
         e.preventDefault();
-        createForm.post(`/mentor/career-groups/${group.id}/paths`, {
+        createForm.post(`/mentor/career-groups/${group.slug}/paths`, {
             preserveScroll: true,
             onSuccess: () => {
                 setCreateModalPhase(null);
@@ -384,7 +384,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
                         </button>
 
                         <Link
-                            href={`/mentor/career-groups/${group.id}/submissions`}
+                            href={`/mentor/career-groups/${group.slug}/submissions`}
                             className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-400 hover:text-slate-900 active:scale-95 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                         >
                             <ClipboardList className="h-4 w-4" />

@@ -16,7 +16,7 @@ class CertificateTest extends TestCase
 
     public function test_guests_are_redirected_to_the_login_page_from_certificates(): void
     {
-        $response = $this->get(route('student.student.certificates'));
+        $response = $this->get(route('student.certificates'));
         $response->assertRedirect(route('login'));
     }
 
@@ -39,7 +39,7 @@ class CertificateTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->get(route('student.student.certificates'));
+        $response = $this->get(route('student.certificates'));
         $response->assertOk();
     }
 }

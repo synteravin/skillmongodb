@@ -132,7 +132,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 'Apakah Anda yakin ingin membatalkan quest ini secara paksa? Uang escrow akan dikembalikan penuh ke pembuat quest.',
             )
         ) {
-            router.post(`/admin/quests/${quest._id}/force-cancel`);
+            router.post(`/admin/quests/${quest.slug}/force-cancel`);
         }
     };
 
@@ -142,7 +142,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 'Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan uang escrow dikembalikan ke pembuat quest.',
             )
         ) {
-            router.post(`/admin/quests/${quest._id}/reopen-bidding`);
+            router.post(`/admin/quests/${quest.slug}/reopen-bidding`);
         }
     };
 

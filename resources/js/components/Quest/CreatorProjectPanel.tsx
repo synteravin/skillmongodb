@@ -36,7 +36,7 @@ export default function CreatorProjectPanel({
 
     const submitApproval = (e: React.FormEvent) => {
         e.preventDefault();
-        reviewForm.post(`/student/quests/${quest._id}/approve`, {
+        reviewForm.post(`/quests/${quest._id}/approve`, {
             onSuccess: () => {
                 setShowApproveForm(false);
                 reviewForm.reset();
@@ -46,7 +46,7 @@ export default function CreatorProjectPanel({
 
     const submitRejection = (e: React.FormEvent) => {
         e.preventDefault();
-        reviewForm.post(`/student/quests/${quest._id}/reject`, {
+        reviewForm.post(`/quests/${quest._id}/reject`, {
             onSuccess: () => {
                 setShowRejectForm(false);
                 reviewForm.reset();
@@ -60,7 +60,7 @@ export default function CreatorProjectPanel({
 
     const handleExtendDeadline = (e: React.FormEvent) => {
         e.preventDefault();
-        extendForm.post(`/student/quests/${quest._id}/extend-deadline`, {
+        extendForm.post(`/quests/${quest._id}/extend-deadline`, {
             onSuccess: () => extendForm.reset(),
         });
     };
@@ -71,7 +71,7 @@ export default function CreatorProjectPanel({
 
     const handleUploadPaymentProof = (e: React.FormEvent) => {
         e.preventDefault();
-        paymentForm.post(`/student/quests/${quest._id}/upload-payment`, {
+        paymentForm.post(`/quests/${quest._id}/upload-payment`, {
             onSuccess: () => paymentForm.reset(),
         });
     };

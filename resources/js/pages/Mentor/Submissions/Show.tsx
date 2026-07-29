@@ -91,7 +91,7 @@ export default function SubmissionShow({
                 {/* Page Header */}
                 <div className="flex items-center gap-4">
                     <Link
-                        href={`/mentor/career-groups/${submission.group_id}/submissions`}
+                        href={`/mentor/career-groups/${submission.group?.slug}/submissions`}
                         className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-xs transition-all hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400"
                     >
                         <ArrowLeft className="h-5 w-5" />

@@ -6,11 +6,11 @@ export default function BottomNav({
     activeOnboardingTarget?: string;
 }) {
     const menus = [
-        { label: 'MY COURSE', href: '/student/course', targetId: 'nav-item-my-course' },
-        { label: 'QUEST', href: '/student/quests', targetId: 'nav-item-quest' },
-        { label: 'TIER LIST', href: '/student/leaderboard', targetId: 'nav-item-tier-list' },
-        { label: 'CERTIFICATE', href: '/student/certificates', targetId: 'nav-item-certificate' },
-        { label: 'FORUM', href: '/student/forum', targetId: 'nav-item-forum' },
+        { label: 'MY COURSE', href: '/course', targetId: 'nav-item-my-course' },
+        { label: 'QUEST', href: '/quests', targetId: 'nav-item-quest' },
+        { label: 'TIER LIST', href: '/leaderboard', targetId: 'nav-item-tier-list' },
+        { label: 'CERTIFICATE', href: '/certificates', targetId: 'nav-item-certificate' },
+        { label: 'FORUM', href: '/forum', targetId: 'nav-item-forum' },
     ];
 
     const isOnboardingActive = Boolean(activeOnboardingTarget);

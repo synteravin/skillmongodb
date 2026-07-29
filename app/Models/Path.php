@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Path extends Model
@@ -88,10 +89,26 @@ class Path extends Model
         return $query->where('is_active', true);
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function ($path) {
+            if (empty($path->slug) && ! empty($path->name)) {
+                $path->slug = Str::slug($path->name);
+            }
+        });
+    }
+
     /* ================= ROUTE KEY ================= */
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
-        return '_id';
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'slug', $value)
+            ->orWhere('_id', $value)
+            ->firstOrFail();
     }
 }

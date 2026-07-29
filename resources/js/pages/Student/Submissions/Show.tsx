@@ -101,7 +101,7 @@ export default function Show({ submission, studentSubmission }: Props) {
                 >
                     <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 md:px-6 dark:bg-[#040812]">
                         <Link
-                            href={`/student/career-groups/${submission.group_id}/submissions`}
+                            href={`/career-groups/${submission.group?.slug}/submissions`}
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-800 bg-gray-200 p-2 transition-colors hover:border-blue-600 hover:bg-blue-900/40 md:h-12 md:w-12 dark:bg-[#0b1021]"
                         >
                             <svg

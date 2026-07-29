@@ -157,7 +157,7 @@ function SortablePathCard({
 
             <div className="mb-3 flex items-center justify-between gap-2.5 pr-20">
                 <Link
-                    href={`/admin/paths/${path._id}/modules`}
+                    href={`/admin/paths/${path.slug}/modules`}
                     className="truncate text-xs font-bold text-slate-800 transition-colors hover:text-indigo-600 hover:underline dark:text-slate-200 dark:hover:text-indigo-400"
                 >
                     {path.name}
@@ -248,7 +248,7 @@ export default function Builder({
     const handleUpdatePath = () => {
         if (!editingPath || !editingPath.name.trim()) return;
         router.put(
-            `/admin/paths/${editingPath._id}`,
+            `/admin/paths/${editingPath.slug || editingPath._id}`,
             { name: editingPath.name.trim() },
             {
                 preserveScroll: true,
@@ -263,7 +263,7 @@ export default function Builder({
             title: 'Hapus Path',
             message: `Apakah Anda yakin ingin menghapus path "${path.name}"? Seluruh modul di dalamnya juga akan terhapus.`,
             onConfirm: () => {
-                router.delete(`/admin/paths/${path._id}`, {
+                router.delete(`/admin/paths/${path.slug}`, {
                     preserveScroll: true,
                 });
             },
@@ -277,7 +277,7 @@ export default function Builder({
     const handleUpdateGroup = () => {
         if (!editingGroup || !editingGroup.name.trim()) return;
         router.put(
-            `/admin/career-groups/${editingGroup._id}`,
+            `/admin/career-groups/${editingGroup.slug || editingGroup._id}`,
             { name: editingGroup.name.trim() },
             {
                 preserveScroll: true,
@@ -292,7 +292,7 @@ export default function Builder({
             title: 'Hapus Career Branch',
             message: `Apakah Anda yakin ingin menghapus Career Branch "${group.name}"? Seluruh path dan modul di dalamnya juga akan terhapus.`,
             onConfirm: () => {
-                router.delete(`/admin/career-groups/${group._id}`, {
+                router.delete(`/admin/career-groups/${group.slug}`, {
                     preserveScroll: true,
                 });
             },

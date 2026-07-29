@@ -15,6 +15,7 @@ test('authenticated users can visit the dashboard', function () {
     ]);
 
     $user = createUser([
+        'role' => 'student',
         'character_id' => (string) $character->_id,
     ]);
     $this->actingAs($user);

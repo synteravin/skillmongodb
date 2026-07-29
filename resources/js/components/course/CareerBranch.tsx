@@ -253,7 +253,7 @@ export default function CareerBranch({
                                 onClick={() => {
                                     if (!selectedMentor) return;
                                     router.post(
-                                        `/admin/career-groups/${group._id}/assign-mentor`,
+                                        `/admin/career-groups/${group.slug}/assign-mentor`,
                                         {
                                             mentor_id: selectedMentor,
                                         },
