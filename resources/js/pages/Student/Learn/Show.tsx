@@ -203,7 +203,7 @@ export default function LearnShow({
     const finalQuizId = path.final_quiz?.id;
 
     const goToModule = (mod: Module) => {
-        router.visit(`/learn/${course._id}/${path._id}/${mod._id}`);
+        router.visit(`/learn/${course.slug || course._id}/${path.slug || path._id}/${mod.slug || mod._id}`);
     };
 
     const completeModule = () => {

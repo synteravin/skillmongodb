@@ -107,7 +107,7 @@ function SortablePathCard({
         ) {
             return;
         }
-        router.visit(`/admin/paths/${path._id}/modules`);
+        router.visit(`/admin/paths/${path.slug || path._id}/modules`);
     };
 
     return (

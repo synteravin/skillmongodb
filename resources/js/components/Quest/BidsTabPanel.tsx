@@ -43,7 +43,7 @@ export default function BidsTabPanel({
     const handleConfirmAccept = () => {
         if (acceptBidId) {
             router.post(
-                `/quests/${quest._id}/accept-bid/${acceptBidId}`,
+                `/quests/${quest.slug || quest._id}/accept-bid/${acceptBidId}`,
                 {},
                 {
                     onSuccess: () => setAcceptBidId(null),

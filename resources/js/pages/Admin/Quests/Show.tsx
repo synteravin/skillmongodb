@@ -100,7 +100,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     };
 
     const handleConfirmArbitrate = () => {
-        arbitrateForm.post(`/admin/quests/${quest._id}/arbitrate`, {
+        arbitrateForm.post(`/admin/quests/${quest.slug || quest._id}/arbitrate`, {
             onSuccess: () => {
                 arbitrateForm.reset();
             },
@@ -119,7 +119,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             deadline: utcDeadline,
         }));
 
-        extendDeadlineForm.post(`/admin/quests/${quest._id}/extend-deadline`, {
+        extendDeadlineForm.post(`/admin/quests/${quest.slug || quest._id}/extend-deadline`, {
             onSuccess: () => {
                 extendDeadlineForm.reset();
             },
@@ -148,7 +148,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleApproveWork = (e: React.FormEvent) => {
         e.preventDefault();
-        approveForm.post(`/admin/quests/${quest._id}/approve`, {
+        approveForm.post(`/admin/quests/${quest.slug || quest._id}/approve`, {
             onSuccess: () => {
                 setShowApproveForm(false);
                 approveForm.reset();
@@ -158,7 +158,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleRejectWork = (e: React.FormEvent) => {
         e.preventDefault();
-        rejectForm.post(`/admin/quests/${quest._id}/reject`, {
+        rejectForm.post(`/admin/quests/${quest.slug || quest._id}/reject`, {
             onSuccess: () => {
                 setShowRejectForm(false);
                 rejectForm.reset();
@@ -175,7 +175,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleApprovePost = () => {
         router.post(
-            `/admin/quests/${quest._id}/approve-post`,
+            `/admin/quests/${quest.slug || quest._id}/approve-post`,
             {},
             {
                 onSuccess: () => setShowApprovePostConfirm(false),
@@ -185,7 +185,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleRejectPost = (e: React.FormEvent) => {
         e.preventDefault();
-        rejectPostForm.post(`/admin/quests/${quest._id}/reject-post`, {
+        rejectPostForm.post(`/admin/quests/${quest.slug || quest._id}/reject-post`, {
             onSuccess: () => {
                 setShowRejectPostForm(false);
                 rejectPostForm.reset();

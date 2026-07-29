@@ -1089,6 +1089,7 @@ export default function Roadmap({
                                                     progress={safeProgress}
                                                     badges={badges}
                                                     courseId={course._id}
+                                                    courseSlug={course.slug}
                                                     basicCompleted={course.basic_paths.every(
                                                         (p: any) =>
                                                             p.is_completed,
