@@ -152,7 +152,7 @@ export default function MobilePlay({
     }, []);
 
     const handleExit = () => {
-        router.visit(`/student/courses/${quiz.course_slug}`);
+        router.visit(`/courses/${quiz.course_slug}`);
     };
 
     if (!quiz?.questions?.length) return null;
