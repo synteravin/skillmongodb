@@ -359,7 +359,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
 
     const submitProfileUpdate = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/admin/users/${user._id}`, {
+        post(`/admin/users/${user.username || user._id}`, {
             preserveScroll: true,
             onSuccess: () => setShowEditProfileModal(false),
         });

@@ -32,7 +32,7 @@ export default function EditSubmission({ submission }: Props) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(`/mentor/submissions/${submission.id}`);
+        put(`/mentor/submissions/${submission.slug || submission.id}`);
     };
 
     return (

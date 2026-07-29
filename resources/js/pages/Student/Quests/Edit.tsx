@@ -143,7 +143,7 @@ export default function Edit({ quest }: QuestEditProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/quests/${quest._id}/update`);
+        post(`/quests/${quest.slug || quest._id}/update`);
     };
 
     const formatBytes = (bytes?: number) => {

@@ -391,7 +391,7 @@ export default function StudentJourneyIndex({ statistics, students = [] }: Props
                                                 {/* 5. Action Column */}
                                                 <td className="px-6 py-4 text-right">
                                                     <Link
-                                                        href={`/mentor/student-journey/${student.id}`}
+                                                        href={`/mentor/student-journey/${student.username || student.id}`}
                                                         className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200/80 bg-indigo-50/80 px-3.5 py-1.5 text-xs font-bold text-indigo-600 shadow-xs transition-all duration-200 hover:border-indigo-500 hover:bg-indigo-600 hover:text-white hover:shadow-md hover:shadow-indigo-500/20 dark:border-indigo-800/60 dark:bg-indigo-950/50 dark:text-indigo-300 dark:hover:bg-indigo-600 dark:hover:text-white"
                                                     >
                                                         <span>Lihat Journey</span>

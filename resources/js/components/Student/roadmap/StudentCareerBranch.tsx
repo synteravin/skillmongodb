@@ -10,6 +10,7 @@ type Props = {
     progress: any;
     badges?: any[];
     courseId?: string;
+    courseSlug?: string;
     basicCompleted: boolean;
 };
 
@@ -18,6 +19,7 @@ export default function StudentCareerBranch({
     progress,
     badges = [],
     courseId,
+    courseSlug,
     basicCompleted,
 }: Props) {
     const hasChosenPath = !!progress.selected_path_id;
@@ -56,12 +58,12 @@ export default function StudentCareerBranch({
         setLoading(true);
 
         router.post(
-            `/select-career/${firstPath._id}`,
+            `/select-career/${firstPath.slug || firstPath._id}`,
             {},
             {
                 onSuccess: () => {
                     router.visit(
-                        `/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`,
+                        `/learn/${courseSlug || courseId}/${firstPath.slug || firstPath._id}/${firstPath.modules[0].slug || firstPath.modules[0]._id}`,
                     );
                 },
                 onFinish: () => setLoading(false),
@@ -409,7 +411,7 @@ export default function StudentCareerBranch({
                                     badge={badge}
                                     href={
                                         p.modules?.[0]?._id
-                                            ? `/learn/${courseId}/${p._id}/${p.modules[0]._id}`
+                                            ? `/learn/${courseSlug || courseId}/${p.slug || p._id}/${p.modules[0].slug || p.modules[0]._id}`
                                             : undefined
                                     }
                                 />

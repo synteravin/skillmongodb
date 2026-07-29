@@ -66,6 +66,7 @@ class CourseRoadmapController extends Controller
             return [
                 '_id' => $pathId,
                 'name' => $path->name,
+                'slug' => $path->slug,
                 'thumbnail' => $path->thumbnail,
                 'is_unlocked' => $isUnlocked,
                 'is_completed' => $isCompleted,
@@ -74,10 +75,14 @@ class CourseRoadmapController extends Controller
                 'first_module_id' => $firstModule
                     ? (string) $firstModule->_id
                     : null,
+                'first_module_slug' => $firstModule
+                    ? $firstModule->slug
+                    : null,
 
                 'modules' => $modules->map(fn ($m) => [
                     '_id' => (string) $m->_id,
                     'title' => $m->title,
+                    'slug' => $m->slug,
                     'badge' => $m->badge ? [
                         'icon' => $m->badge->icon_url,
                     ] : null,
@@ -120,11 +125,13 @@ class CourseRoadmapController extends Controller
                 return [
                     '_id' => $groupId,
                     'name' => $group->name,
+                    'slug' => $group->slug,
                     'is_completed' => $isGroupCompleted,
                     'thumbnail' => $groupThumbnail,
                     'mentor' => $group->mentor ? [
                         '_id' => (string) $group->mentor->_id,
                         'name' => $group->mentor->name,
+                        'username' => $group->mentor->username,
                         'avatar' => $mentorAvatar,
                     ] : null,
 
@@ -146,6 +153,7 @@ class CourseRoadmapController extends Controller
                                 return [
                                     '_id' => $pathId,
                                     'name' => $path->name,
+                                    'slug' => $path->slug,
                                     'thumbnail' => $path->thumbnail,
                                     'is_unlocked' => false,
                                     'is_selected' => false,
@@ -164,6 +172,7 @@ class CourseRoadmapController extends Controller
                             return [
                                 '_id' => $pathId,
                                 'name' => $path->name,
+                                'slug' => $path->slug,
                                 'thumbnail' => $path->thumbnail,
                                 'is_unlocked' => $isUnlocked,
                                 'is_selected' => $isSelected,
@@ -171,6 +180,7 @@ class CourseRoadmapController extends Controller
                                 'modules' => $modules->map(fn ($m) => [
                                     '_id' => (string) $m->_id,
                                     'title' => $m->title,
+                                    'slug' => $m->slug,
                                     'badge' => $m->badge ? [
                                         'icon' => $m->badge->icon_url,
                                     ] : null,
