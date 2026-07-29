@@ -172,7 +172,7 @@ export default function ResultModal({
         {
             label: 'GOLD',
             value: gold,
-            icon: '/images/gold.webp',
+            icon: '/images/Gold.webp',
             color: '#fbbf24',
             glowColor: 'rgba(251,191,36,0.45)',
         },
