@@ -71,7 +71,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
 
                         <div className="shrink-0">
                             <Link
-                                href={`/mentor/career-groups/${group.id}/submissions/create`}
+                                href={`/mentor/career-groups/${group.slug}/submissions/create`}
                                 className="group font-outfit inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:text-slate-900 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
                             >
                                 <Plus className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
@@ -181,7 +181,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                             {/* Action buttons */}
                                             <div className="flex items-center gap-2">
                                                 <Link
-                                                    href={`/mentor/submissions/${submission.id}`}
+                                                    href={`/mentor/submissions/${submission.slug}`}
                                                     className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:border-indigo-300 hover:text-indigo-600 sm:flex-none dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400"
                                                     title="View Details"
                                                 >
@@ -192,7 +192,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                                 </Link>
 
                                                 <Link
-                                                    href={`/mentor/submissions/${submission.id}/edit`}
+                                                    href={`/mentor/submissions/${submission.slug}/edit`}
                                                     className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:border-indigo-300 hover:text-indigo-600 sm:flex-none dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400"
                                                     title="Edit"
                                                 >
@@ -236,7 +236,7 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                     below to create your first assignment.
                                 </p>
                                 <Link
-                                    href={`/mentor/career-groups/${group.id}/submissions/create`}
+                                    href={`/mentor/career-groups/${group.slug}/submissions/create`}
                                     className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-sm shadow-indigo-500/20 transition-all hover:bg-indigo-700 active:scale-95"
                                 >
                                     <Plus className="h-4 w-4" />

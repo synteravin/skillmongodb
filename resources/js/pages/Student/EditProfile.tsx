@@ -74,14 +74,14 @@ export default function EditProfile({ user }: Props) {
     // ══════════ SUBMIT HANDLERS ══════════
     const handleProfileSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        profileForm.post('/student/profile/edit', {
+        profileForm.post('/profile/edit', {
             preserveScroll: true,
         });
     };
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        passwordForm.put('/student/profile/password', {
+        passwordForm.put('/profile/password', {
             preserveScroll: true,
             onSuccess: () => passwordForm.reset(),
         });
@@ -132,7 +132,7 @@ export default function EditProfile({ user }: Props) {
             {/* ── TOOLBAR ── */}
             <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-4 pb-2 md:px-8">
                 {/* BACK */}
-                <Link href="/student/profile">
+                <Link href="/profile">
                     <div
                         className="flex items-center gap-2 border border-[#3B28F6] px-4 py-1.5 font-['Orbitron'] text-[11px] tracking-widest text-[#3B28F6] transition-all hover:border-cyan-500 hover:text-cyan-600 hover:shadow-[0_0_10px_rgba(0,180,220,0.2)] dark:text-blue-400 dark:hover:border-cyan-400 dark:hover:text-cyan-400 dark:hover:shadow-[0_0_10px_rgba(0,212,255,0.35)]"
                         style={{

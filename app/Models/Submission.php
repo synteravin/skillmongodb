@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Submission extends Model
@@ -11,6 +12,7 @@ class Submission extends Model
     protected $fillable = [
         'group_id',
         'title',
+        'slug',
         'description',
         'submission_type',
         'attachment',
@@ -19,6 +21,27 @@ class Submission extends Model
     ];
 
     protected $casts = [];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Submission $submission) {
+            if (empty($submission->slug) && ! empty($submission->title)) {
+                $submission->slug = Str::slug($submission->title);
+            }
+        });
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'slug', $value)
+            ->orWhere('_id', $value)
+            ->firstOrFail();
+    }
 
     public function group()
     {

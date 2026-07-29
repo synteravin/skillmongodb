@@ -12,6 +12,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use MongoDB\Laravel\Eloquent\Model;
 
@@ -205,8 +206,25 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         });
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
-        return '_id';
+        return 'username';
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (User $user) {
+            if (empty($user->username)) {
+                $base = ! empty($user->name) ? Str::slug($user->name, '_') : explode('@', $user->email)[0];
+                $user->username = Str::slug($base, '_');
+            }
+        });
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'username', $value)
+            ->orWhere('_id', $value)
+            ->firstOrFail();
     }
 }

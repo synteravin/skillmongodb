@@ -56,12 +56,12 @@ export default function StudentCareerBranch({
         setLoading(true);
 
         router.post(
-            `/student/select-career/${firstPath._id}`,
+            `/select-career/${firstPath._id}`,
             {},
             {
                 onSuccess: () => {
                     router.visit(
-                        `/student/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`,
+                        `/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`,
                     );
                 },
                 onFinish: () => setLoading(false),
@@ -268,7 +268,7 @@ export default function StudentCareerBranch({
                         {/* MENTOR */}
                         {group.mentor ? (
                             <Link
-                                href={`/student/mentors/${group.mentor._id}`}
+                                href={`/mentors/${group.mentor.username}`}
                                 className="group/mentor flex max-w-[60%] cursor-pointer items-center gap-2"
                             >
                                 {group.mentor.avatar &&
@@ -409,7 +409,7 @@ export default function StudentCareerBranch({
                                     badge={badge}
                                     href={
                                         p.modules?.[0]?._id
-                                            ? `/student/learn/${courseId}/${p._id}/${p.modules[0]._id}`
+                                            ? `/learn/${courseId}/${p._id}/${p.modules[0]._id}`
                                             : undefined
                                     }
                                 />
@@ -424,7 +424,7 @@ export default function StudentCareerBranch({
                             title="Submission"
                             index={group.paths.length}
                             isSubmission={true}
-                            href={`/student/career-groups/${group._id}/submissions`}
+                            href={`/career-groups/${group.slug}/submissions`}
                             done={isCompleted}
                             locked={
                                 !isCompleted &&

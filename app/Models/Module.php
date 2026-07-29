@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Module extends Model
@@ -40,8 +41,24 @@ class Module extends Model
         return $this->belongsTo(LevelBadge::class, 'badge_id', '_id');
     }
 
-    public function getRouteKeyName()
+    protected static function booted(): void
     {
-        return '_id';
+        static::saving(function ($module) {
+            if (empty($module->slug) && ! empty($module->title)) {
+                $module->slug = Str::slug($module->title);
+            }
+        });
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'slug', $value)
+            ->orWhere('_id', $value)
+            ->firstOrFail();
     }
 }

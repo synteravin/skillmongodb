@@ -89,7 +89,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
 
         const timeout = setTimeout(() => {
             router.get(
-                '/student/quests/history',
+                '/quests/history',
                 {
                     search: searchQuery || undefined,
                     role: roleFilter !== 'all' ? roleFilter : undefined,
@@ -170,7 +170,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                     <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                         {/* Back Button */}
                         <Link
-                            href="/student/quests"
+                            href="/quests"
                             className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
                             <svg
@@ -773,14 +773,14 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                             </span>
                                                             <div className="flex gap-2">
                                                                 <Link
-                                                                    href={`/student/quests/${item._id}`}
+                                                                    href={`/quests/${item.slug}`}
                                                                     className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-indigo-700/30 bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-700"
                                                                 >
                                                                     <MessageSquare size={13} />
                                                                     Chat
                                                                 </Link>
                                                                 <Link
-                                                                    href={`/student/quests/${item._id}`}
+                                                                    href={`/quests/${item.slug}`}
                                                                     className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white py-2.5 text-xs font-bold text-slate-800 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                                                 >
                                                                     <Eye size={13} />
