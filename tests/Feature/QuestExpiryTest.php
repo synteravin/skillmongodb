@@ -98,7 +98,7 @@ class QuestExpiryTest extends TestCase
                 'deadline' => $newDeadline,
             ]);
 
-        $response->assertRedirect(route('student.quests.show', $expiredQuest->_id));
+        $response->assertRedirect(route('student.quests.show', $expiredQuest));
 
         $expiredQuest->refresh();
         $this->assertEquals('open', $expiredQuest->status);
@@ -128,7 +128,7 @@ class QuestExpiryTest extends TestCase
                 'deadline' => $newDeadline,
             ]);
 
-        $response->assertRedirect(route('student.quests.show', $ongoingQuest->_id));
+        $response->assertRedirect(route('student.quests.show', $ongoingQuest));
 
         $ongoingQuest->refresh();
         $this->assertEquals('ongoing', $ongoingQuest->status);

@@ -583,8 +583,8 @@ function TopBar({
             {
                 preserveScroll: true,
                 onSuccess: () => {
-                    if (item.data.quest_id) {
-                        router.visit(`/quests/${item.data.quest_id}`);
+                    if (item.data.quest_slug) {
+                        router.visit(`/quests/${item.data.quest_slug}`);
                     } else if (item.data.type === 'submission_graded') {
                         router.visit(`/certificates`);
                     }

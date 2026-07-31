@@ -139,7 +139,7 @@ export default function Index({ quests, filters }: Props) {
     function submit(e: React.FormEvent) {
         e.preventDefault();
         if (openModal === 'edit' && editingQuest) {
-            put(`/admin/quests/${editingQuest.slug || editingQuest._id}`, {
+            put(`/admin/quests/${editingQuest.slug}`, {
                 onSuccess: () => closeModal(),
             });
         } else {

@@ -12,10 +12,6 @@ class CreateCareerGroupAction
 
         $slug = Str::slug($data['name']);
 
-        if (CareerGroup::where('slug', $slug)->exists()) {
-            $slug .= '-'.Str::random(5);
-        }
-
         $order = CareerGroup::where('course_id', $data['course_id'])->max('order');
 
         return CareerGroup::create([

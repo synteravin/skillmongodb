@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CourseStudent;
 use App\Models\MentorCareerGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -66,10 +67,11 @@ class DashboardController extends Controller
 
                     return [
                         'id' => (string) $group->_id,
+                        'slug' => $group->slug ?: Str::slug($group->name) ?: (string) $group->_id,
                         'name' => $group->name,
                         'paths_count' => $group->paths()->count(),
-                        'students' => $students,   // ✅ TAMBAH
-                        'active' => $active,       // ✅ TAMBAH
+                        'students' => $students,
+                        'active' => $active,
                     ];
                 })->values()->all(),
             ],

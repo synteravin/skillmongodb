@@ -18,6 +18,7 @@ use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class QuestService
 {
@@ -85,6 +86,8 @@ class QuestService
 
             return [
                 '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'description' => $quest->description,
                 'min_budget' => $quest->min_budget,
@@ -247,6 +250,8 @@ class QuestService
         return [
             'quest' => [
                 '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'description' => $quest->description,
                 'min_budget' => $quest->min_budget,

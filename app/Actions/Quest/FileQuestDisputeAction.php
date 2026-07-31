@@ -7,6 +7,7 @@ use App\Enums\QuestStatus;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class FileQuestDisputeAction
 {
@@ -44,6 +45,7 @@ class FileQuestDisputeAction
                 'notifiable_id' => $quest->creator_id,
                 'data' => [
                     'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                     'title' => $quest->title,
                     'message' => "Perselisihan (dispute) telah diajukan pada quest '{$quest->title}' oleh {$user->name}. Status ditangguhkan menunggu keputusan Admin.",
                     'type' => 'quest_disputed',
@@ -58,6 +60,7 @@ class FileQuestDisputeAction
                 'notifiable_id' => $quest->worker_id,
                 'data' => [
                     'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                     'title' => $quest->title,
                     'message' => "Perselisihan (dispute) telah diajukan pada quest '{$quest->title}' oleh {$user->name}. Status ditangguhkan menunggu keputusan Admin.",
                     'type' => 'quest_disputed',

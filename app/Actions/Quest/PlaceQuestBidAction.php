@@ -7,6 +7,7 @@ use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class PlaceQuestBidAction
 {
@@ -32,6 +33,7 @@ class PlaceQuestBidAction
                     'notifiable_id' => (string) $quest->creator_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Pelamar '{$student->name}' telah mengajukan proposal penawaran baru (Rp ".number_format((int) $data['bid_amount'], 0, ',', '.').") untuk quest '{$quest->title}'. Silakan tinjau proposal tersebut.",
                         'type' => 'bid_received',

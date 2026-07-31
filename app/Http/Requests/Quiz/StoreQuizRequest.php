@@ -15,7 +15,7 @@ class StoreQuizRequest extends FormRequest
     {
         return [
             /* ================= PATH ================= */
-            'path_id' => ['required', 'string', 'exists:paths,_id'],
+            'path_id' => ['required', 'string'],
 
             /* ================= QUIZ ================= */
             'difficulty' => ['required', 'in:easy,medium,hard'],
@@ -57,13 +57,6 @@ class StoreQuizRequest extends FormRequest
                     $validator->errors()->add(
                         "questions.$index.answers",
                         'Minimal 1 jawaban benar'
-                    );
-                }
-
-                if ($correctCount > 1) {
-                    $validator->errors()->add(
-                        "questions.$index.answers",
-                        'Hanya boleh 1 jawaban benar'
                     );
                 }
             }

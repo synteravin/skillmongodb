@@ -59,10 +59,6 @@ class CourseController extends Controller
 
         $slug = Str::slug($data['title']);
 
-        if (Course::where('slug', $slug)->exists()) {
-            $slug .= '-'.Str::random(4);
-        }
-
         /* ---------- UPLOAD THUMBNAIL ---------- */
 
         $thumbnailPath = null;

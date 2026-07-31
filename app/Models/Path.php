@@ -107,8 +107,8 @@ class Path extends Model
 
     public function resolveRouteBinding($value, $field = null)
     {
-        return $this->where($field ?? 'slug', $value)
-            ->orWhere('_id', $value)
+        return $this->where('_id', $value)
+            ->orWhere('slug', $value)
             ->firstOrFail();
     }
 }

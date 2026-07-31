@@ -454,7 +454,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         )
                                                     ) {
                                                         router.delete(
-                                                            `/quests/${quest._id}`,
+                                                            `/quests/${quest.slug}`,
                                                         );
                                                     }
                                                 }}

@@ -80,10 +80,11 @@ class SubmissionController extends Controller
             ->get()
             ->map(function ($sub) {
                 return [
-                    'id' => $sub->id,
+                    'id' => (string) $sub->_id,
+                    'slug' => $sub->slug ?: (string) $sub->_id,
                     'student_name' => $sub->student ? $sub->student->name : 'Unknown',
                     'status' => $sub->status,
-                    'submitted_at' => $sub->created_at ? $sub->created_at->diffForHumans() : '-',
+                    'submitted_at' => $sub->created_at ? $sub->created_at->toISOString() : null,
                 ];
             });
 

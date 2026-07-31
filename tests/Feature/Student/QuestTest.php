@@ -83,7 +83,7 @@ class QuestTest extends TestCase
 
         $quest = Quest::where('title', 'Test Freelance Job')->first();
         $this->assertNotNull($quest);
-        $response->assertRedirect(route('student.quests.show', $quest->_id));
+        $response->assertRedirect(route('student.quests.show', $quest));
 
         $this->assertEquals('draft', $quest->status);
         $this->assertEquals($student->_id, $quest->creator_id);
@@ -110,7 +110,7 @@ class QuestTest extends TestCase
 
         $quest = Quest::where('title', 'Quest With Attachments')->first();
         $this->assertNotNull($quest);
-        $response->assertRedirect(route('student.quests.show', $quest->_id));
+        $response->assertRedirect(route('student.quests.show', $quest));
 
         $this->assertNotEmpty($quest->images);
         $this->assertNotEmpty($quest->files);
@@ -151,7 +151,7 @@ class QuestTest extends TestCase
             'files' => [$file],
         ]);
 
-        $updateResponse->assertRedirect(route('student.quests.show', $quest->_id));
+        $updateResponse->assertRedirect(route('student.quests.show', $quest));
 
         $quest->refresh();
         $this->assertEquals('Updated & Resubmitted Quest', $quest->title);
@@ -205,7 +205,7 @@ class QuestTest extends TestCase
             'proposal' => 'I have 3 years of experience in React.',
         ]);
 
-        $response->assertRedirect(route('student.quests.show', $quest->_id));
+        $response->assertRedirect(route('student.quests.show', $quest));
 
         $bid = QuestBid::where('quest_id', $quest->_id)->where('student_id', $bidder->_id)->first();
         $this->assertNotNull($bid);
@@ -251,7 +251,7 @@ class QuestTest extends TestCase
         $this->actingAs($creator);
 
         $response = $this->post("/quests/{$quest->_id}/accept-bid/{$bid1->_id}");
-        $response->assertRedirect(route('student.quests.show', $quest->_id));
+        $response->assertRedirect(route('student.quests.show', $quest));
 
         $quest->refresh();
         $bid1->refresh();
@@ -281,7 +281,7 @@ class QuestTest extends TestCase
         $response = $this->actingAs($admin)
             ->post("/admin/quests/{$quest->_id}/approve-post");
 
-        $response->assertRedirect(route('admin.quests.show', $quest->_id));
+        $response->assertRedirect(route('admin.quests.show', $quest));
         $response->assertSessionHas('success');
 
         $quest->refresh();
@@ -308,7 +308,7 @@ class QuestTest extends TestCase
                 'rejection_note' => 'Please provide a clearer description.',
             ]);
 
-        $response->assertRedirect(route('admin.quests.show', $quest->_id));
+        $response->assertRedirect(route('admin.quests.show', $quest));
         $response->assertSessionHas('warning');
 
         $quest->refresh();
@@ -367,7 +367,7 @@ class QuestTest extends TestCase
         $this->actingAs($creator);
 
         $response = $this->post("/quests/{$quest->_id}/accept-bid/{$bid->_id}");
-        $response->assertRedirect(route('student.quests.show', $quest->_id));
+        $response->assertRedirect(route('student.quests.show', $quest));
 
         $quest->refresh();
         $this->assertEquals('ongoing', $quest->status);

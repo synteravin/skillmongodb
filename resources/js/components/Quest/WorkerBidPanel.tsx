@@ -49,7 +49,7 @@ export default function WorkerBidPanel({
 
     const handleBidSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/quests/${quest.slug || quest._id}/bid`, {
+        post(`/quests/${quest.slug}/bid`, {
             onSuccess: () => reset(),
         });
     };

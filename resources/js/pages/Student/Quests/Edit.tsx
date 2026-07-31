@@ -21,6 +21,8 @@ interface ExistingAttachment {
 interface QuestEditProps {
     quest: {
         _id: string;
+        id?: string;
+        slug?: string;
         title: string;
         description: string;
         min_budget: number;
@@ -143,7 +145,7 @@ export default function Edit({ quest }: QuestEditProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/quests/${quest.slug || quest._id}/update`);
+        post(`/quests/${quest.slug}/update`);
     };
 
     const formatBytes = (bytes?: number) => {

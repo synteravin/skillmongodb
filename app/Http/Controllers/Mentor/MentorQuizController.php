@@ -52,9 +52,10 @@ class MentorQuizController extends Controller
         $path->load('quiz.questions.answers');
 
         return Inertia::render('Mentor/Quiz/Create', [
-            'pathId' => (string) $path->_id,
+            'pathId' => $path->slug ?: (string) $path->_id,
             'quiz' => $path->quiz ? [
-                'id' => (string) $path->quiz->_id,
+                'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
+                'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 'difficulty' => $path->quiz->difficulty,
                 'questions' => $path->quiz->questions->map(function ($q) {
                     return [
@@ -118,6 +119,7 @@ class MentorQuizController extends Controller
         $this->authorize('update', $quiz);
 
         $data = $request->validated();
+        $data['path_id'] = (string) ($quiz->path_id ?? $request->input('path_id', ''));
 
         app(UpdateQuizAction::class)->execute($quiz, $data);
 

@@ -370,7 +370,7 @@ export default function Index({
 
                                                 <div className="mt-4 flex justify-end sm:mt-6">
                                                     <Link
-                                                        href={`/submissions/${submissionId}`}
+                                                        href={`/submissions/${submission.slug}`}
                                                         className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-all sm:gap-2 sm:px-6 sm:py-2.5 sm:text-xs ${
                                                             isSubmitted
                                                                 ? 'border border-blue-300 bg-white text-blue-700 hover:bg-blue-50 dark:border-blue-500/40 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900/50'

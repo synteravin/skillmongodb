@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class QuestController extends Controller
@@ -49,6 +50,8 @@ class QuestController extends Controller
 
             return [
                 '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'description' => $quest->description,
                 'min_budget' => $quest->min_budget,
@@ -92,13 +95,13 @@ class QuestController extends Controller
 
     public function show(string $id, QuestService $questService)
     {
-        $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
+        $quest = Quest::with(['creator', 'worker'])->where('slug', $id)->orWhere('_id', $id)->firstOrFail();
         $user = auth()->user();
 
         $rewards = $questService->getRewardsForQuest($quest);
 
         $bids = QuestBid::with('student')
-            ->where('quest_id', $id)
+            ->where('quest_id', $quest->_id)
             ->latest()
             ->get()
             ->map(function ($bid) use ($user) {
@@ -173,7 +176,7 @@ class QuestController extends Controller
         }, $quest->submission_history ?? []);
 
         $transactions = QuestTransaction::with('user')
-            ->where('quest_id', $id)
+            ->where('quest_id', $quest->_id)
             ->latest()
             ->get()
             ->map(function ($t) {
@@ -195,6 +198,8 @@ class QuestController extends Controller
         return Inertia::render('Admin/Quests/Show', [
             'quest' => [
                 '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'description' => $quest->description,
                 'min_budget' => $quest->min_budget,
@@ -239,7 +244,7 @@ class QuestController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $quest = Quest::findOrFail($id);
+        $quest = Quest::where('slug', $id)->orWhere('_id', $id)->firstOrFail();
 
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -304,7 +309,7 @@ class QuestController extends Controller
 
     public function destroy(string $id)
     {
-        $quest = Quest::findOrFail($id);
+        $quest = Quest::where('slug', $id)->orWhere('_id', $id)->firstOrFail();
 
         // Delete associated bids
         $bidIds = QuestBid::where('quest_id', (string) $quest->_id)->pluck('id')->toArray();
@@ -331,7 +336,7 @@ class QuestController extends Controller
 
     public function acceptBid(Request $request, string $questId, string $bidId, QuestService $questService)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
         $bid = QuestBid::findOrFail($bidId);
 
         $questService->acceptBid(
@@ -340,13 +345,13 @@ class QuestController extends Controller
             $bid->_id
         );
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Pekerja berhasil dipilih oleh Admin!');
     }
 
     public function approveWork(Request $request, string $questId, QuestService $questService)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         if ($quest->status !== 'submitted') {
             abort(400, 'Quest harus dalam status menunggu tinjauan.');
@@ -386,13 +391,13 @@ class QuestController extends Controller
             ? 'Pekerjaaan disetujui oleh Admin! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.'
             : 'Pekerjaaan disetujui oleh Admin! Status menjadi disetujui, menunggu pekerja mengunggah berkas ZIP final untuk menyelesaikan quest.';
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with($hasFile ? 'success' : 'warning', $msg);
     }
 
     public function rejectWork(Request $request, string $questId)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         if ($quest->status !== 'submitted') {
             abort(400, 'Quest harus dalam status menunggu tinjauan.');
@@ -419,7 +424,7 @@ class QuestController extends Controller
             'revisions' => $revisions,
         ]);
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('warning', 'Pekerjaan ditolak oleh Admin dan revisi diminta dari pekerja.');
     }
 
@@ -428,7 +433,7 @@ class QuestController extends Controller
      */
     public function approvePublish(Request $request, string $questId)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         if ($quest->status !== 'draft') {
             abort(400, 'Hanya quest berstatus draft yang dapat disetujui.');
@@ -453,7 +458,7 @@ class QuestController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Quest berhasil disetujui dan dipublikasikan!');
     }
 
@@ -467,7 +472,7 @@ class QuestController extends Controller
      */
     public function rejectPublish(Request $request, string $questId)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         if ($quest->status !== 'draft') {
             abort(400, 'Hanya quest berstatus draft yang dapat ditolak.');
@@ -498,7 +503,7 @@ class QuestController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('warning', 'Quest ditolak dan catatan penolakan telah dikirimkan ke pembuat.');
     }
 
@@ -512,7 +517,7 @@ class QuestController extends Controller
      */
     public function arbitrate(ResolveArbitrationRequest $request, string $questId, QuestService $questService)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         $ruling = $request->ruling;
         if ($ruling === 'refund') {
@@ -523,7 +528,7 @@ class QuestController extends Controller
 
         $questService->resolveArbitration($quest, $ruling, $request->note, $request->split_percentage);
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Arbitrase berhasil diselesaikan oleh Admin!');
     }
 
@@ -532,7 +537,7 @@ class QuestController extends Controller
      */
     public function forceCancel(Request $request, string $questId, QuestService $questService)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         $dispute = $quest->dispute;
         if ($dispute && isset($dispute['status']) && $dispute['status'] === 'pending') {
@@ -549,7 +554,7 @@ class QuestController extends Controller
             'dispute' => $dispute,
         ]);
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Quest berhasil dibatalkan secara paksa oleh Admin!');
     }
 
@@ -558,7 +563,7 @@ class QuestController extends Controller
      */
     public function extendDeadline(Request $request, string $questId)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         $request->validate([
             'deadline' => ['required', 'date', 'after:now'],
@@ -577,7 +582,7 @@ class QuestController extends Controller
 
         $quest->update($updateData);
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Tenggat waktu pengerjaan berhasil diperpanjang!');
     }
 
@@ -586,7 +591,7 @@ class QuestController extends Controller
      */
     public function reopenBidding(Request $request, string $questId, QuestService $questService)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         if (in_array($quest->status, ['completed', 'cancelled'])) {
             abort(400, 'Quest yang sudah selesai atau dibatalkan tidak dapat dibuka kembali bidding-nya.');
@@ -609,7 +614,7 @@ class QuestController extends Controller
             'dispute' => null,
         ]);
 
-        return redirect()->route('admin.quests.show', $quest->_id)
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Bidding quest berhasil dibuka kembali oleh Admin!');
     }
 
@@ -635,6 +640,8 @@ class QuestController extends Controller
                 ] : null,
                 'quest' => $flag->quest ? [
                     '_id' => (string) $flag->quest->_id,
+                    'id' => (string) $flag->quest->_id,
+                    'slug' => $flag->quest->slug ?: Str::slug($flag->quest->title),
                     'title' => $flag->quest->title,
                 ] : null,
             ];
