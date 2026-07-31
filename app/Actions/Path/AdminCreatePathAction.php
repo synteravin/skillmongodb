@@ -11,10 +11,6 @@ class AdminCreatePathAction
     {
         $slug = Str::slug($data['name']);
 
-        if (Path::where('slug', $slug)->exists()) {
-            $slug .= '-'.Str::random(5);
-        }
-
         $phase = $data['phase'] ?? 'career_branch';
         $careerGroupId = $data['career_group_id'] ?? null;
 

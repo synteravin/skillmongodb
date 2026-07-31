@@ -18,29 +18,56 @@ class QuizService
             ];
         }
 
-        $correct = 0;
-        $total = count($answers);
+        $totalEarnedPoints = 0.0;
+        $totalQuestions = $quiz->questions()->count();
 
-        foreach ($answers as $questionId => $answerId) {
-            $answer = QuizAnswer::find($answerId);
+        foreach ($quiz->questions as $question) {
+            $questionId = (string) $question->_id;
+            $studentAnswer = $answers[$questionId] ?? null;
 
-            if (! $answer) {
+            if ($studentAnswer === null) {
                 continue;
             }
 
-            if ((string) $answer->question_id !== (string) $questionId) {
+            // Get correct & wrong answer IDs for this question from DB
+            $correctAnswerIds = QuizAnswer::where('question_id', $questionId)
+                ->where('is_correct', true)
+                ->pluck('_id')
+                ->map(fn ($id) => (string) $id)
+                ->toArray();
+
+            $wrongAnswerIds = QuizAnswer::where('question_id', $questionId)
+                ->where('is_correct', false)
+                ->pluck('_id')
+                ->map(fn ($id) => (string) $id)
+                ->toArray();
+
+            $numCorrectKey = count($correctAnswerIds);
+            if ($numCorrectKey === 0) {
                 continue;
             }
 
-            $val = strtolower(trim((string) $answer->is_correct));
+            // Student selected answer IDs as array of strings
+            $studentAnswerIds = is_array($studentAnswer)
+                ? array_map('strval', $studentAnswer)
+                : [(string) $studentAnswer];
 
-            if (in_array($val, ['1', 'true'], true)) {
-                $correct++;
-            }
+            $studentAnswerIds = array_values(array_unique($studentAnswerIds));
+
+            // Count how many correct & wrong answers student selected
+            $numCorrectSelected = count(array_intersect($studentAnswerIds, $correctAnswerIds));
+            $numWrongSelected = count(array_intersect($studentAnswerIds, $wrongAnswerIds));
+
+            // Global Best Practice Partial Credit Formula with Wrong Choice Penalty:
+            // Fraction = max(0, (numCorrectSelected - numWrongSelected) / numCorrectKey)
+            $fraction = max(0.0, ($numCorrectSelected - $numWrongSelected) / $numCorrectKey);
+
+            $totalEarnedPoints += $fraction;
         }
 
+        $total = max($totalQuestions, 1);
         $passingScore = (int) ($quiz->passing_score ?? 75);
-        $score = $total > 0 ? (int) round(($correct / $total) * 100) : 0;
+        $score = (int) round(($totalEarnedPoints / $total) * 100);
         $passed = $score >= $passingScore;
 
         return [

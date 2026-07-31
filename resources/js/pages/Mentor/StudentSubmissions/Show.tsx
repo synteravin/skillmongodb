@@ -76,8 +76,7 @@ export default function Show({ studentSubmission }: Props) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        const subId = studentSubmission.id || studentSubmission._id;
-        put(`/mentor/student-submissions/${subId}/grade`);
+        put(`/mentor/student-submissions/${studentSubmission.slug}/grade`);
     };
 
     const studentInitials = studentSubmission.student.name

@@ -14,7 +14,7 @@ class CareerGroupController extends Controller
 {
     public function assignMentor(Request $request, string $group): RedirectResponse
     {
-        $group = CareerGroup::findOrFail($group);
+        $group = CareerGroup::where('slug', $group)->orWhere('_id', $group)->firstOrFail();
 
         $data = $request->validate([
             'mentor_id' => ['nullable', 'string'],

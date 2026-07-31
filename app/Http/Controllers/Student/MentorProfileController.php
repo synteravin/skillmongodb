@@ -22,7 +22,9 @@ class MentorProfileController extends Controller
      */
     public function show(string $mentorId)
     {
-        $mentor = User::findOrFail($mentorId);
+        $mentor = User::where('username', $mentorId)
+            ->orWhere('_id', $mentorId)
+            ->firstOrFail();
 
         // Abort if not a mentor
         abort_if(! $mentor->isMentor(), 404);

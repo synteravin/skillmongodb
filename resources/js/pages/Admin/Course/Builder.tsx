@@ -107,7 +107,7 @@ function SortablePathCard({
         ) {
             return;
         }
-        router.visit(`/admin/paths/${path.slug || path._id}/modules`);
+        router.visit(`/admin/paths/${path.slug}/modules`);
     };
 
     return (
@@ -118,12 +118,13 @@ function SortablePathCard({
             className="group relative cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-md dark:border-slate-800 dark:bg-[#0b0e14] dark:hover:border-indigo-500/30 dark:hover:bg-[#0e121a]/85"
         >
             {/* Drag Handle & Action Buttons */}
-            <div className="absolute top-3 right-3 flex items-center gap-1">
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-1">
                 {onEdit && (
                     <button
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                             onEdit(path);
                         }}
                         className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
@@ -137,6 +138,7 @@ function SortablePathCard({
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                             onDelete(path);
                         }}
                         className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
@@ -148,7 +150,7 @@ function SortablePathCard({
                 <div
                     {...attributes}
                     {...listeners}
-                    className="cursor-grab rounded-lg p-1 text-slate-400 opacity-100 transition-all duration-200 hover:bg-slate-100 active:cursor-grabbing md:opacity-0 md:group-hover:opacity-100 dark:text-slate-500 dark:hover:bg-slate-800"
+                    className="cursor-grab rounded-lg p-1 text-slate-400 opacity-100 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600 active:cursor-grabbing dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                     title="Tarik untuk memindahkan"
                 >
                     <GripVertical size={16} />
@@ -212,10 +214,12 @@ export default function Builder({
     // Edit Modal States
     const [editingPath, setEditingPath] = useState<{
         _id: string;
+        slug?: string;
         name: string;
     } | null>(null);
     const [editingGroup, setEditingGroup] = useState<{
         _id: string;
+        slug?: string;
         name: string;
     } | null>(null);
     const [confirmModal, setConfirmModal] = useState<{
@@ -242,13 +246,18 @@ export default function Builder({
 
     /* ================= EDIT & DELETE HANDLERS ================= */
     const handleEditPath = (path: any) => {
-        setEditingPath({ _id: path._id, name: path.name });
+        setEditingPath({
+            _id: path._id,
+            slug: path.slug || path._id,
+            name: path.name,
+        });
     };
 
     const handleUpdatePath = () => {
         if (!editingPath || !editingPath.name.trim()) return;
+        const target = editingPath._id || editingPath.slug;
         router.put(
-            `/admin/paths/${editingPath.slug || editingPath._id}`,
+            `/admin/paths/${target}`,
             { name: editingPath.name.trim() },
             {
                 preserveScroll: true,
@@ -258,12 +267,13 @@ export default function Builder({
     };
 
     const handleDeletePath = (path: any) => {
+        const target = path._id || path.slug;
         setConfirmModal({
             open: true,
             title: 'Hapus Path',
             message: `Apakah Anda yakin ingin menghapus path "${path.name}"? Seluruh modul di dalamnya juga akan terhapus.`,
             onConfirm: () => {
-                router.delete(`/admin/paths/${path.slug}`, {
+                router.delete(`/admin/paths/${target}`, {
                     preserveScroll: true,
                 });
             },
@@ -271,13 +281,18 @@ export default function Builder({
     };
 
     const handleEditGroup = (group: any) => {
-        setEditingGroup({ _id: group._id, name: group.name });
+        setEditingGroup({
+            _id: group._id,
+            slug: group.slug || group._id,
+            name: group.name,
+        });
     };
 
     const handleUpdateGroup = () => {
         if (!editingGroup || !editingGroup.name.trim()) return;
+        const target = editingGroup._id || editingGroup.slug;
         router.put(
-            `/admin/career-groups/${editingGroup.slug || editingGroup._id}`,
+            `/admin/career-groups/${target}`,
             { name: editingGroup.name.trim() },
             {
                 preserveScroll: true,
@@ -287,12 +302,13 @@ export default function Builder({
     };
 
     const handleDeleteGroup = (group: any) => {
+        const target = group._id || group.slug;
         setConfirmModal({
             open: true,
             title: 'Hapus Career Branch',
             message: `Apakah Anda yakin ingin menghapus Career Branch "${group.name}"? Seluruh path dan modul di dalamnya juga akan terhapus.`,
             onConfirm: () => {
-                router.delete(`/admin/career-groups/${group.slug}`, {
+                router.delete(`/admin/career-groups/${target}`, {
                     preserveScroll: true,
                 });
             },

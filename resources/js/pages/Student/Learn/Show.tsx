@@ -200,10 +200,10 @@ export default function LearnShow({
         index === 0 || isCompleted(modules[index - 1]._id);
     const allCompleted = modules.every((m) => isCompleted(m._id));
     const isLastModule = currentIndex === modules.length - 1;
-    const finalQuizId = path.final_quiz?.id;
+    const finalQuizSlug = path.final_quiz?.slug;
 
     const goToModule = (mod: Module) => {
-        router.visit(`/learn/${course.slug || course._id}/${path.slug || path._id}/${mod.slug || mod._id}`);
+        router.visit(`/learn/${course.slug}/${path.slug}/${mod.slug}`);
     };
 
     const completeModule = () => {
@@ -727,11 +727,11 @@ export default function LearnShow({
                                     ✓ Tandai Selesai
                                 </button>
                             )}
-                            {isLastModule && finalQuizId && allCompleted && (
+                            {isLastModule && finalQuizSlug && allCompleted && (
                                 <button
                                     onClick={() =>
                                         router.visit(
-                                            `/quiz/${finalQuizId}`,
+                                            `/quiz/${finalQuizSlug}`,
                                         )
                                     }
                                     className="w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"

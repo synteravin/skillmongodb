@@ -9,6 +9,7 @@ use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
 use App\Models\UserStat;
+use Illuminate\Support\Str;
 
 class ResolveQuestArbitrationAction
 {
@@ -118,6 +119,7 @@ class ResolveQuestArbitrationAction
                 'notifiable_id' => $quest->creator_id,
                 'data' => [
                     'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                     'title' => $quest->title,
                     'message' => "Arbitrase quest '{$quest->title}' telah diputuskan oleh Admin: ".strtoupper(str_replace('_', ' ', $ruling)).'.',
                     'type' => 'quest_arbitrated',
@@ -132,6 +134,7 @@ class ResolveQuestArbitrationAction
                 'notifiable_id' => $quest->worker_id,
                 'data' => [
                     'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                     'title' => $quest->title,
                     'message' => "Arbitrase quest '{$quest->title}' telah diputuskan oleh Admin: ".strtoupper(str_replace('_', ' ', $ruling)).'.',
                     'type' => 'quest_arbitrated',

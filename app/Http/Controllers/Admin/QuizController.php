@@ -46,9 +46,10 @@ class QuizController extends Controller
         $path->load('quiz.questions.answers');
 
         return Inertia::render('Admin/Quiz/Create', [
-            'pathId' => (string) $path->_id,
+            'pathId' => $path->slug ?: (string) $path->_id,
             'quiz' => $path->quiz ? [
-                'id' => (string) $path->quiz->_id,
+                'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
+                'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 'difficulty' => $path->quiz->difficulty,
                 'questions' => $path->quiz->questions->map(function ($q) {
                     return [
@@ -94,8 +95,9 @@ class QuizController extends Controller
 
         return Inertia::render('Admin/Quiz/Edit', [
             'quiz' => [
-                'id' => (string) $quiz->_id,
-                'path_id' => (string) $quiz->path_id,
+                'id' => $quiz->slug ?: (string) $quiz->_id,
+                'slug' => $quiz->slug ?: (string) $quiz->_id,
+                'path_id' => $quiz->path ? $quiz->path->slug : (string) $quiz->path_id,
                 'difficulty' => $quiz->difficulty,
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
@@ -122,6 +124,7 @@ class QuizController extends Controller
         $this->authorize('update', $quiz);
 
         $data = $request->validated();
+        $data['path_id'] = (string) ($quiz->path_id ?? $request->input('path_id', ''));
 
         app(UpdateQuizAction::class)->execute($quiz, $data);
 

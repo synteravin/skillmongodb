@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Module;
 use App\Models\Path;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ModuleManagementController extends Controller
@@ -18,11 +19,13 @@ class ModuleManagementController extends Controller
             'path' => [
                 'id' => (string) $path->_id,
                 '_id' => (string) $path->_id,
+                'slug' => $path->slug ?: Str::slug($path->name),
                 'name' => $path->name,
                 'description' => $path->description,
                 'quiz' => $path->quiz ? [
-                    'id' => (string) $path->quiz->_id,
+                    'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
                     '_id' => (string) $path->quiz->_id,
+                    'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 ] : null,
                 'modules' => $path->modules,
             ],

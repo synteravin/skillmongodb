@@ -14,6 +14,8 @@ export interface QuestRewards {
 
 export interface Quest {
     _id: string;
+    id?: string;
+    slug?: string;
     title: string;
     description: string;
     min_budget: number;

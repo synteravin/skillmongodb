@@ -58,12 +58,12 @@ export default function StudentCareerBranch({
         setLoading(true);
 
         router.post(
-            `/select-career/${firstPath.slug || firstPath._id}`,
+            `/select-career/${firstPath.slug}`,
             {},
             {
                 onSuccess: () => {
                     router.visit(
-                        `/learn/${courseSlug || courseId}/${firstPath.slug || firstPath._id}/${firstPath.modules[0].slug || firstPath.modules[0]._id}`,
+                        `/learn/${courseSlug}/${firstPath.slug}/${firstPath.modules[0].slug}`,
                     );
                 },
                 onFinish: () => setLoading(false),
@@ -411,7 +411,7 @@ export default function StudentCareerBranch({
                                     badge={badge}
                                     href={
                                         p.modules?.[0]?._id
-                                            ? `/learn/${courseSlug || courseId}/${p.slug || p._id}/${p.modules[0].slug || p.modules[0]._id}`
+                                            ? `/learn/${courseSlug}/${p.slug}/${p.modules[0].slug}`
                                             : undefined
                                     }
                                 />

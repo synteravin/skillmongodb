@@ -321,26 +321,24 @@ export default function SubmissionShow({
 
                                             {/* Tanggal Submitted */}
                                             <td className="px-6 py-4 font-medium whitespace-nowrap text-slate-500 dark:text-slate-400">
-                                                {item.submitted_at
-                                                    ? new Date(
-                                                          item.submitted_at,
-                                                      ).toLocaleString(
-                                                          'id-ID',
-                                                          {
-                                                              day: 'numeric',
-                                                              month: 'short',
-                                                              year: 'numeric',
-                                                              hour: '2-digit',
-                                                              minute: '2-digit',
-                                                          },
-                                                      )
-                                                    : '—'}
+                                                {(() => {
+                                                    if (!item.submitted_at || item.submitted_at === '-') return '—';
+                                                    const d = new Date(item.submitted_at);
+                                                    if (isNaN(d.getTime())) return item.submitted_at;
+                                                    return d.toLocaleString('id-ID', {
+                                                        day: 'numeric',
+                                                        month: 'short',
+                                                        year: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    });
+                                                })()}
                                             </td>
 
                                             {/* Tombol Review */}
                                             <td className="px-6 py-4 text-right">
                                                 <Link
-                                                    href={`/mentor/student-submissions/${item.id}`}
+                                                    href={`/mentor/student-submissions/${item.slug}`}
                                                     className="inline-flex items-center gap-1 rounded-xl border border-slate-200/80 bg-white px-3.5 py-1.5 font-bold whitespace-nowrap text-indigo-600 transition-all hover:border-indigo-300 hover:shadow-xs dark:border-slate-800 dark:bg-slate-900 dark:text-indigo-400 dark:hover:border-indigo-900/60"
                                                 >
                                                     Evaluate

@@ -32,7 +32,8 @@ type Question = {
 
 type Quiz = {
     id: string;
-    module_id: string;
+    path_id?: string;
+    module_id?: string;
     difficulty: string;
     questions: Question[];
 };
@@ -148,7 +149,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
 
         const formData = new FormData();
         formData.append('_method', 'put');
-        formData.append('module_id', quiz.module_id || '');
+        formData.append('path_id', quiz.path_id || quiz.module_id || '');
         formData.append('difficulty', quiz.difficulty || 'easy');
 
         questions.forEach((q, i) => {
@@ -456,8 +457,10 @@ function QuestionCard({
                         <label className="text-slate-555 ml-1 block text-xs font-semibold dark:text-slate-400">
                             Possible Answers
                         </label>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                            Select the correct answer(s)
+                        <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                            {data.answers.filter((x) => x.is_correct).length > 1
+                                ? `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar (Pilihan Ganda Kompleks)`
+                                : `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar`}
                         </span>
                     </div>
 

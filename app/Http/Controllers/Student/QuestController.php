@@ -15,6 +15,7 @@ use App\Services\Quest\QuestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class QuestController extends Controller
@@ -51,6 +52,8 @@ class QuestController extends Controller
             ->map(function ($quest) {
                 return [
                     '_id' => (string) $quest->_id,
+                    'id' => (string) $quest->_id,
+                    'slug' => $quest->slug ?: Str::slug($quest->title),
                     'title' => $quest->title,
                     'description' => $quest->description,
                     'min_budget' => $quest->min_budget,
@@ -174,7 +177,7 @@ class QuestController extends Controller
             $data
         );
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Quest berhasil dikirim dan menunggu persetujuan admin!');
     }
 
@@ -215,6 +218,8 @@ class QuestController extends Controller
         return Inertia::render('Student/Quests/Edit', [
             'quest' => [
                 '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'description' => $quest->description,
                 'min_budget' => $quest->min_budget,
@@ -373,7 +378,7 @@ class QuestController extends Controller
             'rejection_note' => null,
         ]);
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Quest berhasil diperbarui dan dikirim ulang ke admin untuk ditinjau!');
     }
 
@@ -487,7 +492,7 @@ class QuestController extends Controller
             $validated
         );
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Tawaran Anda berhasil diajukan!');
     }
 
@@ -504,7 +509,7 @@ class QuestController extends Controller
             $bid->_id
         );
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Pekerja berhasil dipilih dan Quest dimulai!');
     }
 
@@ -589,6 +594,7 @@ class QuestController extends Controller
                     'notifiable_id' => (string) $quest->creator_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Pekerja '{$user->name}' telah mengunggah hasil pekerjaan untuk quest '{$quest->title}'. Silakan tinjau pekerjaan tersebut.",
                         'type' => 'work_submitted',
@@ -600,7 +606,7 @@ class QuestController extends Controller
             }
         }
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Hasil pekerjaan berhasil dikirim dan menunggu tinjauan!');
     }
 
@@ -643,6 +649,7 @@ class QuestController extends Controller
                     'notifiable_id' => (string) $quest->worker_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Selamat! Pemilik proyek telah menyetujui hasil pekerjaan Anda untuk quest '{$quest->title}' ({$request->rating}/5⭐).",
                         'type' => 'work_approved',
@@ -656,7 +663,7 @@ class QuestController extends Controller
 
         $msg = 'Hasil tinjauan pekerjaan disetujui! Silakan lanjutkan dengan melakukan transfer pembayaran dan unggah bukti transfer.';
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', $msg);
     }
 
@@ -703,6 +710,7 @@ class QuestController extends Controller
                     'notifiable_id' => (string) $quest->worker_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Pemilik proyek meminta revisi untuk quest '{$quest->title}'. Catatan revisi: '{$request->revision_note}'",
                         'type' => 'work_rejected',
@@ -714,7 +722,7 @@ class QuestController extends Controller
             }
         }
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('warning', 'Pekerjaan ditolak dan revisi diminta dari pekerja.');
     }
 
@@ -787,6 +795,7 @@ class QuestController extends Controller
                     'notifiable_id' => (string) $quest->worker_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Quest '{$quest->title}' telah resmi selesai! Berkas final dikonfirmasi dan hadiah EXP & Gold telah diterima.",
                         'type' => 'quest_completed',
@@ -800,6 +809,7 @@ class QuestController extends Controller
                     'notifiable_id' => (string) $quest->creator_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Pekerja telah mengunggah berkas ZIP final untuk quest '{$quest->title}'. Seluruh rangkaian quest telah resmi selesai!",
                         'type' => 'quest_completed',
@@ -811,7 +821,7 @@ class QuestController extends Controller
             // Ignored for DB fallback
         }
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Konfirmasi pembayaran berhasil! Berkas final berhasil diunggah, quest selesai, dan hadiah telah ditambahkan ke profil Anda.');
     }
 
@@ -866,6 +876,7 @@ class QuestController extends Controller
                     'notifiable_id' => (string) $quest->worker_id,
                     'data' => [
                         'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                         'title' => $quest->title,
                         'message' => "Pemilik proyek telah mengunggah bukti transfer pembayaran untuk quest '{$quest->title}'. Silakan unggah berkas final ZIP Anda.",
                         'type' => 'payment_uploaded',
@@ -877,7 +888,7 @@ class QuestController extends Controller
             }
         }
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Bukti transfer pembayaran berhasil diunggah! Menunggu konfirmasi dari pekerja.');
     }
 
@@ -896,7 +907,7 @@ class QuestController extends Controller
 
         $this->questService->fileDispute($quest, $user, $request->reason);
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Banding (dispute) berhasil diajukan! Menunggu peninjauan arbitrase oleh Admin.');
     }
 
@@ -932,7 +943,7 @@ class QuestController extends Controller
 
         $quest->update($updateData);
 
-        return redirect()->route('student.quests.show', $quest->_id)
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Tenggat waktu quest berhasil diperpanjang!');
     }
 
@@ -1026,6 +1037,8 @@ class QuestController extends Controller
 
             return [
                 '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'description' => $quest->description,
                 'min_salary' => $quest->min_salary,

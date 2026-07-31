@@ -791,6 +791,11 @@ function BoxSoal({
                                     )}
                                     <div className="quiz-question-text mx-auto min-h-0 w-full max-w-[700px] flex-1 overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] sm:text-[11px] md:px-4 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
                                         {question.question_text}
+                                        {question.max_selectable > 1 && (
+                                            <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
+                                                (Pilih {question.max_selectable} Jawaban)
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -902,7 +907,7 @@ export default function Play({
 
     const [current, setCurrent] = useState(0);
     const [answers, setAnswers] = useState<any[]>([]);
-    const [selected, setSelected] = useState<string | null>(null);
+    const [selected, setSelected] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [showResult, setShowResult] = useState(false);
     const [finalResult, setFinalResult] = useState<any>(null);
@@ -924,7 +929,7 @@ export default function Play({
     const handleRetry = () => {
         setCurrent(0);
         setAnswers([]);
-        setSelected(null);
+        setSelected([]);
         setShowResult(false);
         setFinalResult(null);
     };
@@ -934,9 +939,19 @@ export default function Play({
     const question = quiz.questions[current];
     const total = quiz.questions.length;
     const labels = ['A', 'B', 'C', 'D', 'E'];
+    const maxSelectable = question?.max_selectable || 1;
 
     const selectAnswer = (id: string) => {
-        if (!loading) setSelected(id);
+        if (loading) return;
+        if (maxSelectable === 1) {
+            setSelected([id]);
+        } else {
+            if (selected.includes(id)) {
+                setSelected(selected.filter((x) => x !== id));
+            } else if (selected.length < maxSelectable) {
+                setSelected([...selected, id]);
+            }
+        }
     };
 
     const handleBack = () => {
@@ -945,20 +960,37 @@ export default function Play({
             const prev = answers.find(
                 (a) => a.question_id === quiz.questions[current - 1].id,
             );
-            setSelected(prev?.answer_id ?? null);
+            const prevSel = prev?.answer_id;
+            setSelected(
+                Array.isArray(prevSel)
+                    ? prevSel
+                    : prevSel
+                      ? [prevSel]
+                      : [],
+            );
         }
     };
 
     const next = () => {
-        if (!selected) return;
+        if (selected.length === 0) return;
         const updated = [
             ...answers.filter((a) => a.question_id !== question.id),
             { question_id: question.id, answer_id: selected },
         ];
         setAnswers(updated);
-        setSelected(null);
         if (current + 1 < total) {
             setCurrent(current + 1);
+            const nextPrev = updated.find(
+                (a) => a.question_id === quiz.questions[current + 1].id,
+            );
+            const nextSel = nextPrev?.answer_id;
+            setSelected(
+                Array.isArray(nextSel)
+                    ? nextSel
+                    : nextSel
+                      ? [nextSel]
+                      : [],
+            );
         } else {
             submit(updated);
         }
@@ -1113,7 +1145,7 @@ export default function Play({
                                         key={a.id}
                                         label={labels[idx] ?? String(idx + 1)}
                                         text={a.answer_text}
-                                        selected={selected === a.id}
+                                        selected={selected.includes(a.id)}
                                         onClick={() => selectAnswer(a.id)}
                                     />
                                 ))}
@@ -1125,7 +1157,7 @@ export default function Play({
                 <Footer
                     current={current}
                     total={total}
-                    selected={selected}
+                    selected={selected.length > 0 ? 'selected' : null}
                     loading={loading}
                     handleBack={handleBack}
                     next={next}

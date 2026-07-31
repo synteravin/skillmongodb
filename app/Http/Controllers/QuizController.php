@@ -13,28 +13,47 @@ class QuizController extends Controller
 {
     public function show($id)
     {
-        $quiz = Quiz::with(['path.modules', 'questions.answers'])->findOrFail($id);
+        $quiz = Quiz::with(['path.course', 'path.modules', 'questions.answers'])
+            ->where('_id', $id)
+            ->orWhere('slug', $id)
+            ->orWhereHas('path', fn ($q) => $q->where('slug', $id))
+            ->firstOrFail();
 
         $user = auth()->user()->load(['userStats']);
 
-        $progress = UserStat::where('user_id', $user->_id)
-            ->where('course_id', $quiz->path->course_id)
-            ->first();
+        // 🔒 CEK STATUS KELULUSAN TERLEBIH DAHULU
+        $hasPassed = QuizResult::where(function ($q) use ($user) {
+            $q->where('user_id', $user->_id)->orWhere('user_id', (string) $user->_id);
+        })->where(function ($q) use ($quiz) {
+            $q->where('quiz_id', $quiz->_id)->orWhere('quiz_id', (string) $quiz->_id);
+        })->where('passed', true)->exists();
 
-        $completed = $progress?->completed_modules ?? [];
+        // 🔒 JIKA BELUM LULUS DAN BUKAN ADMIN/MENTOR, VALIDASI PEKERJAAN MODUL
+        if (! $hasPassed && ! in_array($user->role, ['admin', 'mentor'])) {
+            $progress = UserStat::where(function ($q) use ($user) {
+                $q->where('user_id', $user->_id)->orWhere('user_id', (string) $user->_id);
+            })->where(function ($q) use ($quiz) {
+                $q->where('course_id', $quiz->path->course_id)->orWhere('course_id', (string) $quiz->path->course_id);
+            })->first();
 
-        $allCompleted = collect($quiz->path->modules)
-            ->every(fn ($m) => in_array((string) $m->_id, $completed));
+            $completedRaw = $progress?->completed_modules ?? [];
+            if (is_string($completedRaw)) {
+                $completedRaw = json_decode($completedRaw, true) ?? [];
+            }
+            $completed = array_map('strval', (array) $completedRaw);
 
-        if (! $allCompleted) {
-            abort(403);
+            $pathModules = $quiz->path->modules ?? collect();
+
+            if ($pathModules->isNotEmpty()) {
+                $allCompleted = $pathModules->every(function ($m) use ($completed) {
+                    return in_array((string) $m->_id, $completed) || ($m->slug && in_array($m->slug, $completed));
+                });
+
+                if (! $allCompleted) {
+                    abort(403, 'Anda harus menyelesaikan semua modul sebelum mengambil kuis ini.');
+                }
+            }
         }
-
-        // 🔒 TERKUNCI HANYA JIKA SUDAH LULUS
-        $hasPassed = QuizResult::where('user_id', (string) $user->_id)
-            ->where('quiz_id', (string) $quiz->_id)
-            ->where('passed', true)
-            ->exists();
 
         // 🔥 Hitung EXP dan Gold untuk Kuis
         $totalExp = 0;
@@ -86,7 +105,7 @@ class QuizController extends Controller
                 'gold' => $totalGold,
             ],
             'quiz' => [
-                'id' => (string) $quiz->_id,
+                'id' => (string) ($quiz->slug ?: $quiz->path->slug ?: $quiz->_id),
                 'difficulty' => $quiz->difficulty,
                 'course_slug' => $quiz->path->course->slug,
                 'questions' => $quiz->questions->map(fn ($q) => [
@@ -95,6 +114,7 @@ class QuizController extends Controller
                     'media_url' => $q->media_url
                         ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
                         : null,
+                    'max_selectable' => max(1, $q->answers->where('is_correct', true)->count()),
                     'answers' => $q->answers->map(fn ($a) => [
                         'id' => (string) $a->_id,
                         'answer_text' => $a->answer_text,
@@ -108,7 +128,10 @@ class QuizController extends Controller
     {
         try {
             $quiz = Quiz::with(['questions.answers', 'path'])
-                ->findOrFail($id);
+                ->where('slug', $id)
+                ->orWhere('_id', $id)
+                ->orWhereHas('path', fn ($q) => $q->where('slug', $id))
+                ->firstOrFail();
 
             $user = auth()->user();
 

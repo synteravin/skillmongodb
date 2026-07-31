@@ -31,6 +31,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface Path {
     id: string;
+    slug?: string;
     name: string;
     description?: string;
     order: number;
@@ -38,6 +39,7 @@ interface Path {
 
 interface Group {
     id: string;
+    slug?: string;
     name: string;
     status?: 'draft' | 'completed';
 }
@@ -250,7 +252,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
         e.preventDefault();
         if (!editingPath) return;
 
-        editForm.put(`/mentor/paths/${editingPath.id}`, {
+        editForm.put(`/mentor/paths/${editingPath.slug || editingPath.id}`, {
             preserveScroll: true,
             onSuccess: () => {
                 setEditingPath(null);
@@ -262,7 +264,7 @@ export default function Index({ group, paths, basic_paths = [] }: Props) {
     const handleDeletePath = () => {
         if (!deletingPath) return;
 
-        router.delete(`/mentor/paths/${deletingPath.id}`, {
+        router.delete(`/mentor/paths/${deletingPath.slug || deletingPath.id}`, {
             preserveScroll: true,
             onSuccess: () => {
                 setDeletingPath(null);

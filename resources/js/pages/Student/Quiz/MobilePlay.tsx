@@ -16,8 +16,8 @@ interface MobilePlayProps {
     setCurrent: (val: number) => void;
     answers: any[];
     setAnswers: (val: any[]) => void;
-    selected: string | null;
-    setSelected: (val: string | null) => void;
+    selected: any;
+    setSelected: (val: any) => void;
     loading: boolean;
     next: () => void;
     handleBack: () => void;
@@ -66,6 +66,11 @@ const QuestionBox = ({ question, isLandscape }: { question: any; isLandscape: bo
             )}
             <div className="text-sm sm:text-base font-semibold leading-relaxed text-gray-200 select-none">
                 {question.question_text}
+                {question.max_selectable > 1 && (
+                    <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
+                        (Pilih {question.max_selectable} Jawaban)
+                    </span>
+                )}
             </div>
         </div>
     );
@@ -199,15 +204,32 @@ export default function MobilePlay({
                                 transition={{ duration: 0.25 }}
                                 className="flex flex-col gap-2.5"
                             >
-                                {question.answers.map((a: any, idx: number) => (
-                                    <AnswerButton
-                                        key={a.id}
-                                        label={labels[idx] ?? String(idx + 1)}
-                                        text={a.answer_text}
-                                        selected={selected === a.id}
-                                        onClick={() => setSelected(a.id)}
-                                    />
-                                ))}
+                                {question.answers.map((a: any, idx: number) => {
+                                    const maxSelectable = question?.max_selectable || 1;
+                                    const isSel = Array.isArray(selected)
+                                        ? selected.includes(a.id)
+                                        : selected === a.id;
+                                    return (
+                                        <AnswerButton
+                                            key={a.id}
+                                            label={labels[idx] ?? String(idx + 1)}
+                                            text={a.answer_text}
+                                            selected={isSel}
+                                            onClick={() => {
+                                                if (maxSelectable === 1) {
+                                                    setSelected([a.id]);
+                                                } else {
+                                                    const cur = Array.isArray(selected) ? selected : [];
+                                                    if (isSel) {
+                                                        setSelected(cur.filter((x: string) => x !== a.id));
+                                                    } else if (cur.length < maxSelectable) {
+                                                        setSelected([...cur, a.id]);
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    );
+                                })}
                             </motion.div>
                         </AnimatePresence>
                     </div>
@@ -269,15 +291,32 @@ export default function MobilePlay({
                                 transition={{ duration: 0.25 }}
                                 className="flex flex-col gap-2"
                             >
-                                {question.answers.map((a: any, idx: number) => (
-                                    <AnswerButton
-                                        key={a.id}
-                                        label={labels[idx] ?? String(idx + 1)}
-                                        text={a.answer_text}
-                                        selected={selected === a.id}
-                                        onClick={() => setSelected(a.id)}
-                                    />
-                                ))}
+                                {question.answers.map((a: any, idx: number) => {
+                                    const maxSelectable = question?.max_selectable || 1;
+                                    const isSel = Array.isArray(selected)
+                                        ? selected.includes(a.id)
+                                        : selected === a.id;
+                                    return (
+                                        <AnswerButton
+                                            key={a.id}
+                                            label={labels[idx] ?? String(idx + 1)}
+                                            text={a.answer_text}
+                                            selected={isSel}
+                                            onClick={() => {
+                                                if (maxSelectable === 1) {
+                                                    setSelected([a.id]);
+                                                } else {
+                                                    const cur = Array.isArray(selected) ? selected : [];
+                                                    if (isSel) {
+                                                        setSelected(cur.filter((x: string) => x !== a.id));
+                                                    } else if (cur.length < maxSelectable) {
+                                                        setSelected([...cur, a.id]);
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    );
+                                })}
                             </motion.div>
                         </AnimatePresence>
                     </div>

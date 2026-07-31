@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import {
@@ -44,6 +44,12 @@ export default function Create({
     const [questions, setQuestions] = useState<Question[]>(
         quiz?.questions ?? [],
     );
+
+    useEffect(() => {
+        if (quiz?.questions && quiz.questions.length > 0) {
+            setQuestions(quiz.questions);
+        }
+    }, [quiz]);
     const [loading, setLoading] = useState(false);
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
@@ -205,14 +211,14 @@ export default function Create({
                             </button>
 
                             {/* Badge */}
-                            <div className="inline-flex w-fit items-center gap-1.5 rounded border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-1 dark:border-indigo-500/30">
-                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500 dark:bg-indigo-400" />
-                                <span className="text-indigo-650 text-[10px] font-bold tracking-[0.12em] uppercase dark:text-indigo-400">
+                            <div className="inline-flex w-fit items-center gap-1.5 rounded border border-indigo-200 bg-indigo-50 px-2.5 py-1 dark:border-indigo-500/30 dark:bg-indigo-500/10">
+                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                <span className="text-[10px] font-bold tracking-[0.12em] text-indigo-700 uppercase dark:text-indigo-400">
                                     Quiz Builder
                                 </span>
                             </div>
 
-                            <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl dark:text-white">
+                            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
                                 Create Quiz
                             </h1>
                             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -225,10 +231,10 @@ export default function Create({
                     {/* QUESTIONS LIST */}
                     <div className="space-y-6">
                         {questions.length === 0 ? (
-                            <div className="border-slate-305 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-white p-12 text-center shadow-sm dark:border-slate-800/60 dark:bg-slate-900/20">
+                            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white p-12 text-center shadow-sm dark:border-slate-800/60 dark:bg-slate-900/20">
                                 <HelpCircle
                                     size={48}
-                                    className="dark:text-slate-655 mb-4 text-slate-400 opacity-50"
+                                    className="mb-4 text-slate-400 opacity-50 dark:text-slate-600"
                                 />
                                 <h3 className="text-slate-750 mb-1 text-lg font-medium dark:text-slate-300">
                                     No questions yet
@@ -262,7 +268,7 @@ export default function Create({
                         <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm backdrop-blur-xl sm:flex-row dark:border-slate-800/60 dark:bg-slate-900/50 dark:shadow-lg">
                             <button
                                 onClick={addQuestion}
-                                className="text-slate-650 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-slate-100 hover:text-slate-800 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-800 sm:w-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                             >
                                 <Plus size={16} />
                                 Add Another Question
@@ -271,7 +277,7 @@ export default function Create({
                             <button
                                 onClick={submit}
                                 disabled={loading}
-                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-500 dark:shadow-indigo-900/40"
                             >
                                 {loading ? (
                                     <>
@@ -359,7 +365,7 @@ function QuestionCard({
             {/* HEADER */}
             <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 p-4 dark:border-slate-800/60 dark:bg-slate-950/50">
                 <div className="flex items-center gap-3">
-                    <span className="text-indigo-650 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-sm font-bold dark:text-indigo-400">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400">
                         {index + 1}
                     </span>
                     <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -398,7 +404,7 @@ function QuestionCard({
                         Attach Media (Optional)
                     </label>
                     <div className="flex items-start gap-4">
-                        <label className="text-slate-655 group flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-700">
+                        <label className="group flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-700">
                             <ImageIcon
                                 size={16}
                                 className="text-slate-400 transition-colors group-hover:text-indigo-500 dark:group-hover:text-indigo-400"
@@ -460,8 +466,10 @@ function QuestionCard({
                         <label className="text-slate-550 ml-1 block text-xs font-semibold dark:text-slate-400">
                             Possible Answers
                         </label>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                            Select the correct answer(s)
+                        <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                            {data.answers.filter((x) => x.is_correct).length > 1
+                                ? `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar (Pilihan Ganda Kompleks)`
+                                : `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar`}
                         </span>
                     </div>
 

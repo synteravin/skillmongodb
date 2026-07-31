@@ -12,8 +12,18 @@ class Quiz extends Model
 
     protected $fillable = [
         'path_id',
+        'slug',
         'difficulty',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function ($quiz) {
+            if (empty($quiz->slug) && $quiz->path) {
+                $quiz->slug = $quiz->path->slug;
+            }
+        });
+    }
 
     public function path()
     {
@@ -24,5 +34,20 @@ class Quiz extends Model
     {
         return $this->hasMany(QuizQuestion::class, 'quiz_id', '_id')
             ->orderBy('order');
+    }
+
+    /* ================= ROUTE KEY ================= */
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'slug', $value)
+            ->orWhere('_id', $value)
+            ->orWhereHas('path', fn ($q) => $q->where('slug', $value))
+            ->firstOrFail();
     }
 }

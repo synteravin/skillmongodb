@@ -29,6 +29,7 @@ class PathController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => (string) $p->_id,
+                'slug' => $p->slug,
                 'name' => $p->name,
                 'description' => $p->description,
                 'order' => $p->order,
@@ -37,6 +38,7 @@ class PathController extends Controller
         return Inertia::render('Mentor/Paths/Index', [
             'group' => [
                 'id' => (string) $group->_id,
+                'slug' => $group->slug,
                 'name' => $group->name,
                 'status' => $group->status ?? 'draft',
             ],
@@ -45,6 +47,7 @@ class PathController extends Controller
                 ->get()
                 ->map(fn ($p) => [
                     'id' => (string) $p->_id,
+                    'slug' => $p->slug,
                     'name' => $p->name,
                     'description' => $p->description,
                     'order' => $p->order,

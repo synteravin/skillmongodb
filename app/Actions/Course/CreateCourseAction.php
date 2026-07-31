@@ -12,10 +12,6 @@ class CreateCourseAction
 
         $slug = Str::slug($data['title']);
 
-        if (Course::where('slug', $slug)->exists()) {
-            $slug .= '-'.Str::random(5);
-        }
-
         return Course::create([
             'title' => $data['title'],
             'slug' => $slug,

@@ -12,10 +12,6 @@ class MentorCreatePathAction
     {
         $slug = Str::slug($data['name']);
 
-        if (Path::where('slug', $slug)->exists()) {
-            $slug .= '-'.Str::random(5);
-        }
-
         $phase = $data['phase'] ?? 'career_branch';
         $careerGroupId = $phase === 'basic_fundamental' ? null : (string) $group->_id;
 

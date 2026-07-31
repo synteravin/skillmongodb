@@ -24,9 +24,7 @@ class SubmitQuizRequest extends FormRequest
     {
         return [
             'answers' => ['required', 'array', 'min:1'],
-
-            // setiap value harus answer valid
-            'answers.*' => ['required', 'string', 'exists:quiz_answers,_id'],
+            'answers.*' => ['required'],
         ];
     }
 }

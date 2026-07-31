@@ -45,6 +45,7 @@ function MobileCareerCard({
     isChosen,
     isOtherChosen,
     courseId,
+    courseSlug,
     progress,
 }: {
     group: any;
@@ -52,6 +53,7 @@ function MobileCareerCard({
     isChosen: boolean;
     isOtherChosen: boolean;
     courseId: string;
+    courseSlug?: string;
     progress: Progress;
 }) {
     const [loading, setLoading] = useState(false);
@@ -68,12 +70,12 @@ function MobileCareerCard({
         if (!firstPath?.modules?.[0]?._id || loading || isLocked) return;
         setLoading(true);
         router.post(
-            `/select-career/${firstPath.slug || firstPath._id}`,
+            `/select-career/${firstPath.slug}`,
             {},
             {
                 onSuccess: () => {
                     router.visit(
-                        `/learn/${course.slug || courseId}/${firstPath.slug || firstPath._id}/${firstPath.modules[0].slug || firstPath.modules[0]._id}`,
+                        `/learn/${courseSlug}/${firstPath.slug}/${firstPath.modules[0].slug}`,
                     );
                 },
                 onFinish: () => setLoading(false),
@@ -403,7 +405,7 @@ function MobileRoadmap({
                         const locked = !path.is_unlocked;
                         const href =
                             !locked && path.first_module_id
-                                ? `/learn/${course.slug || course._id}/${path.slug || path._id}/${path.first_module_slug || path.first_module_id}`
+                                ? `/learn/${course.slug}/${path.slug}/${path.first_module_slug}`
                                 : undefined;
 
                         return (
@@ -706,6 +708,7 @@ function MobileRoadmap({
                                 )
                             }
                             courseId={course._id}
+                            courseSlug={course.slug}
                             progress={safeProgress}
                         />
 
@@ -778,7 +781,7 @@ function MobileRoadmap({
                                                         badge={badge}
                                                         href={
                                                             p.modules?.[0]?._id
-                                                                ? `/learn/${course.slug || course._id}/${p.slug || p._id}/${p.modules[0].slug || p.modules[0]._id}`
+                                                                ? `/learn/${course.slug}/${p.slug}/${p.modules[0].slug}`
                                                                 : undefined
                                                         }
                                                     />
@@ -1034,7 +1037,7 @@ export default function Roadmap({
 
                                 const href =
                                     !locked && path.first_module_id
-                                        ? `/learn/${course.slug || course._id}/${path.slug || path._id}/${path.first_module_slug || path.first_module_id}`
+                                        ? `/learn/${course.slug}/${path.slug}/${path.first_module_slug}`
                                         : undefined;
 
                                 return (

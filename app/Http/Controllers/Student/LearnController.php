@@ -100,7 +100,8 @@ class LearnController extends Controller
                 'slug' => $data['path']->slug,
 
                 'final_quiz' => $data['path']->quiz ? [
-                    'id' => (string) $data['path']->quiz->_id,
+                    'id' => (string) ($data['path']->quiz->slug ?: $data['path']->quiz->_id),
+                    'slug' => $data['path']->quiz->slug ?: $data['path']->slug ?: (string) $data['path']->quiz->_id,
                 ] : null,
 
                 'modules' => $data['modules']->map(fn ($m) => [
