@@ -40,8 +40,13 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const isCreator = currentUser?.id === quest.creator_id;
     const isWorker = currentUser?.id === quest.worker_id;
 
-    const acceptedBid = bids.find((b) => b.status === 'accepted' || (quest.worker_id && b.student?._id === quest.worker_id));
-    const agreedPrice = quest.accepted_bid_amount ?? acceptedBid?.bid_amount ?? null;
+    const acceptedBid = bids.find(
+        (b) =>
+            b.status === 'accepted' ||
+            (quest.worker_id && b.student?._id === quest.worker_id),
+    );
+    const agreedPrice =
+        quest.accepted_bid_amount ?? acceptedBid?.bid_amount ?? null;
 
     // Define initial active tab
     const [activeTab, setActiveTab] = useState<'detail' | 'project' | 'bids'>(
@@ -712,7 +717,9 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     {/* Student Name */}
                                     <div className="flex items-center gap-2.5 pt-0.5">
                                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-200/80 text-xs font-bold text-emerald-900 dark:bg-emerald-900/80 dark:text-emerald-200">
-                                            {quest.worker.name.charAt(0).toUpperCase()}
+                                            {quest.worker.name
+                                                .charAt(0)
+                                                .toUpperCase()}
                                         </div>
                                         <span className="truncate text-sm font-extrabold text-slate-900 dark:text-white">
                                             {quest.worker.name}
@@ -723,7 +730,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     {agreedPrice && (
                                         <div className="border-t border-emerald-200/60 pt-2.5 dark:border-emerald-900/40">
                                             <span className="block text-[9px] font-extrabold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                                NILAI KONTRAK DISETUJUI (AGREED PRICE)
+                                                NILAI KONTRAK
                                             </span>
                                             <span className="font-['Orbitron'] text-sm font-black text-emerald-600 dark:text-emerald-400">
                                                 {formatCurrency(agreedPrice)}
