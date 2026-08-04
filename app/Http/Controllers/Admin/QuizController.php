@@ -7,9 +7,10 @@ use App\Actions\Quiz\DeleteQuizAction;
 use App\Actions\Quiz\UpdateQuizAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Quiz\StoreQuizRequest;
+use App\Http\Responses\QuizResponse;
 use App\Models\Path;
 use App\Models\Quiz;
-use App\Responses\QuizResponse;
+use App\Models\QuizResult;
 use Inertia\Inertia;
 
 class QuizController extends Controller
@@ -25,12 +26,22 @@ class QuizController extends Controller
 
         return Inertia::render('Admin/Quiz/Index', [
             'quizzes' => $quizzes->map(function ($quiz) {
+                $results = QuizResult::where('quiz_id', (string) $quiz->_id)->get();
+                $attemptsCount = $results->count();
+                $passedCount = $results->where('passed', true)->count();
+                $passRate = $attemptsCount > 0 ? (int) round(($passedCount / $attemptsCount) * 100) : 0;
+                $avgScore = $attemptsCount > 0 ? (int) round($results->avg('score')) : 0;
+
                 return [
                     'id' => (string) $quiz->_id,
                     'module_name' => $quiz->path->name ?? 'Unknown Path',
                     'path_name' => $quiz->path->name ?? 'Unknown Path',
                     'difficulty' => $quiz->difficulty ?? 'medium',
+                    'duration' => (int) ($quiz->duration ?? 15),
                     'questions_count' => $quiz->questions ? $quiz->questions->count() : 0,
+                    'attempts_count' => $attemptsCount,
+                    'pass_rate' => $passRate,
+                    'avg_score' => $avgScore,
                 ];
             }),
         ]);

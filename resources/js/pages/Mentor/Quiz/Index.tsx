@@ -9,7 +9,11 @@ type Quiz = {
     module_name?: string;
     path_name?: string;
     difficulty: string;
+    duration?: number;
     questions_count: number;
+    attempts_count?: number;
+    pass_rate?: number;
+    avg_score?: number;
 };
 
 export default function Index({ quizzes }: { quizzes: Quiz[] }) {
@@ -111,13 +115,28 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
                                             'Untitled Quiz'}
                                     </h2>
 
-                                    <p className="mb-6 flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">
-                                        <HelpCircle
-                                            size={14}
-                                            className="text-slate-400 dark:text-slate-500"
-                                        />
-                                        {quiz.questions_count} Questions
+                                    <p className="mb-2 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
+                                        <span className="flex items-center gap-1">
+                                            <HelpCircle
+                                                size={14}
+                                                className="text-slate-400 dark:text-slate-500"
+                                            />
+                                            {quiz.questions_count} Questions
+                                        </span>
+                                        <span>⏱️ {quiz.duration ?? 15} Min</span>
                                     </p>
+
+                                    {/* ANALYTICS STATS */}
+                                    <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-100/80 p-2.5 text-center text-xs backdrop-blur-sm dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/5">
+                                        <div>
+                                            <div className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400">Pass Rate</div>
+                                            <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{quiz.pass_rate ?? 0}%</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400">Avg Score</div>
+                                            <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{quiz.avg_score ?? 0} pts</div>
+                                        </div>
+                                    </div>
 
                                     <div className="mt-auto flex items-center gap-2 border-t border-slate-200 pt-4 dark:border-white/5">
                                         <button
