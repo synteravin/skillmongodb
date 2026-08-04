@@ -21,8 +21,10 @@ type Answer = {
     is_correct: boolean;
 };
 
-type Question = {
+interface Question {
+    id?: string;
     question_text: string;
+    explanation?: string;
     media_url?: string;
     media_file?: File;
     answers: Answer[];
@@ -38,18 +40,37 @@ export default function Create({
     quiz?: {
         id: string;
         difficulty: string;
+        duration?: number;
         questions: Question[];
     } | null;
 }) {
+    const [duration, setDuration] = useState<number>(quiz?.duration || 15);
     const [questions, setQuestions] = useState<Question[]>(
-        quiz?.questions ?? [],
+        quiz?.questions && quiz.questions.length > 0
+            ? quiz.questions
+            : [
+                  {
+                      question_text: '',
+                      explanation: '',
+                      media_url: '',
+                      media_file: undefined,
+                      answers: [
+                          { answer_text: '', is_correct: false },
+                          { answer_text: '', is_correct: false },
+                      ],
+                  },
+              ],
     );
 
     useEffect(() => {
         if (quiz?.questions && quiz.questions.length > 0) {
             setQuestions(quiz.questions);
         }
+        if (quiz?.duration) {
+            setDuration(quiz.duration);
+        }
     }, [quiz]);
+
     const [loading, setLoading] = useState(false);
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
@@ -67,13 +88,12 @@ export default function Create({
         onConfirm: () => {},
     });
 
-    /* ================= ACTIONS ================= */
-
     const addQuestion = () => {
         setQuestions([
             ...questions,
             {
                 question_text: '',
+                explanation: '',
                 media_url: '',
                 media_file: undefined,
                 answers: [
@@ -151,10 +171,14 @@ export default function Create({
         const formData = new FormData();
 
         formData.append('path_id', pathId);
-        formData.append('difficulty', 'medium'); // Can be made dynamic later
+        formData.append('difficulty', 'medium');
+        formData.append('duration', String(duration));
 
         questions.forEach((q, i) => {
             formData.append(`questions[${i}][question_text]`, q.question_text);
+            if (q.explanation) {
+                formData.append(`questions[${i}][explanation]`, q.explanation);
+            }
 
             // MEDIA FILE
             if (q.media_file) {
@@ -228,6 +252,20 @@ export default function Create({
                                 Add questions, answers, and media to construct
                                 your quiz.
                             </p>
+
+                            <div className="mt-3 flex items-center gap-3">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                    Durasi Pengerjaan Kuis (Menit):
+                                </label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={180}
+                                    value={duration}
+                                    onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 15))}
+                                    className="w-24 rounded-lg border border-slate-300 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                />
+                            </div>
                         </div>
                     </header>
 
@@ -398,6 +436,22 @@ function QuestionCard({
                         }
                         rows={3}
                         className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
+                    />
+                </div>
+
+                {/* EXPLANATION */}
+                <div>
+                    <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Pembahasan / Catatan Penjelasan Soal (Opsional)
+                    </label>
+                    <textarea
+                        placeholder="Contoh: Jawaban A benar karena fungsi ini..."
+                        value={data.explanation || ''}
+                        onChange={(e) =>
+                            onChange({ ...data, explanation: e.target.value })
+                        }
+                        rows={2}
+                        className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
                     />
                 </div>
 

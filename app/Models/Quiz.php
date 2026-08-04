@@ -14,6 +14,7 @@ class Quiz extends Model
         'path_id',
         'slug',
         'difficulty',
+        'duration',
     ];
 
     protected static function booted(): void

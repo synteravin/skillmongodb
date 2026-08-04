@@ -19,6 +19,7 @@ class StoreQuizRequest extends FormRequest
 
             /* ================= QUIZ ================= */
             'difficulty' => ['required', 'in:easy,medium,hard'],
+            'duration' => ['nullable', 'integer', 'min:1'],
 
             /* ================= QUESTIONS ================= */
             'questions' => ['required', 'array', 'min:1'],
@@ -30,6 +31,8 @@ class StoreQuizRequest extends FormRequest
             'questions.*.media_url' => ['nullable', 'string'],
 
             'questions.*.question_text' => ['required', 'string'],
+
+            'questions.*.explanation' => ['nullable', 'string'],
 
             /* ================= ANSWERS ================= */
             'questions.*.answers' => ['required', 'array', 'min:2'],

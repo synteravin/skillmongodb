@@ -3,7 +3,6 @@
 namespace App\Services\Quiz;
 
 use App\Models\Quiz;
-use App\Models\QuizAnswer;
 use App\Models\User;
 
 class QuizService
@@ -29,15 +28,15 @@ class QuizService
                 continue;
             }
 
-            // Get correct & wrong answer IDs for this question from DB
-            $correctAnswerIds = QuizAnswer::where('question_id', $questionId)
-                ->where('is_correct', true)
+            // Get correct & wrong answer IDs for this question from model relationship
+            $correctAnswerIds = $question->answers
+                ->filter(fn ($a) => (bool) $a->is_correct)
                 ->pluck('_id')
                 ->map(fn ($id) => (string) $id)
                 ->toArray();
 
-            $wrongAnswerIds = QuizAnswer::where('question_id', $questionId)
-                ->where('is_correct', false)
+            $wrongAnswerIds = $question->answers
+                ->filter(fn ($a) => ! $a->is_correct)
                 ->pluck('_id')
                 ->map(fn ($id) => (string) $id)
                 ->toArray();

@@ -6,12 +6,14 @@ use App\Actions\Quiz\SubmitQuizAction;
 use App\Http\Requests\Quiz\SubmitQuizRequest;
 use App\Models\Quiz;
 use App\Models\QuizResult;
+use App\Models\User;
 use App\Models\UserStat;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class QuizController extends Controller
 {
-    public function show($id)
+    public function show(string $id)
     {
         $quiz = Quiz::with(['path.course', 'path.modules', 'questions.answers'])
             ->where('_id', $id)
@@ -19,7 +21,9 @@ class QuizController extends Controller
             ->orWhereHas('path', fn ($q) => $q->where('slug', $id))
             ->firstOrFail();
 
-        $user = auth()->user()->load(['userStats']);
+        /** @var User $user */
+        $user = Auth::user();
+        $user->load(['userStats']);
 
         // 🔒 CEK STATUS KELULUSAN TERLEBIH DAHULU
         $hasPassed = QuizResult::where(function ($q) use ($user) {
@@ -89,8 +93,11 @@ class QuizController extends Controller
         $currentLevel = floor($totalExp / $expPerLevel) + 1;
         $currentExp = $totalExp % $expPerLevel;
 
-        $user = auth()->user();
+        /** @var User $user */
+        $user = Auth::user();
         $character = $user->character;
+
+        $firstModule = $quiz->path->modules->first();
 
         return Inertia::render('Student/Quiz/Play', [
             'character' => $character ? [
@@ -107,24 +114,37 @@ class QuizController extends Controller
             'quiz' => [
                 'id' => (string) ($quiz->slug ?: $quiz->path->slug ?: $quiz->_id),
                 'difficulty' => $quiz->difficulty,
-                'course_slug' => $quiz->path->course->slug,
-                'questions' => $quiz->questions->map(fn ($q) => [
-                    'id' => (string) $q->_id,
-                    'question_text' => $q->question_text,
-                    'media_url' => $q->media_url
-                        ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
-                        : null,
-                    'max_selectable' => max(1, $q->answers->where('is_correct', true)->count()),
-                    'answers' => $q->answers->map(fn ($a) => [
-                        'id' => (string) $a->_id,
-                        'answer_text' => $a->answer_text,
-                    ]),
-                ]),
+                'duration' => (int) ($quiz->duration ?? 15),
+                'course_slug' => $quiz->path->course->slug ?? null,
+                'path_slug' => $quiz->path->slug ?? null,
+                'module_slug' => $firstModule->slug ?? null,
+                'is_review' => (bool) $hasPassed,
+                'questions' => $quiz->questions->map(function ($q) use ($hasPassed) {
+                    $answers = $hasPassed ? $q->answers : $q->answers->shuffle();
+
+                    return [
+                        'id' => (string) $q->_id,
+                        'question_text' => $q->question_text,
+                        'explanation' => $q->explanation,
+                        'media_url' => $q->media_url
+                            ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
+                            : null,
+                        'max_selectable' => max(1, $q->answers->where('is_correct', true)->count()),
+                        'correct_answer_ids' => $hasPassed
+                            ? $q->answers->where('is_correct', true)->pluck('_id')->map(fn ($id) => (string) $id)->values()->toArray()
+                            : [],
+                        'answers' => $answers->map(fn ($a) => [
+                            'id' => (string) $a->_id,
+                            'answer_text' => $a->answer_text,
+                            'is_correct' => (bool) $a->is_correct,
+                        ]),
+                    ];
+                }),
             ],
         ]);
     }
 
-    public function submit(SubmitQuizRequest $request, $id)
+    public function submit(SubmitQuizRequest $request, string $id)
     {
         try {
             $quiz = Quiz::with(['questions.answers', 'path'])
@@ -133,7 +153,8 @@ class QuizController extends Controller
                 ->orWhereHas('path', fn ($q) => $q->where('slug', $id))
                 ->firstOrFail();
 
-            $user = auth()->user();
+            /** @var User $user */
+            $user = Auth::user();
 
             // 🔒 CEK APAKAH SUDAH LULUS (JIKA SUDAH LULUS, TIDAK BISA SUBMIT LAGI)
             $alreadyPassed = QuizResult::where('user_id', (string) $user->_id)
