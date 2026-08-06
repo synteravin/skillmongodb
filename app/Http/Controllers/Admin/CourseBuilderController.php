@@ -183,14 +183,14 @@ class CourseBuilderController extends Controller
     ) {
         $data = $request->validated();
 
+        $course = Course::find($data['course_id']);
+
         if (! empty($data['career_group_id'])) {
             $group = CareerGroup::findOrFail($data['career_group_id']);
             $this->authorize('update', $group);
         }
 
         $action->execute($data);
-
-        $course = Course::findOrFail($data['course_id']);
 
         return redirect()->route('admin.courses.builder', $course->slug);
     }
@@ -199,11 +199,11 @@ class CourseBuilderController extends Controller
         StoreModuleRequest $request,
         CreateModuleAction $action
     ) {
+        $data = $request->validated();
 
-        $action->execute($request->validated());
+        $action->execute($data);
 
         return redirect()->back();
-
     }
 
     public function reorderPaths(Request $request)
@@ -284,11 +284,13 @@ class CourseBuilderController extends Controller
     public function updateCareerGroupStatus(Request $request, CareerGroup $group)
     {
         $data = $request->validate([
-            'status' => ['required', 'string', 'in:draft,completed'],
+            'status' => ['required', 'string', 'in:draft,published,completed'],
         ]);
 
-        $group->update(['status' => $data['status']]);
+        $status = $data['status'] === 'completed' ? 'published' : $data['status'];
 
-        return back()->with('success', 'Status branch berhasil diperbarui');
+        $group->update(['status' => $status]);
+
+        return back()->with('success', 'Status branch berhasil diperbarui menjadi '.$status);
     }
 }

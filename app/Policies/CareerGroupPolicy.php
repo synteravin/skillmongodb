@@ -25,10 +25,14 @@ class CareerGroupPolicy
             return true;
         }
 
+        if ((string) $careerGroup->mentor_id === (string) $user->_id) {
+            return true;
+        }
+
         $groups = MentorCareerGroup::where(
             'mentor_id',
             (string) $user->_id
-        )->pluck('career_group_id');
+        )->pluck('career_group_id')->map(fn ($id) => (string) $id);
 
         return $groups->contains((string) $careerGroup->_id);
     }

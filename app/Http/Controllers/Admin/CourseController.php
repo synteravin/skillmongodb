@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CareerGroup;
 use App\Models\Course;
+use App\Models\MentorCareerGroup;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
-use MongoDB\BSON\ObjectId;
 
 class CourseController extends Controller
 {
@@ -130,10 +131,8 @@ class CourseController extends Controller
 
     }
 
-    public function assignMentor(Request $request, $course)
+    public function assignMentor(Request $request, Course $course)
     {
-        $course = Course::where('_id', new ObjectId($course))->firstOrFail();
-
         $data = $request->validate([
             'mentor_id' => ['required'],
         ]);
@@ -151,12 +150,28 @@ class CourseController extends Controller
 
     public function publish(Request $request, Course $course)
     {
+        /** @var User $user */
+        $user = $request->user();
+        if (! $user->isAdmin()) {
+            $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) $user->_id)
+                ->pluck('career_group_id')
+                ->map(fn ($id) => (string) $id)
+                ->toArray();
+
+            $isAssignedMentor = (string) $course->mentor_id === (string) $user->_id ||
+                CareerGroup::where('course_id', (string) $course->_id)
+                    ->whereIn('_id', $assignedGroupIds)
+                    ->exists();
+
+            abort_unless($isAssignedMentor, 403, 'Anda tidak memiliki akses untuk mengubah status course ini.');
+        }
+
         $newStatus = $course->status === 'published' ? 'draft' : 'published';
 
         $course->update([
             'status' => $newStatus,
             'published_at' => $newStatus === 'published' ? now() : null,
-            'published_by' => $newStatus === 'published' ? auth()->id() : null,
+            'published_by' => $newStatus === 'published' ? $user->_id : null,
         ]);
 
         return back()->with('success', 'Status course berhasil diubah menjadi '.$newStatus);

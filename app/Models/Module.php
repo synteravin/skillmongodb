@@ -18,6 +18,11 @@ class Module extends Model
         'slug',
         'order',
         'created_by',
+        'is_published',
+    ];
+
+    protected $casts = [
+        'is_published' => 'boolean',
     ];
 
     public function path()
