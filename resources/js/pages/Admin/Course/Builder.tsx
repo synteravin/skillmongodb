@@ -17,6 +17,7 @@ import {
 import AppLayout from '@/layouts/app-layout';
 import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 import {
     DndContext,
@@ -542,6 +543,16 @@ export default function Builder({
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 <div className="mx-auto w-full space-y-8">
+                {course.status === 'published' && (
+                    <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-300">
+                        <Globe className="h-6 w-6 shrink-0 text-emerald-400" />
+                        <div className="text-xs leading-relaxed">
+                            <span className="font-bold text-emerald-400">Course sedang Live & Dipelajari Siswa.</span>
+                            <br />
+                            Anda dapat langsung menambah atau memperbarui kurikulum. Materi baru yang Anda susun akan tersimpan sebagai draf sampai Anda siap menerbitkannya tanpa menginterupsi pembelajaran siswa.
+                        </div>
+                    </div>
+                )}
                     {/* ================= HEADER HERO SECTION ================= */}
                     <header
                         className="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm dark:border-slate-800 dark:bg-[#0d0f17]"

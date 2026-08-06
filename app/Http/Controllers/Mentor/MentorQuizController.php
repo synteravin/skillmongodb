@@ -89,7 +89,6 @@ class MentorQuizController extends Controller
         $this->authorize('create', Quiz::class);
 
         $data = $request->validated();
-
         $data['path_id'] = (string) $path->_id;
 
         app(CreateQuizAction::class)->execute($data);

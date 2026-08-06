@@ -50,7 +50,7 @@ use Laravel\Fortify\Features;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'role:admin,mentor'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

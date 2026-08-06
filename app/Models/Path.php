@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
+use MongoDB\Laravel\Eloquent\Builder;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Path extends Model
@@ -21,10 +22,12 @@ class Path extends Model
         'thumbnail',
         'order',
         'is_active',
+        'is_published',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_published' => 'boolean',
     ];
 
     /* ================= RELATIONS ================= */
@@ -74,19 +77,24 @@ class Path extends Model
 
     /* ================= SCOPES ================= */
 
-    public function scopeFundamental($query)
+    public function scopeFundamental(Builder $query): Builder
     {
         return $query->where('phase', 'basic_fundamental');
     }
 
-    public function scopeCareer($query)
+    public function scopeCareer(Builder $query): Builder
     {
         return $query->where('phase', 'career_branch');
     }
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('is_published', '!==', false);
     }
 
     protected static function booted(): void

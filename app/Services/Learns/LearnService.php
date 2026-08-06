@@ -5,11 +5,12 @@ namespace App\Services\Learns;
 use App\Models\Course;
 use App\Models\Module;
 use App\Models\Path;
+use App\Models\User;
 use App\Models\UserStat;
 
 class LearnService
 {
-    public function getData($user, $courseId, $pathId, $moduleId)
+    public function getData(User $user, string $courseId, string $pathId, string $moduleId): array
     {
         /* ================= NORMALIZE ID ================= */
         $courseId = (string) $courseId;
@@ -25,8 +26,9 @@ class LearnService
         $path = Path::where(fn ($q) => $q->where('slug', $pathId)->orWhere('_id', $pathId))
             ->where('course_id', (string) $course->_id)
             ->with([
-                'modules' => function ($q) {
-                    $q->select('_id', 'path_id', 'title', 'slug', 'order')
+                'modules' => function ($q) use ($user) {
+                    $q->select('_id', 'path_id', 'title', 'slug', 'order', 'is_published')
+                        ->when(! $user->isAdmin() && ! $user->isMentor(), fn ($query) => $query->where('is_published', '!==', false))
                         ->orderBy('order');
                 },
                 'quiz',
@@ -36,6 +38,7 @@ class LearnService
         /* ================= MODULE ================= */
         $module = Module::where(fn ($q) => $q->where('slug', $moduleId)->orWhere('_id', $moduleId))
             ->where('path_id', (string) $path->_id)
+            ->when(! $user->isAdmin() && ! $user->isMentor(), fn ($query) => $query->where('is_published', '!==', false))
             ->with([
                 'contents' => function ($q) {
                     $q->select('_id', 'module_id', 'type', 'content', 'order')
@@ -83,7 +86,7 @@ class LearnService
         ];
     }
 
-    private function normalize($data)
+    private function normalize(mixed $data): array
     {
         if (is_string($data)) {
             $data = json_decode($data, true) ?? [];

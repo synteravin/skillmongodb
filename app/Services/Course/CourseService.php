@@ -15,7 +15,15 @@ class CourseService
             ->where('status', CourseStatus::ACTIVE->value)
             ->first();
 
-        return Course::where('status', 'published')
+        $enrolledCourseIds = CourseStudent::where('user_id', (string) $user->_id)
+            ->pluck('course_id')
+            ->map(fn ($id) => (string) $id)
+            ->toArray();
+
+        return Course::where(function ($query) use ($enrolledCourseIds) {
+            $query->where('status', 'published')
+                ->orWhereIn('_id', $enrolledCourseIds);
+        })
             ->with(['paths.modules'])
             ->latest()
             ->get()
@@ -50,7 +58,12 @@ class CourseService
     public function selectCourse(User $user, string $courseId)
     {
         $course = Course::findOrFail($courseId);
-        if ($course->status !== 'published') {
+
+        $isEnrolled = CourseStudent::where('user_id', (string) $user->_id)
+            ->where('course_id', (string) $course->_id)
+            ->exists();
+
+        if ($course->status !== 'published' && ! $isEnrolled && ! $user->isAdmin()) {
             abort(403, 'Course ini belum dipublikasikan.');
         }
 

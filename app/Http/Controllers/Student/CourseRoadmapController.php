@@ -5,19 +5,22 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\LevelBadge;
+use App\Models\Path;
 use App\Models\User;
 use App\Models\UserStat;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CourseRoadmapController extends Controller
 {
-    public function __invoke(Course $course)
+    public function __invoke(Request $request, Course $course)
     {
         $this->authorize('access', $course);
 
-        $user = auth()->user();
+        /** @var User $user */
+        $user = $request->user();
 
         /* ================= PROGRESS ================= */
 
@@ -101,7 +104,13 @@ class CourseRoadmapController extends Controller
 
         /* ================= CAREER ================= */
 
+        $selectedPath = $progress->selected_path_id ? Path::find($progress->selected_path_id) : null;
+        $selectedGroupId = $selectedPath ? (string) $selectedPath->career_group_id : null;
+
         $careerGroups = $course->careerGroups
+            ->filter(function ($group) use ($selectedGroupId) {
+                return $group->status !== 'draft' || (string) $group->_id === $selectedGroupId;
+            })
             ->values()
             ->map(function ($group) use ($progress, $isBasicCompleted) {
 
