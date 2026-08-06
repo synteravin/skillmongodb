@@ -14,7 +14,7 @@ class SelectCharacterController extends Controller
         $user = $request->user();
 
         if ($user->hasCharacter() && $user->character) {
-            return redirect()->route('student.dashboard');
+            return redirect()->route('dashboard');
         }
 
         $characters = Character::all()->map(function ($character) {
@@ -53,6 +53,6 @@ class SelectCharacterController extends Controller
             $data['character_id']
         );
 
-        return redirect()->route('student.dashboard');
+        return redirect()->route('dashboard');
     }
 }

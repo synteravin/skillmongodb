@@ -17,7 +17,7 @@ class LeaderboardTest extends TestCase
 
     public function test_guests_are_redirected_to_the_login_page_from_leaderboard(): void
     {
-        $response = $this->get('/student/leaderboard');
+        $response = $this->get('/leaderboard');
         $response->assertRedirect(route('login'));
     }
 
@@ -39,7 +39,7 @@ class LeaderboardTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->get('/student/leaderboard');
+        $response = $this->get('/leaderboard');
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Student/Leaderboard')

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Quest extends Model
@@ -15,6 +16,7 @@ class Quest extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'min_budget',
         'max_budget',
@@ -100,6 +102,27 @@ class Quest extends Model
     }
 
     /* ================= RELATIONS ================= */
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Quest $quest) {
+            if (empty($quest->slug) && ! empty($quest->title)) {
+                $quest->slug = Str::slug($quest->title);
+            }
+        });
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? 'slug', $value)
+            ->orWhere('_id', $value)
+            ->firstOrFail();
+    }
 
     public function creator(): BelongsTo
     {

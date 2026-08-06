@@ -52,18 +52,22 @@ class ModuleContentService
     {
         $type = $item['type'];
         $file = $item['file'] ?? null;
+        $title = $item['title'] ?? null;
+        $description = $item['description'] ?? null;
 
         // ================= TEXT =================
         if ($type === 'text') {
             return [
-                'title' => $item['title'] ?? null,
-                'description' => $item['description'] ?? null,
+                'title' => $title,
+                'description' => $description,
             ];
         }
 
         // ================= YOUTUBE =================
         if ($type === 'youtube') {
             return [
+                'title' => $title,
+                'description' => $description,
                 'url' => $item['url'] ?? null,
             ];
         }
@@ -96,6 +100,8 @@ class ModuleContentService
             $disk = Storage::disk('s3');
 
             return [
+                'title' => $title,
+                'description' => $description,
                 'url' => $disk->url($path),
                 'path' => $path,
                 'name' => $file->getClientOriginalName(),
@@ -104,6 +110,10 @@ class ModuleContentService
             ];
         }
 
-        return [];
+        return array_filter([
+            'title' => $title,
+            'description' => $description,
+            'url' => $item['url'] ?? null,
+        ], fn ($val) => ! is_null($val));
     }
 }

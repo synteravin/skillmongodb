@@ -14,6 +14,7 @@ interface ResultModalProps {
     open: boolean;
     result: Result | null;
     onClose: () => void;
+    onViewExplanation?: () => void;
     onRetry?: () => void;
 }
 
@@ -152,6 +153,7 @@ export default function ResultModal({
     open,
     result,
     onClose,
+    onViewExplanation,
     onRetry,
 }: ResultModalProps) {
     const active = open && !!result;
@@ -172,7 +174,7 @@ export default function ResultModal({
         {
             label: 'GOLD',
             value: gold,
-            icon: '/images/gold.webp',
+            icon: '/images/Gold.webp',
             color: '#fbbf24',
             glowColor: 'rgba(251,191,36,0.45)',
         },
@@ -304,51 +306,47 @@ export default function ResultModal({
                         )}
 
                         {/* ── Buttons ── */}
-                        <div className="flex items-center justify-center gap-3">
+                        <div className="flex flex-wrap items-center justify-center gap-2.5">
                             {!isPassed && onRetry && (
                                 <motion.button
                                     whileHover={{ scale: 1.04 }}
                                     whileTap={{ scale: 0.96 }}
                                     onClick={onRetry}
-                                    className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-bold tracking-wider text-white uppercase shadow-lg shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500"
+                                    className="flex-1 min-w-[120px] rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-lg shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500"
                                     style={{
                                         fontFamily: "'Orbitron', sans-serif",
                                     }}
                                 >
-                                    Coba Lagi
+                                    🔄 Coba Lagi
                                 </motion.button>
                             )}
 
                             <motion.button
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                                whileHover={{
-                                    scale: 1.06,
-                                    boxShadow: isPassed
-                                        ? '0 0 35px rgba(59,40,246,0.8), 0 0 70px rgba(59,40,246,0.45)'
-                                        : '0 0 25px rgba(239,68,68,0.5)',
-                                }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={onClose}
-                                className="relative overflow-hidden rounded-xl px-8 py-3 font-black tracking-widest uppercase transition-all duration-300"
+                                whileHover={{ scale: 1.04 }}
+                                whileTap={{ scale: 0.96 }}
+                                onClick={onViewExplanation || onClose}
+                                className="flex-1 min-w-[140px] rounded-xl border border-yellow-400/60 bg-yellow-400/10 px-4 py-3 text-xs font-bold tracking-wider text-yellow-300 uppercase transition-all duration-300 hover:bg-yellow-400/20"
                                 style={{
                                     fontFamily: "'Orbitron', sans-serif",
-                                    fontSize: '1.1rem',
-                                    letterSpacing: '0.2em',
-                                    color: '#fff',
-                                    background: isPassed
-                                        ? '#3B28F6'
-                                        : 'rgba(255,255,255,0.1)',
-                                    border: isPassed
-                                        ? '1px solid rgba(99,102,241,0.5)'
-                                        : '1px solid rgba(255,255,255,0.2)',
-                                    boxShadow: isPassed
-                                        ? '0 0 20px rgba(59,40,246,0.6), 0 0 45px rgba(59,40,246,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
-                                        : 'none',
                                 }}
                             >
-                                {isPassed ? 'OK' : 'Kembali'}
+                                💡 Lihat Pembahasan
+                            </motion.button>
+
+                            <motion.button
+                                whileHover={{ scale: 1.04 }}
+                                whileTap={{ scale: 0.96 }}
+                                onClick={onClose}
+                                className={`flex-1 min-w-[150px] rounded-xl px-4 py-3 text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
+                                    isPassed
+                                        ? 'border border-indigo-400/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 hover:bg-indigo-500'
+                                        : 'border border-slate-600/60 bg-slate-800 text-slate-200 hover:bg-slate-700'
+                                }`}
+                                style={{
+                                    fontFamily: "'Orbitron', sans-serif",
+                                }}
+                            >
+                                Kembali ke Modul
                             </motion.button>
                         </div>
 

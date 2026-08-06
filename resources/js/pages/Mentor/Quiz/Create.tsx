@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import {
@@ -21,8 +21,10 @@ type Answer = {
     is_correct: boolean;
 };
 
-type Question = {
+interface Question {
+    id?: string;
     question_text: string;
+    explanation?: string;
     media_url?: string;
     media_file?: File;
     answers: Answer[];
@@ -38,12 +40,37 @@ export default function Create({
     quiz?: {
         id: string;
         difficulty: string;
+        duration?: number;
         questions: Question[];
     } | null;
 }) {
+    const [duration, setDuration] = useState<number>(quiz?.duration || 15);
     const [questions, setQuestions] = useState<Question[]>(
-        quiz?.questions ?? [],
+        quiz?.questions && quiz.questions.length > 0
+            ? quiz.questions
+            : [
+                  {
+                      question_text: '',
+                      explanation: '',
+                      media_url: '',
+                      media_file: undefined,
+                      answers: [
+                          { answer_text: '', is_correct: false },
+                          { answer_text: '', is_correct: false },
+                      ],
+                  },
+              ],
     );
+
+    useEffect(() => {
+        if (quiz?.questions && quiz.questions.length > 0) {
+            setQuestions(quiz.questions);
+        }
+        if (quiz?.duration) {
+            setDuration(quiz.duration);
+        }
+    }, [quiz]);
+
     const [loading, setLoading] = useState(false);
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
@@ -61,13 +88,12 @@ export default function Create({
         onConfirm: () => {},
     });
 
-    /* ================= ACTIONS ================= */
-
     const addQuestion = () => {
         setQuestions([
             ...questions,
             {
                 question_text: '',
+                explanation: '',
                 media_url: '',
                 media_file: undefined,
                 answers: [
@@ -145,10 +171,14 @@ export default function Create({
         const formData = new FormData();
 
         formData.append('path_id', pathId);
-        formData.append('difficulty', 'medium'); // Can be made dynamic later
+        formData.append('difficulty', 'medium');
+        formData.append('duration', String(duration));
 
         questions.forEach((q, i) => {
             formData.append(`questions[${i}][question_text]`, q.question_text);
+            if (q.explanation) {
+                formData.append(`questions[${i}][explanation]`, q.explanation);
+            }
 
             // MEDIA FILE
             if (q.media_file) {
@@ -202,7 +232,7 @@ export default function Create({
                         <div className="relative z-10 flex flex-col gap-2">
                             <button
                                 onClick={() => window.history.back()}
-                                className="text-slate-655 mb-2 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                                className="mb-2 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                             >
                                 <ArrowLeft size={16} /> Back
                             </button>
@@ -222,6 +252,20 @@ export default function Create({
                                 Add questions, answers, and media to construct
                                 your quiz.
                             </p>
+
+                            <div className="mt-3 flex items-center gap-3">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                    Durasi Pengerjaan Kuis (Menit):
+                                </label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={180}
+                                    value={duration}
+                                    onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 15))}
+                                    className="w-24 rounded-lg border border-slate-300 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                />
+                            </div>
                         </div>
                     </header>
 
@@ -274,7 +318,7 @@ export default function Create({
                             <button
                                 onClick={submit}
                                 disabled={loading}
-                                className="bg-indigo-650 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-8 py-2.5 text-sm font-medium text-white shadow-md shadow-indigo-500/10 transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:shadow-indigo-500/20"
+                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-500 dark:shadow-indigo-900/40"
                             >
                                 {loading ? (
                                     <>
@@ -395,6 +439,22 @@ function QuestionCard({
                     />
                 </div>
 
+                {/* EXPLANATION */}
+                <div>
+                    <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Pembahasan / Catatan Penjelasan Soal (Opsional)
+                    </label>
+                    <textarea
+                        placeholder="Contoh: Jawaban A benar karena fungsi ini..."
+                        value={data.explanation || ''}
+                        onChange={(e) =>
+                            onChange({ ...data, explanation: e.target.value })
+                        }
+                        rows={2}
+                        className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
+                    />
+                </div>
+
                 {/* IMAGE UPLOAD */}
                 <div>
                     <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
@@ -404,7 +464,7 @@ function QuestionCard({
                         <label className="group flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-700">
                             <ImageIcon
                                 size={16}
-                                className="group-hover:text-indigo-650 text-slate-400 transition-colors dark:group-hover:text-indigo-400"
+                                className="text-slate-400 transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                             />
                             <span>Choose Image</span>
                             <input
@@ -463,8 +523,10 @@ function QuestionCard({
                         <label className="ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                             Possible Answers
                         </label>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                            Select the correct answer(s)
+                        <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                            {data.answers.filter((x) => x.is_correct).length > 1
+                                ? `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar (Pilihan Ganda Kompleks)`
+                                : `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar`}
                         </span>
                     </div>
 
@@ -511,7 +573,7 @@ function QuestionCard({
                                             answer_text: e.target.value,
                                         })
                                     }
-                                    className="dark:placeholder:text-slate-655 flex-1 border-none bg-transparent px-2 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 dark:text-white"
+                                    className="flex-1 border-none bg-transparent px-2 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 dark:text-white dark:placeholder:text-slate-500"
                                 />
 
                                 {/* DELETE */}

@@ -18,7 +18,7 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
 
     const handleDisputeSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        disputeForm.post(`/student/quests/${quest._id}/dispute`, {
+        disputeForm.post(`/quests/${quest.slug}/dispute`, {
             onSuccess: () => {
                 setShowDisputeModal(false);
                 disputeForm.reset();

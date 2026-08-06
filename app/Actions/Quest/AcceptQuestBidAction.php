@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class AcceptQuestBidAction
 {
@@ -31,6 +32,7 @@ class AcceptQuestBidAction
             'notifiable_id' => (string) $acceptedBid->student_id,
             'data' => [
                 'quest_id' => (string) $quest->_id,
+                'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
                 'message' => "Selamat! Proposal Anda untuk quest '{$quest->title}' telah diterima oleh pemilik proyek. Silakan mulai pengerjaan.",
                 'type' => 'bid_accepted',
@@ -51,6 +53,7 @@ class AcceptQuestBidAction
                 'notifiable_id' => (string) $rejectedBid->student_id,
                 'data' => [
                     'quest_id' => (string) $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                     'title' => $quest->title,
                     'message' => "Terima kasih atas penawaran Anda. Pemilik proyek telah memilih pelamar lain untuk quest '{$quest->title}'.",
                     'type' => 'bid_rejected',

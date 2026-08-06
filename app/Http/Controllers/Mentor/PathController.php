@@ -13,6 +13,7 @@ use App\Models\Path;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,6 +30,7 @@ class PathController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => (string) $p->_id,
+                'slug' => $p->slug,
                 'name' => $p->name,
                 'description' => $p->description,
                 'order' => $p->order,
@@ -37,6 +39,7 @@ class PathController extends Controller
         return Inertia::render('Mentor/Paths/Index', [
             'group' => [
                 'id' => (string) $group->_id,
+                'slug' => $group->slug,
                 'name' => $group->name,
                 'status' => $group->status ?? 'draft',
             ],
@@ -45,11 +48,18 @@ class PathController extends Controller
                 ->get()
                 ->map(fn ($p) => [
                     'id' => (string) $p->_id,
+                    'slug' => $p->slug,
                     'name' => $p->name,
                     'description' => $p->description,
                     'order' => $p->order,
                 ]),
             'basic_paths' => $basicPaths,
+            'course' => $group->course ? [
+                'id' => (string) $group->course->_id,
+                'slug' => $group->course->slug,
+                'title' => $group->course->title,
+                'status' => $group->course->status,
+            ] : null,
         ]);
     }
 
@@ -79,7 +89,10 @@ class PathController extends Controller
 
     public function update(Request $request, Path $path)
     {
-        $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) auth()->id())
+        /** @var User $user */
+        $user = $request->user();
+
+        $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) $user->_id)
             ->pluck('career_group_id')
             ->toArray();
 
@@ -99,10 +112,13 @@ class PathController extends Controller
         return back()->with('success', 'Path updated successfully');
     }
 
-    public function destroy(Path $path)
+    public function destroy(Request $request, Path $path)
     {
-        if (! auth()->user()->isAdmin()) {
-            $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) auth()->id())
+        /** @var User $user */
+        $user = $request->user();
+
+        if (! $user->isAdmin()) {
+            $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) $user->_id)
                 ->pluck('career_group_id')
                 ->map(fn ($id) => (string) $id)
                 ->toArray();
@@ -138,6 +154,9 @@ class PathController extends Controller
 
     public function reorder(Request $request)
     {
+        /** @var User $user */
+        $user = $request->user();
+
         $data = $request->validate([
             'paths' => ['required', 'array'],
             'paths.*.id' => ['required', 'string'],
@@ -147,7 +166,7 @@ class PathController extends Controller
         if (! empty($data['paths'])) {
             $firstPath = Path::find($data['paths'][0]['id']);
             if ($firstPath) {
-                $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) auth()->id())
+                $assignedGroupIds = MentorCareerGroup::where('mentor_id', (string) $user->_id)
                     ->pluck('career_group_id')
                     ->toArray();
 
@@ -171,7 +190,7 @@ class PathController extends Controller
         $this->authorize('update', $group);
 
         $data = $request->validate([
-            'status' => ['required', 'string', 'in:draft,completed'],
+            'status' => ['required', 'string', 'in:draft,published,completed'],
         ]);
 
         $group->update(['status' => $data['status']]);

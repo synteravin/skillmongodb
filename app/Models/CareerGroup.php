@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use MongoDB\Laravel\Eloquent\Model;
 
 class CareerGroup extends Model
@@ -23,6 +24,27 @@ class CareerGroup extends Model
     protected $attributes = [
         'status' => 'draft',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function ($group) {
+            if (empty($group->slug) && ! empty($group->name)) {
+                $group->slug = Str::slug($group->name);
+            }
+        });
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('_id', $value)
+            ->orWhere('slug', $value)
+            ->firstOrFail();
+    }
 
     public function course()
     {

@@ -50,7 +50,7 @@ use Laravel\Fortify\Features;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'role:admin,mentor'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -258,9 +258,6 @@ Route::middleware(['auth', 'role:mentor'])
         Route::get('/student-journey', [MentorDetailController::class, 'index'])
             ->name('student-journey');
 
-        Route::get('/student-journey', [MentorDetailController::class, 'index'])
-            ->name('student-journey');
-
         Route::get('/student-journey/{student}', [MentorDetailController::class, 'show'])
             ->name('student-journey.show');
 
@@ -416,19 +413,19 @@ Route::middleware(['auth', 'role:mentor'])
 |--------------------------------------------------------------------------
 */
 
+Route::middleware(['auth', 'role:student', 'has.character'])->group(function () {
+    Route::get('/dashboard', [StudentDashboard::class, 'index'])->name('dashboard');
+});
+
 Route::middleware(['auth', 'role:student', 'has.character'])
-    ->prefix('student')
     ->name('student.')
     ->group(function () {
-
-        Route::get('/dashboard', [StudentDashboard::class, 'index'])
-            ->name('dashboard');
 
         Route::post('/complete-onboarding', [StudentDashboard::class, 'completeOnboarding'])
             ->name('complete-onboarding');
 
         Route::get('/certificates', [CertificateController::class, 'index'])
-            ->name('student.certificates');
+            ->name('certificates');
 
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -451,10 +448,10 @@ Route::middleware(['auth', 'role:student', 'has.character'])
             ->name('modules.complete');
 
         Route::post('/paths/{path}/select', SelectPathController::class)
-            ->name('student.paths.select');
+            ->name('paths.select');
 
         Route::post('/paths/{path}/complete', CompletePathController::class)
-            ->name('student.paths.complete');
+            ->name('paths.complete');
 
         Route::get('/learn/{course}/{path}/{module}', [LearnController::class, 'show'])
             ->name('course.path.module.show');
@@ -482,7 +479,6 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:student,admin', 'has.character'])
-    ->prefix('student')
     ->name('student.')
     ->group(function () {
         Route::get('/quests', [QuestController::class, 'index'])->name('quests.index');
@@ -512,7 +508,6 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])
-    ->prefix('student')
     ->name('student.')
     ->group(function () {
         Route::get('/forum/attachment/download', [ForumController::class, 'downloadAttachment'])->name('forum.attachment.download');
@@ -535,11 +530,6 @@ Route::middleware(['auth'])
 Route::controller(SelectCharacterController::class)->group(function () {
     Route::get('/select-character', 'index')->name('character.select');
     Route::post('/select-character', 'store')->name('character.store');
-});
-
-Route::middleware(['auth', 'has.character'])->group(function () {
-    Route::get('/dashboard', [StudentDashboard::class, 'index'])
-        ->name('dashboard');
 });
 
 /*

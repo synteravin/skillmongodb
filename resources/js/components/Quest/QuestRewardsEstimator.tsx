@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { ShieldCheck, Info } from 'lucide-react';
 
 interface QuestRewardsEstimatorProps {
-    maxSalary: number;
+    maxSalary?: number;
+    minBudget?: number;
+    maxBudget?: number;
 }
 
 export default function QuestRewardsEstimator({
     maxSalary,
+    minBudget,
+    maxBudget,
 }: QuestRewardsEstimatorProps) {
     const [rewards, setRewards] = useState({
         exp: 100,
@@ -16,7 +20,7 @@ export default function QuestRewardsEstimator({
     });
 
     useEffect(() => {
-        const maxVal = maxSalary || 0;
+        const maxVal = maxSalary ?? maxBudget ?? 0;
         const avgBudget = maxVal;
 
         const exp = Math.min(

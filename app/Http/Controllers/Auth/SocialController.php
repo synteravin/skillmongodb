@@ -51,7 +51,7 @@ class SocialController extends Controller
         return match ($role) {
             'admin' => '/admin/dashboard',
             'mentor' => '/mentor/dashboard',
-            'student' => '/student/dashboard',
+            'student' => '/dashboard',
             default => '/dashboard',
         };
     }

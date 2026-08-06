@@ -100,7 +100,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     };
 
     const handleConfirmArbitrate = () => {
-        arbitrateForm.post(`/admin/quests/${quest._id}/arbitrate`, {
+        arbitrateForm.post(`/admin/quests/${quest.slug}/arbitrate`, {
             onSuccess: () => {
                 arbitrateForm.reset();
             },
@@ -119,7 +119,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             deadline: utcDeadline,
         }));
 
-        extendDeadlineForm.post(`/admin/quests/${quest._id}/extend-deadline`, {
+        extendDeadlineForm.post(`/admin/quests/${quest.slug}/extend-deadline`, {
             onSuccess: () => {
                 extendDeadlineForm.reset();
             },
@@ -132,7 +132,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 'Apakah Anda yakin ingin membatalkan quest ini secara paksa? Uang escrow akan dikembalikan penuh ke pembuat quest.',
             )
         ) {
-            router.post(`/admin/quests/${quest._id}/force-cancel`);
+            router.post(`/admin/quests/${quest.slug}/force-cancel`);
         }
     };
 
@@ -142,13 +142,13 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 'Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan uang escrow dikembalikan ke pembuat quest.',
             )
         ) {
-            router.post(`/admin/quests/${quest._id}/reopen-bidding`);
+            router.post(`/admin/quests/${quest.slug}/reopen-bidding`);
         }
     };
 
     const handleApproveWork = (e: React.FormEvent) => {
         e.preventDefault();
-        approveForm.post(`/admin/quests/${quest._id}/approve`, {
+        approveForm.post(`/admin/quests/${quest.slug}/approve`, {
             onSuccess: () => {
                 setShowApproveForm(false);
                 approveForm.reset();
@@ -158,7 +158,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleRejectWork = (e: React.FormEvent) => {
         e.preventDefault();
-        rejectForm.post(`/admin/quests/${quest._id}/reject`, {
+        rejectForm.post(`/admin/quests/${quest.slug}/reject`, {
             onSuccess: () => {
                 setShowRejectForm(false);
                 rejectForm.reset();
@@ -175,7 +175,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleApprovePost = () => {
         router.post(
-            `/admin/quests/${quest._id}/approve-post`,
+            `/admin/quests/${quest.slug}/approve-post`,
             {},
             {
                 onSuccess: () => setShowApprovePostConfirm(false),
@@ -185,7 +185,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
     const handleRejectPost = (e: React.FormEvent) => {
         e.preventDefault();
-        rejectPostForm.post(`/admin/quests/${quest._id}/reject-post`, {
+        rejectPostForm.post(`/admin/quests/${quest.slug}/reject-post`, {
             onSuccess: () => {
                 setShowRejectPostForm(false);
                 rejectPostForm.reset();
@@ -810,7 +810,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 onConfirm={() => {
                     if (acceptBidId) {
                         router.post(
-                            `/admin/quests/${quest._id}/accept-bid/${acceptBidId}`,
+                            `/admin/quests/${quest.slug}/accept-bid/${acceptBidId}`,
                         );
                     }
                 }}
@@ -828,7 +828,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 onConfirm={() => {
                     if (deleteBidId) {
                         router.delete(
-                            `/admin/quests/${quest._id}/bids/${deleteBidId}`,
+                            `/admin/quests/${quest.slug}/bids/${deleteBidId}`,
                         );
                     }
                 }}

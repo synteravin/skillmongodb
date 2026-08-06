@@ -109,7 +109,7 @@ export default function Index({
     const handleConfirm = () => {
         if (!selectedCourse || processing) return;
         setProcessing(true);
-        router.post('/student/courses/select', {
+        router.post('/courses/select', {
             course_id: selectedCourse._id,
             slug: selectedCourse.slug,
         });
@@ -142,7 +142,7 @@ export default function Index({
                     >
                         <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                             <Link
-                                href="/student/dashboard"
+                                href="/dashboard"
                                 className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                             >
                                 <svg
@@ -306,7 +306,7 @@ export default function Index({
                                                         'active'
                                                     ) {
                                                         router.get(
-                                                            `/student/courses/${course.slug}`,
+                                                            `/courses/${course.slug}`,
                                                         );
                                                         return;
                                                     }
@@ -317,7 +317,7 @@ export default function Index({
                                                         'completed'
                                                     ) {
                                                         router.get(
-                                                            `/student/courses/${course.slug}`,
+                                                            `/courses/${course.slug}`,
                                                         );
                                                         return;
                                                     }

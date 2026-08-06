@@ -239,7 +239,7 @@ export default function Dashboard({
 
                                         <div className="relative z-10 mt-8 flex flex-col gap-2">
                                             <Link
-                                                href={`/mentor/career-groups/${group.id}/paths`}
+                                                href={`/mentor/career-groups/${group.slug}/paths`}
                                                 className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200"
                                             >
                                                 <span>Manage Paths</span>
@@ -247,7 +247,7 @@ export default function Dashboard({
                                             </Link>
 
                                             <Link
-                                                href={`/mentor/career-groups/${group.id}/submissions`}
+                                                href={`/mentor/career-groups/${group.slug}/submissions`}
                                                 className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-indigo-600 transition-colors hover:border-indigo-300 hover:bg-indigo-50/50 dark:border-slate-800 dark:bg-slate-900 dark:text-indigo-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/5"
                                             >
                                                 <span>Submissions</span>

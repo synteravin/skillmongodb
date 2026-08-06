@@ -200,15 +200,15 @@ export default function LearnShow({
         index === 0 || isCompleted(modules[index - 1]._id);
     const allCompleted = modules.every((m) => isCompleted(m._id));
     const isLastModule = currentIndex === modules.length - 1;
-    const finalQuizId = path.final_quiz?.id;
+    const finalQuizSlug = path.final_quiz?.slug;
 
     const goToModule = (mod: Module) => {
-        router.visit(`/student/learn/${course._id}/${path._id}/${mod._id}`);
+        router.visit(`/learn/${course.slug}/${path.slug}/${mod.slug}`);
     };
 
     const completeModule = () => {
         router.post(
-            `/student/modules/${module._id}/complete`,
+            `/modules/${module._id}/complete`,
             {
                 path_id: path._id,
                 course_id: course._id,
@@ -256,7 +256,7 @@ export default function LearnShow({
                 >
                     <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">
                         <Link
-                            href={`/student/courses/${course.slug}`}
+                            href={`/courses/${course.slug}`}
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-300 bg-[#eff6ff] p-2 transition-colors hover:border-blue-500 hover:bg-blue-100 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
                             <svg
@@ -727,11 +727,11 @@ export default function LearnShow({
                                     ✓ Tandai Selesai
                                 </button>
                             )}
-                            {isLastModule && finalQuizId && allCompleted && (
+                            {isLastModule && finalQuizSlug && allCompleted && (
                                 <button
                                     onClick={() =>
                                         router.visit(
-                                            `/student/quiz/${finalQuizId}`,
+                                            `/quiz/${finalQuizSlug}`,
                                         )
                                     }
                                     className="w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"

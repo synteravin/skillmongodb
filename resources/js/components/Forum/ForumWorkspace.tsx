@@ -120,12 +120,12 @@ export default function ForumWorkspace({
     const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
     // Dynamic base route path & dashboard route
-    const basePath = `/${currentUser.role}/forum`;
+    const basePath = currentUser.role === 'student' ? '/forum' : `/${currentUser.role}/forum`;
 
     const getDashboardRoute = () => {
         if (currentUser.role === 'admin') return '/admin/dashboard';
         if (currentUser.role === 'mentor') return '/mentor/dashboard';
-        return '/student/dashboard';
+        return '/dashboard';
     };
 
     // Form Inertia

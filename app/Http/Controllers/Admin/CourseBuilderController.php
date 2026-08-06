@@ -15,11 +15,14 @@ use App\Models\CareerGroup;
 use App\Models\Course;
 use App\Models\LevelBadge;
 use App\Models\Module;
+use App\Models\ModuleContent;
 use App\Models\Path;
+use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class CourseBuilderController extends Controller
@@ -56,10 +59,14 @@ class CourseBuilderController extends Controller
 
                 return [
                     '_id' => (string) $path->_id,
+                    'id' => (string) $path->_id,
+                    'slug' => $path->slug ?: Str::slug($path->name),
                     'name' => $path->name,
                     'modules' => $path->modules->map(function ($module) {
                         return [
                             '_id' => (string) $module->_id,
+                            'id' => (string) $module->_id,
+                            'slug' => $module->slug ?: Str::slug($module->title),
                             'title' => $module->title,
                         ];
                     }),
@@ -77,11 +84,15 @@ class CourseBuilderController extends Controller
 
                 return [
                     '_id' => (string) $group->_id,
+                    'id' => (string) $group->_id,
+                    'slug' => $group->slug ?: Str::slug($group->name),
                     'name' => $group->name,
                     'status' => $group->status ?? 'draft',
 
                     'mentor' => $group->mentor ? [
                         '_id' => (string) $group->mentor->_id,
+                        'id' => (string) $group->mentor->_id,
+                        'username' => $group->mentor->username,
                         'name' => $group->mentor->name,
                         'avatar' => $group->mentor->avatar,
                         'avatar_url' => $group->mentor->avatar
@@ -92,10 +103,14 @@ class CourseBuilderController extends Controller
                     'paths' => $group->paths->sortBy('order')->values()->map(function ($path) {
                         return [
                             '_id' => (string) $path->_id,
+                            'id' => (string) $path->_id,
+                            'slug' => $path->slug ?: Str::slug($path->name),
                             'name' => $path->name,
                             'modules' => $path->modules->map(function ($module) {
                                 return [
                                     '_id' => (string) $module->_id,
+                                    'id' => (string) $module->_id,
+                                    'slug' => $module->slug ?: Str::slug($module->title),
                                     'title' => $module->title,
                                 ];
                             }),
@@ -168,14 +183,14 @@ class CourseBuilderController extends Controller
     ) {
         $data = $request->validated();
 
+        $course = Course::find($data['course_id']);
+
         if (! empty($data['career_group_id'])) {
             $group = CareerGroup::findOrFail($data['career_group_id']);
             $this->authorize('update', $group);
         }
 
         $action->execute($data);
-
-        $course = Course::findOrFail($data['course_id']);
 
         return redirect()->route('admin.courses.builder', $course->slug);
     }
@@ -184,11 +199,11 @@ class CourseBuilderController extends Controller
         StoreModuleRequest $request,
         CreateModuleAction $action
     ) {
+        $data = $request->validated();
 
-        $action->execute($request->validated());
+        $action->execute($data);
 
         return redirect()->back();
-
     }
 
     public function reorderPaths(Request $request)
@@ -212,17 +227,18 @@ class CourseBuilderController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $group->update(['name' => $data['name']]);
+        $group->name = $data['name'];
+        $group->slug = Str::slug($data['name']);
+        $group->save();
 
         return back()->with('success', 'Career branch updated');
     }
 
     public function destroyCareerGroup(CareerGroup $group)
     {
-        // Delete child paths and modules
+        // Delete child paths, modules, contents, and quizzes
         foreach ($group->paths as $path) {
-            Module::where('path_id', (string) $path->_id)->delete();
-            $path->delete();
+            $this->destroyPath($path);
         }
 
         $group->delete();
@@ -236,14 +252,22 @@ class CourseBuilderController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $path->update(['name' => $data['name']]);
+        $path->name = $data['name'];
+        $path->slug = Str::slug($data['name']);
+        $path->save();
 
         return back()->with('success', 'Path updated');
     }
 
     public function destroyPath(Path $path)
     {
-        Module::where('path_id', (string) $path->_id)->delete();
+        $modules = Module::where('path_id', (string) $path->_id)->get();
+        foreach ($modules as $module) {
+            ModuleContent::where('module_id', (string) $module->_id)->delete();
+            Quiz::where('module_id', (string) $module->_id)->delete();
+            $module->delete();
+        }
+        Quiz::where('path_id', (string) $path->_id)->delete();
         $path->delete();
 
         return back()->with('success', 'Path deleted');
@@ -260,11 +284,13 @@ class CourseBuilderController extends Controller
     public function updateCareerGroupStatus(Request $request, CareerGroup $group)
     {
         $data = $request->validate([
-            'status' => ['required', 'string', 'in:draft,completed'],
+            'status' => ['required', 'string', 'in:draft,published,completed'],
         ]);
 
-        $group->update(['status' => $data['status']]);
+        $status = $data['status'] === 'completed' ? 'published' : $data['status'];
 
-        return back()->with('success', 'Status branch berhasil diperbarui');
+        $group->update(['status' => $status]);
+
+        return back()->with('success', 'Status branch berhasil diperbarui menjadi '.$status);
     }
 }

@@ -94,4 +94,11 @@ class Course extends Model
     {
         return 'slug';
     }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('slug', $value)
+            ->orWhere('_id', $value)
+            ->firstOrFail();
+    }
 }
