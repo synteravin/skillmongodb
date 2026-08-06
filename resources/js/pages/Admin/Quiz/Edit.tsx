@@ -25,6 +25,7 @@ type Answer = {
 type Question = {
     id?: string;
     question_text: string;
+    explanation?: string;
     media_url?: string;
     media_file?: File;
     answers: Answer[];
@@ -32,14 +33,17 @@ type Question = {
 
 type Quiz = {
     id: string;
-    module_id: string;
+    path_id?: string;
+    module_id?: string;
     difficulty: string;
+    duration?: number;
     questions: Question[];
 };
 
 /* ================= COMPONENT ================= */
 
 export default function Edit({ quiz }: { quiz: Quiz }) {
+    const [duration, setDuration] = useState<number>(quiz.duration || 15);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(false);
     const [confirmModal, setConfirmModal] = useState<{
@@ -148,14 +152,18 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
 
         const formData = new FormData();
         formData.append('_method', 'put');
-        formData.append('module_id', quiz.module_id || '');
+        formData.append('path_id', quiz.path_id || quiz.module_id || '');
         formData.append('difficulty', quiz.difficulty || 'easy');
+        formData.append('duration', String(duration));
 
         questions.forEach((q, i) => {
             if (q.id) {
                 formData.append(`questions[${i}][id]`, q.id);
             }
             formData.append(`questions[${i}][question_text]`, q.question_text);
+            if (q.explanation) {
+                formData.append(`questions[${i}][explanation]`, q.explanation);
+            }
             
             if (q.media_file) {
                 formData.append(`questions[${i}][media]`, q.media_file);
@@ -214,6 +222,20 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                                 >
                                     {quiz.difficulty} Difficulty
                                 </span>
+
+                                <div className="flex items-center gap-2">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                        Durasi (Menit):
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min={1}
+                                        max={180}
+                                        value={duration}
+                                        onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 15))}
+                                        className="w-20 rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -388,6 +410,22 @@ function QuestionCard({
                     />
                 </div>
 
+                {/* EXPLANATION */}
+                <div>
+                    <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Pembahasan / Catatan Penjelasan Soal (Opsional)
+                    </label>
+                    <textarea
+                        placeholder="Contoh: Jawaban A benar karena fungsi ini..."
+                        value={data.explanation || ''}
+                        onChange={(e) =>
+                            onChange({ ...data, explanation: e.target.value })
+                        }
+                        rows={2}
+                        className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
+                    />
+                </div>
+
                 {/* IMAGE UPLOAD */}
                 <div>
                     <label className="text-slate-550 mb-1.5 ml-1 block text-xs font-semibold dark:text-slate-400">
@@ -456,8 +494,10 @@ function QuestionCard({
                         <label className="text-slate-555 ml-1 block text-xs font-semibold dark:text-slate-400">
                             Possible Answers
                         </label>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                            Select the correct answer(s)
+                        <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                            {data.answers.filter((x) => x.is_correct).length > 1
+                                ? `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar (Pilihan Ganda Kompleks)`
+                                : `✓ ${data.answers.filter((x) => x.is_correct).length} Jawaban Benar`}
                         </span>
                     </div>
 

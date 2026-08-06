@@ -10,6 +10,7 @@ type Props = {
     progress: any;
     badges?: any[];
     courseId?: string;
+    courseSlug?: string;
     basicCompleted: boolean;
 };
 
@@ -18,6 +19,7 @@ export default function StudentCareerBranch({
     progress,
     badges = [],
     courseId,
+    courseSlug,
     basicCompleted,
 }: Props) {
     const hasChosenPath = !!progress.selected_path_id;
@@ -56,12 +58,12 @@ export default function StudentCareerBranch({
         setLoading(true);
 
         router.post(
-            `/student/select-career/${firstPath._id}`,
+            `/select-career/${firstPath.slug}`,
             {},
             {
                 onSuccess: () => {
                     router.visit(
-                        `/student/learn/${courseId}/${firstPath._id}/${firstPath.modules[0]._id}`,
+                        `/learn/${courseSlug}/${firstPath.slug}/${firstPath.modules[0].slug}`,
                     );
                 },
                 onFinish: () => setLoading(false),
@@ -268,7 +270,7 @@ export default function StudentCareerBranch({
                         {/* MENTOR */}
                         {group.mentor ? (
                             <Link
-                                href={`/student/mentors/${group.mentor._id}`}
+                                href={`/mentors/${group.mentor.username}`}
                                 className="group/mentor flex max-w-[60%] cursor-pointer items-center gap-2"
                             >
                                 {group.mentor.avatar &&
@@ -409,7 +411,7 @@ export default function StudentCareerBranch({
                                     badge={badge}
                                     href={
                                         p.modules?.[0]?._id
-                                            ? `/student/learn/${courseId}/${p._id}/${p.modules[0]._id}`
+                                            ? `/learn/${courseSlug}/${p.slug}/${p.modules[0].slug}`
                                             : undefined
                                     }
                                 />
@@ -424,7 +426,7 @@ export default function StudentCareerBranch({
                             title="Submission"
                             index={group.paths.length}
                             isSubmission={true}
-                            href={`/student/career-groups/${group._id}/submissions`}
+                            href={`/career-groups/${group.slug}/submissions`}
                             done={isCompleted}
                             locked={
                                 !isCompleted &&

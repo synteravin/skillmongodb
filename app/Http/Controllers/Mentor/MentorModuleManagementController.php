@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mentor;
 use App\Http\Controllers\Controller;
 use App\Models\CareerGroup;
 use App\Models\Path;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class MentorModuleManagementController extends Controller
@@ -35,18 +36,21 @@ class MentorModuleManagementController extends Controller
             'group' => [
                 'id' => (string) $group->_id,
                 '_id' => (string) $group->_id,
+                'slug' => $group->slug ?: Str::slug($group->name),
                 'name' => $group->name,
             ],
 
             'path' => [
                 'id' => (string) $path->_id,
                 '_id' => (string) $path->_id,
+                'slug' => $path->slug ?: Str::slug($path->name),
                 'name' => $path->name,
                 'description' => $path->description,
 
                 'quiz' => $path->quiz ? [
-                    'id' => (string) $path->quiz->_id,
+                    'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
                     '_id' => (string) $path->quiz->_id,
+                    'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 ] : null,
 
                 'modules' => $path->modules->map(function ($module) {

@@ -10,6 +10,7 @@ use App\Http\Requests\Quiz\StoreQuizRequest;
 use App\Models\CareerGroup;
 use App\Models\Path;
 use App\Models\Quiz;
+use App\Models\QuizResult;
 use Inertia\Inertia;
 
 class MentorQuizController extends Controller
@@ -22,12 +23,22 @@ class MentorQuizController extends Controller
 
         return Inertia::render('Mentor/Quiz/Index', [
             'quizzes' => $quizzes->map(function ($quiz) {
+                $results = QuizResult::where('quiz_id', (string) $quiz->_id)->get();
+                $attemptsCount = $results->count();
+                $passedCount = $results->where('passed', true)->count();
+                $passRate = $attemptsCount > 0 ? (int) round(($passedCount / $attemptsCount) * 100) : 0;
+                $avgScore = $attemptsCount > 0 ? (int) round($results->avg('score')) : 0;
+
                 return [
                     'id' => (string) $quiz->_id,
                     'module_name' => $quiz->path->name ?? 'Unknown Path',
                     'path_name' => $quiz->path->name ?? 'Unknown Path',
                     'difficulty' => $quiz->difficulty ?? 'medium',
+                    'duration' => (int) ($quiz->duration ?? 15),
                     'questions_count' => $quiz->questions ? $quiz->questions->count() : 0,
+                    'attempts_count' => $attemptsCount,
+                    'pass_rate' => $passRate,
+                    'avg_score' => $avgScore,
                 ];
             }),
         ]);
@@ -52,9 +63,10 @@ class MentorQuizController extends Controller
         $path->load('quiz.questions.answers');
 
         return Inertia::render('Mentor/Quiz/Create', [
-            'pathId' => (string) $path->_id,
+            'pathId' => $path->slug ?: (string) $path->_id,
             'quiz' => $path->quiz ? [
-                'id' => (string) $path->quiz->_id,
+                'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
+                'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 'difficulty' => $path->quiz->difficulty,
                 'questions' => $path->quiz->questions->map(function ($q) {
                     return [
@@ -77,7 +89,6 @@ class MentorQuizController extends Controller
         $this->authorize('create', Quiz::class);
 
         $data = $request->validated();
-
         $data['path_id'] = (string) $path->_id;
 
         app(CreateQuizAction::class)->execute($data);
@@ -118,6 +129,7 @@ class MentorQuizController extends Controller
         $this->authorize('update', $quiz);
 
         $data = $request->validated();
+        $data['path_id'] = (string) ($quiz->path_id ?? $request->input('path_id', ''));
 
         app(UpdateQuizAction::class)->execute($quiz, $data);
 

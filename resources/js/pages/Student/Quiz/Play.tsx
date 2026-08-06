@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
+import TimeExpiredModal from '@/components/QuestionForm/TimeExpiredModal';
+import SkillVenturaLoader from '@/components/SkillVenturaLoader';
 import { router, usePage } from '@inertiajs/react';
 import { Flag } from 'lucide-react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
@@ -11,6 +13,7 @@ interface FooterProps {
     current: number;
     total: number;
     selected: string | null;
+    isReviewMode?: boolean;
     loading: boolean;
     handleBack: () => void;
     next: () => void;
@@ -20,6 +23,7 @@ function Footer({
     current,
     total,
     selected,
+    isReviewMode,
     loading,
     handleBack,
     next,
@@ -257,8 +261,8 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={!selected || loading}
-                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:right-[4px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[85px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:right-[-4px] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[98px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:right-[-15px] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[116px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:right-[-21px] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[118px] ${!selected || loading ? 'opacity-40' : 'opacity-100'}`}
+                    disabled={isReviewMode ? loading : !selected || loading}
+                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:right-[4px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[85px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:right-[-4px] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[98px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:right-[-15px] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[116px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:right-[-21px] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[118px] ${(!isReviewMode && !selected) || loading ? 'opacity-40' : 'opacity-100'}`}
                 >
                     <svg
                         className="absolute inset-0 h-full w-full"
@@ -278,13 +282,17 @@ function Footer({
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
-                            <>
-                                <span>FINISH</span>
-                                <Flag
-                                    className="h-3.5 w-3.5 text-white"
-                                    strokeWidth={3}
-                                />
-                            </>
+                            isReviewMode ? (
+                                'KELUAR'
+                            ) : (
+                                <>
+                                    <span>FINISH</span>
+                                    <Flag
+                                        className="h-3.5 w-3.5 text-white"
+                                        strokeWidth={3}
+                                    />
+                                </>
+                            )
                         ) : (
                             'NEXT >>'
                         )}
@@ -504,13 +512,14 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={!selected || loading}
+                    disabled={isReviewMode ? loading : !selected || loading}
                     className="footer-btn-next absolute top-[-1px] block font-bold lg:hidden"
                     style={{
                         right: -56,
                         width: 160,
                         height: 48,
-                        opacity: !selected || loading ? 0.4 : 1,
+                        opacity:
+                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -520,24 +529,28 @@ function Footer({
                         preserveAspectRatio="none"
                     >
                         <path
-                            d="M0 0 H183 L258 45 H0 Z"
+                            d="M0 0 H185 L258 45 H0 Z"
                             fill="none"
                             stroke="#FACC15"
                             strokeWidth={6}
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
-                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-16px] items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
+                    <span className="footer-btn-next-text relative z-10 flex h-full w-full items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
-                            <>
-                                <span>FINISH</span>
-                                <Flag
-                                    className="h-5 w-5 text-white"
-                                    strokeWidth={3}
-                                />
-                            </>
+                            isReviewMode ? (
+                                'KELUAR'
+                            ) : (
+                                <>
+                                    <span>FINISH</span>
+                                    <Flag
+                                        className="h-4 w-4 text-white"
+                                        strokeWidth={3}
+                                    />
+                                </>
+                            )
                         ) : (
                             'NEXT >>'
                         )}
@@ -548,40 +561,45 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={!selected || loading}
+                    disabled={isReviewMode ? loading : !selected || loading}
                     className="footer-btn-next absolute top-[-4px] hidden font-bold lg:block xl:hidden"
                     style={{
-                        right: -27,
+                        right: -30,
                         width: 172,
                         height: 62,
-                        opacity: !selected || loading ? 0.4 : 1,
+                        opacity:
+                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
                         letterSpacing: '3px',
                     }}
                 >
                     <svg
-                        className="absolute inset-0 h-full w-full"
+                        className="absolute inset-[#000000] h-full w-full"
                         viewBox="0 0 260 45"
                         preserveAspectRatio="none"
                     >
                         <path
-                            d="M0 0 H172 L258 45 H0 Z"
+                            d="M0 0 H173 L258 45 H0 Z"
                             fill="none"
                             stroke="#FACC15"
                             strokeWidth={6}
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
-                    <span className="relative z-10 flex h-full w-full translate-x-[-18px] items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
+                    <span className="relative z-10 flex h-full w-full translate-x-[-9px] items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
-                            <>
-                                <span>FINISH</span>
-                                <Flag
-                                    className="h-4 w-4 text-white"
-                                    strokeWidth={3}
-                                />
-                            </>
+                            isReviewMode ? (
+                                'KELUAR'
+                            ) : (
+                                <>
+                                    <span>FINISH</span>
+                                    <Flag
+                                        className="h-4 w-4 text-white"
+                                        strokeWidth={3}
+                                    />
+                                </>
+                            )
                         ) : (
                             'NEXT >>'
                         )}
@@ -592,13 +610,14 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={!selected || loading}
+                    disabled={isReviewMode ? loading : !selected || loading}
                     className="footer-btn-next absolute top-0 hidden font-bold xl:block 2xl:hidden"
                     style={{
-                        right: -46,
+                        right: -43,
                         width: 215,
                         height: 58,
-                        opacity: !selected || loading ? 0.4 : 1,
+                        opacity:
+                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -619,13 +638,17 @@ function Footer({
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
-                            <>
-                                <span>FINISH</span>
-                                <Flag
-                                    className="h-5 w-5 text-white"
-                                    strokeWidth={3}
-                                />
-                            </>
+                            isReviewMode ? (
+                                'KELUAR'
+                            ) : (
+                                <>
+                                    <span>FINISH</span>
+                                    <Flag
+                                        className="h-5 w-5 text-white"
+                                        strokeWidth={3}
+                                    />
+                                </>
+                            )
                         ) : (
                             'NEXT >>'
                         )}
@@ -636,13 +659,14 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={!selected || loading}
+                    disabled={isReviewMode ? loading : !selected || loading}
                     className="absolute top-[-4px] hidden font-bold 2xl:block"
                     style={{
                         right: -49,
                         width: 280,
                         height: 62,
-                        opacity: !selected || loading ? 0.4 : 1,
+                        opacity:
+                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -663,13 +687,17 @@ function Footer({
                         {loading ? (
                             '...'
                         ) : current + 1 === total ? (
-                            <>
-                                <span>FINISH</span>
-                                <Flag
-                                    className="h-8 w-8 text-white"
-                                    strokeWidth={3}
-                                />
-                            </>
+                            isReviewMode ? (
+                                'KELUAR'
+                            ) : (
+                                <>
+                                    <span>FINISH</span>
+                                    <Flag
+                                        className="h-6 w-6 text-white"
+                                        strokeWidth={3}
+                                    />
+                                </>
+                            )
                         ) : (
                             'NEXT >>'
                         )}
@@ -789,8 +817,22 @@ function BoxSoal({
                                             />
                                         </div>
                                     )}
-                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-[700px] flex-1 overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] sm:text-[11px] md:px-4 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
+                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-[700px] flex-1 [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white sm:text-[11px] md:px-4 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
                                         {question.question_text}
+                                        {question.max_selectable > 1 && (
+                                            <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
+                                                (Pilih {question.max_selectable}{' '}
+                                                Jawaban)
+                                            </span>
+                                        )}
+                                        {question.explanation && (
+                                            <div className="mt-3 rounded-xl border border-indigo-500/40 bg-indigo-950/60 p-3 text-xs text-indigo-200 shadow-sm">
+                                                <span className="font-bold text-yellow-400">
+                                                    💡 Pembahasan:{' '}
+                                                </span>
+                                                {question.explanation}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -801,17 +843,49 @@ function BoxSoal({
         </div>
     );
 }
-function AnswerButton({ label, text, selected, onClick }: any) {
+function AnswerButton({
+    label,
+    text,
+    selected,
+    isCorrect,
+    isReviewMode,
+    onClick,
+}: any) {
     const outerClip =
         'polygon(0 0, 30px 0, 45px 15px, 120px 15px, 135px 0, 100% 0, 100% 100%, 0 100%)';
     const innerClip =
         'polygon(0 0, 31px 0, 46px 14px, 119px 14px, 134px 0, 100% 0, 100% 100%, 0 100%)';
 
+    let borderBg = selected
+        ? 'bg-[#FACC15]'
+        : 'bg-[#3B28F6] group-hover:bg-[#00e5ff]';
+    let contentBg = selected ? 'bg-[#1a1505]' : 'bg-[#0a0f1d]';
+    let labelColor = selected
+        ? 'text-[#FACC15]'
+        : 'text-[#3B28F6] group-hover:text-[#00e5ff]';
+    let textColor = selected
+        ? 'text-white'
+        : 'text-gray-300 group-hover:text-white';
+
+    if (isReviewMode) {
+        if (isCorrect) {
+            borderBg = 'bg-emerald-500';
+            contentBg = 'bg-emerald-950/60';
+            labelColor = 'text-emerald-400';
+            textColor = 'text-emerald-100 font-semibold';
+        } else if (selected) {
+            borderBg = 'bg-rose-500';
+            contentBg = 'bg-rose-950/60';
+            labelColor = 'text-rose-400';
+            textColor = 'text-rose-200';
+        }
+    }
+
     return (
         <motion.button
-            whileTap={{ scale: 0.98 }}
-            onClick={onClick}
-            className="quiz-answer-btn group relative mt-[3px] mb-[3px] block w-full origin-center scale-[0.86] text-left outline-none md:mt-7 md:mb-6 md:scale-100"
+            whileTap={!isReviewMode ? { scale: 0.98 } : undefined}
+            onClick={!isReviewMode ? onClick : undefined}
+            className={`quiz-answer-btn group relative mt-[3px] mb-[3px] block w-full origin-center scale-[0.86] text-left outline-none md:mt-7 md:mb-6 md:scale-100 ${isReviewMode ? 'cursor-default' : 'cursor-pointer'}`}
         >
             <div className="relative">
                 <div className="absolute -top-[14px] z-[1] h-[12px] w-[173px]">
@@ -823,7 +897,15 @@ function AnswerButton({ label, text, selected, onClick }: any) {
                         <path
                             d="M10 0 L90 0 L100 8 L0 8 Z"
                             fill="none"
-                            stroke="#3B82F6"
+                            stroke={
+                                isReviewMode
+                                    ? isCorrect
+                                        ? '#22c55e'
+                                        : selected
+                                          ? '#ef4444'
+                                          : '#3B82F6'
+                                    : '#3B82F6'
+                            }
                             strokeWidth="1"
                             vectorEffect="non-scaling-stroke"
                         />
@@ -839,7 +921,15 @@ function AnswerButton({ label, text, selected, onClick }: any) {
                         <path
                             d="M0 2 L13 15 L87 15 L100 2"
                             fill="none"
-                            stroke="#3B82F6"
+                            stroke={
+                                isReviewMode
+                                    ? isCorrect
+                                        ? '#22c55e'
+                                        : selected
+                                          ? '#ef4444'
+                                          : '#3B82F6'
+                                    : '#3B82F6'
+                            }
                             strokeWidth="1.2"
                             vectorEffect="non-scaling-stroke"
                         />
@@ -848,11 +938,11 @@ function AnswerButton({ label, text, selected, onClick }: any) {
             </div>
 
             <div
-                className={`p-[2px] transition-colors duration-300 ${selected ? 'bg-[#FACC15]' : 'bg-[#3B28F6] group-hover:bg-[#00e5ff]'}`}
+                className={`p-[2px] transition-colors duration-300 ${borderBg}`}
                 style={{ clipPath: outerClip }}
             >
                 <div
-                    className={`h-full w-full pt-4 transition-colors duration-300 ${selected ? 'bg-[#1a1505]' : 'bg-[#0a0f1d]'}`}
+                    className={`h-full w-full pt-4 transition-colors duration-300 ${contentBg}`}
                     style={{ clipPath: innerClip }}
                 >
                     <div
@@ -862,17 +952,29 @@ function AnswerButton({ label, text, selected, onClick }: any) {
                                 'linear-gradient(90deg, rgba(59,40,246,0.2) 0%, transparent 100%)',
                         }}
                     />
-                    <div className="quiz-answer-content relative z-10 flex items-start gap-2 px-2 py-[3px] pb-[5px] md:gap-4 md:py-2">
-                        <span
-                            className={`mt-0.5 font-mono text-[13px] font-bold md:text-lg ${selected ? 'text-[#FACC15]' : 'text-[#3B28F6] group-hover:text-[#00e5ff]'}`}
-                        >
-                            {label}.
-                        </span>
-                        <span
-                            className={`text-[11px] leading-[1.3] md:text-base md:leading-relaxed ${selected ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}
-                        >
-                            {text}
-                        </span>
+                    <div className="quiz-answer-content relative z-10 flex items-center justify-between px-2 py-[3px] pb-[5px] md:gap-4 md:py-2">
+                        <div className="flex items-start gap-2 md:gap-4">
+                            <span
+                                className={`mt-0.5 font-mono text-[13px] font-bold md:text-lg ${labelColor}`}
+                            >
+                                {label}.
+                            </span>
+                            <span
+                                className={`text-[11px] leading-[1.3] md:text-base md:leading-relaxed ${textColor}`}
+                            >
+                                {text}
+                            </span>
+                        </div>
+                        {isReviewMode && isCorrect && (
+                            <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
+                                ✓ Kunci Jawaban
+                            </span>
+                        )}
+                        {isReviewMode && !isCorrect && selected && (
+                            <span className="shrink-0 rounded-full border border-rose-400/40 bg-rose-400/20 px-2 py-0.5 text-xs font-bold text-rose-400">
+                                ✗ Jawaban Anda
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -894,7 +996,9 @@ export default function Play({
 
     const [showQuizTour, setShowQuizTour] = useState(() => {
         if (typeof window !== 'undefined') {
-            const completed = localStorage.getItem(`course_guide_quiz_completed_${auth?.user?.id || 'guest'}`);
+            const completed = localStorage.getItem(
+                `course_guide_quiz_completed_${auth?.user?.id || 'guest'}`,
+            );
             return completed !== 'true';
         }
         return true;
@@ -902,7 +1006,7 @@ export default function Play({
 
     const [current, setCurrent] = useState(0);
     const [answers, setAnswers] = useState<any[]>([]);
-    const [selected, setSelected] = useState<string | null>(null);
+    const [selected, setSelected] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [showResult, setShowResult] = useState(false);
     const [finalResult, setFinalResult] = useState<any>(null);
@@ -921,22 +1025,152 @@ export default function Play({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const getOrCreateStartTime = (quizId: string) => {
+        if (typeof window === 'undefined') return Date.now();
+        const storageKey = `quiz_timer_start_${quizId}`;
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+            return parseInt(stored, 10);
+        }
+        const now = Date.now();
+        localStorage.setItem(storageKey, now.toString());
+        return now;
+    };
+
+    const clearTimerStorage = (quizId: string) => {
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem(`quiz_timer_start_${quizId}`);
+        }
+    };
+
+    const durationSeconds = (quiz?.duration || 15) * 60;
+
+    const [timeLeft, setTimeLeft] = useState<number>(() => {
+        if (!quiz?.duration || quiz.is_review || has_submitted)
+            return durationSeconds;
+        const startTime = getOrCreateStartTime(quiz.id);
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const remaining = durationSeconds - elapsed;
+        return remaining > 0 ? remaining : 0;
+    });
+
+    const [showTimeExpired, setShowTimeExpired] = useState(false);
+    const currentQuestion = quiz?.questions?.[current];
+
+    useEffect(() => {
+        if (
+            !quiz?.duration ||
+            showResult ||
+            showTimeExpired ||
+            quiz.is_review ||
+            has_submitted
+        )
+            return;
+
+        const timer = setInterval(() => {
+            const startTime = getOrCreateStartTime(quiz.id);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const remaining = durationSeconds - elapsed;
+
+            if (remaining <= 0) {
+                setTimeLeft(0);
+                clearInterval(timer);
+                clearTimerStorage(quiz.id);
+                setShowTimeExpired(true);
+
+                const currentUpdated =
+                    selected && selected.length > 0 && currentQuestion
+                        ? [
+                              ...answers.filter(
+                                  (a) => a.question_id !== currentQuestion.id,
+                              ),
+                              {
+                                  question_id: currentQuestion.id,
+                                  answer_id: selected,
+                              },
+                          ]
+                        : answers;
+
+                submit(currentUpdated, true);
+            } else {
+                setTimeLeft(remaining);
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [
+        answers,
+        selected,
+        currentQuestion,
+        showResult,
+        showTimeExpired,
+        quiz?.duration,
+        quiz?.is_review,
+        has_submitted,
+        quiz?.id,
+    ]);
+
+    const formatTimer = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
+    const [isReviewMode, setIsReviewMode] = useState(() =>
+        Boolean(quiz?.is_review || has_submitted),
+    );
+
     const handleRetry = () => {
+        clearTimerStorage(quiz.id);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(
+                `quiz_timer_start_${quiz.id}`,
+                Date.now().toString(),
+            );
+        }
+        setIsReviewMode(false);
         setCurrent(0);
         setAnswers([]);
-        setSelected(null);
+        setSelected([]);
         setShowResult(false);
         setFinalResult(null);
+        setTimeLeft((quiz?.duration || 15) * 60);
+    };
+
+    const getExitUrl = () => {
+        if (quiz?.course_slug && quiz?.path_slug && quiz?.module_slug) {
+            return `/learn/${quiz.course_slug}/${quiz.path_slug}/${quiz.module_slug}`;
+        }
+        return `/courses/${quiz?.course_slug}`;
+    };
+
+    const handleExit = () => {
+        router.visit(getExitUrl());
+    };
+
+    const handleViewExplanation = () => {
+        setShowResult(false);
+        setIsReviewMode(true);
     };
 
     if (!quiz?.questions?.length) return null;
 
-    const question = quiz.questions[current];
+    const question = currentQuestion;
     const total = quiz.questions.length;
     const labels = ['A', 'B', 'C', 'D', 'E'];
+    const maxSelectable = question?.max_selectable || 1;
 
     const selectAnswer = (id: string) => {
-        if (!loading) setSelected(id);
+        if (loading) return;
+        if (maxSelectable === 1) {
+            setSelected([id]);
+        } else {
+            if (selected.includes(id)) {
+                setSelected(selected.filter((x) => x !== id));
+            } else if (selected.length < maxSelectable) {
+                setSelected([...selected, id]);
+            }
+        }
     };
 
     const handleBack = () => {
@@ -945,35 +1179,49 @@ export default function Play({
             const prev = answers.find(
                 (a) => a.question_id === quiz.questions[current - 1].id,
             );
-            setSelected(prev?.answer_id ?? null);
+            const prevSel = prev?.answer_id;
+            setSelected(
+                Array.isArray(prevSel) ? prevSel : prevSel ? [prevSel] : [],
+            );
         }
     };
 
     const next = () => {
-        if (!selected) return;
+        if (selected.length === 0) return;
         const updated = [
             ...answers.filter((a) => a.question_id !== question.id),
             { question_id: question.id, answer_id: selected },
         ];
         setAnswers(updated);
-        setSelected(null);
         if (current + 1 < total) {
             setCurrent(current + 1);
+            const nextPrev = updated.find(
+                (a) => a.question_id === quiz.questions[current + 1].id,
+            );
+            const nextSel = nextPrev?.answer_id;
+            setSelected(
+                Array.isArray(nextSel) ? nextSel : nextSel ? [nextSel] : [],
+            );
         } else {
             submit(updated);
         }
     };
 
-    const submit = async (finalAnswers: any[]) => {
+    const handleProceedTimeExpired = () => {
+        setShowTimeExpired(false);
+        setShowResult(true);
+    };
+
+    const submit = async (finalAnswers: any[], isAutoSubmit = false) => {
         setLoading(true);
         try {
             const csrf = document
                 .querySelector('meta[name="csrf-token"]')
                 ?.getAttribute('content');
             const formatted = Object.fromEntries(
-                finalAnswers.map((a) => [a.question_id, a.answer_id]),
+                (finalAnswers || []).map((a) => [a.question_id, a.answer_id]),
             );
-            const res = await fetch(`/student/quiz/${quiz.id}/submit`, {
+            const res = await fetch(`/quiz/${quiz.id}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -985,13 +1233,34 @@ export default function Play({
             });
             const data = await res.json();
             if (!res.ok) {
-                alert(data.message || 'Submit gagal');
+                setFinalResult({
+                    score: 0,
+                    passed: false,
+                    exp: 0,
+                    gold: 0,
+                    erp: 0,
+                });
+                if (!isAutoSubmit) {
+                    setShowResult(true);
+                }
                 return;
             }
             setFinalResult(data.result);
-            setShowResult(true);
+            clearTimerStorage(quiz.id);
+            if (!isAutoSubmit) {
+                setShowResult(true);
+            }
         } catch {
-            alert('Submit gagal');
+            setFinalResult({
+                score: 0,
+                passed: false,
+                exp: 0,
+                gold: 0,
+                erp: 0,
+            });
+            if (!isAutoSubmit) {
+                setShowResult(true);
+            }
         } finally {
             setLoading(false);
         }
@@ -1017,7 +1286,7 @@ export default function Play({
                     </p>
                     <button
                         onClick={() =>
-                            router.visit(`/student/courses/${quiz.course_slug}`)
+                            router.visit(`/courses/${quiz.course_slug}`)
                         }
                         className="bg-[#FACC15] px-8 py-3 font-bold text-black transition-colors hover:bg-yellow-300"
                         style={{
@@ -1039,7 +1308,10 @@ export default function Play({
                 <MobilePlay
                     quiz={quiz}
                     has_submitted={has_submitted}
-                    user_stats={user_stats || { level: 1, xp: 0, exp_max: 500, gold: 0 }}
+                    isReviewMode={isReviewMode}
+                    user_stats={
+                        user_stats || { level: 1, xp: 0, exp_max: 500, gold: 0 }
+                    }
                     current={current}
                     setCurrent={setCurrent}
                     answers={answers}
@@ -1049,15 +1321,25 @@ export default function Play({
                     loading={loading}
                     next={next}
                     handleBack={handleBack}
+                    timeLeft={timeLeft}
                 />
                 <ResultModal
                     open={showResult}
                     result={finalResult}
-                    onClose={() =>
-                        router.visit(`/student/courses/${quiz.course_slug}`)
-                    }
+                    onClose={handleExit}
+                    onViewExplanation={handleViewExplanation}
                     onRetry={handleRetry}
                 />
+                <TimeExpiredModal
+                    open={showTimeExpired}
+                    onProceed={handleProceedTimeExpired}
+                />
+                {loading && (
+                    <SkillVenturaLoader
+                        text="MEMROSES KUIS..."
+                        subtext="Menganalisis jawaban kuis dan menghitung perolehan EXP/Gold..."
+                    />
+                )}
 
                 {showQuizTour && (
                     <CourseOnboardingTour
@@ -1066,7 +1348,10 @@ export default function Play({
                         onClose={() => {
                             setShowQuizTour(false);
                             if (typeof window !== 'undefined') {
-                                localStorage.setItem(`course_guide_quiz_completed_${auth?.user?.id || 'guest'}`, 'true');
+                                localStorage.setItem(
+                                    `course_guide_quiz_completed_${auth?.user?.id || 'guest'}`,
+                                    'true',
+                                );
                             }
                         }}
                     />
@@ -1078,7 +1363,29 @@ export default function Play({
     return (
         <>
             <div className="quiz-page flex h-screen flex-col overflow-hidden bg-[#04080f] font-['Rajdhani',sans-serif]">
-                <div className="quiz-layout mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-0 overflow-hidden px-[2px] pt-2 pb-[14px] md:flex-row md:gap-4 md:px-4 md:pt-4 md:pb-[100px]">
+                <div className="flex items-center justify-between px-4 pt-3 pb-1 text-white">
+                    <div className="flex items-center gap-2 font-['orbitron'] text-xs font-bold tracking-wider text-slate-400">
+                        {isReviewMode && (
+                            <span className="rounded-md border border-yellow-400/40 bg-yellow-400/20 px-2.5 py-1 font-bold text-yellow-300">
+                                💡 MODE PEMBAHASAN (READ-ONLY REVIEW)
+                            </span>
+                        )}
+                    </div>
+
+                    {!isReviewMode && quiz.duration && (
+                        <div
+                            className={`flex items-center gap-2 rounded-full px-3.5 py-1 font-['orbitron'] text-xs font-bold tracking-widest ${
+                                timeLeft < 60
+                                    ? 'animate-pulse border border-rose-500/60 bg-rose-500/20 text-rose-400'
+                                    : 'border border-indigo-500/40 bg-indigo-500/20 text-indigo-300'
+                            }`}
+                        >
+                            <span>⏱️ TIME: {formatTimer(timeLeft)}</span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="quiz-layout mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-0 overflow-hidden px-[2px] pt-1 pb-[14px] md:flex-row md:gap-4 md:px-4 md:pt-2 md:pb-[100px]">
                     <div className="quiz-question h-[39%] w-full shrink-0 overflow-visible md:h-full md:w-[58%]">
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -1098,7 +1405,7 @@ export default function Play({
                         </AnimatePresence>
                     </div>
 
-                    <div className="quiz-answer flex w-full flex-1 flex-col justify-center overflow-y-auto px-0 py-[2px] [scrollbar-width:none] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
+                    <div className="quiz-answer flex w-full flex-1 [scrollbar-width:none] flex-col justify-center overflow-y-auto px-0 py-[2px] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id + '-answers'}
@@ -1113,7 +1420,9 @@ export default function Play({
                                         key={a.id}
                                         label={labels[idx] ?? String(idx + 1)}
                                         text={a.answer_text}
-                                        selected={selected === a.id}
+                                        selected={selected.includes(a.id)}
+                                        isCorrect={a.is_correct}
+                                        isReviewMode={isReviewMode}
                                         onClick={() => selectAnswer(a.id)}
                                     />
                                 ))}
@@ -1125,21 +1434,35 @@ export default function Play({
                 <Footer
                     current={current}
                     total={total}
-                    selected={selected}
+                    selected={selected.length > 0 ? 'selected' : null}
+                    isReviewMode={isReviewMode}
                     loading={loading}
                     handleBack={handleBack}
-                    next={next}
+                    next={
+                        current + 1 === total && isReviewMode
+                            ? handleExit
+                            : next
+                    }
                 />
             </div>
 
             <ResultModal
                 open={showResult}
                 result={finalResult}
-                onClose={() =>
-                    router.visit(`/student/courses/${quiz.course_slug}`)
-                }
+                onClose={handleExit}
+                onViewExplanation={handleViewExplanation}
                 onRetry={handleRetry}
             />
+            <TimeExpiredModal
+                open={showTimeExpired}
+                onProceed={handleProceedTimeExpired}
+            />
+            {loading && (
+                <SkillVenturaLoader
+                    text="MEMROSES KUIS..."
+                    subtext="Menganalisis jawaban kuis dan menghitung perolehan EXP/Gold..."
+                />
+            )}
 
             {showQuizTour && (
                 <CourseOnboardingTour
@@ -1148,7 +1471,10 @@ export default function Play({
                     onClose={() => {
                         setShowQuizTour(false);
                         if (typeof window !== 'undefined') {
-                            localStorage.setItem(`course_guide_quiz_completed_${auth?.user?.id || 'guest'}`, 'true');
+                            localStorage.setItem(
+                                `course_guide_quiz_completed_${auth?.user?.id || 'guest'}`,
+                                'true',
+                            );
                         }
                     }}
                 />

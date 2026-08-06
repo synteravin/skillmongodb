@@ -139,7 +139,7 @@ export default function Index({ quests, filters }: Props) {
     function submit(e: React.FormEvent) {
         e.preventDefault();
         if (openModal === 'edit' && editingQuest) {
-            put(`/admin/quests/${editingQuest._id}`, {
+            put(`/admin/quests/${editingQuest.slug}`, {
                 onSuccess: () => closeModal(),
             });
         } else {
@@ -480,7 +480,7 @@ export default function Index({ quests, filters }: Props) {
                                                 <td className="px-6 py-4 text-right whitespace-nowrap">
                                                     <div className="flex justify-end gap-1">
                                                         <Link
-                                                            href={`/admin/quests/${quest._id}`}
+                                                            href={`/admin/quests/${quest.slug}`}
                                                             title="Detail & Bid"
                                                             className="rounded-lg bg-indigo-50 px-3 py-1.5 text-[11px] font-bold text-indigo-600 transition-colors hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/60"
                                                         >

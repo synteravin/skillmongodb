@@ -59,7 +59,7 @@ class QuestSubmissionTest extends TestCase
         $zipFile = UploadedFile::fake()->create('project.zip', 500, 'application/zip');
 
         $response = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/submit", [
+            ->post("/quests/{$quest->_id}/submit", [
                 'submission_file' => $zipFile,
                 'submission_link' => 'https://github.com/my-project',
                 'submission_note' => 'I have finished the portfolio project.',
@@ -105,7 +105,7 @@ class QuestSubmissionTest extends TestCase
         ]);
 
         $response = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/approve", [
+            ->post("/quests/{$quest->_id}/approve", [
                 'rating' => 5,
                 'rating_comment' => 'Great work!',
             ]);
@@ -121,7 +121,7 @@ class QuestSubmissionTest extends TestCase
         // Upload payment proof
         $file = UploadedFile::fake()->image('receipt.png');
         $responseUpload = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/upload-payment", [
+            ->post("/quests/{$quest->_id}/upload-payment", [
                 'payment_proof' => $file,
             ]);
 
@@ -136,7 +136,7 @@ class QuestSubmissionTest extends TestCase
         // Worker submits final ZIP and completes payment
         $zipFile = UploadedFile::fake()->create('final.zip', 100, 'application/zip');
         $responseFinal = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/submit-final-zip", [
+            ->post("/quests/{$quest->_id}/submit-final-zip", [
                 'submission_file' => $zipFile,
             ]);
 
@@ -181,7 +181,7 @@ class QuestSubmissionTest extends TestCase
         ]);
 
         $response = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/reject", [
+            ->post("/quests/{$quest->_id}/reject", [
                 'revision_note' => 'Please fix the footer.',
             ]);
 
@@ -213,7 +213,7 @@ class QuestSubmissionTest extends TestCase
         // Try submitting as other
         $zipFile = UploadedFile::fake()->create('project.zip', 500, 'application/zip');
         $response1 = $this->actingAs($other)
-            ->post("/student/quests/{$quest->_id}/submit", [
+            ->post("/quests/{$quest->_id}/submit", [
                 'submission_file' => $zipFile,
                 'submission_link' => 'https://github.com/my-project',
             ]);
@@ -224,7 +224,7 @@ class QuestSubmissionTest extends TestCase
 
         // Try approving as other
         $response2 = $this->actingAs($other)
-            ->post("/student/quests/{$quest->_id}/approve");
+            ->post("/quests/{$quest->_id}/approve");
         $response2->assertStatus(403);
     }
 
@@ -379,7 +379,7 @@ class QuestSubmissionTest extends TestCase
         $document = UploadedFile::fake()->create('specs.pdf', 500, 'application/pdf');
 
         $response = $this->actingAs($creator)
-            ->post('/student/quests', [
+            ->post('/quests', [
                 'title' => 'Quest with attachments',
                 'description' => 'Detailed description here',
                 'min_salary' => 1000,
@@ -427,7 +427,7 @@ class QuestSubmissionTest extends TestCase
 
         // 1. Worker submits work with only repository link (no ZIP)
         $response1 = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/submit", [
+            ->post("/quests/{$quest->_id}/submit", [
                 'submission_link' => 'https://github.com/my-project',
                 'submission_note' => 'Link is ready for review.',
             ]);
@@ -441,7 +441,7 @@ class QuestSubmissionTest extends TestCase
 
         // 2. Creator approves, transitioning to approved (pending ZIP)
         $response2 = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/approve", [
+            ->post("/quests/{$quest->_id}/approve", [
                 'rating' => 4,
                 'rating_comment' => 'Link looks good! Please send final ZIP.',
             ]);
@@ -463,7 +463,7 @@ class QuestSubmissionTest extends TestCase
         // 2.5 Creator uploads payment proof
         $file = UploadedFile::fake()->image('receipt.png');
         $responseUpload = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/upload-payment", [
+            ->post("/quests/{$quest->_id}/upload-payment", [
                 'payment_proof' => $file,
             ]);
 
@@ -476,7 +476,7 @@ class QuestSubmissionTest extends TestCase
         // 3. Worker uploads final ZIP deliverable
         $zipFile = UploadedFile::fake()->create('final.zip', 500, 'application/zip');
         $response3 = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/submit-final-zip", [
+            ->post("/quests/{$quest->_id}/submit-final-zip", [
                 'submission_file' => $zipFile,
             ]);
 
@@ -518,7 +518,7 @@ class QuestSubmissionTest extends TestCase
 
         // First rejection
         $response1 = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/reject", [
+            ->post("/quests/{$quest->_id}/reject", [
                 'revision_note' => 'Please fix the footer.',
             ]);
         $response1->assertRedirect();
@@ -535,7 +535,7 @@ class QuestSubmissionTest extends TestCase
 
         // Second rejection
         $response2 = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/reject", [
+            ->post("/quests/{$quest->_id}/reject", [
                 'revision_note' => 'Header is still broken.',
             ]);
         $response2->assertRedirect();
@@ -570,7 +570,7 @@ class QuestSubmissionTest extends TestCase
 
         // 1. Fails if not approved status
         $response1 = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/upload-payment", [
+            ->post("/quests/{$quest->_id}/upload-payment", [
                 'payment_proof' => $file,
             ]);
         $response1->assertStatus(400);
@@ -580,14 +580,14 @@ class QuestSubmissionTest extends TestCase
 
         // 2. Fails if not the creator or admin
         $response2 = $this->actingAs($otherStudent)
-            ->post("/student/quests/{$quest->_id}/upload-payment", [
+            ->post("/quests/{$quest->_id}/upload-payment", [
                 'payment_proof' => $file,
             ]);
         $response2->assertStatus(403);
 
         // 3. Success for creator
         $response3 = $this->actingAs($creator)
-            ->post("/student/quests/{$quest->_id}/upload-payment", [
+            ->post("/quests/{$quest->_id}/upload-payment", [
                 'payment_proof' => $file,
             ]);
         $response3->assertRedirect();

@@ -28,8 +28,9 @@ class CreateQuizAction
 
         /* ================= CREATE QUIZ ================= */
         $quiz = Quiz::create([
-            'path_id' => (string) $data['path_id'], // 🔥 FIX FINAL (STRING)
+            'path_id' => (string) $data['path_id'],
             'difficulty' => $data['difficulty'] ?? 'easy',
+            'duration' => isset($data['duration']) ? (int) $data['duration'] : 15,
         ]);
 
         /* ================= CREATE QUESTIONS ================= */
@@ -50,8 +51,9 @@ class CreateQuizAction
 
             /* ================= CREATE QUESTION ================= */
             $question = QuizQuestion::create([
-                'quiz_id' => (string) $quiz->_id, // 🔥 CONSISTENT STRING
+                'quiz_id' => (string) $quiz->_id,
                 'question_text' => $q['question_text'] ?? '',
+                'explanation' => $q['explanation'] ?? null,
                 'media_url' => $mediaPath,
                 'media_path' => $mediaS3Path,
                 'order' => $qIndex + 1,

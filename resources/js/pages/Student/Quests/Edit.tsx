@@ -21,6 +21,8 @@ interface ExistingAttachment {
 interface QuestEditProps {
     quest: {
         _id: string;
+        id?: string;
+        slug?: string;
         title: string;
         description: string;
         min_budget: number;
@@ -143,7 +145,7 @@ export default function Edit({ quest }: QuestEditProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/student/quests/${quest._id}/update`);
+        post(`/quests/${quest.slug}/update`);
     };
 
     const formatBytes = (bytes?: number) => {
@@ -174,7 +176,7 @@ export default function Edit({ quest }: QuestEditProps) {
                     <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                         {/* Back Button */}
                         <Link
-                            href={`/student/quests/${quest._id}`}
+                            href={`/quests/${quest.slug}`}
                             className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
                             <svg
@@ -651,7 +653,7 @@ export default function Edit({ quest }: QuestEditProps) {
                     {/* ACTION BUTTONS */}
                     <div className="flex items-center justify-end gap-3 pt-2">
                         <Link
-                            href={`/student/quests/${quest._id}`}
+                            href={`/quests/${quest.slug}`}
                             className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-[#080d1a] dark:text-slate-300 dark:hover:bg-slate-800"
                         >
                             Batal

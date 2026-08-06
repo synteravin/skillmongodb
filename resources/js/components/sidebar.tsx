@@ -61,7 +61,7 @@ const menu: MenuItem[] = [
     {
         name: 'My Profile',
         icon: User,
-        href: '/student/profile',
+        href: '/profile',
         roles: ['student'],
     },
     {
@@ -124,7 +124,7 @@ export default function Sidebar({
             case 'mentor':
                 return '/mentor/dashboard';
             case 'student':
-                return '/student/dashboard';
+                return '/dashboard';
             default:
                 return '/dashboard';
         }

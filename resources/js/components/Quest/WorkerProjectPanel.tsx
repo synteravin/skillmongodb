@@ -35,14 +35,14 @@ export default function WorkerProjectPanel({
 
     const handleWorkSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        submissionForm.post(`/student/quests/${quest._id}/submit`, {
+        submissionForm.post(`/quests/${quest.slug}/submit`, {
             onSuccess: () => submissionForm.reset(),
         });
     };
 
     const handleFinalZipSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        finalZipForm.post(`/student/quests/${quest._id}/submit-final-zip`, {
+        finalZipForm.post(`/quests/${quest.slug}/submit-final-zip`, {
             onSuccess: () => finalZipForm.reset(),
         });
     };

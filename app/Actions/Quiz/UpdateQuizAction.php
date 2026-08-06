@@ -5,6 +5,7 @@ namespace App\Actions\Quiz;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class UpdateQuizAction
@@ -13,6 +14,7 @@ class UpdateQuizAction
     {
         $quiz->update([
             'difficulty' => $data['difficulty'],
+            'duration' => isset($data['duration']) ? (int) $data['duration'] : ($quiz->duration ?? 15),
         ]);
 
         $newQuestionIds = [];
@@ -27,6 +29,7 @@ class UpdateQuizAction
             if (request()->hasFile("questions.$qIndex.media")) {
                 $file = request()->file("questions.$qIndex.media");
                 $mediaS3Path = $file->store('quiz-images', 's3');
+                /** @var FilesystemAdapter $disk */
                 $disk = Storage::disk('s3');
                 $mediaUrl = $disk->url($mediaS3Path);
                 $mediaPath = $mediaS3Path;
@@ -65,6 +68,7 @@ class UpdateQuizAction
                 if ($question) {
                     $question->update([
                         'question_text' => $q['question_text'],
+                        'explanation' => $q['explanation'] ?? null,
                         'media_url' => $mediaUrl,
                         'media_path' => $mediaPath,
                         'order' => $qIndex + 1,
@@ -73,6 +77,7 @@ class UpdateQuizAction
                     $question = QuizQuestion::create([
                         'quiz_id' => (string) $quiz->_id,
                         'question_text' => $q['question_text'],
+                        'explanation' => $q['explanation'] ?? null,
                         'media_url' => $mediaUrl,
                         'media_path' => $mediaPath,
                         'order' => $qIndex + 1,
@@ -82,6 +87,7 @@ class UpdateQuizAction
                 $question = QuizQuestion::create([
                     'quiz_id' => (string) $quiz->_id,
                     'question_text' => $q['question_text'],
+                    'explanation' => $q['explanation'] ?? null,
                     'media_url' => $mediaUrl,
                     'media_path' => $mediaPath,
                     'order' => $qIndex + 1,

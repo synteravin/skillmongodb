@@ -27,7 +27,9 @@ class DetailController extends Controller
         $mentor = $request->user();
         abort_if(! $mentor->isMentor() && ! $mentor->isAdmin(), 403);
 
-        $student = User::findOrFail($studentId);
+        $student = User::where('username', $studentId)
+            ->orWhere('_id', $studentId)
+            ->firstOrFail();
 
         $data = $this->studentJourneyService->getStudentDetailData($mentor, $student);
 

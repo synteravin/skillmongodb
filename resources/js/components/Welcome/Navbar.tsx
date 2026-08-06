@@ -122,7 +122,7 @@ export default function Navbar({
                                     ? '/admin/dashboard'
                                     : auth.user.role === 'mentor'
                                       ? '/mentor/dashboard'
-                                      : '/student/dashboard'
+                                      : '/dashboard'
                             }
                             className="rounded-xs bg-blue-600 px-3 py-2 text-xs font-bold text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-blue-700 md:px-4 md:py-2.5 md:text-sm lg:px-5"
                         >

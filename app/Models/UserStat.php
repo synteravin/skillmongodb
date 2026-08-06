@@ -21,7 +21,7 @@ class UserStat extends Model
         'gold',
         'level',
         'erp',
-        'path_stats' => 'array',
+        'path_stats',
         'completed_career_groups',
     ];
 
@@ -29,6 +29,7 @@ class UserStat extends Model
         'completed_modules' => 'array',
         'completed_paths' => 'array',
         'completed_career_groups' => 'array',
+        'path_stats' => 'array',
     ];
 
     public function user()

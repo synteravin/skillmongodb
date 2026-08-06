@@ -23,10 +23,7 @@ class SubmitQuizRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answers' => ['required', 'array', 'min:1'],
-
-            // setiap value harus answer valid
-            'answers.*' => ['required', 'string', 'exists:quiz_answers,_id'],
+            'answers' => ['nullable', 'array'],
         ];
     }
 }

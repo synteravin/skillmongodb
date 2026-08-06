@@ -300,7 +300,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                     </span>
                 ) : (
                     <Link
-                        href={`/student/quests/${quest._id}`}
+                        href={`/quests/${quest.slug}`}
                         className={`inline-flex items-center gap-1 text-xs font-bold transition-colors ${
                             isOngoingByOthers
                                 ? 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'

@@ -30,7 +30,7 @@ export default function CreateSubmission({ group }: Props) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(`/mentor/career-groups/${group.id}/submissions`);
+        post(`/mentor/career-groups/${group.slug}/submissions`);
     };
 
     return (
@@ -42,7 +42,7 @@ export default function CreateSubmission({ group }: Props) {
                 {/* Header Section */}
                 <div className="mb-6 flex items-center gap-4">
                     <Link
-                        href={`/mentor/career-groups/${group.id}/submissions`}
+                        href={`/mentor/career-groups/${group.slug}/submissions`}
                         className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                         <ArrowLeft className="h-5 w-5" />
@@ -238,7 +238,7 @@ export default function CreateSubmission({ group }: Props) {
 
                             <div className="flex items-center justify-end gap-4 border-t border-slate-100 pt-6 dark:border-slate-800/60">
                                 <Link
-                                    href={`/mentor/career-groups/${group.id}/submissions`}
+                                    href={`/mentor/career-groups/${group.slug}/submissions`}
                                     className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-3 font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
                                 >
                                     Cancel

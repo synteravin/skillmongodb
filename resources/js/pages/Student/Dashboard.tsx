@@ -578,13 +578,15 @@ function TopBar({
 
     const handleNotificationClick = (item: NotificationItem) => {
         router.post(
-            `/student/notifications/${item.id}/read`,
+            `/notifications/${item.id}/read`,
             {},
             {
                 preserveScroll: true,
                 onSuccess: () => {
-                    if (item.data.quest_id) {
-                        router.visit(`/student/quests/${item.data.quest_id}`);
+                    if (item.data.quest_slug) {
+                        router.visit(`/quests/${item.data.quest_slug}`);
+                    } else if (item.data.type === 'submission_graded') {
+                        router.visit(`/certificates`);
                     }
                 },
             },
@@ -596,7 +598,7 @@ function TopBar({
             {/* LEFT */}
             <div className="relative flex items-center gap-2 md:absolute md:top-2 md:left-2 md:gap-4 lg:gap-5">
                 <Link
-                    href="/student/profile"
+                    href="/profile"
                     className="relative h-[55px] w-[55px] flex-shrink-0 md:h-[70px] md:w-[70px]"
                 >
                     <div className="absolute inset-[8px] overflow-hidden rounded-md md:inset-[10px]">
@@ -702,7 +704,8 @@ function TopBar({
                                                         {item.data.type === 'bid_accepted' ||
                                                         item.data.type === 'work_approved' ||
                                                         item.data.type === 'quest_completed' ||
-                                                        item.data.type === 'quest_approved' ? (
+                                                        item.data.type === 'quest_approved' ||
+                                                        item.data.type === 'submission_graded' ? (
                                                             <CheckCircle2 size={16} className="text-emerald-500" />
                                                         ) : item.data.type === 'bid_rejected' ||
                                                           item.data.type === 'work_rejected' ||
@@ -731,6 +734,12 @@ function TopBar({
                                                         {item.data.quest_id && (
                                                             <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
                                                                 <span>Buka Quest</span>
+                                                                <ArrowRight size={10} />
+                                                            </div>
+                                                        )}
+                                                        {item.data.type === 'submission_graded' && (
+                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                                                                <span>Buka Sertifikat</span>
                                                                 <ArrowRight size={10} />
                                                             </div>
                                                         )}
@@ -840,7 +849,7 @@ function LevelRankCard({ user }: { user: User }) {
 function StoreButton() {
     return (
         <Link
-            href="/student/store"
+            href="/store"
             className="absolute top-1/2 left-4 sm:left-6 z-20 hidden -translate-y-1/2 md:flex flex-col items-center justify-center w-20 h-24 sm:w-24 sm:h-28 bg-[#070b28]/80 hover:bg-[#0c1242]/90 border-2 border-blue-600 hover:border-amber-400 rounded-sm shadow-[0_0_15px_rgba(59,40,246,0.3)] transition duration-300 group cursor-pointer"
         >
             <Store className="h-7 w-7 text-amber-400 group-hover:scale-110 transition duration-300" />

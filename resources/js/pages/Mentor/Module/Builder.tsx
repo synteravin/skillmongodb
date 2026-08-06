@@ -14,6 +14,8 @@ import {
     X,
     Check,
     ArrowLeft,
+    Upload,
+    Loader2,
 } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import ConfirmModal from '@/components/ui/ConfirmModal';
@@ -61,11 +63,14 @@ type Module = {
 type Path = {
     id?: string;
     _id?: any;
+    slug?: string;
     name: string;
     description?: string;
 
     quiz?: {
         id: string;
+        _id?: string;
+        slug?: string;
     } | null;
 
     modules: Module[];
@@ -74,6 +79,7 @@ type Path = {
 type CareerGroup = {
     id: string;
     name: string;
+    slug?: string;
 };
 
 /* ================= ID ================= */
@@ -123,16 +129,21 @@ const SortableContent = ({
     updateContentLocal,
     saveContent,
     deleteContent,
+    cancelDraft,
+    submitDraft,
 }: any) => {
     const id = getId(content);
     const isEditing = editingId === id;
+    const isDraft = id.startsWith('draft-');
 
-    // LOCAL STATE FOR FORM (to prevent input lag caused by re-rendering the whole page on every keystroke)
+    // LOCAL STATE FOR FORM
     const [localTitle, setLocalTitle] = useState(content.content?.title || '');
     const [localDesc, setLocalDesc] = useState(
         content.content?.description || '',
     );
     const [localUrl, setLocalUrl] = useState(content.content?.url || '');
+    const [localFile, setLocalFile] = useState<File | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Sync local state when entering edit mode
     useEffect(() => {
@@ -140,6 +151,7 @@ const SortableContent = ({
             setLocalTitle(content.content?.title || '');
             setLocalDesc(content.content?.description || '');
             setLocalUrl(content.content?.url || '');
+            setLocalFile(null);
         }
     }, [isEditing, content.content]);
 
@@ -175,11 +187,12 @@ const SortableContent = ({
                                     Content Title
                                 </label>
                                 <input
+                                    autoFocus
                                     value={localTitle}
                                     onChange={(e) =>
                                         setLocalTitle(e.target.value)
                                     }
-                                    placeholder="Enter title..."
+                                    placeholder="Enter content title..."
                                     className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-600"
                                 />
                             </div>
@@ -224,10 +237,90 @@ const SortableContent = ({
                                     </div>
                                 </div>
                             )}
+
+                            {(content.type === 'image' ||
+                                content.type === 'video' ||
+                                content.type === 'file') && (
+                                <div>
+                                    <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                        {content.type === 'image'
+                                            ? 'Upload Image File'
+                                            : content.type === 'video'
+                                              ? 'Upload Video File'
+                                              : 'Upload Attachment File'}
+                                    </label>
+                                    <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-indigo-500/50 dark:border-slate-800 dark:bg-slate-950/50 dark:hover:border-indigo-500/50">
+                                        <input
+                                            type="file"
+                                            accept={
+                                                content.type === 'image'
+                                                    ? 'image/*'
+                                                    : content.type === 'video'
+                                                      ? 'video/*'
+                                                      : '*/*'
+                                            }
+                                            onChange={(e) => {
+                                                const f = e.target.files?.[0];
+                                                if (f) setLocalFile(f);
+                                            }}
+                                            className="absolute inset-0 z-10 cursor-pointer opacity-0"
+                                        />
+                                        {localFile ? (
+                                            <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-200">
+                                                <FileText
+                                                    className="text-indigo-500 dark:text-indigo-400"
+                                                    size={20}
+                                                />
+                                                <span className="font-semibold">
+                                                    {localFile.name}
+                                                </span>
+                                                <span className="text-xs text-slate-400">
+                                                    (
+                                                    {(
+                                                        localFile.size /
+                                                        (1024 * 1024)
+                                                    ).toFixed(2)}{' '}
+                                                    MB)
+                                                </span>
+                                            </div>
+                                        ) : content.content?.url ? (
+                                            <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-200">
+                                                <Check
+                                                    className="text-emerald-500"
+                                                    size={18}
+                                                />
+                                                <span className="font-medium text-slate-600 dark:text-slate-400">
+                                                    File uploaded (Click to
+                                                    change)
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-1.5 text-center">
+                                                <Upload
+                                                    className="text-slate-400 dark:text-slate-500"
+                                                    size={24}
+                                                />
+                                                <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                                                    Click or Drag & Drop file
+                                                    here
+                                                </p>
+                                                <p className="text-[10px] text-slate-400">
+                                                    {content.type === 'image'
+                                                        ? 'PNG, JPG, WEBP up to 20MB'
+                                                        : content.type === 'video'
+                                                          ? 'MP4, WEBM up to 50MB'
+                                                          : 'PDF, ZIP, DOCX files'}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="mt-2 flex flex-col items-stretch justify-between gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center dark:border-slate-800">
                             <button
+                                type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     deleteContent(id, moduleId);
@@ -243,8 +336,15 @@ const SortableContent = ({
 
                             <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <button
-                                    onClick={() => setEditingId(null)}
-                                    className="text-slate-550 hover:text-slate-850 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium transition-colors hover:bg-slate-100 sm:flex-none sm:py-1.5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                                    disabled={isSubmitting}
+                                    onClick={() => {
+                                        if (isDraft) {
+                                            cancelDraft(id, moduleId);
+                                        } else {
+                                            setEditingId(null);
+                                        }
+                                    }}
+                                    className="text-slate-550 hover:text-slate-850 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium transition-colors hover:bg-slate-100 disabled:opacity-50 sm:flex-none sm:py-1.5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                                 >
                                     <X
                                         size={16}
@@ -253,43 +353,66 @@ const SortableContent = ({
                                     Cancel
                                 </button>
                                 <button
+                                    disabled={isSubmitting}
                                     onClick={() => {
-                                        const newContent = {
-                                            ...content,
-                                            content: {
-                                                ...content.content,
-                                                title: localTitle,
-                                                description: localDesc,
-                                                url: localUrl,
-                                            },
-                                        };
-                                        updateContentLocal(
-                                            moduleId,
-                                            id,
-                                            'title',
-                                            localTitle,
-                                        );
-                                        updateContentLocal(
-                                            moduleId,
-                                            id,
-                                            'description',
-                                            localDesc,
-                                        );
-                                        updateContentLocal(
-                                            moduleId,
-                                            id,
-                                            'url',
-                                            localUrl,
-                                        );
-                                        saveContent(newContent);
-                                        setEditingId(null);
+                                        if (isDraft) {
+                                            submitDraft(
+                                                id,
+                                                moduleId,
+                                                content.type,
+                                                {
+                                                    title: localTitle,
+                                                    description: localDesc,
+                                                    url: localUrl,
+                                                    file: localFile,
+                                                },
+                                                setIsSubmitting,
+                                            );
+                                        } else {
+                                            const newContent = {
+                                                ...content,
+                                                content: {
+                                                    ...content.content,
+                                                    title: localTitle,
+                                                    description: localDesc,
+                                                    url: localUrl,
+                                                },
+                                            };
+                                            updateContentLocal(
+                                                moduleId,
+                                                id,
+                                                'title',
+                                                localTitle,
+                                            );
+                                            updateContentLocal(
+                                                moduleId,
+                                                id,
+                                                'description',
+                                                localDesc,
+                                            );
+                                            updateContentLocal(
+                                                moduleId,
+                                                id,
+                                                'url',
+                                                localUrl,
+                                            );
+                                            saveContent(newContent);
+                                            setEditingId(null);
+                                        }
                                     }}
-                                    className="bg-indigo-650 flex flex-1 items-center justify-center gap-1.5 rounded-lg px-5 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-colors hover:bg-indigo-600 sm:flex-none sm:py-1.5"
+                                    className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-colors hover:bg-indigo-500 disabled:opacity-50 sm:flex-none sm:py-1.5 dark:bg-indigo-600 dark:hover:bg-indigo-500"
                                 >
-                                    <Check
-                                        size={16}
-                                        className="sm:h-3.5 sm:w-3.5"
-                                    />
+                                    {isSubmitting ? (
+                                        <Loader2
+                                            size={16}
+                                            className="animate-spin sm:h-3.5 sm:w-3.5"
+                                        />
+                                    ) : (
+                                        <Check
+                                            size={16}
+                                            className="sm:h-3.5 sm:w-3.5"
+                                        />
+                                    )}
                                     Save
                                 </button>
                             </div>
@@ -302,7 +425,7 @@ const SortableContent = ({
                     >
                         <div className="mb-2 flex items-center gap-2.5 sm:mb-3">
                             <span
-                                className={`flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase sm:text-xs ${typeColors[content.type as keyof typeof typeColors] || 'dark:bg-slate-750 dark:border-slate-655 border-slate-200 bg-slate-100 text-slate-700 dark:text-slate-300'}`}
+                                className={`flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase sm:text-xs ${typeColors[content.type as keyof typeof typeColors] || 'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}
                             >
                                 {
                                     typeIcons[
@@ -311,7 +434,7 @@ const SortableContent = ({
                                 }
                                 {content.type || 'unknown'}
                             </span>
-                            <h3 className="group-hover:text-indigo-650 line-clamp-1 text-sm font-semibold break-all text-slate-800 transition-colors sm:text-base dark:text-white dark:group-hover:text-indigo-400">
+                            <h3 className="line-clamp-1 text-sm font-semibold break-all text-slate-800 transition-colors group-hover:text-indigo-600 sm:text-base dark:text-white dark:group-hover:text-indigo-400">
                                 {content.content?.title || 'Untitled Content'}
                             </h3>
                         </div>
@@ -556,9 +679,87 @@ export default function ModuleBuilder({
                 onError: () => rollback(module, tempId),
             },
         );
-
         setActiveYoutubeModule(null);
         setYoutubeUrl('');
+    };
+
+    const cancelDraft = (draftId: string, moduleId: string) => {
+        setModules((prev) =>
+            prev.map((m) => {
+                if (getId(m) !== moduleId) return m;
+
+                return {
+                    ...m,
+                    contents: m.contents.filter((c) => getId(c) !== draftId),
+                };
+            }),
+        );
+        if (editingId === draftId) {
+            setEditingId(null);
+        }
+    };
+
+    const submitDraft = (
+        draftId: string,
+        moduleId: string,
+        type: ContentType,
+        data: {
+            title: string;
+            description: string;
+            url: string;
+            file: File | null;
+        },
+        setIsSubmitting: (val: boolean) => void,
+    ) => {
+        if (type === 'image' || type === 'video' || type === 'file') {
+            if (!data.file) {
+                alert('Silakan pilih berkas file terlebih dahulu.');
+                return;
+            }
+
+            setIsSubmitting(true);
+            const formData = new FormData();
+            formData.append('type', type);
+            if (data.title) formData.append('title', data.title);
+            if (data.description) formData.append('description', data.description);
+            formData.append('file', data.file);
+
+            router.post(`/mentor/modules/${moduleId}/contents`, formData, {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    setEditingId(null);
+                    setIsSubmitting(false);
+                    router.reload({ only: ['path'] });
+                },
+                onError: () => {
+                    setIsSubmitting(false);
+                },
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+        router.post(
+            `/mentor/modules/${moduleId}/contents`,
+            {
+                type,
+                title: data.title,
+                description: data.description,
+                url: data.url,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setEditingId(null);
+                    setIsSubmitting(false);
+                    router.reload({ only: ['path'] });
+                },
+                onError: () => {
+                    setIsSubmitting(false);
+                },
+            },
+        );
     };
 
     const renderAddButtons = (
@@ -566,43 +767,7 @@ export default function ModuleBuilder({
         module: Module,
         isCentered = false,
     ) => {
-        return activeYoutubeModule === moduleId ? (
-            <div
-                className={`flex w-full animate-in flex-col gap-3 rounded-xl border border-red-500/30 bg-slate-100/50 p-4 shadow-inner duration-200 zoom-in-95 fade-in sm:flex-row dark:bg-slate-900/80 ${isCentered ? 'mx-auto max-w-xl' : ''}`}
-            >
-                <div className="relative flex-1">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                        <Youtube size={16} className="text-red-500" />
-                    </div>
-                    <input
-                        autoFocus
-                        value={youtubeUrl}
-                        onChange={(e) => setYoutubeUrl(e.target.value)}
-                        placeholder="Paste YouTube URL here (https://...)"
-                        className="dark:border-slate-750 w-full rounded-lg border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-sm text-slate-900 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:bg-slate-950/80 dark:text-white"
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') submitYoutube(module);
-                            if (e.key === 'Escape')
-                                setActiveYoutubeModule(null);
-                        }}
-                    />
-                </div>
-                <div className="flex w-full items-center gap-2 sm:w-auto">
-                    <button
-                        onClick={() => setActiveYoutubeModule(null)}
-                        className="dark:hover:bg-slate-850 flex-1 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800 sm:flex-none sm:border-transparent dark:border-slate-700 dark:text-slate-400 dark:hover:text-white"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={() => submitYoutube(module)}
-                        className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-500/20 transition-colors hover:bg-red-500 sm:flex-none"
-                    >
-                        Add Video
-                    </button>
-                </div>
-            </div>
-        ) : (
+        return (
             <div
                 className={`grid w-full grid-cols-2 gap-2.5 sm:flex sm:flex-wrap ${isCentered ? 'justify-center' : ''}`}
             >
@@ -635,14 +800,7 @@ export default function ModuleBuilder({
                 ].map(({ type, icon: Icon, color }) => (
                     <button
                         key={type}
-                        onClick={() => {
-                            if (type === 'youtube') {
-                                setActiveYoutubeModule(moduleId);
-                                setYoutubeUrl('');
-                            } else {
-                                addContent(module, type as ContentType);
-                            }
-                        }}
+                        onClick={() => addContent(module, type as ContentType)}
                         className={`flex min-w-[100px] flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium text-slate-700 transition-all duration-200 dark:text-slate-300 ${color} shadow-sm`}
                     >
                         <Icon size={16} className="opacity-80" />
@@ -654,91 +812,43 @@ export default function ModuleBuilder({
     };
 
     const addContent = (module: Module, type: ContentType) => {
-        const tempId = 'temp-' + Date.now();
+        const draftId = 'draft-' + Date.now();
+        const moduleId = getId(module);
 
-        // ================= TEXT =================
-        if (type === 'text') {
-            setModules((prev) =>
-                prev.map((m) => {
-                    if (getId(m) !== getId(module)) return m;
+        setModules((prev) =>
+            prev.map((m) => {
+                if (getId(m) !== moduleId) return m;
 
-                    return {
-                        ...m,
-                        contents: [
-                            ...m.contents,
-                            {
-                                _id: tempId,
-                                type,
-                                order: m.contents.length + 1,
-                                content: {},
+                return {
+                    ...m,
+                    contents: [
+                        ...m.contents,
+                        {
+                            _id: draftId,
+                            id: draftId,
+                            type,
+                            order: m.contents.length + 1,
+                            content: {
+                                title: '',
+                                description: '',
+                                url: '',
                             },
-                        ],
-                    };
-                }),
-            );
+                        },
+                    ],
+                };
+            }),
+        );
 
-            router.post(
-                `/mentor/modules/${getId(module)}/contents`,
-                { type },
-                {
-                    preserveScroll: true,
-                    onSuccess: () => router.reload({ only: ['path'] }),
-                    onError: () => rollback(module, tempId),
-                },
-            );
-
-            return;
-        }
-
-        // ================= FILE BASED =================
-        const input = document.createElement('input');
-        input.type = 'file';
-
-        if (type === 'image') input.accept = 'image/*';
-        if (type === 'video') input.accept = 'video/*';
-
-        input.onchange = () => {
-            const file = input.files?.[0];
-            if (!file) return;
-
-            // optimistic UI
-            setModules((prev) =>
-                prev.map((m) => {
-                    if (getId(m) !== getId(module)) return m;
-
-                    return {
-                        ...m,
-                        contents: [
-                            ...m.contents,
-                            {
-                                _id: tempId,
-                                type,
-                                order: m.contents.length + 1,
-                                content: {
-                                    url: URL.createObjectURL(file),
-                                },
-                            },
-                        ],
-                    };
-                }),
-            );
-
-            const formData = new FormData();
-            formData.append('type', type);
-            formData.append('file', file);
-
-            router.post(`/mentor/modules/${getId(module)}/contents`, formData, {
-                forceFormData: true,
-                preserveScroll: true,
-                onSuccess: () => router.reload({ only: ['path'] }),
-                onError: () => rollback(module, tempId),
-            });
-        };
-
-        input.click();
+        setEditingId(draftId);
+        setOpenModule(moduleId);
     };
 
     const deleteContent = (id: string, moduleId: string) => {
+        if (id.startsWith('draft-')) {
+            cancelDraft(id, moduleId);
+            return;
+        }
+
         setConfirmModal({
             open: true,
             title: 'Hapus Blok Konten',
@@ -886,7 +996,7 @@ export default function ModuleBuilder({
                         <div>
                             <div className="flex items-center gap-3">
                                 <Link
-                                    href={`/mentor/career-groups/${group.id}/paths`}
+                                    href={`/mentor/career-groups/${group.slug}/paths`}
                                     className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-indigo-300 hover:bg-slate-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-400"
                                 >
                                     <ArrowLeft size={18} />
@@ -918,13 +1028,13 @@ export default function ModuleBuilder({
                             <button
                                 type="button"
                                 onClick={() => {
-                                    if (path.quiz?.id) {
+                                    if (path.quiz?.slug || path.quiz?.id) {
                                         router.get(
-                                            `/mentor/quiz/${path.quiz.id}/edit`,
+                                            `/mentor/quiz/${path.quiz.slug || path.quiz.id}/edit`,
                                         );
                                     } else {
                                         router.get(
-                                            `/mentor/career-groups/${group.id}/paths/${getId(path)}/quiz/create`,
+                                            `/mentor/career-groups/${group.slug}/paths/${path.slug}/quiz/create`,
                                         );
                                     }
                                 }}
@@ -932,10 +1042,10 @@ export default function ModuleBuilder({
                             >
                                 <span>🎯 Manage Final Quiz</span>
                             </button>
-                            {path.quiz?.id && (
+                            {(path.quiz?.slug || path.quiz?.id) && (
                                 <button
                                     type="button"
-                                    onClick={() => deleteQuiz(path.quiz!.id)}
+                                    onClick={() => deleteQuiz(path.quiz!.slug || path.quiz!.id || '')}
                                     className="cursor-pointer rounded-xl border border-rose-500/20 bg-rose-500/10 p-2.5 text-rose-500 transition-colors hover:bg-rose-500/20"
                                     title="Delete Final Quiz"
                                 >
@@ -965,16 +1075,17 @@ export default function ModuleBuilder({
                                 onKeyDown={(e) =>
                                     e.key === 'Enter' && createModule()
                                 }
-                                placeholder="Enter new module title..."
-                                className="dark:placeholder:text-slate-655 w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-11 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-100"
+                                placeholder="Masukkan judul modul baru..."
+                                className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-11 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
                             />
                         </div>
                         <button
                             onClick={createModule}
                             disabled={!newTitle.trim()}
-                            className="bg-indigo-650 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-500 dark:shadow-indigo-900/40"
                         >
-                            <Plus size={18} /> Add Module
+                            <Plus size={18} />
+                            <span>Add Module</span>
                         </button>
                     </div>
                 </div>
@@ -1077,6 +1188,12 @@ export default function ModuleBuilder({
                                                                     }
                                                                     deleteContent={
                                                                         deleteContent
+                                                                    }
+                                                                    cancelDraft={
+                                                                        cancelDraft
+                                                                    }
+                                                                    submitDraft={
+                                                                        submitDraft
                                                                     }
                                                                 />
                                                             ),

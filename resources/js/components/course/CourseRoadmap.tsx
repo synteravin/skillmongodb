@@ -56,7 +56,7 @@ export default function CourseRoadmap({
                                 index={index}
                                 isLast={index === course.basic_paths.length - 1}
                                 thumbnail={path.thumbnail}
-                                href={`/admin/paths/${path._id}/modules`}
+                                href={`/admin/paths/${path.slug}/modules`}
                             />
                         ))}
                     </div>

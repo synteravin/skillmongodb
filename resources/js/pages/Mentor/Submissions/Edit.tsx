@@ -32,7 +32,7 @@ export default function EditSubmission({ submission }: Props) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(`/mentor/submissions/${submission.id}`);
+        put(`/mentor/submissions/${submission.slug}`);
     };
 
     return (
@@ -44,7 +44,7 @@ export default function EditSubmission({ submission }: Props) {
                 {/* Header */}
                 <div className="flex items-center gap-4">
                     <Link
-                        href={`/mentor/career-groups/${submission.group_id}/submissions`}
+                        href={`/mentor/career-groups/${submission.group?.slug}/submissions`}
                         className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400"
                     >
                         <ArrowLeft className="h-5 w-5" />
@@ -245,7 +245,7 @@ export default function EditSubmission({ submission }: Props) {
                             {/* Actions */}
                             <div className="flex flex-col-reverse items-center justify-end gap-3 border-t border-slate-200 pt-4 sm:flex-row dark:border-slate-800">
                                 <Link
-                                    href={`/mentor/career-groups/${submission.group_id}/submissions`}
+                                    href={`/mentor/career-groups/${submission.group?.slug}/submissions`}
                                     className="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-slate-100 px-6 py-2.5 font-medium text-slate-700 transition-colors hover:bg-slate-200 sm:w-auto dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                                 >
                                     Cancel

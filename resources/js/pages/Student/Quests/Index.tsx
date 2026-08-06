@@ -82,7 +82,7 @@ export default function Index({
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         router.get(
-            '/student/quests',
+            '/quests',
             { search, status, limit: 12 },
             { preserveState: true, replace: true },
         );
@@ -91,7 +91,7 @@ export default function Index({
     const handleStatusFilter = (newStatus: string) => {
         setStatus(newStatus);
         router.get(
-            '/student/quests',
+            '/quests',
             { search, status: newStatus, limit: 12 },
             { preserveState: true, replace: true },
         );
@@ -100,7 +100,7 @@ export default function Index({
     const handleLoadMore = () => {
         setIsLoadingMore(true);
         router.get(
-            '/student/quests',
+            '/quests',
             { search, status, limit: currentLimit + 12 },
             {
                 preserveScroll: true,
@@ -113,7 +113,7 @@ export default function Index({
     const handleLoadLess = () => {
         setIsLoadingMore(true);
         router.get(
-            '/student/quests',
+            '/quests',
             { search, status, limit: 12 },
             {
                 preserveScroll: false,
@@ -140,7 +140,7 @@ export default function Index({
                     <div className="relative flex items-center justify-between gap-2 rounded-[4px] bg-white px-3 py-3 md:px-6 md:py-4 dark:bg-[#040812]">
                         {/* Back Button */}
                         <Link
-                            href="/student/dashboard"
+                            href="/dashboard"
                             className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-500 bg-blue-100 transition-colors hover:border-blue-600 hover:bg-blue-200 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
                         >
                             <svg
@@ -248,7 +248,7 @@ export default function Index({
                     {/* Action Buttons */}
                     <div className="flex flex-wrap items-center gap-2">
                         <Link
-                            href="/student/quests/history"
+                            href="/quests/history"
                             className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white"
                         >
                             <History className="h-3.5 w-3.5" />
@@ -256,7 +256,7 @@ export default function Index({
                         </Link>
 
                         <Link
-                            href="/student/quests/create"
+                            href="/quests/create"
                             className="inline-flex items-center justify-center gap-1.5 rounded-full border border-indigo-700/30 bg-indigo-600 px-4.5 py-2 text-xs font-bold text-white shadow-md shadow-indigo-600/30 transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-600/40"
                         >
                             <Plus className="h-4 w-4 stroke-[3]" />
@@ -483,7 +483,7 @@ export default function Index({
                                         Anda belum merilis lowongan proyek apa pun.
                                     </p>
                                     <Link
-                                        href="/student/quests/create"
+                                        href="/quests/create"
                                         className="mt-2 text-xs font-extrabold text-indigo-700 hover:underline dark:text-indigo-400"
                                     >
                                         Buat Lowongan Sekarang →

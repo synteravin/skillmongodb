@@ -67,7 +67,7 @@ class QuestArbitrationTest extends TestCase
         ]);
 
         $response = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/dispute", [
+            ->post("/quests/{$quest->_id}/dispute", [
                 'reason' => 'Creator refuses to pay and demands endless revisions without clear feedback.',
             ]);
 
@@ -289,7 +289,7 @@ class QuestArbitrationTest extends TestCase
         ]);
 
         $response = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/dispute", [
+            ->post("/quests/{$quest->_id}/dispute", [
                 'reason' => 'Worker disputes work on approved state before final ZIP upload.',
             ]);
 
@@ -438,7 +438,7 @@ class QuestArbitrationTest extends TestCase
         ]);
 
         $response = $this->actingAs($worker)
-            ->post("/student/quests/{$quest->_id}/submit", [
+            ->post("/quests/{$quest->_id}/submit", [
                 'submission_link' => 'https://github.com/test',
                 'submission_note' => 'I fixed it.',
             ]);

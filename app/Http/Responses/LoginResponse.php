@@ -13,7 +13,7 @@ class LoginResponse implements LoginResponseContract
         return match ($user->role) {
             'admin' => redirect()->intended('/admin/dashboard'),
             'mentor' => redirect()->intended('/mentor/dashboard'),
-            'student' => redirect()->intended('/student/dashboard'),
+            'student' => redirect()->intended('/dashboard'),
             default => redirect()->intended('/dashboard'),
         };
     }
