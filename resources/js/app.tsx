@@ -12,6 +12,8 @@ import '@fontsource/orbitron/400.css';
 import '@fontsource/orbitron/600.css';
 import '@fontsource/orbitron/700.css';
 
+import '@fontsource/lalezar/400.css';
+
 import GlobalInertiaLoader from '@/components/GlobalInertiaLoader';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
