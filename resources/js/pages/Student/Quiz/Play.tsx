@@ -1221,7 +1221,11 @@ export default function Play({
             const formatted = Object.fromEntries(
                 (finalAnswers || []).map((a) => [a.question_id, a.answer_id]),
             );
-            const res = await fetch(`/quiz/${quiz.id}/submit`, {
+            const submitUrl =
+                quiz.course_slug && quiz.path_slug
+                    ? `/courses/${quiz.course_slug}/paths/${quiz.path_slug}/quiz/submit`
+                    : `/quiz/${quiz.id}/submit`;
+            const res = await fetch(submitUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

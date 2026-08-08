@@ -10,12 +10,20 @@ import {
     Paperclip,
 } from 'lucide-react';
 
+type Group = {
+    id?: string;
+    name?: string;
+    slug?: string;
+};
+
 type Submission = {
     id: string;
     group_id?: string;
+    slug?: string;
     title: string;
     description: string;
     submission_type: string;
+    group?: Group;
 };
 
 interface Props {

@@ -24,6 +24,8 @@ interface Character {
 }
 
 interface User {
+    id?: string | number;
+    _id?: string;
     name: string;
     username: string;
     level: number;
@@ -47,6 +49,7 @@ interface User {
 
 interface NotificationData {
     quest_id?: string;
+    quest_slug?: string;
     title?: string;
     message?: string;
     type?: string;

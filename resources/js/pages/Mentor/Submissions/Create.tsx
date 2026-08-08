@@ -13,6 +13,7 @@ import {
 type Group = {
     id: string;
     name: string;
+    slug?: string;
 };
 
 interface Props {

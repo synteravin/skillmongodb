@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\ForumMessage;
 use App\Models\User;
 use App\Services\Admin\UserDetailService;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class ForumController extends Controller
     public function userProfile(User $user, UserDetailService $userDetailService): JsonResponse
     {
         $user->load(['character']);
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         $details = [];
@@ -96,6 +98,7 @@ class ForumController extends Controller
         }
 
         // Map daftar kursus beserta pesan terakhir untuk Sidebar
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $courseList = $courses->map(function ($c) {
             $lastMessage = ForumMessage::where('course_id', $c->_id)
@@ -219,6 +222,7 @@ class ForumController extends Controller
             $messages = $messages->reverse()->values();
         }
 
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $data = $messages->map(function ($msg) use ($disk) {
             $avatarUrl = null;
@@ -298,6 +302,7 @@ class ForumController extends Controller
         ]);
 
         if ($request->wantsJson()) {
+            /** @var FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
             $avatarUrl = null;
             if ($user->avatar) {

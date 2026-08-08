@@ -456,9 +456,10 @@ Route::middleware(['auth', 'role:student', 'has.character'])
         Route::get('/learn/{course}/{path}/{module}', [LearnController::class, 'show'])
             ->name('course.path.module.show');
 
-        Route::get('/quiz/{quiz}', [App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
-        Route::post('/quiz/{quiz}/submit', [App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
-        Route::get('/quiz/{quiz}/result', [App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
+        Route::get('/courses/{course}/paths/{path}/quiz', [App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
+        Route::post('/courses/{course}/paths/{path}/quiz/submit', [App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
+        Route::get('/courses/{course}/paths/{path}/quiz/result', [App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
+        Route::get('/quiz/{quiz}', [App\Http\Controllers\QuizController::class, 'showLegacy'])->name('quiz.legacy');
         Route::post('/select-career/{path}', SelectPathController::class)
             ->name('select-career');
         Route::get('/leaderboard', [LeaderboardController::class, 'index'])

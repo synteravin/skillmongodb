@@ -10,6 +10,7 @@ use App\Models\CareerGroup;
 use App\Models\StudentSubmission;
 use App\Models\Submission;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class SubmissionController extends Controller
@@ -31,7 +32,7 @@ class SubmissionController extends Controller
         $action->execute(
             $data,
             $group,
-            auth()->user()
+            Auth::User()
         );
 
         return back()->with('success', 'Submission created successfully.');

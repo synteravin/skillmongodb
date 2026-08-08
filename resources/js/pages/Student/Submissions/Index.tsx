@@ -18,6 +18,7 @@ interface CareerGroup {
 interface Submission {
     id: string;
     _id?: string;
+    slug?: string;
     title: string;
     description: string;
     submission_type: string;

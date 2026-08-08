@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Path;
+use App\Models\User;
 use App\Models\UserStat;
 use App\Services\Learns\LearnService;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class LearnController extends Controller
 {
-    public function show($courseId, $pathId, $moduleId, LearnService $service)
+    public function show(string $courseId, string $pathId, string $moduleId, LearnService $service)
     {
-        $user = auth()->user();
+        /** @var User $user */
+        $user = Auth::user();
 
         /* ================= GET DATA ================= */
         $data = $service->getData(
@@ -100,8 +103,8 @@ class LearnController extends Controller
                 'slug' => $data['path']->slug,
 
                 'final_quiz' => $data['path']->quiz ? [
-                    'id' => (string) ($data['path']->quiz->slug ?: $data['path']->quiz->_id),
-                    'slug' => $data['path']->quiz->slug ?: $data['path']->slug ?: (string) $data['path']->quiz->_id,
+                    'id' => (string) $data['path']->quiz->_id,
+                    'slug' => (string) $data['path']->quiz->_id,
                 ] : null,
 
                 'modules' => $data['modules']->map(fn ($m) => [

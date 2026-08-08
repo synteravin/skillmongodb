@@ -3,6 +3,7 @@
 namespace App\Actions\Module;
 
 use App\Models\Module;
+use Illuminate\Support\Str;
 
 class UpdateModuleAction
 {
