@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\UserStat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CareerController extends Controller
 {
     public function select(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::User();
 
         $progress = UserStat::where('user_id', $user->_id)
             ->where('course_id', request('course_id')) // optional kalau perlu

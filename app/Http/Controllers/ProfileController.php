@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Module;
 use App\Models\Rank;
+use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = auth()->user()->load(['userStats', 'courseStudents']);
+        /** @var User $user */
+        $user = $request->user()->load(['userStats', 'courseStudents']);
 
         $totalExp = 0;
         $totalGold = 0;
@@ -210,7 +213,7 @@ class ProfileController extends Controller
 
     public function edit()
     {
-        $user = auth()->user();
+        $user = Auth::User();
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
@@ -232,7 +235,8 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = auth()->user();
+        /** @var User $user */
+        $user = $request->user();
 
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',

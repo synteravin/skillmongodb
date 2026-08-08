@@ -10,6 +10,7 @@ use App\Http\Requests\Module\UpdateModuleRequest;
 use App\Models\Module;
 use App\Services\Module\ModuleContentService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
@@ -22,7 +23,7 @@ class ModuleController extends Controller
 
         $action->execute([
             ...$request->validated(),
-            'created_by' => auth()->id(),
+            'created_by' => Auth::id(),
         ]);
 
         return redirect()->back()->with('success', 'Module created');

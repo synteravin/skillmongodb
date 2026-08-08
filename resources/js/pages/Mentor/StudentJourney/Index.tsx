@@ -17,6 +17,7 @@ import {
 interface Student {
     id: string;
     name: string;
+    username?: string;
     avatar: string | null;
     progressPercent: number;
     averageScore: number;

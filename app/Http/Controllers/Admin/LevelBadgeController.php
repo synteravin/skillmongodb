@@ -39,7 +39,7 @@ class LevelBadgeController extends Controller
             ->with('success', 'Badge operation successful');
     }
 
-    public function edit($id)
+    public function edit(string $id)
     {
         $badge = LevelBadge::findOrFail($id);
 
@@ -48,7 +48,7 @@ class LevelBadgeController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $badge = LevelBadge::findOrFail($id);
 
@@ -94,7 +94,7 @@ class LevelBadgeController extends Controller
         return back();
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
         $badge = LevelBadge::findOrFail($id);
 

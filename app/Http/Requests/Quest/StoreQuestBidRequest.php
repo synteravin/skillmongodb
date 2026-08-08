@@ -2,13 +2,18 @@
 
 namespace App\Http\Requests\Quest;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreQuestBidRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->isStudent();
+        /** @var User $user */
+        $user = $this->user();
+
+        return $user->isStudent();
     }
 
     public function rules(): array
@@ -27,7 +32,7 @@ class StoreQuestBidRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             if (empty($this->cv) && ! $this->hasFile('cv_file') && ! $this->hasFile('cv')) {

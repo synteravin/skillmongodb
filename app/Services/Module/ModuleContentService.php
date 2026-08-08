@@ -2,16 +2,18 @@
 
 namespace App\Services\Module;
 
+use App\Models\Module;
 use App\Models\ModuleContent;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ModuleContentService
 {
     /**
      * CREATE MULTIPLE CONTENTS
      */
-    public function createContents($module, array $contents)
+    public function createContents(Module $module, array $contents)
     {
         $lastOrder = ModuleContent::where('module_id', $module->_id)->max('order') ?? 0;
 
@@ -31,7 +33,7 @@ class ModuleContentService
     /**
      * CREATE SINGLE CONTENT
      */
-    public function createSingle($module, array $data)
+    public function createSingle(Module $module, array $data)
     {
         $order = ModuleContent::where('module_id', $module->_id)->max('order') ?? 0;
 
@@ -92,7 +94,7 @@ class ModuleContentService
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $ext = $file->getClientOriginalExtension();
 
-            $filename = \Str::slug($name).'-'.time().'.'.$ext;
+            $filename = Str::slug($name).'-'.time().'.'.$ext;
 
             $path = $file->storeAs($folder, $filename, 's3');
 

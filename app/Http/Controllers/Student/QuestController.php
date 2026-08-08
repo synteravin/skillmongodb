@@ -11,8 +11,11 @@ use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
+use App\Models\User;
 use App\Services\Quest\QuestService;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -98,7 +101,9 @@ class QuestController extends Controller
 
         if ($templateId) {
             $tq = Quest::find($templateId);
-            if ($tq && ($tq->creator_id === (string) auth()->id() || auth()->user()->isAdmin())) {
+            /** @var User $currentUser */
+            $currentUser = Auth::user();
+            if ($tq && ($tq->creator_id === (string) $currentUser->id || $currentUser->isAdmin())) {
                 $template = [
                     'title' => $tq->title,
                     'description' => $tq->description,
@@ -186,7 +191,8 @@ class QuestController extends Controller
      */
     public function edit(Quest $quest)
     {
-        $user = auth()->user();
+        /** @var User $user */
+        $user = Auth::user();
 
         if ((string) $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
             abort(403, 'Anda tidak memiliki hak akses untuk mengedit quest ini.');
@@ -197,6 +203,7 @@ class QuestController extends Controller
             abort(400, 'Hanya quest berstatus Draf atau Ditolak yang dapat diperbaiki.');
         }
 
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $resolvedImages = array_map(function ($img) use ($disk) {
             return [
@@ -407,10 +414,11 @@ class QuestController extends Controller
     /**
      * Display the specified quest details.
      */
-    public function show(Quest $quest)
+    public function show(string $id)
     {
-        $id = $quest->_id;
-        $user = auth()->user();
+        $quest = Quest::with(['creator', 'worker'])->where('slug', $id)->orWhere('_id', $id)->firstOrFail();
+        /** @var User $user */
+        $user = Auth::user();
         $details = $this->questService->getQuestDetails($id, $user);
 
         if (in_array($quest->status, ['draft', 'rejected'])) {
@@ -468,6 +476,7 @@ class QuestController extends Controller
         Gate::authorize('bid', $quest);
 
         $validated = $request->validated();
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         if ($request->hasFile('cv_file') && $request->file('cv_file')->isValid()) {
@@ -1025,11 +1034,13 @@ class QuestController extends Controller
 
             $submissionFile = null;
             if ($quest->submission_file) {
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
                 $subFile = $quest->submission_file;
                 $submissionFile = [
                     'name' => $subFile['name'] ?? 'project.zip',
                     'size' => $subFile['size'] ?? 0,
-                    'url' => isset($subFile['path']) ? Storage::disk('s3')->temporaryUrl($subFile['path'], now()->addMinutes(30)) : null,
+                    'url' => isset($subFile['path']) ? $disk->temporaryUrl($subFile['path'], now()->addMinutes(30)) : null,
                 ];
             }
 

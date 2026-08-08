@@ -94,7 +94,7 @@ class Path extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('is_published', '!==', false);
+        return $query->where('is_published', '!=', false);
     }
 
     protected static function booted(): void

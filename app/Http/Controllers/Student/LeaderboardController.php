@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Rank;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -91,7 +92,7 @@ class LeaderboardController extends Controller
                 return $u;
             });
 
-        $currentUser = $allLeaderboard->firstWhere('id', auth()->id());
+        $currentUser = $allLeaderboard->firstWhere('id', Auth::User()->id);
 
         $leaderboard = $allLeaderboard
             ->filter(fn ($u) => $u['total_score'] > 0)

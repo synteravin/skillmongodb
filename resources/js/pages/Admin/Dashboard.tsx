@@ -85,6 +85,32 @@ const PATH_COLORS = [
     },
 ];
 
+function getSmoothPath(points: { x: number; y: number }[]): string {
+    if (points.length === 0) return '';
+    if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+
+    let path = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i === 0 ? i : i - 1];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+
+        const tension = 0.15;
+
+        const cp1x = p1.x + (p2.x - p0.x) * tension;
+        const cp1y = Math.max(15, Math.min(210, p1.y + (p2.y - p0.y) * tension));
+
+        const cp2x = p2.x - (p3.x - p1.x) * tension;
+        const cp2y = Math.max(15, Math.min(210, p2.y - (p3.y - p1.y) * tension));
+
+        path += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+    }
+
+    return path;
+}
+
 export default function Dashboard({
     metrics,
     popularCourses,
@@ -121,19 +147,17 @@ export default function Dashboard({
         return { x, y };
     });
 
-    const usersPath = pointsUsers
-        .map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
-        .join(' ');
-    const usersArea = usersPath
-        ? `${usersPath} L ${pointsUsers[pointsUsers.length - 1].x} 210 L ${pointsUsers[0].x} 210 Z`
-        : '';
+    const usersPath = getSmoothPath(pointsUsers);
+    const usersArea =
+        usersPath && pointsUsers.length > 0
+            ? `${usersPath} L ${pointsUsers[pointsUsers.length - 1].x} 210 L ${pointsUsers[0].x} 210 Z`
+            : '';
 
-    const subsPath = pointsSubmissions
-        .map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
-        .join(' ');
-    const subsArea = subsPath
-        ? `${subsPath} L ${pointsSubmissions[pointsSubmissions.length - 1].x} 210 L ${pointsSubmissions[0].x} 210 Z`
-        : '';
+    const subsPath = getSmoothPath(pointsSubmissions);
+    const subsArea =
+        subsPath && pointsSubmissions.length > 0
+            ? `${subsPath} L ${pointsSubmissions[pointsSubmissions.length - 1].x} 210 L ${pointsSubmissions[0].x} 210 Z`
+            : '';
 
     const handleMouseMove = (
         e: React.MouseEvent<SVGSVGElement, MouseEvent>,
@@ -250,8 +274,8 @@ export default function Dashboard({
                                             <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />{' '}
                                             Student Activity
                                         </span>
-                                        <span className="flex items-center gap-1.5 text-purple-500">
-                                            <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />{' '}
+                                        <span className="flex items-center gap-1.5 text-emerald-500">
+                                            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />{' '}
                                             Submissions
                                         </span>
                                     </div>
@@ -296,12 +320,12 @@ export default function Dashboard({
                                                     >
                                                         <stop
                                                             offset="0%"
-                                                            stopColor="#a855f7"
+                                                            stopColor="#10b981"
                                                             stopOpacity="0.25"
                                                         />
                                                         <stop
                                                             offset="100%"
-                                                            stopColor="#a855f7"
+                                                            stopColor="#10b981"
                                                             stopOpacity="0.00"
                                                         />
                                                     </linearGradient>
@@ -339,7 +363,7 @@ export default function Dashboard({
                                                                     x="590"
                                                                     y={y + 3}
                                                                     textAnchor="start"
-                                                                    className="fill-purple-500/80 font-mono text-[9px] font-bold dark:fill-purple-400/80"
+                                                                    className="fill-emerald-500/80 font-mono text-[9px] font-bold dark:fill-emerald-400/80"
                                                                 >
                                                                     {rightVal}
                                                                 </text>
@@ -377,7 +401,7 @@ export default function Dashboard({
                                                     <path
                                                         d={subsPath}
                                                         fill="none"
-                                                        stroke="#a855f7"
+                                                        stroke="#10b981"
                                                         strokeWidth="2.5"
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
@@ -467,7 +491,7 @@ export default function Dashboard({
                                                                     ].y
                                                                 }
                                                                 r="4.5"
-                                                                fill="#a855f7"
+                                                                fill="#10b981"
                                                                 stroke="#fff"
                                                                 strokeWidth="1.5"
                                                             />
@@ -509,7 +533,7 @@ export default function Dashboard({
                                                                 </strong>
                                                             </span>
                                                             <span className="flex items-center gap-1.5">
-                                                                <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />{' '}
+                                                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{' '}
                                                                 Submissions:{' '}
                                                                 <strong>
                                                                     {
