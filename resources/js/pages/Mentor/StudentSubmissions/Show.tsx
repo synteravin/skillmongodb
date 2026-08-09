@@ -36,6 +36,7 @@ interface Submission {
 interface StudentSubmission {
     id: string;
     _id?: string;
+    slug?: string;
     submission_id: string;
     file_path?: string;
     link?: string;

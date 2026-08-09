@@ -8,6 +8,7 @@ use App\Models\CareerGroup;
 use App\Models\StudentSubmission;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class SubmissionController extends Controller
@@ -21,7 +22,7 @@ class SubmissionController extends Controller
             ->get();
 
         // Get student's current submissions for these
-        $studentSubmissions = StudentSubmission::where('student_id', auth()->id())
+        $studentSubmissions = StudentSubmission::where('student_id', Auth::id())
             ->whereIn('submission_id', $submissions->pluck('id'))
             ->get()
             ->keyBy('submission_id');
@@ -42,7 +43,7 @@ class SubmissionController extends Controller
 
         // Get student's submission if exists
         $studentSubmission = StudentSubmission::where('submission_id', $submission->id)
-            ->where('student_id', auth()->id())
+            ->where('student_id', Auth::id())
             ->first();
 
         // Ensure we send related mentor info or group info
@@ -71,7 +72,7 @@ class SubmissionController extends Controller
 
         $data = [
             'submission_id' => $submission->id,
-            'student_id' => auth()->id(),
+            'student_id' => Auth::id(),
             'notes' => $validated['notes'] ?? null,
             'status' => 'submitted',
         ];
@@ -88,13 +89,13 @@ class SubmissionController extends Controller
         $studentSubmission = StudentSubmission::updateOrCreate(
             [
                 'submission_id' => $submission->id,
-                'student_id' => auth()->id(),
+                'student_id' => Auth::id(),
             ],
             $data
         );
 
         // Notify Mentors
-        app(NotifyMentorOfSubmissionAction::class)->execute($studentSubmission, auth()->user());
+        app(NotifyMentorOfSubmissionAction::class)->execute($studentSubmission, Auth::User());
 
         return back()->with('success', 'Your work has been submitted successfully.');
     }

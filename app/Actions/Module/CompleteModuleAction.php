@@ -4,7 +4,7 @@ namespace App\Actions\Module;
 
 use App\Models\Module;
 use App\Models\User;
-use App\Services\ModuleProgressService;
+use App\Services\Module\ModuleProgressService;
 
 class CompleteModuleAction
 {

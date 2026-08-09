@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Quiz;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreQuizRequest extends FormRequest
 {
@@ -44,7 +45,7 @@ class StoreQuizRequest extends FormRequest
     }
 
     /* ================= CUSTOM VALIDATION ================= */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
 

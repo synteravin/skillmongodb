@@ -17,6 +17,7 @@ type Path = {
 type CareerGroup = {
     _id?: string;
     name: string;
+    slug?: string;
     paths: Path[];
     mentor?: Mentor;
 };

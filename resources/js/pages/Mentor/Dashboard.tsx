@@ -5,6 +5,7 @@ import { ArrowRight, Clock, FileText } from 'lucide-react';
 type CareerGroup = {
     id: string;
     name: string;
+    slug?: string;
     paths_count: number;
 };
 

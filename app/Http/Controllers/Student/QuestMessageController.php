@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -62,6 +63,7 @@ class QuestMessageController extends Controller
         }
 
         $data = $messages->map(function ($msg) {
+            /** @var FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
 
             return [
@@ -137,6 +139,7 @@ class QuestMessageController extends Controller
             'file' => $fileData,
         ]);
 
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
 
         return response()->json([

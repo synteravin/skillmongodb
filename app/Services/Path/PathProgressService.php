@@ -7,12 +7,16 @@ use App\Models\Path;
 use App\Models\User;
 use App\Models\UserStat; // ✅ FIXED
 use App\Services\Reward\RewardService;
-use MongoDB\BSON\ObjectId;
+use Illuminate\Support\Collection;
 
 class PathProgressService
 {
     /* ================= HELPER ================= */
 
+    /**
+     * @param  mixed  $data
+     * @return Collection
+     */
     private function normalizeArray($data)
     {
         if (is_string($data)) {
@@ -20,7 +24,7 @@ class PathProgressService
         }
 
         return collect($data)->map(function ($id) {
-            if ($id instanceof ObjectId) {
+            if (is_object($id) && method_exists($id, '__toString')) {
                 return $id->__toString();
             }
 
@@ -28,14 +32,19 @@ class PathProgressService
         });
     }
 
+    /**
+     * @param  Collection|iterable  $collection
+     * @return Collection
+     */
     private function getIdsFromCollection($collection)
     {
-        return $collection->map(function ($item) {
-            if ($item->_id instanceof ObjectId) {
-                return $item->_id->__toString();
+        return collect($collection)->map(function ($item) {
+            $id = is_object($item) && isset($item->_id) ? $item->_id : $item;
+            if (is_object($id) && method_exists($id, '__toString')) {
+                return $id->__toString();
             }
 
-            return (string) $item->_id;
+            return (string) $id;
         });
     }
 
@@ -116,13 +125,9 @@ class PathProgressService
 
         /* ================= VALIDASI ================= */
 
-        $selectedPathId = $progress->selected_path_id instanceof ObjectId
-            ? $progress->selected_path_id->__toString()
-            : (string) $progress->selected_path_id;
+        $selectedPathId = (string) $progress->selected_path_id;
 
-        $currentPathId = $path->_id instanceof ObjectId
-            ? $path->_id->__toString()
-            : (string) $path->_id;
+        $currentPathId = (string) $path->_id;
 
         if (! $selectedPathId) {
             throw new \Exception('No path selected');

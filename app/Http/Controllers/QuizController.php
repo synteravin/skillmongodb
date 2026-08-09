@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\Quiz\SubmitQuizAction;
 use App\Http\Requests\Quiz\SubmitQuizRequest;
+use App\Models\Course;
+use App\Models\Path;
 use App\Models\Quiz;
 use App\Models\QuizResult;
 use App\Models\User;
@@ -13,17 +15,68 @@ use Inertia\Inertia;
 
 class QuizController extends Controller
 {
-    public function show(string $id)
+    public function show(string $courseParam, string $pathParam)
     {
+        $course = Course::where('slug', $courseParam)->orWhere('_id', $courseParam)->first();
+        $courseId = $course ? (string) $course->_id : $courseParam;
+
+        $path = Path::where(function ($q) use ($pathParam) {
+            $q->where('slug', $pathParam)->orWhere('_id', $pathParam);
+        })->where('course_id', $courseId)->firstOrFail();
+
         $quiz = Quiz::with(['path.course', 'path.modules', 'questions.answers'])
-            ->where('_id', $id)
-            ->orWhere('slug', $id)
-            ->orWhereHas('path', fn ($q) => $q->where('slug', $id))
+            ->where('path_id', (string) $path->_id)
             ->firstOrFail();
 
+        return $this->renderQuizPlay($quiz);
+    }
+
+    public function showLegacy(string $id)
+    {
         /** @var User $user */
         $user = Auth::user();
-        $user->load(['userStats']);
+
+        $query = Quiz::with(['path.course', 'path.modules', 'questions.answers']);
+
+        if (preg_match('/^[a-f\d]{24}$/i', $id)) {
+            $quiz = $query->where('_id', $id)->first();
+        } else {
+            $quizzes = $query->where(function ($q) use ($id) {
+                $q->where('slug', $id)->orWhereHas('path', fn ($p) => $p->where('slug', $id));
+            })->get();
+
+            if ($quizzes->count() === 1) {
+                $quiz = $quizzes->first();
+            } elseif ($quizzes->count() > 1 && $user) {
+                $userCourseIds = UserStat::where(function ($q) use ($user) {
+                    $q->where('user_id', $user->_id)->orWhere('user_id', (string) $user->_id);
+                })->pluck('course_id')->map(fn ($cid) => (string) $cid)->toArray();
+
+                $quiz = $quizzes->first(function ($q) use ($userCourseIds) {
+                    return $q->path && in_array((string) $q->path->course_id, $userCourseIds);
+                }) ?? $quizzes->first();
+            } else {
+                $quiz = $quizzes->first();
+            }
+        }
+
+        if (! $quiz || ! $quiz->path || ! $quiz->path->course) {
+            abort(404, 'Kuis tidak ditemukan.');
+        }
+
+        return redirect()->route('quiz.show', [
+            'course' => $quiz->path->course->slug ?: (string) $quiz->path->course->_id,
+            'path' => $quiz->path->slug ?: (string) $quiz->path->_id,
+        ]);
+    }
+
+    private function renderQuizPlay(Quiz $quiz)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if ($user) {
+            $user->load(['userStats']);
+        }
 
         // 🔒 CEK STATUS KELULUSAN TERLEBIH DAHULU
         $hasPassed = QuizResult::where(function ($q) use ($user) {
@@ -46,7 +99,8 @@ class QuizController extends Controller
             }
             $completed = array_map('strval', (array) $completedRaw);
 
-            $pathModules = $quiz->path->modules ?? collect();
+            $pathModules = ($quiz->path->modules ?? collect())
+                ->filter(fn ($m) => $m->is_published !== false);
 
             if ($pathModules->isNotEmpty()) {
                 $allCompleted = $pathModules->every(function ($m) use ($completed) {
@@ -144,13 +198,18 @@ class QuizController extends Controller
         ]);
     }
 
-    public function submit(SubmitQuizRequest $request, string $id)
+    public function submit(SubmitQuizRequest $request, string $courseParam, string $pathParam)
     {
         try {
+            $course = Course::where('slug', $courseParam)->orWhere('_id', $courseParam)->first();
+            $courseId = $course ? (string) $course->_id : $courseParam;
+
+            $path = Path::where(function ($q) use ($pathParam) {
+                $q->where('slug', $pathParam)->orWhere('_id', $pathParam);
+            })->where('course_id', $courseId)->firstOrFail();
+
             $quiz = Quiz::with(['questions.answers', 'path'])
-                ->where('slug', $id)
-                ->orWhere('_id', $id)
-                ->orWhereHas('path', fn ($q) => $q->where('slug', $id))
+                ->where('path_id', (string) $path->_id)
                 ->firstOrFail();
 
             /** @var User $user */

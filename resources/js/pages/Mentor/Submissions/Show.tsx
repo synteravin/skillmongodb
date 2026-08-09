@@ -14,16 +14,24 @@ import {
 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
+type Group = {
+    id?: string;
+    name?: string;
+    slug?: string;
+};
+
 type Submission = {
     id: string;
     group_id?: string;
     title: string;
     description: string;
     status: 'draft' | 'published';
+    group?: Group;
 };
 
 type StudentSubmission = {
     id: string;
+    slug?: string;
     student_name: string;
     status: 'submitted' | 'late' | 'graded';
     submitted_at: string;

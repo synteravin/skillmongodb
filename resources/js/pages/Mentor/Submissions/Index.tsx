@@ -15,6 +15,7 @@ import {
 
 type Submission = {
     id: string;
+    slug?: string;
     title: string;
     description: string;
     submission_type: string;
@@ -24,6 +25,7 @@ type Submission = {
 type Group = {
     id: string;
     name: string;
+    slug?: string;
 };
 
 interface Props {

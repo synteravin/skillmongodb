@@ -28,7 +28,7 @@ class LearnService
             ->with([
                 'modules' => function ($q) use ($user) {
                     $q->select('_id', 'path_id', 'title', 'slug', 'order', 'is_published')
-                        ->when(! $user->isAdmin() && ! $user->isMentor(), fn ($query) => $query->where('is_published', '!==', false))
+                        ->when(! $user->isAdmin() && ! $user->isMentor(), fn ($query) => $query->where('is_published', '!=', false))
                         ->orderBy('order');
                 },
                 'quiz',
@@ -38,7 +38,7 @@ class LearnService
         /* ================= MODULE ================= */
         $module = Module::where(fn ($q) => $q->where('slug', $moduleId)->orWhere('_id', $moduleId))
             ->where('path_id', (string) $path->_id)
-            ->when(! $user->isAdmin() && ! $user->isMentor(), fn ($query) => $query->where('is_published', '!==', false))
+            ->when(! $user->isAdmin() && ! $user->isMentor(), fn ($query) => $query->where('is_published', '!=', false))
             ->with([
                 'contents' => function ($q) {
                     $q->select('_id', 'module_id', 'type', 'content', 'order')
