@@ -77,8 +77,8 @@ export default function WorkerBidPanel({
     const maxBudget = quest.max_budget ?? quest.max_salary ?? 0;
 
     return (
-        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+        <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
             <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                 <h3 className="flex items-center gap-2 text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-slate-100">
                     <Send className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -97,13 +97,19 @@ export default function WorkerBidPanel({
                         }`}
                     >
                         {myBid.status === 'rejected' ? (
-                            <XCircle size={18} className="mt-0.5 shrink-0 text-red-600 dark:text-red-400" />
+                            <XCircle
+                                size={18}
+                                className="mt-0.5 shrink-0 text-red-600 dark:text-red-400"
+                            />
                         ) : (
-                            <Clock size={18} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                            <Clock
+                                size={18}
+                                className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
+                            />
                         )}
                         <div className="text-left">
                             <span
-                                className={`block text-xs font-bold uppercase tracking-wide ${
+                                className={`block text-xs font-bold tracking-wide uppercase ${
                                     myBid.status === 'rejected'
                                         ? 'text-red-700 dark:text-red-300'
                                         : 'text-amber-800 dark:text-amber-300'
@@ -128,7 +134,8 @@ export default function WorkerBidPanel({
                                     Harga Penawaran
                                 </strong>
                                 <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                                    Rp {myBid.bid_amount.toLocaleString('id-ID')}
+                                    Rp{' '}
+                                    {myBid.bid_amount.toLocaleString('id-ID')}
                                 </span>
                             </div>
                             <div>
@@ -153,7 +160,11 @@ export default function WorkerBidPanel({
                         <div className="grid grid-cols-2 gap-2 border-t border-slate-200/80 pt-2 dark:border-slate-800">
                             {myBid.cv && (
                                 <a
-                                    href={myBid.cv.startsWith('http') ? myBid.cv : '#'}
+                                    href={
+                                        myBid.cv.startsWith('http')
+                                            ? myBid.cv
+                                            : '#'
+                                    }
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white py-2 text-center text-[11px] font-bold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-indigo-400 dark:hover:bg-slate-800"
@@ -189,7 +200,7 @@ export default function WorkerBidPanel({
                                     name: quest.creator.name,
                                 })
                             }
-                            className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500"
+                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500"
                         >
                             <MessageSquare size={15} />
                             Hubungi Klien
@@ -201,7 +212,8 @@ export default function WorkerBidPanel({
                 <form onSubmit={handleBidSubmit} className="space-y-4">
                     <div className="space-y-1.5">
                         <label className="block text-xs font-semibold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                            Harga Penawaran (IDR) <span className="text-red-500">*</span>
+                            Harga Penawaran (IDR){' '}
+                            <span className="text-red-500">*</span>
                         </label>
                         <div className="relative">
                             <span className="absolute top-2.5 left-3.5 text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -212,8 +224,10 @@ export default function WorkerBidPanel({
                                 required
                                 placeholder={`Rentang anggaran: Rp ${minBudget.toLocaleString('id-ID')} - Rp ${maxBudget.toLocaleString('id-ID')}`}
                                 value={data.bid_amount}
-                                onChange={(e) => setData('bid_amount', e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2.5 pr-3.5 pl-10 text-xs font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
+                                onChange={(e) =>
+                                    setData('bid_amount', e.target.value)
+                                }
+                                className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2.5 pr-3.5 pl-10 text-xs font-bold text-slate-900 transition-colors placeholder:font-normal placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-1 focus:ring-indigo-600 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
                             />
                         </div>
                         {errors.bid_amount && (
@@ -233,8 +247,10 @@ export default function WorkerBidPanel({
                             placeholder="Jelaskan mengapa Anda kandidat terbaik dan bagaimana Anda berencana menyelesaikan proyek ini secara profesional..."
                             rows={8}
                             value={data.proposal}
-                            onChange={(e) => setData('proposal', e.target.value)}
-                            className="w-full min-h-[180px] rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
+                            onChange={(e) =>
+                                setData('proposal', e.target.value)
+                            }
+                            className="min-h-[180px] w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs leading-relaxed text-slate-900 transition-colors placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-1 focus:ring-indigo-600 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
                         />
                         {errors.proposal && (
                             <p className="text-xs font-semibold text-red-500">
@@ -248,7 +264,8 @@ export default function WorkerBidPanel({
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <label className="block text-xs font-semibold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                    Berkas / Tautan CV <span className="text-red-500">*</span>
+                                    Berkas / Tautan CV{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <div className="flex items-center rounded-lg bg-slate-100 p-0.5 dark:bg-slate-800">
                                     <button
@@ -290,27 +307,36 @@ export default function WorkerBidPanel({
                                     required={!data.cv_file}
                                     placeholder="https://drive.google.com/... (Tautan CV Publik)"
                                     value={data.cv}
-                                    onChange={(e) => setData('cv', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
+                                    onChange={(e) =>
+                                        setData('cv', e.target.value)
+                                    }
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2 text-xs text-slate-900 transition-colors placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-1 focus:ring-indigo-600 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
                                 />
                             ) : (
                                 <div>
                                     {data.cv_file ? (
                                         <div className="flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50/60 p-2 text-xs dark:border-indigo-900/60 dark:bg-indigo-950/40">
                                             <div className="flex min-w-0 items-center gap-2">
-                                                <FileText size={16} className="shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                                <FileText
+                                                    size={16}
+                                                    className="shrink-0 text-indigo-600 dark:text-indigo-400"
+                                                />
                                                 <div className="min-w-0">
                                                     <span className="block truncate text-xs font-semibold text-slate-800 dark:text-slate-200">
                                                         {data.cv_file.name}
                                                     </span>
                                                     <span className="block text-[10px] text-slate-400">
-                                                        {formatFileSize(data.cv_file.size)}
+                                                        {formatFileSize(
+                                                            data.cv_file.size,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </div>
                                             <button
                                                 type="button"
-                                                onClick={() => setData('cv_file', null)}
+                                                onClick={() =>
+                                                    setData('cv_file', null)
+                                                }
                                                 className="rounded p-1 text-slate-400 hover:bg-white hover:text-red-500 dark:hover:bg-slate-800"
                                             >
                                                 <X size={14} />
@@ -323,7 +349,8 @@ export default function WorkerBidPanel({
                                                 Pilih Berkas CV
                                             </span>
                                             <span className="text-[10px] text-slate-400">
-                                                Format: PDF, DOC, DOCX, JPG, PNG (Maks 5MB)
+                                                Format: PDF, DOC, DOCX, JPG, PNG
+                                                (Maks 5MB)
                                             </span>
                                             <input
                                                 type="file"
@@ -331,8 +358,14 @@ export default function WorkerBidPanel({
                                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                                 className="hidden"
                                                 onChange={(e) => {
-                                                    if (e.target.files && e.target.files[0]) {
-                                                        setData('cv_file', e.target.files[0]);
+                                                    if (
+                                                        e.target.files &&
+                                                        e.target.files[0]
+                                                    ) {
+                                                        setData(
+                                                            'cv_file',
+                                                            e.target.files[0],
+                                                        );
                                                     }
                                                 }}
                                             />
@@ -356,7 +389,8 @@ export default function WorkerBidPanel({
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <label className="block text-xs font-semibold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                    Berkas / Tautan Portofolio <span className="text-red-500">*</span>
+                                    Berkas / Tautan Portofolio{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <div className="flex items-center rounded-lg bg-slate-100 p-0.5 dark:bg-slate-800">
                                     <button
@@ -398,27 +432,43 @@ export default function WorkerBidPanel({
                                     required={!data.portfolio_file}
                                     placeholder="https://github.com/... atau behance.net/..."
                                     value={data.portfolio}
-                                    onChange={(e) => setData('portfolio', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
+                                    onChange={(e) =>
+                                        setData('portfolio', e.target.value)
+                                    }
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2 text-xs text-slate-900 transition-colors placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-1 focus:ring-indigo-600 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500"
                                 />
                             ) : (
                                 <div>
                                     {data.portfolio_file ? (
                                         <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50/60 p-2 text-xs dark:border-purple-900/60 dark:bg-purple-950/40">
                                             <div className="flex min-w-0 items-center gap-2">
-                                                <FileText size={16} className="shrink-0 text-purple-600 dark:text-purple-400" />
+                                                <FileText
+                                                    size={16}
+                                                    className="shrink-0 text-purple-600 dark:text-purple-400"
+                                                />
                                                 <div className="min-w-0">
                                                     <span className="block truncate text-xs font-semibold text-slate-800 dark:text-slate-200">
-                                                        {data.portfolio_file.name}
+                                                        {
+                                                            data.portfolio_file
+                                                                .name
+                                                        }
                                                     </span>
                                                     <span className="block text-[10px] text-slate-400">
-                                                        {formatFileSize(data.portfolio_file.size)}
+                                                        {formatFileSize(
+                                                            data.portfolio_file
+                                                                .size,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </div>
                                             <button
                                                 type="button"
-                                                onClick={() => setData('portfolio_file', null)}
+                                                onClick={() =>
+                                                    setData(
+                                                        'portfolio_file',
+                                                        null,
+                                                    )
+                                                }
                                                 className="rounded p-1 text-slate-400 hover:bg-white hover:text-red-500 dark:hover:bg-slate-800"
                                             >
                                                 <X size={14} />
@@ -431,7 +481,8 @@ export default function WorkerBidPanel({
                                                 Pilih Berkas Portofolio
                                             </span>
                                             <span className="text-[10px] text-slate-400">
-                                                Format: PDF, DOC, ZIP, RAR, PNG (Maks 10MB)
+                                                Format: PDF, DOC, ZIP, RAR, PNG
+                                                (Maks 10MB)
                                             </span>
                                             <input
                                                 type="file"
@@ -439,8 +490,14 @@ export default function WorkerBidPanel({
                                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip,.rar"
                                                 className="hidden"
                                                 onChange={(e) => {
-                                                    if (e.target.files && e.target.files[0]) {
-                                                        setData('portfolio_file', e.target.files[0]);
+                                                    if (
+                                                        e.target.files &&
+                                                        e.target.files[0]
+                                                    ) {
+                                                        setData(
+                                                            'portfolio_file',
+                                                            e.target.files[0],
+                                                        );
                                                     }
                                                 }}
                                             />
@@ -464,21 +521,24 @@ export default function WorkerBidPanel({
                     <button
                         type="submit"
                         disabled={processing}
-                        className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-50 dark:from-indigo-600 dark:to-indigo-500"
+                        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-50 dark:from-indigo-600 dark:to-indigo-500"
                     >
                         <Send className="h-4 w-4" />
-                        {processing ? 'Mengirim Proposal...' : 'Kirim Proposal Proyek'}
+                        {processing
+                            ? 'Mengirim Proposal...'
+                            : 'Kirim Proposal Proyek'}
                     </button>
                 </form>
             ) : (
                 /* Case C: Bidding Closed */
                 <div className="py-8 text-center text-slate-400 dark:text-slate-500">
                     <Briefcase className="mx-auto mb-2 h-9 w-9 text-slate-300 dark:text-slate-700" />
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                    <p className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                         Penerimaan Proposal Ditutup
                     </p>
                     <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                        Proyek ini sudah terisi atau sudah melewati masa bidding aktif.
+                        Proyek ini sudah terisi atau sudah melewati masa bidding
+                        aktif.
                     </p>
                 </div>
             )}

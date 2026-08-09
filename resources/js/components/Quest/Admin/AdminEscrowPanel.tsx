@@ -15,7 +15,7 @@ export default function AdminEscrowPanel({
     }
 
     return (
-        <div className="relative overflow-hidden grid grid-cols-1 gap-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-3 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+        <div className="relative grid grid-cols-1 gap-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-3 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
             {/* Column 1: Escrow Amount */}
@@ -46,10 +46,10 @@ export default function AdminEscrowPanel({
                     <span
                         className={`mt-1 inline-block rounded px-2.5 py-1 text-[10px] font-extrabold tracking-wider uppercase ${
                             ['approved', 'completed'].includes(quest.status)
-                                ? 'bg-emerald-500/20 text-emerald-700 border border-emerald-500/30 dark:text-emerald-400'
+                                ? 'border border-emerald-500/30 bg-emerald-500/20 text-emerald-700 dark:text-emerald-400'
                                 : quest.status === 'disputed'
-                                  ? 'animate-pulse bg-red-500/20 text-red-700 border border-red-500/30 dark:text-red-400'
-                                  : 'bg-amber-500/20 text-amber-700 border border-amber-500/30 dark:text-amber-400'
+                                  ? 'animate-pulse border border-red-500/30 bg-red-500/20 text-red-700 dark:text-red-400'
+                                  : 'border border-amber-500/30 bg-amber-500/20 text-amber-700 dark:text-amber-400'
                         }`}
                     >
                         {['approved', 'completed'].includes(quest.status)

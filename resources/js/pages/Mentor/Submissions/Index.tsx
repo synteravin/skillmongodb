@@ -65,7 +65,8 @@ export default function SubmissionIndex({ group, submissions }: Props) {
                                 {group.name}
                             </h1>
                             <p className="text-base leading-relaxed text-slate-500 dark:text-slate-400">
-                                Manage assignments and review student progress for this career branch.
+                                Manage assignments and review student progress
+                                for this career branch.
                             </p>
                         </div>
 

@@ -304,7 +304,8 @@ const SortableContent = ({
                                                 <p className="text-[10px] text-slate-400">
                                                     {content.type === 'image'
                                                         ? 'PNG, JPG, WEBP up to 20MB'
-                                                        : content.type === 'video'
+                                                        : content.type ===
+                                                            'video'
                                                           ? 'MP4, WEBM up to 50MB'
                                                           : 'PDF, ZIP, DOCX files'}
                                                 </p>
@@ -341,7 +342,7 @@ const SortableContent = ({
                                             setEditingId(null);
                                         }
                                     }}
-                                    className="dark:hover:bg-slate-800 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 sm:flex-none sm:border-transparent sm:py-1.5 dark:border-slate-700 dark:text-slate-400 dark:hover:text-white"
+                                    className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:opacity-50 sm:flex-none sm:border-transparent sm:py-1.5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                                 >
                                     <X
                                         size={16}
@@ -714,7 +715,8 @@ export default function ModuleBuilder({ path }: { path: Path }) {
             const formData = new FormData();
             formData.append('type', type);
             if (data.title) formData.append('title', data.title);
-            if (data.description) formData.append('description', data.description);
+            if (data.description)
+                formData.append('description', data.description);
             formData.append('file', data.file);
 
             router.post(`/admin/modules/${moduleId}/contents`, formData, {
@@ -1041,7 +1043,11 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        if (path.quiz?.slug || path.quiz?.id || path.quiz?._id) {
+                                        if (
+                                            path.quiz?.slug ||
+                                            path.quiz?.id ||
+                                            path.quiz?._id
+                                        ) {
                                             router.get(
                                                 `/admin/quiz/${path.quiz.slug || path.quiz.id || path.quiz._id}/edit`,
                                             );
@@ -1157,7 +1163,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                                 <Trash2 size={16} />
                                             </button>
                                             <div
-                                                className={`rounded-full p-2 transition-all duration-300 ${isOpen ? 'dark:bg-slate-800 rotate-180 bg-slate-100 text-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+                                                className={`rounded-full p-2 transition-all duration-300 ${isOpen ? 'rotate-180 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
                                             >
                                                 <ChevronDown size={20} />
                                             </div>

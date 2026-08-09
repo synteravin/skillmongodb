@@ -147,15 +147,69 @@ export default function Index({
                                 viewBox="0 0 48 48"
                                 className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
-                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
-                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
-                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
-                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
-                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                                <rect
+                                    x="12"
+                                    y="20"
+                                    width="29"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="20"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="5"
+                                    y="20"
+                                    width="5"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="16"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="24"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="12"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="28"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="8"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="32"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
                             </svg>
                         </Link>
 
@@ -171,19 +225,21 @@ export default function Index({
             </div>
 
             <div className="relative z-10 flex min-h-0 w-full max-w-none flex-1 flex-col space-y-4 px-4 py-4 sm:px-6 lg:px-10">
-
                 {/* STATS */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {[
                         {
                             label: 'Proyek Tersedia',
-                            val: quests.filter((q) => q.status === 'open').length,
+                            val: quests.filter((q) => q.status === 'open')
+                                .length,
                             icon: Compass,
                             accent: 'text-emerald-600 dark:text-emerald-400',
                         },
                         {
                             label: 'Kontrak Berjalan',
-                            val: myWorkerQuests.filter((q) => q.status === 'ongoing').length,
+                            val: myWorkerQuests.filter(
+                                (q) => q.status === 'ongoing',
+                            ).length,
                             icon: Activity,
                             accent: 'text-indigo-600 dark:text-indigo-400',
                         },
@@ -204,7 +260,11 @@ export default function Index({
                             key={index}
                             className="flex items-center gap-3 rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-[#0d0f17]"
                         >
-                            <statItem.icon size={18} className={`shrink-0 ${statItem.accent}`} strokeWidth={2} />
+                            <statItem.icon
+                                size={18}
+                                className={`shrink-0 ${statItem.accent}`}
+                                strokeWidth={2}
+                            />
                             <div className="min-w-0">
                                 <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                     {statItem.label}
@@ -269,7 +329,7 @@ export default function Index({
                     <>
                         {/* FILTERS & SEARCH */}
                         <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                             <form
                                 onSubmit={handleSearch}
                                 className="relative z-10 flex flex-col items-center gap-3.5 md:flex-row"
@@ -280,8 +340,10 @@ export default function Index({
                                         type="text"
                                         placeholder="Cari lowongan proyek..."
                                         value={search}
-                                        onChange={(e) => setSearch(e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/80 py-2 pr-4 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-500 transition-colors focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50/80 py-2 pr-4 pl-10 text-xs font-semibold text-slate-900 transition-colors placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500"
                                     />
                                     <Search className="absolute top-2.5 left-3 h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
                                 </div>
@@ -290,18 +352,24 @@ export default function Index({
                                 <div className="relative w-full md:w-48">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value as any)}
+                                        onChange={(e) =>
+                                            setSortBy(e.target.value as any)
+                                        }
                                         className="w-full cursor-pointer appearance-none rounded-lg border border-slate-300 bg-slate-50/80 px-3.5 py-2 pr-8 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
                                     >
                                         <option value="latest">Terbaru</option>
-                                        <option value="highest_salary">Anggaran Tertinggi</option>
-                                        <option value="closest_deadline">Deadline Terdekat</option>
+                                        <option value="highest_salary">
+                                            Anggaran Tertinggi
+                                        </option>
+                                        <option value="closest_deadline">
+                                            Deadline Terdekat
+                                        </option>
                                     </select>
                                     <ChevronDown className="pointer-events-none absolute top-3 right-3 h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
                                 </div>
 
                                 {/* Status Filters */}
-                                <div className="flex w-full gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0 scrollbar-none">
+                                <div className="scrollbar-none flex w-full gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0">
                                     {[
                                         { val: '', label: 'Semua' },
                                         { val: 'open', label: 'Tersedia' },
@@ -311,8 +379,12 @@ export default function Index({
                                         <button
                                             key={statusOption.val}
                                             type="button"
-                                            onClick={() => handleStatusFilter(statusOption.val)}
-                                            className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                                            onClick={() =>
+                                                handleStatusFilter(
+                                                    statusOption.val,
+                                                )
+                                            }
+                                            className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold whitespace-nowrap transition-all ${
                                                 status === statusOption.val
                                                     ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
                                                     : 'border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
@@ -327,16 +399,18 @@ export default function Index({
 
                         {/* QUEST LIST */}
                         {bursaQuests.length === 0 ? (
-                            <div className="relative overflow-hidden flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white py-16 text-center shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                            <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-slate-300 bg-white py-16 text-center shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                                 <div className="relative z-10 flex flex-col items-center justify-center">
                                     <Briefcase className="mb-3 h-10 w-10 text-slate-500 dark:text-slate-700" />
-                                <p className="text-sm font-extrabold text-slate-900 dark:text-slate-300">
-                                    Tidak ada lowongan proyek tersedia
-                                </p>
-                                <p className="mx-auto mt-1 max-w-xs text-xs font-semibold text-slate-600">
-                                    Coba ubah kata kunci pencarian atau sesuaikan filter status untuk melihat lowongan lain.
-                                </p>
+                                    <p className="text-sm font-extrabold text-slate-900 dark:text-slate-300">
+                                        Tidak ada lowongan proyek tersedia
+                                    </p>
+                                    <p className="mx-auto mt-1 max-w-xs text-xs font-semibold text-slate-600">
+                                        Coba ubah kata kunci pencarian atau
+                                        sesuaikan filter status untuk melihat
+                                        lowongan lain.
+                                    </p>
                                 </div>
                             </div>
                         ) : (
@@ -350,7 +424,8 @@ export default function Index({
                                     ))}
                                 </div>
 
-                                {(quests.length < totalQuests || currentLimit > 12) && (
+                                {(quests.length < totalQuests ||
+                                    currentLimit > 12) && (
                                     <div className="flex flex-wrap items-center justify-center gap-3 pb-16">
                                         {/* Show Less */}
                                         {currentLimit > 12 && (
@@ -403,14 +478,14 @@ export default function Index({
                     </>
                 ) : (
                     <div className="space-y-8 pb-16">
-                        
                         {/* Sebagai Pekerja */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between border-b border-slate-300 pb-2 dark:border-slate-800">
                                 <h2 className="flex items-center gap-2 pl-1 text-sm font-extrabold text-slate-900 uppercase dark:text-white">
-                                    Sebagai Kontraktor / Pekerja ({myWorkerQuests.length})
+                                    Sebagai Kontraktor / Pekerja (
+                                    {myWorkerQuests.length})
                                 </h2>
-                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider dark:text-slate-400">
+                                <span className="text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                     Proyek Kerja Aktif Anda
                                 </span>
                             </div>
@@ -422,7 +497,9 @@ export default function Index({
                                         Anda belum mengambil proyek apa pun.
                                     </p>
                                     <button
-                                        onClick={() => setActiveMainTab('bursa')}
+                                        onClick={() =>
+                                            setActiveMainTab('bursa')
+                                        }
                                         className="mt-2 text-xs font-extrabold text-indigo-700 hover:underline dark:text-indigo-400"
                                     >
                                         Cari Lowongan Kerja →
@@ -439,13 +516,19 @@ export default function Index({
                                         ))}
                                     </div>
 
-                                    {(myWorkerQuests.length > 3 || myWorkerLimit > 3) && (
+                                    {(myWorkerQuests.length > 3 ||
+                                        myWorkerLimit > 3) && (
                                         <div className="flex justify-center gap-2 pt-3">
-                                            {myWorkerLimit < myWorkerQuests.length && (
+                                            {myWorkerLimit <
+                                                myWorkerQuests.length && (
                                                 <button
                                                     onClick={() =>
-                                                        setMyWorkerLimit((prev) =>
-                                                            Math.min(prev + 6, myWorkerQuests.length),
+                                                        setMyWorkerLimit(
+                                                            (prev) =>
+                                                                Math.min(
+                                                                    prev + 6,
+                                                                    myWorkerQuests.length,
+                                                                ),
                                                         )
                                                     }
                                                     className="rounded-lg border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-sm hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
@@ -455,7 +538,9 @@ export default function Index({
                                             )}
                                             {myWorkerLimit > 3 && (
                                                 <button
-                                                    onClick={() => setMyWorkerLimit(3)}
+                                                    onClick={() =>
+                                                        setMyWorkerLimit(3)
+                                                    }
                                                     className="rounded-lg border border-red-300 bg-white px-3.5 py-1.5 text-xs font-bold text-red-700 shadow-sm hover:bg-red-50 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400"
                                                 >
                                                     Sembunyikan ↑
@@ -471,16 +556,18 @@ export default function Index({
                         <div className="space-y-4">
                             <div className="flex items-center justify-between border-b border-slate-300 pb-2 dark:border-slate-800">
                                 <h2 className="flex items-center gap-2 pl-1 text-sm font-extrabold text-slate-900 uppercase dark:text-white">
-                                    Sebagai Klien / Pemilik Proyek ({myCreatorQuests.length})
+                                    Sebagai Klien / Pemilik Proyek (
+                                    {myCreatorQuests.length})
                                 </h2>
-                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider dark:text-slate-400">
+                                <span className="text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                     Proyek yang Anda posting
                                 </span>
                             </div>
                             {myCreatorQuests.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50/70 py-10 text-center dark:border-slate-800 dark:bg-[#0d1117]/30">
                                     <p className="text-xs font-bold text-slate-800 dark:text-slate-300">
-                                        Anda belum merilis lowongan proyek apa pun.
+                                        Anda belum merilis lowongan proyek apa
+                                        pun.
                                     </p>
                                     <Link
                                         href="/quests/create"
@@ -500,13 +587,19 @@ export default function Index({
                                         ))}
                                     </div>
 
-                                    {(myCreatorQuests.length > 3 || myCreatorLimit > 3) && (
+                                    {(myCreatorQuests.length > 3 ||
+                                        myCreatorLimit > 3) && (
                                         <div className="flex justify-center gap-2 pt-3">
-                                            {myCreatorLimit < myCreatorQuests.length && (
+                                            {myCreatorLimit <
+                                                myCreatorQuests.length && (
                                                 <button
                                                     onClick={() =>
-                                                        setMyCreatorLimit((prev) =>
-                                                            Math.min(prev + 6, myCreatorQuests.length),
+                                                        setMyCreatorLimit(
+                                                            (prev) =>
+                                                                Math.min(
+                                                                    prev + 6,
+                                                                    myCreatorQuests.length,
+                                                                ),
                                                         )
                                                     }
                                                     className="rounded-lg border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-800 shadow-sm hover:bg-slate-100 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
@@ -516,7 +609,9 @@ export default function Index({
                                             )}
                                             {myCreatorLimit > 3 && (
                                                 <button
-                                                    onClick={() => setMyCreatorLimit(3)}
+                                                    onClick={() =>
+                                                        setMyCreatorLimit(3)
+                                                    }
                                                     className="rounded-lg border border-red-300 bg-white px-3.5 py-1.5 text-xs font-bold text-red-700 shadow-sm hover:bg-red-50 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400"
                                                 >
                                                     Sembunyikan ↑

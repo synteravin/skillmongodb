@@ -40,10 +40,10 @@ export default function Edit({ quest }: QuestEditProps) {
     const [dragActive, setDragActive] = useState(false);
 
     const [existingImages, setExistingImages] = useState<ExistingAttachment[]>(
-        quest.images || []
+        quest.images || [],
     );
     const [existingFiles, setExistingFiles] = useState<ExistingAttachment[]>(
-        quest.files || []
+        quest.files || [],
     );
 
     const [newAttachmentPreviews, setNewAttachmentPreviews] = useState<{
@@ -291,7 +291,10 @@ export default function Edit({ quest }: QuestEditProps) {
                                     "{quest.rejection_note}"
                                 </p>
                                 <p className="mt-2 text-[11px] font-medium text-red-600 dark:text-red-400">
-                                    Silakan perbaiki data quest dan tambahkan berkas/gambar yang diminta di bawah ini, lalu klik tombol <strong>Kirim Ulang ke Admin</strong>.
+                                    Silakan perbaiki data quest dan tambahkan
+                                    berkas/gambar yang diminta di bawah ini,
+                                    lalu klik tombol{' '}
+                                    <strong>Kirim Ulang ke Admin</strong>.
                                 </p>
                             </div>
                         </div>
@@ -320,7 +323,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                         setData('title', e.target.value)
                                     }
                                     placeholder="Contoh: Pembuatan Landing Page Startup EdTech"
-                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-800 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-[#030712] dark:text-white"
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-800 transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white"
                                 />
                                 {errors.title && (
                                     <p className="mt-1 text-xs text-red-500">
@@ -342,7 +345,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                         setData('description', e.target.value)
                                     }
                                     placeholder="Jelaskan kebutuhan, fitur yang diinginkan, kriteria hasil, serta instruksi khusus..."
-                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs leading-relaxed text-slate-800 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-[#030712] dark:text-white"
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs leading-relaxed text-slate-800 transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white"
                                 />
                                 {errors.description && (
                                     <p className="mt-1 text-xs text-red-500">
@@ -358,7 +361,9 @@ export default function Edit({ quest }: QuestEditProps) {
                         {/* Anggaran */}
                         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:p-6 dark:border-slate-800 dark:bg-[#080d1a]">
                             <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-slate-800 uppercase dark:text-slate-100">
-                                <span className="font-bold text-emerald-500">Rp</span>
+                                <span className="font-bold text-emerald-500">
+                                    Rp
+                                </span>
                                 Rentang Anggaran Imbalan (Rp)
                             </h2>
 
@@ -373,14 +378,15 @@ export default function Edit({ quest }: QuestEditProps) {
                                         min={0}
                                         value={data.min_budget}
                                         onChange={(e) => {
-                                            const val = parseInt(e.target.value) || 0;
+                                            const val =
+                                                parseInt(e.target.value) || 0;
                                             setData((prev) => ({
                                                 ...prev,
                                                 min_budget: val,
                                                 min_salary: val,
                                             }));
                                         }}
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-[#030712] dark:text-white"
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white"
                                     />
                                 </div>
 
@@ -394,14 +400,15 @@ export default function Edit({ quest }: QuestEditProps) {
                                         min={0}
                                         value={data.max_budget}
                                         onChange={(e) => {
-                                            const val = parseInt(e.target.value) || 0;
+                                            const val =
+                                                parseInt(e.target.value) || 0;
                                             setData((prev) => ({
                                                 ...prev,
                                                 max_budget: val,
                                                 max_salary: val,
                                             }));
                                         }}
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-[#030712] dark:text-white"
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white"
                                     />
                                     {errors.max_budget && (
                                         <p className="mt-1 text-xs text-red-500">
@@ -431,7 +438,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                         onChange={(e) =>
                                             setData('deadline', e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-[#030712] dark:text-white"
+                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none dark:border-slate-700 dark:bg-[#030712] dark:text-white"
                                     />
                                     {errors.deadline && (
                                         <p className="mt-1 text-xs text-red-500">
@@ -442,7 +449,7 @@ export default function Edit({ quest }: QuestEditProps) {
                             </div>
 
                             {/* Rewards Estimator Component */}
-                            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                            <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800">
                                 <QuestRewardsEstimator
                                     minBudget={data.min_budget}
                                     maxBudget={data.max_budget}
@@ -458,11 +465,13 @@ export default function Edit({ quest }: QuestEditProps) {
                             Kelola Berkas & Gambar Lampiran Pendukung
                         </h2>
                         <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
-                            Tambahkan berkas pendukung (PDF, Word, ZIP, Gambar PNG/JPG) yang diminta oleh Admin.
+                            Tambahkan berkas pendukung (PDF, Word, ZIP, Gambar
+                            PNG/JPG) yang diminta oleh Admin.
                         </p>
 
                         {/* Existing Attachments Section */}
-                        {(existingImages.length > 0 || existingFiles.length > 0) && (
+                        {(existingImages.length > 0 ||
+                            existingFiles.length > 0) && (
                             <div className="mb-6 space-y-4 rounded-lg border border-slate-200/80 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-[#030712]/50">
                                 <h3 className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-300">
                                     Lampiran Yang Sudah Ada Sebelumnya:
@@ -489,7 +498,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                                         type="button"
                                                         onClick={() =>
                                                             handleRemoveExistingImage(
-                                                                img.path
+                                                                img.path,
                                                             )
                                                         }
                                                         className="absolute top-2 right-2 rounded-full bg-red-600 p-1 text-white opacity-90 transition-opacity hover:opacity-100"
@@ -518,20 +527,24 @@ export default function Edit({ quest }: QuestEditProps) {
                                                     key={file.path}
                                                     className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs dark:border-slate-800 dark:bg-[#080d1a]"
                                                 >
-                                                    <div className="flex items-center gap-2 min-w-0">
+                                                    <div className="flex min-w-0 items-center gap-2">
                                                         <FileText className="h-4 w-4 shrink-0 text-indigo-500" />
                                                         <span className="truncate font-medium text-slate-700 dark:text-slate-200">
                                                             {file.name}
                                                         </span>
                                                         <span className="text-[10px] text-slate-400">
-                                                            ({formatBytes(file.size)})
+                                                            (
+                                                            {formatBytes(
+                                                                file.size,
+                                                            )}
+                                                            )
                                                         </span>
                                                     </div>
                                                     <button
                                                         type="button"
                                                         onClick={() =>
                                                             handleRemoveExistingFile(
-                                                                file.path
+                                                                file.path,
                                                             )
                                                         }
                                                         className="rounded p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40"
@@ -565,7 +578,8 @@ export default function Edit({ quest }: QuestEditProps) {
                                 Klik atau seret berkas baru ke sini
                             </p>
                             <p className="mt-1 text-[10px] text-slate-400">
-                                Format didukung: PNG, JPG, PDF, DOCX, ZIP (Maks 10MB per file)
+                                Format didukung: PNG, JPG, PDF, DOCX, ZIP (Maks
+                                10MB per file)
                             </p>
                             <input
                                 ref={fileInputRef}
@@ -605,7 +619,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                                         onClick={() =>
                                                             handleRemoveNewFile(
                                                                 'images',
-                                                                idx
+                                                                idx,
                                                             )
                                                         }
                                                         className="absolute top-2 right-2 rounded-full bg-red-600 p-1 text-white"
@@ -613,7 +627,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                                         <X className="h-3.5 w-3.5" />
                                                     </button>
                                                 </div>
-                                            )
+                                            ),
                                         )}
                                     </div>
                                 )}
@@ -627,14 +641,16 @@ export default function Edit({ quest }: QuestEditProps) {
                                                     className="flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50/30 px-3 py-2 text-xs dark:border-indigo-900/40"
                                                 >
                                                     <span className="truncate font-medium text-slate-700 dark:text-slate-200">
-                                                        {file.name} ({formatBytes(file.size)})
+                                                        {file.name} (
+                                                        {formatBytes(file.size)}
+                                                        )
                                                     </span>
                                                     <button
                                                         type="button"
                                                         onClick={() =>
                                                             handleRemoveNewFile(
                                                                 'files',
-                                                                idx
+                                                                idx,
                                                             )
                                                         }
                                                         className="text-red-500 hover:text-red-700"
@@ -642,7 +658,7 @@ export default function Edit({ quest }: QuestEditProps) {
                                                         <X className="h-4 w-4" />
                                                     </button>
                                                 </div>
-                                            )
+                                            ),
                                         )}
                                     </div>
                                 )}

@@ -258,7 +258,14 @@ export default function Create({
                                     min={1}
                                     max={180}
                                     value={duration}
-                                    onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 15))}
+                                    onChange={(e) =>
+                                        setDuration(
+                                            Math.max(
+                                                1,
+                                                parseInt(e.target.value) || 15,
+                                            ),
+                                        )
+                                    }
                                     className="w-24 rounded-lg border border-slate-300 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                                 />
                             </div>
@@ -314,7 +321,7 @@ export default function Create({
                             <button
                                 onClick={submit}
                                 disabled={loading}
-                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-500 dark:shadow-indigo-900/40"
+                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:shadow-indigo-900/40 dark:hover:bg-indigo-500"
                             >
                                 {loading ? (
                                     <>
@@ -547,7 +554,7 @@ function QuestionCard({
                                     className={`flex items-center justify-center rounded-lg px-3 transition-colors sm:px-4 ${
                                         a.is_correct
                                             ? 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                            : 'dark:bg-slate-800 bg-slate-200/60 text-slate-400 hover:bg-slate-300/80 dark:hover:bg-slate-700'
+                                            : 'bg-slate-200/60 text-slate-400 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700'
                                     }`}
                                     title="Mark as correct answer"
                                 >

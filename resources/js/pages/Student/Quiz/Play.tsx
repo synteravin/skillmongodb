@@ -817,7 +817,7 @@ function BoxSoal({
                                             />
                                         </div>
                                     )}
-                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-[700px] flex-1 [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white sm:text-[11px] md:px-4 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
+                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-[700px] flex-1 overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] sm:text-[11px] md:px-4 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
                                         {question.question_text}
                                         {question.max_selectable > 1 && (
                                             <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
@@ -1405,7 +1405,7 @@ export default function Play({
                         </AnimatePresence>
                     </div>
 
-                    <div className="quiz-answer flex w-full flex-1 [scrollbar-width:none] flex-col justify-center overflow-y-auto px-0 py-[2px] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
+                    <div className="quiz-answer flex w-full flex-1 flex-col justify-center overflow-y-auto px-0 py-[2px] [scrollbar-width:none] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id + '-answers'}

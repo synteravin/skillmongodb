@@ -1,6 +1,15 @@
 import { usePage } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { Send, X, MessageSquare, ShieldAlert, Paperclip, Download, FileText, Image as ImageIcon } from 'lucide-react';
+import {
+    Send,
+    X,
+    MessageSquare,
+    ShieldAlert,
+    Paperclip,
+    Download,
+    FileText,
+    Image as ImageIcon,
+} from 'lucide-react';
 
 interface Message {
     id: string;
@@ -194,14 +203,16 @@ export default function QuestChatPanel({
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-200 bg-[#f5f6ff] p-4 dark:border-slate-800 dark:bg-[#0d0f17]">
                 <div className="flex min-w-0 items-center gap-2.5">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-650 dark:bg-slate-800 dark:text-indigo-400">
+                    <div className="text-indigo-650 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 dark:bg-slate-800 dark:text-indigo-400">
                         <MessageSquare className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
                         <h4 className="truncate text-sm font-bold text-slate-900 dark:text-white">
-                            {isDisputed ? 'Ruang Mediasi Arbitrase' : targetUserName}
+                            {isDisputed
+                                ? 'Ruang Mediasi Arbitrase'
+                                : targetUserName}
                         </h4>
-                        <span className="block truncate text-[10px] text-slate-405 dark:text-slate-500">
+                        <span className="text-slate-405 block truncate text-[10px] dark:text-slate-500">
                             Proyek: {questTitle}
                         </span>
                     </div>
@@ -209,21 +220,25 @@ export default function QuestChatPanel({
 
                 <button
                     onClick={onClose}
-                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-250 dark:text-slate-400 dark:hover:bg-white/5"
+                    className="hover:bg-slate-250 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors dark:text-slate-400 dark:hover:bg-white/5"
                 >
                     <X size={18} />
                 </button>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 space-y-4 overflow-y-auto bg-[#f8fafc] p-4 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800 dark:bg-[#030712]">
+            <div className="scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800 flex-1 space-y-4 overflow-y-auto bg-[#f8fafc] p-4 dark:bg-[#030712]">
                 {isDisputed && (
-                    <div className="flex gap-2.5 rounded-xl border border-amber-100 bg-amber-50/15 p-3.5 text-xs text-amber-800 dark:text-amber-300 dark:border-[#3b4b61]/40 dark:bg-[#0d0f17]">
-                        <ShieldAlert className="h-4 w-4 shrink-0 text-amber-550 mt-0.5" />
+                    <div className="flex gap-2.5 rounded-xl border border-amber-100 bg-amber-50/15 p-3.5 text-xs text-amber-800 dark:border-[#3b4b61]/40 dark:bg-[#0d0f17] dark:text-amber-300">
+                        <ShieldAlert className="text-amber-550 mt-0.5 h-4 w-4 shrink-0" />
                         <div className="space-y-0.5">
-                            <span className="block font-bold uppercase tracking-wider text-[10px]">Ruang Mediasi</span>
-                            <p className="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
-                                Admin hadir sebagai mediator resmi untuk menyelesaikan sengketa ini. Silakan lampirkan argumen dan bukti pekerjaan Anda di bawah ini.
+                            <span className="block text-[10px] font-bold tracking-wider uppercase">
+                                Ruang Mediasi
+                            </span>
+                            <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                                Admin hadir sebagai mediator resmi untuk
+                                menyelesaikan sengketa ini. Silakan lampirkan
+                                argumen dan bukti pekerjaan Anda di bawah ini.
                             </p>
                         </div>
                     </div>
@@ -234,13 +249,14 @@ export default function QuestChatPanel({
                         <span className="text-xs">Memuat obrolan...</span>
                     </div>
                 ) : messages.length === 0 ? (
-                    <div className="flex h-full flex-col items-center justify-center space-y-2 p-6 text-center text-slate-405">
+                    <div className="text-slate-405 flex h-full flex-col items-center justify-center space-y-2 p-6 text-center">
                         <MessageSquare className="h-12 w-12 stroke-1 text-slate-300 dark:text-slate-700" />
                         <h5 className="text-sm font-bold text-slate-700 dark:text-slate-300">
                             Belum Ada Obrolan
                         </h5>
                         <p className="text-xs text-slate-400">
-                            Kirim pesan pertama Anda untuk memulai diskusi mengenai proyek ini.
+                            Kirim pesan pertama Anda untuk memulai diskusi
+                            mengenai proyek ini.
                         </p>
                     </div>
                 ) : (
@@ -253,23 +269,27 @@ export default function QuestChatPanel({
                                 key={msg.id}
                                 className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
                             >
-                                <span className="mb-1 px-1 text-[9px] text-slate-400 flex items-center gap-1">
-                                    <span>{isSelf ? 'Anda' : msg.sender.name}</span>
+                                <span className="mb-1 flex items-center gap-1 px-1 text-[9px] text-slate-400">
+                                    <span>
+                                        {isSelf ? 'Anda' : msg.sender.name}
+                                    </span>
                                     <span>•</span>
                                     {msg.sender.role === 'admin' ? (
-                                        <span className="rounded bg-red-50 px-1 py-0.5 text-[8px] font-bold text-red-650 uppercase tracking-wider dark:bg-red-500/10 dark:text-red-400">
+                                        <span className="text-red-650 rounded bg-red-50 px-1 py-0.5 text-[8px] font-bold tracking-wider uppercase dark:bg-red-500/10 dark:text-red-400">
                                             Mediator
                                         </span>
-                                    ) : msg.sender.id === creatorId || msg.sender._id === creatorId ? (
-                                        <span className="rounded bg-blue-50 px-1 py-0.5 text-[8px] font-bold text-blue-650 uppercase tracking-wider dark:bg-blue-500/10 dark:text-blue-400">
+                                    ) : msg.sender.id === creatorId ||
+                                      msg.sender._id === creatorId ? (
+                                        <span className="text-blue-650 rounded bg-blue-50 px-1 py-0.5 text-[8px] font-bold tracking-wider uppercase dark:bg-blue-500/10 dark:text-blue-400">
                                             Klien
                                         </span>
-                                    ) : msg.sender.id === workerId || msg.sender._id === workerId ? (
-                                        <span className="rounded bg-emerald-50 px-1 py-0.5 text-[8px] font-bold text-emerald-600 uppercase tracking-wider dark:bg-emerald-500/10 dark:text-emerald-455">
+                                    ) : msg.sender.id === workerId ||
+                                      msg.sender._id === workerId ? (
+                                        <span className="dark:text-emerald-455 rounded bg-emerald-50 px-1 py-0.5 text-[8px] font-bold tracking-wider text-emerald-600 uppercase dark:bg-emerald-500/10">
                                             Pekerja
                                         </span>
                                     ) : (
-                                        <span className="rounded bg-slate-100 px-1 py-0.5 text-[8px] font-bold text-slate-500 uppercase tracking-wider dark:bg-slate-800 dark:text-slate-400">
+                                        <span className="rounded bg-slate-100 px-1 py-0.5 text-[8px] font-bold tracking-wider text-slate-500 uppercase dark:bg-slate-800 dark:text-slate-400">
                                             Siswa
                                         </span>
                                     )}
@@ -278,13 +298,13 @@ export default function QuestChatPanel({
                                     className={`relative max-w-[85%] rounded-lg px-3 py-2 text-xs shadow-[0_1px_1.5px_rgba(0,0,0,0.1)] ${
                                         isSelf
                                             ? 'rounded-tr-none border border-[#c7d2fe] bg-[#e0e7ff] text-[#1e1b4b] dark:border-[#3b4b61] dark:bg-[#232d3f] dark:text-[#f1f5f9]'
-                                            : 'rounded-tl-none border border-slate-200 bg-white text-slate-850 dark:border-[#334155] dark:bg-[#1e293b] dark:text-[#f1f5f9]'
+                                            : 'text-slate-850 rounded-tl-none border border-slate-200 bg-white dark:border-[#334155] dark:bg-[#1e293b] dark:text-[#f1f5f9]'
                                     }`}
                                 >
                                     {isSelf ? (
                                         <div className="absolute top-[8px] -right-[4px] h-2 w-2 rotate-45 border-t border-r border-[#c7d2fe] bg-[#e0e7ff] dark:border-[#3b4b61] dark:bg-[#232d3f]" />
                                     ) : (
-                                        <div className="absolute top-[8px] -left-[4px] h-2 w-2 rotate-45 border-l border-b border-slate-200 bg-white dark:border-[#334155] dark:bg-[#1e293b]" />
+                                        <div className="absolute top-[8px] -left-[4px] h-2 w-2 rotate-45 border-b border-l border-slate-200 bg-white dark:border-[#334155] dark:bg-[#1e293b]" />
                                     )}
                                     {msg.message && (
                                         <p className="relative z-10 leading-relaxed break-words whitespace-pre-wrap">
@@ -293,38 +313,53 @@ export default function QuestChatPanel({
                                     )}
 
                                     {msg.file && (
-                                        <div className={`mt-2 ${msg.message ? 'border-t border-slate-200/50 pt-2 dark:border-slate-800' : ''}`}>
-                                            {msg.file.name.match(/\.(jpeg|jpg|gif|png)$/i) ? (
-                                                <div className="relative group overflow-hidden rounded border border-slate-200/30 dark:border-slate-800 bg-black/5 dark:bg-black/40 max-w-[240px]">
+                                        <div
+                                            className={`mt-2 ${msg.message ? 'border-t border-slate-200/50 pt-2 dark:border-slate-800' : ''}`}
+                                        >
+                                            {msg.file.name.match(
+                                                /\.(jpeg|jpg|gif|png)$/i,
+                                            ) ? (
+                                                <div className="group relative max-w-[240px] overflow-hidden rounded border border-slate-200/30 bg-black/5 dark:border-slate-800 dark:bg-black/40">
                                                     <img
                                                         src={msg.file.url}
                                                         alt={msg.file.name}
-                                                        className="max-h-40 w-auto object-cover rounded"
+                                                        className="max-h-40 w-auto rounded object-cover"
                                                     />
                                                     <a
                                                         href={msg.file.url}
                                                         download
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity text-white rounded"
+                                                        className="absolute inset-0 flex items-center justify-center rounded bg-black/45 text-white opacity-0 transition-opacity group-hover:opacity-100"
                                                     >
                                                         <Download size={18} />
                                                     </a>
                                                 </div>
                                             ) : (
-                                                <div className={`flex items-center justify-between gap-3 rounded-lg border p-2 text-xs ${
-                                                    isSelf
-                                                        ? 'border-[#c7d2fe]/50 bg-white/50 text-[#1e1b4b] dark:border-[#3b4b61]/45 dark:bg-black/20 dark:text-[#f1f5f9]'
-                                                        : 'border-slate-200/40 bg-black/5 dark:border-slate-800 dark:bg-black/20 text-slate-800 dark:text-slate-200'
-                                                }`}>
+                                                <div
+                                                    className={`flex items-center justify-between gap-3 rounded-lg border p-2 text-xs ${
+                                                        isSelf
+                                                            ? 'border-[#c7d2fe]/50 bg-white/50 text-[#1e1b4b] dark:border-[#3b4b61]/45 dark:bg-black/20 dark:text-[#f1f5f9]'
+                                                            : 'border-slate-200/40 bg-black/5 text-slate-800 dark:border-slate-800 dark:bg-black/20 dark:text-slate-200'
+                                                    }`}
+                                                >
                                                     <div className="flex min-w-0 items-center gap-2">
-                                                        <FileText className={`h-5 w-5 shrink-0 ${isSelf ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-400'}`} />
+                                                        <FileText
+                                                            className={`h-5 w-5 shrink-0 ${isSelf ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-400'}`}
+                                                        />
                                                         <div className="min-w-0">
-                                                            <p className={`truncate text-xs font-semibold ${isSelf ? 'text-[#1e1b4b]' : 'text-slate-705 dark:text-slate-200'}`}>
+                                                            <p
+                                                                className={`truncate text-xs font-semibold ${isSelf ? 'text-[#1e1b4b]' : 'text-slate-705 dark:text-slate-200'}`}
+                                                            >
                                                                 {msg.file.name}
                                                             </p>
-                                                            <p className={`text-[9px] ${isSelf ? 'text-[#1e1b4b]/60 dark:text-[#f1f5f9]/60' : 'text-slate-400'}`}>
-                                                                {formatFileSize(msg.file.size)}
+                                                            <p
+                                                                className={`text-[9px] ${isSelf ? 'text-[#1e1b4b]/60 dark:text-[#f1f5f9]/60' : 'text-slate-400'}`}
+                                                            >
+                                                                {formatFileSize(
+                                                                    msg.file
+                                                                        .size,
+                                                                )}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -336,7 +371,7 @@ export default function QuestChatPanel({
                                                         className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded transition-colors ${
                                                             isSelf
                                                                 ? 'bg-[#c7d2fe]/45 text-[#1e1b4b] hover:bg-[#c7d2fe]/70 dark:bg-slate-800 dark:text-[#f1f5f9] dark:hover:bg-slate-700'
-                                                                : 'bg-indigo-500/10 text-indigo-650 hover:bg-indigo-500/20 dark:text-indigo-400'
+                                                                : 'text-indigo-650 bg-indigo-500/10 hover:bg-indigo-500/20 dark:text-indigo-400'
                                                         }`}
                                                         title="Unduh Berkas"
                                                     >
@@ -367,15 +402,19 @@ export default function QuestChatPanel({
             {/* Selected File Preview */}
             {attachmentFile && (
                 <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-[#0f1322] dark:text-slate-300">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <FileText className="h-4 w-4 text-indigo-550 shrink-0" />
-                        <span className="truncate font-semibold">{attachmentFile.name}</span>
-                        <span className="text-[10px] text-slate-400">({formatFileSize(attachmentFile.size)})</span>
+                    <div className="flex min-w-0 items-center gap-2">
+                        <FileText className="text-indigo-550 h-4 w-4 shrink-0" />
+                        <span className="truncate font-semibold">
+                            {attachmentFile.name}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                            ({formatFileSize(attachmentFile.size)})
+                        </span>
                     </div>
                     <button
                         type="button"
                         onClick={() => setAttachmentFile(null)}
-                        className="text-slate-400 hover:text-red-500 cursor-pointer"
+                        className="cursor-pointer text-slate-400 hover:text-red-500"
                     >
                         <X size={16} />
                     </button>
@@ -415,8 +454,10 @@ export default function QuestChatPanel({
                 />
                 <button
                     type="submit"
-                    disabled={(!newMessage.trim() && !attachmentFile) || sending}
-                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
+                    disabled={
+                        (!newMessage.trim() && !attachmentFile) || sending
+                    }
+                    className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
                 >
                     <Send size={16} />
                 </button>

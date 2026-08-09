@@ -1,5 +1,10 @@
 import React from 'react';
-import { Download, FileArchive, FileText, Image as ImageIcon } from 'lucide-react';
+import {
+    Download,
+    FileArchive,
+    FileText,
+    Image as ImageIcon,
+} from 'lucide-react';
 
 interface ImageAttachment {
     name: string;
@@ -47,7 +52,7 @@ export default function QuestAttachments({
             {/* Images Gallery */}
             {images && images.length > 0 && (
                 <div className="space-y-2.5">
-                    <span className="block text-[10px] font-semibold tracking-wider text-slate-450 uppercase">
+                    <span className="text-slate-450 block text-[10px] font-semibold tracking-wider uppercase">
                         Galeri Gambar
                     </span>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -93,12 +98,15 @@ export default function QuestAttachments({
             {/* Files List */}
             {files && files.length > 0 && (
                 <div className="space-y-2.5">
-                    <span className="block text-[10px] font-semibold tracking-wider text-slate-450 uppercase">
+                    <span className="text-slate-450 block text-[10px] font-semibold tracking-wider uppercase">
                         Dokumen Lampiran
                     </span>
                     <div className="space-y-2">
                         {files.map((file, index) => {
-                            const ext = file.name.split('.').pop()?.toLowerCase();
+                            const ext = file.name
+                                .split('.')
+                                .pop()
+                                ?.toLowerCase();
                             const isZip = ext === 'zip';
                             return (
                                 <div
@@ -112,10 +120,10 @@ export default function QuestAttachments({
                                             <FileText className="h-5 w-5 shrink-0 text-indigo-500" />
                                         )}
                                         <div className="min-w-0">
-                                            <p className="truncate text-xs font-semibold text-slate-705 dark:text-slate-200">
+                                            <p className="text-slate-705 truncate text-xs font-semibold dark:text-slate-200">
                                                 {file.name}
                                             </p>
-                                            <p className="text-slate-400 text-[10px]">
+                                            <p className="text-[10px] text-slate-400">
                                                 {formatBytes(file.size)}
                                             </p>
                                         </div>
@@ -124,7 +132,7 @@ export default function QuestAttachments({
                                         href={file.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-indigo-650 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+                                        className="text-indigo-650 flex cursor-pointer items-center justify-center rounded-lg p-1.5 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
                                         title="Unduh berkas"
                                     >
                                         <Download className="h-4 w-4" />

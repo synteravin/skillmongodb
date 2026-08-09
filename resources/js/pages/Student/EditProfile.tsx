@@ -100,16 +100,19 @@ export default function EditProfile({ user }: Props) {
 
     const score = Object.values(reqs).filter(Boolean).length;
     let strength = 'WEAK';
-    let strengthColor = 'text-red-500 bg-red-500/10 border-red-500/30 dark:text-red-400 dark:bg-red-950/20 dark:border-red-900/30';
+    let strengthColor =
+        'text-red-500 bg-red-500/10 border-red-500/30 dark:text-red-400 dark:bg-red-950/20 dark:border-red-900/30';
     let strengthDot = 'bg-red-500 shadow-red-500/50';
 
     if (score === 3) {
         strength = 'MEDIUM';
-        strengthColor = 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30 dark:text-yellow-400 dark:bg-yellow-950/20 dark:border-yellow-900/30';
+        strengthColor =
+            'text-yellow-500 bg-yellow-500/10 border-yellow-500/30 dark:text-yellow-400 dark:bg-yellow-950/20 dark:border-yellow-900/30';
         strengthDot = 'bg-yellow-500 shadow-yellow-500/50';
     } else if (score === 4) {
         strength = 'STRONG';
-        strengthColor = 'text-green-500 bg-green-500/10 border-green-500/30 dark:text-green-400 dark:bg-green-950/20 dark:border-green-900/30';
+        strengthColor =
+            'text-green-500 bg-green-500/10 border-green-500/30 dark:text-green-400 dark:bg-green-950/20 dark:border-green-900/30';
         strengthDot = 'bg-green-500 shadow-green-500/50';
     }
 
@@ -152,13 +155,13 @@ export default function EditProfile({ user }: Props) {
 
             {/* MAIN CONTENT CONTAINER */}
             <div className="relative z-10 flex flex-1 flex-col gap-6 p-4 md:p-8">
-                
                 {/* ══════════ KARTU ATAS (EDIT PROFIL) ══════════ */}
                 <form
                     onSubmit={handleProfileSubmit}
                     className="flex flex-col gap-6 border-2 border-gray-200 bg-white p-5 shadow-[0_4px_20px_rgba(59,40,246,0.04)] md:p-6 lg:flex-row dark:border-[#3B28F6]/60 dark:bg-[#050619] dark:shadow-none"
                     style={{
-                        clipPath: 'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
+                        clipPath:
+                            'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
                     }}
                 >
                     {/* SEBELAH KIRI: Foto Profil Upload */}
@@ -177,8 +180,11 @@ export default function EditProfile({ user }: Props) {
                                 <img
                                     src={
                                         profileForm.data.avatar
-                                            ? URL.createObjectURL(profileForm.data.avatar)
-                                            : (user.avatar ?? '/images/default-avatar.svg')
+                                            ? URL.createObjectURL(
+                                                  profileForm.data.avatar,
+                                              )
+                                            : (user.avatar ??
+                                              '/images/default-avatar.svg')
                                     }
                                     className="h-full w-full object-cover"
                                     alt="avatar preview"
@@ -208,7 +214,10 @@ export default function EditProfile({ user }: Props) {
                     <div className="flex flex-1 flex-col justify-between">
                         <div>
                             <div className="mb-4 flex items-center gap-2">
-                                <User size={16} className="text-[#3B28F6] dark:text-[#00d4ff]" />
+                                <User
+                                    size={16}
+                                    className="text-[#3B28F6] dark:text-[#00d4ff]"
+                                />
                                 <h2 className="font-['Orbitron'] text-xs font-bold tracking-[2px] text-gray-800 dark:text-white">
                                     IDENTITY PROTOCOL
                                 </h2>
@@ -223,78 +232,117 @@ export default function EditProfile({ user }: Props) {
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 {/* FULL NAME */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         FULL NAME
                                     </label>
                                     <div className="relative flex items-center">
-                                        <User className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60" size={14} />
+                                        <User
+                                            className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60"
+                                            size={14}
+                                        />
                                         <input
                                             type="text"
                                             value={profileForm.data.name}
-                                            onChange={(e) => profileForm.setData('name', e.target.value)}
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-3 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'name',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-3 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                     </div>
                                     {profileForm.errors.name && (
-                                        <span className="mt-1 text-xs text-red-500">{profileForm.errors.name}</span>
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {profileForm.errors.name}
+                                        </span>
                                     )}
                                 </div>
 
                                 {/* USERNAME */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         USERNAME
                                     </label>
                                     <div className="relative flex items-center">
-                                        <span className="absolute left-3 text-sm font-bold text-gray-400 dark:text-[#3B28F6]/60">@</span>
+                                        <span className="absolute left-3 text-sm font-bold text-gray-400 dark:text-[#3B28F6]/60">
+                                            @
+                                        </span>
                                         <input
                                             type="text"
                                             value={profileForm.data.username}
-                                            onChange={(e) => profileForm.setData('username', e.target.value)}
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-3 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'username',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-3 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                     </div>
                                     {profileForm.errors.username && (
-                                        <span className="mt-1 text-xs text-red-500">{profileForm.errors.username}</span>
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {profileForm.errors.username}
+                                        </span>
                                     )}
                                 </div>
 
                                 {/* EMAIL */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         EMAIL ADDRESS
                                     </label>
                                     <div className="relative flex items-center">
-                                        <Mail className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60" size={14} />
+                                        <Mail
+                                            className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60"
+                                            size={14}
+                                        />
                                         <input
                                             type="email"
                                             value={profileForm.data.email}
-                                            onChange={(e) => profileForm.setData('email', e.target.value)}
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-3 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'email',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-3 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                     </div>
                                     {profileForm.errors.email && (
-                                        <span className="mt-1 text-xs text-red-500">{profileForm.errors.email}</span>
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {profileForm.errors.email}
+                                        </span>
                                     )}
                                 </div>
 
                                 {/* LINKEDIN */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         LINKEDIN URL
                                     </label>
                                     <div className="relative flex items-center">
-                                        <Link2 className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60" size={14} />
+                                        <Link2
+                                            className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60"
+                                            size={14}
+                                        />
                                         <input
                                             type="text"
                                             value={profileForm.data.linkedin}
-                                            onChange={(e) => profileForm.setData('linkedin', e.target.value)}
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'linkedin',
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="https://linkedin.com/in/username"
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-3 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-3 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                     </div>
                                     {profileForm.errors.linkedin && (
-                                        <span className="mt-1 text-xs text-red-500">{profileForm.errors.linkedin}</span>
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {profileForm.errors.linkedin}
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -307,11 +355,18 @@ export default function EditProfile({ user }: Props) {
                                 disabled={profileForm.processing}
                                 className="flex items-center justify-center gap-2 px-8 py-2 font-['Orbitron'] text-xs font-bold tracking-widest text-white transition-all hover:opacity-90 hover:shadow-[0_0_16px_rgba(59,40,246,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
                                 style={{
-                                    background: 'linear-gradient(90deg,#3B28F6,#1a10b0)',
-                                    clipPath: 'polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)',
+                                    background:
+                                        'linear-gradient(90deg,#3B28F6,#1a10b0)',
+                                    clipPath:
+                                        'polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)',
                                 }}
                             >
-                                {profileForm.processing && <Loader2 className="animate-spin" size={14} />}
+                                {profileForm.processing && (
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={14}
+                                    />
+                                )}
                                 SAVE PROFILE CHANGES &gt;
                             </button>
                         </div>
@@ -320,18 +375,21 @@ export default function EditProfile({ user }: Props) {
 
                 {/* ══════════ KARTU BAWAH (UBAH KATA SANDI & PERSYARATAN) ══════════ */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    
                     {/* KARTU BAWAH KIRI: Form Ubah Password */}
                     <form
                         onSubmit={handlePasswordSubmit}
                         className="flex flex-col justify-between border-2 border-gray-200 bg-white p-5 shadow-[0_4px_20px_rgba(59,40,246,0.04)] md:p-6 dark:border-[#3B28F6]/60 dark:bg-[#050619] dark:shadow-none"
                         style={{
-                            clipPath: 'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
+                            clipPath:
+                                'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
                         }}
                     >
                         <div>
                             <div className="mb-4 flex items-center gap-2">
-                                <Lock size={16} className="text-[#3B28F6] dark:text-[#00d4ff]" />
+                                <Lock
+                                    size={16}
+                                    className="text-[#3B28F6] dark:text-[#00d4ff]"
+                                />
                                 <h2 className="font-['Orbitron'] text-xs font-bold tracking-[2px] text-gray-800 dark:text-white">
                                     SECURITY ACCESS
                                 </h2>
@@ -346,82 +404,159 @@ export default function EditProfile({ user }: Props) {
                             <div className="flex flex-col gap-4">
                                 {/* CURRENT PASSWORD */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         CURRENT PASSWORD
                                     </label>
                                     <div className="relative flex items-center">
-                                        <Lock className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60" size={14} />
+                                        <Lock
+                                            className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60"
+                                            size={14}
+                                        />
                                         <input
-                                            type={showCurrentPass ? 'text' : 'password'}
-                                            value={passwordForm.data.current_password}
-                                            onChange={(e) => passwordForm.setData('current_password', e.target.value)}
+                                            type={
+                                                showCurrentPass
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
+                                            value={
+                                                passwordForm.data
+                                                    .current_password
+                                            }
+                                            onChange={(e) =>
+                                                passwordForm.setData(
+                                                    'current_password',
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="••••••••••••••••••••••••"
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-10 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-10 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => setShowCurrentPass(!showCurrentPass)}
+                                            onClick={() =>
+                                                setShowCurrentPass(
+                                                    !showCurrentPass,
+                                                )
+                                            }
                                             className="absolute right-3 text-gray-400 hover:text-gray-600 dark:hover:text-white"
                                         >
-                                            {showCurrentPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                                            {showCurrentPass ? (
+                                                <EyeOff size={15} />
+                                            ) : (
+                                                <Eye size={15} />
+                                            )}
                                         </button>
                                     </div>
                                     {passwordForm.errors.current_password && (
-                                        <span className="mt-1 text-xs text-red-500">{passwordForm.errors.current_password}</span>
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {
+                                                passwordForm.errors
+                                                    .current_password
+                                            }
+                                        </span>
                                     )}
                                 </div>
 
                                 {/* NEW PASSWORD */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         NEW PASSWORD
                                     </label>
                                     <div className="relative flex items-center">
-                                        <Key className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60" size={14} />
+                                        <Key
+                                            className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60"
+                                            size={14}
+                                        />
                                         <input
-                                            type={showNewPass ? 'text' : 'password'}
+                                            type={
+                                                showNewPass
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
                                             value={passwordForm.data.password}
-                                            onChange={(e) => passwordForm.setData('password', e.target.value)}
+                                            onChange={(e) =>
+                                                passwordForm.setData(
+                                                    'password',
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="Enter new password"
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-10 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-10 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => setShowNewPass(!showNewPass)}
+                                            onClick={() =>
+                                                setShowNewPass(!showNewPass)
+                                            }
                                             className="absolute right-3 text-gray-400 hover:text-gray-600 dark:hover:text-white"
                                         >
-                                            {showNewPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                                            {showNewPass ? (
+                                                <EyeOff size={15} />
+                                            ) : (
+                                                <Eye size={15} />
+                                            )}
                                         </button>
                                     </div>
                                     {passwordForm.errors.password && (
-                                        <span className="mt-1 text-xs text-red-500">{passwordForm.errors.password}</span>
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {passwordForm.errors.password}
+                                        </span>
                                     )}
                                 </div>
 
                                 {/* CONFIRM PASSWORD */}
                                 <div className="flex flex-col">
-                                    <label className="mb-1 text-[10px] tracking-[2px] text-yellow-600 dark:text-yellow-400 font-bold">
+                                    <label className="mb-1 text-[10px] font-bold tracking-[2px] text-yellow-600 dark:text-yellow-400">
                                         CONFIRM NEW PASSWORD
                                     </label>
                                     <div className="relative flex items-center">
-                                        <Check className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60" size={14} />
+                                        <Check
+                                            className="absolute left-3 text-gray-400 dark:text-[#3B28F6]/60"
+                                            size={14}
+                                        />
                                         <input
-                                            type={showConfirmPass ? 'text' : 'password'}
-                                            value={passwordForm.data.password_confirmation}
-                                            onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
+                                            type={
+                                                showConfirmPass
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
+                                            value={
+                                                passwordForm.data
+                                                    .password_confirmation
+                                            }
+                                            onChange={(e) =>
+                                                passwordForm.setData(
+                                                    'password_confirmation',
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="Confirm new password"
-                                            className="w-full border border-gray-300 bg-gray-50 pl-9 pr-10 py-2 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
+                                            className="w-full border border-gray-300 bg-gray-50 py-2 pr-10 pl-9 font-['Oxanium'] text-sm tracking-wide text-gray-800 transition-all outline-none focus:border-[#3B28F6] focus:shadow-[0_0_8px_rgba(59,40,246,0.15)] dark:border-[#3B28F6]/40 dark:bg-[#020208] dark:text-white dark:focus:border-cyan-400 dark:focus:shadow-[0_0_10px_rgba(0,212,255,0.25)]"
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => setShowConfirmPass(!showConfirmPass)}
+                                            onClick={() =>
+                                                setShowConfirmPass(
+                                                    !showConfirmPass,
+                                                )
+                                            }
                                             className="absolute right-3 text-gray-400 hover:text-gray-600 dark:hover:text-white"
                                         >
-                                            {showConfirmPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                                            {showConfirmPass ? (
+                                                <EyeOff size={15} />
+                                            ) : (
+                                                <Eye size={15} />
+                                            )}
                                         </button>
                                     </div>
-                                    {passwordForm.errors.password_confirmation && (
-                                        <span className="mt-1 text-xs text-red-500">{passwordForm.errors.password_confirmation}</span>
+                                    {passwordForm.errors
+                                        .password_confirmation && (
+                                        <span className="mt-1 text-xs text-red-500">
+                                            {
+                                                passwordForm.errors
+                                                    .password_confirmation
+                                            }
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -434,11 +569,18 @@ export default function EditProfile({ user }: Props) {
                                 disabled={passwordForm.processing}
                                 className="flex items-center justify-center gap-2 px-8 py-2 font-['Orbitron'] text-xs font-bold tracking-widest text-white transition-all hover:opacity-90 hover:shadow-[0_0_16px_rgba(59,40,246,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
                                 style={{
-                                    background: 'linear-gradient(90deg,#3B28F6,#1a10b0)',
-                                    clipPath: 'polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)',
+                                    background:
+                                        'linear-gradient(90deg,#3B28F6,#1a10b0)',
+                                    clipPath:
+                                        'polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)',
                                 }}
                             >
-                                {passwordForm.processing && <Loader2 className="animate-spin" size={14} />}
+                                {passwordForm.processing && (
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={14}
+                                    />
+                                )}
                                 UPDATE PASSWORD &gt;
                             </button>
                         </div>
@@ -448,12 +590,16 @@ export default function EditProfile({ user }: Props) {
                     <div
                         className="flex flex-col justify-between border-2 border-gray-200 bg-white p-5 shadow-[0_4px_20px_rgba(59,40,246,0.04)] md:p-6 dark:border-[#3B28F6]/60 dark:bg-[#050619] dark:shadow-none"
                         style={{
-                            clipPath: 'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
+                            clipPath:
+                                'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
                         }}
                     >
                         <div>
                             <div className="mb-4 flex items-center gap-2">
-                                <Shield size={16} className="text-[#3B28F6] dark:text-[#00d4ff]" />
+                                <Shield
+                                    size={16}
+                                    className="text-[#3B28F6] dark:text-[#00d4ff]"
+                                />
                                 <h2 className="font-['Orbitron'] text-xs font-bold tracking-[2px] text-gray-800 dark:text-white">
                                     SYSTEM REQUIREMENTS
                                 </h2>
@@ -464,13 +610,21 @@ export default function EditProfile({ user }: Props) {
                                     <div
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.length
-                                                ? 'border-green-500 text-green-500 bg-green-500/10'
+                                                ? 'border-green-500 bg-green-500/10 text-green-500'
                                                 : 'border-gray-300 dark:border-gray-700'
                                         }`}
                                     >
-                                        {reqs.length && <Check size={10} strokeWidth={3} />}
+                                        {reqs.length && (
+                                            <Check size={10} strokeWidth={3} />
+                                        )}
                                     </div>
-                                    <span className={reqs.length ? 'text-green-500 font-medium' : ''}>
+                                    <span
+                                        className={
+                                            reqs.length
+                                                ? 'font-medium text-green-500'
+                                                : ''
+                                        }
+                                    >
                                         Minimum 8 characters long
                                     </span>
                                 </li>
@@ -478,13 +632,21 @@ export default function EditProfile({ user }: Props) {
                                     <div
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.lowercase
-                                                ? 'border-green-500 text-green-500 bg-green-500/10'
+                                                ? 'border-green-500 bg-green-500/10 text-green-500'
                                                 : 'border-gray-300 dark:border-gray-700'
                                         }`}
                                     >
-                                        {reqs.lowercase && <Check size={10} strokeWidth={3} />}
+                                        {reqs.lowercase && (
+                                            <Check size={10} strokeWidth={3} />
+                                        )}
                                     </div>
-                                    <span className={reqs.lowercase ? 'text-green-500 font-medium' : ''}>
+                                    <span
+                                        className={
+                                            reqs.lowercase
+                                                ? 'font-medium text-green-500'
+                                                : ''
+                                        }
+                                    >
                                         At least one lowercase letter
                                     </span>
                                 </li>
@@ -492,13 +654,21 @@ export default function EditProfile({ user }: Props) {
                                     <div
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.uppercase
-                                                ? 'border-green-500 text-green-500 bg-green-500/10'
+                                                ? 'border-green-500 bg-green-500/10 text-green-500'
                                                 : 'border-gray-300 dark:border-gray-700'
                                         }`}
                                     >
-                                        {reqs.uppercase && <Check size={10} strokeWidth={3} />}
+                                        {reqs.uppercase && (
+                                            <Check size={10} strokeWidth={3} />
+                                        )}
                                     </div>
-                                    <span className={reqs.uppercase ? 'text-green-500 font-medium' : ''}>
+                                    <span
+                                        className={
+                                            reqs.uppercase
+                                                ? 'font-medium text-green-500'
+                                                : ''
+                                        }
+                                    >
                                         At least one uppercase letter
                                     </span>
                                 </li>
@@ -506,13 +676,21 @@ export default function EditProfile({ user }: Props) {
                                     <div
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.notCurrent
-                                                ? 'border-green-500 text-green-500 bg-green-500/10'
+                                                ? 'border-green-500 bg-green-500/10 text-green-500'
                                                 : 'border-gray-300 dark:border-gray-700'
                                         }`}
                                     >
-                                        {reqs.notCurrent && <Check size={10} strokeWidth={3} />}
+                                        {reqs.notCurrent && (
+                                            <Check size={10} strokeWidth={3} />
+                                        )}
                                     </div>
-                                    <span className={reqs.notCurrent ? 'text-green-500 font-medium' : ''}>
+                                    <span
+                                        className={
+                                            reqs.notCurrent
+                                                ? 'font-medium text-green-500'
+                                                : ''
+                                        }
+                                    >
                                         Must not match current password
                                     </span>
                                 </li>
@@ -525,16 +703,18 @@ export default function EditProfile({ user }: Props) {
                                 <span className="tracking-widest text-gray-500 dark:text-gray-400">
                                     SECURITY LEVEL
                                 </span>
-                                <div className={`flex items-center gap-2 border px-3 py-1 font-bold tracking-widest ${strengthColor}`}>
-                                    <span className={`inline-block h-2 w-2 rounded-full shadow-[0_0_6px] ${strengthDot}`} />
+                                <div
+                                    className={`flex items-center gap-2 border px-3 py-1 font-bold tracking-widest ${strengthColor}`}
+                                >
+                                    <span
+                                        className={`inline-block h-2 w-2 rounded-full shadow-[0_0_6px] ${strengthDot}`}
+                                    />
                                     {strength}
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     );

@@ -1,5 +1,11 @@
 import { Form, Head, usePage } from '@inertiajs/react';
-import { ShieldBan, ShieldCheck, ShieldAlert, QrCode, KeyRound } from 'lucide-react';
+import {
+    ShieldBan,
+    ShieldCheck,
+    ShieldAlert,
+    QrCode,
+    KeyRound,
+} from 'lucide-react';
 import { useState } from 'react';
 import Heading from '@/components/heading';
 import TwoFactorRecoveryCodes from '@/components/two-factor-recovery-codes';
@@ -67,11 +73,12 @@ export default function TwoFactor({
                         {twoFactorEnabled ? (
                             <div className="flex flex-col items-start justify-start space-y-4">
                                 <Badge variant="default">Enabled</Badge>
-                                <p className="text-muted-foreground text-sm">
-                                    With two-factor authentication enabled, you will
-                                    be prompted for a secure, random pin during
-                                    login, which you can retrieve from the
-                                    TOTP-supported application on your phone.
+                                <p className="text-sm text-muted-foreground">
+                                    With two-factor authentication enabled, you
+                                    will be prompted for a secure, random pin
+                                    during login, which you can retrieve from
+                                    the TOTP-supported application on your
+                                    phone.
                                 </p>
 
                                 <TwoFactorRecoveryCodes
@@ -97,17 +104,19 @@ export default function TwoFactor({
                         ) : (
                             <div className="flex flex-col items-start justify-start space-y-4">
                                 <Badge variant="destructive">Disabled</Badge>
-                                <p className="text-muted-foreground text-sm">
-                                    When you enable two-factor authentication, you
-                                    will be prompted for a secure pin during login.
-                                    This pin can be retrieved from a TOTP-supported
-                                    application on your phone.
+                                <p className="text-sm text-muted-foreground">
+                                    When you enable two-factor authentication,
+                                    you will be prompted for a secure pin during
+                                    login. This pin can be retrieved from a
+                                    TOTP-supported application on your phone.
                                 </p>
 
                                 <div className="pt-2">
                                     {hasSetupData ? (
                                         <Button
-                                            onClick={() => setShowSetupModal(true)}
+                                            onClick={() =>
+                                                setShowSetupModal(true)
+                                            }
                                         >
                                             <ShieldCheck />
                                             Continue Setup
@@ -159,53 +168,65 @@ export default function TwoFactor({
 
             <SettingsLayout>
                 {twoFactorEnabled ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
                         {/* Left Column: Status Card */}
-                        <div className="lg:col-span-7 xl:col-span-8 relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-7 xl:col-span-8 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
-                            
+
                             <div className="mb-6 flex items-center gap-4 border-b border-slate-100 pb-5 dark:border-slate-800/60">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-650 dark:text-emerald-400 border border-emerald-100/50 dark:border-emerald-900/30 shadow-xs">
+                                <div className="text-emerald-650 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100/50 bg-emerald-50 shadow-xs dark:border-emerald-900/30 dark:bg-emerald-950/40 dark:text-emerald-400">
                                     <ShieldCheck className="size-6" />
                                 </div>
                                 <div>
                                     <h2 className="text-base font-semibold text-slate-800 dark:text-white">
                                         Two-Factor Authentication
                                     </h2>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400/60 mt-0.5">
-                                        Status: Aktif. Akun Anda saat ini terlindungi dengan verifikasi dua langkah.
+                                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400/60">
+                                        Status: Aktif. Akun Anda saat ini
+                                        terlindungi dengan verifikasi dua
+                                        langkah.
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-6">
-                                <div className="flex items-center gap-3 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 p-4 text-emerald-800 dark:text-emerald-400 border border-emerald-100/50 dark:border-emerald-900/30">
-                                    <div className="flex size-6 items-center justify-center rounded-full bg-emerald-500 text-white flex-shrink-0 shadow-xs">
+                                <div className="flex items-center gap-3 rounded-2xl border border-emerald-100/50 bg-emerald-50/50 p-4 text-emerald-800 dark:border-emerald-900/30 dark:bg-emerald-950/20 dark:text-emerald-400">
+                                    <div className="flex size-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xs">
                                         <ShieldCheck className="size-3.5" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="text-xs font-bold">Autentikasi Dua Faktor Aktif</p>
-                                        <p className="text-[10px] text-emerald-600/90 dark:text-emerald-500 mt-0.5">
-                                            Perangkat autentikator Anda berhasil ditautkan.
+                                        <p className="text-xs font-bold">
+                                            Autentikasi Dua Faktor Aktif
+                                        </p>
+                                        <p className="mt-0.5 text-[10px] text-emerald-600/90 dark:text-emerald-500">
+                                            Perangkat autentikator Anda berhasil
+                                            ditautkan.
                                         </p>
                                     </div>
                                 </div>
 
                                 <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                                    Dengan mengaktifkan autentikasi dua faktor, Anda akan diminta memasukkan PIN keamanan acak selama masuk. PIN ini dapat diperoleh dari aplikasi authenticator (seperti Google Authenticator atau Microsoft Authenticator) di ponsel Anda.
+                                    Dengan mengaktifkan autentikasi dua faktor,
+                                    Anda akan diminta memasukkan PIN keamanan
+                                    acak selama masuk. PIN ini dapat diperoleh
+                                    dari aplikasi authenticator (seperti Google
+                                    Authenticator atau Microsoft Authenticator)
+                                    di ponsel Anda.
                                 </p>
 
-                                <div className="relative inline pt-4 border-t border-slate-100 dark:border-slate-800/60 w-full flex justify-end">
+                                <div className="relative flex inline w-full justify-end border-t border-slate-100 pt-4 dark:border-slate-800/60">
                                     <Form {...disable.form()}>
                                         {({ processing }) => (
                                             <Button
                                                 variant="destructive"
                                                 type="submit"
                                                 disabled={processing}
-                                                className="rounded-lg text-xs font-semibold px-4 py-2 cursor-pointer shadow-md shadow-rose-500/10 flex items-center gap-1.5"
+                                                className="flex cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold shadow-md shadow-rose-500/10"
                                             >
-                                                <ShieldBan className="size-4" /> 
-                                                {processing ? 'Menonaktifkan...' : 'Nonaktifkan 2FA'}
+                                                <ShieldBan className="size-4" />
+                                                {processing
+                                                    ? 'Menonaktifkan...'
+                                                    : 'Nonaktifkan 2FA'}
                                             </Button>
                                         )}
                                     </Form>
@@ -223,47 +244,58 @@ export default function TwoFactor({
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
                         {/* Left Column: Enable Card */}
-                        <div className="lg:col-span-7 xl:col-span-8 relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-7 xl:col-span-8 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                            
+
                             <div className="mb-6 flex items-center gap-4 border-b border-slate-100 pb-5 dark:border-slate-800/60">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 border border-slate-200 dark:border-slate-800 shadow-xs">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-slate-500 shadow-xs dark:border-slate-800 dark:bg-zinc-800 dark:text-zinc-400">
                                     <ShieldAlert className="size-6" />
                                 </div>
                                 <div>
                                     <h2 className="text-base font-semibold text-slate-800 dark:text-white">
                                         Two-Factor Authentication
                                     </h2>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400/60 mt-0.5">
-                                        Status: Belum Aktif. Tambahkan keamanan ekstra pada akun Anda.
+                                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400/60">
+                                        Status: Belum Aktif. Tambahkan keamanan
+                                        ekstra pada akun Anda.
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-6">
-                                <div className="flex items-center gap-3 rounded-2xl bg-slate-50 dark:bg-slate-900/50 p-4 text-slate-700 dark:text-slate-400 border border-slate-100 dark:border-slate-800">
-                                    <div className="flex size-6 items-center justify-center rounded-full bg-slate-200 dark:bg-zinc-850 text-slate-600 dark:text-neutral-450 flex-shrink-0">
+                                <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-slate-700 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
+                                    <div className="dark:bg-zinc-850 dark:text-neutral-450 flex size-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-600">
                                         <ShieldAlert className="size-3.5" />
                                     </div>
                                     <div className="text-left">
-                                        <p className="text-xs font-bold">Keamanan Akun Minimum</p>
-                                        <p className="text-[10px] text-slate-500 mt-0.5">
-                                            Aktifkan 2FA untuk melindungi data penting dan akses kontrol Anda.
+                                        <p className="text-xs font-bold">
+                                            Keamanan Akun Minimum
+                                        </p>
+                                        <p className="mt-0.5 text-[10px] text-slate-500">
+                                            Aktifkan 2FA untuk melindungi data
+                                            penting dan akses kontrol Anda.
                                         </p>
                                     </div>
                                 </div>
 
                                 <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                                    Autentikasi dua faktor menambahkan lapisan perlindungan ekstra pada akun Anda. Setelah diaktifkan, Anda akan diminta memasukkan kode PIN keamanan dinamis yang dapat diperoleh dari aplikasi authenticator di ponsel Anda setiap kali Anda masuk.
+                                    Autentikasi dua faktor menambahkan lapisan
+                                    perlindungan ekstra pada akun Anda. Setelah
+                                    diaktifkan, Anda akan diminta memasukkan
+                                    kode PIN keamanan dinamis yang dapat
+                                    diperoleh dari aplikasi authenticator di
+                                    ponsel Anda setiap kali Anda masuk.
                                 </p>
 
-                                <div className="pt-4 border-t border-slate-100 dark:border-slate-800/60 w-full flex justify-end">
+                                <div className="flex w-full justify-end border-t border-slate-100 pt-4 dark:border-slate-800/60">
                                     {hasSetupData ? (
                                         <Button
-                                            onClick={() => setShowSetupModal(true)}
-                                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold px-4 py-2 cursor-pointer shadow-md shadow-indigo-500/20 flex items-center gap-1.5"
+                                            onClick={() =>
+                                                setShowSetupModal(true)
+                                            }
+                                            className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:bg-indigo-700"
                                         >
                                             <QrCode className="size-4" />
                                             Lanjutkan Konfigurasi 2FA
@@ -271,16 +303,20 @@ export default function TwoFactor({
                                     ) : (
                                         <Form
                                             {...enable.form()}
-                                            onSuccess={() => setShowSetupModal(true)}
+                                            onSuccess={() =>
+                                                setShowSetupModal(true)
+                                            }
                                         >
                                             {({ processing }) => (
                                                 <Button
                                                     type="submit"
                                                     disabled={processing}
-                                                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold px-4 py-2 cursor-pointer shadow-md shadow-indigo-500/20 flex items-center gap-1.5"
+                                                    className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:bg-indigo-700"
                                                 >
                                                     <ShieldCheck className="size-4" />
-                                                    {processing ? 'Mengaktifkan...' : 'Aktifkan 2FA'}
+                                                    {processing
+                                                        ? 'Mengaktifkan...'
+                                                        : 'Aktifkan 2FA'}
                                                 </Button>
                                             )}
                                         </Form>
@@ -290,26 +326,46 @@ export default function TwoFactor({
                         </div>
 
                         {/* Right Column: Why enable 2FA Info Card */}
-                        <div className="lg:col-span-5 xl:col-span-4 relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-5 xl:col-span-4 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
                             <div className="mb-4 border-b border-slate-100 pb-4 dark:border-slate-800/60">
-                                <h3 className="text-sm font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                                <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-white">
                                     <KeyRound className="size-4 text-indigo-500" />
                                     Mengapa harus 2FA?
                                 </h3>
                             </div>
                             <div className="space-y-4 text-xs text-slate-500 dark:text-slate-400">
                                 <div className="space-y-1">
-                                    <h4 className="font-semibold text-slate-800 dark:text-white">1. Proteksi Berlapis</h4>
-                                    <p className="leading-relaxed text-[11px] text-slate-500 dark:text-slate-450">Bahkan jika orang lain mengetahui kata sandi Anda, mereka tidak akan dapat mengakses akun tanpa PIN keamanan dinamis Anda.</p>
+                                    <h4 className="font-semibold text-slate-800 dark:text-white">
+                                        1. Proteksi Berlapis
+                                    </h4>
+                                    <p className="dark:text-slate-450 text-[11px] leading-relaxed text-slate-500">
+                                        Bahkan jika orang lain mengetahui kata
+                                        sandi Anda, mereka tidak akan dapat
+                                        mengakses akun tanpa PIN keamanan
+                                        dinamis Anda.
+                                    </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <h4 className="font-semibold text-slate-800 dark:text-white">2. Keamanan Data Platform</h4>
-                                    <p className="leading-relaxed text-[11px] text-slate-500 dark:text-slate-450">Sebagai Admin/Mentor, akun Anda memiliki wewenang mengelola platform. Mengamankan kredensial Anda adalah prioritas utama.</p>
+                                    <h4 className="font-semibold text-slate-800 dark:text-white">
+                                        2. Keamanan Data Platform
+                                    </h4>
+                                    <p className="dark:text-slate-450 text-[11px] leading-relaxed text-slate-500">
+                                        Sebagai Admin/Mentor, akun Anda memiliki
+                                        wewenang mengelola platform. Mengamankan
+                                        kredensial Anda adalah prioritas utama.
+                                    </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <h4 className="font-semibold text-slate-800 dark:text-white">3. Standar Industri Modern</h4>
-                                    <p className="leading-relaxed text-[11px] text-slate-500 dark:text-slate-450">Menggunakan algoritma TOTP standar yang didukung penuh oleh Google Authenticator, Microsoft Authenticator, Authy, dll.</p>
+                                    <h4 className="font-semibold text-slate-800 dark:text-white">
+                                        3. Standar Industri Modern
+                                    </h4>
+                                    <p className="dark:text-slate-450 text-[11px] leading-relaxed text-slate-500">
+                                        Menggunakan algoritma TOTP standar yang
+                                        didukung penuh oleh Google
+                                        Authenticator, Microsoft Authenticator,
+                                        Authy, dll.
+                                    </p>
                                 </div>
                             </div>
                         </div>

@@ -25,8 +25,9 @@ export default function ConfirmPassword() {
                             <h1 className="text-2xl font-semibold text-slate-800 dark:text-white">
                                 Confirm Password
                             </h1>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                                This is a secure area of the application. Please confirm your password before continuing.
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                This is a secure area of the application. Please
+                                confirm your password before continuing.
                             </p>
                         </div>
 
@@ -34,7 +35,7 @@ export default function ConfirmPassword() {
                             {({ processing, errors }) => (
                                 <div className="space-y-5">
                                     <div className="grid gap-2">
-                                        <Label 
+                                        <Label
                                             htmlFor="password"
                                             className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400"
                                         >
@@ -55,7 +56,7 @@ export default function ConfirmPassword() {
 
                                     <div className="pt-2">
                                         <Button
-                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2"
+                                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:scale-[1.02] hover:bg-indigo-700 active:scale-[0.98]"
                                             disabled={processing}
                                             data-test="confirm-password-button"
                                         >

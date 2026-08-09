@@ -12,7 +12,10 @@ interface QuestRevisionNotesProps {
         | 'admin_ongoing';
 }
 
-export default function QuestRevisionNotes({ quest, viewType }: QuestRevisionNotesProps) {
+export default function QuestRevisionNotes({
+    quest,
+    viewType,
+}: QuestRevisionNotesProps) {
     if (!quest.revisions || quest.revisions.length === 0) {
         if (!quest.revision_note) {
             return null;
@@ -38,7 +41,7 @@ export default function QuestRevisionNotes({ quest, viewType }: QuestRevisionNot
                 <span className="block text-[10px] font-bold tracking-wider text-red-700 uppercase">
                     Pemberitahuan: {label}
                 </span>
-                <p className="text-slate-655 dark:text-slate-300 mt-1 text-xs leading-relaxed whitespace-pre-wrap italic">
+                <p className="text-slate-655 mt-1 text-xs leading-relaxed whitespace-pre-wrap italic dark:text-slate-300">
                     "{quest.revision_note}"
                 </p>
             </div>
@@ -68,10 +71,10 @@ export default function QuestRevisionNotes({ quest, viewType }: QuestRevisionNot
                 <span className="block text-[10px] font-bold tracking-wider text-red-700 uppercase">
                     Pemberitahuan: {mainLabel}
                 </span>
-                <p className="dark:text-slate-300 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic">
+                <p className="mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-600 italic dark:text-slate-300">
                     "{latestRevision.note}"
                 </p>
-                <div className="text-slate-400 mt-1 flex items-center gap-1 text-[9px]">
+                <div className="mt-1 flex items-center gap-1 text-[9px] text-slate-400">
                     <span>Oleh {latestRevision.author_name} • </span>
                     <span>
                         {new Date(latestRevision.created_at).toLocaleString(
@@ -88,8 +91,8 @@ export default function QuestRevisionNotes({ quest, viewType }: QuestRevisionNot
             {/* Previous Revisions */}
             {quest.revisions.length > 1 && (
                 <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50/30 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
-                    <details className="relative z-10 group">
+                    <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+                    <details className="group relative z-10">
                         <summary className="flex cursor-pointer items-center justify-between px-3.5 py-2 text-[10px] font-bold tracking-wider text-slate-500 uppercase select-none hover:text-slate-700 dark:text-slate-400 dark:hover:text-white">
                             <span>
                                 Lihat Riwayat Revisi Sebelumnya (
@@ -109,11 +112,11 @@ export default function QuestRevisionNotes({ quest, viewType }: QuestRevisionNot
                                     return (
                                         <div
                                             key={idx}
-                                            className="relative overflow-hidden space-y-1 rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]"
+                                            className="relative space-y-1 overflow-hidden rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]"
                                         >
                                             <div className="flex items-center justify-between text-[9px] font-bold text-slate-500">
                                                 <span>REVISI #{revNum}</span>
-                                                <span className="text-slate-400 font-normal">
+                                                <span className="font-normal text-slate-400">
                                                     {new Date(
                                                         rev.created_at,
                                                     ).toLocaleString('id-ID', {
@@ -122,12 +125,12 @@ export default function QuestRevisionNotes({ quest, viewType }: QuestRevisionNot
                                                     })}
                                                 </span>
                                             </div>
-                                            <p className="dark:text-slate-350 mt-1 text-xs leading-relaxed whitespace-pre-wrap text-slate-655 italic">
+                                            <p className="dark:text-slate-350 text-slate-655 mt-1 text-xs leading-relaxed whitespace-pre-wrap italic">
                                                 "{rev.note}"
                                             </p>
-                                            <div className="text-slate-400 text-[9px]">
+                                            <div className="text-[9px] text-slate-400">
                                                 Diminta oleh:{' '}
-                                                <span className="font-semibold text-slate-505 dark:text-slate-300">
+                                                <span className="text-slate-505 font-semibold dark:text-slate-300">
                                                     {rev.author_name}
                                                 </span>
                                             </div>

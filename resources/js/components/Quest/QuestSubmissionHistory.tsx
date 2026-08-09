@@ -26,9 +26,9 @@ export default function QuestSubmissionHistory({ quest }: Props) {
     }
 
     return (
-        <div className="relative overflow-hidden space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
-            <h3 className="relative z-10 border-b border-slate-105 pb-3 text-xs font-bold text-slate-800 uppercase dark:border-slate-800 dark:text-slate-200">
+        <div className="relative space-y-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+            <h3 className="border-slate-105 relative z-10 border-b pb-3 text-xs font-bold text-slate-800 uppercase dark:border-slate-800 dark:text-slate-200">
                 Riwayat Submisi Berkas (Submission History)
             </h3>
             <div className="max-h-[300px] space-y-3 overflow-y-auto pr-1">
@@ -49,7 +49,7 @@ export default function QuestSubmissionHistory({ quest }: Props) {
                                 </span>
                             </div>
                             {historyItem.submission_note && (
-                                <p className="truncate text-xs text-slate-650 dark:text-slate-350">
+                                <p className="text-slate-650 dark:text-slate-350 truncate text-xs">
                                     {historyItem.submission_note}
                                 </p>
                             )}

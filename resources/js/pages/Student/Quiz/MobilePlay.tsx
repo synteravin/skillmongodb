@@ -445,7 +445,7 @@ export default function MobilePlay({
                 {/* Column 2 (Right): Answers + Navigation */}
                 <div className="flex min-h-0 w-1/2 flex-1 flex-col justify-between">
                     {/* Options list scrollable */}
-                    <div className="flex flex-1 [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] flex-col gap-2 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:bg-[#3B28F6]">
+                    <div className="flex flex-1 flex-col gap-2 overflow-y-auto pr-1 [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:bg-[#3B28F6]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id + '-answers-landscape'}

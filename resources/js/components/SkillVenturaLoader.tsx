@@ -10,10 +10,13 @@ export default function SkillVenturaLoader({
     subtext = 'Harap tunggu sebentar...',
 }: SkillVenturaLoaderProps) {
     return (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#04080f]/90 p-4 backdrop-blur-md font-['Rajdhani',sans-serif]">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#04080f]/90 p-4 font-['Rajdhani',sans-serif] backdrop-blur-md">
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: [0.97, 1.03, 0.97], opacity: [0.85, 1, 0.85] }}
+                animate={{
+                    scale: [0.97, 1.03, 0.97],
+                    opacity: [0.85, 1, 0.85],
+                }}
                 transition={{
                     repeat: Infinity,
                     duration: 1.8,

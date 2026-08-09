@@ -88,67 +88,126 @@ export default function HeroSection() {
 
             {/* MARQUEE - ALWAYS VISIBLE */}
             <div className="relative z-20 mt-24 w-full rotate-[3deg] overflow-hidden">
-                <div className="border border-slate-200/50 bg-gradient-to-r from-white/80 via-slate-200/60 to-white/80 shadow-lg backdrop-blur-lg transition-all duration-500 dark:border-white/10 dark:from-black/70 dark:via-indigo-900/60 dark:to-black/70 dark:shadow-2xl overflow-hidden">
-                    <div className="animate-marquee hover:[animation-play-state:paused] flex w-max items-center py-4 md:py-6 text-slate-800 dark:text-white">
+                <div className="overflow-hidden border border-slate-200/50 bg-gradient-to-r from-white/80 via-slate-200/60 to-white/80 shadow-lg backdrop-blur-lg transition-all duration-500 dark:border-white/10 dark:from-black/70 dark:via-indigo-900/60 dark:to-black/70 dark:shadow-2xl">
+                    <div className="animate-marquee flex w-max items-center py-4 text-slate-800 hover:[animation-play-state:paused] md:py-6 dark:text-white">
                         {[...Array(2)].map((_, i) => (
                             <div
                                 key={i}
-                                className="flex items-center gap-12 pr-12 md:gap-16 md:pr-16 shrink-0"
+                                className="flex shrink-0 items-center gap-12 pr-12 md:gap-16 md:pr-16"
                             >
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Code2 size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Software Development</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Code2
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Software Development
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <ShieldCheck size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Cyber Security</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <ShieldCheck
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Cyber Security
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Cloud size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Cloud Computing</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Cloud
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Cloud Computing
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Database size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Data Science</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Database
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Data Science
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Brain size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Artificial Intelligence</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Brain
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Artificial Intelligence
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Smartphone size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Mobile Development</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Smartphone
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Mobile Development
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Globe size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Web Development</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Globe
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Web Development
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Palette size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">UI/UX Design</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Palette
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        UI/UX Design
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <TrendingUp size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Digital Marketing</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <TrendingUp
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Digital Marketing
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Briefcase size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Business Management</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Briefcase
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Business Management
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Microscope size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Research & Innovation</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Microscope
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Research & Innovation
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Gamepad2 size={22} className="text-slate-800 dark:text-white" />
-                                    <span className="text-sm font-semibold tracking-wide md:text-base">Game Development</span>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <Gamepad2
+                                        size={22}
+                                        className="text-slate-800 dark:text-white"
+                                    />
+                                    <span className="text-sm font-semibold tracking-wide md:text-base">
+                                        Game Development
+                                    </span>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-
         </section>
     );
 }

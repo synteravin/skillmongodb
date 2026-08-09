@@ -98,10 +98,10 @@ function ImageContent({ item }: { item: Content }) {
                 </div>
             )}
 
-            {/* Layout normal: gambar kiri + caption kanan (atau atas-bawah di mobile) */}
-            <div className="mb-5 flex flex-col items-start gap-4 md:flex-row">
+            {/* Layout normal: gambar kiri + caption kanan (atau atas-bawah di mobile/tablet) */}
+            <div className="mb-5 flex flex-col items-start gap-4 lg:flex-row">
                 {/* Gambar */}
-                <div className="w-full flex-shrink-0 md:w-[55%]">
+                <div className="w-full flex-shrink-0 lg:w-[55%]">
                     <div className="flex items-center gap-2 rounded-t-xl border border-b-0 border-blue-200 bg-blue-50 px-3 py-2 dark:border-blue-500/20 dark:bg-blue-500/10">
                         <span className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400 dark:shadow-[0_0_8px_#60a5fa]" />
                         <span className="text-[10px] font-semibold tracking-widest text-blue-500 uppercase dark:text-gray-400">
@@ -131,7 +131,7 @@ function ImageContent({ item }: { item: Content }) {
 
                 {/* Caption */}
                 {item.content?.caption && (
-                    <div className="flex w-full flex-1 flex-col gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-500/15 dark:bg-blue-500/5">
+                    <div className="flex w-full flex-col gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 lg:flex-1 dark:border-blue-500/15 dark:bg-blue-500/5">
                         <div className="flex items-center gap-2">
                             <span className="rounded border border-blue-300 bg-blue-100 px-2 py-0.5 text-[9px] font-bold tracking-widest text-blue-600 uppercase dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-400">
                                 Catatan
@@ -174,7 +174,9 @@ export default function LearnShow({
 
     const [showLearnTour, setShowLearnTour] = useState(() => {
         if (typeof window !== 'undefined') {
-            const completed = localStorage.getItem(`course_guide_learn_completed_${auth?.user?.id || 'guest'}`);
+            const completed = localStorage.getItem(
+                `course_guide_learn_completed_${auth?.user?.id || 'guest'}`,
+            );
             return completed !== 'true';
         }
         return true;
@@ -328,7 +330,7 @@ export default function LearnShow({
                                 />
                             </svg>
                         </Link>
-                        <h1 className="font-['Orbitron'] text-xl font-bold tracking-[0.15em] text-[#1e3a8a] uppercase md:text-2xl lg:text-3xl dark:text-white">
+                        <h1 className="font-['Orbitron'] text-lg font-bold tracking-[0.15em] text-[#1e3a8a] uppercase sm:text-xl md:text-xl lg:text-2xl xl:text-3xl dark:text-white">
                             {course.title}
                         </h1>
                     </div>
@@ -336,7 +338,7 @@ export default function LearnShow({
             </div>
 
             {/* ================= MAIN ================= */}
-            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-1 pt-2 pb-1 md:flex-row">
+            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-2 md:flex-row md:gap-3 md:p-3 lg:gap-4 lg:p-4">
                 {/* ================= LEFT PANEL ================= */}
 
                 {/* MOBILE: Dropdown */}
@@ -469,7 +471,7 @@ export default function LearnShow({
                 </div>
 
                 {/* DESKTOP: Panel biasa */}
-                <div className="hidden w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:flex md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
+                <div className="hidden w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:flex md:w-[200px] md:flex-shrink-0 lg:w-[240px] xl:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
                     <p className="flex-shrink-0 px-1 font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
                         Quest Modules
                     </p>
@@ -496,7 +498,7 @@ export default function LearnShow({
                                     }`}
                                 >
                                     <div
-                                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border ${
+                                        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border lg:h-10 lg:w-10 ${
                                             isActive
                                                 ? 'border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20'
                                                 : done
@@ -524,7 +526,7 @@ export default function LearnShow({
                                     </div>
                                     <div className="flex min-w-0 flex-col">
                                         <span
-                                            className={`mb-0.5 font-['Orbitron'] text-[10px] font-semibold tracking-widest uppercase ${
+                                            className={`mb-0.5 font-['Orbitron'] text-[9px] font-semibold tracking-widest uppercase lg:text-[10px] ${
                                                 isActive
                                                     ? 'text-blue-500 dark:text-blue-400'
                                                     : done
@@ -536,7 +538,7 @@ export default function LearnShow({
                                             {String(index + 1).padStart(2, '0')}
                                         </span>
                                         <span
-                                            className={`truncate text-sm leading-tight font-bold ${
+                                            className={`truncate text-xs leading-tight font-bold lg:text-sm ${
                                                 isActive
                                                     ? 'text-[#1e3a8a] dark:text-white'
                                                     : done
@@ -560,11 +562,11 @@ export default function LearnShow({
 
                 {/* ================= RIGHT PANEL ================= */}
                 <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
-                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-500/30 min-h-0 flex-1 overflow-y-auto rounded-xl border border-blue-200 bg-white p-4 shadow-sm md:p-6 lg:p-8 dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
+                    <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-500/30 min-h-0 flex-1 overflow-y-auto rounded-xl border border-blue-200 bg-white p-4 shadow-sm md:p-4 lg:p-6 xl:p-8 dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
                         {/* Module Title */}
                         <div className="mb-6 flex items-center gap-3">
                             <div className="h-6 w-[3px] rounded-full bg-gradient-to-b from-blue-500 to-indigo-400 dark:from-blue-400 dark:to-purple-400" />
-                            <h2 className="font-['Orbitron'] text-lg font-bold tracking-widest text-[#1e3a8a] md:text-xl dark:text-white">
+                            <h2 className="font-['Orbitron'] text-base font-bold tracking-widest text-[#1e3a8a] md:text-lg lg:text-xl xl:text-2xl dark:text-white">
                                 {module.title}
                             </h2>
                         </div>
@@ -588,12 +590,12 @@ export default function LearnShow({
                                                         '0',
                                                     )}
                                                 </span>
-                                                <h3 className="font-['Orbitron'] text-base font-bold text-blue-700 dark:text-blue-300">
+                                                <h3 className="font-['Orbitron'] text-sm font-bold text-blue-700 md:text-base dark:text-blue-300">
                                                     {item.content.title}
                                                 </h3>
                                             </div>
                                         )}
-                                        <p className="border-l-2 border-blue-300 pl-6 text-[14px] leading-relaxed whitespace-pre-wrap text-[#334155] md:text-[15px] dark:border-blue-500/20 dark:text-gray-300">
+                                        <p className="border-l-2 border-blue-300 pl-4 text-[13px] leading-relaxed whitespace-pre-wrap text-[#334155] md:pl-6 md:text-[14px] lg:text-[15px] dark:border-blue-500/20 dark:text-gray-300">
                                             {item.content?.description ||
                                                 item.content?.text}
                                         </p>
@@ -730,9 +732,7 @@ export default function LearnShow({
                             {isLastModule && finalQuizSlug && allCompleted && (
                                 <button
                                     onClick={() =>
-                                        router.visit(
-                                            `/quiz/${finalQuizSlug}`,
-                                        )
+                                        router.visit(`/quiz/${finalQuizSlug}`)
                                     }
                                     className="w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"
                                 >
@@ -750,7 +750,10 @@ export default function LearnShow({
                     onClose={() => {
                         setShowLearnTour(false);
                         if (typeof window !== 'undefined') {
-                            localStorage.setItem(`course_guide_learn_completed_${auth?.user?.id || 'guest'}`, 'true');
+                            localStorage.setItem(
+                                `course_guide_learn_completed_${auth?.user?.id || 'guest'}`,
+                                'true',
+                            );
                         }
                     }}
                 />

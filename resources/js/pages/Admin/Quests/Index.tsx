@@ -272,7 +272,7 @@ export default function Index({ quests, filters }: Props) {
                                 </select>
                             </div>
 
-                            <div className="flex w-full scrollbar-none items-center gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0">
+                            <div className="scrollbar-none flex w-full items-center gap-1.5 overflow-x-auto pb-1 md:w-auto md:pb-0">
                                 {[
                                     'all',
                                     'draft',

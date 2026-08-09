@@ -71,7 +71,9 @@ export default function Dashboard({
     const [showTour, setShowTour] = useState(() => {
         if (user.has_completed_onboarding) return false;
         if (typeof window !== 'undefined') {
-            const localCompleted = localStorage.getItem(`onboarding_completed_${user.id || user.username || user.name}`);
+            const localCompleted = localStorage.getItem(
+                `onboarding_completed_${user.id || user.username || user.name}`,
+            );
             if (localCompleted === 'true') return false;
         }
         return true;
@@ -111,13 +113,18 @@ export default function Dashboard({
                         setShowTour(false);
                         setActiveTargetId(undefined);
                         if (typeof window !== 'undefined') {
-                            localStorage.setItem(`onboarding_completed_${user.id || user.username || user.name}`, 'true');
+                            localStorage.setItem(
+                                `onboarding_completed_${user.id || user.username || user.name}`,
+                                'true',
+                            );
                         }
                     }}
                 />
             )}
 
-            <BottomNav activeOnboardingTarget={showTour ? activeTargetId : undefined} />
+            <BottomNav
+                activeOnboardingTarget={showTour ? activeTargetId : undefined}
+            />
         </div>
     );
 }
@@ -665,17 +672,17 @@ function TopBar({
                                 onClick={() => setShowModal(false)}
                                 className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs md:bg-transparent"
                             />
-                            <div className="absolute right-0 top-full mt-2 z-50 w-80 sm:w-96 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl backdrop-blur-md dark:border-slate-800 dark:bg-[#0c0e18]/95 font-sans">
+                            <div className="absolute top-full right-0 z-50 mt-2 w-80 rounded-2xl border border-slate-200 bg-white/95 p-4 font-sans shadow-2xl backdrop-blur-md sm:w-96 dark:border-slate-800 dark:bg-[#0c0e18]/95">
                                 <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                                     <div className="flex items-center gap-2">
                                         <Bell className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
+                                        <h3 className="text-xs font-bold tracking-wider text-slate-800 uppercase dark:text-slate-100">
                                             Pesan & Notifikasi
                                         </h3>
                                     </div>
                                     <button
                                         onClick={() => setShowModal(false)}
-                                        className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                                        className="cursor-pointer rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                                     >
                                         <X size={14} />
                                     </button>
@@ -685,7 +692,9 @@ function TopBar({
                                     {notifications.length === 0 ? (
                                         <div className="py-8 text-center text-slate-400 dark:text-slate-500">
                                             <Bell className="mx-auto mb-2 h-8 w-8 text-slate-300 dark:text-slate-700" />
-                                            <p className="text-xs font-semibold">Belum ada pesan atau notifikasi</p>
+                                            <p className="text-xs font-semibold">
+                                                Belum ada pesan atau notifikasi
+                                            </p>
                                         </div>
                                     ) : (
                                         notifications.map((item) => {
@@ -693,7 +702,11 @@ function TopBar({
                                             return (
                                                 <div
                                                     key={item.id}
-                                                    onClick={() => handleNotificationClick(item)}
+                                                    onClick={() =>
+                                                        handleNotificationClick(
+                                                            item,
+                                                        )
+                                                    }
                                                     className={`group flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-all ${
                                                         isUnread
                                                             ? 'border-indigo-200 bg-indigo-50/60 dark:border-indigo-900/50 dark:bg-indigo-950/40'
@@ -701,46 +714,83 @@ function TopBar({
                                                     }`}
                                                 >
                                                     <div className="mt-0.5 shrink-0">
-                                                        {item.data.type === 'bid_accepted' ||
-                                                        item.data.type === 'work_approved' ||
-                                                        item.data.type === 'quest_completed' ||
-                                                        item.data.type === 'quest_approved' ||
-                                                        item.data.type === 'submission_graded' ? (
-                                                            <CheckCircle2 size={16} className="text-emerald-500" />
-                                                        ) : item.data.type === 'bid_rejected' ||
-                                                          item.data.type === 'work_rejected' ||
-                                                          item.data.type === 'quest_rejected' ? (
-                                                            <XCircle size={16} className="text-red-500 font-bold" />
-                                                        ) : item.data.type === 'work_submitted' ||
-                                                          item.data.type === 'payment_uploaded' ||
-                                                          item.data.type === 'bid_received' ? (
-                                                            <Clock size={16} className="text-amber-500" />
+                                                        {item.data.type ===
+                                                            'bid_accepted' ||
+                                                        item.data.type ===
+                                                            'work_approved' ||
+                                                        item.data.type ===
+                                                            'quest_completed' ||
+                                                        item.data.type ===
+                                                            'quest_approved' ||
+                                                        item.data.type ===
+                                                            'submission_graded' ? (
+                                                            <CheckCircle2
+                                                                size={16}
+                                                                className="text-emerald-500"
+                                                            />
+                                                        ) : item.data.type ===
+                                                              'bid_rejected' ||
+                                                          item.data.type ===
+                                                              'work_rejected' ||
+                                                          item.data.type ===
+                                                              'quest_rejected' ? (
+                                                            <XCircle
+                                                                size={16}
+                                                                className="font-bold text-red-500"
+                                                            />
+                                                        ) : item.data.type ===
+                                                              'work_submitted' ||
+                                                          item.data.type ===
+                                                              'payment_uploaded' ||
+                                                          item.data.type ===
+                                                              'bid_received' ? (
+                                                            <Clock
+                                                                size={16}
+                                                                className="text-amber-500"
+                                                            />
                                                         ) : (
-                                                            <Info size={16} className="text-indigo-500" />
+                                                            <Info
+                                                                size={16}
+                                                                className="text-indigo-500"
+                                                            />
                                                         )}
                                                     </div>
                                                     <div className="min-w-0 flex-1">
                                                         <div className="flex items-center justify-between gap-1">
                                                             <span className="truncate text-xs font-bold text-slate-800 dark:text-white">
-                                                                {item.data.title || 'Notifikasi Proyek'}
+                                                                {item.data
+                                                                    .title ||
+                                                                    'Notifikasi Proyek'}
                                                             </span>
-                                                            <span className="text-[9px] font-medium text-slate-400 shrink-0">
-                                                                {item.created_at}
+                                                            <span className="shrink-0 text-[9px] font-medium text-slate-400">
+                                                                {
+                                                                    item.created_at
+                                                                }
                                                             </span>
                                                         </div>
-                                                        <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600 dark:text-slate-350 line-clamp-2">
+                                                        <p className="dark:text-slate-350 mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-slate-600">
                                                             {item.data.message}
                                                         </p>
                                                         {item.data.quest_id && (
-                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
-                                                                <span>Buka Quest</span>
-                                                                <ArrowRight size={10} />
+                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 group-hover:underline dark:text-indigo-400">
+                                                                <span>
+                                                                    Buka Quest
+                                                                </span>
+                                                                <ArrowRight
+                                                                    size={10}
+                                                                />
                                                             </div>
                                                         )}
-                                                        {item.data.type === 'submission_graded' && (
-                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
-                                                                <span>Buka Sertifikat</span>
-                                                                <ArrowRight size={10} />
+                                                        {item.data.type ===
+                                                            'submission_graded' && (
+                                                            <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 group-hover:underline dark:text-indigo-400">
+                                                                <span>
+                                                                    Buka
+                                                                    Sertifikat
+                                                                </span>
+                                                                <ArrowRight
+                                                                    size={10}
+                                                                />
                                                             </div>
                                                         )}
                                                     </div>
@@ -823,7 +873,9 @@ function LevelRankCard({ user }: { user: User }) {
             {/* ERP Progress Bar */}
             <div className="space-y-1 border-t border-slate-200/80 pt-2 dark:border-slate-800/80">
                 <div className="flex items-center justify-between text-[10px] font-bold">
-                    <span className="text-slate-500 dark:text-slate-400">ERP Reputasi</span>
+                    <span className="text-slate-500 dark:text-slate-400">
+                        ERP Reputasi
+                    </span>
                     <span className="font-['Orbitron'] text-amber-500 dark:text-amber-400">
                         {rank.current_score}{' '}
                         <span className="text-slate-400 dark:text-slate-600">
@@ -850,13 +902,13 @@ function StoreButton() {
     return (
         <Link
             href="/store"
-            className="absolute top-1/2 left-4 sm:left-6 z-20 hidden -translate-y-1/2 md:flex flex-col items-center justify-center w-20 h-24 sm:w-24 sm:h-28 bg-[#070b28]/80 hover:bg-[#0c1242]/90 border-2 border-blue-600 hover:border-amber-400 rounded-sm shadow-[0_0_15px_rgba(59,40,246,0.3)] transition duration-300 group cursor-pointer"
+            className="group absolute top-1/2 left-4 z-20 hidden h-24 w-20 -translate-y-1/2 cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-blue-600 bg-[#070b28]/80 shadow-[0_0_15px_rgba(59,40,246,0.3)] transition duration-300 hover:border-amber-400 hover:bg-[#0c1242]/90 sm:left-6 sm:h-28 sm:w-24 md:flex"
         >
-            <Store className="h-7 w-7 text-amber-400 group-hover:scale-110 transition duration-300" />
-            <span className="mt-2 font-['Orbitron'] text-xs font-bold text-white tracking-wider">
+            <Store className="h-7 w-7 text-amber-400 transition duration-300 group-hover:scale-110" />
+            <span className="mt-2 font-['Orbitron'] text-xs font-bold tracking-wider text-white">
                 Store
             </span>
-            <div className="absolute inset-0 border border-amber-400/40 pointer-events-none" />
+            <div className="pointer-events-none absolute inset-0 border border-amber-400/40" />
         </Link>
     );
 }
@@ -929,32 +981,34 @@ function CharacterSection({
 
     return (
         <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
-            <div className="pointer-events-auto absolute -bottom-10 md:-bottom-14 lg:-bottom-16 xl:-bottom-20 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[32%] lg:right-[36%] xl:right-[38%]">
+            <div className="pointer-events-auto absolute -bottom-10 left-1/2 -translate-x-1/2 md:right-[32%] md:-bottom-14 md:left-auto md:translate-x-0 lg:right-[36%] lg:-bottom-16 xl:right-[38%] xl:-bottom-20">
                 {/* Speech Bubble Spesial Dashboard (Melayang pas di atas kepala hero) */}
                 {showBubble && (
-                    <div className="animate-fadeIn absolute bottom-[98%] sm:bottom-[100%] md:bottom-[102%] left-[35%] sm:left-[40%] md:left-[45%] w-56 sm:w-64 md:w-72 lg:w-80 z-50 pointer-events-auto">
-                        <div className="relative rounded-2xl border border-[#3B28F6]/50 bg-gradient-to-b from-[#0b0903]/95 via-[#070b24]/95 to-[#05081c]/95 backdrop-blur-md p-3 sm:p-4 text-slate-200 shadow-[0_0_25px_-3px_rgba(59,40,246,0.6),0_0_10px_rgba(251,191,36,0.2)]">
+                    <div className="animate-fadeIn pointer-events-auto absolute bottom-[98%] left-[35%] z-50 w-56 sm:bottom-[100%] sm:left-[40%] sm:w-64 md:bottom-[102%] md:left-[45%] md:w-72 lg:w-80">
+                        <div className="relative rounded-2xl border border-[#3B28F6]/50 bg-gradient-to-b from-[#0b0903]/95 via-[#070b24]/95 to-[#05081c]/95 p-3 text-slate-200 shadow-[0_0_25px_-3px_rgba(59,40,246,0.6),0_0_10px_rgba(251,191,36,0.2)] backdrop-blur-md sm:p-4">
                             {/* Top glowing accent line */}
-                            <div className="absolute top-0 left-4 right-4 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+                            <div className="absolute top-0 right-4 left-4 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
 
                             {/* Header Spesial Dashboard - Nama karakter dinamis */}
-                            <div className="flex items-center gap-1.5 mb-2 pb-1 border-b border-[#3B28F6]/25">
-                                <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_3px_rgba(251,191,36,0.8)] animate-pulse" />
-                                <h4 className="font-['Orbitron'] font-extrabold text-[10px] sm:text-xs text-amber-400 uppercase tracking-widest flex items-center gap-1">
+                            <div className="mb-2 flex items-center gap-1.5 border-b border-[#3B28F6]/25 pb-1">
+                                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-amber-400 shadow-[0_0_8px_3px_rgba(251,191,36,0.8)]" />
+                                <h4 className="flex items-center gap-1 font-['Orbitron'] text-[10px] font-extrabold tracking-widest text-amber-400 uppercase sm:text-xs">
                                     {character.name}
                                 </h4>
                             </div>
 
                             {/* Content dengan Typewriter */}
-                            <div className="min-h-[48px] sm:min-h-[56px] flex items-center">
-                                <p className="font-sans text-[9.5px] sm:text-xs font-medium leading-relaxed text-slate-200">
+                            <div className="flex min-h-[48px] items-center sm:min-h-[56px]">
+                                <p className="font-sans text-[9.5px] leading-relaxed font-medium text-slate-200 sm:text-xs">
                                     {displayText}
-                                    <span className="animate-pulse font-bold text-amber-400 ml-0.5">|</span>
+                                    <span className="ml-0.5 animate-pulse font-bold text-amber-400">
+                                        |
+                                    </span>
                                 </p>
                             </div>
 
                             {/* Ekor Arrow (Pointer) di kiri bawah mengarah ke kepala/bahu Hero */}
-                            <div className="absolute -bottom-1.5 left-4 sm:left-6 h-3 sm:h-3.5 w-3 sm:w-3.5 rotate-45 border-r border-b border-[#3B28F6]/50 bg-[#05081c]" />
+                            <div className="absolute -bottom-1.5 left-4 h-3 w-3 rotate-45 border-r border-b border-[#3B28F6]/50 bg-[#05081c] sm:left-6 sm:h-3.5 sm:w-3.5" />
                         </div>
                     </div>
                 )}
@@ -963,7 +1017,7 @@ function CharacterSection({
                 <img
                     src={character.avatar}
                     onClick={triggerNextBubble}
-                    className="relative z-20 h-[300px] sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[540px] cursor-pointer transition hover:scale-[1.02]"
+                    className="relative z-20 h-[300px] cursor-pointer transition hover:scale-[1.02] sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[540px]"
                     style={{ animation: 'breathe 3s ease-in-out infinite' }}
                     title="Klik hero untuk kata-kata penyemangat!"
                 />
