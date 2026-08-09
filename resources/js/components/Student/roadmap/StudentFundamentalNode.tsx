@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/react';
 
 type Props = {
     title: string;
+    description?: string | null;
     locked?: boolean;
     done?: boolean;
     thumbnail?: string | null;
@@ -11,6 +12,7 @@ type Props = {
 
 export default function StudentFundamentalNode({
     title,
+    description,
     locked = false,
     done = false,
     thumbnail,
@@ -181,10 +183,8 @@ export default function StudentFundamentalNode({
                                     : 'text-gray-500 dark:text-gray-400',
                             ].join(' ')}
                         >
-                            Kelas ini akan membantumu memahami dasar-dasar
-                            pemrograman web modern, mulai dari HTML, CSS, hingga
-                            JavaScript, dengan pendekatan yang praktis dan mudah
-                            diikuti.
+                            {description ||
+                                'Kelas ini akan membantumu memahami dasar-dasar pemrograman web modern, mulai dari HTML, CSS, hingga JavaScript, dengan pendekatan yang praktis dan mudah diikuti.'}
                         </p>
 
                         {/* label LOCKED */}

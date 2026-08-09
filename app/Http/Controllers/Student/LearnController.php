@@ -101,6 +101,7 @@ class LearnController extends Controller
                 '_id' => (string) $data['path']->_id,
                 'name' => $data['path']->name,
                 'slug' => $data['path']->slug,
+                'description' => $data['path']->description,
 
                 'final_quiz' => $data['path']->quiz ? [
                     'id' => (string) $data['path']->quiz->_id,

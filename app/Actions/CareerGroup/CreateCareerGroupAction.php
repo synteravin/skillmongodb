@@ -20,6 +20,8 @@ class CreateCareerGroupAction
 
             'name' => $data['name'],
 
+            'description' => $data['description'] ?? null,
+
             'slug' => $slug,
 
             'order' => ($order ?? 0) + 1,

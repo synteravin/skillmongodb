@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 
 type Props = {
     title: string;
+    description?: string | null;
     index: number;
     isLast?: boolean;
     href?: string;
@@ -10,6 +11,7 @@ type Props = {
 
 export default function FundamentalNode({
     title,
+    description,
     isLast,
     href,
     thumbnail,
@@ -70,9 +72,8 @@ export default function FundamentalNode({
                             {title}
                         </h3>
                         <p className="mt-1 line-clamp-2 font-sans text-[10px] leading-snug text-slate-400 sm:text-[11px]">
-                            This fundamental module covers the core concepts,
-                            syntax, and essential tools required to begin
-                            programming modern web solutions.
+                            {description ||
+                                'This fundamental module covers the core concepts, syntax, and essential tools required to begin programming modern web solutions.'}
                         </p>
                     </div>
                 </div>
