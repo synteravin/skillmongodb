@@ -1,5 +1,13 @@
 import React from 'react';
-import { MessageSquare, Briefcase, FileArchive, Download, Star, Check, FileImage } from 'lucide-react';
+import {
+    MessageSquare,
+    Briefcase,
+    FileArchive,
+    Download,
+    Star,
+    Check,
+    FileImage,
+} from 'lucide-react';
 import { Quest, Bid } from '@/types/quest';
 import RevisionHistory from '@/components/Quest/RevisionHistory';
 
@@ -33,7 +41,7 @@ export default function AdminProjectTabPanel({
     handleRejectWork,
 }: AdminProjectTabPanelProps) {
     return (
-        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+        <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 dark:border-slate-800">
                 <h3 className="text-sm font-extrabold tracking-wider text-slate-900 uppercase dark:text-white">
@@ -95,19 +103,24 @@ export default function AdminProjectTabPanel({
             ) : (
                 <div className="py-6 text-center text-slate-500 dark:text-slate-400">
                     <Briefcase className="mx-auto mb-2 h-8 w-8 text-indigo-500 opacity-60" />
-                    <p className="text-xs font-extrabold uppercase text-slate-800 dark:text-slate-300">
+                    <p className="text-xs font-extrabold text-slate-800 uppercase dark:text-slate-300">
                         Belum ada pekerja ditunjuk.
                     </p>
                     <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                        Silakan terima salah satu penawaran masuk pada tab "Pelamar" untuk memulai pengerjaan quest.
+                        Silakan terima salah satu penawaran masuk pada tab
+                        "Pelamar" untuk memulai pengerjaan quest.
                     </p>
                 </div>
             )}
 
             {quest.status === 'ongoing' && (
                 <div className="space-y-4 border-t border-slate-200 pt-4 dark:border-slate-800">
-                    <p className="text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400">
-                        Status quest ini adalah <strong className="font-bold text-slate-900 dark:text-white">Dalam Pengerjaan</strong>. Pekerja saat ini sedang menyelesaikan deskripsi tugas.
+                    <p className="text-xs leading-relaxed font-semibold text-slate-600 dark:text-slate-400">
+                        Status quest ini adalah{' '}
+                        <strong className="font-bold text-slate-900 dark:text-white">
+                            Dalam Pengerjaan
+                        </strong>
+                        . Pekerja saat ini sedang menyelesaikan deskripsi tugas.
                     </p>
                     <RevisionHistory quest={quest} viewType="admin_ongoing" />
                 </div>
@@ -119,7 +132,9 @@ export default function AdminProjectTabPanel({
                         Disetujui & Menunggu Pembayaran
                     </span>
                     <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                        Hasil pekerjaan disetujui. Saat ini sistem menunggu pembuat quest mengunggah bukti transfer pembayaran secara offline.
+                        Hasil pekerjaan disetujui. Saat ini sistem menunggu
+                        pembuat quest mengunggah bukti transfer pembayaran
+                        secara offline.
                     </p>
                 </div>
             )}
@@ -128,16 +143,19 @@ export default function AdminProjectTabPanel({
                 <div className="space-y-4 border-t border-slate-200 pt-4 dark:border-slate-800">
                     <div className="flex flex-col gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center">
                         <span className="block text-xs font-bold tracking-wider text-amber-700 uppercase dark:text-amber-300">
-                            Bukti Pembayaran Diunggah & Menunggu Berkas ZIP Final
+                            Bukti Pembayaran Diunggah & Menunggu Berkas ZIP
+                            Final
                         </span>
                         <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                            Pembuat quest telah mengunggah bukti transfer pembayaran. Sistem menunggu pekerja mengirim berkas proyek final (.zip) untuk menyelesaikan quest.
+                            Pembuat quest telah mengunggah bukti transfer
+                            pembayaran. Sistem menunggu pekerja mengirim berkas
+                            proyek final (.zip) untuk menyelesaikan quest.
                         </p>
                     </div>
 
                     {quest.payment_proof && (
                         <div className="rounded-xl border border-slate-300 bg-slate-50/70 p-4 text-xs dark:border-slate-800 dark:bg-[#030712]">
-                            <span className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-2 dark:text-slate-400">
+                            <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
                                 Bukti Transfer Pembuat
                             </span>
                             <div className="flex flex-col gap-3">
@@ -149,7 +167,18 @@ export default function AdminProjectTabPanel({
                                                 {quest.payment_proof.name}
                                             </p>
                                             <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                                                Diunggah pada: {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                                Diunggah pada:{' '}
+                                                {quest.payment_uploaded_at
+                                                    ? new Date(
+                                                          quest.payment_uploaded_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                          {
+                                                              dateStyle:
+                                                                  'medium',
+                                                          },
+                                                      )
+                                                    : ''}
                                             </p>
                                         </div>
                                     </div>
@@ -163,20 +192,20 @@ export default function AdminProjectTabPanel({
                                         <Download size={16} />
                                     </a>
                                 </div>
-                                <div className="relative overflow-hidden rounded-lg border border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs shadow-sm">
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                                     <a
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block group"
+                                        className="group block"
                                     >
                                         <img
                                             src={quest.payment_proof.url}
                                             alt="Bukti Transfer Pembayaran"
-                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
                                                 Perbesar Gambar 🔍
                                             </span>
                                         </div>
@@ -194,8 +223,10 @@ export default function AdminProjectTabPanel({
                         <span className="block text-xs font-bold tracking-wider text-amber-700 uppercase dark:text-amber-300">
                             Penyerahan Tugas Masuk
                         </span>
-                        <p className="text-xs font-semibold leading-relaxed text-slate-700 dark:text-slate-300">
-                            Pekerja telah selesai melakukan penyerahan tugas awal. Silakan review hasil pekerjaannya di bawah ini.
+                        <p className="text-xs leading-relaxed font-semibold text-slate-700 dark:text-slate-300">
+                            Pekerja telah selesai melakukan penyerahan tugas
+                            awal. Silakan review hasil pekerjaannya di bawah
+                            ini.
                         </p>
                     </div>
 
@@ -215,7 +246,9 @@ export default function AdminProjectTabPanel({
                                                 {quest.submission_file.name}
                                             </p>
                                             <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                                                {formatBytes(quest.submission_file.size)}
+                                                {formatBytes(
+                                                    quest.submission_file.size,
+                                                )}
                                             </p>
                                         </div>
                                     </div>
@@ -294,12 +327,18 @@ export default function AdminProjectTabPanel({
                                         <button
                                             key={val}
                                             type="button"
-                                            onClick={() => approveForm.setData('rating', val)}
+                                            onClick={() =>
+                                                approveForm.setData(
+                                                    'rating',
+                                                    val,
+                                                )
+                                            }
                                             className="cursor-pointer transition-transform focus:outline-none active:scale-95"
                                         >
                                             <Star
                                                 className={`h-7 w-7 ${
-                                                    val <= approveForm.data.rating
+                                                    val <=
+                                                    approveForm.data.rating
                                                         ? 'fill-amber-400 text-amber-400'
                                                         : 'text-slate-300 dark:text-slate-600'
                                                 }`}
@@ -317,7 +356,12 @@ export default function AdminProjectTabPanel({
                                     placeholder="Berikan ulasan tentang penyelesaian pekerjaan..."
                                     rows={3}
                                     value={approveForm.data.rating_comment}
-                                    onChange={(e) => approveForm.setData('rating_comment', e.target.value)}
+                                    onChange={(e) =>
+                                        approveForm.setData(
+                                            'rating_comment',
+                                            e.target.value,
+                                        )
+                                    }
                                     className="w-full rounded-lg border border-slate-300 bg-slate-50/80 px-3 py-2 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
                             </div>
@@ -328,7 +372,9 @@ export default function AdminProjectTabPanel({
                                     disabled={approveForm.processing}
                                     className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-emerald-700 disabled:opacity-50"
                                 >
-                                    {approveForm.processing ? 'Menyelesaikan...' : 'Kirim Ulasan & Setujui'}
+                                    {approveForm.processing
+                                        ? 'Menyelesaikan...'
+                                        : 'Kirim Ulasan & Setujui'}
                                 </button>
                                 <button
                                     type="button"
@@ -354,14 +400,20 @@ export default function AdminProjectTabPanel({
                             </h4>
                             <div className="space-y-1">
                                 <label className="text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
-                                    Detail Revisi yang Harus Diperbaiki <span className="text-red-500">*</span>
+                                    Detail Revisi yang Harus Diperbaiki{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
                                     required
                                     placeholder="Jelaskan secara rinci apa saja yang perlu diperbaiki pekerja..."
                                     rows={4}
                                     value={rejectForm.data.revision_note}
-                                    onChange={(e) => rejectForm.setData('revision_note', e.target.value)}
+                                    onChange={(e) =>
+                                        rejectForm.setData(
+                                            'revision_note',
+                                            e.target.value,
+                                        )
+                                    }
                                     className="w-full rounded-lg border border-slate-300 bg-slate-50/80 px-3 py-2 text-xs font-semibold text-slate-900 focus:border-red-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
                             </div>
@@ -372,7 +424,9 @@ export default function AdminProjectTabPanel({
                                     disabled={rejectForm.processing}
                                     className="flex-1 cursor-pointer rounded-lg bg-red-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-red-700 disabled:opacity-50"
                                 >
-                                    {rejectForm.processing ? 'Mengirim...' : 'Kirim Catatan Revisi'}
+                                    {rejectForm.processing
+                                        ? 'Mengirim...'
+                                        : 'Kirim Catatan Revisi'}
                                 </button>
                                 <button
                                     type="button"
@@ -397,8 +451,9 @@ export default function AdminProjectTabPanel({
                         <span className="block text-xs font-bold tracking-wider text-emerald-700 uppercase dark:text-emerald-300">
                             Quest Selesai
                         </span>
-                        <p className="text-xs font-semibold leading-relaxed text-slate-700 dark:text-slate-300">
-                            Pekerjaan telah disetujui, berkas final ZIP telah terkirim, dan quest diselesaikan secara resmi.
+                        <p className="text-xs leading-relaxed font-semibold text-slate-700 dark:text-slate-300">
+                            Pekerjaan telah disetujui, berkas final ZIP telah
+                            terkirim, dan quest diselesaikan secara resmi.
                         </p>
                     </div>
 
@@ -441,7 +496,9 @@ export default function AdminProjectTabPanel({
                                                 {quest.submission_file.name}
                                             </p>
                                             <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                                                {formatBytes(quest.submission_file.size)}
+                                                {formatBytes(
+                                                    quest.submission_file.size,
+                                                )}
                                             </p>
                                         </div>
                                     </div>
@@ -487,7 +544,17 @@ export default function AdminProjectTabPanel({
                                                 {quest.payment_proof.name}
                                             </p>
                                             <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                                                {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                                {quest.payment_uploaded_at
+                                                    ? new Date(
+                                                          quest.payment_uploaded_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                          {
+                                                              dateStyle:
+                                                                  'medium',
+                                                          },
+                                                      )
+                                                    : ''}
                                             </p>
                                         </div>
                                     </div>
@@ -501,20 +568,20 @@ export default function AdminProjectTabPanel({
                                         <Download className="h-4.5 w-4.5" />
                                     </a>
                                 </div>
-                                <div className="relative overflow-hidden rounded-lg border border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs">
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-900">
                                     <a
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block group"
+                                        className="group block"
                                     >
                                         <img
                                             src={quest.payment_proof.url}
                                             alt="Bukti Transfer Pembayaran"
-                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
                                                 Perbesar Gambar 🔍
                                             </span>
                                         </div>

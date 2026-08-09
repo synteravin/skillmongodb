@@ -109,7 +109,7 @@ export default function EditPathModal({
                         )}
                     </div>
 
-                    <div className="flex items-center gap-3 border-t border-slate-150 pt-4 dark:border-slate-800">
+                    <div className="border-slate-150 flex items-center gap-3 border-t pt-4 dark:border-slate-800">
                         <button
                             type="button"
                             onClick={onClose}

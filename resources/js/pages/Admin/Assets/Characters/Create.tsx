@@ -280,7 +280,7 @@ export default function CreateCharacter() {
                                         className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-4 text-center transition-all ${
                                             dragActive
                                                 ? 'border-slate-400 bg-slate-50 dark:border-slate-500 dark:bg-white/5'
-                                                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-5-0 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-white/[0.03]'
+                                                : 'hover:bg-slate-5-0 border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-white/[0.03]'
                                         }`}
                                     >
                                         <input

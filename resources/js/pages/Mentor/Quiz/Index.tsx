@@ -123,18 +123,28 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
                                             />
                                             {quiz.questions_count} Questions
                                         </span>
-                                        <span>⏱️ {quiz.duration ?? 15} Min</span>
+                                        <span>
+                                            ⏱️ {quiz.duration ?? 15} Min
+                                        </span>
                                     </p>
 
                                     {/* ANALYTICS STATS */}
-                                    <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-100/80 p-2.5 text-center text-xs backdrop-blur-sm dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/5">
+                                    <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl border border-slate-200/60 bg-slate-100/80 p-2.5 text-center text-xs backdrop-blur-sm dark:border-white/5 dark:bg-slate-900/60">
                                         <div>
-                                            <div className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400">Pass Rate</div>
-                                            <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{quiz.pass_rate ?? 0}%</div>
+                                            <div className="text-[10px] font-semibold text-slate-500 uppercase dark:text-slate-400">
+                                                Pass Rate
+                                            </div>
+                                            <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                                                {quiz.pass_rate ?? 0}%
+                                            </div>
                                         </div>
                                         <div>
-                                            <div className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400">Avg Score</div>
-                                            <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{quiz.avg_score ?? 0} pts</div>
+                                            <div className="text-[10px] font-semibold text-slate-500 uppercase dark:text-slate-400">
+                                                Avg Score
+                                            </div>
+                                            <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                                                {quiz.avg_score ?? 0} pts
+                                            </div>
                                         </div>
                                     </div>
 

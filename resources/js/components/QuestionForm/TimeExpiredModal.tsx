@@ -32,8 +32,9 @@ export default function TimeExpiredModal({
                     </h2>
 
                     <p className="mb-6 text-sm leading-relaxed text-slate-300">
-                        Waktu pengerjaan kuis telah selesai. Seluruh jawaban Anda
-                        yang telah terisi telah disimpan dan dikirim otomatis.
+                        Waktu pengerjaan kuis telah selesai. Seluruh jawaban
+                        Anda yang telah terisi telah disimpan dan dikirim
+                        otomatis.
                     </p>
 
                     <motion.button

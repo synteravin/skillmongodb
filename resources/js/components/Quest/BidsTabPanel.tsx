@@ -245,7 +245,7 @@ export default function BidsTabPanel({
                                         <span className="block text-[9px] font-medium tracking-wider text-slate-400 uppercase">
                                             Proposal
                                         </span>
-                                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600 dark:text-slate-350">
+                                        <p className="dark:text-slate-350 mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600">
                                             {bid.proposal}
                                         </p>
                                     </div>
@@ -258,7 +258,9 @@ export default function BidsTabPanel({
                                             {bid.cv && (
                                                 <a
                                                     href={
-                                                        bid.cv.startsWith('http')
+                                                        bid.cv.startsWith(
+                                                            'http',
+                                                        )
                                                             ? bid.cv
                                                             : '#'
                                                     }

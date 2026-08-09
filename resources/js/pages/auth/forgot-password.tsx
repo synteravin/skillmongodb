@@ -23,9 +23,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 />
 
                 {/* ================= CARD ================= */}
-                <div
-                    className="relative w-[96%] max-w-md sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl rounded-3xl border border-white/20 bg-white/20 p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 sm:p-7 md:p-8 lg:p-9 xl:p-10 2xl:p-12 dark:border-white/10 dark:bg-slate-900/35 dark:backdrop-blur-xl">
-                    
+                <div className="relative w-[96%] max-w-md rounded-3xl border border-white/20 bg-white/20 p-6 shadow-2xl backdrop-blur-lg transition-all duration-300 sm:max-w-md sm:p-7 md:max-w-lg md:p-8 lg:max-w-xl lg:p-9 xl:max-w-2xl xl:p-10 2xl:max-w-3xl 2xl:p-12 dark:border-white/10 dark:bg-slate-900/35 dark:backdrop-blur-xl">
                     {/* Neon Border */}
                     <div className="pointer-events-none absolute inset-0 rounded-3xl border-2 border-yellow-400/70" />
 
@@ -58,7 +56,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                         type="email"
                                         placeholder="Email"
                                         autoFocus
-                                        className="border border-white/20 bg-white/10 text-white placeholder:text-white/60 backdrop-blur-md transition-all duration-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500 dark:bg-white/5"
+                                        className="border border-white/20 bg-white/10 text-white backdrop-blur-md transition-all duration-300 placeholder:text-white/60 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500 dark:bg-white/5"
                                     />
                                     <InputError message={errors.email} />
                                 </div>

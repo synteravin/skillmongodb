@@ -23,7 +23,7 @@ export default function SpeechBubble({
                 <div className="absolute -bottom-2.5 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-r border-b border-indigo-500/30 bg-white dark:border-indigo-500/40 dark:bg-[#070b24]" />
             )}
             {tailPosition === 'bottom-left' && (
-                <div className="absolute -bottom-2.5 left-10 sm:left-12 h-4 w-4 rotate-45 border-r border-b border-indigo-500/30 bg-white dark:border-indigo-500/40 dark:bg-[#070b24]" />
+                <div className="absolute -bottom-2.5 left-10 h-4 w-4 rotate-45 border-r border-b border-indigo-500/30 bg-white sm:left-12 dark:border-indigo-500/40 dark:bg-[#070b24]" />
             )}
             {tailPosition === 'right' && (
                 <div className="absolute top-6 -right-2 h-4 w-4 rotate-45 border-t border-r border-indigo-500/30 bg-white dark:border-indigo-500/40 dark:bg-[#070b24]" />

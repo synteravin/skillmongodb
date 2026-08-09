@@ -11,14 +11,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import SortablePathCard from './SortablePathCard';
-import {
-    Check,
-    Layers,
-    Lock,
-    Map,
-    Plus,
-    RefreshCw,
-} from 'lucide-react';
+import { Check, Layers, Lock, Map, Plus, RefreshCw } from 'lucide-react';
 
 interface PathColumnSectionProps {
     type: 'basic_fundamental' | 'career_branch';
@@ -69,7 +62,8 @@ export default function PathColumnSection({
                   'Tidak ada materi Basic Fundamental yang tersedia. Silakan klik Tambah Path untuk membuatnya.',
           }
         : {
-              badgeBg: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+              badgeBg:
+                  'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
               badgeLabel: 'SPESIALISASI',
               title: 'Career Branch',
               description:

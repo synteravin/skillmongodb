@@ -1262,216 +1262,273 @@ export default function Show({ user, details }: { user: any; details: any }) {
                                 </div>
                             )}
 
-                           {/* Submission Detail */}
-{(selectedDetail.type === 'submission' ||
-    selectedDetail.type ===
-        'mentor_submission') && (
-    <div
-        className="space-y-5"
-        style={{
-            fontFamily: "'Outfit', sans-serif",
-        }}
-    >
-        {/* ── Hero Header ───────────────────────────── */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-            
-            <div className="relative px-5 pt-5 pb-4">
-                {/* type badge + status */}
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-[#3B28F6] uppercase dark:bg-slate-800 dark:text-indigo-400">
-                        {selectedDetail.type === 'mentor_submission'
-                            ? 'Mentor Task'
-                            : 'Submission'}
-                    </span>
-                    <span
-                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
-                            selectedDetail.data.status === 'graded' ||
-                            selectedDetail.data.status === 'approved'
-                                ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                : selectedDetail.data.status === 'rejected'
-                                  ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
-                                  : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
-                        }`}
-                    >
-                        {selectedDetail.data.status ?? 'Pending'}
-                    </span>
-                </div>
+                            {/* Submission Detail */}
+                            {(selectedDetail.type === 'submission' ||
+                                selectedDetail.type ===
+                                    'mentor_submission') && (
+                                <div
+                                    className="space-y-5"
+                                    style={{
+                                        fontFamily: "'Outfit', sans-serif",
+                                    }}
+                                >
+                                    {/* ── Hero Header ───────────────────────────── */}
+                                    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+                                        <div className="relative px-5 pt-5 pb-4">
+                                            {/* type badge + status */}
+                                            <div className="mb-3 flex flex-wrap items-center gap-2">
+                                                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-[#3B28F6] uppercase dark:bg-slate-800 dark:text-indigo-400">
+                                                    {selectedDetail.type ===
+                                                    'mentor_submission'
+                                                        ? 'Mentor Task'
+                                                        : 'Submission'}
+                                                </span>
+                                                <span
+                                                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                                                        selectedDetail.data
+                                                            .status ===
+                                                            'graded' ||
+                                                        selectedDetail.data
+                                                            .status ===
+                                                            'approved'
+                                                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                                            : selectedDetail
+                                                                    .data
+                                                                    .status ===
+                                                                'rejected'
+                                                              ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                                                              : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
+                                                    }`}
+                                                >
+                                                    {selectedDetail.data
+                                                        .status ?? 'Pending'}
+                                                </span>
+                                            </div>
 
-                {/* title */}
-                <h3 className="text-base font-bold text-slate-800 dark:text-white">
-                    {selectedDetail.data.title ||
-                        selectedDetail.data.task_title ||
-                        'Untitled Assignment'}
-                </h3>
+                                            {/* title */}
+                                            <h3 className="text-base font-bold text-slate-800 dark:text-white">
+                                                {selectedDetail.data.title ||
+                                                    selectedDetail.data
+                                                        .task_title ||
+                                                    'Untitled Assignment'}
+                                            </h3>
 
-                {/* career group */}
-                {selectedDetail.data.career_group && (
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                     {selectedDetail.data.career_group}
-                    </p>
-                )}
+                                            {/* career group */}
+                                            {selectedDetail.data
+                                                .career_group && (
+                                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    {
+                                                        selectedDetail.data
+                                                            .career_group
+                                                    }
+                                                </p>
+                                            )}
 
-                {/* meta: submitted by + date + grade */}
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-slate-200 pt-3 dark:border-slate-800">
-                    {selectedDetail.data.student_name && (
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                            <span>Submitted by</span>
-                            <span className="font-semibold text-slate-700 dark:text-white">
-                                {selectedDetail.data.student_name}
-                            </span>
-                        </div>
-                    )}
-                    {selectedDetail.data.submitted_at && (
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                            <span>
-                                {new Date(
-                                    selectedDetail.data.submitted_at,
-                                ).toLocaleString('en-US', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                })}
-                            </span>
-                        </div>
-                    )}
-                    {selectedDetail.data.grade && (
-                        <div className="ml-auto flex items-center gap-1.5">
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">Score</span>
-                            <span className="rounded-lg bg-slate-100 px-2.5 py-0.5 text-sm font-black text-[#3B28F6] dark:bg-slate-800 dark:text-indigo-300">
-                                {selectedDetail.data.grade}
-                            </span>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-
-        {/* ── Student Notes ──────────────────────────── */}
-        <div className="rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
-            <div className="border-b border-slate-200 px-4 py-2.5 dark:border-slate-800">
-                <h4 className="text-[10px] font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
-                    Student Notes
-                </h4>
-            </div>
-            <div className="px-4 py-3">
-                {selectedDetail.data.notes ? (
-                    <p className="text-xs leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300">
-                        {selectedDetail.data.notes}
-                    </p>
-                ) : (
-                    <p className="text-xs italic text-slate-400 dark:text-slate-600">
-                        No notes provided.
-                    </p>
-                )}
-            </div>
-        </div>
-
-        {/* ── Attachments ────────────────────────────── */}
-        <div className="rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
-            <div className="border-b border-slate-200 px-4 py-2.5 dark:border-slate-800">
-                <h4 className="text-[10px] font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
-                    Attachments
-                </h4>
-            </div>
-            <div className="space-y-2 px-4 py-3">
-                {selectedDetail.data.link && (
-                    <a href={selectedDetail.data.link} target="_blank" rel="noreferrer" className="group flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 transition-all hover:border-blue-400 hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/20"
-                    >
-                        <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-blue-500/20 text-sm dark:bg-blue-500/30">
-                            🔗
-                        </span>
-                        <div className="min-w-0 flex-1">
-                            <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase dark:text-blue-400">
-                                External Link
-                            </p>
-                            <p className="mt-0.5 truncate text-[11px] font-medium text-blue-700 dark:text-blue-300">
-                                {selectedDetail.data.link}
-                            </p>
-                        </div>
-                        <svg
-                            className="h-3.5 w-3.5 flex-shrink-0 text-blue-400 opacity-60 transition group-hover:opacity-100"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                        </svg>
-                    </a>
-                )}
-
-                {selectedDetail.data.file_path && (
-                    <a
-                        href={`/storage/${selectedDetail.data.file_path}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 transition-all hover:border-slate-400 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:hover:bg-slate-800"
-                    >
-                        <div className="min-w-0 flex-1">
-                            <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                Uploaded File
-                            </p>
-                            <p className="mt-0.5 truncate text-[11px] font-medium text-slate-700 dark:text-slate-300">
-                                /storage/{selectedDetail.data.file_path}
-                            </p>
-                        </div>
-                    </a>
-                )}
-
-                {!selectedDetail.data.link &&
-                    !selectedDetail.data.file_path && (
-                        <p className="text-xs italic text-slate-400 dark:text-slate-600">
-                            No attachments uploaded.
-                        </p>
-                    )}
-            </div>
-        </div>
-
-        {/* ── Mentor Evaluation ─────────────────────── */}
-        {selectedDetail.type === 'submission' &&
-            (selectedDetail.data.feedback ||
-                selectedDetail.data.grade) && (
-                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-                    <div className="absolute inset-x-0 top-0 h-0.5 bg-[#3B28F6]" />
-                    <div className="relative">
-                        <div className="border-b border-slate-200 px-4 py-2.5 dark:border-slate-800">
-                            <h4 className="text-[10px] font-bold tracking-widest text-[#3B28F6] uppercase dark:text-indigo-400">
-                                Mentor Evaluation
-                            </h4>
-                        </div>
-                        <div className="space-y-3 px-4 py-3">
-                            {selectedDetail.data.grade && (
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                                        Score Awarded
-                                    </span>
-                                    <span className="rounded-lg bg-slate-100 px-3 py-1 text-lg font-black text-[#3B28F6] dark:bg-slate-800 dark:text-indigo-300">
-                                        {selectedDetail.data.grade}
-                                    </span>
-                                </div>
-                            )}
-                            {selectedDetail.data.feedback && (
-                                <div>
-                                    <p className="mb-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                                        Feedback
-                                    </p>
-                                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs leading-relaxed whitespace-pre-wrap text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
-                                        {selectedDetail.data.feedback}
+                                            {/* meta: submitted by + date + grade */}
+                                            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-slate-200 pt-3 dark:border-slate-800">
+                                                {selectedDetail.data
+                                                    .student_name && (
+                                                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                                        <span>
+                                                            Submitted by
+                                                        </span>
+                                                        <span className="font-semibold text-slate-700 dark:text-white">
+                                                            {
+                                                                selectedDetail
+                                                                    .data
+                                                                    .student_name
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {selectedDetail.data
+                                                    .submitted_at && (
+                                                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                                        <span>
+                                                            {new Date(
+                                                                selectedDetail
+                                                                    .data
+                                                                    .submitted_at,
+                                                            ).toLocaleString(
+                                                                'en-US',
+                                                                {
+                                                                    day: 'numeric',
+                                                                    month: 'short',
+                                                                    year: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                },
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {selectedDetail.data.grade && (
+                                                    <div className="ml-auto flex items-center gap-1.5">
+                                                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                                                            Score
+                                                        </span>
+                                                        <span className="rounded-lg bg-slate-100 px-2.5 py-0.5 text-sm font-black text-[#3B28F6] dark:bg-slate-800 dark:text-indigo-300">
+                                                            {
+                                                                selectedDetail
+                                                                    .data.grade
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    {/* ── Student Notes ──────────────────────────── */}
+                                    <div className="rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
+                                        <div className="border-b border-slate-200 px-4 py-2.5 dark:border-slate-800">
+                                            <h4 className="text-[10px] font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
+                                                Student Notes
+                                            </h4>
+                                        </div>
+                                        <div className="px-4 py-3">
+                                            {selectedDetail.data.notes ? (
+                                                <p className="text-xs leading-relaxed whitespace-pre-wrap text-slate-600 dark:text-slate-300">
+                                                    {selectedDetail.data.notes}
+                                                </p>
+                                            ) : (
+                                                <p className="text-xs text-slate-400 italic dark:text-slate-600">
+                                                    No notes provided.
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* ── Attachments ────────────────────────────── */}
+                                    <div className="rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
+                                        <div className="border-b border-slate-200 px-4 py-2.5 dark:border-slate-800">
+                                            <h4 className="text-[10px] font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
+                                                Attachments
+                                            </h4>
+                                        </div>
+                                        <div className="space-y-2 px-4 py-3">
+                                            {selectedDetail.data.link && (
+                                                <a
+                                                    href={
+                                                        selectedDetail.data.link
+                                                    }
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="group flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 transition-all hover:border-blue-400 hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/20"
+                                                >
+                                                    <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-blue-500/20 text-sm dark:bg-blue-500/30">
+                                                        🔗
+                                                    </span>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase dark:text-blue-400">
+                                                            External Link
+                                                        </p>
+                                                        <p className="mt-0.5 truncate text-[11px] font-medium text-blue-700 dark:text-blue-300">
+                                                            {
+                                                                selectedDetail
+                                                                    .data.link
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <svg
+                                                        className="h-3.5 w-3.5 flex-shrink-0 text-blue-400 opacity-60 transition group-hover:opacity-100"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth={2}
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                                        />
+                                                    </svg>
+                                                </a>
+                                            )}
+
+                                            {selectedDetail.data.file_path && (
+                                                <a
+                                                    href={`/storage/${selectedDetail.data.file_path}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 transition-all hover:border-slate-400 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:hover:bg-slate-800"
+                                                >
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                                            Uploaded File
+                                                        </p>
+                                                        <p className="mt-0.5 truncate text-[11px] font-medium text-slate-700 dark:text-slate-300">
+                                                            /storage/
+                                                            {
+                                                                selectedDetail
+                                                                    .data
+                                                                    .file_path
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </a>
+                                            )}
+
+                                            {!selectedDetail.data.link &&
+                                                !selectedDetail.data
+                                                    .file_path && (
+                                                    <p className="text-xs text-slate-400 italic dark:text-slate-600">
+                                                        No attachments uploaded.
+                                                    </p>
+                                                )}
+                                        </div>
+                                    </div>
+
+                                    {/* ── Mentor Evaluation ─────────────────────── */}
+                                    {selectedDetail.type === 'submission' &&
+                                        (selectedDetail.data.feedback ||
+                                            selectedDetail.data.grade) && (
+                                            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+                                                <div className="absolute inset-x-0 top-0 h-0.5 bg-[#3B28F6]" />
+                                                <div className="relative">
+                                                    <div className="border-b border-slate-200 px-4 py-2.5 dark:border-slate-800">
+                                                        <h4 className="text-[10px] font-bold tracking-widest text-[#3B28F6] uppercase dark:text-indigo-400">
+                                                            Mentor Evaluation
+                                                        </h4>
+                                                    </div>
+                                                    <div className="space-y-3 px-4 py-3">
+                                                        {selectedDetail.data
+                                                            .grade && (
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                                                    Score
+                                                                    Awarded
+                                                                </span>
+                                                                <span className="rounded-lg bg-slate-100 px-3 py-1 text-lg font-black text-[#3B28F6] dark:bg-slate-800 dark:text-indigo-300">
+                                                                    {
+                                                                        selectedDetail
+                                                                            .data
+                                                                            .grade
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                        {selectedDetail.data
+                                                            .feedback && (
+                                                            <div>
+                                                                <p className="mb-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                                                    Feedback
+                                                                </p>
+                                                                <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs leading-relaxed whitespace-pre-wrap text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
+                                                                    {
+                                                                        selectedDetail
+                                                                            .data
+                                                                            .feedback
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                 </div>
                             )}
-                        </div>
-                    </div>
-                </div>
-            )}
-    </div>
-)}
                         </div>
                     </div>
                 </div>
@@ -1571,4 +1628,3 @@ export default function Show({ user, details }: { user: any; details: any }) {
         </AppLayout>
     );
 }
-

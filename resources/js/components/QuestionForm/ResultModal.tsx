@@ -312,7 +312,7 @@ export default function ResultModal({
                                     whileHover={{ scale: 1.04 }}
                                     whileTap={{ scale: 0.96 }}
                                     onClick={onRetry}
-                                    className="flex-1 min-w-[120px] rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-lg shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500"
+                                    className="min-w-[120px] flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-lg shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500"
                                     style={{
                                         fontFamily: "'Orbitron', sans-serif",
                                     }}
@@ -325,7 +325,7 @@ export default function ResultModal({
                                 whileHover={{ scale: 1.04 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={onViewExplanation || onClose}
-                                className="flex-1 min-w-[140px] rounded-xl border border-yellow-400/60 bg-yellow-400/10 px-4 py-3 text-xs font-bold tracking-wider text-yellow-300 uppercase transition-all duration-300 hover:bg-yellow-400/20"
+                                className="min-w-[140px] flex-1 rounded-xl border border-yellow-400/60 bg-yellow-400/10 px-4 py-3 text-xs font-bold tracking-wider text-yellow-300 uppercase transition-all duration-300 hover:bg-yellow-400/20"
                                 style={{
                                     fontFamily: "'Orbitron', sans-serif",
                                 }}
@@ -337,7 +337,7 @@ export default function ResultModal({
                                 whileHover={{ scale: 1.04 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={onClose}
-                                className={`flex-1 min-w-[150px] rounded-xl px-4 py-3 text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
+                                className={`min-w-[150px] flex-1 rounded-xl px-4 py-3 text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
                                     isPassed
                                         ? 'border border-indigo-400/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 hover:bg-indigo-500'
                                         : 'border border-slate-600/60 bg-slate-800 text-slate-200 hover:bg-slate-700'

@@ -28,7 +28,7 @@ interface Question {
     media_url?: string;
     media_file?: File;
     answers: Answer[];
-};
+}
 
 /* ================= COMPONENT ================= */
 
@@ -262,7 +262,14 @@ export default function Create({
                                     min={1}
                                     max={180}
                                     value={duration}
-                                    onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 15))}
+                                    onChange={(e) =>
+                                        setDuration(
+                                            Math.max(
+                                                1,
+                                                parseInt(e.target.value) || 15,
+                                            ),
+                                        )
+                                    }
                                     className="w-24 rounded-lg border border-slate-300 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                                 />
                             </div>
@@ -318,7 +325,7 @@ export default function Create({
                             <button
                                 onClick={submit}
                                 disabled={loading}
-                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-500 dark:shadow-indigo-900/40"
+                                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:shadow-indigo-900/40 dark:hover:bg-indigo-500"
                             >
                                 {loading ? (
                                     <>

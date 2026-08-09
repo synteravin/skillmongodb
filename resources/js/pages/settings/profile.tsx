@@ -62,8 +62,8 @@ export default function Profile({
                                         Profile Information
                                     </h2>
                                     <p className="text-xs text-slate-500 dark:text-slate-400/60">
-                                        Update your personal details and account email
-                                        address.
+                                        Update your personal details and account
+                                        email address.
                                     </p>
                                 </div>
                             </div>
@@ -75,7 +75,11 @@ export default function Profile({
                                 }}
                                 className="space-y-5"
                             >
-                                {({ processing, recentlySuccessful, errors }) => (
+                                {({
+                                    processing,
+                                    recentlySuccessful,
+                                    errors,
+                                }) => (
                                     <>
                                         <div className="grid gap-2">
                                             <Label
@@ -123,7 +127,8 @@ export default function Profile({
                                         </div>
 
                                         {mustVerifyEmail &&
-                                            auth.user.email_verified_at === null && (
+                                            auth.user.email_verified_at ===
+                                                null && (
                                                 <div className="dark:text-amber-450 rounded-lg border border-amber-500/25 bg-amber-500/5 p-3.5 text-xs text-amber-700">
                                                     <p className="leading-relaxed">
                                                         Your email address is
@@ -133,15 +138,17 @@ export default function Profile({
                                                             as="button"
                                                             className="font-bold underline decoration-amber-500/40 underline-offset-4 transition-colors hover:decoration-amber-500"
                                                         >
-                                                            Click here to resend the
-                                                            verification email.
+                                                            Click here to resend
+                                                            the verification
+                                                            email.
                                                         </Link>
                                                     </p>
                                                     {status ===
                                                         'verification-link-sent' && (
                                                         <div className="mt-2 font-bold text-green-600 dark:text-green-400">
-                                                            A new verification link has
-                                                            been sent to your email
+                                                            A new verification
+                                                            link has been sent
+                                                            to your email
                                                             address.
                                                         </div>
                                                     )}
@@ -185,7 +192,8 @@ export default function Profile({
                                     Update password
                                 </h2>
                                 <p className="text-xs text-slate-500 dark:text-slate-400/60">
-                                    Ensure your account is using a long, random password to stay secure.
+                                    Ensure your account is using a long, random
+                                    password to stay secure.
                                 </p>
                             </div>
 
@@ -211,10 +219,17 @@ export default function Profile({
                                 }}
                                 className="space-y-5"
                             >
-                                {({ errors, processing, recentlySuccessful }) => (
+                                {({
+                                    errors,
+                                    processing,
+                                    recentlySuccessful,
+                                }) => (
                                     <>
                                         <div className="grid gap-2">
-                                            <Label htmlFor="current_password" className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                            <Label
+                                                htmlFor="current_password"
+                                                className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400"
+                                            >
                                                 Current password
                                             </Label>
                                             <Input
@@ -227,12 +242,17 @@ export default function Profile({
                                                 placeholder="Current password"
                                             />
                                             <InputError
-                                                message={errors.current_password}
+                                                message={
+                                                    errors.current_password
+                                                }
                                             />
                                         </div>
 
                                         <div className="grid gap-2">
-                                            <Label htmlFor="password" className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                            <Label
+                                                htmlFor="password"
+                                                className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400"
+                                            >
                                                 New password
                                             </Label>
                                             <Input
@@ -244,11 +264,16 @@ export default function Profile({
                                                 autoComplete="new-password"
                                                 placeholder="New password"
                                             />
-                                            <InputError message={errors.password} />
+                                            <InputError
+                                                message={errors.password}
+                                            />
                                         </div>
 
                                         <div className="grid gap-2">
-                                            <Label htmlFor="password_confirmation" className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                            <Label
+                                                htmlFor="password_confirmation"
+                                                className="text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400"
+                                            >
                                                 Confirm password
                                             </Label>
                                             <Input
@@ -260,7 +285,9 @@ export default function Profile({
                                                 placeholder="Confirm password"
                                             />
                                             <InputError
-                                                message={errors.password_confirmation}
+                                                message={
+                                                    errors.password_confirmation
+                                                }
                                             />
                                         </div>
 
@@ -326,8 +353,8 @@ export default function Profile({
                                         Profile Information
                                     </h2>
                                     <p className="text-xs text-slate-500 dark:text-slate-400/60">
-                                        Update your personal details and account email
-                                        address.
+                                        Update your personal details and account
+                                        email address.
                                     </p>
                                 </div>
                             </div>
@@ -339,7 +366,11 @@ export default function Profile({
                                 }}
                                 className="space-y-5"
                             >
-                                {({ processing, recentlySuccessful, errors }) => (
+                                {({
+                                    processing,
+                                    recentlySuccessful,
+                                    errors,
+                                }) => (
                                     <>
                                         <div className="grid gap-2">
                                             <Label
@@ -387,7 +418,8 @@ export default function Profile({
                                         </div>
 
                                         {mustVerifyEmail &&
-                                            auth.user.email_verified_at === null && (
+                                            auth.user.email_verified_at ===
+                                                null && (
                                                 <div className="dark:text-amber-450 rounded-lg border border-amber-500/25 bg-amber-500/5 p-3.5 text-xs text-amber-700">
                                                     <p className="leading-relaxed">
                                                         Your email address is
@@ -397,15 +429,17 @@ export default function Profile({
                                                             as="button"
                                                             className="font-bold underline decoration-amber-500/40 underline-offset-4 transition-colors hover:decoration-amber-500"
                                                         >
-                                                            Click here to resend the
-                                                            verification email.
+                                                            Click here to resend
+                                                            the verification
+                                                            email.
                                                         </Link>
                                                     </p>
                                                     {status ===
                                                         'verification-link-sent' && (
                                                         <div className="mt-2 font-bold text-green-600 dark:text-green-400">
-                                                            A new verification link has
-                                                            been sent to your email
+                                                            A new verification
+                                                            link has been sent
+                                                            to your email
                                                             address.
                                                         </div>
                                                     )}

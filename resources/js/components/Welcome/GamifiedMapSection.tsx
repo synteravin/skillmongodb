@@ -170,8 +170,7 @@ const beginnerBranches: TreeBranch[] = [
     },
     {
         title: 'Laravel Auth & Mid',
-        subtitle:
-            'Laravel Authentication & Middleware: Membangun Sistem Login Modern',
+        subtitle: 'Laravel Authentication Membangun Sistem Login Modern',
         nodes: [
             {
                 title: 'user session',
@@ -541,671 +540,718 @@ export default function GamifiedMapSection() {
             className="relative flex w-full items-center justify-center py-16"
             style={{ backgroundColor: '#ffffff' }}
         >
-            {/* Main Gamified Card Container */}
-            <div
-                className="relative flex min-h-[680px] w-full max-w-6xl flex-col justify-between rounded-3xl p-8 text-white shadow-2xl transition-all duration-300 md:p-12"
-                style={{ backgroundColor: '#191D53' }}
-            >
-                {/* Header */}
-                <div className="mb-8 text-center">
-                    <h2 className="mb-2 font-['Orbitron'] text-3xl font-black tracking-wide text-white md:text-4xl">
-                        Gamified Learning for Every Skill Level
-                    </h2>
-                    <p className="font-['Oxanium'] text-xs text-slate-300 md:text-sm">
-                        Level Up Your Skills Through VENTURA's Gamified Learning
-                        Roadmap
-                    </p>
-                </div>
-
-                {/* Tabs Switcher */}
-                <div className="mb-8 flex justify-center border-b border-white/10 pb-4">
-                    <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-                        {[
-                            {
-                                id: 'interactive-lessons',
-                                label: 'Interactive Lessons',
-                            },
-                            { id: 'beginner-path', label: 'Beginner Path' },
-                            { id: 'Instant-start', label: 'Instant Start' },
-                            {
-                                id: 'real-simulations',
-                                label: 'Real Simulations',
-                            },
-                        ].map((tab) => {
-                            const isActive = activeTab === tab.id;
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`relative px-4 py-2 font-['Orbitron'] text-xs font-bold tracking-wide uppercase transition-all duration-300 focus:outline-none md:text-sm ${
-                                        isActive
-                                            ? 'rounded-t-lg border-b-2 border-yellow-400 bg-[#252a6a]/60 text-white shadow-[inset_0_0_8px_rgba(59,40,246,0.3)]'
-                                            : 'rounded-t-lg text-slate-400 hover:bg-white/5 hover:text-white'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            );
-                        })}
+            <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+                {/* Main Gamified Card Container */}
+                <div
+                    className="relative mx-auto flex min-h-[680px] w-full max-w-6xl flex-col justify-between rounded-3xl p-8 text-white shadow-2xl transition-all duration-300 md:p-8 lg:p-12"
+                    style={{ backgroundColor: '#191D53' }}
+                >
+                    {/* Header */}
+                    <div className="mb-8 text-center">
+                        <h2 className="mb-2 font-['Orbitron'] text-3xl font-black tracking-wide text-white md:text-4xl">
+                            Gamified Learning for Every Skill Level
+                        </h2>
+                        <p className="font-['Oxanium'] text-xs text-slate-300 md:text-sm">
+                            Level Up Your Skills Through VENTURA's Gamified
+                            Learning Roadmap
+                        </p>
                     </div>
-                </div>
 
-                {/* Dynamic Content Area */}
-                <div className="relative flex min-h-[460px] flex-1 flex-col justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#08091a] p-6 md:p-8">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.25 }}
-                            className="h-full w-full"
-                        >
-                            {/* ============================================================================
+                    {/* Tabs Switcher */}
+                    <div className="mb-8 flex justify-center border-b border-white/10 pb-4">
+                        <div className="flex flex-wrap justify-center gap-2 md:flex-nowrap md:gap-3 lg:gap-6 xl:gap-8">
+                            {[
+                                {
+                                    id: 'interactive-lessons',
+                                    label: 'Interactive Lessons',
+                                },
+                                { id: 'beginner-path', label: 'Beginner Path' },
+                                { id: 'Instant-start', label: 'Instant Start' },
+                                {
+                                    id: 'real-simulations',
+                                    label: 'Real Simulations',
+                                },
+                            ].map((tab) => {
+                                const isActive = activeTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`relative px-2.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none md:px-3 md:py-2 md:text-xs lg:px-4 lg:py-2 lg:text-sm lg:tracking-widest ${
+                                            isActive
+                                                ? 'rounded-t-lg border-b-2 border-yellow-400 bg-[#252a6a]/60 text-white shadow-[inset_0_0_8px_rgba(59,40,246,0.3)]'
+                                                : 'rounded-t-lg text-slate-400 hover:bg-white/5 hover:text-white'
+                                        }`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Dynamic Content Area */}
+                    <div className="relative flex min-h-[460px] flex-1 flex-col justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#08091a] p-6 md:p-8">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.25 }}
+                                className="h-full w-full"
+                            >
+                                {/* ============================================================================
                                 TAB 1 — INTERACTIVE LESSONS (Walkthrough Orientasi Platform)
                                ============================================================================ */}
-                            {activeTab === 'interactive-lessons' && (
-                                <div className="flex w-full flex-col gap-6">
-                                    {/* Horizontal Clickable Stepper */}
-                                    <div className="relative mx-auto flex w-full max-w-4xl items-center justify-between py-4">
-                                        {/* Connector Line */}
-                                        <div className="absolute top-1/2 right-0 left-0 -z-10 h-[2px] -translate-y-1/2 bg-slate-800">
-                                            <div
-                                                className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-500"
-                                                style={{
-                                                    width: `${((activeStepId - 1) / 7) * 100}%`,
-                                                }}
-                                            />
-                                        </div>
-
-                                        {walkthroughSteps.map((step) => {
-                                            const StepIcon = step.icon;
-                                            const isPast =
-                                                step.id < activeStepId;
-                                            const isCurrent =
-                                                step.id === activeStepId;
-                                            return (
-                                                <button
-                                                    key={step.id}
-                                                    onClick={() =>
-                                                        setActiveStepId(step.id)
-                                                    }
-                                                    className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 ${
-                                                        isCurrent
-                                                            ? 'scale-110 border-yellow-400 bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.6)]'
-                                                            : isPast
-                                                              ? 'border-blue-500 bg-slate-900 text-blue-400'
-                                                              : 'border-slate-800 bg-slate-950 text-slate-500 hover:border-slate-600'
-                                                    }`}
-                                                >
-                                                    <StepIcon size={16} />
-                                                    <span className="absolute -bottom-6 font-['Orbitron'] text-[9px] font-bold whitespace-nowrap text-slate-400">
-                                                        Step {step.id}
-                                                    </span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-
-                                    {/* Detailed Walkthrough Info Display */}
-                                    <div className="mx-auto mt-4 grid w-full max-w-4xl grid-cols-1 items-center gap-8 rounded-2xl border border-white/5 bg-[#13174D]/25 p-6 md:grid-cols-2 md:p-8">
-                                        {/* Left Side: Text info */}
-                                        <div className="flex h-full min-h-[180px] flex-col justify-between text-left">
-                                            <div>
-                                                <span className="mb-3 inline-flex items-center gap-1 rounded bg-yellow-400/10 px-2 py-0.5 font-['Orbitron'] text-[9px] font-black tracking-widest text-yellow-400 uppercase">
-                                                    {currentStep.badgeName}
-                                                </span>
-                                                <h3 className="mb-2 font-['Orbitron'] text-xl font-bold tracking-wide text-white uppercase">
-                                                    {currentStep.title}
-                                                </h3>
-                                                <p className="font-['Oxanium'] text-xs leading-relaxed text-slate-300">
-                                                    {currentStep.desc}
-                                                </p>
+                                {activeTab === 'interactive-lessons' && (
+                                    <div className="flex w-full flex-col gap-6">
+                                        {/* Horizontal Clickable Stepper */}
+                                        <div className="relative mx-auto flex w-full max-w-4xl items-center justify-between py-4">
+                                            {/* Connector Line */}
+                                            <div className="absolute top-1/2 right-0 left-0 -z-10 h-[2px] -translate-y-1/2 bg-slate-800">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-500"
+                                                    style={{
+                                                        width: `${((activeStepId - 1) / 7) * 100}%`,
+                                                    }}
+                                                />
                                             </div>
 
-                                            <div className="mt-6 flex items-center gap-4 border-t border-white/5 pt-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[9px] font-bold text-slate-500 uppercase">
-                                                        Estimated Reward
-                                                    </span>
-                                                    <span className="font-['Orbitron'] text-sm font-black text-cyan-400">
-                                                        {currentStep.reward}
-                                                    </span>
-                                                </div>
-                                                <button
-                                                    onClick={() =>
-                                                        activeStepId < 8
-                                                            ? setActiveStepId(
-                                                                  activeStepId +
-                                                                      1,
-                                                              )
-                                                            : setActiveStepId(1)
-                                                    }
-                                                    className="ml-auto flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-blue-500"
-                                                >
-                                                    <span>
-                                                        {activeStepId === 8
-                                                            ? 'Ulangi Panduan'
-                                                            : 'Langkah Berikutnya'}
-                                                    </span>
-                                                    <ArrowRight size={12} />
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Right Side: Mock UI Representation based on Step */}
-                                        <div className="relative flex h-full min-h-[180px] items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/60 p-5 font-mono">
-                                            {currentStep.mockType ===
-                                                'course' && (
-                                                <div className="w-full space-y-2 text-left text-xs text-slate-400">
-                                                    <div className="mb-2 border-b border-white/5 pb-2 text-center font-['Orbitron'] font-bold text-cyan-400 uppercase">
-                                                        Jalur Belajar Tersedia
-                                                    </div>
-                                                    <div className="flex justify-between border-b border-white/5 py-1">
-                                                        <span>
-                                                            [1] Laravel Backend
-                                                        </span>
-                                                        <span className="text-emerald-400">
-                                                            Pilih Quest
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex justify-between border-b border-white/5 py-1">
-                                                        <span>
-                                                            [2] React Frontend
-                                                        </span>
-                                                        <span className="text-emerald-400">
-                                                            Pilih Quest
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex justify-between py-1">
-                                                        <span>
-                                                            [3] Solidity Web3
-                                                        </span>
-                                                        <span className="text-emerald-400">
-                                                            Pilih Quest
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'editor' && (
-                                                <div className="w-full space-y-1.5 text-left text-[10px]">
-                                                    <div className="text-slate-500">
-                                                        // editor.tsx
-                                                    </div>
-                                                    <div className="text-purple-400">
-                                                        function{' '}
-                                                        <span className="text-blue-400">
-                                                            startLearning
-                                                        </span>
-                                                        () {'{'}
-                                                    </div>
-                                                    <div className="text-slate-300">
-                                                        &nbsp;&nbsp;console.log(
-                                                        <span className="text-yellow-300">
-                                                            "Hello Ventura!"
-                                                        </span>
-                                                        );
-                                                    </div>
-                                                    <div className="text-slate-300">
-                                                        &nbsp;&nbsp;return{' '}
-                                                        <span className="text-emerald-400">
-                                                            true
-                                                        </span>
-                                                        ;
-                                                    </div>
-                                                    <div className="text-purple-400">
-                                                        {'}'}
-                                                    </div>
-                                                    <div className="mt-2 animate-pulse rounded bg-blue-600/20 py-1 text-center text-[8px] font-bold tracking-widest text-blue-400">
-                                                        RUNNING CODE
-                                                        PLAYGROUND...
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'check' && (
-                                                <div className="w-full space-y-3 text-center">
-                                                    <div className="inline-flex h-10 w-10 animate-bounce items-center justify-center rounded-full border border-emerald-500/40 bg-emerald-500/20 text-emerald-400">
-                                                        <CheckCircle
-                                                            size={20}
-                                                        />
-                                                    </div>
-                                                    <div className="font-['Orbitron'] text-xs text-slate-300">
-                                                        COMPILE SUCCESS: 12/12
-                                                        TESTS PASSED
-                                                    </div>
-                                                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
-                                                        <div className="h-full w-full bg-emerald-500" />
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'stats' && (
-                                                <div className="w-full space-y-2 text-left">
-                                                    <div className="border-b border-white/5 pb-2 text-center font-['Orbitron'] font-bold text-yellow-400 uppercase">
-                                                        Statistik Naik Level
-                                                    </div>
-                                                    <div className="flex items-center justify-between text-xs">
-                                                        <span>EXP: +1,240</span>
-                                                        <span className="text-cyan-400">
-                                                            Level 4
-                                                        </span>
-                                                    </div>
-                                                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                                                        <div className="h-full w-3/4 bg-cyan-400" />
-                                                    </div>
-                                                    <div className="mt-1 flex items-center justify-between text-xs">
-                                                        <span>
-                                                            Gold Balance
-                                                        </span>
-                                                        <span className="font-bold text-yellow-400">
-                                                            1,850 Gold
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'achieve' && (
-                                                <div className="w-full space-y-2 text-center">
-                                                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-yellow-400/40 bg-yellow-400/10 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]">
-                                                        <Trophy
-                                                            size={24}
-                                                            className="animate-pulse"
-                                                        />
-                                                    </div>
-                                                    <div className="font-['Orbitron'] text-xs font-bold text-white">
-                                                        Lencana Terbuka: NOVICE
-                                                        SLAYER
-                                                    </div>
-                                                    <div className="text-[9px] text-slate-500">
-                                                        Kategori: Laravel CRUD
-                                                        Basics
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'guild' && (
-                                                <div className="w-full space-y-2 text-left text-xs">
-                                                    <div className="border-b border-white/5 pb-1 text-center font-['Orbitron'] font-bold text-purple-400 uppercase">
-                                                        Guild Active Lobby
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500 text-[9px] font-bold text-black">
-                                                            JD
-                                                        </div>
-                                                        <span>
-                                                            JohnDoe joined voice
-                                                            channel
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-[9px] font-bold text-black">
-                                                            AN
-                                                        </div>
-                                                        <span>
-                                                            Anang: "Siapa raid
-                                                            malam ini?"
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'quest' && (
-                                                <div className="w-full space-y-2 text-left text-xs">
-                                                    <div className="border-b border-white/5 pb-1 text-center font-['Orbitron'] font-bold text-rose-400 uppercase">
-                                                        Quest In Progress
-                                                    </div>
-                                                    <div className="rounded border border-white/5 bg-slate-900/60 p-2">
-                                                        <div className="text-[10px] font-bold text-white">
-                                                            Payment Webhook
-                                                            Integration
-                                                        </div>
-                                                        <div className="mt-1 text-[9px] text-slate-400">
-                                                            Status: Coding |
-                                                            Reward: 400 Gold
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {currentStep.mockType ===
-                                                'portfolio' && (
-                                                <div className="w-full space-y-3 text-center">
-                                                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-500/40 bg-blue-500/20 text-blue-400">
-                                                        <Briefcase size={20} />
-                                                    </div>
-                                                    <div className="font-['Orbitron'] text-xs font-bold text-white">
-                                                        PORTFOLIO EXPORT READY
-                                                    </div>
-                                                    <div className="inline-block cursor-pointer rounded bg-white/10 px-2 py-1 text-[8px] text-white select-all">
-                                                        https://skillventura.com/verify/anang
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* ============================================================================
-                                TAB 2 — BEGINNER PATH (Condensed Preview Peta Progres Skill Tree)
-                               ============================================================================ */}
-                            {activeTab === 'beginner-path' && (
-                                <div className="relative w-full pt-4">
-                                    {/* Desktop tree line connections */}
-                                    <div className="absolute top-0 left-1/2 hidden h-12 w-[66.6%] -translate-x-1/2 border-b-2 border-white/20 md:block" />
-                                    <div className="absolute top-0 left-1/2 hidden h-12 w-[2px] -translate-x-1/2 bg-white/20 md:block" />
-                                    <div className="absolute top-12 left-[16.6%] hidden h-6 w-[2px] bg-white/20 md:block" />
-                                    <div className="absolute top-12 left-1/2 hidden h-6 w-[2px] -translate-x-1/2 bg-white/20 md:block" />
-                                    <div className="absolute top-12 right-[16.6%] hidden h-6 w-[2px] bg-white/20 md:block" />
-
-                                    {/* 3 Branch columns */}
-                                    <div className="relative z-10 grid w-full grid-cols-1 gap-8 md:grid-cols-3 md:gap-4">
-                                        {beginnerBranches.map(
-                                            (branch, branchIndex) => {
+                                            {walkthroughSteps.map((step) => {
+                                                const StepIcon = step.icon;
+                                                const isPast =
+                                                    step.id < activeStepId;
+                                                const isCurrent =
+                                                    step.id === activeStepId;
                                                 return (
-                                                    <div
-                                                        key={branchIndex}
-                                                        className="flex flex-col items-center"
+                                                    <button
+                                                        key={step.id}
+                                                        onClick={() =>
+                                                            setActiveStepId(
+                                                                step.id,
+                                                            )
+                                                        }
+                                                        className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 ${
+                                                            isCurrent
+                                                                ? 'scale-110 border-yellow-400 bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.6)]'
+                                                                : isPast
+                                                                  ? 'border-blue-500 bg-slate-900 text-blue-400'
+                                                                  : 'border-slate-800 bg-slate-950 text-slate-500 hover:border-slate-600'
+                                                        }`}
                                                     >
-                                                        {/* Header Branch */}
-                                                        <div className="flex min-h-[60px] flex-col justify-center px-4 text-center">
-                                                            <h4 className="font-['Orbitron'] text-sm font-black tracking-wide text-white uppercase">
-                                                                {branch.title}
-                                                            </h4>
-                                                            <p className="mx-auto mt-1 max-w-[220px] font-['Oxanium'] text-[10px] leading-relaxed text-slate-400">
-                                                                {
-                                                                    branch.subtitle
-                                                                }
-                                                            </p>
-                                                        </div>
-
-                                                        {/* Line from branch header to node 1 */}
-                                                        <div className="my-1 h-8 w-[2px] bg-white/20" />
-
-                                                        {/* Node I */}
-                                                        <StudentModuleNodeClone
-                                                            title={
-                                                                branch.nodes[0]
-                                                                    .title
-                                                            }
-                                                            subtitle={
-                                                                branch.nodes[0]
-                                                                    .subtitle
-                                                            }
-                                                            index={0}
-                                                            locked={
-                                                                branch.nodes[0]
-                                                                    .locked
-                                                            }
-                                                            done={
-                                                                branch.nodes[0]
-                                                                    .done
-                                                            }
-                                                        />
-
-                                                        {/* Line from node 1 to node 2 */}
-                                                        <div className="my-1 h-8 w-[2px] bg-white/20" />
-
-                                                        {/* Node II */}
-                                                        <StudentModuleNodeClone
-                                                            title={
-                                                                branch.nodes[1]
-                                                                    .title
-                                                            }
-                                                            subtitle={
-                                                                branch.nodes[1]
-                                                                    .subtitle
-                                                            }
-                                                            index={1}
-                                                            locked={
-                                                                branch.nodes[1]
-                                                                    .locked
-                                                            }
-                                                            done={
-                                                                branch.nodes[1]
-                                                                    .done
-                                                            }
-                                                        />
-
-                                                        {/* Connecting element for mobile roadmap stack */}
-                                                        {branchIndex < 2 && (
-                                                            <div className="relative mt-4 h-10 w-[2px] bg-white/20 md:hidden">
-                                                                <div className="absolute -bottom-2 -left-[5px] border-t-4 border-r-4 border-l-4 border-transparent border-t-white/30" />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            },
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* ============================================================================
-                                TAB 3 — INSTANT START (Launchpad Kartu Aksi Cepat)
-                               ============================================================================ */}
-                            {activeTab === 'Instant-start' && (
-                                <div className="grid w-full grid-cols-1 gap-6 py-4 sm:grid-cols-2 lg:grid-cols-3">
-                                    {launchCards.map((card, i) => {
-                                        const CardIcon = card.icon;
-                                        return (
-                                            <div
-                                                key={i}
-                                                className={`group flex flex-col justify-between rounded-2xl border p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${card.color}`}
-                                            >
-                                                <div className="text-left">
-                                                    <div className="mb-4 flex items-center justify-between">
-                                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-slate-900/60 shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]">
-                                                            <CardIcon
-                                                                size={18}
-                                                            />
-                                                        </div>
-                                                        <span className="rounded border border-white/10 bg-white/5 px-2 py-0.5 font-['Oxanium'] text-[9px] font-bold text-slate-400">
-                                                            {card.duration}
+                                                        <StepIcon size={16} />
+                                                        <span className="absolute -bottom-6 font-['Orbitron'] text-[9px] font-bold whitespace-nowrap text-slate-400">
+                                                            Step {step.id}
                                                         </span>
-                                                    </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
 
-                                                    <span className="mb-2 inline-flex items-center gap-1 rounded border border-white/10 bg-white/5 px-2 py-0.5 font-['Orbitron'] text-[8px] font-black tracking-wider text-slate-400 uppercase">
-                                                        {card.difficulty}
+                                        {/* Detailed Walkthrough Info Display */}
+                                        <div className="mx-auto mt-4 grid w-full max-w-4xl grid-cols-1 items-center gap-8 rounded-2xl border border-white/5 bg-[#13174D]/25 p-6 md:grid-cols-2 md:p-8">
+                                            {/* Left Side: Text info */}
+                                            <div className="flex h-full min-h-[180px] flex-col justify-between text-left">
+                                                <div>
+                                                    <span className="mb-3 inline-flex items-center gap-1 rounded bg-yellow-400/10 px-2 py-0.5 font-['Orbitron'] text-[9px] font-black tracking-widest text-yellow-400 uppercase">
+                                                        {currentStep.badgeName}
                                                     </span>
-
-                                                    <h4 className="mb-2 font-['Orbitron'] text-base font-bold tracking-wide text-white uppercase">
-                                                        {card.title}
-                                                    </h4>
-                                                    <p className="font-['Oxanium'] text-xs leading-relaxed text-slate-400">
-                                                        {card.desc}
+                                                    <h3 className="mb-2 font-['Orbitron'] text-xl font-bold tracking-wide text-white uppercase">
+                                                        {currentStep.title}
+                                                    </h3>
+                                                    <p className="font-['Oxanium'] text-xs leading-relaxed text-slate-300">
+                                                        {currentStep.desc}
                                                     </p>
                                                 </div>
 
-                                                <div className="mt-5 flex justify-end">
-                                                    <button className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition-all group-hover:bg-white group-hover:text-slate-950 hover:bg-white hover:text-slate-950">
-                                                        <span>{card.cta}</span>
+                                                <div className="mt-6 flex items-center gap-4 border-t border-white/5 pt-4">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[9px] font-bold text-slate-500 uppercase">
+                                                            Estimated Reward
+                                                        </span>
+                                                        <span className="font-['Orbitron'] text-sm font-black text-cyan-400">
+                                                            {currentStep.reward}
+                                                        </span>
+                                                    </div>
+                                                    <button
+                                                        onClick={() =>
+                                                            activeStepId < 8
+                                                                ? setActiveStepId(
+                                                                      activeStepId +
+                                                                          1,
+                                                                  )
+                                                                : setActiveStepId(
+                                                                      1,
+                                                                  )
+                                                        }
+                                                        className="ml-auto flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-blue-500"
+                                                    >
+                                                        <span>
+                                                            {activeStepId === 8
+                                                                ? 'Ulangi Panduan'
+                                                                : 'Langkah Berikutnya'}
+                                                        </span>
                                                         <ArrowRight size={12} />
                                                     </button>
                                                 </div>
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
 
-                            {/* ============================================================================
+                                            {/* Right Side: Mock UI Representation based on Step */}
+                                            <div className="relative flex h-full min-h-[180px] items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/60 p-5 font-mono">
+                                                {currentStep.mockType ===
+                                                    'course' && (
+                                                    <div className="w-full space-y-2 text-left text-xs text-slate-400">
+                                                        <div className="mb-2 border-b border-white/5 pb-2 text-center font-['Orbitron'] font-bold text-cyan-400 uppercase">
+                                                            Jalur Belajar
+                                                            Tersedia
+                                                        </div>
+                                                        <div className="flex justify-between border-b border-white/5 py-1">
+                                                            <span>
+                                                                [1] Laravel
+                                                                Backend
+                                                            </span>
+                                                            <span className="text-emerald-400">
+                                                                Pilih Quest
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between border-b border-white/5 py-1">
+                                                            <span>
+                                                                [2] React
+                                                                Frontend
+                                                            </span>
+                                                            <span className="text-emerald-400">
+                                                                Pilih Quest
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between py-1">
+                                                            <span>
+                                                                [3] Solidity
+                                                                Web3
+                                                            </span>
+                                                            <span className="text-emerald-400">
+                                                                Pilih Quest
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'editor' && (
+                                                    <div className="w-full space-y-1.5 text-left text-[10px]">
+                                                        <div className="text-slate-500">
+                                                            // editor.tsx
+                                                        </div>
+                                                        <div className="text-purple-400">
+                                                            function{' '}
+                                                            <span className="text-blue-400">
+                                                                startLearning
+                                                            </span>
+                                                            () {'{'}
+                                                        </div>
+                                                        <div className="text-slate-300">
+                                                            &nbsp;&nbsp;console.log(
+                                                            <span className="text-yellow-300">
+                                                                "Hello Ventura!"
+                                                            </span>
+                                                            );
+                                                        </div>
+                                                        <div className="text-slate-300">
+                                                            &nbsp;&nbsp;return{' '}
+                                                            <span className="text-emerald-400">
+                                                                true
+                                                            </span>
+                                                            ;
+                                                        </div>
+                                                        <div className="text-purple-400">
+                                                            {'}'}
+                                                        </div>
+                                                        <div className="mt-2 animate-pulse rounded bg-blue-600/20 py-1 text-center text-[8px] font-bold tracking-widest text-blue-400">
+                                                            RUNNING CODE
+                                                            PLAYGROUND...
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'check' && (
+                                                    <div className="w-full space-y-3 text-center">
+                                                        <div className="inline-flex h-10 w-10 animate-bounce items-center justify-center rounded-full border border-emerald-500/40 bg-emerald-500/20 text-emerald-400">
+                                                            <CheckCircle
+                                                                size={20}
+                                                            />
+                                                        </div>
+                                                        <div className="font-['Orbitron'] text-xs text-slate-300">
+                                                            COMPILE SUCCESS:
+                                                            12/12 TESTS PASSED
+                                                        </div>
+                                                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                                                            <div className="h-full w-full bg-emerald-500" />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'stats' && (
+                                                    <div className="w-full space-y-2 text-left">
+                                                        <div className="border-b border-white/5 pb-2 text-center font-['Orbitron'] font-bold text-yellow-400 uppercase">
+                                                            Statistik Naik Level
+                                                        </div>
+                                                        <div className="flex items-center justify-between text-xs">
+                                                            <span>
+                                                                EXP: +1,240
+                                                            </span>
+                                                            <span className="text-cyan-400">
+                                                                Level 4
+                                                            </span>
+                                                        </div>
+                                                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                                                            <div className="h-full w-3/4 bg-cyan-400" />
+                                                        </div>
+                                                        <div className="mt-1 flex items-center justify-between text-xs">
+                                                            <span>
+                                                                Gold Balance
+                                                            </span>
+                                                            <span className="font-bold text-yellow-400">
+                                                                1,850 Gold
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'achieve' && (
+                                                    <div className="w-full space-y-2 text-center">
+                                                        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-yellow-400/40 bg-yellow-400/10 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                                                            <Trophy
+                                                                size={24}
+                                                                className="animate-pulse"
+                                                            />
+                                                        </div>
+                                                        <div className="font-['Orbitron'] text-xs font-bold text-white">
+                                                            Lencana Terbuka:
+                                                            NOVICE SLAYER
+                                                        </div>
+                                                        <div className="text-[9px] text-slate-500">
+                                                            Kategori: Laravel
+                                                            CRUD Basics
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'guild' && (
+                                                    <div className="w-full space-y-2 text-left text-xs">
+                                                        <div className="border-b border-white/5 pb-1 text-center font-['Orbitron'] font-bold text-purple-400 uppercase">
+                                                            Guild Active Lobby
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500 text-[9px] font-bold text-black">
+                                                                JD
+                                                            </div>
+                                                            <span>
+                                                                JohnDoe joined
+                                                                voice channel
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-[9px] font-bold text-black">
+                                                                AN
+                                                            </div>
+                                                            <span>
+                                                                Anang: "Siapa
+                                                                raid malam ini?"
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'quest' && (
+                                                    <div className="w-full space-y-2 text-left text-xs">
+                                                        <div className="border-b border-white/5 pb-1 text-center font-['Orbitron'] font-bold text-rose-400 uppercase">
+                                                            Quest In Progress
+                                                        </div>
+                                                        <div className="rounded border border-white/5 bg-slate-900/60 p-2">
+                                                            <div className="text-[10px] font-bold text-white">
+                                                                Payment Webhook
+                                                                Integration
+                                                            </div>
+                                                            <div className="mt-1 text-[9px] text-slate-400">
+                                                                Status: Coding |
+                                                                Reward: 400 Gold
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {currentStep.mockType ===
+                                                    'portfolio' && (
+                                                    <div className="w-full space-y-3 text-center">
+                                                        <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-500/40 bg-blue-500/20 text-blue-400">
+                                                            <Briefcase
+                                                                size={20}
+                                                            />
+                                                        </div>
+                                                        <div className="font-['Orbitron'] text-xs font-bold text-white">
+                                                            PORTFOLIO EXPORT
+                                                            READY
+                                                        </div>
+                                                        <div className="inline-block cursor-pointer rounded bg-white/10 px-2 py-1 text-[8px] text-white select-all">
+                                                            https://skillventura.com/verify/anang
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* ============================================================================
+                                TAB 2 — BEGINNER PATH (Condensed Preview Peta Progres Skill Tree)
+                               ============================================================================ */}
+                                {activeTab === 'beginner-path' && (
+                                    <div className="relative w-full pt-4">
+                                        {/* Desktop tree line connections */}
+                                        <div className="absolute top-0 left-1/2 hidden h-12 w-[66.6%] -translate-x-1/2 border-b-2 border-white/20 md:block" />
+                                        <div className="absolute top-0 left-1/2 hidden h-12 w-[2px] -translate-x-1/2 bg-white/20 md:block" />
+                                        <div className="absolute top-12 left-[16.6%] hidden h-6 w-[2px] bg-white/20 md:block" />
+                                        <div className="absolute top-12 left-1/2 hidden h-6 w-[2px] -translate-x-1/2 bg-white/20 md:block" />
+                                        <div className="absolute top-12 right-[16.6%] hidden h-6 w-[2px] bg-white/20 md:block" />
+
+                                        {/* 3 Branch columns */}
+                                        <div className="relative z-10 grid w-full grid-cols-1 gap-8 md:grid-cols-3 md:gap-4">
+                                            {beginnerBranches.map(
+                                                (branch, branchIndex) => {
+                                                    return (
+                                                        <div
+                                                            key={branchIndex}
+                                                            className="flex flex-col items-center"
+                                                        >
+                                                            {/* Header Branch */}
+                                                            <div className="flex min-h-[60px] w-full max-w-[240px] flex-col justify-center px-2 text-center">
+                                                                <h4
+                                                                    className="w-full truncate font-['Orbitron'] text-sm font-black tracking-wide text-white uppercase"
+                                                                    title={
+                                                                        branch.title
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        branch.title
+                                                                    }
+                                                                </h4>
+                                                                <p className="mx-auto mt-1 max-w-[220px] font-['Oxanium'] text-[10px] leading-relaxed text-slate-400">
+                                                                    {
+                                                                        branch.subtitle
+                                                                    }
+                                                                </p>
+                                                            </div>
+
+                                                            {/* Line from branch header to node 1 */}
+                                                            <div className="my-1 h-8 w-[2px] bg-white/20" />
+
+                                                            {/* Node I */}
+                                                            <StudentModuleNodeClone
+                                                                title={
+                                                                    branch
+                                                                        .nodes[0]
+                                                                        .title
+                                                                }
+                                                                subtitle={
+                                                                    branch
+                                                                        .nodes[0]
+                                                                        .subtitle
+                                                                }
+                                                                index={0}
+                                                                locked={
+                                                                    branch
+                                                                        .nodes[0]
+                                                                        .locked
+                                                                }
+                                                                done={
+                                                                    branch
+                                                                        .nodes[0]
+                                                                        .done
+                                                                }
+                                                            />
+
+                                                            {/* Line from node 1 to node 2 */}
+                                                            <div className="my-1 h-8 w-[2px] bg-white/20" />
+
+                                                            {/* Node II */}
+                                                            <StudentModuleNodeClone
+                                                                title={
+                                                                    branch
+                                                                        .nodes[1]
+                                                                        .title
+                                                                }
+                                                                subtitle={
+                                                                    branch
+                                                                        .nodes[1]
+                                                                        .subtitle
+                                                                }
+                                                                index={1}
+                                                                locked={
+                                                                    branch
+                                                                        .nodes[1]
+                                                                        .locked
+                                                                }
+                                                                done={
+                                                                    branch
+                                                                        .nodes[1]
+                                                                        .done
+                                                                }
+                                                            />
+
+                                                            {/* Connecting element for mobile roadmap stack */}
+                                                            {branchIndex <
+                                                                2 && (
+                                                                <div className="relative mt-4 h-10 w-[2px] bg-white/20 md:hidden">
+                                                                    <div className="absolute -bottom-2 -left-[5px] border-t-4 border-r-4 border-l-4 border-transparent border-t-white/30" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* ============================================================================
+                                TAB 3 — INSTANT START (Launchpad Kartu Aksi Cepat)
+                               ============================================================================ */}
+                                {activeTab === 'Instant-start' && (
+                                    <div className="grid w-full grid-cols-1 gap-6 py-4 sm:grid-cols-2 md:grid-cols-3">
+                                        {launchCards.map((card, i) => {
+                                            const CardIcon = card.icon;
+                                            return (
+                                                <div
+                                                    key={i}
+                                                    className={`group flex flex-col justify-between rounded-2xl border p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${card.color}`}
+                                                >
+                                                    <div className="text-left">
+                                                        <div className="mb-4 flex items-center justify-between">
+                                                            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-slate-900/60 shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]">
+                                                                <CardIcon
+                                                                    size={18}
+                                                                />
+                                                            </div>
+                                                            <span className="rounded border border-white/10 bg-white/5 px-2 py-0.5 font-['Oxanium'] text-[9px] font-bold text-slate-400">
+                                                                {card.duration}
+                                                            </span>
+                                                        </div>
+
+                                                        <span className="mb-2 inline-flex items-center gap-1 rounded border border-white/10 bg-white/5 px-2 py-0.5 font-['Orbitron'] text-[8px] font-black tracking-wider text-slate-400 uppercase">
+                                                            {card.difficulty}
+                                                        </span>
+
+                                                        <h4 className="mb-2 font-['Orbitron'] text-base font-bold tracking-wide text-white uppercase">
+                                                            {card.title}
+                                                        </h4>
+                                                        <p className="font-['Oxanium'] text-xs leading-relaxed text-slate-400">
+                                                            {card.desc}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="mt-5 flex justify-end">
+                                                        <button className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition-all group-hover:bg-white group-hover:text-slate-950 hover:bg-white hover:text-slate-950">
+                                                            <span>
+                                                                {card.cta}
+                                                            </span>
+                                                            <ArrowRight
+                                                                size={12}
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* ============================================================================
                                 TAB 4 — REAL SIMULATIONS (Simulation & Quest Marketplace Dashboard)
                                ============================================================================ */}
-                            {activeTab === 'real-simulations' && (
-                                <div className="grid w-full grid-cols-1 gap-8 py-4 text-left lg:grid-cols-5">
-                                    {/* Left Side: Quest Board Upwork Style (3 columns of width) */}
-                                    <div className="flex flex-col gap-4 lg:col-span-3">
-                                        <div className="mb-1 flex items-center justify-between border-b border-white/10 pb-3">
-                                            <div className="flex items-center gap-2">
-                                                <Compass
-                                                    className="animate-spin text-blue-400"
-                                                    size={18}
-                                                />
-                                                <h3 className="font-['Orbitron'] text-base font-bold tracking-wide text-white uppercase">
-                                                    Quest Board (Simulasi Pasar
-                                                    Lepas)
-                                                </h3>
-                                            </div>
-                                            <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-400">
-                                                Proyek Aktif
-                                            </span>
-                                        </div>
-
-                                        {activeQuests.map((quest, index) => (
-                                            <div
-                                                key={index}
-                                                className="group cursor-pointer rounded-xl border border-white/5 bg-[#13174D]/10 p-4 transition-all duration-300 hover:border-white/10 hover:bg-[#13174D]/30 hover:shadow-md"
-                                            >
-                                                <div className="mb-2 flex items-start justify-between gap-4">
-                                                    <h4 className="truncate font-['Orbitron'] text-sm font-bold text-white transition-colors group-hover:text-blue-400">
-                                                        {quest.title}
-                                                    </h4>
-                                                    <span className="shrink-0 rounded border border-white/10 bg-white/5 px-2 py-0.5 font-['Oxanium'] text-[8px] font-bold text-slate-400">
-                                                        {quest.difficulty}
-                                                    </span>
-                                                </div>
-                                                <p className="mb-3 line-clamp-1 font-['Oxanium'] text-xs text-slate-400">
-                                                    {quest.desc}
-                                                </p>
-                                                <div className="flex items-center justify-between border-t border-white/5 pt-2.5 text-[10px] text-slate-500">
-                                                    <div className="flex gap-4">
-                                                        <span>
-                                                            Bids:{' '}
-                                                            <strong className="text-slate-300">
-                                                                {quest.bids}{' '}
-                                                                penawar
-                                                            </strong>
-                                                        </span>
-                                                        <span>
-                                                            Reward:{' '}
-                                                            <strong className="text-yellow-400">
-                                                                {quest.reward}
-                                                            </strong>
-                                                        </span>
-                                                    </div>
-                                                    <span className="flex items-center gap-0.5 font-bold text-blue-400 group-hover:underline">
-                                                        Ajukan Proposal{' '}
-                                                        <ChevronRight
-                                                            size={10}
-                                                        />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Right Side: Discord/Team Lobby + Reviews (2 columns of width) */}
-                                    <div className="flex flex-col gap-6 lg:col-span-2">
-                                        {/* Team Lobby block */}
-                                        <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#13174D]/15 p-5">
-                                            <div className="absolute top-2 right-2 flex h-2 w-2 animate-ping rounded-full bg-emerald-500" />
-                                            <div className="mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
-                                                <Users
-                                                    className="text-purple-400"
-                                                    size={18}
-                                                />
-                                                <h4 className="font-['Orbitron'] text-sm font-bold text-white uppercase">
-                                                    Lobi Guild Aktif
-                                                </h4>
-                                            </div>
-
-                                            <div className="space-y-3">
-                                                <div className="flex items-center justify-between text-xs">
-                                                    <span className="font-bold text-slate-400">
-                                                        Raid ID: #08-API-Build
-                                                    </span>
-                                                    <span className="animate-pulse font-bold text-purple-400">
-                                                        Live
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex gap-2">
-                                                    {/* User Avatars representation */}
-                                                    {[
-                                                        'AN',
-                                                        'JD',
-                                                        'RM',
-                                                        'KS',
-                                                    ].map((name, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-slate-900 text-[9px] font-black text-white transition-transform hover:scale-110"
-                                                        >
-                                                            <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full border border-slate-950 bg-emerald-400" />
-                                                            {name}
-                                                        </div>
-                                                    ))}
-                                                    <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-white/10 text-xs text-slate-500 hover:border-white/30">
-                                                        +
-                                                    </div>
-                                                </div>
-
-                                                <div className="mt-2 flex items-center gap-3 rounded-lg border border-white/5 bg-slate-950/60 p-3">
-                                                    <Zap
-                                                        className="animate-bounce text-yellow-400"
-                                                        size={20}
+                                {activeTab === 'real-simulations' && (
+                                    <div className="grid w-full grid-cols-1 gap-4 py-4 text-left md:grid-cols-5 lg:gap-8">
+                                        {/* Left Side: Quest Board Upwork Style (3 columns of width) */}
+                                        <div className="flex flex-col gap-4 md:col-span-3">
+                                            <div className="mb-1 flex items-center justify-between border-b border-white/10 pb-3">
+                                                <div className="flex items-center gap-2">
+                                                    <Compass
+                                                        className="animate-spin text-blue-400"
+                                                        size={18}
                                                     />
-                                                    <div className="text-left">
-                                                        <div className="text-[10px] font-bold text-slate-400 uppercase">
-                                                            Clan Bonus Booster
+                                                    <h3 className="font-['Orbitron'] text-base font-bold tracking-wide text-white uppercase">
+                                                        Quest Board (Simulasi
+                                                        Pasar Lepas)
+                                                    </h3>
+                                                </div>
+                                                <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-400">
+                                                    Proyek Aktif
+                                                </span>
+                                            </div>
+
+                                            {activeQuests.map(
+                                                (quest, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="group cursor-pointer rounded-xl border border-white/5 bg-[#13174D]/10 p-4 transition-all duration-300 hover:border-white/10 hover:bg-[#13174D]/30 hover:shadow-md"
+                                                    >
+                                                        <div className="mb-2 flex items-start justify-between gap-4">
+                                                            <h4 className="truncate font-['Orbitron'] text-sm font-bold text-white transition-colors group-hover:text-blue-400">
+                                                                {quest.title}
+                                                            </h4>
+                                                            <span className="shrink-0 rounded border border-white/10 bg-white/5 px-2 py-0.5 font-['Oxanium'] text-[8px] font-bold text-slate-400">
+                                                                {
+                                                                    quest.difficulty
+                                                                }
+                                                            </span>
                                                         </div>
-                                                        <div className="font-['Orbitron'] text-[9px] font-black tracking-widest text-yellow-400">
-                                                            XP MULTIPLIER: +25%
-                                                            ACTIVE
+                                                        <p className="mb-3 line-clamp-1 font-['Oxanium'] text-xs text-slate-400">
+                                                            {quest.desc}
+                                                        </p>
+                                                        <div className="flex items-center justify-between border-t border-white/5 pt-2.5 text-[10px] text-slate-500">
+                                                            <div className="flex gap-4">
+                                                                <span>
+                                                                    Bids:{' '}
+                                                                    <strong className="text-slate-300">
+                                                                        {
+                                                                            quest.bids
+                                                                        }{' '}
+                                                                        penawar
+                                                                    </strong>
+                                                                </span>
+                                                                <span>
+                                                                    Reward:{' '}
+                                                                    <strong className="text-yellow-400">
+                                                                        {
+                                                                            quest.reward
+                                                                        }
+                                                                    </strong>
+                                                                </span>
+                                                            </div>
+                                                            <span className="flex items-center gap-0.5 font-bold text-blue-400 group-hover:underline">
+                                                                Ajukan Proposal{' '}
+                                                                <ChevronRight
+                                                                    size={10}
+                                                                />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+
+                                        {/* Right Side: Discord/Team Lobby + Reviews (2 columns of width) */}
+                                        <div className="flex flex-col gap-6 md:col-span-2">
+                                            {/* Team Lobby block */}
+                                            <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#13174D]/15 p-5">
+                                                <div className="absolute top-2 right-2 flex h-2 w-2 animate-ping rounded-full bg-emerald-500" />
+                                                <div className="mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                                                    <Users
+                                                        className="text-purple-400"
+                                                        size={18}
+                                                    />
+                                                    <h4 className="font-['Orbitron'] text-sm font-bold text-white uppercase">
+                                                        Lobi Guild Aktif
+                                                    </h4>
+                                                </div>
+
+                                                <div className="space-y-3">
+                                                    <div className="flex items-center justify-between text-xs">
+                                                        <span className="font-bold text-slate-400">
+                                                            Raid ID:
+                                                            #08-API-Build
+                                                        </span>
+                                                        <span className="animate-pulse font-bold text-purple-400">
+                                                            Live
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex gap-2">
+                                                        {/* User Avatars representation */}
+                                                        {[
+                                                            'AN',
+                                                            'JD',
+                                                            'RM',
+                                                            'KS',
+                                                        ].map((name, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-slate-900 text-[9px] font-black text-white transition-transform hover:scale-110"
+                                                            >
+                                                                <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full border border-slate-950 bg-emerald-400" />
+                                                                {name}
+                                                            </div>
+                                                        ))}
+                                                        <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-white/10 text-xs text-slate-500 hover:border-white/30">
+                                                            +
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-2 flex items-center gap-3 rounded-lg border border-white/5 bg-slate-950/60 p-3">
+                                                        <Zap
+                                                            className="animate-bounce text-yellow-400"
+                                                            size={20}
+                                                        />
+                                                        <div className="text-left">
+                                                            <div className="text-[10px] font-bold text-slate-400 uppercase">
+                                                                Clan Bonus
+                                                                Booster
+                                                            </div>
+                                                            <div className="font-['Orbitron'] text-[9px] font-black tracking-widest text-yellow-400">
+                                                                XP MULTIPLIER:
+                                                                +25% ACTIVE
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Peer Reviews block */}
-                                        <div className="flex-1 rounded-2xl border border-white/5 bg-[#13174D]/15 p-5">
-                                            <div className="mb-3 flex items-center gap-2 border-b border-white/5 pb-3">
-                                                <UserCheck
-                                                    className="text-cyan-400"
-                                                    size={18}
-                                                />
-                                                <h4 className="font-['Orbitron'] text-sm font-bold text-white uppercase">
-                                                    Evaluasi Peer-Review
-                                                </h4>
-                                            </div>
-
-                                            <div className="space-y-2 text-left">
-                                                <div className="flex gap-0.5 text-yellow-400">
-                                                    {[...Array(5)].map(
-                                                        (_, i) => (
-                                                            <Star
-                                                                key={i}
-                                                                size={10}
-                                                                fill="currentColor"
-                                                            />
-                                                        ),
-                                                    )}
+                                            {/* Peer Reviews block */}
+                                            <div className="flex-1 rounded-2xl border border-white/5 bg-[#13174D]/15 p-5">
+                                                <div className="mb-3 flex items-center gap-2 border-b border-white/5 pb-3">
+                                                    <UserCheck
+                                                        className="text-cyan-400"
+                                                        size={18}
+                                                    />
+                                                    <h4 className="font-['Orbitron'] text-sm font-bold text-white uppercase">
+                                                        Evaluasi Peer-Review
+                                                    </h4>
                                                 </div>
-                                                <blockquote className="text-[11px] leading-relaxed text-slate-400 italic">
-                                                    "Kode tersusun dengan baik,
-                                                    modular, dan penanganan
-                                                    middleware JWT aman.
-                                                    Evaluasi code review
-                                                    disetujui. +50 Gold bonus!"
-                                                </blockquote>
-                                                <div className="flex justify-between border-t border-white/5 pt-2 text-[9px] text-slate-500">
-                                                    <span>
-                                                        Reviewer: Mentor Ridhwan
-                                                    </span>
-                                                    <span className="text-cyan-400">
-                                                        Verified
-                                                    </span>
+
+                                                <div className="space-y-2 text-left">
+                                                    <div className="flex gap-0.5 text-yellow-400">
+                                                        {[...Array(5)].map(
+                                                            (_, i) => (
+                                                                <Star
+                                                                    key={i}
+                                                                    size={10}
+                                                                    fill="currentColor"
+                                                                />
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                    <blockquote className="text-[11px] leading-relaxed text-slate-400 italic">
+                                                        "Kode tersusun dengan
+                                                        baik, modular, dan
+                                                        penanganan middleware
+                                                        JWT aman. Evaluasi code
+                                                        review disetujui. +50
+                                                        Gold bonus!"
+                                                    </blockquote>
+                                                    <div className="flex justify-between border-t border-white/5 pt-2 text-[9px] text-slate-500">
+                                                        <span>
+                                                            Reviewer: Mentor
+                                                            Ridhwan
+                                                        </span>
+                                                        <span className="text-cyan-400">
+                                                            Verified
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
         </section>

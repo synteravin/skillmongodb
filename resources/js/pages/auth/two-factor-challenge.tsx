@@ -62,7 +62,7 @@ export default function TwoFactorChallenge() {
                             <h1 className="text-2xl font-semibold text-slate-800 dark:text-white">
                                 {authConfigContent.title}
                             </h1>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
+                            <p className="text-xs leading-relaxed text-muted-foreground">
                                 {authConfigContent.description}
                             </p>
                         </div>
@@ -96,18 +96,24 @@ export default function TwoFactorChallenge() {
                                                     name="code"
                                                     maxLength={OTP_MAX_LENGTH}
                                                     value={code}
-                                                    onChange={(value) => setCode(value)}
+                                                    onChange={(value) =>
+                                                        setCode(value)
+                                                    }
                                                     disabled={processing}
                                                     pattern={REGEXP_ONLY_DIGITS}
                                                     autoFocus
                                                 >
                                                     <InputOTPGroup>
                                                         {Array.from(
-                                                            { length: OTP_MAX_LENGTH },
+                                                            {
+                                                                length: OTP_MAX_LENGTH,
+                                                            },
                                                             (_, index) => (
                                                                 <InputOTPSlot
                                                                     key={index}
-                                                                    index={index}
+                                                                    index={
+                                                                        index
+                                                                    }
                                                                 />
                                                             ),
                                                         )}
@@ -120,17 +126,19 @@ export default function TwoFactorChallenge() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-md shadow-indigo-500/20"
+                                        className="w-full cursor-pointer rounded-xl bg-indigo-600 py-3 font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:scale-[1.02] hover:bg-indigo-700 active:scale-[0.98]"
                                         disabled={processing}
                                     >
-                                        {processing ? 'Processing...' : 'Continue'}
+                                        {processing
+                                            ? 'Processing...'
+                                            : 'Continue'}
                                     </Button>
 
-                                    <div className="text-center text-xs text-muted-foreground pt-2">
+                                    <div className="pt-2 text-center text-xs text-muted-foreground">
                                         <span>or you can </span>
                                         <button
                                             type="button"
-                                            className="cursor-pointer text-indigo-650 dark:text-indigo-400 font-semibold hover:underline"
+                                            className="text-indigo-650 cursor-pointer font-semibold hover:underline dark:text-indigo-400"
                                             onClick={() =>
                                                 toggleRecoveryMode(clearErrors)
                                             }

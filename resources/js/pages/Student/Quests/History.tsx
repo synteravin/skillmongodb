@@ -177,15 +177,69 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                 viewBox="0 0 48 48"
                                 className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
                             >
-                                <rect x="12" y="20" width="29" height="4" fill="currentColor" />
-                                <rect x="8" y="20" width="4" height="4" fill="currentColor" />
-                                <rect x="5" y="20" width="5" height="4" fill="currentColor" />
-                                <rect x="8" y="16" width="4" height="4" fill="currentColor" />
-                                <rect x="8" y="24" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="12" width="4" height="4" fill="currentColor" />
-                                <rect x="12" y="28" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="8" width="4" height="4" fill="currentColor" />
-                                <rect x="16" y="32" width="4" height="4" fill="currentColor" />
+                                <rect
+                                    x="12"
+                                    y="20"
+                                    width="29"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="20"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="5"
+                                    y="20"
+                                    width="5"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="16"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="8"
+                                    y="24"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="12"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="12"
+                                    y="28"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="8"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
+                                <rect
+                                    x="16"
+                                    y="32"
+                                    width="4"
+                                    height="4"
+                                    fill="currentColor"
+                                />
                             </svg>
                         </Link>
 
@@ -201,12 +255,11 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
             </div>
 
             <div className="relative z-10 w-full max-w-none px-4 py-8 sm:px-6 lg:px-10">
-
                 {/* Professional Stats Cards */}
                 <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
                     {/* Projects Completed */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                        <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                         <div className="relative z-10 flex items-center justify-between">
                             <div>
                                 <p className="text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
@@ -224,7 +277,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
 
                     {/* Total Bid (Pekerja) */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                        <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                         <div className="relative z-10 flex items-center justify-between">
                             <div>
                                 <p className="text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
@@ -242,7 +295,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
 
                     {/* Total Bid (Pembuat Quest) */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                        <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                         <div className="relative z-10 flex items-center justify-between">
                             <div>
                                 <p className="text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
@@ -260,80 +313,81 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                 </div>
 
                 {/* Filter and Search Bar */}
-                <div className="relative overflow-hidden mb-6 flex flex-col gap-4 rounded-xl border border-slate-300 bg-white p-5 shadow-sm xl:flex-row xl:items-center xl:justify-between dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
-                    <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 w-full">
-                    {/* Search */}
-                    <div className="relative w-full xl:max-w-md">
-                        <input
-                            type="text"
-                            placeholder="Cari judul kontrak proyek..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-4 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
-                        />
-                        <Search className="absolute top-3.5 left-3.5 h-4 w-4 text-slate-600 dark:text-slate-400" />
-                    </div>
+                <div className="relative mb-6 flex flex-col gap-4 overflow-hidden rounded-xl border border-slate-300 bg-white p-5 shadow-sm xl:flex-row xl:items-center xl:justify-between dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                    <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+                    <div className="relative z-10 flex w-full flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                        {/* Search */}
+                        <div className="relative w-full xl:max-w-md">
+                            <input
+                                type="text"
+                                placeholder="Cari judul kontrak proyek..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 bg-slate-50/90 py-2.5 pr-4 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-500 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                            />
+                            <Search className="absolute top-3.5 left-3.5 h-4 w-4 text-slate-600 dark:text-slate-400" />
+                        </div>
 
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center xl:justify-end">
-                        {/* Role Filter Pills */}
-                        <div className="flex w-full gap-1.5 overflow-x-auto pb-1 sm:w-auto sm:pb-0 scrollbar-none">
-                            {[
-                                { key: 'all', label: 'Semua Peran' },
-                                { key: 'worker', label: 'Pekerja' },
-                                { key: 'creator', label: 'Klien' },
-                                { key: 'bidder', label: 'Pelamar' },
-                            ].map((roleOption) => (
-                                <button
-                                    key={roleOption.key}
-                                    onClick={() =>
-                                        setRoleFilter(roleOption.key)
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center xl:justify-end">
+                            {/* Role Filter Pills */}
+                            <div className="scrollbar-none flex w-full gap-1.5 overflow-x-auto pb-1 sm:w-auto sm:pb-0">
+                                {[
+                                    { key: 'all', label: 'Semua Peran' },
+                                    { key: 'worker', label: 'Pekerja' },
+                                    { key: 'creator', label: 'Klien' },
+                                    { key: 'bidder', label: 'Pelamar' },
+                                ].map((roleOption) => (
+                                    <button
+                                        key={roleOption.key}
+                                        onClick={() =>
+                                            setRoleFilter(roleOption.key)
+                                        }
+                                        className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold whitespace-nowrap transition-all ${
+                                            roleFilter === roleOption.key
+                                                ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                                                : 'border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
+                                        }`}
+                                    >
+                                        {roleOption.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Status Dropdown */}
+                            <div className="relative w-full sm:w-44">
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) =>
+                                        setStatusFilter(e.target.value)
                                     }
-                                    className={`cursor-pointer rounded-lg px-3.5 py-2 text-xs font-bold whitespace-nowrap transition-all ${
-                                        roleFilter === roleOption.key
-                                            ? 'border border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                                            : 'border border-slate-300 bg-slate-100/90 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
-                                    }`}
+                                    className="w-full cursor-pointer appearance-none rounded-lg border border-slate-300 bg-slate-50/90 px-3 py-2.5 pr-8 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
                                 >
-                                    {roleOption.label}
-                                </button>
-                            ))}
+                                    <option value="all">Semua Status</option>
+                                    <option value="open">Bidding</option>
+                                    <option value="ongoing">Pengerjaan</option>
+                                    <option value="submitted">Tinjauan</option>
+                                    <option value="approved">Disetujui</option>
+                                    <option value="payment">Pembayaran</option>
+                                    <option value="completed">Selesai</option>
+                                    <option value="rejected">Ditolak</option>
+                                    <option value="expired">Kadaluarsa</option>
+                                </select>
+                                <ChevronDown className="pointer-events-none absolute top-3.5 right-3 h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
+                            </div>
                         </div>
-
-                        {/* Status Dropdown */}
-                        <div className="relative w-full sm:w-44">
-                            <select
-                                value={statusFilter}
-                                onChange={(e) =>
-                                    setStatusFilter(e.target.value)
-                                }
-                                className="w-full cursor-pointer appearance-none rounded-lg border border-slate-300 bg-slate-50/90 px-3 py-2.5 pr-8 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300"
-                            >
-                                <option value="all">Semua Status</option>
-                                <option value="open">Bidding</option>
-                                <option value="ongoing">Pengerjaan</option>
-                                <option value="submitted">Tinjauan</option>
-                                <option value="approved">Disetujui</option>
-                                <option value="payment">Pembayaran</option>
-                                <option value="completed">Selesai</option>
-                                <option value="rejected">Ditolak</option>
-                                <option value="expired">Kadaluarsa</option>
-                            </select>
-                            <ChevronDown className="pointer-events-none absolute top-3.5 right-3 h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
-                        </div>
-                    </div>
                     </div>
                 </div>
 
                 {/* Main Content - Quest Cards Accordion */}
                 {quests.data.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/20 py-20 text-center dark:border-slate-800 dark:bg-[#0d1117]/30">
-                        <Briefcase className="mx-auto mb-3 h-10 w-10 text-slate-355 dark:text-slate-700" />
+                        <Briefcase className="text-slate-355 mx-auto mb-3 h-10 w-10 dark:text-slate-700" />
                         <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
                             Tidak ada data kerja dalam riwayat
                         </p>
                         <p className="mt-1 text-xs text-slate-400">
-                            Coba ubah kata kunci pencarian atau filter peran/status Anda.
+                            Coba ubah kata kunci pencarian atau filter
+                            peran/status Anda.
                         </p>
                     </div>
                 ) : (
@@ -347,10 +401,10 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                     className={`relative overflow-hidden rounded-xl border bg-white transition-all duration-200 ${getAccentBorderClass(item.status)} ${
                                         isExpanded
                                             ? 'border-indigo-500/40 shadow-md dark:border-indigo-500/40 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]'
-                                            : 'border-slate-300 hover:border-indigo-400 hover:shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:hover:border-slate-750'
+                                            : 'dark:hover:border-slate-750 border-slate-300 hover:border-indigo-400 hover:shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]'
                                     }`}
                                 >
-                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                                    <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                                     {/* Accordion Trigger/Header */}
                                     <div
                                         onClick={() =>
@@ -365,28 +419,45 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                 {/* Status Badge */}
                                                 <span
                                                     className={`rounded border px-2.5 py-0.5 text-[9.5px] font-extrabold uppercase ${
-                                                        item.status === 'completed'
-                                                            ? 'border-emerald-500/40 bg-emerald-100 text-emerald-800 dark:border-slate-800 dark:bg-[#030712] dark:text-emerald-450'
-                                                            : ['approved', 'payment'].includes(item.status)
-                                                              ? 'border-amber-500/40 bg-amber-100 text-amber-900 dark:border-slate-800 dark:bg-[#030712] dark:text-cyan-405'
-                                                              : item.status === 'submitted'
+                                                        item.status ===
+                                                        'completed'
+                                                            ? 'dark:text-emerald-450 border-emerald-500/40 bg-emerald-100 text-emerald-800 dark:border-slate-800 dark:bg-[#030712]'
+                                                            : [
+                                                                    'approved',
+                                                                    'payment',
+                                                                ].includes(
+                                                                    item.status,
+                                                                )
+                                                              ? 'dark:text-cyan-405 border-amber-500/40 bg-amber-100 text-amber-900 dark:border-slate-800 dark:bg-[#030712]'
+                                                              : item.status ===
+                                                                  'submitted'
                                                                 ? 'border-purple-500/40 bg-purple-100 text-purple-900 dark:border-slate-800 dark:bg-[#030712] dark:text-purple-400'
-                                                                : item.status === 'ongoing'
+                                                                : item.status ===
+                                                                    'ongoing'
                                                                   ? 'border-blue-500/40 bg-blue-100 text-blue-900 dark:border-slate-800 dark:bg-[#030712] dark:text-indigo-400'
-                                                                  : item.status === 'expired'
+                                                                  : item.status ===
+                                                                      'expired'
                                                                     ? 'border-red-500/40 bg-red-100 text-red-900 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400'
                                                                     : 'border-slate-300 bg-slate-200/80 text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
                                                     }`}
                                                 >
                                                     {item.status === 'completed'
                                                         ? 'Selesai'
-                                                        : ['approved', 'payment'].includes(item.status)
+                                                        : [
+                                                                'approved',
+                                                                'payment',
+                                                            ].includes(
+                                                                item.status,
+                                                            )
                                                           ? 'Pembayaran'
-                                                          : item.status === 'submitted'
+                                                          : item.status ===
+                                                              'submitted'
                                                             ? 'Ditinjau'
-                                                            : item.status === 'ongoing'
+                                                            : item.status ===
+                                                                'ongoing'
                                                               ? 'Pengerjaan'
-                                                              : item.status === 'expired'
+                                                              : item.status ===
+                                                                  'expired'
                                                                 ? 'Kadaluarsa'
                                                                 : 'Bidding'}
                                                 </span>
@@ -419,22 +490,30 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                             : 'Belum Ada Pekerja'
                                                         : `Klien: ${item.creator.name}`}
                                                 </span>
-                                                {item.bids_count !== undefined && item.status === 'open' && (
-                                                    <div className="flex items-center gap-1 rounded border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-800 dark:border-slate-800 dark:bg-[#040812] dark:text-slate-300">
-                                                        <Users
-                                                            size={10}
-                                                            className="text-indigo-600 dark:text-indigo-400"
-                                                        />
-                                                        {item.bids_count} Proposal
-                                                    </div>
-                                                )}
-                                                {['ongoing', 'submitted'].includes(item.status) && (
+                                                {item.bids_count !==
+                                                    undefined &&
+                                                    item.status === 'open' && (
+                                                        <div className="flex items-center gap-1 rounded border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-800 dark:border-slate-800 dark:bg-[#040812] dark:text-slate-300">
+                                                            <Users
+                                                                size={10}
+                                                                className="text-indigo-600 dark:text-indigo-400"
+                                                            />
+                                                            {item.bids_count}{' '}
+                                                            Proposal
+                                                        </div>
+                                                    )}
+                                                {[
+                                                    'ongoing',
+                                                    'submitted',
+                                                ].includes(item.status) && (
                                                     <span className="flex items-center gap-1 rounded border border-amber-300 bg-amber-100/90 px-2 py-0.5 text-[10px] font-bold text-amber-900 dark:border-slate-800 dark:bg-amber-950/40 dark:text-amber-400">
                                                         <Clock
                                                             size={11}
                                                             className="text-amber-600 dark:text-amber-400"
                                                         />
-                                                        {getDeadlineCountdown(item.deadline)}
+                                                        {getDeadlineCountdown(
+                                                            item.deadline,
+                                                        )}
                                                     </span>
                                                 )}
                                             </div>
@@ -444,7 +523,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                             <span
                                                 className={`text-xs font-black sm:text-sm ${
                                                     item.is_worker
-                                                        ? 'text-emerald-700 dark:text-emerald-450'
+                                                        ? 'dark:text-emerald-450 text-emerald-700'
                                                         : item.is_creator
                                                           ? 'text-purple-700 dark:text-purple-400'
                                                           : 'text-indigo-700 dark:text-indigo-400'
@@ -452,11 +531,20 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                             >
                                                 {item.is_creator
                                                     ? item.accepted_bid_amount
-                                                        ? formatCurrency(item.accepted_bid_amount)
+                                                        ? formatCurrency(
+                                                              item.accepted_bid_amount,
+                                                          )
                                                         : `${formatCurrency(item.min_budget ?? item.min_salary ?? 0)} - ${formatCurrency(item.max_budget ?? item.max_salary ?? 0)}`
                                                     : item.my_bid
-                                                      ? formatCurrency(item.my_bid.bid_amount)
-                                                      : formatCurrency(item.min_budget ?? item.min_salary ?? 0)}
+                                                      ? formatCurrency(
+                                                            item.my_bid
+                                                                .bid_amount,
+                                                        )
+                                                      : formatCurrency(
+                                                            item.min_budget ??
+                                                                item.min_salary ??
+                                                                0,
+                                                        )}
                                             </span>
                                             <div
                                                 className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all ${
@@ -476,8 +564,14 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                     <AnimatePresence initial={false}>
                                         {isExpanded && (
                                             <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: 'auto', opacity: 1 }}
+                                                initial={{
+                                                    height: 0,
+                                                    opacity: 0,
+                                                }}
+                                                animate={{
+                                                    height: 'auto',
+                                                    opacity: 1,
+                                                }}
                                                 exit={{ height: 0, opacity: 0 }}
                                                 transition={{ duration: 0.2 }}
                                                 className="overflow-hidden"
@@ -487,34 +581,45 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                     <div className="space-y-4 md:col-span-2">
                                                         <div className="space-y-1.5">
                                                             <span className="block text-[9.5px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                                                Deskripsi Penugasan
+                                                                Deskripsi
+                                                                Penugasan
                                                             </span>
-                                                            <p className="text-xs leading-relaxed whitespace-pre-wrap font-normal text-slate-800 dark:text-slate-300">
-                                                                {item.description}
+                                                            <p className="text-xs leading-relaxed font-normal whitespace-pre-wrap text-slate-800 dark:text-slate-300">
+                                                                {
+                                                                    item.description
+                                                                }
                                                             </p>
                                                         </div>
 
                                                         {/* Stepper Progress Horizontal Timeline */}
                                                         <div className="space-y-3 rounded-lg border border-slate-300 bg-white p-4 dark:border-slate-800 dark:bg-[#0d1117]">
                                                             <span className="block border-b border-slate-200 pb-2 text-[9.5px] font-bold tracking-wider text-slate-700 uppercase dark:border-slate-800 dark:text-slate-300">
-                                                                Milestone Kontrak Kerja
+                                                                Milestone
+                                                                Kontrak Kerja
                                                             </span>
                                                             <div className="scrollbar-none overflow-x-auto pb-1">
                                                                 <div className="relative mx-auto grid w-full max-w-2xl min-w-[450px] grid-cols-6 gap-0 pt-2">
                                                                     {(() => {
-                                                                        const historyStatuses = [
-                                                                            'open',
-                                                                            'ongoing',
-                                                                            'submitted',
-                                                                            'approved',
-                                                                            'payment',
-                                                                            'completed',
-                                                                        ];
-                                                                        const mappedStatus = item.status;
-                                                                        const currentIdx = historyStatuses.indexOf(mappedStatus);
-                                                                        const lineWidth = currentIdx >= 0
-                                                                            ? `${(currentIdx / (historyStatuses.length - 1)) * 100}%`
-                                                                            : '0%';
+                                                                        const historyStatuses =
+                                                                            [
+                                                                                'open',
+                                                                                'ongoing',
+                                                                                'submitted',
+                                                                                'approved',
+                                                                                'payment',
+                                                                                'completed',
+                                                                            ];
+                                                                        const mappedStatus =
+                                                                            item.status;
+                                                                        const currentIdx =
+                                                                            historyStatuses.indexOf(
+                                                                                mappedStatus,
+                                                                            );
+                                                                        const lineWidth =
+                                                                            currentIdx >=
+                                                                            0
+                                                                                ? `${(currentIdx / (historyStatuses.length - 1)) * 100}%`
+                                                                                : '0%';
 
                                                                         return (
                                                                             <>
@@ -522,56 +627,99 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                                     <div className="absolute inset-0 rounded-full bg-slate-300 dark:bg-[#040812]" />
                                                                                     <div
                                                                                         className="absolute top-0 bottom-0 left-0 rounded-full bg-indigo-600 transition-all duration-500"
-                                                                                        style={{ width: lineWidth }}
+                                                                                        style={{
+                                                                                            width: lineWidth,
+                                                                                        }}
                                                                                     />
                                                                                 </div>
 
                                                                                 {[
-                                                                                    { key: 'open', label: 'Bidding' },
-                                                                                    { key: 'ongoing', label: 'Pengerjaan' },
-                                                                                    { key: 'submitted', label: 'Tinjauan' },
-                                                                                    { key: 'approved', label: 'Disetujui' },
-                                                                                    { key: 'payment', label: 'Pembayaran' },
-                                                                                    { key: 'completed', label: 'Selesai' },
-                                                                                ].map((step, idx) => {
-                                                                                    const stepIdx = historyStatuses.indexOf(step.key);
-                                                                                    const isCompleted = currentIdx !== -1 && (stepIdx < currentIdx || item.status === 'completed');
-                                                                                    const isActive = currentIdx !== -1 && mappedStatus === step.key;
+                                                                                    {
+                                                                                        key: 'open',
+                                                                                        label: 'Bidding',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'ongoing',
+                                                                                        label: 'Pengerjaan',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'submitted',
+                                                                                        label: 'Tinjauan',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'approved',
+                                                                                        label: 'Disetujui',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'payment',
+                                                                                        label: 'Pembayaran',
+                                                                                    },
+                                                                                    {
+                                                                                        key: 'completed',
+                                                                                        label: 'Selesai',
+                                                                                    },
+                                                                                ].map(
+                                                                                    (
+                                                                                        step,
+                                                                                        idx,
+                                                                                    ) => {
+                                                                                        const stepIdx =
+                                                                                            historyStatuses.indexOf(
+                                                                                                step.key,
+                                                                                            );
+                                                                                        const isCompleted =
+                                                                                            currentIdx !==
+                                                                                                -1 &&
+                                                                                            (stepIdx <
+                                                                                                currentIdx ||
+                                                                                                item.status ===
+                                                                                                    'completed');
+                                                                                        const isActive =
+                                                                                            currentIdx !==
+                                                                                                -1 &&
+                                                                                            mappedStatus ===
+                                                                                                step.key;
 
-                                                                                    return (
-                                                                                        <div
-                                                                                            key={step.key}
-                                                                                            className="relative z-10 flex w-full min-w-0 flex-col items-center"
-                                                                                        >
+                                                                                        return (
                                                                                             <div
-                                                                                                className={`flex h-5 w-5 items-center justify-center rounded-full border text-[9px] font-bold transition-all duration-355 ${
-                                                                                                    isCompleted
-                                                                                                        ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                                                                                                        : isActive
-                                                                                                          ? 'border-indigo-600 bg-indigo-100 text-indigo-800 font-extrabold dark:bg-[#040812] dark:text-indigo-400'
-                                                                                                          : 'border-slate-300 bg-slate-100 text-slate-600 font-semibold dark:border-slate-800 dark:bg-[#0d1117] dark:text-slate-400'
-                                                                                                }`}
+                                                                                                key={
+                                                                                                    step.key
+                                                                                                }
+                                                                                                className="relative z-10 flex w-full min-w-0 flex-col items-center"
                                                                                             >
-                                                                                                {isCompleted ? (
-                                                                                                    <Check className="h-2.5 w-2.5 stroke-[3.5]" />
-                                                                                                ) : (
-                                                                                                    idx + 1
-                                                                                                )}
+                                                                                                <div
+                                                                                                    className={`flex h-5 w-5 items-center justify-center rounded-full border text-[9px] font-bold transition-all duration-355 ${
+                                                                                                        isCompleted
+                                                                                                            ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                                                                                                            : isActive
+                                                                                                              ? 'border-indigo-600 bg-indigo-100 font-extrabold text-indigo-800 dark:bg-[#040812] dark:text-indigo-400'
+                                                                                                              : 'border-slate-300 bg-slate-100 font-semibold text-slate-600 dark:border-slate-800 dark:bg-[#0d1117] dark:text-slate-400'
+                                                                                                    }`}
+                                                                                                >
+                                                                                                    {isCompleted ? (
+                                                                                                        <Check className="h-2.5 w-2.5 stroke-[3.5]" />
+                                                                                                    ) : (
+                                                                                                        idx +
+                                                                                                        1
+                                                                                                    )}
+                                                                                                </div>
+                                                                                                <span
+                                                                                                    className={`mt-2 w-full px-0.5 text-center text-[7.5px] font-bold tracking-wider break-words uppercase transition-all duration-355 sm:text-[9px] ${
+                                                                                                        isActive
+                                                                                                            ? 'font-extrabold text-indigo-700 dark:text-indigo-400'
+                                                                                                            : isCompleted
+                                                                                                              ? 'font-bold text-indigo-700 dark:text-indigo-400'
+                                                                                                              : 'text-slate-600 dark:text-slate-400'
+                                                                                                    }`}
+                                                                                                >
+                                                                                                    {
+                                                                                                        step.label
+                                                                                                    }
+                                                                                                </span>
                                                                                             </div>
-                                                                                            <span
-                                                                                                className={`mt-2 w-full px-0.5 text-center text-[7.5px] font-bold tracking-wider break-words uppercase transition-all duration-355 sm:text-[9px] ${
-                                                                                                    isActive
-                                                                                                        ? 'text-indigo-700 font-extrabold dark:text-indigo-400'
-                                                                                                        : isCompleted
-                                                                                                          ? 'text-indigo-700 font-bold dark:text-indigo-400'
-                                                                                                          : 'text-slate-600 dark:text-slate-400'
-                                                                                                }`}
-                                                                                            >
-                                                                                                {step.label}
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    );
-                                                                                })}
+                                                                                        );
+                                                                                    },
+                                                                                )}
                                                                             </>
                                                                         );
                                                                     })()}
@@ -580,10 +728,14 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         </div>
 
                                                         {/* Submission details */}
-                                                        {(item.submission_link || item.submission_file || item.submission_note) && (
+                                                        {(item.submission_link ||
+                                                            item.submission_file ||
+                                                            item.submission_note) && (
                                                             <div className="space-y-3 rounded-lg border border-slate-300 bg-white p-4 dark:border-slate-800 dark:bg-[#0d1117]">
                                                                 <span className="block text-[9.5px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                                                    Hasil Deliverables Dikirim
+                                                                    Hasil
+                                                                    Deliverables
+                                                                    Dikirim
                                                                 </span>
 
                                                                 {item.submission_file && (
@@ -592,15 +744,27 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                             <FileArchive className="h-5 w-5 shrink-0 text-amber-600" />
                                                                             <div className="min-w-0">
                                                                                 <p className="truncate text-xs font-bold text-slate-900 dark:text-slate-200">
-                                                                                    {item.submission_file.name}
+                                                                                    {
+                                                                                        item
+                                                                                            .submission_file
+                                                                                            .name
+                                                                                    }
                                                                                 </p>
                                                                                 <p className="text-[10px] font-semibold text-slate-500">
-                                                                                    {formatBytes(item.submission_file.size)}
+                                                                                    {formatBytes(
+                                                                                        item
+                                                                                            .submission_file
+                                                                                            .size,
+                                                                                    )}
                                                                                 </p>
                                                                             </div>
                                                                         </div>
                                                                         <a
-                                                                            href={item.submission_file.url}
+                                                                            href={
+                                                                                item
+                                                                                    .submission_file
+                                                                                    .url
+                                                                            }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
                                                                             className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-700 hover:bg-amber-100"
@@ -614,16 +778,28 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                 {item.submission_link && (
                                                                     <div className="space-y-0.5">
                                                                         <span className="block text-[8.5px] font-bold text-slate-600 uppercase">
-                                                                            Tautan Demo / Hasil Kerja
+                                                                            Tautan
+                                                                            Demo
+                                                                            /
+                                                                            Hasil
+                                                                            Kerja
                                                                         </span>
                                                                         <a
-                                                                            href={item.submission_link}
+                                                                            href={
+                                                                                item.submission_link
+                                                                            }
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
                                                                             className="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 hover:underline dark:text-indigo-400"
                                                                         >
-                                                                            {item.submission_link}
-                                                                            <ExternalLink size={10} />
+                                                                            {
+                                                                                item.submission_link
+                                                                            }
+                                                                            <ExternalLink
+                                                                                size={
+                                                                                    10
+                                                                                }
+                                                                            />
                                                                         </a>
                                                                     </div>
                                                                 )}
@@ -631,10 +807,13 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                 {item.submission_note && (
                                                                     <div className="space-y-0.5">
                                                                         <span className="block text-[8.5px] font-bold text-slate-600 uppercase">
-                                                                            Catatan Tambahan
+                                                                            Catatan
+                                                                            Tambahan
                                                                         </span>
                                                                         <p className="rounded border border-slate-300 bg-slate-50 p-2.5 text-xs leading-relaxed font-normal text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-300">
-                                                                            {item.submission_note}
+                                                                            {
+                                                                                item.submission_note
+                                                                            }
                                                                         </p>
                                                                     </div>
                                                                 )}
@@ -644,34 +823,44 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         {/* Current status comment description */}
                                                         <div className="space-y-1 rounded-lg border border-slate-300 bg-white p-4 dark:border-slate-800 dark:bg-[#0d1117]">
                                                             <span className="block text-[9.5px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                                                Detail Kontrak Proyek
+                                                                Detail Kontrak
+                                                                Proyek
                                                             </span>
-                                                            <p className="text-xs leading-relaxed font-medium text-slate-700 dark:text-slate-450">
-                                                                {item.status === 'open'
+                                                            <p className="dark:text-slate-450 text-xs leading-relaxed font-medium text-slate-700">
+                                                                {item.status ===
+                                                                'open'
                                                                     ? item.is_creator
                                                                         ? `Pendaftaran proyek ini dibuka. Proposal pelamar masuk sebanyak ${item.bids_count || 0}. Anda dapat meninjau di detail lowongan.`
                                                                         : item.my_bid
                                                                           ? `Proposal penawaran Anda senilai ${formatCurrency(item.my_bid.bid_amount)} telah terkirim. Menunggu tinjauan dari pemilik proyek.`
                                                                           : 'Pendaftaran terbuka untuk semua kandidat pelamar.'
-                                                                    : item.status === 'ongoing'
+                                                                    : item.status ===
+                                                                        'ongoing'
                                                                       ? item.is_worker
                                                                           ? 'Anda sedang mengerjakan proyek ini. Pastikan Anda menyelesaikan deliverables sebelum batas tenggat waktu.'
                                                                           : item.is_creator
                                                                             ? `Proyek sedang dikerjakan oleh kontraktor ${item.worker?.name || ''}. Tunggu draf submission mereka.`
                                                                             : 'Proyek sedang dalam masa pengerjaan aktif oleh pekerja terpilih.'
-                                                                      : item.status === 'submitted'
+                                                                      : item.status ===
+                                                                          'submitted'
                                                                         ? item.is_creator
                                                                             ? 'Pekerja telah mengirimkan draf. Tinjau kelayakan hasil kerja atau minta revisi pada workspace pengerjaan.'
                                                                             : item.is_worker
                                                                               ? 'Draf pengerjaan Anda telah dikirim dan sedang dalam proses review peninjauan klien.'
                                                                               : 'Hasil pekerjaan dikirim dan sedang ditinjau.'
-                                                                        : ['approved', 'payment'].includes(item.status)
+                                                                        : [
+                                                                                'approved',
+                                                                                'payment',
+                                                                            ].includes(
+                                                                                item.status,
+                                                                            )
                                                                           ? item.is_creator
                                                                               ? 'Draf disetujui! Silakan lakukan transfer dana pembayaran, lalu unggah bukti transfer di workspace detail.'
                                                                               : item.is_worker
                                                                                 ? 'Pekerjaan Anda disetujui! Lakukan verifikasi pembayaran offline dari klien. Unggah berkas ZIP final jika dana telah masuk.'
                                                                                 : 'Disetujui, dalam proses rilis dana pembayaran.'
-                                                                          : item.status === 'expired'
+                                                                          : item.status ===
+                                                                              'expired'
                                                                             ? item.is_creator
                                                                                 ? 'Kontrak dibatalkan otomatis karena melewati deadline.'
                                                                                 : 'Kontrak dibatalkan otomatis.'
@@ -685,17 +874,32 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         {/* Project value metrics */}
                                                         <div className="space-y-2">
                                                             <span className="block text-[9.5px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                                                Nilai Reputasi & Kontribusi
+                                                                Nilai Reputasi &
+                                                                Kontribusi
                                                             </span>
                                                             <div className="flex flex-wrap gap-2">
-                                                                {item.rewards?.gold && (
+                                                                {item.rewards
+                                                                    ?.gold && (
                                                                     <div className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-100/80 px-2.5 py-1 text-xs font-extrabold text-amber-900 dark:border-slate-800 dark:bg-[#030712] dark:text-amber-400">
-                                                                        + {item.rewards.gold} Gold
+                                                                        +{' '}
+                                                                        {
+                                                                            item
+                                                                                .rewards
+                                                                                .gold
+                                                                        }{' '}
+                                                                        Gold
                                                                     </div>
                                                                 )}
-                                                                {item.rewards?.exp && (
+                                                                {item.rewards
+                                                                    ?.exp && (
                                                                     <div className="flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-100/80 px-2.5 py-1 text-xs font-extrabold text-purple-900 dark:border-slate-800 dark:bg-[#030712] dark:text-purple-400">
-                                                                        + {item.rewards.exp} XP
+                                                                        +{' '}
+                                                                        {
+                                                                            item
+                                                                                .rewards
+                                                                                .exp
+                                                                        }{' '}
+                                                                        XP
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -704,35 +908,50 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         {/* Contract Info */}
                                                         <div className="space-y-2">
                                                             <span className="block text-[9.5px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                                                Ringkasan Finansial
+                                                                Ringkasan
+                                                                Finansial
                                                             </span>
                                                             <div className="space-y-2.5 rounded-lg border border-slate-300 bg-white p-3.5 text-[11px] dark:border-slate-800 dark:bg-[#030712]">
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-[9.5px] font-bold text-slate-600 uppercase dark:text-slate-400">
-                                                                        Nilai Kontrak
+                                                                        Nilai
+                                                                        Kontrak
                                                                     </span>
                                                                     <span className="font-extrabold text-slate-900 dark:text-white">
                                                                         {item.is_creator
-                                                     ? item.accepted_bid_amount
-                                                         ? formatCurrency(item.accepted_bid_amount)
-                                                         : `${formatCurrency(item.min_budget ?? item.min_salary ?? 0)} - ${formatCurrency(item.max_budget ?? item.max_salary ?? 0)}`
-                                                     : item.my_bid
-                                                       ? formatCurrency(item.my_bid.bid_amount)
-                                                       : formatCurrency(item.min_budget ?? item.min_salary ?? 0)}
+                                                                            ? item.accepted_bid_amount
+                                                                                ? formatCurrency(
+                                                                                      item.accepted_bid_amount,
+                                                                                  )
+                                                                                : `${formatCurrency(item.min_budget ?? item.min_salary ?? 0)} - ${formatCurrency(item.max_budget ?? item.max_salary ?? 0)}`
+                                                                            : item.my_bid
+                                                                              ? formatCurrency(
+                                                                                    item
+                                                                                        .my_bid
+                                                                                        .bid_amount,
+                                                                                )
+                                                                              : formatCurrency(
+                                                                                    item.min_budget ??
+                                                                                        item.min_salary ??
+                                                                                        0,
+                                                                                )}
                                                                     </span>
                                                                 </div>
                                                                 <div className="flex items-center justify-between border-t border-slate-200 pt-2 dark:border-slate-800">
                                                                     <span className="text-[9.5px] font-bold text-slate-600 uppercase dark:text-slate-400">
-                                                                        Status Pembayaran
+                                                                        Status
+                                                                        Pembayaran
                                                                     </span>
                                                                     <span
                                                                         className={`rounded border px-2 py-0.5 text-[10px] font-bold ${
-                                                                            item.status === 'completed'
+                                                                            item.status ===
+                                                                            'completed'
                                                                                 ? 'border-emerald-300 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400'
                                                                                 : 'border-amber-300 bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-400'
                                                                         }`}
                                                                     >
-                                                                        {item.status === 'completed'
+                                                                        {item.status ===
+                                                                        'completed'
                                                                             ? 'Tuntas / Cair'
                                                                             : 'Ditahan (Escrow)'}
                                                                     </span>
@@ -741,30 +960,51 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                         </div>
 
                                                         {/* Review Feedback */}
-                                                        {item.status === 'completed' && item.rating && (
-                                                            <div className="space-y-2 rounded-lg border border-indigo-200 bg-indigo-50/50 p-3.5 text-center dark:border-slate-800 dark:bg-[#0d1117]">
-                                                                <span className="block text-[8.5px] font-bold tracking-widest text-slate-700 uppercase dark:text-slate-400">
-                                                                    Ulasan Klien
-                                                                </span>
-                                                                <div className="flex justify-center gap-1">
-                                                                    {[1, 2, 3, 4, 5].map((starVal) => (
-                                                                        <Star
-                                                                            key={starVal}
-                                                                            className={`h-3.5 w-3.5 ${
-                                                                                starVal <= (item.rating ?? 0)
-                                                                                    ? 'fill-amber-400 text-amber-400'
-                                                                                    : 'text-slate-300 dark:text-slate-800'
-                                                                            }`}
-                                                                        />
-                                                                    ))}
+                                                        {item.status ===
+                                                            'completed' &&
+                                                            item.rating && (
+                                                                <div className="space-y-2 rounded-lg border border-indigo-200 bg-indigo-50/50 p-3.5 text-center dark:border-slate-800 dark:bg-[#0d1117]">
+                                                                    <span className="block text-[8.5px] font-bold tracking-widest text-slate-700 uppercase dark:text-slate-400">
+                                                                        Ulasan
+                                                                        Klien
+                                                                    </span>
+                                                                    <div className="flex justify-center gap-1">
+                                                                        {[
+                                                                            1,
+                                                                            2,
+                                                                            3,
+                                                                            4,
+                                                                            5,
+                                                                        ].map(
+                                                                            (
+                                                                                starVal,
+                                                                            ) => (
+                                                                                <Star
+                                                                                    key={
+                                                                                        starVal
+                                                                                    }
+                                                                                    className={`h-3.5 w-3.5 ${
+                                                                                        starVal <=
+                                                                                        (item.rating ??
+                                                                                            0)
+                                                                                            ? 'fill-amber-400 text-amber-400'
+                                                                                            : 'text-slate-300 dark:text-slate-800'
+                                                                                    }`}
+                                                                                />
+                                                                            ),
+                                                                        )}
+                                                                    </div>
+                                                                    {item.rating_comment && (
+                                                                        <p className="dark:text-slate-350 mt-1 text-[11px] leading-relaxed font-semibold text-slate-700 italic">
+                                                                            "
+                                                                            {
+                                                                                item.rating_comment
+                                                                            }
+                                                                            "
+                                                                        </p>
+                                                                    )}
                                                                 </div>
-                                                                {item.rating_comment && (
-                                                                    <p className="mt-1 text-[11px] leading-relaxed font-semibold text-slate-700 italic dark:text-slate-350">
-                                                                        "{item.rating_comment}"
-                                                                    </p>
-                                                                )}
-                                                            </div>
-                                                        )}
+                                                            )}
 
                                                         {/* Action Buttons */}
                                                         <div className="space-y-2 border-t border-slate-200 pt-3 dark:border-slate-800">
@@ -776,14 +1016,22 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                     href={`/quests/${item.slug}`}
                                                                     className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-indigo-700/30 bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-700"
                                                                 >
-                                                                    <MessageSquare size={13} />
+                                                                    <MessageSquare
+                                                                        size={
+                                                                            13
+                                                                        }
+                                                                    />
                                                                     Chat
                                                                 </Link>
                                                                 <Link
                                                                     href={`/quests/${item.slug}`}
                                                                     className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white py-2.5 text-xs font-bold text-slate-800 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                                                 >
-                                                                    <Eye size={13} />
+                                                                    <Eye
+                                                                        size={
+                                                                            13
+                                                                        }
+                                                                    />
                                                                     Detail
                                                                 </Link>
                                                             </div>
@@ -801,9 +1049,21 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
 
                 {/* Server-Side Pagination Links */}
                 {quests.last_page > 1 && (
-                    <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-205 pt-6 sm:flex-row dark:border-slate-800">
-                        <span className="text-xs text-slate-505 dark:text-slate-400">
-                            Menampilkan <span className="font-semibold text-slate-850 dark:text-white">{quests.from}</span> – <span className="font-semibold text-slate-850 dark:text-white">{quests.to}</span> dari <span className="font-semibold text-slate-850 dark:text-white">{quests.total}</span> data proyek
+                    <div className="border-slate-205 mt-8 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row dark:border-slate-800">
+                        <span className="text-slate-505 text-xs dark:text-slate-400">
+                            Menampilkan{' '}
+                            <span className="text-slate-850 font-semibold dark:text-white">
+                                {quests.from}
+                            </span>{' '}
+                            –{' '}
+                            <span className="text-slate-850 font-semibold dark:text-white">
+                                {quests.to}
+                            </span>{' '}
+                            dari{' '}
+                            <span className="text-slate-850 font-semibold dark:text-white">
+                                {quests.total}
+                            </span>{' '}
+                            data proyek
                         </span>
 
                         <div className="flex items-center gap-1">
@@ -848,8 +1108,8 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                         preserveScroll
                                         className={`flex h-7 min-w-7 items-center justify-center rounded-lg px-2 text-xs font-semibold transition-colors ${
                                             link.active
-                                                ? 'border border-indigo-200 bg-indigo-50 text-indigo-707 dark:border-slate-800 dark:bg-[#0d1117] dark:text-indigo-400'
-                                                : 'border border-slate-200 text-slate-600 hover:border-slate-350 hover:text-slate-805 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200'
+                                                ? 'text-indigo-707 border border-indigo-200 bg-indigo-50 dark:border-slate-800 dark:bg-[#0d1117] dark:text-indigo-400'
+                                                : 'hover:border-slate-350 hover:text-slate-805 border border-slate-200 text-slate-600 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200'
                                         }`}
                                     >
                                         {labelText}
@@ -857,7 +1117,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                 ) : (
                                     <span
                                         key={i}
-                                        className="flex h-7 min-w-7 cursor-not-allowed items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 opacity-50 dark:border-slate-800 dark:text-slate-650"
+                                        className="dark:text-slate-650 flex h-7 min-w-7 cursor-not-allowed items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 opacity-50 dark:border-slate-800"
                                     >
                                         {labelText}
                                     </span>

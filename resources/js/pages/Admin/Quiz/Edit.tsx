@@ -164,7 +164,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
             if (q.explanation) {
                 formData.append(`questions[${i}][explanation]`, q.explanation);
             }
-            
+
             if (q.media_file) {
                 formData.append(`questions[${i}][media]`, q.media_file);
             } else if (q.media_url) {
@@ -172,18 +172,20 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
             }
 
             q.answers.forEach((a, j) => {
-                formData.append(`questions[${i}][answers][${j}][answer_text]`, a.answer_text);
-                formData.append(`questions[${i}][answers][${j}][is_correct]`, a.is_correct ? '1' : '0');
+                formData.append(
+                    `questions[${i}][answers][${j}][answer_text]`,
+                    a.answer_text,
+                );
+                formData.append(
+                    `questions[${i}][answers][${j}][is_correct]`,
+                    a.is_correct ? '1' : '0',
+                );
             });
         });
 
-        router.post(
-            `/admin/quiz/${quiz.id}`,
-            formData,
-            {
-                onFinish: () => setLoading(false),
-            },
-        );
+        router.post(`/admin/quiz/${quiz.id}`, formData, {
+            onFinish: () => setLoading(false),
+        });
     };
 
     /* ================= UI ================= */
@@ -232,7 +234,15 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                                         min={1}
                                         max={180}
                                         value={duration}
-                                        onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 15))}
+                                        onChange={(e) =>
+                                            setDuration(
+                                                Math.max(
+                                                    1,
+                                                    parseInt(e.target.value) ||
+                                                        15,
+                                                ),
+                                            )
+                                        }
                                         className="w-20 rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                                     />
                                 </div>

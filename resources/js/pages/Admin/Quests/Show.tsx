@@ -377,13 +377,17 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                     ? 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400'
                                                     : quest.status === 'expired'
                                                       ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
-                                                      : quest.status === 'ongoing'
+                                                      : quest.status ===
+                                                          'ongoing'
                                                         ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
-                                                        : quest.status === 'approved'
+                                                        : quest.status ===
+                                                            'approved'
                                                           ? 'border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/20 dark:text-purple-400'
-                                                          : quest.status === 'payment'
+                                                          : quest.status ===
+                                                              'payment'
                                                             ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
-                                                            : quest.status === 'submitted'
+                                                            : quest.status ===
+                                                                'submitted'
                                                               ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
                                                               : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }`}
@@ -398,11 +402,14 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                   ? 'Kadaluarsa'
                                                   : quest.status === 'ongoing'
                                                     ? 'Pengerjaan'
-                                                    : quest.status === 'approved'
+                                                    : quest.status ===
+                                                        'approved'
                                                       ? 'Disetujui'
-                                                      : quest.status === 'payment'
+                                                      : quest.status ===
+                                                          'payment'
                                                         ? 'Pembayaran'
-                                                        : quest.status === 'submitted'
+                                                        : quest.status ===
+                                                            'submitted'
                                                           ? 'Ditinjau'
                                                           : 'Selesai'}
                                     </span>
@@ -433,7 +440,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
 
                             {/* Stats Metrics Subgrid - Dashboard Card Style */}
                             <div className="grid grid-cols-1 gap-3 border-t border-slate-200/80 pt-6 sm:grid-cols-3 dark:border-slate-800/80">
-                                <div className="relative overflow-hidden flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="relative flex flex-col justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                                     <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Total Penawaran
@@ -443,7 +450,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     </span>
                                 </div>
 
-                                <div className="relative overflow-hidden flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="relative flex flex-col justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                                     <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Rata-Rata Penawaran
@@ -455,14 +462,23 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     </span>
                                 </div>
 
-                                <div className="relative overflow-hidden flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                <div className="relative flex flex-col justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                                     <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                                         Rentang Anggaran
                                     </span>
                                     <span className="mt-1 text-base font-extrabold text-slate-900 dark:text-white">
-                                        {formatCurrency(quest.min_budget ?? quest.min_salary ?? 0)} -{' '}
-                                        {formatCurrency(quest.max_budget ?? quest.max_salary ?? 0)}
+                                        {formatCurrency(
+                                            quest.min_budget ??
+                                                quest.min_salary ??
+                                                0,
+                                        )}{' '}
+                                        -{' '}
+                                        {formatCurrency(
+                                            quest.max_budget ??
+                                                quest.max_salary ??
+                                                0,
+                                        )}
                                     </span>
                                     {quest.accepted_bid_amount && (
                                         <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -643,7 +659,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 </div>
                             )}
                             {/* QUEST METADATA DETAILS */}
-                            <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                 <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
                                 <h3 className="border-b border-slate-200 pb-3 text-xs font-bold tracking-wider text-slate-900 uppercase dark:border-slate-800 dark:text-white">
                                     Rincian Quest
@@ -676,11 +692,15 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                             </span>
                                             <span className="text-xs font-bold text-slate-900 dark:text-white">
                                                 {formatCurrency(
-                                                    quest.min_budget ?? quest.min_salary ?? 0,
+                                                    quest.min_budget ??
+                                                        quest.min_salary ??
+                                                        0,
                                                 )}{' '}
                                                 -{' '}
                                                 {formatCurrency(
-                                                    quest.max_budget ?? quest.max_salary ?? 0,
+                                                    quest.max_budget ??
+                                                        quest.max_salary ??
+                                                        0,
                                                 )}
                                             </span>
                                         </div>

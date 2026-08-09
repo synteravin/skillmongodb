@@ -42,7 +42,9 @@ export default function Index({
     // Guide intro state
     const [showIntroTour, setShowIntroTour] = useState(() => {
         if (typeof window !== 'undefined') {
-            const completed = localStorage.getItem(`course_guide_intro_completed_${auth?.user?.id || 'guest'}`);
+            const completed = localStorage.getItem(
+                `course_guide_intro_completed_${auth?.user?.id || 'guest'}`,
+            );
             return completed !== 'true';
         }
         return true;
@@ -52,7 +54,9 @@ export default function Index({
     const [showWarningTour, setShowWarningTour] = useState(false);
     const [hasSeenWarningTour, setHasSeenWarningTour] = useState(() => {
         if (typeof window !== 'undefined') {
-            const completed = localStorage.getItem(`course_guide_warning_completed_${auth?.user?.id || 'guest'}`);
+            const completed = localStorage.getItem(
+                `course_guide_warning_completed_${auth?.user?.id || 'guest'}`,
+            );
             return completed === 'true';
         }
         return false;
@@ -101,7 +105,10 @@ export default function Index({
         setShowWarningTour(false);
         setHasSeenWarningTour(true);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(`course_guide_warning_completed_${auth?.user?.id || 'guest'}`, 'true');
+            localStorage.setItem(
+                `course_guide_warning_completed_${auth?.user?.id || 'guest'}`,
+                'true',
+            );
         }
         setShowConfirmModal(true);
     };
@@ -472,7 +479,8 @@ export default function Index({
                                         <span className="xs:text-xs text-[11px] leading-none font-extrabold text-white sm:text-sm md:text-base lg:text-lg">
                                             Modul:{' '}
                                             <span className="font-bold text-white">
-                                                {selectedCourse.modules_count ?? 0}
+                                                {selectedCourse.modules_count ??
+                                                    0}
                                             </span>
                                         </span>
                                     </div>
@@ -664,7 +672,10 @@ export default function Index({
                     onClose={() => {
                         setShowIntroTour(false);
                         if (typeof window !== 'undefined') {
-                            localStorage.setItem(`course_guide_intro_completed_${auth?.user?.id || 'guest'}`, 'true');
+                            localStorage.setItem(
+                                `course_guide_intro_completed_${auth?.user?.id || 'guest'}`,
+                                'true',
+                            );
                         }
                     }}
                 />

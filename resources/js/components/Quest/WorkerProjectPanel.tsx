@@ -1,6 +1,12 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { FileArchive, MessageSquare, Download, CheckCircle2, FileImage } from 'lucide-react';
+import {
+    FileArchive,
+    MessageSquare,
+    Download,
+    CheckCircle2,
+    FileImage,
+} from 'lucide-react';
 import RevisionHistory from './RevisionHistory';
 import { Quest, Bid } from '@/types/quest';
 
@@ -48,8 +54,8 @@ export default function WorkerProjectPanel({
     };
 
     return (
-        <div className="relative overflow-hidden space-y-5 rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+        <div className="relative space-y-5 overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
             <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                 <h3 className="font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-blue-200">
                     Penyerahan Tugas Proyek
@@ -80,10 +86,14 @@ export default function WorkerProjectPanel({
                 <div className="space-y-4">
                     <RevisionHistory quest={quest} viewType="worker_ongoing" />
 
-                    <form onSubmit={handleWorkSubmit} className="space-y-4 font-['Oxanium']">
+                    <form
+                        onSubmit={handleWorkSubmit}
+                        className="space-y-4 font-['Oxanium']"
+                    >
                         <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
                             Kirimkan hasil pekerjaan Anda agar pemilik quest
-                            dapat meninjau dan memberikan persetujuan pengerjaan.
+                            dapat meninjau dan memberikan persetujuan
+                            pengerjaan.
                         </p>
 
                         {/* ZIP Deliverable File Input with Drag-and-Drop */}
@@ -118,11 +128,15 @@ export default function WorkerProjectPanel({
                                         <FileArchive className="h-6 w-6 shrink-0 text-purple-500" />
                                         <div className="min-w-0">
                                             <p className="truncate text-xs font-bold text-slate-700 dark:text-slate-200">
-                                                {submissionForm.data.submission_file.name}
+                                                {
+                                                    submissionForm.data
+                                                        .submission_file.name
+                                                }
                                             </p>
                                             <p className="text-[10px] text-slate-400">
                                                 {(
-                                                    submissionForm.data.submission_file.size /
+                                                    submissionForm.data
+                                                        .submission_file.size /
                                                     1024 /
                                                     1024
                                                 ).toFixed(2)}{' '}
@@ -138,7 +152,7 @@ export default function WorkerProjectPanel({
                                                 null,
                                             )
                                         }
-                                        className="shrink-0 cursor-pointer rounded-lg px-2.5 py-1 font-['Orbitron'] text-[10px] font-bold tracking-wider text-red-650 uppercase transition-colors hover:bg-red-500/10 dark:text-red-400"
+                                        className="text-red-650 shrink-0 cursor-pointer rounded-lg px-2.5 py-1 font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase transition-colors hover:bg-red-500/10 dark:text-red-400"
                                     >
                                         Hapus
                                     </button>
@@ -147,7 +161,9 @@ export default function WorkerProjectPanel({
                                 <div
                                     onClick={() =>
                                         document
-                                            .getElementById('submission-file-input')
+                                            .getElementById(
+                                                'submission-file-input',
+                                            )
                                             ?.click()
                                     }
                                     onDragOver={(e) => {
@@ -205,7 +221,8 @@ export default function WorkerProjectPanel({
                                         />
                                     </div>
                                     <span className="block text-right font-['Orbitron'] text-[8px] font-bold tracking-widest text-slate-400 uppercase">
-                                        Mengunggah: {submissionForm.progress.percentage}%
+                                        Mengunggah:{' '}
+                                        {submissionForm.progress.percentage}%
                                     </span>
                                 </div>
                             )}
@@ -287,7 +304,11 @@ export default function WorkerProjectPanel({
                             Persetujuan Diterima! Menunggu Pembayaran
                         </span>
                         <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
-                            Kerja bagus! Hasil pengerjaan Anda telah disetujui. Saat ini sistem menunggu pembuat quest mengunggah bukti transfer pembayaran secara offline. Anda akan dapat mengunggah berkas proyek final ZIP dan menyelesaikan quest setelah bukti transfer dikirim.
+                            Kerja bagus! Hasil pengerjaan Anda telah disetujui.
+                            Saat ini sistem menunggu pembuat quest mengunggah
+                            bukti transfer pembayaran secara offline. Anda akan
+                            dapat mengunggah berkas proyek final ZIP dan
+                            menyelesaikan quest setelah bukti transfer dikirim.
                         </p>
                     </div>
                 </div>
@@ -300,14 +321,18 @@ export default function WorkerProjectPanel({
                         <span className="block text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
                             Bukti Pembayaran Diunggah
                         </span>
-                        <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-305">
-                            Pembuat quest telah mengunggah bukti transfer pembayaran. Silakan periksa rekening Anda. Jika dana telah masuk, unggah berkas proyek final (.zip) Anda di bawah ini untuk meresmikan penyelesaian quest dan mengklaim hadiah.
+                        <p className="dark:text-slate-305 text-xs leading-relaxed text-slate-500">
+                            Pembuat quest telah mengunggah bukti transfer
+                            pembayaran. Silakan periksa rekening Anda. Jika dana
+                            telah masuk, unggah berkas proyek final (.zip) Anda
+                            di bawah ini untuk meresmikan penyelesaian quest dan
+                            mengklaim hadiah.
                         </p>
                     </div>
 
                     {quest.payment_proof && (
                         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800/60 dark:bg-black/20">
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                 Bukti Transfer Pembuat
                             </span>
                             <div className="flex flex-col gap-3">
@@ -315,11 +340,22 @@ export default function WorkerProjectPanel({
                                     <div className="flex min-w-0 items-center gap-2">
                                         <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
                                         <div className="min-w-0">
-                                            <p className="truncate text-xs font-semibold text-slate-750 dark:text-slate-200">
+                                            <p className="text-slate-750 truncate text-xs font-semibold dark:text-slate-200">
                                                 {quest.payment_proof.name}
                                             </p>
-                                            <p className="text-[10px] text-slate-405">
-                                                Diunggah pada: {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                            <p className="text-slate-405 text-[10px]">
+                                                Diunggah pada:{' '}
+                                                {quest.payment_uploaded_at
+                                                    ? new Date(
+                                                          quest.payment_uploaded_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                          {
+                                                              dateStyle:
+                                                                  'medium',
+                                                          },
+                                                      )
+                                                    : ''}
                                             </p>
                                         </div>
                                     </div>
@@ -333,20 +369,20 @@ export default function WorkerProjectPanel({
                                         <Download size={16} />
                                     </a>
                                 </div>
-                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs">
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
                                     <a
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block group"
+                                        className="group block"
                                     >
                                         <img
                                             src={quest.payment_proof.url}
                                             alt="Bukti Transfer Pembayaran"
-                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
                                                 Perbesar Gambar 🔍
                                             </span>
                                         </div>
@@ -360,7 +396,8 @@ export default function WorkerProjectPanel({
                         <div className="space-y-2">
                             <label className="flex items-center gap-1.5 font-['Orbitron'] text-xs font-bold text-slate-600 uppercase dark:text-blue-200">
                                 <FileArchive className="h-4 w-4 text-amber-500" />
-                                Upload Berkas Proyek Final (ZIP) <span className="text-red-500">*</span>
+                                Upload Berkas Proyek Final (ZIP){' '}
+                                <span className="text-red-500">*</span>
                             </label>
 
                             <input
@@ -385,11 +422,15 @@ export default function WorkerProjectPanel({
                                         <FileArchive className="h-6 w-6 shrink-0 text-indigo-500" />
                                         <div className="min-w-0">
                                             <p className="truncate text-xs font-bold text-slate-700 dark:text-slate-200">
-                                                {finalZipForm.data.submission_file.name}
+                                                {
+                                                    finalZipForm.data
+                                                        .submission_file.name
+                                                }
                                             </p>
                                             <p className="text-[10px] text-slate-400">
                                                 {(
-                                                    finalZipForm.data.submission_file.size /
+                                                    finalZipForm.data
+                                                        .submission_file.size /
                                                     1024 /
                                                     1024
                                                 ).toFixed(2)}{' '}
@@ -414,7 +455,9 @@ export default function WorkerProjectPanel({
                                 <div
                                     onClick={() =>
                                         document
-                                            .getElementById('final-zip-file-input')
+                                            .getElementById(
+                                                'final-zip-file-input',
+                                            )
                                             ?.click()
                                     }
                                     onDragOver={(e) => {
@@ -472,7 +515,8 @@ export default function WorkerProjectPanel({
                                         />
                                     </div>
                                     <span className="block text-right font-['Orbitron'] text-[8px] font-bold tracking-widest text-slate-400 uppercase">
-                                        Mengunggah: {finalZipForm.progress.percentage}%
+                                        Mengunggah:{' '}
+                                        {finalZipForm.progress.percentage}%
                                     </span>
                                 </div>
                             )}
@@ -486,7 +530,10 @@ export default function WorkerProjectPanel({
 
                         <button
                             type="submit"
-                            disabled={finalZipForm.processing || !finalZipForm.data.submission_file}
+                            disabled={
+                                finalZipForm.processing ||
+                                !finalZipForm.data.submission_file
+                            }
                             className="w-full cursor-pointer rounded-xl bg-indigo-600 py-2.5 font-['Orbitron'] text-xs font-semibold tracking-wider text-white uppercase shadow-md transition-all hover:bg-indigo-700 disabled:opacity-50"
                         >
                             {finalZipForm.processing
@@ -509,7 +556,10 @@ export default function WorkerProjectPanel({
                         </p>
                     </div>
 
-                    <RevisionHistory quest={quest} viewType="worker_submitted" />
+                    <RevisionHistory
+                        quest={quest}
+                        viewType="worker_submitted"
+                    />
 
                     <div className="space-y-3.5 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs dark:border-slate-800 dark:bg-black/20">
                         {quest.submission_file && (
@@ -584,7 +634,17 @@ export default function WorkerProjectPanel({
                                                 {quest.payment_proof.name}
                                             </p>
                                             <p className="text-[10px] text-slate-400">
-                                                {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                                {quest.payment_uploaded_at
+                                                    ? new Date(
+                                                          quest.payment_uploaded_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                          {
+                                                              dateStyle:
+                                                                  'medium',
+                                                          },
+                                                      )
+                                                    : ''}
                                             </p>
                                         </div>
                                     </div>
@@ -592,26 +652,26 @@ export default function WorkerProjectPanel({
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-indigo-650 transition-colors hover:bg-indigo-500/10 hover:text-indigo-700"
+                                        className="text-indigo-650 flex cursor-pointer items-center justify-center rounded-lg p-1.5 transition-colors hover:bg-indigo-500/10 hover:text-indigo-700"
                                         title="Unduh Bukti Transfer"
                                     >
                                         <Download className="h-4.5 w-4.5" />
                                     </a>
                                 </div>
-                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xs">
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
                                     <a
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block group"
+                                        className="group block"
                                     >
                                         <img
                                             src={quest.payment_proof.url}
                                             alt="Bukti Transfer Pembayaran"
-                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
                                                 Perbesar Gambar 🔍
                                             </span>
                                         </div>

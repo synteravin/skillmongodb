@@ -62,9 +62,14 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const isTwoFactorPage = isCurrentUrl(show());
 
     return (
-        <div className={cn("px-4 py-6", isAdminOrMentor && "px-6 py-8 sm:px-8 lg:px-10")}>
+        <div
+            className={cn(
+                'px-4 py-6',
+                isAdminOrMentor && 'px-6 py-8 sm:px-8 lg:px-10',
+            )}
+        >
             {isAdminOrMentor ? (
-                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17] mb-8">
+                <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17]">
                     {/* Grid Pattern Motif */}
                     <div
                         className="pointer-events-none absolute inset-0 z-0"
@@ -79,31 +84,40 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
                     <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                    <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="space-y-3">
                             <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                 Configuration
                             </span>
                             <h1 className="text-2xl leading-snug font-semibold tracking-tight text-slate-800 md:text-[28px] dark:text-white">
-                                {isTwoFactorPage ? "Two-Factor Authentication" : "Account Settings"}
+                                {isTwoFactorPage
+                                    ? 'Two-Factor Authentication'
+                                    : 'Account Settings'}
                             </h1>
                             <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
-                                {isTwoFactorPage 
-                                    ? "Manage your account's two-factor authentication security settings." 
-                                    : "Manage your profile, password, security, and appearance settings."}
+                                {isTwoFactorPage
+                                    ? "Manage your account's two-factor authentication security settings."
+                                    : 'Manage your profile, password, security, and appearance settings.'}
                             </p>
                         </div>
 
                         <div className="shrink-0">
                             {isTwoFactorPage ? (
-                                <Button asChild variant="outline" className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    className="border-slate-200 bg-white font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/50"
+                                >
                                     <Link href={edit()}>
                                         <Settings className="mr-2 h-4 w-4 text-slate-500" />
                                         Back to Settings
                                     </Link>
                                 </Button>
                             ) : (
-                                <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-xs">
+                                <Button
+                                    asChild
+                                    className="bg-indigo-600 font-semibold text-white shadow-xs hover:bg-indigo-700"
+                                >
                                     <Link href={show()}>
                                         <ShieldCheck className="mr-2 h-4 w-4 text-white" />
                                         Two-Factor Auth
@@ -121,9 +135,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
             )}
 
             {isAdminOrMentor ? (
-                <div className="w-full">
-                    {children}
-                </div>
+                <div className="w-full">{children}</div>
             ) : (
                 <div className="flex flex-col lg:flex-row lg:space-x-12">
                     <aside className="w-full max-w-xl lg:w-48">

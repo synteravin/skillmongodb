@@ -27,21 +27,22 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
     };
 
     if (!(isCreator || isWorker)) return null;
-    if (!['ongoing', 'submitted', 'approved'].includes(quest.status)) return null;
+    if (!['ongoing', 'submitted', 'approved'].includes(quest.status))
+        return null;
 
     return (
         <>
-            <div className="relative overflow-hidden space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
-                <h3 className="relative z-10 flex items-center gap-2 border-b border-slate-100 pb-3 text-sm font-bold text-slate-850 dark:border-slate-800 dark:text-slate-200">
-                    <ShieldAlert
-                        size={15}
-                        className="text-amber-500"
-                    />
+            <div className="relative space-y-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+                <h3 className="text-slate-850 relative z-10 flex items-center gap-2 border-b border-slate-100 pb-3 text-sm font-bold dark:border-slate-800 dark:text-slate-200">
+                    <ShieldAlert size={15} className="text-amber-500" />
                     Pusat Bantuan & Penyelesaian Sengketa
                 </h3>
                 <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                    Apakah terjadi kendala dalam pengerjaan proyek, ketidaksesuaian hasil kerja (deliverables), atau pelanggaran kesepakatan? Anda dapat mengajukan banding agar administrator bertindak sebagai mediator arbitrase.
+                    Apakah terjadi kendala dalam pengerjaan proyek,
+                    ketidaksesuaian hasil kerja (deliverables), atau pelanggaran
+                    kesepakatan? Anda dapat mengajukan banding agar
+                    administrator bertindak sebagai mediator arbitrase.
                 </p>
                 <button
                     type="button"
@@ -59,20 +60,26 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
                         onClick={() => setShowDisputeModal(false)}
                         className="absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm"
                     />
-                    <div className="relative overflow-hidden z-10 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+                    <div className="relative z-10 w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
                         <h3 className="relative z-10 mb-2 flex items-center gap-2 text-base font-bold text-slate-800 dark:text-amber-400">
                             <ShieldAlert className="text-amber-500" />
                             Ajukan Dispute / Banding
                         </h3>
                         <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
-                            Jelaskan detail kendala atau dasar perselisihan yang Anda alami. Laporan ini akan ditinjau oleh mediator admin untuk diproses lebih lanjut.
+                            Jelaskan detail kendala atau dasar perselisihan yang
+                            Anda alami. Laporan ini akan ditinjau oleh mediator
+                            admin untuk diproses lebih lanjut.
                         </p>
 
-                        <form onSubmit={handleDisputeSubmit} className="space-y-4">
+                        <form
+                            onSubmit={handleDisputeSubmit}
+                            className="space-y-4"
+                        >
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-slate-450 uppercase">
-                                    Alasan & Kronologi Banding <span className="text-red-500">*</span>
+                                <label className="text-slate-450 text-[10px] font-bold uppercase">
+                                    Alasan & Kronologi Banding{' '}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
                                     required
@@ -80,7 +87,10 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
                                     rows={4}
                                     value={disputeForm.data.reason}
                                     onChange={(e) =>
-                                        disputeForm.setData('reason', e.target.value)
+                                        disputeForm.setData(
+                                            'reason',
+                                            e.target.value,
+                                        )
                                     }
                                     className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-amber-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
@@ -104,7 +114,9 @@ export default function DisputePanel({ quest, isCreator, isWorker }: Props) {
                                     disabled={disputeForm.processing}
                                     className="cursor-pointer rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-amber-700 disabled:opacity-50"
                                 >
-                                    {disputeForm.processing ? 'Mengirim...' : 'Kirim Laporan'}
+                                    {disputeForm.processing
+                                        ? 'Mengirim...'
+                                        : 'Kirim Laporan'}
                                 </button>
                             </div>
                         </form>

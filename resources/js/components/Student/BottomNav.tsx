@@ -8,8 +8,16 @@ export default function BottomNav({
     const menus = [
         { label: 'MY COURSE', href: '/course', targetId: 'nav-item-my-course' },
         { label: 'QUEST', href: '/quests', targetId: 'nav-item-quest' },
-        { label: 'TIER LIST', href: '/leaderboard', targetId: 'nav-item-tier-list' },
-        { label: 'CERTIFICATE', href: '/certificates', targetId: 'nav-item-certificate' },
+        {
+            label: 'TIER LIST',
+            href: '/leaderboard',
+            targetId: 'nav-item-tier-list',
+        },
+        {
+            label: 'CERTIFICATE',
+            href: '/certificates',
+            targetId: 'nav-item-certificate',
+        },
         { label: 'FORUM', href: '/forum', targetId: 'nav-item-forum' },
     ];
 
@@ -31,7 +39,8 @@ export default function BottomNav({
                 >
                     <div className={`flex ${bgClasses}`}>
                         {menus.map((menu, index) => {
-                            const isCurrentActive = activeOnboardingTarget === menu.targetId;
+                            const isCurrentActive =
+                                activeOnboardingTarget === menu.targetId;
                             return (
                                 <NavItem
                                     key={menu.label}
@@ -60,7 +69,8 @@ export default function BottomNav({
                 >
                     <div className={`flex ${bgClasses}`}>
                         {menus.map((menu, index) => {
-                            const isCurrentActive = activeOnboardingTarget === menu.targetId;
+                            const isCurrentActive =
+                                activeOnboardingTarget === menu.targetId;
                             return (
                                 <NavItem
                                     key={menu.label}
@@ -104,8 +114,7 @@ function NavItem({
     if (isOnboardingActive) {
         if (isCurrentActive) {
             // Active menu: Bold text without heavy shadow
-            stateStyle =
-                'text-amber-400 font-black scale-105 opacity-100';
+            stateStyle = 'text-amber-400 font-black scale-105 opacity-100';
         } else {
             // Inactive menus
             stateStyle = 'text-slate-300/40 opacity-35 font-medium';
@@ -145,7 +154,7 @@ function NavItem({
                     className={
                         mobile
                             ? `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 dark:bg-yellow-400`
-                            : `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 dark:bg-yellow-400 md:h-[180%] md:w-[2px] lg:h-[200%] 2xl:h-[220%]`
+                            : `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 md:h-[180%] md:w-[2px] lg:h-[200%] 2xl:h-[220%] dark:bg-yellow-400`
                     }
                 />
             )}
@@ -181,7 +190,11 @@ function NavItem({
     }
 
     return (
-        <button id={navId} className={baseClass} style={{ fontFamily: 'Orbitron' }}>
+        <button
+            id={navId}
+            className={baseClass}
+            style={{ fontFamily: 'Orbitron' }}
+        >
             {content}
         </button>
     );

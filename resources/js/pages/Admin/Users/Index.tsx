@@ -849,12 +849,30 @@ export default function Index({
                             <div className="flex items-center gap-1">
                                 {users.links.map((link, i) => {
                                     const labelLower = link.label.toLowerCase();
-                                    const isPrev = labelLower.includes('previous') || labelLower.includes('&laquo;') || labelLower.includes('laquo');
-                                    const isNext = labelLower.includes('next') || labelLower.includes('&raquo;') || labelLower.includes('raquo');
-                                    
+                                    const isPrev =
+                                        labelLower.includes('previous') ||
+                                        labelLower.includes('&laquo;') ||
+                                        labelLower.includes('laquo');
+                                    const isNext =
+                                        labelLower.includes('next') ||
+                                        labelLower.includes('&raquo;') ||
+                                        labelLower.includes('raquo');
+
                                     const renderLabel = () => {
-                                        if (isPrev) return <ChevronLeft size={14} className="shrink-0" />;
-                                        if (isNext) return <ChevronRight size={14} className="shrink-0" />;
+                                        if (isPrev)
+                                            return (
+                                                <ChevronLeft
+                                                    size={14}
+                                                    className="shrink-0"
+                                                />
+                                            );
+                                        if (isNext)
+                                            return (
+                                                <ChevronRight
+                                                    size={14}
+                                                    className="shrink-0"
+                                                />
+                                            );
                                         return link.label;
                                     };
 
@@ -874,7 +892,7 @@ export default function Index({
                                     ) : (
                                         <span
                                             key={i}
-                                            className="cursor-not-allowed flex h-7 min-w-7 items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
+                                            className="flex h-7 min-w-7 cursor-not-allowed items-center justify-center rounded-lg border border-slate-200 px-2 text-xs font-semibold text-slate-400 tabular-nums opacity-50 dark:border-slate-800 dark:text-slate-600"
                                         >
                                             {renderLabel()}
                                         </span>

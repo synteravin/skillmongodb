@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { Star, Download, FileArchive, MessageSquare, Check, FileImage, Calendar, AlertCircle } from 'lucide-react';
+import {
+    Star,
+    Download,
+    FileArchive,
+    MessageSquare,
+    Check,
+    FileImage,
+    Calendar,
+    AlertCircle,
+} from 'lucide-react';
 import RevisionHistory from './RevisionHistory';
 import { Quest, Bid } from '@/types/quest';
 
@@ -81,8 +90,8 @@ export default function CreatorProjectPanel({
     );
 
     return (
-        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+        <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
             <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                 <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
                     Alur Kerja Pekerjaan
@@ -96,7 +105,7 @@ export default function CreatorProjectPanel({
                                 name: quest.worker?.name ?? 'Pekerja',
                             })
                         }
-                        className="relative inline-flex items-center gap-2 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
+                        className="relative inline-flex cursor-pointer items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 px-3.5 py-1.5 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
                     >
                         <MessageSquare size={14} />
                         Chat Pekerja
@@ -122,7 +131,7 @@ export default function CreatorProjectPanel({
                             <span className="text-sm font-bold text-slate-800 dark:text-white">
                                 {quest.worker.name}
                             </span>
-                            <span className="block text-xs text-slate-505 dark:text-slate-400">
+                            <span className="text-slate-505 block text-xs dark:text-slate-400">
                                 {quest.worker.email}
                             </span>
                         </div>
@@ -132,9 +141,13 @@ export default function CreatorProjectPanel({
 
             {quest.status === 'ongoing' && (
                 <div className="space-y-4">
-                    <p className="text-xs leading-relaxed text-slate-505 dark:text-slate-405">
-                        Pekerja sedang menyelesaikan tugas. Status kontrak saat ini
-                        adalah <span className="font-semibold text-slate-700 dark:text-slate-200">Dalam Pengerjaan</span>.
+                    <p className="text-slate-505 dark:text-slate-405 text-xs leading-relaxed">
+                        Pekerja sedang menyelesaikan tugas. Status kontrak saat
+                        ini adalah{' '}
+                        <span className="font-semibold text-slate-700 dark:text-slate-200">
+                            Dalam Pengerjaan
+                        </span>
+                        .
                     </p>
                     <RevisionHistory quest={quest} viewType="creator_ongoing" />
                 </div>
@@ -143,18 +156,26 @@ export default function CreatorProjectPanel({
             {quest.status === 'approved' && (
                 <div className="space-y-4">
                     <div className="flex flex-col gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4 dark:border-slate-800 dark:bg-[#030712]">
-                        <span className="block text-xs font-semibold text-indigo-755 dark:text-indigo-400">
+                        <span className="text-indigo-755 block text-xs font-semibold dark:text-indigo-400">
                             Hasil Pekerjaan Disetujui! Lanjutkan ke Pembayaran
                         </span>
-                        <p className="text-[11px] text-slate-550 dark:text-slate-400 leading-relaxed">
-                            Anda telah menyetujui hasil pengerjaan. Langkah berikutnya adalah melakukan transfer dana pembayaran secara offline ke pekerja (sesuai kesepakatan bid) dan mengunggah bukti transfer di bawah ini untuk memverifikasi proses pembayaran.
+                        <p className="text-slate-550 text-[11px] leading-relaxed dark:text-slate-400">
+                            Anda telah menyetujui hasil pengerjaan. Langkah
+                            berikutnya adalah melakukan transfer dana pembayaran
+                            secara offline ke pekerja (sesuai kesepakatan bid)
+                            dan mengunggah bukti transfer di bawah ini untuk
+                            memverifikasi proses pembayaran.
                         </p>
                     </div>
 
-                    <form onSubmit={handleUploadPaymentProof} className="space-y-4">
+                    <form
+                        onSubmit={handleUploadPaymentProof}
+                        className="space-y-4"
+                    >
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">
-                                Bukti Transfer Pembayaran <span className="text-red-500">*</span>
+                                Bukti Transfer Pembayaran{' '}
+                                <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="file"
@@ -163,10 +184,13 @@ export default function CreatorProjectPanel({
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
-                                        paymentForm.setData('payment_proof', file);
+                                        paymentForm.setData(
+                                            'payment_proof',
+                                            file,
+                                        );
                                     }
                                 }}
-                                className="w-full rounded-lg border border-slate-250 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                className="border-slate-250 w-full rounded-lg border bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                             />
                             {paymentForm.errors.payment_proof && (
                                 <p className="text-xs font-semibold text-red-500">
@@ -178,9 +202,11 @@ export default function CreatorProjectPanel({
                         <button
                             type="submit"
                             disabled={paymentForm.processing}
-                            className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400 disabled:opacity-50"
+                            className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-50 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
                         >
-                            {paymentForm.processing ? 'Mengirim...' : 'Kirim Bukti Pembayaran'}
+                            {paymentForm.processing
+                                ? 'Mengirim...'
+                                : 'Kirim Bukti Pembayaran'}
                         </button>
                     </form>
                 </div>
@@ -192,21 +218,24 @@ export default function CreatorProjectPanel({
                         <span className="block text-xs font-semibold text-amber-700 dark:text-amber-400">
                             Menunggu Konfirmasi Pekerja
                         </span>
-                        <p className="text-[11px] text-slate-550 dark:text-slate-400 leading-relaxed">
-                            Bukti transfer pembayaran Anda telah diunggah. Saat ini sistem menunggu pekerja memverifikasi penerimaan dana di rekeningnya dan menyerahkan Berkas Proyek Final (ZIP) untuk menyelesaikan kontrak ini.
+                        <p className="text-slate-550 text-[11px] leading-relaxed dark:text-slate-400">
+                            Bukti transfer pembayaran Anda telah diunggah. Saat
+                            ini sistem menunggu pekerja memverifikasi penerimaan
+                            dana di rekeningnya dan menyerahkan Berkas Proyek
+                            Final (ZIP) untuk menyelesaikan kontrak ini.
                         </p>
                     </div>
 
                     {quest.payment_proof && (
                         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-[#030712]">
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                 Bukti Transfer Anda
                             </span>
                             <div className="flex flex-col gap-3">
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex min-w-0 items-center gap-2">
                                         <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
-                                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
+                                        <span className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
                                             {quest.payment_proof.name}
                                         </span>
                                     </div>
@@ -214,26 +243,26 @@ export default function CreatorProjectPanel({
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-650 hover:bg-indigo-100 dark:bg-slate-800 dark:text-indigo-400"
+                                        className="text-indigo-650 flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-slate-800 dark:text-indigo-400"
                                         title="Unduh Bukti Transfer"
                                     >
                                         <Download size={14} />
                                     </a>
                                 </div>
-                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0d1117] max-w-xs">
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0d1117]">
                                     <a
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block group"
+                                        className="group block"
                                     >
                                         <img
                                             src={quest.payment_proof.url}
                                             alt="Bukti Transfer Pembayaran"
-                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <span className="rounded bg-black/70 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                            <span className="rounded bg-black/70 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
                                                 Perbesar Gambar 🔍
                                             </span>
                                         </div>
@@ -252,7 +281,8 @@ export default function CreatorProjectPanel({
                             Hasil Pekerjaan Terkirim
                         </span>
                         <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                            Pekerja telah melakukan penyerahan tugas proyek. Silakan review hasil pekerjaannya di bawah ini.
+                            Pekerja telah melakukan penyerahan tugas proyek.
+                            Silakan review hasil pekerjaannya di bawah ini.
                         </p>
                     </div>
 
@@ -274,7 +304,7 @@ export default function CreatorProjectPanel({
                                             <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
                                                 {quest.submission_file.name}
                                             </p>
-                                            <p className="text-[10px] text-slate-405">
+                                            <p className="text-slate-405 text-[10px]">
                                                 {formatBytes(
                                                     quest.submission_file.size,
                                                 )}
@@ -315,7 +345,7 @@ export default function CreatorProjectPanel({
                                 <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
                                     Catatan dari Pekerja
                                 </strong>
-                                <p className="rounded-lg border border-slate-200 bg-white p-2.5 leading-relaxed whitespace-pre-wrap text-slate-650 dark:border-slate-800 dark:bg-[#0d1117] dark:text-slate-300">
+                                <p className="text-slate-650 rounded-lg border border-slate-200 bg-white p-2.5 leading-relaxed whitespace-pre-wrap dark:border-slate-800 dark:bg-[#0d1117] dark:text-slate-300">
                                     {quest.submission_note}
                                 </p>
                             </div>
@@ -326,13 +356,13 @@ export default function CreatorProjectPanel({
                         <div className="flex gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
                             <button
                                 onClick={() => setShowApproveForm(true)}
-                                className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2.5 text-xs font-bold text-white uppercase tracking-wider transition-colors hover:bg-emerald-700"
+                                className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-emerald-700"
                             >
                                 Setujui & Selesai
                             </button>
                             <button
                                 onClick={() => setShowRejectForm(true)}
-                                className="flex-1 cursor-pointer rounded-lg bg-rose-600 py-2.5 text-xs font-bold text-white uppercase tracking-wider transition-colors hover:bg-rose-700"
+                                className="flex-1 cursor-pointer rounded-lg bg-rose-600 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-rose-700"
                             >
                                 Tolak / Minta Revisi
                             </button>
@@ -391,7 +421,7 @@ export default function CreatorProjectPanel({
                                             e.target.value,
                                         )
                                     }
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-indigo-650 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                    className="focus:border-indigo-650 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
                             </div>
 
@@ -399,7 +429,7 @@ export default function CreatorProjectPanel({
                                 <button
                                     type="submit"
                                     disabled={reviewForm.processing}
-                                    className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2 text-xs font-bold text-white uppercase tracking-wider transition-colors hover:bg-emerald-700 disabled:opacity-50"
+                                    className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-emerald-700 disabled:opacity-50"
                                 >
                                     {reviewForm.processing
                                         ? 'Menyelesaikan...'
@@ -411,7 +441,7 @@ export default function CreatorProjectPanel({
                                         setShowApproveForm(false);
                                         reviewForm.reset();
                                     }}
-                                    className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-455 dark:hover:text-white"
+                                    className="dark:text-slate-455 rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-white"
                                 >
                                     Batal
                                 </button>
@@ -424,7 +454,7 @@ export default function CreatorProjectPanel({
                             onSubmit={submitRejection}
                             className="space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800"
                         >
-                            <h4 className="text-xs font-bold text-slate-750 uppercase dark:text-rose-400">
+                            <h4 className="text-slate-750 text-xs font-bold uppercase dark:text-rose-400">
                                 Kirim Feedback Revisi
                             </h4>
                             <div className="space-y-1">
@@ -443,7 +473,7 @@ export default function CreatorProjectPanel({
                                             e.target.value,
                                         )
                                     }
-                                    className="w-full rounded-lg border border-slate-250 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                    className="border-slate-250 w-full rounded-lg border bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
                             </div>
 
@@ -451,7 +481,7 @@ export default function CreatorProjectPanel({
                                 <button
                                     type="submit"
                                     disabled={reviewForm.processing}
-                                    className="flex-1 cursor-pointer rounded-lg bg-rose-600 py-2 text-xs font-bold text-white uppercase tracking-wider transition-colors hover:bg-rose-700 disabled:opacity-50"
+                                    className="flex-1 cursor-pointer rounded-lg bg-rose-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-rose-700 disabled:opacity-50"
                                 >
                                     {reviewForm.processing
                                         ? 'Mengirim...'
@@ -463,7 +493,7 @@ export default function CreatorProjectPanel({
                                         setShowRejectForm(false);
                                         reviewForm.reset();
                                     }}
-                                    className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-455 dark:hover:text-white"
+                                    className="dark:text-slate-455 rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-white"
                                 >
                                     Batal
                                 </button>
@@ -481,7 +511,8 @@ export default function CreatorProjectPanel({
                             Pekerjaan Selesai
                         </span>
                         <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                            Pekerjaan telah disetujui, berkas final ZIP telah terkirim, dan quest diselesaikan secara resmi.
+                            Pekerjaan telah disetujui, berkas final ZIP telah
+                            terkirim, dan quest diselesaikan secara resmi.
                         </p>
                     </div>
 
@@ -497,20 +528,20 @@ export default function CreatorProjectPanel({
                                         className={`h-5 w-5 ${
                                             star <= (quest.rating ?? 0)
                                                 ? 'fill-amber-400 text-amber-400'
-                                                : 'text-slate-300 dark:text-slate-650'
+                                                : 'dark:text-slate-650 text-slate-300'
                                         }`}
                                     />
                                 ))}
                             </div>
                             {quest.rating_comment && (
-                                <p className="rounded-lg border border-slate-100 bg-white p-2.5 text-xs text-slate-605 italic dark:border-slate-850 dark:bg-[#0d1117] dark:text-slate-350">
+                                <p className="text-slate-605 dark:border-slate-850 dark:text-slate-350 rounded-lg border border-slate-100 bg-white p-2.5 text-xs italic dark:bg-[#0d1117]">
                                     "{quest.rating_comment}"
                                 </p>
                             )}
                         </div>
                     )}
 
-                    <div className="space-y-3 rounded-xl border border-slate-150 bg-slate-50 p-4 text-xs dark:border-slate-800 dark:bg-[#030712]">
+                    <div className="border-slate-150 space-y-3 rounded-xl border bg-slate-50 p-4 text-xs dark:border-slate-800 dark:bg-[#030712]">
                         {quest.submission_file && (
                             <div className="space-y-1">
                                 <strong className="block text-[10px] tracking-wider text-slate-400 uppercase">
@@ -534,7 +565,7 @@ export default function CreatorProjectPanel({
                                         href={quest.submission_file.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-650 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
+                                        className="text-amber-650 flex cursor-pointer items-center justify-center rounded-lg p-1.5 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
                                         title="Unduh ZIP di Tab Baru"
                                     >
                                         <Download className="h-4.5 w-4.5" />
@@ -572,7 +603,17 @@ export default function CreatorProjectPanel({
                                                 {quest.payment_proof.name}
                                             </p>
                                             <p className="text-[10px] text-slate-400">
-                                                {quest.payment_uploaded_at ? new Date(quest.payment_uploaded_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : ''}
+                                                {quest.payment_uploaded_at
+                                                    ? new Date(
+                                                          quest.payment_uploaded_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                          {
+                                                              dateStyle:
+                                                                  'medium',
+                                                          },
+                                                      )
+                                                    : ''}
                                             </p>
                                         </div>
                                     </div>
@@ -580,26 +621,26 @@ export default function CreatorProjectPanel({
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-indigo-650 transition-colors hover:bg-indigo-500/10 hover:text-indigo-700"
+                                        className="text-indigo-650 flex cursor-pointer items-center justify-center rounded-lg p-1.5 transition-colors hover:bg-indigo-500/10 hover:text-indigo-700"
                                         title="Unduh Bukti Transfer"
                                     >
                                         <Download className="h-4.5 w-4.5" />
                                     </a>
                                 </div>
-                                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0d1117] max-w-xs">
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0d1117]">
                                     <a
                                         href={quest.payment_proof.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block group"
+                                        className="group block"
                                     >
                                         <img
                                             src={quest.payment_proof.url}
                                             alt="Bukti Transfer Pembayaran"
-                                            className="w-full object-contain max-h-40 transition-transform duration-300 group-hover:scale-105"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold text-white uppercase tracking-wider">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
                                                 Perbesar Gambar 🔍
                                             </span>
                                         </div>
@@ -614,24 +655,34 @@ export default function CreatorProjectPanel({
             {quest.status === 'expired' && (
                 <div className="space-y-4 border-t border-slate-100/60 pt-4 dark:border-slate-800/60">
                     <div className="rounded-xl border border-red-200 bg-red-50/15 p-4 dark:border-slate-800 dark:bg-[#030712]">
-                        <span className="block text-xs font-semibold text-red-655 dark:text-red-400">
+                        <span className="text-red-655 block text-xs font-semibold dark:text-red-400">
                             Perpanjang Tenggat Waktu (Re-open)
                         </span>
                         <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                            Kontrak ini telah kadaluarsa karena melewati batas waktu pengerjaan. Sebagai pemilik proyek, Anda dapat menentukan tenggat waktu baru di bawah ini untuk membuka kembali pendaftaran proyek (jika belum terisi) atau melanjutkan pengerjaan.
+                            Kontrak ini telah kadaluarsa karena melewati batas
+                            waktu pengerjaan. Sebagai pemilik proyek, Anda dapat
+                            menentukan tenggat waktu baru di bawah ini untuk
+                            membuka kembali pendaftaran proyek (jika belum
+                            terisi) atau melanjutkan pengerjaan.
                         </p>
                     </div>
 
                     <form onSubmit={handleExtendDeadline} className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">
-                                Tenggat Waktu Baru <span className="text-red-500">*</span>
+                                Tenggat Waktu Baru{' '}
+                                <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="datetime-local"
                                 required
                                 value={extendForm.data.deadline}
-                                onChange={(e) => extendForm.setData('deadline', e.target.value)}
+                                onChange={(e) =>
+                                    extendForm.setData(
+                                        'deadline',
+                                        e.target.value,
+                                    )
+                                }
                                 className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                             />
                             {extendForm.errors.deadline && (
@@ -644,9 +695,11 @@ export default function CreatorProjectPanel({
                         <button
                             type="submit"
                             disabled={extendForm.processing}
-                            className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400 disabled:opacity-50"
+                            className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-50 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
                         >
-                            {extendForm.processing ? 'Memproses...' : 'Aktifkan Kembali Kontrak'}
+                            {extendForm.processing
+                                ? 'Memproses...'
+                                : 'Aktifkan Kembali Kontrak'}
                         </button>
                     </form>
                 </div>

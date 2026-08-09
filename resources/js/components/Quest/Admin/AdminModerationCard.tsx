@@ -23,12 +23,13 @@ export default function AdminModerationCard({
                         Persetujuan Quest Baru
                     </h3>
                 </div>
-                <p className="text-xs font-semibold leading-relaxed text-slate-700 dark:text-slate-300">
+                <p className="text-xs leading-relaxed font-semibold text-slate-700 dark:text-slate-300">
                     Quest ini dikirim oleh{' '}
-                    <strong className="font-bold text-slate-900 dark:text-white">{quest.creator.name}</strong>{' '}
-                    dan membutuhkan persetujuan Anda sebagai
-                    administrator sebelum dipublikasikan ke
-                    papan quest publik.
+                    <strong className="font-bold text-slate-900 dark:text-white">
+                        {quest.creator.name}
+                    </strong>{' '}
+                    dan membutuhkan persetujuan Anda sebagai administrator
+                    sebelum dipublikasikan ke papan quest publik.
                 </p>
 
                 <div className="flex gap-3 pt-2">
@@ -63,7 +64,7 @@ export default function AdminModerationCard({
                         <span className="block text-[9px] font-bold tracking-wider text-red-600 uppercase dark:text-red-400">
                             Catatan Penolakan Anda:
                         </span>
-                        <p className="text-xs font-semibold leading-relaxed whitespace-pre-wrap text-slate-800 dark:text-slate-200">
+                        <p className="text-xs leading-relaxed font-semibold whitespace-pre-wrap text-slate-800 dark:text-slate-200">
                             {quest.rejection_note}
                         </p>
                     </div>
@@ -81,13 +82,11 @@ export default function AdminModerationCard({
                 <h3 className="text-sm font-extrabold text-rose-700 dark:text-rose-300">
                     Tenggat Waktu Terlewati
                 </h3>
-                <p className="text-xs font-semibold leading-relaxed text-slate-800 dark:text-slate-200">
-                    Tenggat waktu pengerjaan proyek ini
-                    telah berakhir sebelum pekerja berhasil
-                    menyelesaikan tugasnya. Pekerja lama
-                    dibebaskan dan penalti reputasi ERP
-                    telah diberlakukan secara otomatis oleh
-                    sistem.
+                <p className="text-xs leading-relaxed font-semibold text-slate-800 dark:text-slate-200">
+                    Tenggat waktu pengerjaan proyek ini telah berakhir sebelum
+                    pekerja berhasil menyelesaikan tugasnya. Pekerja lama
+                    dibebaskan dan penalti reputasi ERP telah diberlakukan
+                    secara otomatis oleh sistem.
                 </p>
             </div>
         );

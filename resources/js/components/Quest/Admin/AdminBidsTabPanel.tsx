@@ -22,7 +22,7 @@ export default function AdminBidsTabPanel({
     const canAccept = quest.status === 'open';
 
     return (
-        <div className="relative overflow-hidden space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+        <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 dark:border-slate-800">
                 <h3 className="text-sm font-extrabold tracking-wider text-slate-900 uppercase dark:text-white">
@@ -36,11 +36,12 @@ export default function AdminBidsTabPanel({
             {bids.length === 0 ? (
                 <div className="py-12 text-center text-slate-500 dark:text-slate-400">
                     <Briefcase className="mx-auto mb-2 h-10 w-10 text-indigo-500 opacity-60" />
-                    <p className="text-xs font-extrabold uppercase text-slate-800 dark:text-slate-300">
+                    <p className="text-xs font-extrabold text-slate-800 uppercase dark:text-slate-300">
                         Belum ada pelamar.
                     </p>
                     <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                        Siswa belum mengajukan proposal penawaran untuk quest ini.
+                        Siswa belum mengajukan proposal penawaran untuk quest
+                        ini.
                     </p>
                 </div>
             ) : (
@@ -60,7 +61,9 @@ export default function AdminBidsTabPanel({
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="flex min-w-0 items-center gap-2.5">
                                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-800 text-xs font-bold text-white shadow-sm">
-                                            {bid.student.name.substring(0, 2).toUpperCase()}
+                                            {bid.student.name
+                                                .substring(0, 2)
+                                                .toUpperCase()}
                                         </div>
                                         <div className="min-w-0">
                                             <span className="block truncate text-xs font-extrabold text-slate-900 dark:text-white">
@@ -85,7 +88,11 @@ export default function AdminBidsTabPanel({
                                     </p>
                                     <div className="flex gap-2 pt-1.5">
                                         <a
-                                            href={bid.cv.startsWith('http') ? bid.cv : '#'}
+                                            href={
+                                                bid.cv.startsWith('http')
+                                                    ? bid.cv
+                                                    : '#'
+                                            }
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex-1 truncate rounded bg-slate-200 py-1 text-center text-[10px] font-bold text-slate-800 hover:bg-slate-300 dark:bg-slate-800 dark:text-indigo-300 dark:hover:bg-slate-700"
@@ -93,7 +100,11 @@ export default function AdminBidsTabPanel({
                                             CV Link
                                         </a>
                                         <a
-                                            href={bid.portfolio.startsWith('http') ? bid.portfolio : '#'}
+                                            href={
+                                                bid.portfolio.startsWith('http')
+                                                    ? bid.portfolio
+                                                    : '#'
+                                            }
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex-1 truncate rounded bg-slate-200 py-1 text-center text-[10px] font-bold text-slate-800 hover:bg-slate-300 dark:bg-slate-800 dark:text-indigo-300 dark:hover:bg-slate-700"

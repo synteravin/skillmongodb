@@ -1,9 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import {
-    ArrowLeft,
-    Power,
-    UserCog,
-} from 'lucide-react';
+import { ArrowLeft, Power, UserCog } from 'lucide-react';
 
 type Props = {
     user: {
@@ -79,9 +75,7 @@ export default function ProfilePage({ user }: Props) {
                 </Link>
             </div>
 
-            <div
-                className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 overflow-visible px-4 pb-4 sm:flex-row md:gap-4 md:px-8 lg:overflow-hidden"
-            >
+            <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 overflow-visible px-4 pb-4 sm:flex-row md:gap-4 md:px-8 lg:overflow-hidden">
                 {/* ══════════ LEFT PANEL ══════════ */}
                 <div className="flex w-full shrink-0 flex-col gap-3 sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[295px] 2xl:w-[310px]">
                     {/* PROFILE CARD */}
@@ -91,11 +85,12 @@ export default function ProfilePage({ user }: Props) {
                             className="relative mb-3 shrink-0"
                             style={{ width: '140px', height: '140px' }}
                         >
-                            <div
-                                className="h-full w-full overflow-hidden rounded-full border-2 border-[#FACC15]"
-                            >
+                            <div className="h-full w-full overflow-hidden rounded-full border-2 border-[#FACC15]">
                                 <img
-                                    src={user.avatar ?? '/images/default-avatar.svg'}
+                                    src={
+                                        user.avatar ??
+                                        '/images/default-avatar.svg'
+                                    }
                                     className="h-full w-full object-cover"
                                     alt="avatar"
                                 />
@@ -234,7 +229,11 @@ export default function ProfilePage({ user }: Props) {
                                     >
                                         <defs>
                                             <clipPath id="rankCircleClip">
-                                                <circle cx="40" cy="40" r="36" />
+                                                <circle
+                                                    cx="40"
+                                                    cy="40"
+                                                    r="36"
+                                                />
                                             </clipPath>
                                         </defs>
                                         <image
@@ -349,7 +348,8 @@ export default function ProfilePage({ user }: Props) {
                                         FAV COURSE
                                     </span>
                                     <div className="w-full border border-[#3B28F6]/80 bg-gray-50/50 px-3 py-1.5 font-['Oxanium'] text-sm tracking-wide text-gray-700 md:py-2 xl:py-3 xl:text-base dark:border-[#1e2a6e] dark:bg-[#050510] dark:text-gray-400">
-                                        {user.last_course?.course_name || 'Not Set'}
+                                        {user.last_course?.course_name ||
+                                            'Not Set'}
                                     </div>
                                 </div>
                             </div>

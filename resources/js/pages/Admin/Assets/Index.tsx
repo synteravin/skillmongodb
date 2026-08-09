@@ -352,7 +352,8 @@ export default function AssetsPage({
                                 </h1>
                                 <p className="text-sm leading-relaxed text-slate-500 md:text-[15px] dark:text-slate-400/60">
                                     Click on any category below to inspect and
-                                    manage game assets and custom certificate designs.
+                                    manage game assets and custom certificate
+                                    designs.
                                 </p>
                             </div>
                         </div>
@@ -387,7 +388,8 @@ export default function AssetsPage({
                                 </span>
                             </div>
                             <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                                Manage progression tiers and student ranking system
+                                Manage progression tiers and student ranking
+                                system
                             </p>
                         </button>
 
@@ -476,7 +478,8 @@ export default function AssetsPage({
                                     </h2>
                                 </div>
                                 <span className="rounded-lg border border-[#7C5CFF]/20 bg-[#7C5CFF]/10 px-2.5 py-1 text-xs font-semibold text-[#7C5CFF]">
-                                    {stats?.certificates ?? certificateItems.length}
+                                    {stats?.certificates ??
+                                        certificateItems.length}
                                 </span>
                             </div>
                             <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
@@ -498,7 +501,8 @@ export default function AssetsPage({
                                             Level Rank List
                                         </h3>
                                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                                            Drag and drop to reorder rank positions
+                                            Drag and drop to reorder rank
+                                            positions
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -528,7 +532,8 @@ export default function AssetsPage({
                                 {rankItems.length === 0 ? (
                                     <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-white/10">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                                            No ranks found. Create your first rank to get started.
+                                            No ranks found. Create your first
+                                            rank to get started.
                                         </p>
                                     </div>
                                 ) : (
@@ -587,7 +592,8 @@ export default function AssetsPage({
                                                             </p>
                                                         </div>
                                                         <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                                                            Drag to reorder position
+                                                            Drag to reorder
+                                                            position
                                                         </p>
                                                     </div>
                                                 </div>
@@ -629,7 +635,8 @@ export default function AssetsPage({
                                             Characters List
                                         </h3>
                                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                                            Manage game avatars and student characters
+                                            Manage game avatars and student
+                                            characters
                                         </p>
                                     </div>
                                     <Link
@@ -643,7 +650,8 @@ export default function AssetsPage({
                                 {characterItems.length === 0 ? (
                                     <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-white/10">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                                            No characters found. Create your first character.
+                                            No characters found. Create your
+                                            first character.
                                         </p>
                                     </div>
                                 ) : (
@@ -703,7 +711,8 @@ export default function AssetsPage({
                                             Level Badge List
                                         </h3>
                                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                                            Drag and drop to reorder badge milestones
+                                            Drag and drop to reorder badge
+                                            milestones
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -733,7 +742,8 @@ export default function AssetsPage({
                                 {badgeItems.length === 0 ? (
                                     <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-white/10">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                                            No badges found. Create your first badge.
+                                            No badges found. Create your first
+                                            badge.
                                         </p>
                                     </div>
                                 ) : (
@@ -792,7 +802,8 @@ export default function AssetsPage({
                                                             </p>
                                                         </div>
                                                         <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                                                            Drag to reorder badge position
+                                                            Drag to reorder
+                                                            badge position
                                                         </p>
                                                     </div>
                                                 </div>
@@ -831,15 +842,20 @@ export default function AssetsPage({
                                 <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                                     <div>
                                         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-                                            Kelola Desain Latar Belakang & Logo Sertifikat
+                                            Kelola Desain Latar Belakang & Logo
+                                            Sertifikat
                                         </h3>
                                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                                            Upload gambar latar belakang (A4 Landscape) & logo custom untuk template sertifikat siswa.
+                                            Upload gambar latar belakang (A4
+                                            Landscape) & logo custom untuk
+                                            template sertifikat siswa.
                                         </p>
                                     </div>
                                     <button
                                         type="button"
-                                        onClick={() => setIsUploadModalOpen(true)}
+                                        onClick={() =>
+                                            setIsUploadModalOpen(true)
+                                        }
                                         className="flex cursor-pointer items-center gap-2 rounded-xl bg-[#7C5CFF] px-4 py-2.5 text-xs font-medium text-white shadow-lg shadow-[#7C5CFF]/20 transition-colors hover:bg-[#6A4BE0]"
                                     >
                                         <Plus size={16} /> Upload Desain Baru
@@ -851,20 +867,25 @@ export default function AssetsPage({
                                     <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 dark:border-emerald-500/20 dark:bg-emerald-500/10">
                                         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                                             <div className="flex items-center gap-4">
-                                                <div className="relative aspect-[1.414/1] w-36 overflow-hidden rounded-xl border border-emerald-500/40 shadow-sm bg-slate-100">
+                                                <div className="relative aspect-[1.414/1] w-36 overflow-hidden rounded-xl border border-emerald-500/40 bg-slate-100 shadow-sm">
                                                     <img
                                                         src={
                                                             activeCertificate.background_url ||
                                                             '/images/Sertifikat Course LMS SkillVentura.png'
                                                         }
-                                                        alt={activeCertificate.title}
+                                                        alt={
+                                                            activeCertificate.title
+                                                        }
                                                         className="h-full w-full object-cover"
                                                     />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
                                                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                                                            <CheckCircle2 size={12} /> SEDANG DIGUNAKAN
+                                                            <CheckCircle2
+                                                                size={12}
+                                                            />{' '}
+                                                            SEDANG DIGUNAKAN
                                                         </span>
                                                         {activeCertificate.logo_url && (
                                                             <span className="inline-flex items-center gap-1 rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
@@ -873,20 +894,29 @@ export default function AssetsPage({
                                                         )}
                                                     </div>
                                                     <h4 className="text-base font-bold text-slate-900 dark:text-white">
-                                                        {activeCertificate.title}
+                                                        {
+                                                            activeCertificate.title
+                                                        }
                                                     </h4>
                                                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                                                        Diunggah pada: {activeCertificate.created_at || '-'}
+                                                        Diunggah pada:{' '}
+                                                        {activeCertificate.created_at ||
+                                                            '-'}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <button
                                                     type="button"
-                                                    onClick={() => setPreviewModalDesign(activeCertificate)}
+                                                    onClick={() =>
+                                                        setPreviewModalDesign(
+                                                            activeCertificate,
+                                                        )
+                                                    }
                                                     className="flex cursor-pointer items-center gap-2 rounded-xl border border-emerald-500/30 bg-white px-4 py-2 text-xs font-semibold text-emerald-700 shadow-sm hover:bg-emerald-50 dark:bg-slate-900 dark:text-emerald-400 dark:hover:bg-slate-800"
                                                 >
-                                                    <Eye size={14} /> Preview Contoh Sertifikat
+                                                    <Eye size={14} /> Preview
+                                                    Contoh Sertifikat
                                                 </button>
                                             </div>
                                         </div>
@@ -894,11 +924,21 @@ export default function AssetsPage({
                                 ) : (
                                     <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300">
                                         <div className="flex items-center gap-3">
-                                            <Sparkles size={20} className="text-amber-500" />
+                                            <Sparkles
+                                                size={20}
+                                                className="text-amber-500"
+                                            />
                                             <div>
-                                                <h4 className="text-sm font-bold">Menggunakan Template Bawaan Sistem</h4>
+                                                <h4 className="text-sm font-bold">
+                                                    Menggunakan Template Bawaan
+                                                    Sistem
+                                                </h4>
                                                 <p className="text-xs opacity-90">
-                                                    Saat ini belum ada desain custom yang diaktifkan. Sistem otomatis menggunakan desain latar belakang bawaan SkillVentura.
+                                                    Saat ini belum ada desain
+                                                    custom yang diaktifkan.
+                                                    Sistem otomatis menggunakan
+                                                    desain latar belakang bawaan
+                                                    SkillVentura.
                                                 </p>
                                             </div>
                                         </div>
@@ -908,17 +948,24 @@ export default function AssetsPage({
                                 {/* GALLERY GRID */}
                                 <div>
                                     <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                                        Galeri Desain Sertifikat ({certificateItems.length})
+                                        Galeri Desain Sertifikat (
+                                        {certificateItems.length})
                                     </h4>
 
                                     {certificateItems.length === 0 ? (
                                         <div className="rounded-xl border border-dashed border-slate-200 p-10 text-center dark:border-white/10">
-                                            <ImageIcon size={36} className="mx-auto mb-2 text-slate-400 opacity-60" />
+                                            <ImageIcon
+                                                size={36}
+                                                className="mx-auto mb-2 text-slate-400 opacity-60"
+                                            />
                                             <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                                                Belum ada desain sertifikat custom yang diunggah.
+                                                Belum ada desain sertifikat
+                                                custom yang diunggah.
                                             </p>
                                             <p className="mt-1 text-xs text-slate-400">
-                                                Klik "+ Upload Desain Baru" untuk mengunggah gambar background & logo sertifikat.
+                                                Klik "+ Upload Desain Baru"
+                                                untuk mengunggah gambar
+                                                background & logo sertifikat.
                                             </p>
                                         </div>
                                     ) : (
@@ -935,19 +982,25 @@ export default function AssetsPage({
                                                     {/* Card Header Thumbnail */}
                                                     <div className="relative aspect-[1.414/1] w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
                                                         <img
-                                                            src={item.background_url || ''}
+                                                            src={
+                                                                item.background_url ||
+                                                                ''
+                                                            }
                                                             alt={item.title}
                                                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                         />
                                                         {item.is_active && (
                                                             <div className="absolute top-3 left-3 rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-bold text-white shadow-md">
-                                                                ✓ Aktif Digunakan
+                                                                ✓ Aktif
+                                                                Digunakan
                                                             </div>
                                                         )}
                                                         {item.logo_url && (
-                                                            <div className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 p-1 shadow-md backdrop-blur-sm">
+                                                            <div className="absolute right-3 bottom-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 p-1 shadow-md backdrop-blur-sm">
                                                                 <img
-                                                                    src={item.logo_url}
+                                                                    src={
+                                                                        item.logo_url
+                                                                    }
                                                                     alt="Custom Logo"
                                                                     className="max-h-full max-w-full object-contain"
                                                                 />
@@ -957,10 +1010,17 @@ export default function AssetsPage({
                                                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 backdrop-blur-[2px] transition-opacity group-hover:opacity-100">
                                                             <button
                                                                 type="button"
-                                                                onClick={() => setPreviewModalDesign(item)}
+                                                                onClick={() =>
+                                                                    setPreviewModalDesign(
+                                                                        item,
+                                                                    )
+                                                                }
                                                                 className="flex items-center gap-2 rounded-xl bg-white/90 px-4 py-2 text-xs font-bold text-slate-900 shadow-lg hover:bg-white"
                                                             >
-                                                                <Eye size={14} /> Preview Mockup
+                                                                <Eye
+                                                                    size={14}
+                                                                />{' '}
+                                                                Preview Mockup
                                                             </button>
                                                         </div>
                                                     </div>
@@ -972,7 +1032,9 @@ export default function AssetsPage({
                                                                 {item.title}
                                                             </h5>
                                                             <p className="mt-1 text-xs text-slate-400">
-                                                                Diupload: {item.created_at || '-'}
+                                                                Diupload:{' '}
+                                                                {item.created_at ||
+                                                                    '-'}
                                                             </p>
                                                         </div>
 
@@ -980,34 +1042,68 @@ export default function AssetsPage({
                                                         <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-white/10">
                                                             {item.is_active ? (
                                                                 <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                                                                    <CheckCircle2 size={14} /> Digunakan saat ini
+                                                                    <CheckCircle2
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />{' '}
+                                                                    Digunakan
+                                                                    saat ini
                                                                 </span>
                                                             ) : (
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => handleSetActiveCertificate(item.id, item.title)}
+                                                                    onClick={() =>
+                                                                        handleSetActiveCertificate(
+                                                                            item.id,
+                                                                            item.title,
+                                                                        )
+                                                                    }
                                                                     className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-600 transition-colors hover:bg-emerald-500 hover:text-white dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500 dark:hover:text-white"
                                                                 >
-                                                                    <Check size={14} /> Gunakan Desain Ini
+                                                                    <Check
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />{' '}
+                                                                    Gunakan
+                                                                    Desain Ini
                                                                 </button>
                                                             )}
 
                                                             <div className="flex items-center gap-1">
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => setPreviewModalDesign(item)}
+                                                                    onClick={() =>
+                                                                        setPreviewModalDesign(
+                                                                            item,
+                                                                        )
+                                                                    }
                                                                     className="cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-white/10 dark:hover:text-white"
                                                                     title="Preview"
                                                                 >
-                                                                    <Eye size={16} />
+                                                                    <Eye
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
                                                                 </button>
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => handleDeleteCertificate(item.id, item.title)}
+                                                                    onClick={() =>
+                                                                        handleDeleteCertificate(
+                                                                            item.id,
+                                                                            item.title,
+                                                                        )
+                                                                    }
                                                                     className="cursor-pointer rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400"
                                                                     title="Hapus Desain"
                                                                 >
-                                                                    <Trash2 size={16} />
+                                                                    <Trash2
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -1260,27 +1356,39 @@ export default function AssetsPage({
                                 </button>
                             </div>
 
-                            <form onSubmit={handleUploadCertificate} className="mt-4 space-y-4">
+                            <form
+                                onSubmit={handleUploadCertificate}
+                                className="mt-4 space-y-4"
+                            >
                                 <div>
                                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                        Judul / Nama Template <span className="text-rose-500">*</span>
+                                        Judul / Nama Template{' '}
+                                        <span className="text-rose-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         required
                                         value={uploadForm.data.title}
-                                        onChange={(e) => uploadForm.setData('title', e.target.value)}
+                                        onChange={(e) =>
+                                            uploadForm.setData(
+                                                'title',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="Contoh: Desain Sertifikat Standard 2026"
                                         className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none focus:border-[#7C5CFF] focus:bg-white dark:border-white/10 dark:bg-white/5 dark:focus:border-[#7C5CFF]"
                                     />
                                     {uploadForm.errors.title && (
-                                        <p className="mt-1 text-xs text-rose-500">{uploadForm.errors.title}</p>
+                                        <p className="mt-1 text-xs text-rose-500">
+                                            {uploadForm.errors.title}
+                                        </p>
                                     )}
                                 </div>
 
                                 <div>
                                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                        Gambar Latar Belakang (PNG, JPG max 5MB) <span className="text-rose-500">*</span>
+                                        Gambar Latar Belakang (PNG, JPG max 5MB){' '}
+                                        <span className="text-rose-500">*</span>
                                     </label>
 
                                     <div className="mt-1.5 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 p-4 transition-colors hover:border-[#7C5CFF] dark:border-white/10 dark:hover:border-[#7C5CFF]">
@@ -1294,7 +1402,10 @@ export default function AssetsPage({
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        uploadForm.setData('background', null);
+                                                        uploadForm.setData(
+                                                            'background',
+                                                            null,
+                                                        );
                                                         setUploadPreview(null);
                                                     }}
                                                     className="absolute top-2 right-2 rounded-full bg-rose-500 p-1 text-white shadow-md hover:bg-rose-600"
@@ -1304,12 +1415,16 @@ export default function AssetsPage({
                                             </div>
                                         ) : (
                                             <label className="flex cursor-pointer flex-col items-center py-4 text-center">
-                                                <Upload size={32} className="text-[#7C5CFF] mb-2" />
+                                                <Upload
+                                                    size={32}
+                                                    className="mb-2 text-[#7C5CFF]"
+                                                />
                                                 <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                                                     Pilih file gambar background
                                                 </span>
                                                 <span className="mt-1 text-xs text-slate-400">
-                                                    Rekomendasi rasio A4 Landscape (3508 x 2480 px)
+                                                    Rekomendasi rasio A4
+                                                    Landscape (3508 x 2480 px)
                                                 </span>
                                                 <input
                                                     type="file"
@@ -1322,16 +1437,21 @@ export default function AssetsPage({
                                         )}
                                     </div>
                                     {uploadForm.errors.background && (
-                                        <p className="mt-1 text-xs text-rose-500">{uploadForm.errors.background}</p>
+                                        <p className="mt-1 text-xs text-rose-500">
+                                            {uploadForm.errors.background}
+                                        </p>
                                     )}
                                 </div>
 
                                 <div>
                                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                        Logo Sertifikat Kustom (Opsional - PNG, SVG, JPG max 2MB)
+                                        Logo Sertifikat Kustom (Opsional - PNG,
+                                        SVG, JPG max 2MB)
                                     </label>
                                     <p className="text-[11px] text-slate-400">
-                                        Jika diisi, logo ini akan menggantikan logo bawaan SkillVentura di posisi atas sertifikat.
+                                        Jika diisi, logo ini akan menggantikan
+                                        logo bawaan SkillVentura di posisi atas
+                                        sertifikat.
                                     </p>
 
                                     <div className="mt-1.5 flex items-center gap-3">
@@ -1345,7 +1465,10 @@ export default function AssetsPage({
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        uploadForm.setData('logo', null);
+                                                        uploadForm.setData(
+                                                            'logo',
+                                                            null,
+                                                        );
                                                         setLogoPreview(null);
                                                     }}
                                                     className="absolute -top-1 -right-1 rounded-full bg-rose-500 p-0.5 text-white shadow-md hover:bg-rose-600"
@@ -1356,8 +1479,15 @@ export default function AssetsPage({
                                         ) : null}
 
                                         <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10">
-                                            <Upload size={14} className="text-[#7C5CFF]" />
-                                            <span>{logoPreview ? 'Ganti Logo' : 'Pilih File Logo Kustom'}</span>
+                                            <Upload
+                                                size={14}
+                                                className="text-[#7C5CFF]"
+                                            />
+                                            <span>
+                                                {logoPreview
+                                                    ? 'Ganti Logo'
+                                                    : 'Pilih File Logo Kustom'}
+                                            </span>
                                             <input
                                                 type="file"
                                                 accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
@@ -1367,11 +1497,13 @@ export default function AssetsPage({
                                         </label>
                                     </div>
                                     {uploadForm.errors.logo && (
-                                        <p className="mt-1 text-xs text-rose-500">{uploadForm.errors.logo}</p>
+                                        <p className="mt-1 text-xs text-rose-500">
+                                            {uploadForm.errors.logo}
+                                        </p>
                                     )}
                                 </div>
 
-                                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/10">
+                                <div className="flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-white/10">
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -1389,7 +1521,14 @@ export default function AssetsPage({
                                         disabled={uploadForm.processing}
                                         className="flex items-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2 text-xs font-semibold text-white shadow-md hover:bg-[#6A4BE0] disabled:opacity-50"
                                     >
-                                        {uploadForm.processing ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                                        {uploadForm.processing ? (
+                                            <Loader2
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <Upload size={14} />
+                                        )}
                                         Upload & Simpan
                                     </button>
                                 </div>
@@ -1401,29 +1540,38 @@ export default function AssetsPage({
 
             {/* MOCKUP PREVIEW MODAL */}
             {previewModalDesign && (
-                <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 sm:p-4 backdrop-blur-md">
-                    <div className="relative flex flex-col w-[96vw] max-w-5xl h-[88vh] overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-800 shadow-2xl dark:border-white/15 dark:bg-[#0a0d18] dark:text-white">
+                <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 backdrop-blur-md sm:p-4">
+                    <div className="relative flex h-[88vh] w-[96vw] max-w-5xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-800 shadow-2xl dark:border-white/15 dark:bg-[#0a0d18] dark:text-white">
                         {/* Modal Header */}
-                        <div className="shrink-0 flex items-center justify-between border-b border-slate-200 p-4 sm:px-6 dark:border-white/10">
+                        <div className="flex shrink-0 items-center justify-between border-b border-slate-200 p-4 sm:px-6 dark:border-white/10">
                             <div>
-                                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                                    Simulasi Preview Sertifikat: {previewModalDesign.title}
+                                <h3 className="text-sm font-bold text-slate-900 sm:text-base dark:text-white">
+                                    Simulasi Preview Sertifikat:{' '}
+                                    {previewModalDesign.title}
                                 </h3>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    Preview tampilan jika desain ini dipakai untuk mencetak sertifikat siswa
+                                    Preview tampilan jika desain ini dipakai
+                                    untuk mencetak sertifikat siswa
                                 </p>
                             </div>
                             <div className="flex items-center gap-2 sm:gap-3">
                                 <button
                                     type="button"
-                                    onClick={() => setShowSampleTextOverlay(!showSampleTextOverlay)}
+                                    onClick={() =>
+                                        setShowSampleTextOverlay(
+                                            !showSampleTextOverlay,
+                                        )
+                                    }
                                     className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                                         showSampleTextOverlay
                                             ? 'bg-[#7C5CFF] text-white'
                                             : 'bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-slate-300'
                                     }`}
                                 >
-                                    <Eye size={14} /> {showSampleTextOverlay ? 'Simulasi Teks' : 'Latar Belakang'}
+                                    <Eye size={14} />{' '}
+                                    {showSampleTextOverlay
+                                        ? 'Simulasi Teks'
+                                        : 'Latar Belakang'}
                                 </button>
                                 <button
                                     type="button"
@@ -1436,93 +1584,130 @@ export default function AssetsPage({
                         </div>
 
                         {/* Certificate Render Container (NO SCROLLBAR) */}
-                        <div className="relative flex-1 min-h-0 p-3 sm:p-5 bg-slate-950 flex justify-center items-center overflow-hidden">
+                        <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-slate-950 p-3 sm:p-5">
                             <div
-                                className="relative aspect-[1.414/1] h-full max-h-full max-w-full w-auto overflow-hidden rounded-xl shadow-2xl bg-white text-[#0f294a]"
+                                className="relative aspect-[1.414/1] h-full max-h-full w-auto max-w-full overflow-hidden rounded-xl bg-white text-[#0f294a] shadow-2xl"
                                 style={{ aspectRatio: '1.414 / 1' }}
                             >
                                 {/* Background Image */}
                                 <img
-                                    src={previewModalDesign.background_url || '/images/Sertifikat Course LMS SkillVentura.png'}
+                                    src={
+                                        previewModalDesign.background_url ||
+                                        '/images/Sertifikat Course LMS SkillVentura.png'
+                                    }
                                     alt="Certificate Background"
                                     className="absolute inset-0 h-full w-full object-cover"
                                 />
 
                                 {/* Simulated Overlay Text (Matches certificate.blade.php layout) */}
                                 {showSampleTextOverlay && (
-                                    <div className="absolute inset-0 flex flex-col justify-between p-3 sm:p-6 text-center select-none pointer-events-none">
+                                    <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-3 text-center select-none sm:p-6">
                                         {/* Center Semi-transparent Card */}
-                                         <div className="mx-auto mt-[6%] w-[84%] rounded-xl sm:rounded-2xl border border-white/70 bg-white/95 p-2.5 sm:p-4 shadow-sm">
-                                             {/* Logo Container */}
-                                             <div className="mb-1 flex justify-center">
-                                                 <img
-                                                     src={
-                                                         previewModalDesign.logo_url ||
-                                                         '/images/[WithoutBG]SVLogo (2).png'
-                                                     }
-                                                     alt="Logo"
-                                                     className="h-12 sm:h-20 w-auto object-contain"
-                                                     onError={(e) => {
-                                                         (e.currentTarget as HTMLImageElement).style.display = 'none';
-                                                     }}
-                                                 />
-                                             </div>
+                                        <div className="mx-auto mt-[6%] w-[84%] rounded-xl border border-white/70 bg-white/95 p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+                                            {/* Logo Container */}
+                                            <div className="mb-1 flex justify-center">
+                                                <img
+                                                    src={
+                                                        previewModalDesign.logo_url ||
+                                                        '/images/[WithoutBG]SVLogo (2).png'
+                                                    }
+                                                    alt="Logo"
+                                                    className="h-12 w-auto object-contain sm:h-20"
+                                                    onError={(e) => {
+                                                        (
+                                                            e.currentTarget as HTMLImageElement
+                                                        ).style.display =
+                                                            'none';
+                                                    }}
+                                                />
+                                            </div>
 
-                                             <div className="text-[10px] sm:text-xs font-extrabold tracking-[0.2em] uppercase text-[#0f294a]">
-                                                 CERTIFICATE OF RECOGNITION
-                                             </div>
-                                             <div className="mx-auto my-1 sm:my-1.5 h-0.5 w-20 sm:w-32 bg-amber-500 rounded" />
-                                             <div className="text-[8px] sm:text-[10px] font-bold tracking-wider uppercase text-slate-500">
-                                                 This Certificate is proudly awarded to:
-                                             </div>
-                                             <div
-                                                 className="my-1 sm:my-1.5 text-base sm:text-2xl font-bold text-blue-900 italic"
-                                                 style={{ fontFamily: "'Dancing Script', 'Brush Script MT', cursive, serif" }}
-                                             >
-                                                 Alexander Morgan
-                                             </div>
-                                             <div className="text-[8.5px] sm:text-[11px] leading-tight sm:leading-relaxed text-slate-600">
-                                                 This certificate is given to <strong>Alexander Morgan</strong> for their achievement in <strong>Fullstack Web Development Mastery</strong> and proves that they are competent in their field.
-                                             </div>
-                                         </div>
+                                            <div className="text-[10px] font-extrabold tracking-[0.2em] text-[#0f294a] uppercase sm:text-xs">
+                                                CERTIFICATE OF RECOGNITION
+                                            </div>
+                                            <div className="mx-auto my-1 h-0.5 w-20 rounded bg-amber-500 sm:my-1.5 sm:w-32" />
+                                            <div className="text-[8px] font-bold tracking-wider text-slate-500 uppercase sm:text-[10px]">
+                                                This Certificate is proudly
+                                                awarded to:
+                                            </div>
+                                            <div
+                                                className="my-1 text-base font-bold text-blue-900 italic sm:my-1.5 sm:text-2xl"
+                                                style={{
+                                                    fontFamily:
+                                                        "'Dancing Script', 'Brush Script MT', cursive, serif",
+                                                }}
+                                            >
+                                                Alexander Morgan
+                                            </div>
+                                            <div className="text-[8.5px] leading-tight text-slate-600 sm:text-[11px] sm:leading-relaxed">
+                                                This certificate is given to{' '}
+                                                <strong>
+                                                    Alexander Morgan
+                                                </strong>{' '}
+                                                for their achievement in{' '}
+                                                <strong>
+                                                    Fullstack Web Development
+                                                    Mastery
+                                                </strong>{' '}
+                                                and proves that they are
+                                                competent in their field.
+                                            </div>
+                                        </div>
 
-                                         {/* Footer Signatures */}
-                                         <div className="mb-2 sm:mb-4 flex items-end justify-between px-4 sm:px-10 text-[8px] sm:text-[11px]">
-                                             <div className="w-24 sm:w-40 text-center">
-                                                 <div className="h-5 sm:h-9 flex items-end justify-center">
-                                                     <span className="font-serif italic text-[8.5px] sm:text-xs text-slate-700">Guild Master</span>
-                                                 </div>
-                                                 <div className="my-0.5 sm:my-1 border-t border-amber-800/60" />
-                                                 <div className="font-bold text-slate-900">Guild Master</div>
-                                                 <div className="text-[7px] sm:text-[9px] uppercase tracking-wider text-slate-500">Admin</div>
-                                             </div>
+                                        {/* Footer Signatures */}
+                                        <div className="mb-2 flex items-end justify-between px-4 text-[8px] sm:mb-4 sm:px-10 sm:text-[11px]">
+                                            <div className="w-24 text-center sm:w-40">
+                                                <div className="flex h-5 items-end justify-center sm:h-9">
+                                                    <span className="font-serif text-[8.5px] text-slate-700 italic sm:text-xs">
+                                                        Guild Master
+                                                    </span>
+                                                </div>
+                                                <div className="my-0.5 border-t border-amber-800/60 sm:my-1" />
+                                                <div className="font-bold text-slate-900">
+                                                    Guild Master
+                                                </div>
+                                                <div className="text-[7px] tracking-wider text-slate-500 uppercase sm:text-[9px]">
+                                                    Admin
+                                                </div>
+                                            </div>
 
-                                             <div className="w-20 sm:w-32 text-center">
-                                                 <div className="font-bold text-slate-900">July 20, 2026</div>
-                                                 <div className="my-0.5 sm:my-1 border-t border-amber-800/60" />
-                                                 <div className="text-[7px] sm:text-[9px] uppercase tracking-wider text-slate-500">Date Issued</div>
-                                             </div>
+                                            <div className="w-20 text-center sm:w-32">
+                                                <div className="font-bold text-slate-900">
+                                                    July 20, 2026
+                                                </div>
+                                                <div className="my-0.5 border-t border-amber-800/60 sm:my-1" />
+                                                <div className="text-[7px] tracking-wider text-slate-500 uppercase sm:text-[9px]">
+                                                    Date Issued
+                                                </div>
+                                            </div>
 
-                                             <div className="w-24 sm:w-40 text-center">
-                                                 <div className="h-5 sm:h-9 flex items-end justify-center">
-                                                     <span className="font-serif italic text-[8.5px] sm:text-xs text-slate-700">Synteravin</span>
-                                                 </div>
-                                                 <div className="my-0.5 sm:my-1 border-t border-amber-800/60" />
-                                                 <div className="font-bold text-slate-900">Synteravin</div>
-                                                 <div className="text-[7px] sm:text-[9px] uppercase tracking-wider text-slate-500">Mentor</div>
-                                             </div>
-                                         </div>
+                                            <div className="w-24 text-center sm:w-40">
+                                                <div className="flex h-5 items-end justify-center sm:h-9">
+                                                    <span className="font-serif text-[8.5px] text-slate-700 italic sm:text-xs">
+                                                        Synteravin
+                                                    </span>
+                                                </div>
+                                                <div className="my-0.5 border-t border-amber-800/60 sm:my-1" />
+                                                <div className="font-bold text-slate-900">
+                                                    Synteravin
+                                                </div>
+                                                <div className="text-[7px] tracking-wider text-slate-500 uppercase sm:text-[9px]">
+                                                    Mentor
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                             </div>
                         </div>
 
                         {/* Modal Footer Actions */}
-                        <div className="shrink-0 flex items-center justify-between border-t border-slate-200 p-4 sm:px-6 dark:border-white/10">
+                        <div className="flex shrink-0 items-center justify-between border-t border-slate-200 p-4 sm:px-6 dark:border-white/10">
                             <div>
                                 {previewModalDesign.is_active ? (
                                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                                        <CheckCircle2 size={16} /> Desain ini sedang aktif digunakan sistem
+                                        <CheckCircle2 size={16} /> Desain ini
+                                        sedang aktif digunakan sistem
                                     </span>
                                 ) : (
                                     <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -1542,12 +1727,16 @@ export default function AssetsPage({
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            handleSetActiveCertificate(previewModalDesign.id, previewModalDesign.title);
+                                            handleSetActiveCertificate(
+                                                previewModalDesign.id,
+                                                previewModalDesign.title,
+                                            );
                                             setPreviewModalDesign(null);
                                         }}
                                         className="flex items-center gap-1.5 rounded-xl bg-emerald-500 px-5 py-2 text-xs font-bold text-white shadow-md hover:bg-emerald-600"
                                     >
-                                        <Check size={16} /> Gunakan Desain Ini Sekarang
+                                        <Check size={16} /> Gunakan Desain Ini
+                                        Sekarang
                                     </button>
                                 )}
                             </div>

@@ -307,7 +307,8 @@ const SortableContent = ({
                                                 <p className="text-[10px] text-slate-400">
                                                     {content.type === 'image'
                                                         ? 'PNG, JPG, WEBP up to 20MB'
-                                                        : content.type === 'video'
+                                                        : content.type ===
+                                                            'video'
                                                           ? 'MP4, WEBM up to 50MB'
                                                           : 'PDF, ZIP, DOCX files'}
                                                 </p>
@@ -721,7 +722,8 @@ export default function ModuleBuilder({
             const formData = new FormData();
             formData.append('type', type);
             if (data.title) formData.append('title', data.title);
-            if (data.description) formData.append('description', data.description);
+            if (data.description)
+                formData.append('description', data.description);
             formData.append('file', data.file);
 
             router.post(`/mentor/modules/${moduleId}/contents`, formData, {
@@ -1045,7 +1047,13 @@ export default function ModuleBuilder({
                             {(path.quiz?.slug || path.quiz?.id) && (
                                 <button
                                     type="button"
-                                    onClick={() => deleteQuiz(path.quiz!.slug || path.quiz!.id || '')}
+                                    onClick={() =>
+                                        deleteQuiz(
+                                            path.quiz!.slug ||
+                                                path.quiz!.id ||
+                                                '',
+                                        )
+                                    }
                                     className="cursor-pointer rounded-xl border border-rose-500/20 bg-rose-500/10 p-2.5 text-rose-500 transition-colors hover:bg-rose-500/20"
                                     title="Delete Final Quiz"
                                 >
@@ -1082,7 +1090,7 @@ export default function ModuleBuilder({
                         <button
                             onClick={createModule}
                             disabled={!newTitle.trim()}
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-500 dark:shadow-indigo-900/40"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-indigo-600 dark:shadow-indigo-900/40 dark:hover:bg-indigo-500"
                         >
                             <Plus size={18} />
                             <span>Add Module</span>

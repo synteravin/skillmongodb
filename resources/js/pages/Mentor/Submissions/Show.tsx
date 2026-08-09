@@ -322,16 +322,27 @@ export default function SubmissionShow({
                                             {/* Tanggal Submitted */}
                                             <td className="px-6 py-4 font-medium whitespace-nowrap text-slate-500 dark:text-slate-400">
                                                 {(() => {
-                                                    if (!item.submitted_at || item.submitted_at === '-') return '—';
-                                                    const d = new Date(item.submitted_at);
-                                                    if (isNaN(d.getTime())) return item.submitted_at;
-                                                    return d.toLocaleString('id-ID', {
-                                                        day: 'numeric',
-                                                        month: 'short',
-                                                        year: 'numeric',
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                    });
+                                                    if (
+                                                        !item.submitted_at ||
+                                                        item.submitted_at ===
+                                                            '-'
+                                                    )
+                                                        return '—';
+                                                    const d = new Date(
+                                                        item.submitted_at,
+                                                    );
+                                                    if (isNaN(d.getTime()))
+                                                        return item.submitted_at;
+                                                    return d.toLocaleString(
+                                                        'id-ID',
+                                                        {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                        },
+                                                    );
                                                 })()}
                                             </td>
 

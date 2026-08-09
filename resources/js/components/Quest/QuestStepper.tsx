@@ -23,8 +23,8 @@ export default function QuestStepper({ status }: QuestStepperProps) {
     const currentIdx = statuses.includes(status) ? statuses.indexOf(status) : 0;
 
     return (
-        <div className="relative overflow-hidden w-full rounded-xl border border-slate-300 bg-white p-5 py-6 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700 pointer-events-none select-none z-0" />
+        <div className="relative w-full overflow-hidden rounded-xl border border-slate-300 bg-white p-5 py-6 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+            <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
             <div className="relative z-10 grid grid-cols-6 gap-0">
                 {/* Stepper Line Container */}
                 <div className="absolute top-[14px] right-[8.33%] left-[8.33%] z-0 h-[2px] -translate-y-1/2 sm:top-[16px]">
@@ -74,10 +74,10 @@ export default function QuestStepper({ status }: QuestStepperProps) {
                             <span
                                 className={`mt-2.5 w-full px-0.5 text-center text-[10px] leading-tight font-medium tracking-wide break-words transition-all duration-300 ${
                                     isActive
-                                        ? 'font-bold text-indigo-650 dark:text-indigo-400'
+                                        ? 'text-indigo-650 font-bold dark:text-indigo-400'
                                         : isCompleted
                                           ? 'text-slate-700 dark:text-slate-300'
-                                          : 'text-slate-400 dark:text-slate-550'
+                                          : 'dark:text-slate-550 text-slate-400'
                                 }`}
                             >
                                 {step.label}

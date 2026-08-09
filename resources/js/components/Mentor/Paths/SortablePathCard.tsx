@@ -76,7 +76,7 @@ export default function SortablePathCard({
 
                 {/* Text Block */}
                 <div className="min-w-0 flex-1">
-                    <h3 className="text-slate-850 text-sm font-bold leading-snug transition-colors group-hover:text-indigo-600 sm:text-base dark:text-slate-100 dark:group-hover:text-indigo-400">
+                    <h3 className="text-slate-850 text-sm leading-snug font-bold transition-colors group-hover:text-indigo-600 sm:text-base dark:text-slate-100 dark:group-hover:text-indigo-400">
                         {path.name || 'Nama Path Tidak Tersedia'}
                     </h3>
                     <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">

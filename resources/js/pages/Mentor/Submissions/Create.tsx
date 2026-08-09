@@ -146,13 +146,22 @@ export default function CreateSubmission({ group }: Props) {
                                             }
                                             className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 pr-10 text-slate-900 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:focus:bg-[#0d0f17]"
                                         >
-                                            <option value="file" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
+                                            <option
+                                                value="file"
+                                                className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white"
+                                            >
                                                 File Upload Only
                                             </option>
-                                            <option value="link" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
+                                            <option
+                                                value="link"
+                                                className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white"
+                                            >
                                                 URL Link Only
                                             </option>
-                                            <option value="both" className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white">
+                                            <option
+                                                value="both"
+                                                className="bg-white text-slate-900 dark:bg-[#0d0f17] dark:text-white"
+                                            >
                                                 Both (File &amp; Link)
                                             </option>
                                         </select>

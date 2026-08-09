@@ -12,11 +12,12 @@ export default function CtaSection() {
                 {/* CTA Card */}
                 <div className="relative flex min-h-[180px] w-full max-w-[990px] flex-col items-center justify-center rounded-tl-[370px] rounded-tr-[20px] rounded-br-[370px] rounded-bl-[20px] border border-white bg-[#1D215D] px-6 py-8 text-center shadow-2xl sm:px-8 md:min-h-[200px] md:px-10 md:py-10 lg:min-h-[240px] lg:px-12">
                     <h2
-                        className="max-w-[650px] text-lg leading-tight font-bold text-white sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
+                        className="max-w-[650px] text-xs leading-tight font-bold text-white sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
                         style={{ fontFamily: 'Orbitron' }}
                     >
-                        Join Us to Learn Level Up and <br />
-                        Master Real-World Tech Skills
+                        Join Us to Learn Level Up and{' '}
+                        <br className="hidden sm:inline" />
+                        Master Real-World Tech
                     </h2>
 
                     <button

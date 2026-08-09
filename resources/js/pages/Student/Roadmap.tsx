@@ -388,9 +388,11 @@ function MobileRoadmap({
                 {/* ══════════════════════════════════════════
                     SECTION 1 — FUNDAMENTALS
                 ══════════════════════════════════════════ */}
-                <div className={`flex w-full flex-col items-center ${
-                    activeTour === 'fundamental' ? 'relative z-[130]' : ''
-                }`}>
+                <div
+                    className={`flex w-full flex-col items-center ${
+                        activeTour === 'fundamental' ? 'relative z-[130]' : ''
+                    }`}
+                >
                     {/* Section badge */}
                     <div className="mb-3 flex items-center gap-2">
                         <div className="h-[1px] w-8 bg-gradient-to-l from-blue-500 to-transparent" />
@@ -426,396 +428,410 @@ function MobileRoadmap({
                 {/* ══════════════════════════════════════════
                     SECTION 2 — CAREER BRANCH SELECTOR CARD
                 ══════════════════════════════════════════ */}
-                <div className={`w-full flex flex-col items-center ${
-                    activeTour === 'career' ? 'relative z-[130]' : ''
-                }`}>
-                    <div className="flex w-full flex-col items-center">
-                    {/* Section badge */}
-                    <div className="mb-3 flex items-center gap-2">
-                        <div className="h-[1px] w-8 bg-gradient-to-l from-[#facc15] to-transparent" />
-                        <span className="font-['Orbitron'] text-[8px] font-bold tracking-[0.3em] text-amber-400 uppercase dark:text-amber-400">
-                            Choose Path
-                        </span>
-                        <div className="h-[1px] w-8 bg-gradient-to-r from-[#facc15] to-transparent" />
-                    </div>
-
-                    {/* Selector card */}
-                    <div className="relative w-full rounded-xl border-2 border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.4)] dark:shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]">
-                        {/* Top accent line */}
-                        <div className="absolute top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-
-                        <div className="rounded-xl bg-white px-5 py-5 dark:bg-[#050619]">
-                            {/* Card header */}
-                            <div className="mb-1 flex items-center gap-2">
-                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-400/50 bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/10">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        className="h-4 w-4 text-blue-500 dark:text-blue-400"
-                                    >
-                                        <path
-                                            d="M3 7h18M3 12h18M3 17h12"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                        />
-                                    </svg>
-                                </div>
-                                <h3 className="font-['Orbitron'] text-xs font-bold tracking-widest text-gray-900 uppercase dark:text-white">
-                                    Choose Your Career Branch
-                                </h3>
-                            </div>
-
-                            <p className="mb-4 text-[10px] leading-relaxed text-gray-500 dark:text-gray-400">
-                                Select your specialization path to continue your
-                                learning journey.
-                            </p>
-
-                            {/* ── CUSTOM DROPDOWN ── */}
-                            <div className="relative w-full">
-                                <button
-                                    onClick={() =>
-                                        setDropdownOpen((prev) => !prev)
-                                    }
-                                    className={`flex w-full items-center justify-between gap-2 px-4 py-3 text-left transition-all duration-200 ${
-                                        dropdownOpen
-                                            ? 'rounded-t-xl border-2 border-b-0 border-[#3B28F6] bg-[#0b1333] dark:bg-[#0b1333]'
-                                            : 'rounded-xl border-2 border-blue-400/60 bg-blue-50/50 dark:border-[#3B28F6]/70 dark:bg-[#0b1333]/50'
-                                    }`}
-                                    style={{
-                                        boxShadow: dropdownOpen
-                                            ? '0 0 20px rgba(59,40,246,0.25)'
-                                            : '0 0 14px rgba(59,40,246,0.12)',
-                                    }}
-                                >
-                                    <div className="flex items-center gap-2.5">
-                                        <div
-                                            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border transition-all duration-200 ${
-                                                dropdownOpen
-                                                    ? 'border-blue-400/60 bg-blue-500/20'
-                                                    : 'border-blue-300/40 bg-blue-50 dark:border-blue-500/20 dark:bg-blue-500/10'
-                                            }`}
-                                        >
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                className="h-3.5 w-3.5 text-blue-400"
-                                            >
-                                                <path
-                                                    d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
-                                                    strokeLinejoin="round"
-                                                />
-                                                <circle
-                                                    cx="12"
-                                                    cy="13"
-                                                    r="1.5"
-                                                    fill="currentColor"
-                                                />
-                                            </svg>
-                                        </div>
-                                        <span
-                                            className={`font-['Orbitron'] text-[11px] font-bold tracking-wide uppercase transition-colors duration-200 ${
-                                                selectedGroupIndex >= 0
-                                                    ? dropdownOpen
-                                                        ? 'text-blue-300'
-                                                        : 'text-blue-600 dark:text-blue-300'
-                                                    : 'text-gray-400 dark:text-gray-500'
-                                            }`}
-                                        >
-                                            {selectedGroupIndex >= 0
-                                                ? course.career_groups[
-                                                      selectedGroupIndex
-                                                  ].name
-                                                : 'Select a branch…'}
-                                        </span>
-                                    </div>
-                                    <div
-                                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${dropdownOpen ? 'rotate-180 bg-blue-500/20' : 'bg-transparent'}`}
-                                    >
-                                        <ChevronDown className="h-3.5 w-3.5 text-blue-400 dark:text-blue-400" />
-                                    </div>
-                                </button>
-
-                                {/* Dropdown list — nyambung ke trigger */}
-                                <div
-                                    className={`absolute top-full right-0 left-0 z-[9999] overflow-y-auto rounded-b-xl border-2 border-t-0 border-[#3B28F6] bg-white transition-all duration-200 dark:bg-[#060d24] ${dropdownOpen ? 'max-h-[260px] opacity-100' : 'pointer-events-none max-h-0 opacity-0'}`}
-                                    style={{
-                                        boxShadow:
-                                            '0 16px 32px rgba(59,40,246,0.25)',
-                                    }}
-                                >
-                                    {/* Top separator line */}
-                                    <div className="mx-4 h-[1px] bg-gradient-to-r from-transparent via-[#3B28F6]/40 to-transparent" />
-
-                                    {course.career_groups.map(
-                                        (group: any, idx: number) => (
-                                            <button
-                                                key={group._id}
-                                                onClick={() => {
-                                                    setSelectedGroupIndex(idx);
-                                                    setDropdownOpen(false);
-                                                }}
-                                                className={`group/item flex w-full items-center gap-3 px-4 py-3 text-left transition-all duration-150 ${
-                                                    idx === selectedGroupIndex
-                                                        ? 'bg-blue-500/8 dark:bg-blue-500/10'
-                                                        : 'hover:bg-blue-50/70 dark:hover:bg-[#0b1333]/80'
-                                                } ${idx < course.career_groups.length - 1 ? 'border-b border-blue-100/50 dark:border-[#3B28F6]/15' : ''}`}
-                                            >
-                                                {/* Thumbnail */}
-                                                <div
-                                                    className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-150 ${
-                                                        idx ===
-                                                        selectedGroupIndex
-                                                            ? 'border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.4)]'
-                                                            : 'border-blue-200/60 group-hover/item:border-blue-400/60 dark:border-blue-500/20'
-                                                    } bg-blue-50 dark:bg-[#0b1333]`}
-                                                >
-                                                    {group.thumbnail ? (
-                                                        <img
-                                                            src={
-                                                                group.thumbnail
-                                                            }
-                                                            className="h-full w-full object-cover"
-                                                            alt={group.name}
-                                                        />
-                                                    ) : (
-                                                        <svg
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            className={`h-4 w-4 transition-colors ${idx === selectedGroupIndex ? 'text-blue-500' : 'text-blue-300 dark:text-blue-700'}`}
-                                                        >
-                                                            <path
-                                                                d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z"
-                                                                stroke="currentColor"
-                                                                strokeWidth="1.5"
-                                                                strokeLinejoin="round"
-                                                            />
-                                                            <circle
-                                                                cx="12"
-                                                                cy="13"
-                                                                r="1.5"
-                                                                fill="currentColor"
-                                                            />
-                                                        </svg>
-                                                    )}
-                                                </div>
-
-                                                {/* Name + subtitle */}
-                                                <div className="flex min-w-0 flex-1 flex-col">
-                                                    <span
-                                                        className={`font-['Orbitron'] text-[10px] font-bold tracking-wide uppercase transition-colors ${
-                                                            idx ===
-                                                            selectedGroupIndex
-                                                                ? 'text-blue-600 dark:text-blue-300'
-                                                                : 'text-gray-700 group-hover/item:text-blue-500 dark:text-gray-300 dark:group-hover/item:text-blue-400'
-                                                        }`}
-                                                    >
-                                                        {group.name}
-                                                    </span>
-                                                    <span className="mt-0.5 truncate text-[9px] text-gray-400 dark:text-gray-600">
-                                                        {group.paths?.length ??
-                                                            0}{' '}
-                                                        paths ·{' '}
-                                                        {group.paths?.reduce(
-                                                            (
-                                                                s: number,
-                                                                p: any,
-                                                            ) =>
-                                                                s +
-                                                                (p.modules
-                                                                    ?.length ||
-                                                                    0),
-                                                            0,
-                                                        ) ?? 0}{' '}
-                                                        modules
-                                                    </span>
-                                                </div>
-
-                                                {/* Active indicator */}
-                                                {idx === selectedGroupIndex ? (
-                                                    <div className="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/15">
-                                                        <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
-                                                    </div>
-                                                ) : (
-                                                    <div className="ml-auto h-5 w-5 shrink-0 rounded-full border border-blue-100/40 group-hover/item:border-blue-300/40 dark:border-blue-500/10" />
-                                                )}
-                                            </button>
-                                        ),
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* ══════════════════════════════════════════
-                    CONNECTOR + SECTION 3 — SELECTED BRANCH
-                ══════════════════════════════════════════ */}
-                <RoadmapLine height="h-10" />
-
-                {selectedGroup === null ? (
-                    /* ── PLACEHOLDER when no branch selected ── */
-                    <div
-                        className="relative w-full overflow-hidden rounded-xl border-2 border-blue-200/60 dark:border-[#3B28F6]/40"
-                        style={{
-                            boxShadow: '0 0 20px rgba(59,40,246,0.08)',
-                        }}
-                    >
-                        <div className="bg-white px-5 py-8 dark:bg-[#050619]">
-                            <div className="flex flex-col items-center gap-3 text-center">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-blue-200/60 bg-blue-50/50 dark:border-[#3B28F6]/30 dark:bg-[#0b1333]/50">
-                                    <span className="text-2xl">🔒</span>
-                                </div>
-                                <p className="font-['Orbitron'] text-xs font-bold tracking-wider text-gray-400 uppercase dark:text-gray-500">
-                                    Select a Career Branch to continue
-                                </p>
-                                <p className="text-[10px] leading-relaxed text-gray-400 dark:text-gray-600">
-                                    Your progress will be saved automatically in
-                                    your chosen path.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    /* ── SELECTED BRANCH — career card + module nodes ── */
+                <div
+                    className={`flex w-full flex-col items-center ${
+                        activeTour === 'career' ? 'relative z-[130]' : ''
+                    }`}
+                >
                     <div className="flex w-full flex-col items-center">
                         {/* Section badge */}
                         <div className="mb-3 flex items-center gap-2">
-                            <div className="h-[1px] w-8 bg-gradient-to-l from-blue-500 to-transparent" />
-                            <span className="font-['Orbitron'] text-[8px] font-bold tracking-[0.3em] text-blue-500 uppercase dark:text-blue-400">
-                                Your Branch
+                            <div className="h-[1px] w-8 bg-gradient-to-l from-[#facc15] to-transparent" />
+                            <span className="font-['Orbitron'] text-[8px] font-bold tracking-[0.3em] text-amber-400 uppercase dark:text-amber-400">
+                                Choose Path
                             </span>
-                            <div className="h-[1px] w-8 bg-gradient-to-r from-blue-500 to-transparent" />
+                            <div className="h-[1px] w-8 bg-gradient-to-r from-[#facc15] to-transparent" />
                         </div>
 
-                        {/* Career branch detail card */}
-                        <MobileCareerCard
-                            group={selectedGroup}
-                            basicCompleted={basicCompleted}
-                            isChosen={selectedGroup.paths.some(
-                                (p: any) =>
-                                    p._id === safeProgress.selected_path_id,
-                            )}
-                            isOtherChosen={
-                                !!(
-                                    safeProgress.selected_path_id &&
-                                    !selectedGroup.paths.some(
-                                        (p: any) =>
-                                            p._id ===
-                                            safeProgress.selected_path_id,
-                                    )
-                                )
-                            }
-                            courseId={course._id}
-                            courseSlug={course.slug}
-                            progress={safeProgress}
-                        />
+                        {/* Selector card */}
+                        <div className="relative w-full rounded-xl border-2 border-[#3B28F6] shadow-[0_0_35px_6px_rgba(59,40,246,0.4)] dark:shadow-[0_0_35px_6px_rgba(59,40,246,0.5)]">
+                            {/* Top accent line */}
+                            <div className="absolute top-0 right-0 left-0 z-10 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
 
-                        {/* ─── CONNECTOR + SECTION 4: MODULE NODES ─── */}
-                        {selectedGroup.paths.length > 0 && (
-                            <>
-                                <RoadmapLine height="h-8" />
-
-                                {/* Module paths section badge */}
-                                <div className="mb-3 flex items-center gap-2">
-                                    <div className="h-[1px] w-8 bg-gradient-to-l from-blue-500 to-transparent" />
-                                    <span className="font-['Orbitron'] text-[8px] font-bold tracking-[0.3em] text-blue-500 uppercase dark:text-blue-400">
-                                        Roadmap
-                                    </span>
-                                    <div className="h-[1px] w-8 bg-gradient-to-r from-blue-500 to-transparent" />
+                            <div className="rounded-xl bg-white px-5 py-5 dark:bg-[#050619]">
+                                {/* Card header */}
+                                <div className="mb-1 flex items-center gap-2">
+                                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-400/50 bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/10">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            className="h-4 w-4 text-blue-500 dark:text-blue-400"
+                                        >
+                                            <path
+                                                d="M3 7h18M3 12h18M3 17h12"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <h3 className="font-['Orbitron'] text-xs font-bold tracking-widest text-gray-900 uppercase dark:text-white">
+                                        Choose Your Career Branch
+                                    </h3>
                                 </div>
 
-                                <div className="flex w-full flex-col items-center">
-                                    {selectedGroup.paths.map(
-                                        (p: any, idx: number) => {
-                                            const done =
-                                                safeProgress.completed_paths?.includes(
-                                                    String(p._id),
-                                                );
+                                <p className="mb-4 text-[10px] leading-relaxed text-gray-500 dark:text-gray-400">
+                                    Select your specialization path to continue
+                                    your learning journey.
+                                </p>
 
-                                            const isOtherChosen =
-                                                safeProgress.selected_path_id &&
-                                                !selectedGroup.paths.some(
-                                                    (sp: any) =>
-                                                        sp._id ===
-                                                        safeProgress.selected_path_id,
-                                                );
-
-                                            let locked = false;
-                                            if (!basicCompleted) locked = true;
-                                            if (isOtherChosen) locked = true;
-                                            if (!hasChosenPath) locked = true;
-                                            if (idx > 0) {
-                                                const prevPath =
-                                                    selectedGroup.paths[
-                                                        idx - 1
-                                                    ];
-                                                if (
-                                                    !safeProgress.completed_paths?.includes(
-                                                        String(prevPath._id),
-                                                    )
-                                                )
-                                                    locked = true;
-                                            }
-
-                                            const badge = badges?.find(
-                                                (b: any) =>
-                                                    parseInt(
-                                                        b.order
-                                                            ?.toString()
-                                                            .trim(),
-                                                    ) ===
-                                                    idx + 1,
-                                            );
-
-                                            return (
-                                                <React.Fragment
-                                                    key={String(p._id)}
-                                                >
-                                                    <StudentModuleNode
-                                                        title={p.name}
-                                                        done={done}
-                                                        locked={locked}
-                                                        index={idx}
-                                                        badge={badge}
-                                                        href={
-                                                            p.modules?.[0]?._id
-                                                                ? `/learn/${course.slug}/${p.slug}/${p.modules[0].slug}`
-                                                                : undefined
-                                                        }
-                                                    />
-                                                    <RoadmapLine height="h-6" />
-                                                </React.Fragment>
-                                            );
-                                        },
-                                    )}
-
-                                    {/* SUBMISSION node */}
-                                    <StudentModuleNode
-                                        title="Submission"
-                                        index={selectedGroup.paths.length}
-                                        isSubmission={true}
-                                        href={`/career-groups/${selectedGroup.slug}/submissions`}
-                                        done={selectedGroup.is_completed}
-                                        locked={
-                                            !selectedGroup.is_completed &&
-                                            (!basicCompleted ||
-                                                !safeProgress.completed_paths?.includes(
-                                                    String(
-                                                        selectedGroup.paths[
-                                                            selectedGroup.paths
-                                                                .length - 1
-                                                        ]?._id,
-                                                    ),
-                                                ))
+                                {/* ── CUSTOM DROPDOWN ── */}
+                                <div className="relative w-full">
+                                    <button
+                                        onClick={() =>
+                                            setDropdownOpen((prev) => !prev)
                                         }
-                                    />
+                                        className={`flex w-full items-center justify-between gap-2 px-4 py-3 text-left transition-all duration-200 ${
+                                            dropdownOpen
+                                                ? 'rounded-t-xl border-2 border-b-0 border-[#3B28F6] bg-[#0b1333] dark:bg-[#0b1333]'
+                                                : 'rounded-xl border-2 border-blue-400/60 bg-blue-50/50 dark:border-[#3B28F6]/70 dark:bg-[#0b1333]/50'
+                                        }`}
+                                        style={{
+                                            boxShadow: dropdownOpen
+                                                ? '0 0 20px rgba(59,40,246,0.25)'
+                                                : '0 0 14px rgba(59,40,246,0.12)',
+                                        }}
+                                    >
+                                        <div className="flex items-center gap-2.5">
+                                            <div
+                                                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border transition-all duration-200 ${
+                                                    dropdownOpen
+                                                        ? 'border-blue-400/60 bg-blue-500/20'
+                                                        : 'border-blue-300/40 bg-blue-50 dark:border-blue-500/20 dark:bg-blue-500/10'
+                                                }`}
+                                            >
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    className="h-3.5 w-3.5 text-blue-400"
+                                                >
+                                                    <path
+                                                        d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.5"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                    <circle
+                                                        cx="12"
+                                                        cy="13"
+                                                        r="1.5"
+                                                        fill="currentColor"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <span
+                                                className={`font-['Orbitron'] text-[11px] font-bold tracking-wide uppercase transition-colors duration-200 ${
+                                                    selectedGroupIndex >= 0
+                                                        ? dropdownOpen
+                                                            ? 'text-blue-300'
+                                                            : 'text-blue-600 dark:text-blue-300'
+                                                        : 'text-gray-400 dark:text-gray-500'
+                                                }`}
+                                            >
+                                                {selectedGroupIndex >= 0
+                                                    ? course.career_groups[
+                                                          selectedGroupIndex
+                                                      ].name
+                                                    : 'Select a branch…'}
+                                            </span>
+                                        </div>
+                                        <div
+                                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${dropdownOpen ? 'rotate-180 bg-blue-500/20' : 'bg-transparent'}`}
+                                        >
+                                            <ChevronDown className="h-3.5 w-3.5 text-blue-400 dark:text-blue-400" />
+                                        </div>
+                                    </button>
+
+                                    {/* Dropdown list — nyambung ke trigger */}
+                                    <div
+                                        className={`absolute top-full right-0 left-0 z-[9999] overflow-y-auto rounded-b-xl border-2 border-t-0 border-[#3B28F6] bg-white transition-all duration-200 dark:bg-[#060d24] ${dropdownOpen ? 'max-h-[260px] opacity-100' : 'pointer-events-none max-h-0 opacity-0'}`}
+                                        style={{
+                                            boxShadow:
+                                                '0 16px 32px rgba(59,40,246,0.25)',
+                                        }}
+                                    >
+                                        {/* Top separator line */}
+                                        <div className="mx-4 h-[1px] bg-gradient-to-r from-transparent via-[#3B28F6]/40 to-transparent" />
+
+                                        {course.career_groups.map(
+                                            (group: any, idx: number) => (
+                                                <button
+                                                    key={group._id}
+                                                    onClick={() => {
+                                                        setSelectedGroupIndex(
+                                                            idx,
+                                                        );
+                                                        setDropdownOpen(false);
+                                                    }}
+                                                    className={`group/item flex w-full items-center gap-3 px-4 py-3 text-left transition-all duration-150 ${
+                                                        idx ===
+                                                        selectedGroupIndex
+                                                            ? 'bg-blue-500/8 dark:bg-blue-500/10'
+                                                            : 'hover:bg-blue-50/70 dark:hover:bg-[#0b1333]/80'
+                                                    } ${idx < course.career_groups.length - 1 ? 'border-b border-blue-100/50 dark:border-[#3B28F6]/15' : ''}`}
+                                                >
+                                                    {/* Thumbnail */}
+                                                    <div
+                                                        className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-150 ${
+                                                            idx ===
+                                                            selectedGroupIndex
+                                                                ? 'border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.4)]'
+                                                                : 'border-blue-200/60 group-hover/item:border-blue-400/60 dark:border-blue-500/20'
+                                                        } bg-blue-50 dark:bg-[#0b1333]`}
+                                                    >
+                                                        {group.thumbnail ? (
+                                                            <img
+                                                                src={
+                                                                    group.thumbnail
+                                                                }
+                                                                className="h-full w-full object-cover"
+                                                                alt={group.name}
+                                                            />
+                                                        ) : (
+                                                            <svg
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                className={`h-4 w-4 transition-colors ${idx === selectedGroupIndex ? 'text-blue-500' : 'text-blue-300 dark:text-blue-700'}`}
+                                                            >
+                                                                <path
+                                                                    d="M12 2C12 2 7 6 7 13l2 2c0-4 1.5-7 3-9 1.5 2 3 5 3 9l2-2c0-7-5-11-5-11Z"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                                <circle
+                                                                    cx="12"
+                                                                    cy="13"
+                                                                    r="1.5"
+                                                                    fill="currentColor"
+                                                                />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Name + subtitle */}
+                                                    <div className="flex min-w-0 flex-1 flex-col">
+                                                        <span
+                                                            className={`font-['Orbitron'] text-[10px] font-bold tracking-wide uppercase transition-colors ${
+                                                                idx ===
+                                                                selectedGroupIndex
+                                                                    ? 'text-blue-600 dark:text-blue-300'
+                                                                    : 'text-gray-700 group-hover/item:text-blue-500 dark:text-gray-300 dark:group-hover/item:text-blue-400'
+                                                            }`}
+                                                        >
+                                                            {group.name}
+                                                        </span>
+                                                        <span className="mt-0.5 truncate text-[9px] text-gray-400 dark:text-gray-600">
+                                                            {group.paths
+                                                                ?.length ??
+                                                                0}{' '}
+                                                            paths ·{' '}
+                                                            {group.paths?.reduce(
+                                                                (
+                                                                    s: number,
+                                                                    p: any,
+                                                                ) =>
+                                                                    s +
+                                                                    (p.modules
+                                                                        ?.length ||
+                                                                        0),
+                                                                0,
+                                                            ) ?? 0}{' '}
+                                                            modules
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Active indicator */}
+                                                    {idx ===
+                                                    selectedGroupIndex ? (
+                                                        <div className="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/15">
+                                                            <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="ml-auto h-5 w-5 shrink-0 rounded-full border border-blue-100/40 group-hover/item:border-blue-300/40 dark:border-blue-500/10" />
+                                                    )}
+                                                </button>
+                                            ),
+                                        )}
+                                    </div>
                                 </div>
-                            </>
-                        )}
+                            </div>
+                        </div>
                     </div>
-                )}
+                    {/* ══════════════════════════════════════════
+                    CONNECTOR + SECTION 3 — SELECTED BRANCH
+                ══════════════════════════════════════════ */}
+                    <RoadmapLine height="h-10" />
+
+                    {selectedGroup === null ? (
+                        /* ── PLACEHOLDER when no branch selected ── */
+                        <div
+                            className="relative w-full overflow-hidden rounded-xl border-2 border-blue-200/60 dark:border-[#3B28F6]/40"
+                            style={{
+                                boxShadow: '0 0 20px rgba(59,40,246,0.08)',
+                            }}
+                        >
+                            <div className="bg-white px-5 py-8 dark:bg-[#050619]">
+                                <div className="flex flex-col items-center gap-3 text-center">
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-full border border-blue-200/60 bg-blue-50/50 dark:border-[#3B28F6]/30 dark:bg-[#0b1333]/50">
+                                        <span className="text-2xl">🔒</span>
+                                    </div>
+                                    <p className="font-['Orbitron'] text-xs font-bold tracking-wider text-gray-400 uppercase dark:text-gray-500">
+                                        Select a Career Branch to continue
+                                    </p>
+                                    <p className="text-[10px] leading-relaxed text-gray-400 dark:text-gray-600">
+                                        Your progress will be saved
+                                        automatically in your chosen path.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        /* ── SELECTED BRANCH — career card + module nodes ── */
+                        <div className="flex w-full flex-col items-center">
+                            {/* Section badge */}
+                            <div className="mb-3 flex items-center gap-2">
+                                <div className="h-[1px] w-8 bg-gradient-to-l from-blue-500 to-transparent" />
+                                <span className="font-['Orbitron'] text-[8px] font-bold tracking-[0.3em] text-blue-500 uppercase dark:text-blue-400">
+                                    Your Branch
+                                </span>
+                                <div className="h-[1px] w-8 bg-gradient-to-r from-blue-500 to-transparent" />
+                            </div>
+
+                            {/* Career branch detail card */}
+                            <MobileCareerCard
+                                group={selectedGroup}
+                                basicCompleted={basicCompleted}
+                                isChosen={selectedGroup.paths.some(
+                                    (p: any) =>
+                                        p._id === safeProgress.selected_path_id,
+                                )}
+                                isOtherChosen={
+                                    !!(
+                                        safeProgress.selected_path_id &&
+                                        !selectedGroup.paths.some(
+                                            (p: any) =>
+                                                p._id ===
+                                                safeProgress.selected_path_id,
+                                        )
+                                    )
+                                }
+                                courseId={course._id}
+                                courseSlug={course.slug}
+                                progress={safeProgress}
+                            />
+
+                            {/* ─── CONNECTOR + SECTION 4: MODULE NODES ─── */}
+                            {selectedGroup.paths.length > 0 && (
+                                <>
+                                    <RoadmapLine height="h-8" />
+
+                                    {/* Module paths section badge */}
+                                    <div className="mb-3 flex items-center gap-2">
+                                        <div className="h-[1px] w-8 bg-gradient-to-l from-blue-500 to-transparent" />
+                                        <span className="font-['Orbitron'] text-[8px] font-bold tracking-[0.3em] text-blue-500 uppercase dark:text-blue-400">
+                                            Roadmap
+                                        </span>
+                                        <div className="h-[1px] w-8 bg-gradient-to-r from-blue-500 to-transparent" />
+                                    </div>
+
+                                    <div className="flex w-full flex-col items-center">
+                                        {selectedGroup.paths.map(
+                                            (p: any, idx: number) => {
+                                                const done =
+                                                    safeProgress.completed_paths?.includes(
+                                                        String(p._id),
+                                                    );
+
+                                                const isOtherChosen =
+                                                    safeProgress.selected_path_id &&
+                                                    !selectedGroup.paths.some(
+                                                        (sp: any) =>
+                                                            sp._id ===
+                                                            safeProgress.selected_path_id,
+                                                    );
+
+                                                let locked = false;
+                                                if (!basicCompleted)
+                                                    locked = true;
+                                                if (isOtherChosen)
+                                                    locked = true;
+                                                if (!hasChosenPath)
+                                                    locked = true;
+                                                if (idx > 0) {
+                                                    const prevPath =
+                                                        selectedGroup.paths[
+                                                            idx - 1
+                                                        ];
+                                                    if (
+                                                        !safeProgress.completed_paths?.includes(
+                                                            String(
+                                                                prevPath._id,
+                                                            ),
+                                                        )
+                                                    )
+                                                        locked = true;
+                                                }
+
+                                                const badge = badges?.find(
+                                                    (b: any) =>
+                                                        parseInt(
+                                                            b.order
+                                                                ?.toString()
+                                                                .trim(),
+                                                        ) ===
+                                                        idx + 1,
+                                                );
+
+                                                return (
+                                                    <React.Fragment
+                                                        key={String(p._id)}
+                                                    >
+                                                        <StudentModuleNode
+                                                            title={p.name}
+                                                            done={done}
+                                                            locked={locked}
+                                                            index={idx}
+                                                            badge={badge}
+                                                            href={
+                                                                p.modules?.[0]
+                                                                    ?._id
+                                                                    ? `/learn/${course.slug}/${p.slug}/${p.modules[0].slug}`
+                                                                    : undefined
+                                                            }
+                                                        />
+                                                        <RoadmapLine height="h-6" />
+                                                    </React.Fragment>
+                                                );
+                                            },
+                                        )}
+
+                                        {/* SUBMISSION node */}
+                                        <StudentModuleNode
+                                            title="Submission"
+                                            index={selectedGroup.paths.length}
+                                            isSubmission={true}
+                                            href={`/career-groups/${selectedGroup.slug}/submissions`}
+                                            done={selectedGroup.is_completed}
+                                            locked={
+                                                !selectedGroup.is_completed &&
+                                                (!basicCompleted ||
+                                                    !safeProgress.completed_paths?.includes(
+                                                        String(
+                                                            selectedGroup.paths[
+                                                                selectedGroup
+                                                                    .paths
+                                                                    .length - 1
+                                                            ]?._id,
+                                                        ),
+                                                    ))
+                                            }
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -850,14 +866,20 @@ export default function Roadmap({
 
     const basicCompleted = course.basic_paths.every((p: any) => p.is_completed);
 
-    const [activeTour, setActiveTour] = useState<'fundamental' | 'career' | null>(() => {
+    const [activeTour, setActiveTour] = useState<
+        'fundamental' | 'career' | null
+    >(() => {
         if (typeof window !== 'undefined') {
             const userId = auth?.user?.id || 'guest';
             if (!basicCompleted) {
-                const completed = localStorage.getItem(`roadmap_fundamental_completed_${userId}`);
+                const completed = localStorage.getItem(
+                    `roadmap_fundamental_completed_${userId}`,
+                );
                 if (completed !== 'true') return 'fundamental';
             } else {
-                const completed = localStorage.getItem(`roadmap_career_completed_${userId}`);
+                const completed = localStorage.getItem(
+                    `roadmap_career_completed_${userId}`,
+                );
                 if (completed !== 'true') return 'career';
             }
         }
@@ -868,9 +890,15 @@ export default function Roadmap({
         if (typeof window !== 'undefined') {
             const userId = auth?.user?.id || 'guest';
             if (activeTour === 'fundamental') {
-                localStorage.setItem(`roadmap_fundamental_completed_${userId}`, 'true');
+                localStorage.setItem(
+                    `roadmap_fundamental_completed_${userId}`,
+                    'true',
+                );
             } else if (activeTour === 'career') {
-                localStorage.setItem(`roadmap_career_completed_${userId}`, 'true');
+                localStorage.setItem(
+                    `roadmap_career_completed_${userId}`,
+                    'true',
+                );
             }
         }
         setActiveTour(null);
@@ -1028,9 +1056,13 @@ export default function Roadmap({
                     {/* ── DESKTOP LAYOUT (md+) — original, completely unchanged ── */}
                     <div className="mx-auto hidden w-full max-w-screen-2xl px-4 pb-16 md:block md:px-8 lg:px-12 2xl:px-16">
                         {/* FUNDAMENTAL */}
-                        <div className={`mt-4 flex w-full flex-col flex-nowrap items-center ${
-                            activeTour === 'fundamental' ? 'relative z-[130]' : ''
-                        }`}>
+                        <div
+                            className={`mt-4 flex w-full flex-col flex-nowrap items-center ${
+                                activeTour === 'fundamental'
+                                    ? 'relative z-[130]'
+                                    : ''
+                            }`}
+                        >
                             {course.basic_paths?.map((path: any) => {
                                 const done = path.is_completed;
                                 const locked = !path.is_unlocked;
@@ -1057,9 +1089,13 @@ export default function Roadmap({
 
                         {/* CAREER GROUPS */}
                         {course.career_groups?.length > 0 && (
-                            <div className={`mt-0 flex w-full flex-col flex-wrap items-start justify-center gap-0 sm:flex-row ${
-                                activeTour === 'career' ? 'relative z-[130]' : 'relative z-10'
-                            }`}>
+                            <div
+                                className={`mt-0 flex w-full flex-col flex-wrap items-start justify-center gap-0 sm:flex-row ${
+                                    activeTour === 'career'
+                                        ? 'relative z-[130]'
+                                        : 'relative z-10'
+                                }`}
+                            >
                                 {course.career_groups.map(
                                     (group: any, idx: number) => {
                                         const isFirst = idx === 0;
