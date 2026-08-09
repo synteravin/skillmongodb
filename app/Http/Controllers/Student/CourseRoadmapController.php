@@ -216,6 +216,7 @@ class CourseRoadmapController extends Controller
                 '_id' => (string) $course->_id,
                 'title' => $course->title,
                 'slug' => $course->slug,
+                'description' => $course->description,
                 'basic_paths' => $basicPaths,
                 'career_groups' => $careerGroups,
             ],
