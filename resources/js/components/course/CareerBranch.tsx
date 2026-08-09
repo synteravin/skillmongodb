@@ -18,6 +18,7 @@ type CareerGroup = {
     _id?: string;
     name: string;
     slug?: string;
+    description?: string | null;
     paths: Path[];
     mentor?: Mentor;
 };
@@ -120,15 +121,18 @@ export default function CareerBranch({
                             </div>
                         </div>
 
-                        <h2 className="mb-2 text-center font-['Orbitron'] text-sm leading-tight font-bold tracking-widest text-white uppercase sm:text-base">
-                            {group.name}
-                        </h2>
+                        <div className="mb-2 flex h-14 items-center justify-center text-center">
+                            <h2 className="line-clamp-2 text-center font-['Orbitron'] text-sm leading-tight font-bold tracking-widest text-white uppercase sm:text-base">
+                                {group.name}
+                            </h2>
+                        </div>
 
-                        <p className="mb-4 text-center font-sans text-[10px] leading-relaxed text-slate-400">
-                            A special package to become a professional{' '}
-                            {group.name} Developer, starting with modern web
-                            development fundamentals.
-                        </p>
+                        <div className="mb-4 flex h-20 items-center justify-center px-1 text-center">
+                            <p className="line-clamp-4 text-center font-sans text-[10px] leading-relaxed text-slate-400">
+                                {group.description ||
+                                    `A special package to become a professional ${group.name} Developer, starting with modern web development fundamentals.`}
+                            </p>
+                        </div>
 
                         <div className="mb-4 flex justify-between gap-2">
                             <div className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border border-[#1A2E99] bg-[#020101] p-2 text-center">

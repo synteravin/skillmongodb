@@ -217,9 +217,8 @@ function MobileCareerCard({
                 <p
                     className={`mb-4 line-clamp-3 px-1 text-center text-[10px] leading-relaxed font-semibold ${isLocked ? 'text-[#3B82F6] dark:text-gray-600' : 'text-gray-500 dark:text-gray-400'}`}
                 >
-                    A special package to become a professional {group.name}{' '}
-                    Developer, starting with modern web development fundamentals
-                    and progressing to advanced topics and real-world projects.
+                    {group.description ||
+                        `A special package to become a professional ${group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects.`}
                 </p>
 
                 {/* STATS */}
@@ -415,6 +414,7 @@ function MobileRoadmap({
                             <React.Fragment key={path._id}>
                                 <StudentFundamentalNode
                                     title={path.name}
+                                    description={path.description}
                                     locked={locked}
                                     done={done}
                                     thumbnail={path.thumbnail}
@@ -1078,6 +1078,7 @@ export default function Roadmap({
                                     <React.Fragment key={path._id}>
                                         <StudentFundamentalNode
                                             title={path.name}
+                                            description={path.description}
                                             locked={locked}
                                             done={done}
                                             thumbnail={path.thumbnail}
@@ -1091,6 +1092,7 @@ export default function Roadmap({
 
                         {/* CAREER GROUPS */}
                         {course.career_groups?.length > 0 && (
+
                             <div className="w-full overflow-x-auto pt-0 pb-10 px-4 [scrollbar-width:thin] [scrollbar-color:rgba(59,40,246,0.3)_transparent] dark:[scrollbar-color:rgba(255,255,255,0.2)_transparent]">
                                 <div
                                     className={`mt-0 flex min-w-max justify-center gap-0 pb-2 ${
@@ -1122,6 +1124,7 @@ export default function Roadmap({
                                                                 <div className="absolute top-0 right-0 z-0 hidden h-[2px] w-1/2 bg-blue-500/70 sm:block dark:bg-white/80" />
                                                             )}
                                                         </>
+
                                                     )}
 
                                                     <div className="z-10 hidden h-10 w-[2px] bg-blue-500/70 sm:block dark:bg-white/80" />

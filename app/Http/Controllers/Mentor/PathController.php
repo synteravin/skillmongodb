@@ -41,6 +41,7 @@ class PathController extends Controller
                 'id' => (string) $group->_id,
                 'slug' => $group->slug,
                 'name' => $group->name,
+                'description' => $group->description,
                 'status' => $group->status ?? 'draft',
             ],
             'paths' => $group->paths()

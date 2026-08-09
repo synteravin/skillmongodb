@@ -468,7 +468,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     onClick={() =>
                                         fileInputRef.current?.click()
                                     }
-                                    className={`relative flex aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-xl border transition-colors ${isDragging ? 'border-[#3B28F6] bg-[#3B28F6]/10' : preview ? 'border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.03]' : 'border-dashed border-slate-200 bg-slate-50 hover:border-[#3B28F6]/50 hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-[#3B28F6]/50 dark:hover:bg-white/[0.05]'}`}
+                                    className={`relative flex aspect-video md:aspect-[4/3] cursor-pointer items-center justify-center overflow-hidden rounded-xl border transition-colors ${isDragging ? 'border-[#3B28F6] bg-[#3B28F6]/10' : preview ? 'border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.03]' : 'border-dashed border-slate-200 bg-slate-50 hover:border-[#3B28F6]/50 hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-[#3B28F6]/50 dark:hover:bg-white/[0.05]'}`}
                                 >
                                     {preview ? (
                                         <>
@@ -531,12 +531,13 @@ export default function Index({ courses }: { courses: Course[] }) {
 
                                         <input
                                             type="text"
+                                            disabled={processing}
                                             value={data.title}
                                             onChange={(e) =>
                                                 setData('title', e.target.value)
                                             }
                                             placeholder="e.g., Advanced Laravel Architecture"
-                                            className="dark:placeholder:text-slate-650 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition-colors outline-none placeholder:text-slate-400 focus:border-[#3B28F6] focus:bg-white dark:border-white/10 dark:bg-white/[0.03] dark:text-white dark:focus:bg-white/[0.05]"
+                                            className="dark:placeholder:text-slate-650 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition-colors outline-none placeholder:text-slate-400 focus:border-[#3B28F6] focus:bg-white disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.03] dark:text-white dark:focus:bg-white/[0.05]"
                                         />
 
                                         {errors.title && (
@@ -553,7 +554,8 @@ export default function Index({ courses }: { courses: Course[] }) {
                                         </label>
 
                                         <textarea
-                                            rows={6}
+                                            rows={5}
+                                            disabled={processing}
                                             value={data.description}
                                             onChange={(e) =>
                                                 setData(
@@ -562,7 +564,7 @@ export default function Index({ courses }: { courses: Course[] }) {
                                                 )
                                             }
                                             placeholder="What will students learn from this course?"
-                                            className="dark:placeholder:text-slate-650 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition-colors outline-none placeholder:text-slate-400 focus:border-[#3B28F6] focus:bg-white dark:border-white/10 dark:bg-white/[0.03] dark:text-white dark:focus:bg-white/[0.05]"
+                                            className="dark:placeholder:text-slate-650 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition-colors outline-none placeholder:text-slate-400 focus:border-[#3B28F6] focus:bg-white disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.03] dark:text-white dark:focus:bg-white/[0.05]"
                                         />
 
                                         {errors.description && (
@@ -576,11 +578,12 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-3 border-t border-slate-200 pt-5 dark:border-white/10">
+                                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3 border-t border-slate-200 pt-5 dark:border-white/10">
                                     <button
                                         type="button"
+                                        disabled={processing}
                                         onClick={closeModal}
-                                        className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.07]"
+                                        className="w-full sm:w-auto rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.07]"
                                     >
                                         Cancel
                                     </button>
@@ -588,12 +591,12 @@ export default function Index({ courses }: { courses: Course[] }) {
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="inline-flex items-center justify-center gap-2 rounded-xl border-transparent bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[#3B28F6] dark:hover:bg-[#2A1CE0]"
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border-transparent bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[#3B28F6] dark:hover:bg-[#2A1CE0]"
                                     >
                                         {processing ? (
                                             <>
                                                 <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                                Saving...
+                                                Processing...
                                             </>
                                         ) : openModal === 'edit' ? (
                                             'Save Changes'
