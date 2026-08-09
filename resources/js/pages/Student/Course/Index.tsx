@@ -2,6 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
+import PageBackground from '@/components/Student/PageBackground';
 import {
     TriangleAlert,
     X,
@@ -137,7 +138,8 @@ export default function Index({
         <>
             <Head title="My Courses" />
 
-            <div className="flex h-screen flex-col overflow-hidden bg-slate-100 font-sans text-slate-900 dark:bg-[#020202] dark:text-slate-200">
+            <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] font-sans text-slate-900 dark:bg-[#020202] dark:text-slate-200">
+                <PageBackground />
                 {/* ================= HEADER (DIAM) ================= */}
                 <div className="w-full flex-shrink-0 px-1 pt-0.5">
                     <div
@@ -402,7 +404,7 @@ export default function Index({
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25 }}
                         onClick={handleCancelDesc}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020202]/30 p-4 backdrop-blur-xs lg:p-6"
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020202]/30 dark:bg-[#020202]/50 p-4 backdrop-blur-xs lg:p-6"
                     >
                         {/* ================= CARD MODAL ================= */}
                         <motion.div
@@ -423,7 +425,7 @@ export default function Index({
                                 ease: [0.22, 1, 0.36, 1], // lebih smooth dari easeInOut
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className="relative w-full max-w-[560px] overflow-hidden rounded-xl border-2 border-[#3B28F6] bg-[#020202] will-change-[clip-path,opacity] md:max-w-[640px] md:rounded-[16px] md:border-[3px] lg:max-w-[720px] xl:max-w-[780px] 2xl:max-w-[860px]"
+                            className="relative w-full max-w-[560px] overflow-hidden rounded-xl border-2 border-[#3B28F6] bg-[#fdfcfc] dark:bg-[#020202] will-change-[clip-path,opacity] md:max-w-[640px] md:rounded-[16px] md:border-[3px] lg:max-w-[720px] xl:max-w-[780px] 2xl:max-w-[860px]"
                         >
                             {/* ================= THUMBNAIL ================= */}
                             <div className="xs:h-[165px] relative h-[140px] w-full overflow-hidden md:h-[200px] lg:h-[220px]">
@@ -454,7 +456,7 @@ export default function Index({
                             {/* ================= BODY ================= */}
                             <div className="px-4 py-4 md:px-7 md:py-5 lg:px-8">
                                 {/* TITLE */}
-                                <h1 className="xs:text-lg text-base leading-snug font-bold text-white sm:text-xl md:text-2xl lg:text-3xl">
+                                <h1 className="xs:text-lg text-base leading-snug font-bold text-slate-900 dark:text-white sm:text-xl md:text-2xl lg:text-3xl">
                                     {selectedCourse.title}
                                 </h1>
 
@@ -466,19 +468,19 @@ export default function Index({
                                 </div>
 
                                 {/* ================= DESKRIPSI (SCROLL FIX) ================= */}
-                                <div className="xs:max-h-[110px] xs:text-sm max-h-[85px] overflow-y-auto pr-1.5 text-xs leading-relaxed text-slate-300 [scrollbar-color:rgba(59,40,246,0.5)_transparent] [scrollbar-width:thin] md:max-h-[130px] md:text-base">
+                                <div className="xs:max-h-[110px] xs:text-sm max-h-[85px] overflow-y-auto pr-1.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300 [scrollbar-color:rgba(59,40,246,0.5)_transparent] [scrollbar-width:thin] md:max-h-[130px] md:text-base">
                                     {selectedCourse.description}
                                 </div>
 
                                 {/* ================= INFO BOX ================= */}
                                 <div className="mt-4 flex flex-wrap gap-2.5 md:mt-5 md:gap-3">
                                     {/* MODUL */}
-                                    <div className="xs:gap-2 xs:px-3 xs:py-2 xs:min-w-[140px] flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-white/10 bg-[#03062C] px-2.5 py-1.5 sm:min-w-[160px]">
-                                        <BookOpen className="h-4 w-4 shrink-0 text-yellow-400 sm:h-5 sm:w-5" />
+                                    <div className="xs:gap-2 xs:px-3 xs:py-2 xs:min-w-[140px] flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 dark:border-white/10 dark:bg-[#03062C] px-2.5 py-1.5 sm:min-w-[160px]">
+                                        <BookOpen className="h-4 w-4 shrink-0 text-yellow-500 dark:text-yellow-400 sm:h-5 sm:w-5" />
 
-                                        <span className="xs:text-xs text-[11px] leading-none font-extrabold text-white sm:text-sm md:text-base lg:text-lg">
+                                        <span className="xs:text-xs text-[11px] leading-none font-extrabold text-slate-800 dark:text-white sm:text-sm md:text-base lg:text-lg">
                                             Modul:{' '}
-                                            <span className="font-bold text-white">
+                                            <span className="font-bold text-[#3B28F6] dark:text-white">
                                                 {selectedCourse.modules_count ??
                                                     0}
                                             </span>
@@ -486,12 +488,12 @@ export default function Index({
                                     </div>
 
                                     {/* FORMAT */}
-                                    <div className="xs:gap-2 xs:px-3 xs:py-2 xs:min-w-[140px] flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-white/10 bg-[#03062C] px-2.5 py-1.5 sm:min-w-[160px]">
-                                        <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-400 sm:h-5 sm:w-5" />
+                                    <div className="xs:gap-2 xs:px-3 xs:py-2 xs:min-w-[140px] flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 dark:border-white/10 dark:bg-[#03062C] px-2.5 py-1.5 sm:min-w-[160px]">
+                                        <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-500 dark:text-yellow-400 sm:h-5 sm:w-5" />
 
-                                        <span className="xs:text-xs text-[11px] leading-none font-extrabold text-white sm:text-sm md:text-base lg:text-lg">
+                                        <span className="xs:text-xs text-[11px] leading-none font-extrabold text-slate-800 dark:text-white sm:text-sm md:text-base lg:text-lg">
                                             Format:{' '}
-                                            <span className="font-bold text-white">
+                                            <span className="font-bold text-[#3B28F6] dark:text-white">
                                                 Video & Project
                                             </span>
                                         </span>
@@ -508,7 +510,7 @@ export default function Index({
                             </div>
 
                             {/* FOOTER */}
-                            <p className="pb-3 text-center text-[9px] tracking-widest text-slate-600 uppercase sm:text-[10px] md:pb-4">
+                            <p className="pb-3 text-center text-[9px] tracking-widest text-slate-400 dark:text-slate-600 uppercase sm:text-[10px] md:pb-4">
                                 Skillventura · Course
                             </p>
                         </motion.div>
@@ -523,7 +525,7 @@ export default function Index({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 p-4 lg:p-6"
+                        className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 dark:bg-black/80 p-4 lg:p-6"
                     >
                         <motion.div
                             initial={{
@@ -539,27 +541,23 @@ export default function Index({
                                 opacity: 0,
                             }}
                             transition={{ duration: 0.5, ease: 'easeInOut' }}
-                            className="relative w-full max-w-2xl rounded border border-[#FACC15] bg-[#020202] shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_30px_rgba(250,204,21,0.15)] md:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
+                            className="relative w-full max-w-2xl rounded border border-[#FACC15] bg-white dark:bg-[#020202] shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
                         >
                             {/* Header */}
                             <div className="relative z-10 flex items-center gap-3 px-4 py-2.5 md:gap-5 md:px-5 md:py-3">
                                 {/* GARIS */}
-                                <div className="absolute right-4 bottom-0 left-4 h-[1px] bg-slate-800 md:right-5 md:left-5 dark:bg-slate-700/60" />
+                                <div className="absolute right-4 bottom-0 left-4 h-[1px] bg-slate-200 dark:bg-slate-700/60 md:right-5 md:left-5" />
 
                                 {/* ICON */}
                                 <div
-                                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center md:h-7 md:w-7"
-                                    style={{
-                                        border: '1px solid #FACC15',
-                                        background: 'rgba(250,204,21,0.15)',
-                                    }}
+                                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center md:h-7 md:w-7 border border-[#FACC15] bg-yellow-500/10 dark:bg-yellow-500/15"
                                 >
-                                    <TriangleAlert className="h-3.5 w-3.5 text-yellow-400 md:h-4 md:w-4" />
+                                    <TriangleAlert className="h-3.5 w-3.5 text-yellow-500 dark:text-yellow-400 md:h-4 md:w-4" />
                                 </div>
 
                                 {/* TITLE */}
                                 <h1
-                                    className="xs:tracking-[0.2em] xs:text-base text-sm font-bold tracking-[0.12em] text-white uppercase sm:text-lg sm:tracking-[0.3em] md:text-xl"
+                                    className="xs:tracking-[0.2em] xs:text-base text-sm font-bold tracking-[0.12em] text-slate-900 dark:text-white uppercase sm:text-lg sm:tracking-[0.3em] md:text-xl"
                                     style={{
                                         fontFamily: 'Orbitron, sans-serif',
                                     }}
@@ -572,7 +570,7 @@ export default function Index({
                             <div className="relative z-10 flex flex-col gap-3.5 px-4 py-4 md:gap-4 md:px-5 md:pt-5 md:pb-5">
                                 {/* Question */}
                                 <p
-                                    className="xs:text-sm text-center text-xs leading-relaxed font-semibold text-white sm:text-base md:text-lg"
+                                    className="xs:text-sm text-center text-xs leading-relaxed font-semibold text-slate-800 dark:text-white sm:text-base md:text-lg"
                                     style={{
                                         fontFamily: 'Orbitron',
                                         letterSpacing: '0.05em',
@@ -582,7 +580,7 @@ export default function Index({
                                 </p>
 
                                 {/* Warning box */}
-                                <div className="xs:p-4 border border-[#cc0000] bg-[#110000] p-3 shadow-[inset_0_0_15px_rgba(180,0,0,0.1)]">
+                                <div className="xs:p-4 border border-red-300 dark:border-[#cc0000] bg-red-50/50 dark:bg-[#110000] p-3 shadow-[inset_0_0_15px_rgba(180,0,0,0.05)] dark:shadow-[inset_0_0_15px_rgba(180,0,0,0.1)]">
                                     {/* Warning label */}
                                     <div className="mb-2 flex items-center gap-2 md:mb-3">
                                         <div className="text-red-600">
@@ -598,7 +596,7 @@ export default function Index({
 
                                     {/* Warning text */}
                                     <p
-                                        className="xs:text-sm text-center text-xs leading-relaxed text-white md:text-base"
+                                        className="xs:text-sm text-center text-xs leading-relaxed text-slate-800 dark:text-white md:text-base"
                                         style={{ fontFamily: 'Oxanium' }}
                                     >
                                         Once selected, you{' '}
@@ -614,12 +612,9 @@ export default function Index({
                                 <div className="xs:gap-3 flex flex-col gap-2.5 pt-1 sm:flex-row">
                                     <button
                                         onClick={handleCancelConfirm}
-                                        className="xs:py-2.5 xs:tracking-[0.2em] xs:text-sm flex-1 py-2 text-xs tracking-[0.12em] uppercase transition-all duration-200 hover:bg-white/10 sm:text-base md:py-3 md:text-lg"
+                                        className="xs:py-2.5 xs:tracking-[0.2em] xs:text-sm flex-1 py-2 text-xs tracking-[0.12em] uppercase transition-all duration-200 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 dark:bg-[#111] dark:hover:bg-white/10 dark:border-[#444] dark:text-[#aaaaaa] sm:text-base md:py-3 md:text-lg"
                                         style={{
                                             fontFamily: 'Oxanium',
-                                            background: '#111',
-                                            border: '1.5px solid #444',
-                                            color: '#aaaaaa',
                                         }}
                                     >
                                         Cancel

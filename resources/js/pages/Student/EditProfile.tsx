@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import AvatarCropper from '@/components/AvatarCropper';
+import PageBackground from '@/components/Student/PageBackground';
 
 type Props = {
     user: {
@@ -117,7 +118,7 @@ export default function EditProfile({ user }: Props) {
     }
 
     return (
-        <div className="flex min-h-screen w-full flex-col overflow-y-auto bg-[#f0f2fa] text-gray-900 transition-colors duration-300 dark:bg-[#0c0c14] dark:text-white">
+        <div className="relative flex min-h-screen w-full flex-col overflow-y-auto bg-[#fdfcfc] text-gray-900 transition-colors duration-300 dark:bg-[#0c0c14] dark:text-white">
             {/* AvatarCropper Modal */}
             {cropSrc && (
                 <AvatarCropper
@@ -127,13 +128,10 @@ export default function EditProfile({ user }: Props) {
                 />
             )}
 
-            {/* BG GLOW */}
-            <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
-                <div className="h-[400px] w-[700px] rounded-full bg-blue-600 opacity-5 blur-[160px] dark:opacity-10" />
-            </div>
+            <PageBackground />
 
             {/* ── TOOLBAR ── */}
-            <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-4 pb-2 md:px-8">
+            <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-3 pb-2 md:px-8">
                 {/* BACK */}
                 <Link href="/profile">
                     <div
@@ -149,20 +147,16 @@ export default function EditProfile({ user }: Props) {
                 </Link>
 
                 <h1 className="hidden font-['Orbitron'] text-sm font-bold tracking-[4px] text-gray-700 sm:block dark:text-gray-300">
-                    EDIT PROFILE & SECURITY
+                    EDIT PROFILE
                 </h1>
             </div>
 
             {/* MAIN CONTENT CONTAINER */}
-            <div className="relative z-10 flex flex-1 flex-col gap-6 p-4 md:p-8">
+            <div className="relative z-10 flex flex-1 flex-col gap-6 px-4 pb-4 md:px-8">
                 {/* ══════════ KARTU ATAS (EDIT PROFIL) ══════════ */}
                 <form
                     onSubmit={handleProfileSubmit}
                     className="flex flex-col gap-6 border-2 border-gray-200 bg-white p-5 shadow-[0_4px_20px_rgba(59,40,246,0.04)] md:p-6 lg:flex-row dark:border-[#3B28F6]/60 dark:bg-[#050619] dark:shadow-none"
-                    style={{
-                        clipPath:
-                            'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
-                    }}
                 >
                     {/* SEBELAH KIRI: Foto Profil Upload */}
                     <div className="flex flex-col items-center justify-center border-gray-100 lg:w-1/3 lg:border-r lg:pr-6 dark:border-[#3B28F6]/20">
@@ -174,7 +168,7 @@ export default function EditProfile({ user }: Props) {
                             style={{ width: '155px', height: '155px' }}
                         >
                             <div
-                                className="h-full w-full cursor-pointer overflow-hidden rounded-full border-4 border-[#3B28F6] transition hover:border-[#FACC15] dark:border-[#3B28F6] dark:hover:border-[#FACC15]"
+                                className="h-full w-full cursor-pointer overflow-hidden rounded-full border-4 border-[#FACC15] transition hover:border-[#3B28F6] dark:border-[#FACC15] dark:hover:border-[#3B28F6]"
                                 onClick={handleAvatarClick}
                             >
                                 <img
@@ -379,10 +373,6 @@ export default function EditProfile({ user }: Props) {
                     <form
                         onSubmit={handlePasswordSubmit}
                         className="flex flex-col justify-between border-2 border-gray-200 bg-white p-5 shadow-[0_4px_20px_rgba(59,40,246,0.04)] md:p-6 dark:border-[#3B28F6]/60 dark:bg-[#050619] dark:shadow-none"
-                        style={{
-                            clipPath:
-                                'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
-                        }}
                     >
                         <div>
                             <div className="mb-4 flex items-center gap-2">
@@ -589,10 +579,6 @@ export default function EditProfile({ user }: Props) {
                     {/* KARTU BAWAH KANAN: Persyaratan Sistem */}
                     <div
                         className="flex flex-col justify-between border-2 border-gray-200 bg-white p-5 shadow-[0_4px_20px_rgba(59,40,246,0.04)] md:p-6 dark:border-[#3B28F6]/60 dark:bg-[#050619] dark:shadow-none"
-                        style={{
-                            clipPath:
-                                'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
-                        }}
                     >
                         <div>
                             <div className="mb-4 flex items-center gap-2">
@@ -611,7 +597,7 @@ export default function EditProfile({ user }: Props) {
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.length
                                                 ? 'border-green-500 bg-green-500/10 text-green-500'
-                                                : 'border-gray-300 dark:border-gray-700'
+                                                : 'border-red-500/70 bg-red-500/10 dark:border-red-500/50'
                                         }`}
                                     >
                                         {reqs.length && (
@@ -633,7 +619,7 @@ export default function EditProfile({ user }: Props) {
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.lowercase
                                                 ? 'border-green-500 bg-green-500/10 text-green-500'
-                                                : 'border-gray-300 dark:border-gray-700'
+                                                : 'border-red-500/70 bg-red-500/10 dark:border-red-500/50'
                                         }`}
                                     >
                                         {reqs.lowercase && (
@@ -655,7 +641,7 @@ export default function EditProfile({ user }: Props) {
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.uppercase
                                                 ? 'border-green-500 bg-green-500/10 text-green-500'
-                                                : 'border-gray-300 dark:border-gray-700'
+                                                : 'border-red-500/70 bg-red-500/10 dark:border-red-500/50'
                                         }`}
                                     >
                                         {reqs.uppercase && (
@@ -677,7 +663,7 @@ export default function EditProfile({ user }: Props) {
                                         className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                                             reqs.notCurrent
                                                 ? 'border-green-500 bg-green-500/10 text-green-500'
-                                                : 'border-gray-300 dark:border-gray-700'
+                                                : 'border-red-500/70 bg-red-500/10 dark:border-red-500/50'
                                         }`}
                                     >
                                         {reqs.notCurrent && (

@@ -153,8 +153,8 @@ function NavItem({
                 <div
                     className={
                         mobile
-                            ? `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 dark:bg-yellow-400`
-                            : `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 md:h-[180%] md:w-[2px] lg:h-[200%] 2xl:h-[220%] dark:bg-yellow-400`
+                            ? `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 dark:bg-[#FACC15]`
+                            : `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-[#FACC15] md:h-[180%] md:w-[2px] lg:h-[200%] 2xl:h-[220%] dark:bg-yellow-400`
                     }
                 />
             )}

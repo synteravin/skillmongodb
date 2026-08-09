@@ -2,6 +2,7 @@ import { Link, useForm } from '@inertiajs/react';
 import React, { useRef, useState } from 'react';
 import { Plus, X, FileText, Calendar, Award, CloudUpload } from 'lucide-react';
 import QuestRewardsEstimator from '@/components/Quest/QuestRewardsEstimator';
+import PageBackground from '@/components/Student/PageBackground';
 
 export default function Create() {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,9 +96,10 @@ export default function Create() {
 
     return (
         <div
-            className="flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8fafc] text-slate-800 transition-colors duration-200 dark:bg-[#030712] dark:text-white"
+            className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#fdfcfc] text-slate-800 transition-colors duration-200 dark:bg-[#020202] dark:text-white"
             style={{ fontFamily: "'Outfit', sans-serif" }}
         >
+            <PageBackground />
             {/* HEADER - Gaming style, consistent with other pages */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div

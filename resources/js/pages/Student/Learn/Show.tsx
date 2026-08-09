@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { router, Link, usePage } from '@inertiajs/react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
+import PageBackground from '@/components/Student/PageBackground';
 import {
     Lock,
     Check,
@@ -248,7 +249,8 @@ export default function LearnShow({
     const [moduleDropdownOpen, setModuleDropdownOpen] = useState(false);
 
     return (
-        <div className="flex h-screen flex-col overflow-hidden bg-[#f0f4ff] text-[#1e293b] dark:bg-[#040812] dark:text-white">
+        <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] text-[#1e293b] dark:bg-[#020202] dark:text-white">
+            <PageBackground />
             {/* ================= HEADER ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div

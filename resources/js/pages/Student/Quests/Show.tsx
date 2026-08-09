@@ -18,6 +18,7 @@ import QuestStepper from '@/components/Quest/QuestStepper';
 import QuestAttachments from '@/components/Quest/QuestAttachments';
 import CreatorProjectPanel from '@/components/Quest/CreatorProjectPanel';
 import WorkerProjectPanel from '@/components/Quest/WorkerProjectPanel';
+import PageBackground from '@/components/Student/PageBackground';
 import VisitorBidPanel from '@/components/Quest/VisitorBidPanel';
 import BidsTabPanel from '@/components/Quest/BidsTabPanel';
 import DisputePanel from '@/components/Quest/DisputePanel';
@@ -179,9 +180,10 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
     return (
         <div
-            className="flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8fafc] text-slate-800 transition-colors duration-250 dark:bg-[#030712] dark:text-white"
+            className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#fdfcfc] text-slate-800 transition-colors duration-250 dark:bg-[#020202] dark:text-white"
             style={{ fontFamily: "'Outfit', sans-serif" }}
         >
+            <PageBackground />
             {/* HEADER - Gaming style, consistent with other pages */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
