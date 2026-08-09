@@ -225,6 +225,7 @@ export default function StudentCareerBranch({
                             }`}
                         >
                             {group.description ||
+                                firstPath?.description ||
                                 `A special package to become a professional ${group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects.`}
                         </p>
                     </div>

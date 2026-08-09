@@ -12,6 +12,7 @@ type Course = {
     _id: string;
     title: string;
     slug: string;
+    description?: string | null;
     basic_paths: any[];
     career_groups: any[];
 };
@@ -218,6 +219,7 @@ function MobileCareerCard({
                     className={`mb-4 line-clamp-3 px-1 text-center text-[10px] leading-relaxed font-semibold ${isLocked ? 'text-[#3B82F6] dark:text-gray-600' : 'text-gray-500 dark:text-gray-400'}`}
                 >
                     {group.description ||
+                        group.paths?.[0]?.description ||
                         `A special package to become a professional ${group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects.`}
                 </p>
 
