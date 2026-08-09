@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\UserStat;
 use App\Services\CertificateService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class StudentSubmissionController extends Controller
@@ -37,12 +38,12 @@ class StudentSubmissionController extends Controller
             'grade' => $validated['grade'],
             'feedback' => $validated['feedback'],
             'status' => 'graded',
-            'graded_by' => auth()->id(),
+            'graded_by' => Auth::User()->id,
         ];
 
         $studentSubmission->update($updateData);
 
-        (new CertificateService)->generateForSubmission($studentSubmission, auth()->user());
+        (new CertificateService)->generateForSubmission($studentSubmission, Auth::User());
 
         try {
             Notification::create([

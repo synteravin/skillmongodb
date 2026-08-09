@@ -11,6 +11,7 @@ type Module = {
 type Path = {
     _id: string;
     name: string;
+    slug?: string;
     modules: Module[];
     thumbnail?: string | null;
 };

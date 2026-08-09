@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\StudentSubmission;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -12,7 +13,7 @@ class CertificateController extends Controller
 {
     public function index()
     {
-        $certificates = StudentSubmission::where('student_id', auth()->id())
+        $certificates = StudentSubmission::where('student_id', Auth::User()->id)
             ->whereNotNull('certificate_path')
             ->with('submission.group')
             ->latest()

@@ -6,6 +6,7 @@ use App\Models\CertificateDesign;
 use App\Models\StudentSubmission;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CertificateService
@@ -22,7 +23,7 @@ class CertificateService
         }
 
         if (! $mentor) {
-            $mentor = auth()->user();
+            $mentor = Auth::User();
         }
 
         $admin = User::where('role', 'admin')->first();

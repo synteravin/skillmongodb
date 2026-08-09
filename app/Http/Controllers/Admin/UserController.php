@@ -9,6 +9,7 @@ use App\Services\Admin\UserDetailService;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -218,7 +219,10 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
-        if ((string) auth()->user()->_id === (string) $user->_id) {
+        /** @var User $currentUser */
+        $currentUser = Auth::user();
+
+        if ((string) $currentUser->_id === (string) $user->_id) {
             return back()->with('error', 'Tidak bisa hapus diri sendiri');
         }
 
@@ -236,7 +240,9 @@ class UserController extends Controller
             'ids.*' => ['required', 'string'],
         ]);
 
-        $currentUserId = (string) auth()->id();
+        /** @var User $currentUser */
+        $currentUser = $request->user();
+        $currentUserId = (string) $currentUser->_id;
         $targetIds = array_filter($validated['ids'], function ($id) use ($currentUserId) {
             return (string) $id !== $currentUserId;
         });

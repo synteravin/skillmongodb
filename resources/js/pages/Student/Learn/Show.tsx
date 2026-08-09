@@ -22,6 +22,7 @@ type Content = {
 type Module = {
     _id: string;
     title: string;
+    slug?: string;
     contents: Content[];
     order?: number;
 };
@@ -29,8 +30,9 @@ type Module = {
 type Path = {
     _id: string;
     name: string;
+    slug?: string;
     modules: Module[];
-    final_quiz?: { id: string };
+    final_quiz?: { id: string; slug?: string };
 };
 
 type Course = {
@@ -732,7 +734,11 @@ export default function LearnShow({
                             {isLastModule && finalQuizSlug && allCompleted && (
                                 <button
                                     onClick={() =>
-                                        router.visit(`/quiz/${finalQuizSlug}`)
+
+                                        router.visit(
+                                            `/courses/${course.slug}/paths/${path.slug}/quiz`,
+                                        )
+
                                     }
                                     className="w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"
                                 >

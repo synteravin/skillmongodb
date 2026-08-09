@@ -6,7 +6,7 @@ use App\Models\UserStat;
 
 class RewardService
 {
-    private function normalizeStats($stats)
+    private function normalizeStats(mixed $stats): array
     {
         if (is_object($stats)) {
             return (array) $stats;
@@ -15,12 +15,8 @@ class RewardService
         return $stats ?? [];
     }
 
-    private function initPath(&$stats, $pathId)
+    private function initPath(array &$stats, string $pathId): void
     {
-        if (! is_array($stats)) {
-            $stats = [];
-        }
-
         if (! isset($stats[$pathId])) {
             $stats[$pathId] = [
                 'exp' => 0,
@@ -30,7 +26,7 @@ class RewardService
         }
     }
 
-    public function addExp(UserStat $progress, $pathId, int $amount)
+    public function addExp(UserStat $progress, string $pathId, int $amount)
     {
         $stats = $this->normalizeStats($progress->path_stats);
         $pathId = (string) $pathId;
@@ -43,7 +39,7 @@ class RewardService
         $progress->save();
     }
 
-    public function addGold(UserStat $progress, $pathId, int $amount)
+    public function addGold(UserStat $progress, string $pathId, int $amount)
     {
         $stats = $this->normalizeStats($progress->path_stats);
         $pathId = (string) $pathId;
@@ -56,7 +52,7 @@ class RewardService
         $progress->save();
     }
 
-    public function setQuizScore(UserStat $progress, $pathId, int $score)
+    public function setQuizScore(UserStat $progress, string $pathId, int $score)
     {
         $stats = $this->normalizeStats($progress->path_stats);
         $pathId = (string) $pathId;

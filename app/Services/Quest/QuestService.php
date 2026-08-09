@@ -17,6 +17,7 @@ use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
 use App\Models\User;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -194,6 +195,7 @@ class QuestService
                 ];
             });
 
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $resolvedImages = array_map(function ($img) use ($disk) {
             return [
@@ -423,11 +425,13 @@ class QuestService
 
             $submissionFile = null;
             if ($quest->submission_file) {
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
                 $subFile = $quest->submission_file;
                 $submissionFile = [
                     'name' => $subFile['name'] ?? 'project.zip',
                     'size' => $subFile['size'] ?? 0,
-                    'url' => isset($subFile['path']) ? Storage::disk('s3')->temporaryUrl($subFile['path'], now()->addMinutes(30)) : null,
+                    'url' => isset($subFile['path']) ? $disk->temporaryUrl($subFile['path'], now()->addMinutes(30)) : null,
                 ];
             }
 

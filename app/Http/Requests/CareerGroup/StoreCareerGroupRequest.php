@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\CareerGroup;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,10 @@ class StoreCareerGroupRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()?->isAdmin();
+        /** @var User|null $user */
+        $user = $this->user();
+
+        return $user?->isAdmin() ?? false;
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Actions\Path\SelectPathAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Path\SelectPathRequest;
 use App\Models\Path;
+use Illuminate\Support\Facades\Auth;
 
 class SelectPathController extends Controller
 {
@@ -16,7 +17,7 @@ class SelectPathController extends Controller
     ) {
         $this->authorize('select', $path);
 
-        $action->execute(auth()->user(), $path);
+        $action->execute(Auth::User(), $path);
 
         return back()->with('success', 'Path selected');
     }

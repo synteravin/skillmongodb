@@ -13,7 +13,9 @@ use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
 use App\Models\User;
 use App\Services\Quest\QuestService;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -96,7 +98,8 @@ class QuestController extends Controller
     public function show(string $id, QuestService $questService)
     {
         $quest = Quest::with(['creator', 'worker'])->where('slug', $id)->orWhere('_id', $id)->firstOrFail();
-        $user = auth()->user();
+        /** @var User $user */
+        $user = Auth::user();
 
         $rewards = $questService->getRewardsForQuest($quest);
 
@@ -127,6 +130,7 @@ class QuestController extends Controller
                 ];
             });
 
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('s3');
         $resolvedImages = array_map(function ($img) use ($disk) {
             return [

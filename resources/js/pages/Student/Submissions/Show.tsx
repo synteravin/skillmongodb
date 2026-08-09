@@ -13,6 +13,7 @@ import { FormEventHandler, useState, useRef } from 'react';
 interface CareerGroup {
     id: string;
     _id?: string;
+    slug?: string;
     name: string;
 }
 
@@ -23,6 +24,7 @@ interface User {
 interface Submission {
     id: string;
     _id?: string;
+    slug?: string;
     group_id: string;
     title: string;
     description: string;
