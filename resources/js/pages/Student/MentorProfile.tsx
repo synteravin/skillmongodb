@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageBackground from '@/components/Student/PageBackground';
 import {
     Mail,
     Linkedin,
@@ -64,7 +65,8 @@ export default function MentorProfile({ mentor }: Props) {
     };
 
     return (
-        <div className="relative min-h-screen w-full overflow-x-hidden bg-[#f0f2fa] pb-16 font-sans text-gray-900 transition-colors duration-300 dark:bg-[#020208] dark:text-white">
+        <div className="relative min-h-screen w-full overflow-x-hidden bg-[#fdfcfc] pb-16 font-sans text-gray-900 transition-colors duration-300 dark:bg-[#020208] dark:text-white">
+            <PageBackground />
             {/* ── HEADER NAVIGATION (MATCHING SELECT COURSE) ── */}
             <div className="relative z-30 w-full shrink-0 px-1 pt-0.5">
                 <div

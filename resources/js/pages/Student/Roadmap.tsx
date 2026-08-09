@@ -5,6 +5,7 @@ import StudentCareerBranch from '@/components/Student/roadmap/StudentCareerBranc
 import { Link, router, usePage } from '@inertiajs/react';
 import { User, ChevronDown } from 'lucide-react';
 import RoadmapOnboardingTour from '@/components/Student/RoadmapOnboardingTour';
+import PageBackground from '@/components/Student/PageBackground';
 
 /* ================= TYPES ================= */
 type Course = {
@@ -928,7 +929,8 @@ export default function Roadmap({
     }, []);
 
     return (
-        <div className="flex h-screen w-full flex-col overflow-hidden bg-blue-100/30 font-sans text-gray-800 dark:bg-[#020202] dark:text-slate-200">
+        <div className="relative flex h-screen w-full flex-col overflow-hidden bg-[#fdfcfc] font-sans text-gray-800 dark:bg-[#020202] dark:text-slate-200">
+            <PageBackground />
             {/* ================= HEADER (unchanged, visible both breakpoints) ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
@@ -1089,55 +1091,57 @@ export default function Roadmap({
 
                         {/* CAREER GROUPS */}
                         {course.career_groups?.length > 0 && (
-                            <div
-                                className={`mt-0 flex w-full flex-col flex-wrap items-start justify-center gap-0 sm:flex-row ${
-                                    activeTour === 'career'
-                                        ? 'relative z-[130]'
-                                        : 'relative z-10'
-                                }`}
-                            >
-                                {course.career_groups.map(
-                                    (group: any, idx: number) => {
-                                        const isFirst = idx === 0;
-                                        const isLast =
-                                            idx ===
-                                            course.career_groups.length - 1;
-                                        const hasMultiple =
-                                            course.career_groups.length > 1;
+                            <div className="w-full overflow-x-auto pt-0 pb-10 px-4 [scrollbar-width:thin] [scrollbar-color:rgba(59,40,246,0.3)_transparent] dark:[scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+                                <div
+                                    className={`mt-0 flex min-w-max justify-center gap-0 pb-2 ${
+                                        activeTour === 'career'
+                                            ? 'relative z-[130]'
+                                            : 'relative z-10'
+                                    }`}
+                                >
+                                    {course.career_groups.map(
+                                        (group: any, idx: number) => {
+                                            const isFirst = idx === 0;
+                                            const isLast =
+                                                idx ===
+                                                course.career_groups.length - 1;
+                                            const hasMultiple =
+                                                course.career_groups.length > 1;
 
-                                        return (
-                                            <div
-                                                key={group._id}
-                                                className="relative flex max-w-[340px] min-w-[260px] flex-1 flex-col items-center 2xl:max-w-[380px]"
-                                            >
-                                                {hasMultiple && (
-                                                    <>
-                                                        {!isFirst && (
-                                                            <div className="absolute top-0 left-0 z-0 hidden h-[2px] w-1/2 bg-blue-500/70 sm:block dark:bg-white/80" />
-                                                        )}
-                                                        {!isLast && (
-                                                            <div className="absolute top-0 right-0 z-0 hidden h-[2px] w-1/2 bg-blue-500/70 sm:block dark:bg-white/80" />
-                                                        )}
-                                                    </>
-                                                )}
-
-                                                <div className="z-10 hidden h-10 w-[2px] bg-blue-500/70 sm:block dark:bg-white/80" />
-
-                                                <StudentCareerBranch
-                                                    group={group}
-                                                    progress={safeProgress}
-                                                    badges={badges}
-                                                    courseId={course._id}
-                                                    courseSlug={course.slug}
-                                                    basicCompleted={course.basic_paths.every(
-                                                        (p: any) =>
-                                                            p.is_completed,
+                                            return (
+                                                <div
+                                                    key={group._id}
+                                                    className="relative flex w-[280px] sm:w-[320px] md:w-[340px] 2xl:w-[380px] flex-col items-center shrink-0"
+                                                >
+                                                    {hasMultiple && (
+                                                        <>
+                                                            {!isFirst && (
+                                                                <div className="absolute top-0 left-0 z-0 hidden h-[2px] w-1/2 bg-blue-500/70 sm:block dark:bg-white/80" />
+                                                            )}
+                                                            {!isLast && (
+                                                                <div className="absolute top-0 right-0 z-0 hidden h-[2px] w-1/2 bg-blue-500/70 sm:block dark:bg-white/80" />
+                                                            )}
+                                                        </>
                                                     )}
-                                                />
-                                            </div>
-                                        );
-                                    },
-                                )}
+
+                                                    <div className="z-10 hidden h-10 w-[2px] bg-blue-500/70 sm:block dark:bg-white/80" />
+
+                                                    <StudentCareerBranch
+                                                        group={group}
+                                                        progress={safeProgress}
+                                                        badges={badges}
+                                                        courseId={course._id}
+                                                        courseSlug={course.slug}
+                                                        basicCompleted={course.basic_paths.every(
+                                                            (p: any) =>
+                                                                p.is_completed,
+                                                        )}
+                                                    />
+                                                </div>
+                                            );
+                                        },
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

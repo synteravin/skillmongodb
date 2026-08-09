@@ -1,4 +1,5 @@
 import { useForm, Link } from '@inertiajs/react';
+import PageBackground from '@/components/Student/PageBackground';
 import {
     FileText,
     Link as LinkIcon,
@@ -90,7 +91,8 @@ export default function Show({ submission, studentSubmission }: Props) {
     };
 
     return (
-        <div className="flex h-screen flex-col overflow-hidden bg-[#f0f4ff] text-[#1e293b] dark:bg-[#040812] dark:text-white">
+        <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] text-[#1e293b] dark:bg-[#020202] dark:text-white">
+            <PageBackground />
             {/* ================= HEADER ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div

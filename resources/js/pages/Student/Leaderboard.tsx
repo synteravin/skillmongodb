@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import React from 'react';
 import { Star } from 'lucide-react';
+import PageBackground from '@/components/Student/PageBackground';
 
 type Player = {
     id?: number;
@@ -77,12 +78,8 @@ export default function Leaderboard({
     };
 
     return (
-        <div className="relative flex h-screen flex-col overflow-hidden bg-gradient-to-br from-[#f8fafc] via-[#eff6ff] to-[#e2e8f0] p-3 text-slate-800 transition-colors duration-500 sm:p-6 md:p-8 dark:from-[#050816] dark:via-[#0b1026] dark:to-[#050816] dark:text-white">
-            {/* Ambient Background Glow */}
-            <div className="pointer-events-none fixed top-0 left-0 z-0 h-full w-full overflow-hidden">
-                <div className="absolute top-[-10%] left-[-10%] h-72 w-72 rounded-full bg-blue-500/20 blur-[100px] sm:h-96 sm:w-96 sm:blur-[120px] dark:bg-blue-600/20" />
-                <div className="absolute right-[-10%] bottom-[-10%] h-72 w-72 rounded-full bg-yellow-400/20 blur-[100px] sm:h-96 sm:w-96 sm:blur-[120px] dark:bg-yellow-500/15" />
-            </div>
+        <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] p-3 text-slate-800 transition-colors duration-500 sm:p-6 md:p-8 dark:bg-[#020202] dark:text-white">
+            <PageBackground />
 
             <div className="relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col">
                 {/* HEADER */}

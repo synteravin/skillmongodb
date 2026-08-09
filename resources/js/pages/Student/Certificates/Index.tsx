@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import React, { useState, useRef, useEffect } from 'react';
+import PageBackground from '@/components/Student/PageBackground';
 
 interface Certificate {
     id: string;
@@ -48,20 +49,8 @@ export default function Index({ certificates }: Props) {
     };
 
     return (
-        <div className="relative flex h-screen flex-col overflow-hidden bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] p-4 text-slate-800 transition-colors duration-500 sm:p-6 md:p-8 dark:from-[#050b18] dark:via-[#0a0f26] dark:to-[#040815] dark:text-white">
-            {/* Background Glows */}
-            <div
-                className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-                style={{ height: contentHeight, minHeight: '100%' }}
-            >
-                {Array.from({ length: pages }).map((_, i) => (
-                    <div
-                        key={i}
-                        className="absolute left-1/2 h-[300px] w-[1800px] max-w-full -translate-x-1/2 rounded-full bg-[#3B82F6] opacity-[0.08] blur-[120px] md:blur-[150px] dark:opacity-[0.16]"
-                        style={{ top: `${20 + i * 100}vh` }}
-                    />
-                ))}
-            </div>
+        <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] p-4 text-slate-800 transition-colors duration-500 sm:p-6 md:p-8 dark:bg-[#020202] dark:text-white">
+            <PageBackground />
 
             <div
                 ref={contentRef}

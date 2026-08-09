@@ -47,7 +47,7 @@ export default function Navbar({
                     <div className="flex items-center justify-center rounded-lg text-white">
                         {/* <Gem size={24} /> */}
                         <img
-                            src="/images/logo-fast.png"
+                            src="/images/logo-fast.webp"
                             alt="Logo"
                             className="h-16 w-auto object-contain md:h-16 lg:h-18 xl:h-19"
                         />

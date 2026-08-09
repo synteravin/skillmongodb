@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { ArrowLeft, Power, UserCog } from 'lucide-react';
+import PageBackground from '@/components/Student/PageBackground';
 
 type Props = {
     user: {
@@ -43,11 +44,8 @@ export default function ProfilePage({ user }: Props) {
     const starProgress = ((user.total_score % 500) / 500) * 100;
 
     return (
-        <div className="flex min-h-screen w-full flex-col overflow-y-auto bg-[#f0f2fa] text-gray-900 transition-colors duration-300 lg:h-screen lg:overflow-hidden dark:bg-[#0c0c14] dark:text-white">
-            {/* BG GLOW */}
-            <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-                <div className="h-[400px] w-[700px] rounded-full bg-blue-600 opacity-5 blur-[160px] dark:opacity-10" />
-            </div>
+        <div className="relative flex min-h-screen w-full flex-col overflow-y-auto bg-[#fdfcfc] text-gray-900 transition-colors duration-300 lg:h-screen lg:overflow-hidden dark:bg-[#0c0c14] dark:text-white">
+            <PageBackground />
 
             {/* ── TOOLBAR ── */}
             <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-3 pb-2 md:px-8">
@@ -110,31 +108,22 @@ export default function ProfilePage({ user }: Props) {
                         {/* STATS */}
                         <div className="flex w-full items-center border-t border-gray-200 pt-3 text-sm dark:border-gray-700">
                             <div className="flex-1 text-center">
-                                <p className="font-bold text-yellow-500 dark:text-yellow-400">
+                                <p className="font-['Orbitron'] text-base font-black text-yellow-500 sm:text-lg dark:text-yellow-400">
                                     {user.courses}
                                 </p>
-                                <p className="mt-0.5 text-[10px] tracking-widest text-gray-400">
+                                <p className="mt-0.5 text-[10px] font-bold tracking-widest text-gray-400">
                                     COURSES
                                 </p>
                             </div>
                             <div className="h-8 w-px bg-gray-200 dark:bg-gray-700" />
                             <div className="flex-1 text-center">
                                 <p
-                                    className={`font-bold ${user.avg_score >= 90 ? 'text-green-500' : user.avg_score >= 75 ? 'text-[#3B28F6]' : 'text-red-500'}`}
+                                    className={`font-['Orbitron'] text-base font-black sm:text-lg ${user.avg_score >= 90 ? 'text-green-500' : user.avg_score >= 75 ? 'text-[#3B28F6]' : 'text-red-500'}`}
                                 >
                                     {user.avg_score}%
                                 </p>
-                                <p className="mt-0.5 text-[10px] tracking-widest text-gray-400">
+                                <p className="mt-0.5 text-[10px] font-bold tracking-widest text-gray-400">
                                     AVG SCORE
-                                </p>
-                            </div>
-                            <div className="h-8 w-px bg-gray-200 dark:bg-gray-700" />
-                            <div className="flex-1 text-center">
-                                <p className="font-bold text-gray-800 dark:text-white">
-                                    420
-                                </p>
-                                <p className="mt-0.5 text-[10px] tracking-widest text-gray-400">
-                                    HOURS
                                 </p>
                             </div>
                         </div>
