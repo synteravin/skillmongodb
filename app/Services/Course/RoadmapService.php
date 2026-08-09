@@ -57,6 +57,7 @@ class RoadmapService
             return [
                 '_id' => (string) $path->_id,
                 'name' => $path->name,
+                'description' => $path->description,
                 'thumbnail' => $path->thumbnail,
                 'is_completed' => $completed,
                 'is_unlocked' => $isUnlocked,
@@ -79,6 +80,7 @@ class RoadmapService
                 return [
                     '_id' => (string) $group->_id,
                     'name' => $group->name,
+                    'description' => $group->description,
                     'is_unlocked' => $isBasicDone,
                     'paths' => $group->paths
                         ->filter(fn ($path) => $path->is_published !== false)
@@ -89,6 +91,8 @@ class RoadmapService
                             if (! $isBasicDone) {
                                 return [
                                     '_id' => (string) $path->_id,
+                                    'name' => $path->name,
+                                    'description' => $path->description,
                                     'is_unlocked' => false,
                                 ];
                             }
@@ -104,6 +108,7 @@ class RoadmapService
                             return [
                                 '_id' => (string) $path->_id,
                                 'name' => $path->name,
+                                'description' => $path->description,
                                 'is_unlocked' => $isUnlocked,
                                 'is_selected' => $selected,
                             ];

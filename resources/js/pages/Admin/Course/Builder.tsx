@@ -158,13 +158,18 @@ function SortablePathCard({
                 </div>
             </div>
 
-            <div className="mb-3 flex items-center justify-between gap-2.5 pr-20">
+            <div className="mb-3 flex flex-col justify-start pr-20">
                 <Link
                     href={`/admin/paths/${path.slug}/modules`}
                     className="truncate text-xs font-bold text-slate-800 transition-colors hover:text-indigo-600 hover:underline dark:text-slate-200 dark:hover:text-indigo-400"
                 >
                     {path.name}
                 </Link>
+                {path.description && (
+                    <p className="mt-0.5 line-clamp-2 text-[11px] text-slate-500 dark:text-slate-400">
+                        {path.description}
+                    </p>
+                )}
             </div>
 
             <div className="space-y-1.5">
@@ -217,11 +222,13 @@ export default function Builder({
         _id: string;
         slug?: string;
         name: string;
+        description?: string;
     } | null>(null);
     const [editingGroup, setEditingGroup] = useState<{
         _id: string;
         slug?: string;
         name: string;
+        description?: string;
     } | null>(null);
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
@@ -239,30 +246,61 @@ export default function Builder({
 
     /* ================= FORM STATE ================= */
     const [careerGroupName, setCareerGroupName] = useState('');
+    const [careerGroupDescription, setCareerGroupDescription] = useState('');
     const [basicPathName, setBasicPathName] = useState('');
+    const [basicPathDescription, setBasicPathDescription] = useState('');
     const [careerPathName, setCareerPathName] = useState('');
+    const [careerPathDescription, setCareerPathDescription] = useState('');
     const [careerGroupId, setCareerGroupId] = useState<string | null>(null);
     const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
     const [assignedMentorId, setAssignedMentorId] = useState<string>('');
 
+    /* ================= SUBMIT LOADING & ERROR STATES ================= */
+    const [isSubmittingCareerGroup, setIsSubmittingCareerGroup] = useState(false);
+    const [isSubmittingBasicPath, setIsSubmittingBasicPath] = useState(false);
+    const [isSubmittingCareerPath, setIsSubmittingCareerPath] = useState(false);
+    const [isSubmittingMentor, setIsSubmittingMentor] = useState(false);
+    const [isSubmittingEditPath, setIsSubmittingEditPath] = useState(false);
+    const [isSubmittingEditGroup, setIsSubmittingEditGroup] = useState(false);
+
+    const [basicPathError, setBasicPathError] = useState<string | null>(null);
+    const [careerGroupError, setCareerGroupError] = useState<string | null>(null);
+    const [careerPathError, setCareerPathError] = useState<string | null>(null);
+    const [mentorAssignError, setMentorAssignError] = useState<string | null>(null);
+    const [editPathError, setEditPathError] = useState<string | null>(null);
+    const [editGroupError, setEditGroupError] = useState<string | null>(null);
+
     /* ================= EDIT & DELETE HANDLERS ================= */
     const handleEditPath = (path: any) => {
+        setEditPathError(null);
         setEditingPath({
             _id: path._id,
             slug: path.slug || path._id,
             name: path.name,
+            description: path.description || '',
         });
     };
 
     const handleUpdatePath = () => {
-        if (!editingPath || !editingPath.name.trim()) return;
+        if (!editingPath || !editingPath.name.trim() || isSubmittingEditPath) return;
+        setIsSubmittingEditPath(true);
+        setEditPathError(null);
         const target = editingPath._id || editingPath.slug;
         router.put(
             `/admin/paths/${target}`,
-            { name: editingPath.name.trim() },
+            {
+                name: editingPath.name.trim(),
+                description: editingPath.description?.trim() || null,
+            },
             {
                 preserveScroll: true,
                 onSuccess: () => setEditingPath(null),
+                onError: (errs) => {
+                    setEditPathError(errs.name || errs.description || 'Gagal mengubah path.');
+                },
+                onFinish: () => {
+                    setIsSubmittingEditPath(false);
+                },
             },
         );
     };
@@ -282,22 +320,35 @@ export default function Builder({
     };
 
     const handleEditGroup = (group: any) => {
+        setEditGroupError(null);
         setEditingGroup({
             _id: group._id,
             slug: group.slug || group._id,
             name: group.name,
+            description: group.description || '',
         });
     };
 
     const handleUpdateGroup = () => {
-        if (!editingGroup || !editingGroup.name.trim()) return;
+        if (!editingGroup || !editingGroup.name.trim() || isSubmittingEditGroup) return;
+        setIsSubmittingEditGroup(true);
+        setEditGroupError(null);
         const target = editingGroup._id || editingGroup.slug;
         router.put(
             `/admin/career-groups/${target}`,
-            { name: editingGroup.name.trim() },
+            {
+                name: editingGroup.name.trim(),
+                description: editingGroup.description?.trim() || null,
+            },
             {
                 preserveScroll: true,
                 onSuccess: () => setEditingGroup(null),
+                onError: (errs) => {
+                    setEditGroupError(errs.name || errs.description || 'Gagal mengubah branch.');
+                },
+                onFinish: () => {
+                    setIsSubmittingEditGroup(false);
+                },
             },
         );
     };
@@ -390,52 +441,72 @@ export default function Builder({
         if (!groupId) return;
         setCareerGroupId(groupId);
         setCareerPathName('');
+        setCareerPathDescription('');
+        setCareerPathError(null);
         setOpenCareerPath(true);
     }
 
     function createCareerGroup() {
-        if (!careerGroupName.trim()) return;
+        if (!careerGroupName.trim() || isSubmittingCareerGroup) return;
+        setIsSubmittingCareerGroup(true);
+        setCareerGroupError(null);
         router.post(
             '/admin/career-groups',
             {
                 course_id: String(course._id),
-                name: careerGroupName,
+                name: careerGroupName.trim(),
+                description: careerGroupDescription.trim() || null,
             },
             {
                 preserveScroll: true,
                 onSuccess: () => {
                     setCareerGroupName('');
+                    setCareerGroupDescription('');
                     setOpenCareerGroup(false);
+                },
+                onError: (errs) => {
+                    setCareerGroupError(errs.name || errs.description || 'Gagal membuat Career Branch. Periksa data Anda.');
+                },
+                onFinish: () => {
+                    setIsSubmittingCareerGroup(false);
                 },
             },
         );
     }
 
     function createBasicPath() {
-        if (!basicPathName.trim()) return;
+        if (!basicPathName.trim() || isSubmittingBasicPath) return;
+        setIsSubmittingBasicPath(true);
+        setBasicPathError(null);
         router.post(
             '/admin/paths',
             {
                 course_id: String(course._id),
                 phase: 'basic_fundamental',
-                name: basicPathName,
+                name: basicPathName.trim(),
+                description: basicPathDescription.trim() || null,
             },
             {
                 preserveScroll: true,
                 onSuccess: () => {
                     setBasicPathName('');
+                    setBasicPathDescription('');
                     setOpenBasicPath(false);
+                },
+                onError: (errs) => {
+                    setBasicPathError(errs.name || errs.description || 'Gagal membuat Path Fundamental. Periksa data Anda.');
+                },
+                onFinish: () => {
+                    setIsSubmittingBasicPath(false);
                 },
             },
         );
     }
 
     function createCareerPath() {
-        console.log('CREATE CAREER PATH 🔥', {
-            careerGroupId,
-            name: careerPathName,
-        });
-        if (!careerGroupId || !careerPathName.trim()) return;
+        if (!careerGroupId || !careerPathName.trim() || isSubmittingCareerPath) return;
+        setIsSubmittingCareerPath(true);
+        setCareerPathError(null);
         router.post(
             '/admin/paths',
             {
@@ -443,13 +514,21 @@ export default function Builder({
                 career_group_id: String(careerGroupId),
                 phase: 'career_branch',
                 name: careerPathName.trim(),
+                description: careerPathDescription.trim() || null,
             },
             {
                 preserveScroll: true,
                 onSuccess: () => {
                     setCareerPathName('');
+                    setCareerPathDescription('');
                     setCareerGroupId(null);
                     setOpenCareerPath(false);
+                },
+                onError: (errs) => {
+                    setCareerPathError(errs.name || errs.description || 'Gagal membuat Path Karir. Periksa data Anda.');
+                },
+                onFinish: () => {
+                    setIsSubmittingCareerPath(false);
                 },
             },
         );
@@ -516,11 +595,14 @@ export default function Builder({
     ) {
         setSelectedPathId(pathId);
         setAssignedMentorId(currentMentorId || '');
+        setMentorAssignError(null);
         setOpenAssignMentor(true);
     }
 
     function submitMentorAssignment() {
-        if (!selectedPathId) return;
+        if (!selectedPathId || isSubmittingMentor) return;
+        setIsSubmittingMentor(true);
+        setMentorAssignError(null);
         router.post(
             `/admin/career-groups/${selectedPathId}/assign-mentor`,
             {
@@ -532,6 +614,12 @@ export default function Builder({
                     setOpenAssignMentor(false);
                     setSelectedPathId(null);
                     setAssignedMentorId('');
+                },
+                onError: (errs) => {
+                    setMentorAssignError(errs.mentor_id || 'Gagal mengubah mentor.');
+                },
+                onFinish: () => {
+                    setIsSubmittingMentor(false);
                 },
             },
         );
@@ -805,22 +893,29 @@ export default function Builder({
                                                 <div className="flex flex-col gap-4 border-b border-slate-200 bg-slate-50/70 px-5 py-4 dark:border-slate-800/80 dark:bg-slate-900/40">
                                                     {/* Row 1: Title, Status, and Edit/Delete Actions */}
                                                     <div className="flex w-full flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                                                        <div className="flex min-w-0 items-center gap-3">
-                                                            <div
-                                                                className={`h-2.5 w-2.5 shrink-0 rounded-full ${group.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'animate-pulse bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.5)] dark:bg-indigo-500 dark:shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}
-                                                            />
-                                                            <span className="truncate font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-white">
-                                                                {group.name}
-                                                            </span>
-                                                            {group.status ===
-                                                            'completed' ? (
-                                                                <span className="inline-flex shrink-0 items-center rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-emerald-500 uppercase">
-                                                                    Completed
+                                                        <div className="flex min-w-0 flex-col gap-0.5">
+                                                            <div className="flex items-center gap-3">
+                                                                <div
+                                                                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${group.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'animate-pulse bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.5)] dark:bg-indigo-500 dark:shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}
+                                                                />
+                                                                <span className="truncate font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-white">
+                                                                    {group.name}
                                                                 </span>
-                                                            ) : (
-                                                                <span className="inline-flex shrink-0 items-center rounded border border-slate-500/20 bg-slate-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
-                                                                    Draft
-                                                                </span>
+                                                                {group.status ===
+                                                                'completed' ? (
+                                                                    <span className="inline-flex shrink-0 items-center rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-emerald-500 uppercase">
+                                                                        Completed
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="inline-flex shrink-0 items-center rounded border border-slate-500/20 bg-slate-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
+                                                                        Draft
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            {group.description && (
+                                                                <p className="mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                                                                    {group.description}
+                                                                </p>
                                                             )}
                                                         </div>
                                                         <div className="flex shrink-0 items-center gap-1.5">
@@ -1040,7 +1135,7 @@ export default function Builder({
                     <Modal
                         open={openCareerGroup}
                         title="Tambah Career Branch"
-                        onClose={() => setOpenCareerGroup(false)}
+                        onClose={() => !isSubmittingCareerGroup && setOpenCareerGroup(false)}
                     >
                         <div
                             className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none"
@@ -1054,33 +1149,65 @@ export default function Builder({
                                         Nama Career Branch
                                     </label>
                                     <input
+                                        disabled={isSubmittingCareerGroup}
                                         value={careerGroupName}
                                         onChange={(e) =>
                                             setCareerGroupName(e.target.value)
                                         }
                                         placeholder="Frontend Web Developer"
-                                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
+                                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
                                         autoFocus
                                     />
                                 </div>
 
+                                <div>
+                                    <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                        Deskripsi Career Branch (Opsional)
+                                    </label>
+                                    <textarea
+                                        rows={3}
+                                        disabled={isSubmittingCareerGroup}
+                                        value={careerGroupDescription}
+                                        onChange={(e) =>
+                                            setCareerGroupDescription(e.target.value)
+                                        }
+                                        placeholder="Jelaskan fokus karir dan ruang lingkup materi pada branch ini..."
+                                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
+                                    />
+                                    {careerGroupError && (
+                                        <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
+                                            {careerGroupError}
+                                        </p>
+                                    )}
+                                </div>
+
                                 <div className="h-px bg-slate-100 dark:bg-white/5" />
 
-                                <div className="flex justify-end gap-2.5">
+                                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
                                     <button
+                                        type="button"
+                                        disabled={isSubmittingCareerGroup}
                                         onClick={() =>
                                             setOpenCareerGroup(false)
                                         }
-                                        className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                        className="w-full sm:w-auto rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                     >
                                         Batal
                                     </button>
                                     <button
-                                        disabled={!careerGroupName.trim()}
+                                        type="button"
+                                        disabled={!careerGroupName.trim() || isSubmittingCareerGroup}
                                         onClick={createCareerGroup}
-                                        className="rounded-lg border border-slate-800 bg-slate-800 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-slate-800 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
                                     >
-                                        Buat Branch
+                                        {isSubmittingCareerGroup ? (
+                                            <>
+                                                <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                                Membuat...
+                                            </>
+                                        ) : (
+                                            'Buat Branch'
+                                        )}
                                     </button>
                                 </div>
                             </div>
@@ -1091,7 +1218,7 @@ export default function Builder({
                     <Modal
                         open={openBasicPath}
                         title="Tambah Path Fundamental"
-                        onClose={() => setOpenBasicPath(false)}
+                        onClose={() => !isSubmittingBasicPath && setOpenBasicPath(false)}
                     >
                         <div
                             className="space-y-5"
@@ -1102,29 +1229,62 @@ export default function Builder({
                                     Nama Path
                                 </label>
                                 <input
+                                    disabled={isSubmittingBasicPath}
                                     value={basicPathName}
                                     onChange={(e) =>
                                         setBasicPathName(e.target.value)
                                     }
                                     placeholder="Dasar HTML & CSS"
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
                                     autoFocus
                                 />
                             </div>
+
+                            <div>
+                                <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                    Deskripsi Path (Opsional)
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    disabled={isSubmittingBasicPath}
+                                    value={basicPathDescription}
+                                    onChange={(e) =>
+                                        setBasicPathDescription(e.target.value)
+                                    }
+                                    placeholder="Jelaskan ringkasan materi fundamental yang akan dipelajari..."
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
+                                />
+                                {basicPathError && (
+                                    <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
+                                        {basicPathError}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="h-px bg-slate-100 dark:bg-white/5" />
-                            <div className="flex justify-end gap-2.5">
+                            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
                                 <button
+                                    type="button"
+                                    disabled={isSubmittingBasicPath}
                                     onClick={() => setOpenBasicPath(false)}
-                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="w-full sm:w-auto rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     Batal
                                 </button>
                                 <button
-                                    disabled={!basicPathName.trim()}
+                                    type="button"
+                                    disabled={!basicPathName.trim() || isSubmittingBasicPath}
                                     onClick={createBasicPath}
-                                    className="rounded-lg border border-slate-800 bg-slate-800 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-slate-800 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
                                 >
-                                    Buat Path
+                                    {isSubmittingBasicPath ? (
+                                        <>
+                                            <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Membuat...
+                                        </>
+                                    ) : (
+                                        'Buat Path'
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -1134,7 +1294,7 @@ export default function Builder({
                     <Modal
                         open={openCareerPath}
                         title="Tambah Path Karir"
-                        onClose={() => setOpenCareerPath(false)}
+                        onClose={() => !isSubmittingCareerPath && setOpenCareerPath(false)}
                     >
                         <div
                             className="space-y-5"
@@ -1145,29 +1305,62 @@ export default function Builder({
                                     Nama Path
                                 </label>
                                 <input
+                                    disabled={isSubmittingCareerPath}
                                     value={careerPathName}
                                     onChange={(e) =>
                                         setCareerPathName(e.target.value)
                                     }
                                     placeholder="React.js Lanjutan"
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
                                     autoFocus
                                 />
                             </div>
+
+                            <div>
+                                <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                    Deskripsi Path (Opsional)
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    disabled={isSubmittingCareerPath}
+                                    value={careerPathDescription}
+                                    onChange={(e) =>
+                                        setCareerPathDescription(e.target.value)
+                                    }
+                                    placeholder="Jelaskan materi spesifik dan keterampilan yang akan dikuasai..."
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:border-slate-500"
+                                />
+                                {careerPathError && (
+                                    <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
+                                        {careerPathError}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="h-px bg-slate-100 dark:bg-slate-800" />
-                            <div className="flex justify-end gap-2.5">
+                            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
                                 <button
+                                    type="button"
+                                    disabled={isSubmittingCareerPath}
                                     onClick={() => setOpenCareerPath(false)}
-                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="w-full sm:w-auto rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     Batal
                                 </button>
                                 <button
-                                    disabled={!careerPathName.trim()}
+                                    type="button"
+                                    disabled={!careerPathName.trim() || isSubmittingCareerPath}
                                     onClick={createCareerPath}
-                                    className="rounded-lg border border-slate-800 bg-slate-800 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-indigo-500/50 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-slate-800 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-indigo-500/50 dark:bg-indigo-600 dark:hover:bg-indigo-500"
                                 >
-                                    Buat Path
+                                    {isSubmittingCareerPath ? (
+                                        <>
+                                            <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Membuat...
+                                        </>
+                                    ) : (
+                                        'Buat Path'
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -1177,7 +1370,7 @@ export default function Builder({
                     <Modal
                         open={openAssignMentor}
                         title="Atur Mentor Career Branch"
-                        onClose={() => setOpenAssignMentor(false)}
+                        onClose={() => !isSubmittingMentor && setOpenAssignMentor(false)}
                     >
                         <div
                             className="space-y-5"
@@ -1188,11 +1381,12 @@ export default function Builder({
                                     Pilih Mentor
                                 </label>
                                 <select
+                                    disabled={isSubmittingMentor}
                                     value={assignedMentorId}
                                     onChange={(e) =>
                                         setAssignedMentorId(e.target.value)
                                     }
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
                                 >
                                     <option value="">
                                         Tanpa Mentor (Hapus Mentor)
@@ -1206,20 +1400,36 @@ export default function Builder({
                                         </option>
                                     ))}
                                 </select>
+                                {mentorAssignError && (
+                                    <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
+                                        {mentorAssignError}
+                                    </p>
+                                )}
                             </div>
                             <div className="h-px bg-slate-100 dark:bg-white/5" />
-                            <div className="flex justify-end gap-2.5">
+                            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
                                 <button
+                                    type="button"
+                                    disabled={isSubmittingMentor}
                                     onClick={() => setOpenAssignMentor(false)}
-                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="w-full sm:w-auto rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     Batal
                                 </button>
                                 <button
+                                    type="button"
+                                    disabled={isSubmittingMentor}
                                     onClick={submitMentorAssignment}
-                                    className="rounded-lg border border-slate-800 bg-slate-800 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700 dark:border-indigo-500/50 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-slate-800 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-slate-700 disabled:opacity-40 dark:border-indigo-500/50 dark:bg-indigo-600 dark:hover:bg-indigo-500"
                                 >
-                                    Simpan Perubahan
+                                    {isSubmittingMentor ? (
+                                        <>
+                                            <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Menyimpan...
+                                        </>
+                                    ) : (
+                                        'Simpan Perubahan'
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -1228,8 +1438,8 @@ export default function Builder({
                     {/* Modal: Edit Path */}
                     <Modal
                         open={!!editingPath}
-                        title="Edit Nama Path"
-                        onClose={() => setEditingPath(null)}
+                        title="Edit Path"
+                        onClose={() => !isSubmittingEditPath && setEditingPath(null)}
                     >
                         <div
                             className="space-y-5"
@@ -1241,6 +1451,7 @@ export default function Builder({
                                 </label>
                                 <input
                                     type="text"
+                                    disabled={isSubmittingEditPath}
                                     value={editingPath?.name || ''}
                                     onChange={(e) =>
                                         setEditingPath((prev) =>
@@ -1252,23 +1463,63 @@ export default function Builder({
                                                 : null,
                                         )
                                     }
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
                                     placeholder="Contoh: Fundamental PHP"
                                 />
                             </div>
+
+                            <div>
+                                <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                    Deskripsi Path (Opsional)
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    disabled={isSubmittingEditPath}
+                                    value={editingPath?.description || ''}
+                                    onChange={(e) =>
+                                        setEditingPath((prev) =>
+                                            prev
+                                                ? {
+                                                      ...prev,
+                                                      description: e.target.value,
+                                                  }
+                                                : null,
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    placeholder="Jelaskan ringkasan materi path ini..."
+                                />
+                                {editPathError && (
+                                    <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
+                                        {editPathError}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="h-px bg-slate-100 dark:bg-white/5" />
-                            <div className="flex justify-end gap-2.5">
+                            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
                                 <button
+                                    type="button"
+                                    disabled={isSubmittingEditPath}
                                     onClick={() => setEditingPath(null)}
-                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="w-full sm:w-auto rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     Batal
                                 </button>
                                 <button
+                                    type="button"
+                                    disabled={!editingPath?.name.trim() || isSubmittingEditPath}
                                     onClick={handleUpdatePath}
-                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-40"
                                 >
-                                    Simpan Perubahan
+                                    {isSubmittingEditPath ? (
+                                        <>
+                                            <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Menyimpan...
+                                        </>
+                                    ) : (
+                                        'Simpan Perubahan'
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -1278,7 +1529,7 @@ export default function Builder({
                     <Modal
                         open={!!editingGroup}
                         title="Edit Career Branch"
-                        onClose={() => setEditingGroup(null)}
+                        onClose={() => !isSubmittingEditGroup && setEditingGroup(null)}
                     >
                         <div
                             className="space-y-5"
@@ -1290,6 +1541,7 @@ export default function Builder({
                                 </label>
                                 <input
                                     type="text"
+                                    disabled={isSubmittingEditGroup}
                                     value={editingGroup?.name || ''}
                                     onChange={(e) =>
                                         setEditingGroup((prev) =>
@@ -1301,23 +1553,63 @@ export default function Builder({
                                                 : null,
                                         )
                                     }
-                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
                                     placeholder="Contoh: Backend Web Development"
                                 />
                             </div>
+
+                            <div>
+                                <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                                    Deskripsi Career Branch (Opsional)
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    disabled={isSubmittingEditGroup}
+                                    value={editingGroup?.description || ''}
+                                    onChange={(e) =>
+                                        setEditingGroup((prev) =>
+                                            prev
+                                                ? {
+                                                      ...prev,
+                                                      description: e.target.value,
+                                                  }
+                                                : null,
+                                        )
+                                    }
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-slate-500"
+                                    placeholder="Jelaskan fokus karir dan ruang lingkup branch ini..."
+                                />
+                                {editGroupError && (
+                                    <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
+                                        {editGroupError}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="h-px bg-slate-100 dark:bg-white/5" />
-                            <div className="flex justify-end gap-2.5">
+                            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2.5">
                                 <button
+                                    type="button"
+                                    disabled={isSubmittingEditGroup}
                                     onClick={() => setEditingGroup(null)}
-                                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="w-full sm:w-auto rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     Batal
                                 </button>
                                 <button
+                                    type="button"
+                                    disabled={!editingGroup?.name.trim() || isSubmittingEditGroup}
                                     onClick={handleUpdateGroup}
-                                    className="rounded-lg border border-indigo-600 bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-40"
                                 >
-                                    Simpan Perubahan
+                                    {isSubmittingEditGroup ? (
+                                        <>
+                                            <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Menyimpan...
+                                        </>
+                                    ) : (
+                                        'Simpan Perubahan'
+                                    )}
                                 </button>
                             </div>
                         </div>

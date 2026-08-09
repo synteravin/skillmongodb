@@ -10,6 +10,7 @@ export interface Group {
     id: string;
     slug?: string;
     name: string;
+    description?: string;
     status?: 'draft' | 'published' | 'completed';
 }
 

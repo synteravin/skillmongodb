@@ -216,9 +216,8 @@ function MobileCareerCard({
                 <p
                     className={`mb-4 line-clamp-3 px-1 text-center text-[10px] leading-relaxed font-semibold ${isLocked ? 'text-[#3B82F6] dark:text-gray-600' : 'text-gray-500 dark:text-gray-400'}`}
                 >
-                    A special package to become a professional {group.name}{' '}
-                    Developer, starting with modern web development fundamentals
-                    and progressing to advanced topics and real-world projects.
+                    {group.description ||
+                        `A special package to become a professional ${group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects.`}
                 </p>
 
                 {/* STATS */}
@@ -414,6 +413,7 @@ function MobileRoadmap({
                             <React.Fragment key={path._id}>
                                 <StudentFundamentalNode
                                     title={path.name}
+                                    description={path.description}
                                     locked={locked}
                                     done={done}
                                     thumbnail={path.thumbnail}
@@ -1076,6 +1076,7 @@ export default function Roadmap({
                                     <React.Fragment key={path._id}>
                                         <StudentFundamentalNode
                                             title={path.name}
+                                            description={path.description}
                                             locked={locked}
                                             done={done}
                                             thumbnail={path.thumbnail}
@@ -1090,7 +1091,7 @@ export default function Roadmap({
                         {/* CAREER GROUPS */}
                         {course.career_groups?.length > 0 && (
                             <div
-                                className={`mt-0 flex w-full flex-col flex-wrap items-start justify-center gap-0 sm:flex-row ${
+                                className={`mt-0 flex w-full flex-col flex-wrap items-stretch justify-center gap-0 sm:flex-row ${
                                     activeTour === 'career'
                                         ? 'relative z-[130]'
                                         : 'relative z-10'
@@ -1108,7 +1109,7 @@ export default function Roadmap({
                                         return (
                                             <div
                                                 key={group._id}
-                                                className="relative flex max-w-[340px] min-w-[260px] flex-1 flex-col items-center 2xl:max-w-[380px]"
+                                                className="relative flex h-full max-w-[340px] min-w-[260px] flex-1 flex-col items-center 2xl:max-w-[380px]"
                                             >
                                                 {hasMultiple && (
                                                     <>

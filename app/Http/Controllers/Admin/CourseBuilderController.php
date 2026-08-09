@@ -62,6 +62,7 @@ class CourseBuilderController extends Controller
                     'id' => (string) $path->_id,
                     'slug' => $path->slug ?: Str::slug($path->name),
                     'name' => $path->name,
+                    'description' => $path->description,
                     'modules' => $path->modules->map(function ($module) {
                         return [
                             '_id' => (string) $module->_id,
@@ -87,6 +88,7 @@ class CourseBuilderController extends Controller
                     'id' => (string) $group->_id,
                     'slug' => $group->slug ?: Str::slug($group->name),
                     'name' => $group->name,
+                    'description' => $group->description,
                     'status' => $group->status ?? 'draft',
 
                     'mentor' => $group->mentor ? [
@@ -106,6 +108,7 @@ class CourseBuilderController extends Controller
                             'id' => (string) $path->_id,
                             'slug' => $path->slug ?: Str::slug($path->name),
                             'name' => $path->name,
+                            'description' => $path->description,
                             'modules' => $path->modules->map(function ($module) {
                                 return [
                                     '_id' => (string) $module->_id,
@@ -225,9 +228,11 @@ class CourseBuilderController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
         ]);
 
         $group->name = $data['name'];
+        $group->description = $data['description'] ?? null;
         $group->slug = Str::slug($data['name']);
         $group->save();
 
@@ -250,9 +255,11 @@ class CourseBuilderController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
         ]);
 
         $path->name = $data['name'];
+        $path->description = $data['description'] ?? null;
         $path->slug = Str::slug($data['name']);
         $path->save();
 

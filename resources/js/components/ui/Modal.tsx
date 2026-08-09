@@ -20,7 +20,7 @@ export default function Modal({ open, title, onClose, children, maxWidth = "max-
     if (!open || !mounted) return null
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
             {/* BACKDROP */}
             <div
                 onClick={onClose}
@@ -28,24 +28,25 @@ export default function Modal({ open, title, onClose, children, maxWidth = "max-
             />
 
             {/* MODAL */}
-            <div className={`relative w-full ${maxWidth} mx-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] shadow-xl dark:shadow-none p-6 transition-all z-10`}>
+            <div className={`relative w-full ${maxWidth} my-auto flex max-h-[90vh] flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-xl transition-all z-10 dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910] dark:shadow-none sm:p-6`}>
                 {/* Header */}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/5">
                     <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
                         {title}
                     </h2>
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5"
                     >
                         ✕
                     </button>
                 </div>
 
-                {/* Divider */}
-                <div className="border-b border-slate-200 dark:border-white/5 mb-4"></div>
-
-                {children}
+                {/* Modal Body with internal scroll */}
+                <div className="flex-1 overflow-y-auto pt-4 pr-1">
+                    {children}
+                </div>
             </div>
         </div>,
         document.body
