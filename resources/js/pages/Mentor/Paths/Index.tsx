@@ -136,6 +136,11 @@ export default function Index({
                             <h1 className="text-xl font-bold tracking-tight text-slate-800 sm:text-2xl dark:text-white">
                                 Atur Learning Paths
                             </h1>
+                            {group.description && (
+                                <p className="mt-0.5 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                                    {group.description}
+                                </p>
+                            )}
                             <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                                 Branch:{' '}
                                 <span className="font-semibold text-indigo-600 dark:text-indigo-400">

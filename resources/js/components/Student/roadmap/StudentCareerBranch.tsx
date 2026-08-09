@@ -72,7 +72,7 @@ export default function StudentCareerBranch({
     };
 
     return (
-        <div className="text-sans relative flex w-full flex-col items-center px-8 sm:px-4">
+        <div className="relative flex h-full w-full flex-col items-center px-8 sm:px-4">
             {/* ═══════════════════════════════════════════════
                 CARD UTAMA
                 - Tinggi FIXED agar semua card seragam
@@ -82,7 +82,7 @@ export default function StudentCareerBranch({
                 - TIDAK ada opacity/grayscale wrapper
             ════════════════════════════════════════════════ */}
             <div
-                className={`relative mb-0 flex w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${
+                className={`relative mb-0 flex h-full w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${
                     isCompleted
                         ? 'border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.35)]'
                         : isChosen
@@ -100,7 +100,7 @@ export default function StudentCareerBranch({
 
                 {/* ── INNER CARD ── */}
                 <div
-                    className={`relative flex w-full flex-col rounded-xl p-5 dark:bg-[#050619] ${
+                    className={`relative flex h-full w-full flex-col justify-between rounded-xl p-5 dark:bg-[#050619] ${
                         !basicCompleted || isOtherChosen
                             ? 'bg-[#f0f7ff]' /* light locked: biru sangat tipis */
                             : isCompleted
@@ -200,73 +200,75 @@ export default function StudentCareerBranch({
                         </div>
                     </div>
 
-                    {/* ── TITLE
-                        line-clamp-2 + min-height paksa 2 baris
-                        agar semua card tingginya sama ── */}
-                    <h2
-                        className={`/* min-height = 2 baris: 2 × line-height (1.25) × font-size(18px) ≈ 3.5rem */ mb-2 line-clamp-2 min-h-[3.5rem] text-center font-['Orbitron'] text-base leading-tight font-bold tracking-widest uppercase sm:text-lg ${
-                            !basicCompleted || isOtherChosen
-                                ? 'text-[#3B82F6] dark:text-white/50'
-                                : isCompleted
-                                  ? 'text-emerald-700 dark:text-white'
-                                  : 'text-gray-900 dark:text-white'
-                        }`}
-                    >
-                        {group.name}
-                    </h2>
-
-                    {/* ── DESCRIPTION ── */}
-                    <p
-                        className={`mb-4 line-clamp-4 px-1 text-center text-[10px] leading-relaxed font-semibold ${
-                            !basicCompleted || isOtherChosen
-                                ? 'text-[#3B82F6] dark:text-gray-600'
-                                : 'text-gray-500 dark:text-gray-400'
-                        }`}
-                    >
-                        A special package to become a professional {group.name}{' '}
-                        Developer, starting with modern web development
-                        fundamentals and progressing to advanced topics and
-                        real-world projects the next
-                    </p>
-
-                    {/* ── STATS ── */}
-                    <div className="mb-4 flex justify-between gap-2">
-                        <div
-                            className={`flex flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border p-2 text-center ${
+                    {/* ── TITLE ── */}
+                    <div className="mb-2 flex h-14 items-center justify-center text-center">
+                        <h2
+                            className={`line-clamp-2 text-center font-['Orbitron'] text-base leading-tight font-bold tracking-widest uppercase sm:text-lg ${
                                 !basicCompleted || isOtherChosen
-                                    ? 'border-blue-100 bg-blue-50/50 dark:border-[#1A2E99]/40 dark:bg-[#020101]'
-                                    : 'border-[#1A2E99] bg-[#f8faff] dark:bg-[#020101]'
+                                    ? 'text-[#3B82F6] dark:text-white/50'
+                                    : isCompleted
+                                      ? 'text-emerald-700 dark:text-white'
+                                      : 'text-gray-900 dark:text-white'
                             }`}
                         >
-                            <span
-                                className={`block text-[9px] font-semibold tracking-wider uppercase ${
-                                    !basicCompleted || isOtherChosen
-                                        ? 'text-blue-300 dark:text-[#F0E427]/50'
-                                        : 'text-[#F0E427] dark:text-[#F0E427]'
-                                }`}
-                            >
-                                Learning Path
-                            </span>
-                            <span
-                                className={`block text-sm font-bold ${
-                                    !basicCompleted || isOtherChosen
-                                        ? 'text-blue-300 dark:text-gray-600'
-                                        : 'text-gray-700 dark:text-[#B3B3B3]'
-                                }`}
-                            >
-                                {totalModules} Units
-                            </span>
-                        </div>
+                            {group.name}
+                        </h2>
                     </div>
 
-                    {/* ── FOOTER: mentor + button ── */}
-                    <div
-                        className={`relative z-40 flex items-center justify-between border-t pt-3 ${
-                            !basicCompleted || isOtherChosen
-                                ? 'border-blue-100 dark:border-[#1A2E99]/30'
-                                : 'border-blue-100 dark:border-[#1A2E99]/80'
-                        }`}
-                    >
+                    {/* ── DESCRIPTION ── */}
+                    <div className="mb-4 flex h-20 items-center justify-center px-1 text-center">
+                        <p
+                            className={`line-clamp-4 text-center text-[10px] leading-relaxed font-semibold ${
+                                !basicCompleted || isOtherChosen
+                                    ? 'text-[#3B82F6] dark:text-gray-600'
+                                    : 'text-gray-500 dark:text-gray-400'
+                            }`}
+                        >
+                            {group.description ||
+                                `A special package to become a professional ${group.name} Developer, starting with modern web development fundamentals and progressing to advanced topics and real-world projects.`}
+                        </p>
+                    </div>
+
+                    {/* ── BOTTOM CONTAINER (STATS + FOOTER) ── */}
+                    <div className="mt-auto flex flex-col justify-end">
+                        {/* ── STATS ── */}
+                        <div className="mb-4 flex justify-between gap-2">
+                            <div
+                                className={`flex flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border p-2 text-center ${
+                                    !basicCompleted || isOtherChosen
+                                        ? 'border-blue-100 bg-blue-50/50 dark:border-[#1A2E99]/40 dark:bg-[#020101]'
+                                        : 'border-[#1A2E99] bg-[#f8faff] dark:bg-[#020101]'
+                                }`}
+                            >
+                                <span
+                                    className={`block text-[9px] font-semibold tracking-wider uppercase ${
+                                        !basicCompleted || isOtherChosen
+                                            ? 'text-blue-300 dark:text-[#F0E427]/50'
+                                            : 'text-[#F0E427] dark:text-[#F0E427]'
+                                    }`}
+                                >
+                                    Learning Path
+                                </span>
+                                <span
+                                    className={`block text-sm font-bold ${
+                                        !basicCompleted || isOtherChosen
+                                            ? 'text-blue-300 dark:text-gray-600'
+                                            : 'text-gray-700 dark:text-[#B3B3B3]'
+                                    }`}
+                                >
+                                    {totalModules} Units
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* ── FOOTER: mentor + button ── */}
+                        <div
+                            className={`relative z-40 flex items-center justify-between border-t pt-3 ${
+                                !basicCompleted || isOtherChosen
+                                    ? 'border-blue-100 dark:border-[#1A2E99]/30'
+                                    : 'border-blue-100 dark:border-[#1A2E99]/80'
+                            }`}
+                        >
                         {/* MENTOR */}
                         {group.mentor ? (
                             <Link
@@ -350,6 +352,7 @@ export default function StudentCareerBranch({
                     </div>
                 </div>
             </div>
+        </div>
 
             {/* ── CONNECTOR LINE bawah card ── */}
             <div
