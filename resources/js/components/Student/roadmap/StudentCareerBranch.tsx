@@ -72,7 +72,7 @@ export default function StudentCareerBranch({
     };
 
     return (
-        <div className="relative flex h-full w-full flex-col items-center px-8 sm:px-4">
+        <div className="relative flex w-full flex-col items-center px-8 sm:px-4">
             {/* ═══════════════════════════════════════════════
                 CARD UTAMA
                 - Tinggi FIXED agar semua card seragam
@@ -82,7 +82,7 @@ export default function StudentCareerBranch({
                 - TIDAK ada opacity/grayscale wrapper
             ════════════════════════════════════════════════ */}
             <div
-                className={`relative mb-0 flex h-full w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${
+                className={`relative mb-0 flex w-full flex-col overflow-hidden rounded-xl border-2 shadow-lg transition-all ${
                     isCompleted
                         ? 'border-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.35)]'
                         : isChosen
@@ -100,7 +100,7 @@ export default function StudentCareerBranch({
 
                 {/* ── INNER CARD ── */}
                 <div
-                    className={`relative flex h-full w-full flex-col justify-between rounded-xl p-5 dark:bg-[#050619] ${
+                    className={`relative flex w-full flex-col justify-between rounded-xl p-5 dark:bg-[#050619] ${
                         !basicCompleted || isOtherChosen
                             ? 'bg-[#f0f7ff]' /* light locked: biru sangat tipis */
                             : isCompleted

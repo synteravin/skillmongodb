@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { router, Link, usePage } from '@inertiajs/react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
-import PageBackground from '@/components/Student/PageBackground';
 import {
     Lock,
     Check,
@@ -249,15 +248,14 @@ export default function LearnShow({
     const [moduleDropdownOpen, setModuleDropdownOpen] = useState(false);
 
     return (
-        <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] text-[#1e293b] dark:bg-[#020202] dark:text-white">
-            <PageBackground />
+        <div className="flex h-screen flex-col overflow-hidden bg-[#f0f4ff] text-[#1e293b] dark:bg-[#040812] dark:text-white">
             {/* ================= HEADER ================= */}
             <div className="w-full flex-shrink-0 px-1 pt-0.5">
                 <div
                     className="relative rounded-md p-[2px] md:p-[3px]"
                     style={{
                         backgroundImage:
-                            'linear-gradient(to right, #2563EB 0%, #3b82f6 30%, #6366f1 50%, #facc15 100%)',
+                            'linear-gradient(to bottom, #2563EB 0%, #3b82f6 30%, #6366f1 50%, #facc15 100%)',
                     }}
                 >
                     <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">

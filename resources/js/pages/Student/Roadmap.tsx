@@ -373,7 +373,7 @@ function MobileRoadmap({
                         className="relative w-full rounded-md p-[2px]"
                         style={{
                             backgroundImage:
-                                'linear-gradient(to right, #3B28F6 0%, #4c2fff 40%, #facc15 100%)',
+                                'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 40%, #facc15 100%)',
                         }}
                     >
                         <div className="rounded-[4px] bg-white px-4 py-2.5 dark:bg-[#040812]">
