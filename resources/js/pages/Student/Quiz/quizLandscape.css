@@ -9,7 +9,7 @@
     /* Box Biru Kiri */
     .quiz-footer .footer-diag-left {
         bottom: -12px !important; /* Posisi vertikal box biru kiri */
-        width: 247px !important; /* Lebar box biru kiri */
+        width: calc(50% - 21vw - 45px) !important; /* Lebar box biru kiri */
         height: 48px !important; /* Tinggi box biru kiri */
         background-color: #3b28f6 !important; /* Warna box biru */
         /* Clip path untuk membuat kemiringan/sisi miring di sebelah kanan */
@@ -24,7 +24,7 @@
     /* Box Biru Kanan */
     .quiz-footer .footer-diag-right {
         bottom: -12px !important; /* Posisi vertikal box biru kanan */
-        width: 251px !important; /* Lebar box biru kanan */
+        width: calc(50% - 21vw - 45px) !important; /* Lebar box biru kanan */
         height: 48px !important; /* Tinggi box biru kanan */
         background-color: #3b28f6 !important; /* Warna box biru */
         /* Clip path untuk membuat kemiringan/sisi miring di sebelah kiri */
@@ -38,17 +38,18 @@
     /* Garis Kuning Atas Tengah */
     .quiz-footer .footer-bar-top {
         height: 5px !important; /* Ketebalan garis */
-        width: 370px !important; /* Panjang garis atas */
         background-color: #facc15 !important;
         top: 60% !important;
-        left: 28.5% !important;
+        left: calc(50% - 21vw - 45px) !important;
+        right: calc(50% - 21vw - 45px) !important;
+        width: auto !important;
     }
 
     /* Garis Kuning Bawah Samping Kiri */
     .quiz-footer .footer-bar-bottom-left {
         bottom: -18% !important;
         height: 5px !important;
-        width: 199px !important; /* Panjang garis kiri */
+        width: calc(50% - 21vw - 45px - 52px) !important; /* Panjang garis kiri */
         background-color: #facc15 !important;
     }
 
@@ -56,7 +57,7 @@
     .quiz-footer .footer-bar-bottom-right {
         bottom: -18% !important;
         height: 5px !important;
-        width: 204px !important; /* Panjang garis kanan */
+        width: calc(50% - 21vw - 45px - 52px) !important; /* Panjang garis kanan */
         background-color: #facc15 !important;
     }
 
@@ -69,7 +70,7 @@
         background-color: #facc15 !important; /* Warna garis miring kiri */
         width: 4px !important; /* Ketebalan garis miring kiri */
         height: 77px !important; /* Panjang/tinggi garis miring kiri */
-        left: 253px !important; /* Posisi horizontal dari kiri layar */
+        left: calc(50% - 21vw - 45px) !important; /* Posisi horizontal dari kiri layar */
         top: 52px !important;
         transform: rotate(48deg) !important; /* Derajat kemiringan */
         transform-origin: top left !important;
@@ -80,7 +81,7 @@
         background-color: #facc15 !important; /* Warna garis miring kanan */
         width: 4px !important; /* Ketebalan garis miring kanan */
         height: 77px !important; /* Panjang/tinggi garis miring kanan */
-        right: 253px !important; /* Posisi horizontal dari kanan layar */
+        right: calc(50% - 21vw - 45px) !important; /* Posisi horizontal dari kanan layar */
         top: 52px !important;
         transform: translateX(-100%) rotate(-48deg) !important; /* Derajat kemiringan */
         transform-origin: top right !important;
@@ -93,7 +94,7 @@
     /* Tombol BACK */
     .quiz-footer .footer-btn-back {
         top: 12px !important; /* Posisi vertikal tombol BACK */
-        left: -35px !important; /* Geser posisi tombol BACK (makin negatif = makin ke kiri) */
+        left: -42px !important; /* Geser posisi tombol BACK */
         width: 160px !important; /* Lebar tombol BACK */
         height: 40px !important; /* Tinggi tombol BACK */
     }
@@ -101,7 +102,7 @@
     /* Tombol NEXT / FINISH */
     .quiz-footer .footer-btn-next {
         top: 12px !important; /* Posisi vertikal tombol NEXT */
-        right: -33px !important; /* Geser posisi tombol NEXT (makin negatif = makin ke kanan) */
+        right: -42px !important; /* Geser posisi tombol NEXT */
         width: 160px !important; /* Lebar tombol NEXT */
         height: 40px !important; /* Tinggi tombol NEXT */
     }
@@ -112,7 +113,8 @@
         width: 90px !important; /* Lebar box nomor */
         height: 40px !important; /* Tinggi box nomor */
         font-size: 18px !important; /* Ukuran font nomor */
-        margin-left: -60px !important; /* Centering helper (setengah dari lebar box nomor) */
+        left: 50% !important; /* Center the counter */
+        margin-left: -45px !important; /* Centering helper (setengah dari lebar box nomor) */
         border-width: 4px !important; /* Ketebalan border nomor */
     }
 }
