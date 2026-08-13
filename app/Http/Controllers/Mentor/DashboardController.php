@@ -18,7 +18,9 @@ class DashboardController extends Controller
         $groups = MentorCareerGroup::with('careerGroup')
             ->where('mentor_id', (string) $mentor->_id)
             ->get()
-            ->pluck('careerGroup');
+            ->pluck('careerGroup')
+            ->filter()
+            ->values();
 
         // 🔥 HITUNG TOTAL STUDENT
         $totalStudents = $groups->sum(function ($group) {
