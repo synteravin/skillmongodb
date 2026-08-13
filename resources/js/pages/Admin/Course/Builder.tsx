@@ -47,6 +47,7 @@ type Module = {
 type Path = {
     _id: string;
     name: string;
+    description?: string | null;
     modules: Module[];
     mentor?: Mentor | null;
 };
@@ -54,9 +55,10 @@ type Path = {
 type CareerGroup = {
     _id: string;
     name: string;
+    description?: string | null;
     paths: Path[];
     mentor?: Mentor | null;
-    status?: 'draft' | 'completed';
+    status?: 'draft' | 'published' | 'completed';
 };
 
 type Course = {
@@ -204,12 +206,12 @@ export default function Builder({
     mentors: Mentor[];
 }) {
     const assignedGroups = course.career_groups?.filter((g) => g.mentor) || [];
-    const completedGroups = assignedGroups.filter(
-        (g) => g.status === 'completed',
+    const publishedGroups = assignedGroups.filter(
+        (g) => g.status === 'published' || g.status === 'completed',
     );
-    const isAllCompleted =
+    const isAllPublished =
         assignedGroups.length > 0 &&
-        completedGroups.length === assignedGroups.length;
+        publishedGroups.length === assignedGroups.length;
 
     /* ================= MODAL STATE ================= */
     const [openCareerGroup, setOpenCareerGroup] = useState(false);
@@ -732,10 +734,10 @@ export default function Builder({
                                         Mentor Progress:{' '}
                                     </span>
                                     <span
-                                        className={`text-xs font-bold ${isAllCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}
+                                        className={`text-xs font-bold ${isAllPublished ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}
                                     >
-                                        {completedGroups.length}/
-                                        {assignedGroups.length} Completed
+                                        {publishedGroups.length}/
+                                        {assignedGroups.length} Published
                                     </span>
                                 </div>
                                 <button
@@ -743,7 +745,7 @@ export default function Builder({
                                     className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold tracking-wider uppercase shadow-xs transition-all ${
                                         course.status === 'published'
                                             ? 'bg-amber-600 text-white shadow-amber-500/10 hover:bg-amber-700'
-                                            : isAllCompleted
+                                            : isAllPublished
                                               ? 'bg-emerald-600 text-white shadow-emerald-500/10 hover:bg-emerald-700'
                                               : 'bg-indigo-600 text-white shadow-indigo-500/10 hover:bg-indigo-700'
                                     }`}
@@ -896,15 +898,17 @@ export default function Builder({
                                                         <div className="flex min-w-0 flex-col gap-0.5">
                                                             <div className="flex items-center gap-3">
                                                                 <div
-                                                                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${group.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'animate-pulse bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.5)] dark:bg-indigo-500 dark:shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}
+                                                                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${group.status === 'published' || group.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'animate-pulse bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.5)] dark:bg-indigo-500 dark:shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}
                                                                 />
                                                                 <span className="truncate font-['Orbitron'] text-sm font-bold tracking-wider text-slate-800 uppercase dark:text-white">
                                                                     {group.name}
                                                                 </span>
                                                                 {group.status ===
-                                                                'completed' ? (
+                                                                    'published' ||
+                                                                    group.status ===
+                                                                    'completed' ? (
                                                                     <span className="inline-flex shrink-0 items-center rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-emerald-500 uppercase">
-                                                                        Completed
+                                                                        Published
                                                                     </span>
                                                                 ) : (
                                                                     <span className="inline-flex shrink-0 items-center rounded border border-slate-500/20 bg-slate-500/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-slate-500 uppercase">

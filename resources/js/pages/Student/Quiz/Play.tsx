@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
 import TimeExpiredModal from '@/components/QuestionForm/TimeExpiredModal';
-import SkillVenturaLoader from '@/components/SkillVenturaLoader';
 import { router, usePage } from '@inertiajs/react';
 import { Flag } from 'lucide-react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
@@ -1338,12 +1337,6 @@ export default function Play({
                     open={showTimeExpired}
                     onProceed={handleProceedTimeExpired}
                 />
-                {loading && (
-                    <SkillVenturaLoader
-                        text="MEMROSES KUIS..."
-                        subtext="Menganalisis jawaban kuis dan menghitung perolehan EXP/Gold..."
-                    />
-                )}
 
                 {showQuizTour && (
                     <CourseOnboardingTour
@@ -1461,12 +1454,6 @@ export default function Play({
                 open={showTimeExpired}
                 onProceed={handleProceedTimeExpired}
             />
-            {loading && (
-                <SkillVenturaLoader
-                    text="MEMROSES KUIS..."
-                    subtext="Menganalisis jawaban kuis dan menghitung perolehan EXP/Gold..."
-                />
-            )}
 
             {showQuizTour && (
                 <CourseOnboardingTour

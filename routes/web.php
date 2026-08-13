@@ -279,11 +279,6 @@ Route::middleware(['auth', 'role:mentor'])
         Route::delete('/paths/{path}', [PathController::class, 'destroy'])
             ->name('paths.destroy');
 
-        Route::post(
-            '/paths/{path}/submissions',
-            [SubmissionController::class, 'store']
-        )->name('submissions.store');
-
         Route::post('/submissions/{submission}/publish', [SubmissionController::class, 'publish'])
             ->name('submissions.publish');
 

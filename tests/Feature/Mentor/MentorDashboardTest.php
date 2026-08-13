@@ -75,4 +75,30 @@ class MentorDashboardTest extends TestCase
             ->has('notifications')
         );
     }
+
+    public function test_mentor_dashboard_handles_orphaned_mentor_career_group_records(): void
+    {
+        $this->mentor = User::create([
+            'name' => 'Test Mentor Orphan',
+            'email' => 'mentor_orphan_'.uniqid().'@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'mentor',
+        ]);
+
+        // Create orphan assignment with non-existent career_group_id
+        $this->mentorCareerGroup = MentorCareerGroup::create([
+            'mentor_id' => (string) $this->mentor->_id,
+            'career_group_id' => 'non_existent_career_group_id_123',
+        ]);
+
+        $this->actingAs($this->mentor);
+
+        $response = $this->get('/mentor/dashboard');
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Mentor/Dashboard')
+            ->where('mentor.stats.career_groups', 0)
+        );
+    }
 }

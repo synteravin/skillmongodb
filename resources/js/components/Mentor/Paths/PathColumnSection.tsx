@@ -103,7 +103,7 @@ export default function PathColumnSection({
                         {isPublished ? (
                             <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-                                PUBLISHED (LIVE)
+                                PUBLISHED
                             </span>
                         ) : (
                             <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600 dark:text-amber-400">
