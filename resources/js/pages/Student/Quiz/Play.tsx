@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
 import TimeExpiredModal from '@/components/QuestionForm/TimeExpiredModal';
 import { router, usePage } from '@inertiajs/react';
-import { Flag } from 'lucide-react';
+import { Flag, AlertOctagon, TriangleAlert } from 'lucide-react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
 import MobilePlay from './MobilePlay';
 import './quizLandscape.css';
@@ -720,7 +720,7 @@ function BoxSoal({
                 <div className="h-full w-full bg-[#04080f] p-[7px] md:p-[15px]">
                     <div className="h-full w-full bg-[#3B28F6] p-[2px] md:p-[4px]">
                         <div className="h-full w-full bg-[#04080f] p-[6px] md:p-[15px]">
-                            <div className="quiz-box-soal relative flex h-full min-h-0 w-full flex-col overflow-visible border-2 border-[#3B28F6] bg-[#04080f] px-[10px] py-[12px] md:min-h-[350px] md:border-4 md:p-9">
+                            <div className="quiz-box-soal relative flex h-full min-h-0 w-full flex-col overflow-visible border-2 border-[#3B28F6] bg-[#04080f] px-[10px] py-[12px] md:min-h-[350px] md:border-4 md:px-4 md:py-6">
                                 <div className="absolute top-[-8px] left-1/2 z-20 h-[9px] w-[210px] origin-bottom -translate-x-1/2 scale-[0.38] overflow-visible min-[390px]:max-[767px]:top-[-8px] min-[390px]:max-[767px]:scale-[0.42] min-[500px]:max-[767px]:top-[-8px] min-[500px]:max-[767px]:scale-[0.42] min-[620px]:max-[767px]:top-[-8px] min-[620px]:max-[767px]:scale-[0.42] min-[700px]:max-[767px]:top-[-8px] min-[700px]:max-[767px]:scale-[0.42] md:-top-4 md:w-[270px] md:scale-100">
                                     <div className="relative flex h-full w-full items-center justify-center">
                                         <div
@@ -816,7 +816,7 @@ function BoxSoal({
                                             />
                                         </div>
                                     )}
-                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-[700px] flex-1 overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] sm:text-[11px] md:px-4 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
+                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-none flex-1 overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] sm:text-[11px] md:px-0 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
                                         {question.question_text}
                                         {question.max_selectable > 1 && (
                                             <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
@@ -853,7 +853,7 @@ function AnswerButton({
     const outerClip =
         'polygon(0 0, 30px 0, 45px 15px, 120px 15px, 135px 0, 100% 0, 100% 100%, 0 100%)';
     const innerClip =
-        'polygon(0 0, 31px 0, 46px 14px, 119px 14px, 134px 0, 100% 0, 100% 100%, 0 100%)';
+        'polygon(0 0, 27px 0, 42px 15px, 119px 15px, 134px 0, 100% 0, 100% 100%, 0 100%)';
 
     let borderBg = selected
         ? 'bg-[#FACC15]'
@@ -866,17 +866,23 @@ function AnswerButton({
         ? 'text-white'
         : 'text-gray-300 group-hover:text-white';
 
+    let strokeColorClass = selected
+        ? 'text-[#FACC15]'
+        : 'text-[#3B28F6] group-hover:text-[#00e5ff]';
+
     if (isReviewMode) {
         if (isCorrect) {
             borderBg = 'bg-emerald-500';
             contentBg = 'bg-emerald-950/60';
             labelColor = 'text-emerald-400';
             textColor = 'text-emerald-100 font-semibold';
+            strokeColorClass = 'text-emerald-500';
         } else if (selected) {
             borderBg = 'bg-rose-500';
             contentBg = 'bg-rose-950/60';
             labelColor = 'text-rose-400';
             textColor = 'text-rose-200';
+            strokeColorClass = 'text-rose-500';
         }
     }
 
@@ -887,49 +893,34 @@ function AnswerButton({
             className={`quiz-answer-btn group relative mt-[3px] mb-[3px] block w-full origin-center scale-[0.86] text-left outline-none md:mt-7 md:mb-6 md:scale-100 ${isReviewMode ? 'cursor-default' : 'cursor-pointer'}`}
         >
             <div className="relative">
-                <div className="absolute -top-[14px] z-[1] h-[12px] w-[173px]">
+                {/* Top Trapezoid Ornament (Closed Shape with Bottom Notch) */}
+                <div className={`absolute left-0 -top-[14px] z-[1] h-[27px] w-[165px] transition-colors duration-300 ${strokeColorClass}`}>
                     <svg
                         className="absolute inset-0 h-full w-full overflow-visible"
-                        viewBox="0 0 100 8"
+                        viewBox="0 0 165 27"
                         preserveAspectRatio="none"
                     >
                         <path
-                            d="M10 0 L90 0 L100 8 L0 8 Z"
+                            d="M15 0 L150 0 L165 12 L135 12 L120 27 L45 27 L30 12 L0 12 Z"
                             fill="none"
-                            stroke={
-                                isReviewMode
-                                    ? isCorrect
-                                        ? '#22c55e'
-                                        : selected
-                                          ? '#ef4444'
-                                          : '#3B82F6'
-                                    : '#3B82F6'
-                            }
-                            strokeWidth="1"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
                 </div>
-                <div className="absolute -top-[3px] left-[34.5px] z-[3] h-[2px] w-[97px] rounded-br-md rounded-bl-sm bg-[#04080f]" />
-                <div className="absolute -top-1 left-[34px] z-[2] h-[16px] w-[98px]">
+                {/* SVG Notch Border (Centerline Aligned to Box) */}
+                <div className={`absolute left-0 top-0 z-[2] h-5 w-[150px] transition-colors duration-300 ${strokeColorClass}`}>
                     <svg
                         className="absolute inset-0 h-full w-full overflow-visible"
-                        viewBox="0 0 100 16"
+                        viewBox="0 0 150 20"
                         preserveAspectRatio="none"
                     >
                         <path
-                            d="M0 2 L13 15 L87 15 L100 2"
+                            d="M30 1 L45 16 L120 16 L135 1"
                             fill="none"
-                            stroke={
-                                isReviewMode
-                                    ? isCorrect
-                                        ? '#22c55e'
-                                        : selected
-                                          ? '#ef4444'
-                                          : '#3B82F6'
-                                    : '#3B82F6'
-                            }
-                            strokeWidth="1.2"
+                            stroke="currentColor"
+                            strokeWidth="2"
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
@@ -1271,31 +1262,62 @@ export default function Play({
 
     if (has_submitted) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#04080f] font-['Rajdhani',sans-serif]">
+            <div className="flex min-h-screen items-center justify-center bg-[#04080f] font-['Rajdhani',sans-serif] p-4">
                 <div
-                    className="relative border-2 border-[#3B28F6] p-10 text-center"
-                    style={{
-                        clipPath:
-                            'polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px)',
-                    }}
+                    className="relative w-full max-w-xl rounded border border-[#FACC15] bg-white dark:bg-[#020202] p-8 md:p-10 text-center shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
                 >
-                    <div className="absolute top-0 left-0 z-20 h-8 w-8 border-t-[3px] border-l-[3px] border-[#FACC15]" />
-                    <div className="absolute right-0 bottom-0 z-20 h-8 w-8 border-r-[3px] border-b-[3px] border-[#FACC15]" />
-                    <h1 className="mb-4 text-3xl font-bold tracking-[4px] text-[#FACC15]">
+                    {/* Header Icon */}
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center border border-[#FACC15] bg-yellow-500/10 dark:bg-yellow-500/15 rounded-full">
+                        <TriangleAlert className="h-6 w-6 text-yellow-500 dark:text-yellow-400" />
+                    </div>
+
+                    <h1 
+                        className="mb-4 text-2xl md:text-3xl font-bold tracking-[4px] text-slate-900 dark:text-white uppercase"
+                        style={{ fontFamily: 'Orbitron, sans-serif' }}
+                    >
                         MISSION COMPLETED
                     </h1>
-                    <p className="mb-8 text-lg text-gray-300">
+                    
+                    <p className="mb-6 text-base md:text-lg text-slate-800 dark:text-white font-semibold">
                         Kamu sudah menyelesaikan quiz ini.
                     </p>
+
+                    {/* Warning box style copied from course index confirmation modal */}
+                    <div className="mx-auto max-w-lg border border-red-300 dark:border-[#cc0000] bg-red-50/50 dark:bg-[#110000] p-4 mb-8 shadow-[inset_0_0_15px_rgba(180,0,0,0.05)] dark:shadow-[inset_0_0_15px_rgba(180,0,0,0.1)] text-left rounded">
+                        <div className="mb-2 flex items-center gap-2">
+                            <div className="text-red-600">
+                                <AlertOctagon className="h-5 w-5 font-bold" />
+                            </div>
+                            <p
+                                className="text-xs font-bold tracking-widest text-red-500 uppercase"
+                                style={{ fontFamily: 'Oxanium' }}
+                            >
+                                System Warning
+                            </p>
+                        </div>
+                        <p
+                            className="text-xs md:text-sm leading-relaxed text-slate-800 dark:text-white"
+                            style={{ fontFamily: 'Oxanium' }}
+                        >
+                            Quiz ini telah disubmit. Anda{' '}
+                            <span className="font-bold text-[#EE0202]">
+                                tidak dapat mengubah
+                            </span>{' '}
+                            jawaban atau mengirim ulang kuis ini lagi.
+                        </p>
+                    </div>
+
                     <button
                         onClick={() =>
                             router.visit(`/courses/${quiz.course_slug}`)
                         }
-                        className="bg-[#FACC15] px-8 py-3 font-bold text-black transition-colors hover:bg-yellow-300"
+                        className="xs:py-2.5 xs:tracking-[0.2em] xs:text-sm py-2 text-xs font-bold tracking-[0.12em] uppercase transition-all duration-300 sm:text-base md:py-3 md:text-xl w-full max-w-md mx-auto block"
                         style={{
-                            clipPath:
-                                'polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%)',
-                            letterSpacing: 2,
+                            fontFamily: 'Oxanium',
+                            background: '#FACC15',
+                            border: '1px solid #FACC15',
+                            color: '#020202',
+                            boxShadow: '0 0 12px rgba(250,204,21,0.25)',
                         }}
                     >
                         KEMBALI KE COURSE

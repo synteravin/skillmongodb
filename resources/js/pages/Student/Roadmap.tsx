@@ -1057,47 +1057,54 @@ export default function Roadmap({
                         activeTour={activeTour}
                     />
 
-                    {/* ── DESKTOP LAYOUT (md+) — original, completely unchanged ── */}
-                    <div className="mx-auto hidden w-full max-w-screen-2xl px-4 pb-16 md:block md:px-8 lg:px-12 2xl:px-16">
-                        {/* FUNDAMENTAL */}
-                        <div
-                            className={`mt-4 flex w-full flex-col flex-nowrap items-center ${
-                                activeTour === 'fundamental'
-                                    ? 'relative z-[130]'
-                                    : ''
-                            }`}
-                        >
-                            {course.basic_paths?.map((path: any) => {
-                                const done = path.is_completed;
-                                const locked = !path.is_unlocked;
+                    {/* ── DESKTOP LAYOUT (md+) ── */}
+                    <div className="hidden md:block">
+                        {/* FUNDAMENTAL SECTION (Boxed/Static) */}
+                        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-0 md:px-8 lg:px-12 2xl:px-16">
+                            <div
+                                className={`mt-4 flex w-full flex-col flex-nowrap items-center ${
+                                    activeTour === 'fundamental'
+                                        ? 'relative z-[130]'
+                                        : ''
+                                }`}
+                            >
+                                {course.basic_paths?.map((path: any, idx: number) => {
+                                    const done = path.is_completed;
+                                    const locked = !path.is_unlocked;
 
-                                const href =
-                                    !locked && path.first_module_id
-                                        ? `/learn/${course.slug}/${path.slug}/${path.first_module_slug}`
-                                        : undefined;
+                                    const href =
+                                        !locked && path.first_module_id
+                                            ? `/learn/${course.slug}/${path.slug}/${path.first_module_slug}`
+                                            : undefined;
 
-                                return (
-                                    <React.Fragment key={path._id}>
-                                        <StudentFundamentalNode
-                                            title={path.name}
-                                            description={path.description}
-                                            locked={locked}
-                                            done={done}
-                                            thumbnail={path.thumbnail}
-                                            href={href}
-                                        />
-                                        <div className="h-12 w-[2px] bg-blue-500/70 dark:bg-white/80" />
-                                    </React.Fragment>
-                                );
-                            })}
+                                    const isLastPath = idx === course.basic_paths.length - 1;
+
+                                    return (
+                                        <React.Fragment key={path._id}>
+                                            <StudentFundamentalNode
+                                                title={path.name}
+                                                description={path.description}
+                                                locked={locked}
+                                                done={done}
+                                                thumbnail={path.thumbnail}
+                                                href={href}
+                                            />
+                                            {isLastPath ? (
+                                                <div className="relative z-20 -mb-[2px] h-[50px] w-[2px] bg-blue-500/70 dark:bg-white/80" />
+                                            ) : (
+                                                <div className="h-12 w-[2px] bg-blue-500/70 dark:bg-white/80" />
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </div>
                         </div>
 
-                        {/* CAREER GROUPS */}
+                        {/* CAREER GROUPS SECTION (Full Layer Scrollable) */}
                         {course.career_groups?.length > 0 && (
-
-                            <div className="w-full overflow-x-auto pt-0 pb-10 px-4 [scrollbar-width:thin] [scrollbar-color:rgba(59,40,246,0.3)_transparent] dark:[scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+                            <div className="w-full overflow-x-auto pt-0 pb-16 [scrollbar-width:thin] [scrollbar-color:rgba(59,40,246,0.3)_transparent] dark:[scrollbar-color:rgba(255,255,255,0.2)_transparent]">
                                 <div
-                                    className={`mt-0 flex min-w-max justify-center gap-0 pb-2 ${
+                                    className={`mt-0 flex min-w-max justify-center items-start gap-0 pb-2 career-groups-row ${
                                         activeTour === 'career'
                                             ? 'relative z-[130]'
                                             : 'relative z-10'
@@ -1126,7 +1133,6 @@ export default function Roadmap({
                                                                 <div className="absolute top-0 right-0 z-0 hidden h-[2px] w-1/2 bg-blue-500/70 sm:block dark:bg-white/80" />
                                                             )}
                                                         </>
-
                                                     )}
 
                                                     <div className="z-10 hidden h-10 w-[2px] bg-blue-500/70 sm:block dark:bg-white/80" />
