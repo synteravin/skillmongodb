@@ -453,6 +453,7 @@ Route::middleware(['auth', 'role:student', 'has.character'])
 
         Route::get('/courses/{course}/paths/{path}/quiz', [App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
         Route::post('/courses/{course}/paths/{path}/quiz/submit', [App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
+        Route::post('/courses/{course}/paths/{path}/quiz/restart', [App\Http\Controllers\QuizController::class, 'restart'])->name('quiz.restart');
         Route::get('/courses/{course}/paths/{path}/quiz/result', [App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
         Route::get('/quiz/{quiz}', [App\Http\Controllers\QuizController::class, 'showLegacy'])->name('quiz.legacy');
         Route::post('/select-career/{path}', SelectPathController::class)

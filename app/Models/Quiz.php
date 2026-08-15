@@ -17,10 +17,17 @@ class Quiz extends Model
         'duration',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'duration' => 'integer',
+        ];
+    }
+
     protected static function booted(): void
     {
         static::saving(function ($quiz) {
-            if (empty($quiz->slug) && $quiz->path) {
+            if ($quiz->path && $quiz->path->slug) {
                 $quiz->slug = $quiz->path->slug;
             }
         });

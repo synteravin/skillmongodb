@@ -31,6 +31,7 @@ const AnswerButton = ({
     selected,
     isCorrect,
     isReviewMode,
+    questionScore,
     onClick,
 }: any) => {
     let borderBg = selected
@@ -42,16 +43,20 @@ const AnswerButton = ({
     let textColor = selected ? 'text-yellow-400' : 'text-gray-300';
 
     if (isReviewMode) {
-        if (isCorrect) {
+        if (selected && isCorrect) {
             borderBg =
                 'bg-emerald-950/70 border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.25)]';
             badgeBg = 'bg-emerald-500 text-white';
             textColor = 'text-emerald-200 font-semibold';
-        } else if (selected) {
+        } else if (selected && !isCorrect) {
             borderBg =
                 'bg-rose-950/70 border-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.25)]';
             badgeBg = 'bg-rose-500 text-white';
             textColor = 'text-rose-200';
+        } else {
+            borderBg = 'bg-[#0d1222] border-slate-800/80';
+            badgeBg = 'bg-slate-800 text-slate-400';
+            textColor = 'text-slate-400';
         }
     }
 
@@ -73,14 +78,14 @@ const AnswerButton = ({
                     {text}
                 </span>
             </div>
-            {isReviewMode && isCorrect && (
-                <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
-                    ✓ Kunci
+            {isReviewMode && selected && isCorrect && (
+                <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/20 px-2.5 py-0.5 font-['orbitron'] text-xs font-bold text-emerald-400">
+                    (+{questionScore || 20} Poin)
                 </span>
             )}
-            {isReviewMode && !isCorrect && selected && (
-                <span className="shrink-0 rounded-full border border-rose-400/40 bg-rose-400/20 px-2 py-0.5 text-xs font-bold text-rose-400">
-                    ✗ Anda
+            {isReviewMode && selected && !isCorrect && (
+                <span className="shrink-0 rounded-full border border-rose-400/40 bg-rose-400/20 px-2.5 py-0.5 font-['orbitron'] text-xs font-bold text-rose-400">
+                    (0 Poin)
                 </span>
             )}
         </motion.button>
@@ -90,14 +95,31 @@ const AnswerButton = ({
 const QuestionBox = ({
     question,
     isLandscape,
+    isReviewMode,
 }: {
     question: any;
     isLandscape: boolean;
+    isReviewMode?: boolean;
 }) => {
     return (
         <div
             className={`flex min-h-0 w-full flex-col gap-3 ${isLandscape ? 'h-full overflow-y-auto pr-1' : ''}`}
         >
+            {isReviewMode && question.question_score !== undefined && (
+                <div className="flex items-center justify-between">
+                    <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-['orbitron'] text-xs font-bold ${
+                            question.is_user_correct
+                                ? 'border border-emerald-500/40 bg-emerald-500/20 text-emerald-400'
+                                : 'border border-rose-500/40 bg-rose-500/20 text-rose-400'
+                        }`}
+                    >
+                        {/* {question.is_user_correct
+                            ? `✓ Benar (+${question.question_score} Poin)`
+                            : `✕ Salah (0 Poin)`} */}
+                    </span>
+                </div>
+            )}
             {question.media_url && (
                 <div className="flex w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-700/50 bg-white p-2">
                     <img
@@ -301,6 +323,7 @@ export default function MobilePlay({
                                 <QuestionBox
                                     question={question}
                                     isLandscape={false}
+                                    isReviewMode={isReviewMode}
                                 />
                             </motion.div>
                         </AnimatePresence>
@@ -333,6 +356,11 @@ export default function MobilePlay({
                                             selected={isSel}
                                             isCorrect={a.is_correct}
                                             isReviewMode={isReviewMode}
+                                            questionScore={
+                                                question.max_score ||
+                                                question.question_score ||
+                                                20
+                                            }
                                             onClick={() => {
                                                 if (maxSelectable === 1) {
                                                     setSelected([a.id]);
@@ -437,6 +465,7 @@ export default function MobilePlay({
                             <QuestionBox
                                 question={question}
                                 isLandscape={true}
+                                isReviewMode={isReviewMode}
                             />
                         </motion.div>
                     </AnimatePresence>
@@ -445,7 +474,7 @@ export default function MobilePlay({
                 {/* Column 2 (Right): Answers + Navigation */}
                 <div className="flex min-h-0 w-1/2 flex-1 flex-col justify-between">
                     {/* Options list scrollable */}
-                    <div className="flex flex-1 flex-col gap-2 overflow-y-auto pr-1 [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:bg-[#3B28F6]">
+                    <div className="flex flex-1 [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] flex-col gap-2 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:bg-[#3B28F6]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id + '-answers-landscape'}

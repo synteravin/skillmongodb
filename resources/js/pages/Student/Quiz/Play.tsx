@@ -260,8 +260,10 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={isReviewMode ? loading : !selected || loading}
-                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:right-[4px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[85px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:right-[-4px] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[98px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:right-[-15px] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[116px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:right-[-21px] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[118px] ${(!isReviewMode && !selected) || loading ? 'opacity-40' : 'opacity-100'}`}
+                    disabled={
+                        isReviewMode ? loading : !selected?.length || loading
+                    }
+                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:right-[4px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[85px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:right-[-4px] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[98px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:right-[-15px] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[116px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:right-[-21px] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[118px] ${(!isReviewMode && !selected?.length) || loading ? 'opacity-40' : 'opacity-100'}`}
                 >
                     <svg
                         className="absolute inset-0 h-full w-full"
@@ -511,14 +513,18 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={isReviewMode ? loading : !selected || loading}
+                    disabled={
+                        isReviewMode ? loading : !selected?.length || loading
+                    }
                     className="footer-btn-next absolute top-[-1px] block font-bold lg:hidden"
                     style={{
                         right: -56,
                         width: 160,
                         height: 48,
                         opacity:
-                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
+                            (!isReviewMode && !selected?.length) || loading
+                                ? 0.4
+                                : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -560,14 +566,18 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={isReviewMode ? loading : !selected || loading}
+                    disabled={
+                        isReviewMode ? loading : !selected?.length || loading
+                    }
                     className="footer-btn-next absolute top-[-4px] hidden font-bold lg:block xl:hidden"
                     style={{
                         right: -30,
                         width: 172,
                         height: 62,
                         opacity:
-                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
+                            (!isReviewMode && !selected?.length) || loading
+                                ? 0.4
+                                : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -609,14 +619,18 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={isReviewMode ? loading : !selected || loading}
+                    disabled={
+                        isReviewMode ? loading : !selected?.length || loading
+                    }
                     className="footer-btn-next absolute top-0 hidden font-bold xl:block 2xl:hidden"
                     style={{
                         right: -43,
                         width: 215,
                         height: 58,
                         opacity:
-                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
+                            (!isReviewMode && !selected?.length) || loading
+                                ? 0.4
+                                : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -658,14 +672,18 @@ function Footer({
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={next}
-                    disabled={isReviewMode ? loading : !selected || loading}
+                    disabled={
+                        isReviewMode ? loading : !selected?.length || loading
+                    }
                     className="absolute top-[-4px] hidden font-bold 2xl:block"
                     style={{
                         right: -49,
                         width: 280,
                         height: 62,
                         opacity:
-                            (!isReviewMode && !selected) || loading ? 0.4 : 1,
+                            (!isReviewMode && !selected?.length) || loading
+                                ? 0.4
+                                : 1,
                         letterSpacing: '3px',
                     }}
                 >
@@ -709,10 +727,12 @@ function Footer({
 
 function BoxSoal({
     question,
+    isReviewMode,
 }: {
     current: number;
     total: number;
     question: any;
+    isReviewMode?: boolean;
 }) {
     return (
         <div className="quiz-question-inner relative h-full w-full p-[2px] md:p-6 lg:p-8">
@@ -807,6 +827,23 @@ function BoxSoal({
 
                                 <div className="quiz-mask-bot2 absolute bottom-[-5px] left-1/2 z-10 h-[10px] w-[120px] -translate-x-1/2 bg-[#04080f] min-[390px]:max-[767px]:w-[128px] min-[500px]:max-[767px]:w-[128px] min-[620px]:max-[767px]:w-[128px] min-[700px]:max-[767px]:w-[128px] md:-bottom-2 md:w-[270px]" />
                                 <div className="flex min-h-0 w-full flex-1 flex-col gap-4">
+                                    {/* {isReviewMode &&
+                                        question.question_score !==
+                                            undefined && (
+                                            <div className="mb-1 flex items-center justify-between">
+                                                <span
+                                                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-['orbitron'] text-xs font-bold tracking-wider ${
+                                                        question.is_user_correct
+                                                            ? 'border border-emerald-500/40 bg-emerald-500/20 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                                                            : 'border border-rose-500/40 bg-rose-500/20 text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
+                                                    }`}
+                                                >
+                                                    {question.is_user_correct
+                                                    ? `✓ Benar (+${question.question_score} Poin)`
+                                                    : `✕ Salah (0 Poin)`}
+                                                </span>
+                                            </div>
+                                        )} */}
                                     {question.media_url && (
                                         <div className="quiz-media -mt-1 flex h-[70px] w-full flex-shrink-0 items-center justify-center md:-mt-4 md:h-[150px] lg:h-[180px]">
                                             <img
@@ -816,7 +853,7 @@ function BoxSoal({
                                             />
                                         </div>
                                     )}
-                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-none flex-1 overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white [scrollbar-color:#3B28F6_#0d0d1a] [scrollbar-width:thin] sm:text-[11px] md:px-0 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
+                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-none flex-1 [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white sm:text-[11px] md:px-0 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
                                         {question.question_text}
                                         {question.max_selectable > 1 && (
                                             <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
@@ -848,6 +885,7 @@ function AnswerButton({
     selected,
     isCorrect,
     isReviewMode,
+    questionScore,
     onClick,
 }: any) {
     const outerClip =
@@ -871,18 +909,24 @@ function AnswerButton({
         : 'text-[#3B28F6] group-hover:text-[#00e5ff]';
 
     if (isReviewMode) {
-        if (isCorrect) {
+        if (selected && isCorrect) {
             borderBg = 'bg-emerald-500';
             contentBg = 'bg-emerald-950/60';
             labelColor = 'text-emerald-400';
             textColor = 'text-emerald-100 font-semibold';
             strokeColorClass = 'text-emerald-500';
-        } else if (selected) {
+        } else if (selected && !isCorrect) {
             borderBg = 'bg-rose-500';
             contentBg = 'bg-rose-950/60';
             labelColor = 'text-rose-400';
             textColor = 'text-rose-200';
             strokeColorClass = 'text-rose-500';
+        } else {
+            borderBg = 'bg-slate-800/60';
+            contentBg = 'bg-[#0a0f1d]';
+            labelColor = 'text-slate-500';
+            textColor = 'text-slate-400';
+            strokeColorClass = 'text-slate-700';
         }
     }
 
@@ -894,7 +938,9 @@ function AnswerButton({
         >
             <div className="relative">
                 {/* Top Trapezoid Ornament (Closed Shape with Bottom Notch) */}
-                <div className={`absolute left-0 -top-[14px] z-[1] h-[27px] w-[165px] transition-colors duration-300 ${strokeColorClass}`}>
+                <div
+                    className={`absolute -top-[14px] left-0 z-[1] h-[27px] w-[165px] transition-colors duration-300 ${strokeColorClass}`}
+                >
                     <svg
                         className="absolute inset-0 h-full w-full overflow-visible"
                         viewBox="0 0 165 27"
@@ -910,7 +956,9 @@ function AnswerButton({
                     </svg>
                 </div>
                 {/* SVG Notch Border (Centerline Aligned to Box) */}
-                <div className={`absolute left-0 top-0 z-[2] h-5 w-[150px] transition-colors duration-300 ${strokeColorClass}`}>
+                <div
+                    className={`absolute top-0 left-0 z-[2] h-5 w-[150px] transition-colors duration-300 ${strokeColorClass}`}
+                >
                     <svg
                         className="absolute inset-0 h-full w-full overflow-visible"
                         viewBox="0 0 150 20"
@@ -955,14 +1003,14 @@ function AnswerButton({
                                 {text}
                             </span>
                         </div>
-                        {isReviewMode && isCorrect && (
-                            <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/20 px-2 py-0.5 text-xs font-bold text-emerald-400">
-                                ✓ Kunci Jawaban
+                        {isReviewMode && selected && isCorrect && (
+                            <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/20 px-2.5 py-0.5 font-['orbitron'] text-xs font-bold text-emerald-400">
+                                (+{questionScore || 20} Poin)
                             </span>
                         )}
-                        {isReviewMode && !isCorrect && selected && (
-                            <span className="shrink-0 rounded-full border border-rose-400/40 bg-rose-400/20 px-2 py-0.5 text-xs font-bold text-rose-400">
-                                ✗ Jawaban Anda
+                        {isReviewMode && selected && !isCorrect && (
+                            <span className="shrink-0 rounded-full border border-rose-400/40 bg-rose-400/20 px-2.5 py-0.5 font-['orbitron'] text-xs font-bold text-rose-400">
+                                (0 Poin)
                             </span>
                         )}
                     </div>
@@ -1015,37 +1063,27 @@ export default function Play({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const getOrCreateStartTime = (quizId: string) => {
-        if (typeof window === 'undefined') return Date.now();
-        const storageKey = `quiz_timer_start_${quizId}`;
-        const stored = localStorage.getItem(storageKey);
-        if (stored) {
-            return parseInt(stored, 10);
+    const initialTimeLeft =
+        typeof quiz?.remaining_seconds === 'number'
+            ? quiz.remaining_seconds
+            : (quiz?.duration || 15) * 60;
+
+    const [timeLeft, setTimeLeft] = useState<number>(initialTimeLeft);
+
+    useEffect(() => {
+        if (typeof quiz?.remaining_seconds === 'number') {
+            setTimeLeft(quiz.remaining_seconds);
+        } else {
+            setTimeLeft((quiz?.duration || 15) * 60);
         }
-        const now = Date.now();
-        localStorage.setItem(storageKey, now.toString());
-        return now;
-    };
-
-    const clearTimerStorage = (quizId: string) => {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem(`quiz_timer_start_${quizId}`);
-        }
-    };
-
-    const durationSeconds = (quiz?.duration || 15) * 60;
-
-    const [timeLeft, setTimeLeft] = useState<number>(() => {
-        if (!quiz?.duration || quiz.is_review || has_submitted)
-            return durationSeconds;
-        const startTime = getOrCreateStartTime(quiz.id);
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        const remaining = durationSeconds - elapsed;
-        return remaining > 0 ? remaining : 0;
-    });
+    }, [quiz?.remaining_seconds, quiz?.duration, quiz?.id]);
 
     const [showTimeExpired, setShowTimeExpired] = useState(false);
     const currentQuestion = quiz?.questions?.[current];
+
+    const [isReviewMode, setIsReviewMode] = useState(() =>
+        Boolean(quiz?.is_review),
+    );
 
     useEffect(() => {
         if (
@@ -1053,38 +1091,35 @@ export default function Play({
             showResult ||
             showTimeExpired ||
             quiz.is_review ||
+            isReviewMode ||
             has_submitted
         )
             return;
 
         const timer = setInterval(() => {
-            const startTime = getOrCreateStartTime(quiz.id);
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const remaining = durationSeconds - elapsed;
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    setShowTimeExpired(true);
 
-            if (remaining <= 0) {
-                setTimeLeft(0);
-                clearInterval(timer);
-                clearTimerStorage(quiz.id);
-                setShowTimeExpired(true);
+                    const currentUpdated =
+                        selected && selected.length > 0 && currentQuestion
+                            ? [
+                                  ...answers.filter(
+                                      (a) => a.question_id !== currentQuestion.id,
+                                  ),
+                                  {
+                                      question_id: currentQuestion.id,
+                                      answer_id: selected,
+                                  },
+                              ]
+                            : answers;
 
-                const currentUpdated =
-                    selected && selected.length > 0 && currentQuestion
-                        ? [
-                              ...answers.filter(
-                                  (a) => a.question_id !== currentQuestion.id,
-                              ),
-                              {
-                                  question_id: currentQuestion.id,
-                                  answer_id: selected,
-                              },
-                          ]
-                        : answers;
-
-                submit(currentUpdated, true);
-            } else {
-                setTimeLeft(remaining);
-            }
+                    submit(currentUpdated, true);
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
 
         return () => clearInterval(timer);
@@ -1096,8 +1131,8 @@ export default function Play({
         showTimeExpired,
         quiz?.duration,
         quiz?.is_review,
+        isReviewMode,
         has_submitted,
-        quiz?.id,
     ]);
 
     const formatTimer = (seconds: number) => {
@@ -1106,25 +1141,42 @@ export default function Play({
         return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     };
 
-    const [isReviewMode, setIsReviewMode] = useState(() =>
-        Boolean(quiz?.is_review || has_submitted),
-    );
-
-    const handleRetry = () => {
-        clearTimerStorage(quiz.id);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(
-                `quiz_timer_start_${quiz.id}`,
-                Date.now().toString(),
-            );
+    useEffect(() => {
+        if (isReviewMode && currentQuestion?.user_answer_ids) {
+            setSelected(currentQuestion.user_answer_ids);
         }
+    }, [current, isReviewMode, currentQuestion]);
+
+    const handleRetry = async () => {
         setIsReviewMode(false);
         setCurrent(0);
         setAnswers([]);
         setSelected([]);
         setShowResult(false);
         setFinalResult(null);
-        setTimeLeft((quiz?.duration || 15) * 60);
+
+        const csrf = document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content');
+        const restartUrl =
+            quiz?.course_slug && quiz?.path_slug
+                ? `/courses/${quiz.course_slug}/paths/${quiz.path_slug}/quiz/restart`
+                : `/quiz/${quiz?.id}/restart`;
+        try {
+            const res = await fetch(restartUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf || '',
+                    Accept: 'application/json',
+                },
+                credentials: 'include',
+            });
+            const data = await res.json();
+            setTimeLeft(data.remaining_seconds ?? (quiz?.duration || 15) * 60);
+        } catch {
+            setTimeLeft((quiz?.duration || 15) * 60);
+        }
     };
 
     const getExitUrl = () => {
@@ -1166,17 +1218,28 @@ export default function Play({
     const handleBack = () => {
         if (current > 0) {
             setCurrent(current - 1);
-            const prev = answers.find(
-                (a) => a.question_id === quiz.questions[current - 1].id,
-            );
-            const prevSel = prev?.answer_id;
-            setSelected(
-                Array.isArray(prevSel) ? prevSel : prevSel ? [prevSel] : [],
-            );
+            if (!isReviewMode) {
+                const prev = answers.find(
+                    (a) => a.question_id === quiz.questions[current - 1].id,
+                );
+                const prevSel = prev?.answer_id;
+                setSelected(
+                    Array.isArray(prevSel) ? prevSel : prevSel ? [prevSel] : [],
+                );
+            }
         }
     };
 
     const next = () => {
+        if (isReviewMode) {
+            if (current + 1 < total) {
+                setCurrent(current + 1);
+            } else {
+                handleExit();
+            }
+            return;
+        }
+
         if (selected.length === 0) return;
         const updated = [
             ...answers.filter((a) => a.question_id !== question.id),
@@ -1240,7 +1303,6 @@ export default function Play({
                 return;
             }
             setFinalResult(data.result);
-            clearTimerStorage(quiz.id);
             if (!isAutoSubmit) {
                 setShowResult(true);
             }
@@ -1260,30 +1322,28 @@ export default function Play({
         }
     };
 
-    if (has_submitted) {
+    if (has_submitted && !isReviewMode) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#04080f] font-['Rajdhani',sans-serif] p-4">
-                <div
-                    className="relative w-full max-w-xl rounded border border-[#FACC15] bg-white dark:bg-[#020202] p-8 md:p-10 text-center shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
-                >
+            <div className="flex min-h-screen items-center justify-center bg-[#04080f] p-4 font-['Rajdhani',sans-serif]">
+                <div className="relative w-full max-w-xl rounded border border-[#FACC15] bg-white p-8 text-center shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] md:p-10 dark:bg-[#020202] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]">
                     {/* Header Icon */}
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center border border-[#FACC15] bg-yellow-500/10 dark:bg-yellow-500/15 rounded-full">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[#FACC15] bg-yellow-500/10 dark:bg-yellow-500/15">
                         <TriangleAlert className="h-6 w-6 text-yellow-500 dark:text-yellow-400" />
                     </div>
 
-                    <h1 
-                        className="mb-4 text-2xl md:text-3xl font-bold tracking-[4px] text-slate-900 dark:text-white uppercase"
+                    <h1
+                        className="mb-4 text-2xl font-bold tracking-[4px] text-slate-900 uppercase md:text-3xl dark:text-white"
                         style={{ fontFamily: 'Orbitron, sans-serif' }}
                     >
                         MISSION COMPLETED
                     </h1>
-                    
-                    <p className="mb-6 text-base md:text-lg text-slate-800 dark:text-white font-semibold">
+
+                    <p className="mb-6 text-base font-semibold text-slate-800 md:text-lg dark:text-white">
                         Kamu sudah menyelesaikan quiz ini.
                     </p>
 
                     {/* Warning box style copied from course index confirmation modal */}
-                    <div className="mx-auto max-w-lg border border-red-300 dark:border-[#cc0000] bg-red-50/50 dark:bg-[#110000] p-4 mb-8 shadow-[inset_0_0_15px_rgba(180,0,0,0.05)] dark:shadow-[inset_0_0_15px_rgba(180,0,0,0.1)] text-left rounded">
+                    <div className="mx-auto mb-8 max-w-lg rounded border border-red-300 bg-red-50/50 p-4 text-left shadow-[inset_0_0_15px_rgba(180,0,0,0.05)] dark:border-[#cc0000] dark:bg-[#110000] dark:shadow-[inset_0_0_15px_rgba(180,0,0,0.1)]">
                         <div className="mb-2 flex items-center gap-2">
                             <div className="text-red-600">
                                 <AlertOctagon className="h-5 w-5 font-bold" />
@@ -1296,7 +1356,7 @@ export default function Play({
                             </p>
                         </div>
                         <p
-                            className="text-xs md:text-sm leading-relaxed text-slate-800 dark:text-white"
+                            className="text-xs leading-relaxed text-slate-800 md:text-sm dark:text-white"
                             style={{ fontFamily: 'Oxanium' }}
                         >
                             Quiz ini telah disubmit. Anda{' '}
@@ -1307,21 +1367,22 @@ export default function Play({
                         </p>
                     </div>
 
-                    <button
-                        onClick={() =>
-                            router.visit(`/courses/${quiz.course_slug}`)
-                        }
-                        className="xs:py-2.5 xs:tracking-[0.2em] xs:text-sm py-2 text-xs font-bold tracking-[0.12em] uppercase transition-all duration-300 sm:text-base md:py-3 md:text-xl w-full max-w-md mx-auto block"
-                        style={{
-                            fontFamily: 'Oxanium',
-                            background: '#FACC15',
-                            border: '1px solid #FACC15',
-                            color: '#020202',
-                            boxShadow: '0 0 12px rgba(250,204,21,0.25)',
-                        }}
-                    >
-                        KEMBALI KE COURSE
-                    </button>
+                    <div className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
+                        <button
+                            onClick={() => setIsReviewMode(true)}
+                            className="flex-1 cursor-pointer rounded border border-yellow-400 bg-yellow-400 py-3 text-xs font-bold tracking-wider text-black uppercase shadow-[0_0_12px_rgba(250,204,21,0.25)] transition-all duration-300 hover:bg-yellow-300 md:text-sm"
+                            style={{ fontFamily: 'Oxanium' }}
+                        >
+                            💡 LIHAT PEMBAHASAN
+                        </button>
+                        <button
+                            onClick={handleExit}
+                            className="flex-1 cursor-pointer rounded border border-slate-700 bg-slate-800 py-3 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-slate-700 md:text-sm"
+                            style={{ fontFamily: 'Oxanium' }}
+                        >
+                            KEMBALI KE COURSE
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -1386,7 +1447,7 @@ export default function Play({
                     <div className="flex items-center gap-2 font-['orbitron'] text-xs font-bold tracking-wider text-slate-400">
                         {isReviewMode && (
                             <span className="rounded-md border border-yellow-400/40 bg-yellow-400/20 px-2.5 py-1 font-bold text-yellow-300">
-                                💡 MODE PEMBAHASAN (READ-ONLY REVIEW)
+                                💡 MODE REVIEW JAWABAN
                             </span>
                         )}
                     </div>
@@ -1419,12 +1480,13 @@ export default function Play({
                                     current={current}
                                     total={total}
                                     question={question}
+                                    isReviewMode={isReviewMode}
                                 />
                             </motion.div>
                         </AnimatePresence>
                     </div>
 
-                    <div className="quiz-answer flex w-full flex-1 flex-col justify-center overflow-y-auto px-0 py-[2px] [scrollbar-width:none] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
+                    <div className="quiz-answer flex w-full flex-1 [scrollbar-width:none] flex-col justify-center overflow-y-auto px-0 py-[2px] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={question.id + '-answers'}
@@ -1442,6 +1504,11 @@ export default function Play({
                                         selected={selected.includes(a.id)}
                                         isCorrect={a.is_correct}
                                         isReviewMode={isReviewMode}
+                                        questionScore={
+                                            question.max_score ||
+                                            question.question_score ||
+                                            20
+                                        }
                                         onClick={() => selectAnswer(a.id)}
                                     />
                                 ))}

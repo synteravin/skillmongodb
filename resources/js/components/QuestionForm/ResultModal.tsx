@@ -330,7 +330,7 @@ export default function ResultModal({
                                     fontFamily: "'Orbitron', sans-serif",
                                 }}
                             >
-                                💡 Lihat Pembahasan
+                                💡 Lihat
                             </motion.button>
 
                             <motion.button

@@ -16,16 +16,18 @@ class SubmissionController extends Controller
     public function index(CareerGroup $group)
     {
         // Get all published submissions for this group
-        $submissions = Submission::where('group_id', $group->id)
+        $submissions = Submission::where('group_id', (string) $group->id)
             ->where('status', 'published')
             ->latest()
             ->get();
 
+        $submissionIds = $submissions->map(fn ($s) => (string) ($s->id ?? $s->_id))->toArray();
+
         // Get student's current submissions for these
-        $studentSubmissions = StudentSubmission::where('student_id', Auth::id())
-            ->whereIn('submission_id', $submissions->pluck('id'))
+        $studentSubmissions = StudentSubmission::where('student_id', (string) Auth::id())
+            ->whereIn('submission_id', $submissionIds)
             ->get()
-            ->keyBy('submission_id');
+            ->keyBy(fn ($item) => (string) $item->submission_id);
 
         return Inertia::render('Student/Submissions/Index', [
             'group' => $group,
@@ -41,13 +43,13 @@ class SubmissionController extends Controller
             abort(404);
         }
 
-        // Get student's submission if exists
-        $studentSubmission = StudentSubmission::where('submission_id', $submission->id)
-            ->where('student_id', Auth::id())
-            ->first();
+        // Ensure we send related group and group mentor info
+        $submission->load(['group.mentor']);
 
-        // Ensure we send related mentor info or group info
-        $submission->load('mentor', 'group');
+        // Get student's submission if exists
+        $studentSubmission = StudentSubmission::where('submission_id', (string) ($submission->id ?? $submission->_id))
+            ->where('student_id', (string) Auth::id())
+            ->first();
 
         return Inertia::render('Student/Submissions/Show', [
             'submission' => $submission,
@@ -70,15 +72,18 @@ class SubmissionController extends Controller
 
         $validated = $request->validate($rules);
 
+        $subId = (string) ($submission->id ?? $submission->_id);
+        $studentId = (string) Auth::id();
+
         $data = [
-            'submission_id' => $submission->id,
-            'student_id' => Auth::id(),
+            'submission_id' => $subId,
+            'student_id' => $studentId,
             'notes' => $validated['notes'] ?? null,
             'status' => 'submitted',
         ];
 
         if ($request->hasFile('file')) {
-            $data['file_path'] = $request->file('file')->store("student_submissions/{$submission->id}");
+            $data['file_path'] = $request->file('file')->store("student_submissions/{$subId}");
         }
 
         if (isset($validated['link'])) {
@@ -88,8 +93,8 @@ class SubmissionController extends Controller
         // Update or Create
         $studentSubmission = StudentSubmission::updateOrCreate(
             [
-                'submission_id' => $submission->id,
-                'student_id' => Auth::id(),
+                'submission_id' => $subId,
+                'student_id' => $studentId,
             ],
             $data
         );

@@ -38,7 +38,7 @@ class StudentSubmissionController extends Controller
             'grade' => $validated['grade'],
             'feedback' => $validated['feedback'],
             'status' => 'graded',
-            'graded_by' => Auth::User()->id,
+            'graded_by' => (string) Auth::id(),
         ];
 
         $studentSubmission->update($updateData);

@@ -8,6 +8,13 @@ import {
     AlertCircle,
     MessageSquare,
     ClipboardList,
+    ArrowLeft,
+    Download,
+    Award,
+    ChevronLeft,
+    ExternalLink,
+    Sparkles,
+    User as UserIcon,
 } from 'lucide-react';
 import { FormEventHandler, useState, useRef } from 'react';
 
@@ -16,6 +23,7 @@ interface CareerGroup {
     _id?: string;
     slug?: string;
     name: string;
+    mentor?: User;
 }
 
 interface User {
@@ -31,7 +39,6 @@ interface Submission {
     description: string;
     submission_type: 'file' | 'link';
     attachment?: string;
-    mentor?: User;
     group?: CareerGroup;
 }
 
@@ -59,8 +66,8 @@ export default function Show({ submission, studentSubmission }: Props) {
 
     const { data, setData, post, processing, errors } = useForm({
         file: null as File | null,
-        link: '',
-        notes: '',
+        link: studentSubmission?.link || '',
+        notes: studentSubmission?.notes || '',
     });
 
     const [dragActive, setDragActive] = useState(false);
@@ -85,216 +92,242 @@ export default function Show({ submission, studentSubmission }: Props) {
         }
     };
 
+    const targetSlug = submission.slug || submission.id || (submission._id as string);
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(`/submissions/${submission.slug}/submit`);
+        post(`/submissions/${targetSlug}/submit`);
     };
+
+    const handleBackNav = () => {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else if (submission.group?.slug) {
+            window.location.href = `/career-groups/${submission.group.slug}/submissions`;
+        } else {
+            window.location.href = '/course';
+        }
+    };
+
+    const backUrl = submission.group?.slug
+        ? `/career-groups/${submission.group.slug}/submissions`
+        : '/course';
 
     return (
         <div className="relative flex h-screen flex-col overflow-hidden bg-[#fdfcfc] text-[#1e293b] dark:bg-[#020202] dark:text-white">
             <PageBackground />
+
             {/* ================= HEADER ================= */}
-            <div className="w-full flex-shrink-0 px-1 pt-0.5">
+            <div className="w-full flex-shrink-0 px-2 pt-2 md:px-4 md:pt-3">
                 <div
-                    className="relative rounded-md p-[2px] md:p-[3px]"
+                    className="relative rounded-2xl p-[2px]"
                     style={{
                         backgroundImage:
-                            'linear-gradient(to bottom, #3B28F6 0%, #4c2fff 30%, #7c3aed 50%, #facc15 100%)',
+                            'linear-gradient(to right, #3B28F6 0%, #4c2fff 30%, #7c3aed 60%, #facc15 100%)',
                     }}
                 >
-                    <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 md:px-6 dark:bg-[#040812]">
-                        <Link
-                            href={`/career-groups/${submission.group?.slug}/submissions`}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-800 bg-gray-200 p-2 transition-colors hover:border-blue-600 hover:bg-blue-900/40 md:h-12 md:w-12 dark:bg-[#0b1021]"
+                    <div className="flex items-center gap-4 rounded-[14px] bg-white/95 px-4 py-3.5 backdrop-blur-md md:px-6 dark:bg-[#040812]/95">
+                        <button
+                            onClick={handleBackNav}
+                            type="button"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-blue-700 shadow-sm transition-all hover:scale-105 hover:border-blue-400 hover:bg-blue-100 md:h-11 md:w-11 dark:border-blue-500/40 dark:bg-[#0b1021] dark:text-indigo-400 dark:hover:bg-blue-900/40"
+                            title="Back"
                         >
-                            <svg
-                                viewBox="0 0 48 48"
-                                className="h-7 w-7 scale-125 text-indigo-600 transition-transform duration-200 hover:scale-150 md:h-9 md:w-9 dark:text-indigo-500"
-                            >
-                                <rect
-                                    x="12"
-                                    y="20"
-                                    width="29"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="8"
-                                    y="20"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="5"
-                                    y="20"
-                                    width="5"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="8"
-                                    y="16"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="8"
-                                    y="24"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="12"
-                                    y="12"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="12"
-                                    y="28"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="16"
-                                    y="8"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                                <rect
-                                    x="16"
-                                    y="32"
-                                    width="4"
-                                    height="4"
-                                    fill="currentColor"
-                                />
-                            </svg>
-                        </Link>
-                        {/* Title */}
-                        <h1 className="truncate font-['Orbitron'] text-xl font-bold tracking-[0.1em] text-[#1e3a8a] uppercase md:text-2xl md:tracking-[0.15em] lg:text-3xl dark:text-white">
-                            {submission.title}
-                        </h1>
+                            <ArrowLeft className="h-5 w-5 md:h-6 md:w-6" />
+                        </button>
+
+                        <div className="flex flex-col min-w-0">
+                            <span className="text-[10px] font-bold tracking-widest text-blue-600 uppercase md:text-xs dark:text-indigo-400">
+                                Assignment Workspace
+                            </span>
+                            <h1 className="truncate font-['Orbitron'] text-lg font-extrabold tracking-wide text-[#1e3a8a] uppercase md:text-2xl lg:text-3xl dark:text-white">
+                                {submission.title}
+                            </h1>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* ================= MAIN ================= */}
-            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-1 pt-2 pb-1 md:flex-row">
+            {/* ================= MAIN CONTENT ================= */}
+            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-2 pt-2 pb-2 md:flex-row md:px-4 md:pt-3 md:pb-3">
                 {/* ================= SIDEBAR (DESKTOP) ================= */}
-                <div className="hidden w-full flex-col gap-2 overflow-hidden rounded-xl border border-blue-200 bg-white p-3 shadow-sm md:flex md:w-[260px] md:flex-shrink-0 lg:w-[280px] dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
-                    <p className="flex-shrink-0 px-1 font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
-                        Navigation
-                    </p>
-                    <div className="flex flex-col gap-2">
-                        <div className="relative flex items-center gap-3 rounded-xl border border-blue-400 bg-gradient-to-br from-[#dbeafe] to-[#eff6ff] px-3 py-3 shadow-[0_0_12px_rgba(59,130,246,0.15)] dark:border-blue-500/80 dark:from-[#1a2060] dark:to-[#0e1540] dark:shadow-[0_0_16px_rgba(99,130,255,0.2)]">
-                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-blue-400 bg-blue-100 dark:border-blue-500/60 dark:bg-blue-500/20">
-                                <ClipboardList className="h-5 w-5 text-blue-600 dark:text-indigo-300" />
-                            </div>
-                            <div className="flex min-w-0 flex-col">
-                                <span className="truncate font-['Oxanium'] text-sm font-bold text-[#1e3a8a] dark:text-white">
-                                    Assignments
-                                </span>
-                            </div>
-                            <div className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#2563EB] to-[#6366f1] dark:from-[#99E4FD] dark:to-[#9681FF]" />
-                        </div>
+                <div className="hidden w-full flex-col gap-4 overflow-hidden rounded-2xl border border-blue-200/90 bg-white/90 p-4 shadow-md backdrop-blur-sm md:flex md:w-[270px] md:flex-shrink-0 lg:w-[290px] dark:border-blue-500/30 dark:bg-[#080d1e]/90 dark:shadow-none">
+                    <div className="flex items-center justify-between px-1">
+                        <p className="font-['Orbitron'] text-xs font-bold tracking-[0.15em] text-blue-600 uppercase dark:text-gray-400">
+                            Assignment Details
+                        </p>
                     </div>
-                </div>
 
-                {/* MOBILE BANNER */}
-                <div className="flex-shrink-0 md:hidden">
-                    <div className="flex w-full items-center justify-between rounded-xl border border-blue-200 bg-white px-4 py-3 shadow-sm dark:border-blue-500/30 dark:bg-gradient-to-r dark:from-[#0d1229] dark:to-[#080d1e]">
-                        <div className="flex items-center gap-2">
-                            <ClipboardList className="h-4 w-4 text-blue-500 dark:text-blue-400" />
-                            <span className="font-['Orbitron'] text-xs font-bold tracking-[0.2em] text-blue-500 uppercase dark:text-gray-400">
-                                Assignments
+                    {/* Metadata Summary Card */}
+                    <div className="flex flex-col gap-3 rounded-xl border border-blue-200/80 bg-white p-3.5 shadow-xs dark:border-blue-500/20 dark:bg-[#0c1229]">
+                        <div>
+                            <span className="text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
+                                Format Required
                             </span>
+                            <p className="font-['Orbitron'] text-xs font-bold text-blue-700 uppercase dark:text-blue-300">
+                                {submission.submission_type} Submission
+                            </p>
+                        </div>
+
+                        {submission.group?.mentor && (
+                            <div className="border-t border-slate-100 pt-2 dark:border-blue-500/15">
+                                <span className="text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
+                                    Assigned Mentor
+                                </span>
+                                <p className="flex items-center gap-1.5 font-['Oxanium'] text-xs font-semibold text-slate-700 dark:text-gray-300">
+                                    <UserIcon className="h-3.5 w-3.5 text-blue-500" />
+                                    {submission.group.mentor.name}
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="border-t border-slate-100 pt-2 dark:border-blue-500/15">
+                            <span className="text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
+                                Workspace Status
+                            </span>
+                            <div className="mt-1">
+                                {isGraded ? (
+                                    <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300">
+                                        <Award className="h-3.5 w-3.5" /> Graded ({studentSubmission.grade})
+                                    </span>
+                                ) : isSubmitted ? (
+                                    <span className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/15 dark:text-blue-300">
+                                        <CheckCircle2 className="h-3.5 w-3.5" /> Submitted
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/15 dark:text-amber-300">
+                                        Not Submitted
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* ================= CONTENT AREA (SCROLLABLE, NO OUTER CARD) ================= */}
-                <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-500/30 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-xl border border-blue-200 bg-white p-4 shadow-sm sm:gap-5 sm:p-5 md:gap-6 md:p-8 dark:border-blue-500/30 dark:bg-gradient-to-b dark:from-[#0d1229] dark:to-[#080d1e] dark:shadow-none">
-                    {/* Header Info */}
-                    <div className="border-b border-blue-100 pb-4 sm:pb-5 md:pb-6 dark:border-blue-500/15">
-                        <div className="mb-2 flex items-center gap-2 sm:mb-3">
-                            <span className="inline-flex items-center gap-1.5 rounded-md border border-blue-300 bg-blue-50 px-2.5 py-1 text-[10px] font-bold tracking-wider text-blue-600 uppercase sm:px-3 sm:text-xs dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-400">
-                                <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                {/* ================= CONTENT AREA ================= */}
+                <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-blue-300 dark:scrollbar-thumb-blue-500/30 flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto rounded-2xl border border-blue-200/90 bg-white/80 p-4 shadow-md backdrop-blur-sm sm:p-6 md:p-8 dark:border-blue-500/30 dark:bg-[#080d1e]/80 dark:shadow-none">
+                    {/* MENTOR EVALUATION & FEEDBACK BOX (If Graded) - PLACED AT VERY TOP */}
+                    {isGraded && (
+                        <div className="rounded-2xl border-2 border-emerald-300 bg-gradient-to-r from-emerald-50/95 via-teal-50/85 to-emerald-50/95 p-5 shadow-sm md:p-6 dark:border-emerald-500/40 dark:from-emerald-950/50 dark:via-teal-950/40 dark:to-emerald-950/50">
+                            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-md shadow-emerald-500/20 sm:h-14 sm:w-14 dark:bg-emerald-600">
+                                        <Award className="h-7 w-7 sm:h-8 sm:w-8" />
+                                    </div>
+                                    <div>
+                                        <span className="font-['Orbitron'] text-2xl font-black text-emerald-700 sm:text-3xl dark:text-emerald-400">
+                                            {studentSubmission.grade}
+                                        </span>
+                                        <span className="ml-2 text-xs font-bold tracking-widest text-emerald-800 uppercase dark:text-emerald-300">
+                                            Final Score
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 border-t border-emerald-300/60 pt-3.5 min-w-0 md:border-t-0 md:border-l md:pt-0 md:pl-5 dark:border-emerald-500/30">
+                                    <h4 className="flex items-center gap-1.5 font-['Orbitron'] text-xs font-bold tracking-wider text-emerald-900 uppercase dark:text-emerald-300">
+                                        <Sparkles className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                                        Mentor Feedback:
+                                    </h4>
+                                    <p className="mt-1 font-['Oxanium'] text-xs leading-relaxed text-emerald-900 italic break-words whitespace-pre-line sm:text-sm dark:text-emerald-100">
+                                        "{studentSubmission.feedback || 'Great work! No additional written feedback provided.'}"
+                                    </p>
+                                </div>
+
+                                {studentSubmission.certificate_url && (
+                                    <a
+                                        href={studentSubmission.certificate_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition-all hover:bg-emerald-500 sm:w-auto sm:px-5 sm:py-3 md:self-center"
+                                    >
+                                        <Award className="h-4 w-4" />
+                                        View Certificate
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Assignment Info Banner Card */}
+                    <div className="flex flex-col gap-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/60 to-indigo-50/40 p-5 md:p-6 dark:border-blue-500/20 dark:from-[#0c132f] dark:to-[#080d1e]">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 bg-blue-100/70 px-3 py-1 text-xs font-extrabold text-blue-800 uppercase dark:border-blue-500/40 dark:bg-blue-500/20 dark:text-blue-300">
+                                <FileText className="h-3.5 w-3.5" />
                                 {submission.submission_type} Submission
                             </span>
                         </div>
+
                         <h2 className="font-['Orbitron'] text-xl font-extrabold text-[#1e3a8a] sm:text-2xl md:text-3xl dark:text-white">
                             {submission.title}
                         </h2>
-                        <p className="mt-2 font-['Oxanium'] text-xs leading-relaxed whitespace-pre-line text-slate-700 sm:mt-3 sm:text-sm md:text-base dark:text-gray-300">
+
+                        <p className="font-['Oxanium'] text-sm leading-relaxed whitespace-pre-line text-slate-700 md:text-base dark:text-gray-300">
                             {submission.description}
                         </p>
 
                         {submission.attachment && (
-                            <div className="mt-3 sm:mt-4">
+                            <div className="pt-2">
                                 <a
                                     href={`/storage/${submission.attachment}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-[11px] font-bold text-blue-700 transition-colors hover:bg-blue-100 sm:gap-2 sm:px-4 sm:py-2 sm:text-xs dark:border-blue-500/40 dark:bg-blue-500/20 dark:text-blue-300 dark:hover:bg-blue-500/30"
+                                    className="inline-flex items-center gap-2 rounded-xl border border-blue-300 bg-white px-4 py-2.5 text-xs font-bold text-blue-700 shadow-xs transition-all hover:bg-blue-50 hover:shadow-md dark:border-blue-500/40 dark:bg-[#0c1229] dark:text-blue-300 dark:hover:bg-blue-900/50"
                                 >
-                                    <ClipboardList className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                    <ClipboardList className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                                     Download Reference Material
+                                    <ExternalLink className="h-3.5 w-3.5 opacity-60" />
                                 </a>
                             </div>
                         )}
                     </div>
 
-                    {/* Submission Hub */}
-                    <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
-                        <div className="flex items-center gap-2.5 sm:gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-blue-300 bg-blue-50 sm:h-9 sm:w-9 md:h-10 md:w-10 dark:border-blue-500/30 dark:bg-blue-500/10">
-                                <UploadCloud className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5 dark:text-blue-400" />
+                    {/* SUBMISSION WORKSPACE CARD */}
+                    <div className="flex flex-col gap-5 rounded-2xl border border-blue-200/90 bg-white p-5 shadow-sm md:p-6 dark:border-blue-500/30 dark:bg-[#0c1229]">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-300 bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/15">
+                                <UploadCloud className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div>
-                                <h3 className="font-['Orbitron'] text-base font-bold text-[#1e3a8a] sm:text-lg dark:text-white">
-                                    Submission Hub
+                                <h3 className="font-['Orbitron'] text-base font-bold text-[#1e3a8a] md:text-lg dark:text-white">
+                                    Submission Workspace
                                 </h3>
-                                <p className="font-['Oxanium'] text-[10px] font-semibold tracking-wider text-slate-400 uppercase sm:text-xs">
-                                    Secure Workspace
+                                <p className="font-['Oxanium'] text-xs text-slate-500 dark:text-gray-400">
+                                    Submit your assignment solution or edit your submission below
                                 </p>
                             </div>
                         </div>
 
+                        {/* Existing Submission Banner */}
                         {isSubmitted && (
-                            <div className="flex flex-col gap-3 rounded-xl border border-emerald-300 bg-emerald-50/50 p-4 sm:gap-4 sm:p-5 md:p-6 dark:border-emerald-500/30 dark:bg-emerald-500/10">
-                                <div className="flex items-center gap-3 sm:gap-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 sm:h-11 sm:w-11 md:h-12 md:w-12 dark:bg-emerald-500/20">
-                                        <CheckCircle2 className="h-5 w-5 text-emerald-600 sm:h-6 sm:w-6 dark:text-emerald-400" />
+                            <div className="flex flex-col gap-4 rounded-xl border border-emerald-300 bg-emerald-50/60 p-4 md:p-5 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                                        <CheckCircle2 className="h-6 w-6" />
                                     </div>
                                     <div>
-                                        <h4 className="font-['Orbitron'] text-sm font-bold text-emerald-900 sm:text-base dark:text-emerald-300">
-                                            Task Submitted!
+                                        <h4 className="font-['Orbitron'] text-sm font-bold text-emerald-900 md:text-base dark:text-emerald-300">
+                                            {isGraded ? 'Task Graded & Completed' : 'Task Successfully Submitted'}
                                         </h4>
-                                        <p className="font-['Oxanium'] text-[11px] text-emerald-700 sm:text-xs dark:text-emerald-400/80">
-                                            Your work has been uploaded and is
-                                            awaiting mentor review.
+                                        <p className="font-['Oxanium'] text-xs text-emerald-700 dark:text-emerald-400/90">
+                                            {isGraded
+                                                ? 'Your submission has been evaluated by your mentor.'
+                                                : 'Your solution is uploaded and currently under mentor review.'}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="mt-1 flex flex-col gap-2.5 sm:mt-2 sm:gap-3">
+                                <div className="flex flex-col gap-3 pt-2">
                                     {studentSubmission?.link && (
-                                        <div className="rounded-lg border border-emerald-200 bg-white p-3 sm:p-4 dark:border-emerald-500/20 dark:bg-black/20">
-                                            <label className="mb-1 flex items-center gap-1.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase sm:text-[10px]">
-                                                <LinkIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{' '}
-                                                Project URL
+                                        <div className="rounded-xl border border-emerald-200 bg-white p-3.5 dark:border-emerald-500/20 dark:bg-black/30">
+                                            <label className="mb-1 flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
+                                                <LinkIcon className="h-3.5 w-3.5" /> Project URL
                                             </label>
                                             <a
                                                 href={studentSubmission.link}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="font-['Oxanium'] text-xs font-medium break-all text-blue-600 underline sm:text-sm dark:text-blue-400"
+                                                className="font-['Oxanium'] text-xs font-bold break-all text-blue-600 underline md:text-sm dark:text-blue-400"
                                             >
                                                 {studentSubmission.link}
                                             </a>
@@ -302,27 +335,32 @@ export default function Show({ submission, studentSubmission }: Props) {
                                     )}
 
                                     {studentSubmission?.file_path && (
-                                        <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-white p-3 sm:p-4 dark:border-emerald-500/20 dark:bg-black/20">
+                                        <div className="flex flex-col gap-2 rounded-xl border border-emerald-200 bg-white p-3.5 sm:flex-row sm:items-center sm:justify-between dark:border-emerald-500/20 dark:bg-black/30">
                                             <div>
-                                                <label className="mb-1 flex items-center gap-1.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase sm:text-[10px]">
-                                                    <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{' '}
-                                                    Attached Document
+                                                <label className="mb-1 flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
+                                                    <FileText className="h-3.5 w-3.5" /> Submitted Document
                                                 </label>
-                                                <div className="font-['Oxanium'] text-xs font-bold text-slate-700 sm:text-sm dark:text-gray-200">
-                                                    File Uploaded Successfully
+                                                <div className="font-['Oxanium'] text-xs font-bold text-slate-700 md:text-sm dark:text-gray-200">
+                                                    File Uploaded & Saved
                                                 </div>
                                             </div>
-                                            <CheckCircle2 className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5 dark:text-emerald-400" />
+                                            <a
+                                                href={`/storage/${studentSubmission.file_path}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1.5 rounded-xl border border-blue-300 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 shadow-xs transition-colors hover:bg-blue-100 dark:border-blue-500/40 dark:bg-blue-500/20 dark:text-blue-300 dark:hover:bg-blue-500/30"
+                                            >
+                                                <Download className="h-4 w-4" /> Download Submitted File
+                                            </a>
                                         </div>
                                     )}
 
                                     {studentSubmission?.notes && (
-                                        <div className="rounded-lg border border-emerald-200 bg-white p-3 sm:p-4 dark:border-emerald-500/20 dark:bg-black/20">
-                                            <label className="mb-1 flex items-center gap-1.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase sm:text-[10px]">
-                                                <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{' '}
-                                                Private Notes
+                                        <div className="rounded-xl border border-emerald-200 bg-white p-3.5 dark:border-emerald-500/20 dark:bg-black/30">
+                                            <label className="mb-1 flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest text-slate-400 uppercase">
+                                                <MessageSquare className="h-3.5 w-3.5" /> Private Notes
                                             </label>
-                                            <div className="font-['Oxanium'] text-xs text-slate-600 italic sm:text-sm dark:text-gray-300">
+                                            <div className="font-['Oxanium'] text-xs text-slate-600 italic md:text-sm dark:text-gray-300">
                                                 "{studentSubmission.notes}"
                                             </div>
                                         </div>
@@ -330,17 +368,14 @@ export default function Show({ submission, studentSubmission }: Props) {
                                 </div>
 
                                 {!isGraded && (
-                                    <div className="mt-1 flex items-start gap-2.5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-[11px] text-amber-800 sm:mt-2 sm:gap-3 sm:p-3.5 sm:text-xs dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
-                                        <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+                                    <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3.5 text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
+                                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                                         <div>
                                             <strong className="font-['Orbitron']">
-                                                Need to make changes?
+                                                Update Submission
                                             </strong>
                                             <p className="mt-0.5 font-['Oxanium']">
-                                                You can overwrite your
-                                                submission using the form below
-                                                as long as it hasn't been
-                                                graded.
+                                                You can modify and overwrite your submission using the form below as long as it hasn't been graded.
                                             </p>
                                         </div>
                                     </div>
@@ -348,22 +383,20 @@ export default function Show({ submission, studentSubmission }: Props) {
                             </div>
                         )}
 
+                        {/* Submission Input Form */}
                         {(!isSubmitted || !isGraded) && (
                             <form
                                 onSubmit={submit}
-                                className="flex flex-col gap-4 sm:gap-5 md:gap-6"
+                                className="flex flex-col gap-5 pt-2"
                             >
                                 {submission.submission_type === 'link' ? (
                                     <div>
-                                        <label className="mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase sm:mb-2 sm:text-xs dark:text-gray-400">
-                                            Project URL{' '}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
+                                        <label className="mb-2 block text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-gray-300">
+                                            Project URL <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 sm:pl-4">
-                                                <LinkIcon className="h-3.5 w-3.5 text-slate-400 sm:h-4 sm:w-4" />
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                                <LinkIcon className="h-4 w-4 text-slate-400" />
                                             </div>
                                             <input
                                                 type="url"
@@ -376,31 +409,28 @@ export default function Show({ submission, studentSubmission }: Props) {
                                                         e.target.value,
                                                     )
                                                 }
-                                                className="w-full rounded-xl border border-blue-200 bg-white py-3 pr-3 pl-9 text-xs font-medium text-slate-800 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:py-3.5 sm:pr-4 sm:pl-11 sm:text-sm dark:border-blue-500/30 dark:bg-white/5 dark:text-white dark:focus:border-blue-400"
+                                                className="w-full rounded-xl border border-blue-200 bg-white py-3 pr-4 pl-10 text-xs font-semibold text-slate-800 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 md:text-sm dark:border-blue-500/30 dark:bg-white/5 dark:text-white dark:focus:border-blue-400"
                                             />
                                         </div>
                                         {errors.link && (
-                                            <p className="mt-1.5 text-[11px] font-medium text-red-500 sm:text-xs">
+                                            <p className="mt-1.5 text-xs font-medium text-red-500">
                                                 {errors.link}
                                             </p>
                                         )}
                                     </div>
                                 ) : (
                                     <div>
-                                        <label className="mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase sm:mb-2 sm:text-xs dark:text-gray-400">
-                                            Upload File{' '}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
+                                        <label className="mb-2 block text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-gray-300">
+                                            Upload File <span className="text-red-500">*</span>
                                         </label>
                                         <div
-                                            className={`flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-5 text-center transition-all sm:min-h-[160px] sm:p-6 md:p-8 ${
+                                            className={`flex min-h-[150px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
                                                 dragActive
                                                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
-                                                    : 'border-blue-200 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-50 dark:border-blue-500/30 dark:bg-white/5 dark:hover:border-blue-400'
+                                                    : 'border-blue-200 bg-blue-50/40 hover:border-blue-400 hover:bg-blue-50/80 dark:border-blue-500/30 dark:bg-white/5 dark:hover:border-blue-400'
                                             } ${
                                                 data.file
-                                                    ? 'border-emerald-500 bg-emerald-50 dark:border-emerald-500/40 dark:bg-emerald-500/10'
+                                                    ? 'border-emerald-500 bg-emerald-50/80 dark:border-emerald-500/40 dark:bg-emerald-500/10'
                                                     : ''
                                             }`}
                                             onDragEnter={handleDrag}
@@ -426,13 +456,13 @@ export default function Show({ submission, studentSubmission }: Props) {
 
                                             {data.file ? (
                                                 <div className="flex flex-col items-center">
-                                                    <div className="mb-2.5 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 sm:mb-3 sm:h-11 sm:w-11 md:h-12 md:w-12 dark:bg-emerald-500/20">
-                                                        <FileText className="h-5 w-5 text-emerald-600 sm:h-6 sm:w-6 dark:text-emerald-400" />
+                                                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                                                        <FileText className="h-6 w-6" />
                                                     </div>
-                                                    <p className="max-w-[200px] truncate font-['Oxanium'] text-xs font-bold text-emerald-900 sm:max-w-[250px] sm:text-sm dark:text-emerald-300">
+                                                    <p className="max-w-[240px] truncate font-['Oxanium'] text-sm font-bold text-emerald-900 sm:max-w-[300px] dark:text-emerald-300">
                                                         {data.file.name}
                                                     </p>
-                                                    <p className="mt-1 text-[11px] text-emerald-600 sm:text-xs dark:text-emerald-400/80">
+                                                    <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400/80">
                                                         Ready to upload
                                                     </p>
                                                     <button
@@ -444,29 +474,27 @@ export default function Show({ submission, studentSubmission }: Props) {
                                                                 null,
                                                             );
                                                         }}
-                                                        className="mt-3 rounded-lg bg-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-700 transition-colors hover:bg-red-500 hover:text-white sm:mt-4 sm:px-3 sm:py-1.5 sm:text-xs dark:bg-slate-800 dark:text-gray-300"
+                                                        className="mt-3 rounded-lg bg-slate-200 px-3 py-1 text-xs font-bold text-slate-700 transition-colors hover:bg-red-500 hover:text-white dark:bg-slate-800 dark:text-gray-300"
                                                     >
                                                         Remove File
                                                     </button>
                                                 </div>
                                             ) : (
                                                 <div className="flex flex-col items-center">
-                                                    <div className="mb-2.5 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 sm:mb-3 sm:h-11 sm:w-11 md:h-12 md:w-12 dark:bg-blue-500/20">
-                                                        <UploadCloud className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6 dark:text-blue-400" />
+                                                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
+                                                        <UploadCloud className="h-6 w-6" />
                                                     </div>
-                                                    <p className="font-['Oxanium'] text-xs font-bold text-slate-700 sm:text-sm dark:text-gray-200">
-                                                        Click to browse or drag
-                                                        file here
+                                                    <p className="font-['Oxanium'] text-sm font-bold text-slate-700 dark:text-gray-200">
+                                                        Click to browse or drag file here
                                                     </p>
-                                                    <p className="mt-1 text-[11px] text-slate-400 sm:text-xs">
-                                                        Supported: PDF, ZIP,
-                                                        DOCX (Max 10MB)
+                                                    <p className="mt-1 text-xs text-slate-400">
+                                                        Supported formats: PDF, ZIP, DOCX (Max 10MB)
                                                     </p>
                                                 </div>
                                             )}
                                         </div>
                                         {errors.file && (
-                                            <p className="mt-1.5 text-[11px] font-medium text-red-500 sm:text-xs">
+                                            <p className="mt-1.5 text-xs font-medium text-red-500">
                                                 {errors.file}
                                             </p>
                                         )}
@@ -474,7 +502,7 @@ export default function Show({ submission, studentSubmission }: Props) {
                                 )}
 
                                 <div>
-                                    <label className="mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase sm:mb-2 sm:text-xs dark:text-gray-400">
+                                    <label className="mb-2 block text-xs font-bold tracking-wider text-slate-600 uppercase dark:text-gray-300">
                                         Private Notes{' '}
                                         <span className="font-normal text-slate-400 normal-case">
                                             (Optional)
@@ -482,15 +510,15 @@ export default function Show({ submission, studentSubmission }: Props) {
                                     </label>
                                     <textarea
                                         rows={4}
-                                        placeholder="Add context, challenges you faced, or questions for your mentor..."
+                                        placeholder="Add context, challenges faced, or notes for your mentor..."
                                         value={data.notes}
                                         onChange={(e) =>
                                             setData('notes', e.target.value)
                                         }
-                                        className="w-full rounded-xl border border-blue-200 bg-white p-3 text-xs font-medium text-slate-800 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:p-4 sm:text-sm dark:border-blue-500/30 dark:bg-white/5 dark:text-white dark:focus:border-blue-400"
+                                        className="w-full rounded-xl border border-blue-200 bg-white p-3.5 text-xs font-medium text-slate-800 transition-all outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 md:text-sm dark:border-blue-500/30 dark:bg-white/5 dark:text-white dark:focus:border-blue-400"
                                     />
                                     {errors.notes && (
-                                        <p className="mt-1.5 text-[11px] font-medium text-red-500 sm:text-xs">
+                                        <p className="mt-1.5 text-xs font-medium text-red-500">
                                             {errors.notes}
                                         </p>
                                     )}
@@ -499,9 +527,9 @@ export default function Show({ submission, studentSubmission }: Props) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-5 py-3 font-['Orbitron'] text-[11px] font-bold tracking-wider text-white uppercase shadow-md shadow-blue-600/20 transition-all hover:bg-blue-700 disabled:opacity-50 sm:gap-2 sm:px-6 sm:py-3.5 sm:text-xs"
+                                    className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-lg disabled:opacity-50"
                                 >
-                                    <UploadCloud className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                    <UploadCloud className="h-4 w-4" />
                                     <span>
                                         {isSubmitted
                                             ? 'Update Submission'

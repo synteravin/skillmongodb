@@ -37,7 +37,13 @@ class QuestController extends Controller
         }
 
         if ($status && $status !== 'all') {
-            $query->where('status', $status);
+            if ($status === 'pending' || $status === 'draft') {
+                $query->whereIn('status', ['draft', 'pending_approval']);
+            } elseif ($status === 'dispute' || $status === 'in_dispute') {
+                $query->whereIn('status', ['in_dispute', 'dispute']);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         $paginatedQuests = $query->paginate(10)->withQueryString();
@@ -62,6 +68,7 @@ class QuestController extends Controller
                 'max_salary' => $quest->max_budget,
                 'deadline' => $quest->deadline->toISOString(),
                 'status' => $quest->status,
+                'created_at' => $quest->created_at?->toISOString() ?? now()->toISOString(),
                 'creator' => [
                     'name' => $quest->creator?->name ?? 'Unknown',
                     'role' => $quest->creator?->role ?? 'unknown',
@@ -74,8 +81,18 @@ class QuestController extends Controller
             ];
         });
 
+        $statusCounts = [
+            'all' => Quest::count(),
+            'pending' => Quest::whereIn('status', ['draft', 'pending_approval'])->count(),
+            'open' => Quest::where('status', 'open')->count(),
+            'ongoing' => Quest::where('status', 'ongoing')->count(),
+            'dispute' => Quest::whereIn('status', ['in_dispute', 'dispute'])->count(),
+            'completed' => Quest::where('status', 'completed')->count(),
+        ];
+
         return Inertia::render('Admin/Quests/Index', [
             'quests' => $quests,
+            'statusCounts' => $statusCounts,
             'filters' => [
                 'search' => $search,
                 'status' => $status ?? 'all',
@@ -462,7 +479,7 @@ class QuestController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+        return redirect()->back(fallback: route('admin.quests.show', $quest))
             ->with('success', 'Quest berhasil disetujui dan dipublikasikan!');
     }
 
@@ -507,7 +524,7 @@ class QuestController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+        return redirect()->back(fallback: route('admin.quests.show', $quest))
             ->with('warning', 'Quest ditolak dan catatan penolakan telah dikirimkan ke pembuat.');
     }
 

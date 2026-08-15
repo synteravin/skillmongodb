@@ -227,6 +227,21 @@ export default function Sidebar({
                                         }
                                     />
                                     {isOpen && <span>{item.name}</span>}
+
+                                    {/* Admin Quests Pending Badge */}
+                                    {item.name === 'Quests' &&
+                                        userRole === 'admin' &&
+                                        props?.pendingCounts?.quests > 0 && (
+                                            <>
+                                                {isOpen ? (
+                                                    <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full border border-amber-500/40 bg-amber-500/20 px-1.5 text-[10px] font-bold text-amber-400 animate-pulse">
+                                                        {props.pendingCounts.quests}
+                                                    </span>
+                                                ) : (
+                                                    <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                                                )}
+                                            </>
+                                        )}
                                 </Link>
                             );
                         })}

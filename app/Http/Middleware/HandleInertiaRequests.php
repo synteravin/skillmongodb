@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Quest;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -45,6 +46,9 @@ class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state')
                 || $request->cookie('sidebar_state') === 'true',
 
+            'pendingCounts' => fn () => $request->user()?->isAdmin() ? [
+                'quests' => Quest::whereIn('status', ['draft', 'pending_approval'])->count(),
+            ] : [],
         ]);
     }
 }

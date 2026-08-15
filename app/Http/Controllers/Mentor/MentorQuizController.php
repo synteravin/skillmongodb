@@ -68,6 +68,7 @@ class MentorQuizController extends Controller
                 'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
                 'difficulty' => $path->quiz->difficulty,
+                'duration' => (int) ($path->quiz->duration ?? 15),
                 'questions' => $path->quiz->questions->map(function ($q) {
                     return [
                         'question_text' => $q->question_text,
@@ -107,6 +108,7 @@ class MentorQuizController extends Controller
                 'id' => (string) $quiz->_id,
                 'path_id' => (string) $quiz->path_id,
                 'difficulty' => $quiz->difficulty,
+                'duration' => (int) ($quiz->duration ?? 15),
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
                         'id' => (string) $q->_id,
@@ -115,8 +117,8 @@ class MentorQuizController extends Controller
                             ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
                             : null,
                         'answers' => $q->answers->map(fn ($a) => [
-                            'answer_text' => $a->answer_text,
-                            'is_correct' => $a->is_correct,
+                            'answer_text' => $a['answer_text'] ?? $a->answer_text,
+                            'is_correct' => $a['is_correct'] ?? $a->is_correct,
                         ]),
                     ];
                 }),

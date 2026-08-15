@@ -419,7 +419,7 @@ class QuestController extends Controller
         $quest = Quest::with(['creator', 'worker'])->where('slug', $id)->orWhere('_id', $id)->firstOrFail();
         /** @var User $user */
         $user = Auth::user();
-        $details = $this->questService->getQuestDetails($id, $user);
+        $details = $this->questService->getQuestDetails($quest, $user);
 
         if (in_array($quest->status, ['draft', 'rejected'])) {
             if ($quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
