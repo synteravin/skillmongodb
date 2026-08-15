@@ -3,6 +3,7 @@
 namespace App\Actions\Quiz;
 
 use App\Models\Quiz;
+use App\Models\QuizAttempt;
 use App\Models\QuizResult;
 use App\Models\User;
 use App\Models\UserStat;
@@ -46,6 +47,14 @@ class SubmitQuizAction
                 'completed_at' => now(),
             ]
         );
+
+        QuizAttempt::where('user_id', $userId)
+            ->where('quiz_id', (string) $quiz->_id)
+            ->where('is_active', true)
+            ->update([
+                'is_active' => false,
+                'completed_at' => now(),
+            ]);
 
         if ($passed) {
             // 🔥 AMBIL / BUAT PROGRESS

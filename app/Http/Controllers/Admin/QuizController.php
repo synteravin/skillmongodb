@@ -110,6 +110,7 @@ class QuizController extends Controller
                 'slug' => $quiz->slug ?: (string) $quiz->_id,
                 'path_id' => $quiz->path ? $quiz->path->slug : (string) $quiz->path_id,
                 'difficulty' => $quiz->difficulty,
+                'duration' => (int) ($quiz->duration ?? 15),
                 'questions' => $quiz->questions->map(function ($q) {
                     return [
                         'id' => (string) $q->_id,
@@ -118,8 +119,8 @@ class QuizController extends Controller
                             ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
                             : null,
                         'answers' => $q->answers->map(fn ($a) => [
-                            'answer_text' => $a->answer_text,
-                            'is_correct' => $a->is_correct,
+                            'answer_text' => $a['answer_text'] ?? $a->answer_text,
+                            'is_correct' => $a['is_correct'] ?? $a->is_correct,
                         ]),
                     ];
                 }),

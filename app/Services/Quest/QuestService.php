@@ -114,11 +114,16 @@ class QuestService
     }
 
     /**
-     * Get detailed quest by ID.
+     * Get detailed quest by instance, ID, or slug.
      */
-    public function getQuestDetails(string $id, ?User $currentUser = null)
+    public function getQuestDetails(Quest|string $questOrId, ?User $currentUser = null)
     {
-        $quest = Quest::with(['creator', 'worker'])->findOrFail($id);
+        $quest = $questOrId instanceof Quest
+            ? $questOrId->loadMissing(['creator', 'worker'])
+            : Quest::with(['creator', 'worker'])
+                ->where('_id', $questOrId)
+                ->orWhere('slug', $questOrId)
+                ->firstOrFail();
 
         $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
 
@@ -164,7 +169,7 @@ class QuestService
         }
 
         $bids = QuestBid::with('student')
-            ->where('quest_id', $id)
+            ->where('quest_id', (string) $quest->_id)
             ->latest()
             ->get()
             ->map(function ($bid) use ($currentUser) {

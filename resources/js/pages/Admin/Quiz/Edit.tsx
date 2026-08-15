@@ -65,8 +65,13 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
     /* ================= INIT DATA ================= */
 
     useEffect(() => {
-        if (quiz && quiz.questions) {
-            setQuestions(quiz.questions);
+        if (quiz) {
+            if (quiz.duration) {
+                setDuration(quiz.duration);
+            }
+            if (quiz.questions) {
+                setQuestions(quiz.questions);
+            }
         }
     }, [quiz]);
 

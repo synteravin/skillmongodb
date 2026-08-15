@@ -96,15 +96,35 @@ class UpdateQuizAction
 
             $newQuestionIds[] = (string) $question->_id;
 
-            // Recreate answers for this question
-            QuizAnswer::where('question_id', (string) $question->_id)->delete();
+            // Preserve or update answers for this question
+            $newAnswerIds = [];
             foreach ($q['answers'] as $a) {
-                QuizAnswer::create([
+                $ansId = $a['id'] ?? null;
+                if ($ansId) {
+                    $ans = QuizAnswer::find($ansId);
+                    if ($ans) {
+                        $ans->update([
+                            'answer_text' => $a['answer_text'],
+                            'is_correct' => (bool) $a['is_correct'],
+                        ]);
+                        $newAnswerIds[] = (string) $ans->_id;
+
+                        continue;
+                    }
+                }
+
+                $createdAns = QuizAnswer::create([
                     'question_id' => (string) $question->_id,
                     'answer_text' => $a['answer_text'],
                     'is_correct' => (bool) $a['is_correct'],
                 ]);
+                $newAnswerIds[] = (string) $createdAns->_id;
             }
+
+            // Delete removed answers
+            QuizAnswer::where('question_id', (string) $question->_id)
+                ->whereNotIn('_id', $newAnswerIds)
+                ->delete();
         }
 
         // Delete any old questions that were removed
