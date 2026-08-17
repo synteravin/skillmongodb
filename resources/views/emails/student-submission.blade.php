@@ -42,9 +42,7 @@
                 <!-- HEADER COVER BANNER -->
                 <tr>
                     <td style="padding: 0; background-color: #f8fafc; text-align: center; line-height: 0;">
-                        <a href="{{ config('app.url') }}" target="_blank" style="display: block; text-decoration: none;">
-                            <img src="{{ $coverSrc }}" alt="SkillVentura" width="580" style="display: block; width: 100%; max-width: 580px; height: auto; border: 0; outline: none;" />
-                        </a>
+                        <img src="{{ $coverSrc }}" alt="SkillVentura" width="580" style="display: block; width: 100%; max-width: 580px; height: auto; border: 0; outline: none;" />
                     </td>
                 </tr>
 
