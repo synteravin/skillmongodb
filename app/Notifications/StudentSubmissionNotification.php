@@ -23,8 +23,10 @@ class StudentSubmissionNotification extends Notification implements ShouldQueue
         return ['database', 'mail'];
     }
 
-    public function toMail(object $notifiable)
+    public function toMail(object $notifiable): MailMessage
     {
+        $actionUrl = url('/mentor/student-submissions/'.$this->studentSubmissionId);
+
         return (new MailMessage)
             ->subject('Tugas Baru Menunggu Penilaian - '.$this->studentName)
             ->withSymfonyMessage(function ($message) {
@@ -32,13 +34,14 @@ class StudentSubmissionNotification extends Notification implements ShouldQueue
                 $message->getHeaders()->addTextHeader('X-Priority', '1 (Highest)');
                 $message->getHeaders()->addTextHeader('Importance', 'High');
             })
-            ->greeting('Halo '.$notifiable->name.',')
-            ->line('Ada submission (tugas) baru yang butuh direview dari siswa Anda:')
-            ->line('**Nama Siswa:** '.$this->studentName)
-            ->line('**Judul Tugas:** '.$this->submissionTitle)
-            ->line('**Career Group:** '.$this->careerGroupName)
-            ->action('Periksa Tugas Sekarang', url('/mentor/student-submissions/'.$this->studentSubmissionId))
-            ->line('Harap segera diperiksa dan diberikan penilaian agar siswa dapat melanjutkan ke materi berikutnya. Terima kasih!');
+            ->view('emails.student-submission', [
+                'studentSubmissionId' => $this->studentSubmissionId,
+                'studentName' => $this->studentName,
+                'submissionTitle' => $this->submissionTitle,
+                'careerGroupName' => $this->careerGroupName,
+                'actionUrl' => $actionUrl,
+                'notifiable' => $notifiable,
+            ]);
     }
 
     public function toDatabase(object $notifiable): array

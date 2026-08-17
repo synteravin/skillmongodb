@@ -4,20 +4,22 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class SocialController extends Controller
 {
-    public function redirect()
+    public function redirect(): SymfonyRedirectResponse
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback()
+    public function callback(): RedirectResponse
     {
         /** @var AbstractProvider $provider */
         $provider = Socialite::driver('google');
@@ -46,7 +48,7 @@ class SocialController extends Controller
         return redirect($this->redirectByRole($user->role));
     }
 
-    private function redirectByRole($role)
+    private function redirectByRole(?string $role): string
     {
         return match ($role) {
             'admin' => '/admin/dashboard',

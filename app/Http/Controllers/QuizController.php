@@ -7,6 +7,7 @@ use App\Http\Requests\Quiz\SubmitQuizRequest;
 use App\Models\Course;
 use App\Models\Path;
 use App\Models\Quiz;
+use App\Models\QuizAnswer;
 use App\Models\QuizAttempt;
 use App\Models\QuizResult;
 use App\Models\User;

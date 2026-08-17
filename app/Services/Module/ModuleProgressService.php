@@ -8,7 +8,7 @@ use App\Models\UserStat;
 
 class ModuleProgressService
 {
-    public function complete(User $user, Module $module)
+    public function complete(User $user, Module $module): UserStat
     {
         $progress = UserStat::firstOrCreate([
             'user_id' => $user->_id,
@@ -25,7 +25,7 @@ class ModuleProgressService
         }
 
         // 🔥 CHECK NEXT STAGE
-        if ($this->isFundamentalDone($module->path->course_id, $progress)) {
+        if ($this->isFundamentalDone((string) $module->path->course_id, $progress)) {
             $progress->stage = 'path';
         }
 
@@ -34,7 +34,7 @@ class ModuleProgressService
         return $progress;
     }
 
-    private function isFundamentalDone($courseId, $progress): bool
+    private function isFundamentalDone(string $courseId, UserStat $progress): bool
     {
         $modules = Module::whereHas('path', function ($q) use ($courseId) {
             $q->where('course_id', $courseId)

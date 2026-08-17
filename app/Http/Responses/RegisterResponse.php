@@ -2,19 +2,16 @@
 
 namespace App\Http\Responses;
 
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Illuminate\Http\Request;
+use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
+use Symfony\Component\HttpFoundation\Response;
 
-class RegisterResponse implements LoginResponseContract
+class RegisterResponse implements RegisterResponseContract
 {
     /**
-     * Create a new class instance.
+     * @param  Request  $request
      */
-    public function __construct()
-    {
-        //
-    }
-
-    public function toResponse($request)
+    public function toResponse($request): Response
     {
         $user = $request->user();
 
