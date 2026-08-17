@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use MongoDB\Laravel\Eloquent\Builder;
 use MongoDB\Laravel\Eloquent\Model;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmailContract
@@ -98,7 +99,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->role === 'student';
     }
 
-    public function getSignatureUrlAttribute()
+    public function getSignatureUrlAttribute(): ?string
     {
         if ($this->signature_path) {
             /** @var FilesystemAdapter $disk */
@@ -111,7 +112,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return null;
     }
 
-    public function getWorkExperiencesAttribute($value): array
+    public function getWorkExperiencesAttribute(mixed $value): array
     {
         if (is_string($value)) {
             return json_decode($value, true) ?: [];
@@ -120,7 +121,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return is_array($value) ? $value : [];
     }
 
-    public function getEducationsAttribute($value): array
+    public function getEducationsAttribute(mixed $value): array
     {
         if (is_string($value)) {
             return json_decode($value, true) ?: [];
@@ -191,7 +192,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         ];
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter(Builder $query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($q, $search) {
             $q->where(function ($sq) use ($search) {
