@@ -122,6 +122,8 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
             case 'approved':
             case 'payment':
                 return 'border-l-4 border-l-cyan-500';
+            case 'delivered':
+                return 'border-l-4 border-l-indigo-500';
             default:
                 return 'border-l-4 border-l-slate-400';
         }
@@ -432,6 +434,9 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                 )
                                                               ? 'dark:text-cyan-405 border-amber-500/40 bg-amber-100 text-amber-900 dark:border-slate-800 dark:bg-[#030712]'
                                                               : item.status ===
+                                                                  'delivered'
+                                                                ? 'border-indigo-500/40 bg-indigo-100 text-indigo-900 dark:border-slate-800 dark:bg-[#030712] dark:text-indigo-400'
+                                                              : item.status ===
                                                                   'submitted'
                                                                 ? 'border-purple-500/40 bg-purple-100 text-purple-900 dark:border-slate-800 dark:bg-[#030712] dark:text-purple-400'
                                                                 : item.status ===
@@ -453,6 +458,9 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                             )
                                                           ? 'Pembayaran'
                                                           : item.status ===
+                                                              'delivered'
+                                                            ? 'Verifikasi Berkas'
+                                                            : item.status ===
                                                               'submitted'
                                                             ? 'Ditinjau'
                                                             : item.status ===

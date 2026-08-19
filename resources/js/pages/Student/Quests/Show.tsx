@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import React, { useState } from 'react';
 import {
     Calendar,
@@ -11,7 +11,10 @@ import {
     Clock,
     Award,
     ShieldAlert,
+    Flag,
+    Trash2,
 } from 'lucide-react';
+import Modal from '@/components/ui/Modal';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
 import RevisionHistory from '@/components/Quest/RevisionHistory';
 import QuestStepper from '@/components/Quest/QuestStepper';
@@ -61,6 +64,35 @@ export default function Show({ quest, bids, myBid, can }: Props) {
         url: string;
         name: string;
     } | null>(null);
+
+    const [showFlagModal, setShowFlagModal] = useState(false);
+    const flagForm = useForm({
+        reason: 'Dugaan Penipuan / Spam',
+        details: '',
+    });
+
+    const [showDeleteDraftModal, setShowDeleteDraftModal] = useState(false);
+    const [isDeletingDraft, setIsDeletingDraft] = useState(false);
+
+    const handleDeleteDraft = () => {
+        router.delete(`/quests/${quest.slug || quest.id || quest._id}`, {
+            onStart: () => setIsDeletingDraft(true),
+            onFinish: () => {
+                setIsDeletingDraft(false);
+                setShowDeleteDraftModal(false);
+            },
+        });
+    };
+
+    const handleFlagSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        flagForm.post(`/quests/${quest.slug || quest.id || quest._id}/flag`, {
+            onSuccess: () => {
+                setShowFlagModal(false);
+                flagForm.reset();
+            },
+        });
+    };
 
     const formatCurrency = (num: number) => {
         return new Intl.NumberFormat('id-ID', {
@@ -302,7 +334,18 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                 PROYEK FREELANCE
                             </span>
 
-                            <div>
+                            <div className="flex items-center gap-2">
+                                {!isCreator && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowFlagModal(true)}
+                                        className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-500 hover:text-amber-600 dark:text-slate-400 dark:hover:text-amber-400 border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 transition-colors shadow-2xs"
+                                        title="Laporkan lowongan ini kepada tim Administrator"
+                                    >
+                                        <Flag className="w-3.5 h-3.5" />
+                                        <span className="hidden sm:inline">Laporkan</span>
+                                    </button>
+                                )}
                                 <span
                                     className={`rounded-lg border px-3 py-1 text-xs font-bold uppercase ${
                                         quest.status === 'open'
@@ -322,9 +365,12 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                           'payment'
                                                         ? 'border-amber-250 text-amber-750 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
                                                         : quest.status ===
-                                                            'submitted'
-                                                          ? 'border-yellow-255 text-yellow-750 bg-yellow-50 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
-                                                          : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
+                                                            'delivered'
+                                                          ? 'border-indigo-250 text-indigo-707 bg-indigo-50 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
+                                                          : quest.status ===
+                                                              'submitted'
+                                                            ? 'border-yellow-255 text-yellow-750 bg-yellow-50 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
+                                                            : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
                                     }`}
                                 >
                                     {quest.status === 'open'
@@ -342,9 +388,12 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                   : quest.status === 'payment'
                                                     ? 'Proses Transfer'
                                                     : quest.status ===
-                                                        'submitted'
-                                                      ? 'Ditinjau Klien'
-                                                      : 'Proyek Selesai'}
+                                                        'delivered'
+                                                      ? 'Verifikasi Berkas Final'
+                                                      : quest.status ===
+                                                          'submitted'
+                                                        ? 'Ditinjau Klien'
+                                                        : 'Proyek Selesai'}
                                 </span>
                             </div>
                         </div>
@@ -405,17 +454,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         </Link>
                                         <button
                                             type="button"
-                                            onClick={() => {
-                                                if (
-                                                    confirm(
-                                                        'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?',
-                                                    )
-                                                ) {
-                                                    router.delete(
-                                                        `/quests/${quest.slug}`,
-                                                    );
-                                                }
-                                            }}
+                                            onClick={() => setShowDeleteDraftModal(true)}
                                             className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/50 dark:bg-[#030712] dark:text-red-400 dark:hover:bg-red-950/40"
                                         >
                                             Hapus Draf
@@ -454,17 +493,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                             </Link>
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    if (
-                                                        confirm(
-                                                            'Apakah Anda yakin ingin membatalkan dan menghapus draf quest ini?',
-                                                        )
-                                                    ) {
-                                                        router.delete(
-                                                            `/quests/${quest.slug}`,
-                                                        );
-                                                    }
-                                                }}
+                                                onClick={() => setShowDeleteDraftModal(true)}
                                                 className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/50 dark:bg-[#030712] dark:text-red-400 dark:hover:bg-red-950/40"
                                             >
                                                 Hapus Draf
@@ -908,6 +937,141 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Flag / Report Quest Modal */}
+            {showFlagModal && (
+                <Modal
+                    open={showFlagModal}
+                    onClose={() => setShowFlagModal(false)}
+                    title="Laporkan Lowongan Proyek"
+                >
+                    <form onSubmit={handleFlagSubmit} className="space-y-4 text-xs">
+                        <p className="text-slate-600 dark:text-slate-400">
+                            Bantu kami menjaga komunitas tetap aman dan terpercaya. Tim moderator akan meninjau laporan ini.
+                        </p>
+
+                        <div className="space-y-1.5">
+                            <label className="font-bold text-slate-700 dark:text-slate-300">
+                                Alasan Laporan <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                value={flagForm.data.reason}
+                                onChange={(e) => flagForm.setData('reason', e.target.value)}
+                                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                            >
+                                <option value="Dugaan Penipuan / Spam">Dugaan Penipuan / Spam</option>
+                                <option value="Konten Tidak Pantas / SARA">Konten Tidak Pantas / SARA</option>
+                                <option value="Informasi Gaji / Anggaran Tidak Wajar">Informasi Gaji / Anggaran Tidak Wajar</option>
+                                <option value="Pelanggaran Hak Cipta">Pelanggaran Hak Cipta</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="font-bold text-slate-700 dark:text-slate-300">
+                                Rincian Tambahan (Opsional)
+                            </label>
+                            <textarea
+                                rows={3}
+                                placeholder="Jelaskan alasan atau kronologi yang mencurigakan..."
+                                value={flagForm.data.details}
+                                onChange={(e) => flagForm.setData('details', e.target.value)}
+                                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                            <button
+                                type="button"
+                                onClick={() => setShowFlagModal(false)}
+                                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={flagForm.processing}
+                                className="px-4 py-2 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-xl transition-colors disabled:opacity-50 shadow-xs"
+                            >
+                                {flagForm.processing ? 'Mengirim...' : 'Kirim Laporan'}
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
+
+            {/* Delete Draft Quest Confirmation Modal */}
+            {showDeleteDraftModal && (
+                <Modal
+                    open={showDeleteDraftModal}
+                    onClose={() => {
+                        if (!isDeletingDraft) {
+                            setShowDeleteDraftModal(false);
+                        }
+                    }}
+                    title="Hapus Draf Lowongan"
+                >
+                    <div className="space-y-4 text-xs">
+                        <div className="flex items-start gap-3 rounded-xl border border-red-200/70 bg-red-50/50 p-3.5 dark:border-red-900/40 dark:bg-red-950/20">
+                            <Trash2 className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+                            <div className="space-y-1">
+                                <p className="font-bold text-red-900 dark:text-red-300">
+                                    Konfirmasi Penghapusan Draf
+                                </p>
+                                <p className="leading-relaxed text-slate-600 dark:text-slate-400">
+                                    Apakah Anda yakin ingin membatalkan dan menghapus draf lowongan proyek ini? Tindakan ini permanen dan seluruh data draf akan dihapus dari sistem.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Summary preview of the quest */}
+                        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-[#0c101a]">
+                            <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                Judul Proyek
+                            </span>
+                            <p className="mt-0.5 font-bold text-slate-800 dark:text-slate-200">
+                                {quest.title}
+                            </p>
+                            <div className="mt-2.5 flex flex-wrap gap-4 text-[11px] text-slate-600 dark:text-slate-400">
+                                <div>
+                                    <span className="text-slate-400">Anggaran: </span>
+                                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                                        {formatCurrency(quest.min_salary ?? quest.min_budget ?? 0)} - {formatCurrency(quest.max_salary ?? quest.max_budget ?? 0)}
+                                    </span>
+                                </div>
+                                {quest.deadline && (
+                                    <div>
+                                        <span className="text-slate-400">Tenggat: </span>
+                                        <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                            {formatDate(quest.deadline)}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                            <button
+                                type="button"
+                                disabled={isDeletingDraft}
+                                onClick={() => setShowDeleteDraftModal(false)}
+                                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors disabled:opacity-50"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                disabled={isDeletingDraft}
+                                onClick={handleDeleteDraft}
+                                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors disabled:opacity-50 shadow-xs"
+                            >
+                                <Trash2 size={13} />
+                                {isDeletingDraft ? 'Menghapus...' : 'Ya, Hapus Draf'}
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
             )}
         </div>
     );

@@ -9,9 +9,9 @@ use App\Models\UserStat;
 class RecordQuestTransactionAction
 {
     /**
-     * Record a transaction and adjust the target user's Gold balance.
+     * Record a transaction and optionally adjust the target user's Gold balance.
      */
-    public function execute(string $questId, string $userId, int $amount, string $type, string $description): QuestTransaction
+    public function execute(string $questId, string $userId, int $amount, string $type, string $description, ?int $goldReward = null): QuestTransaction
     {
         $transaction = QuestTransaction::create([
             'quest_id' => $questId,
@@ -21,24 +21,28 @@ class RecordQuestTransactionAction
             'description' => $description,
         ]);
 
-        $user = User::find($userId);
-        if ($user) {
-            $userStat = UserStat::firstOrCreate([
-                'user_id' => $userId,
-                'course_id' => 'quest_rewards',
-            ], [
-                'completed_modules' => [],
-                'completed_paths' => [],
-                'exp' => 0,
-                'gold' => 0,
-                'erp' => 0,
-                'level' => 1,
-                'path_stats' => [],
-            ]);
+        $goldToAdd = $goldReward ?? ($type === 'release_payout' ? $amount : 0);
 
-            $currentGold = (int) ($userStat->gold ?? 0);
-            $userStat->gold = max(0, $currentGold + $amount);
-            $userStat->save();
+        if ($goldToAdd > 0) {
+            $user = User::find($userId);
+            if ($user) {
+                $userStat = UserStat::firstOrCreate([
+                    'user_id' => $userId,
+                    'course_id' => 'quest_rewards',
+                ], [
+                    'completed_modules' => [],
+                    'completed_paths' => [],
+                    'exp' => 0,
+                    'gold' => 0,
+                    'erp' => 0,
+                    'level' => 1,
+                    'path_stats' => [],
+                ]);
+
+                $currentGold = (int) ($userStat->gold ?? 0);
+                $userStat->gold = max(0, $currentGold + $goldToAdd);
+                $userStat->save();
+            }
         }
 
         return $transaction;

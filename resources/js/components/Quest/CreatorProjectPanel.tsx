@@ -85,6 +85,27 @@ export default function CreatorProjectPanel({
         });
     };
 
+    const confirmDeliveryForm = useForm({});
+    const [showZipRevisionModal, setShowZipRevisionModal] = useState(false);
+    const zipRevisionForm = useForm({
+        revision_note: '',
+    });
+
+    const handleConfirmDelivery = (e: React.FormEvent) => {
+        e.preventDefault();
+        confirmDeliveryForm.post(`/quests/${quest.slug}/confirm-delivery`);
+    };
+
+    const handleRequestZipRevision = (e: React.FormEvent) => {
+        e.preventDefault();
+        zipRevisionForm.post(`/quests/${quest.slug}/request-delivery-revision`, {
+            onSuccess: () => {
+                setShowZipRevisionModal(false);
+                zipRevisionForm.reset();
+            },
+        });
+    };
+
     const acceptedBid = bids.find(
         (b) => b.status === 'accepted' || b.student?._id === quest.worker_id,
     );
@@ -209,6 +230,100 @@ export default function CreatorProjectPanel({
                                 : 'Kirim Bukti Pembayaran'}
                         </button>
                     </form>
+                </div>
+            )}
+
+            {quest.status === 'delivered' && (
+                <div className="space-y-5">
+                    <div className="flex flex-col gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/20 p-4 dark:border-indigo-900/40 dark:bg-indigo-950/10">
+                        <span className="block text-xs font-semibold text-indigo-700 dark:text-indigo-400">
+                            Master Berkas Proyek Final (ZIP) Telah Diunggah!
+                        </span>
+                        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                            Pekerja telah mengunggah berkas arsip final. Silakan unduh dan periksa seluruh kelengkapan isi berkas sebelum memberikan konfirmasi penyelesaian akhir.
+                        </p>
+                    </div>
+
+                    {quest.submission_file && (
+                        <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-[#030712]">
+                            <strong className="block text-[10px] tracking-wider text-slate-400 uppercase">
+                                Berkas Master ZIP Final
+                            </strong>
+                            <div className="flex items-center justify-between rounded-xl border border-indigo-200 bg-indigo-500/5 p-3 dark:border-slate-800 dark:bg-[#0d1117]">
+                                <div className="flex min-w-0 items-center gap-3">
+                                    <FileArchive className="h-6 w-6 shrink-0 text-indigo-500" />
+                                    <div className="min-w-0">
+                                        <p className="truncate text-xs font-bold text-slate-800 dark:text-slate-200">
+                                            {quest.submission_file.name}
+                                        </p>
+                                        <p className="text-[10px] text-slate-400">
+                                            {formatBytes(quest.submission_file.size)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <a
+                                    href={quest.submission_file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-indigo-700 shadow-xs"
+                                >
+                                    <Download size={14} /> Unduh ZIP
+                                </a>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button
+                            type="button"
+                            onClick={handleConfirmDelivery}
+                            disabled={confirmDeliveryForm.processing}
+                            className="flex-1 cursor-pointer rounded-xl bg-emerald-600 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:bg-emerald-700 disabled:opacity-50"
+                        >
+                            {confirmDeliveryForm.processing
+                                ? 'Memproses...'
+                                : 'Konfirmasi Berkas Sesuai & Selesaikan'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowZipRevisionModal(true)}
+                            className="cursor-pointer rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs font-bold tracking-wider text-amber-700 dark:text-amber-400 uppercase transition-colors hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                        >
+                            Minta Perbaikan / Kirim Ulang ZIP
+                        </button>
+                    </div>
+
+                    {showZipRevisionModal && (
+                        <form onSubmit={handleRequestZipRevision} className="space-y-3 rounded-xl border border-amber-300/60 bg-amber-50/30 p-4 dark:border-amber-900/40 dark:bg-amber-950/10">
+                            <h4 className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase">
+                                Catatan Kendala Berkas ZIP
+                            </h4>
+                            <textarea
+                                required
+                                rows={3}
+                                placeholder="Contoh: File ZIP rusak atau tidak bisa diekstrak. Tolong unggah ulang berkas arsip standar..."
+                                value={zipRevisionForm.data.revision_note}
+                                onChange={(e) => zipRevisionForm.setData('revision_note', e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-xs text-slate-800 focus:border-amber-500 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                            />
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowZipRevisionModal(false)}
+                                    className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={zipRevisionForm.processing || !zipRevisionForm.data.revision_note.trim()}
+                                    className="rounded-lg bg-amber-600 px-4 py-1.5 text-xs font-bold text-white uppercase hover:bg-amber-700 disabled:opacity-50"
+                                >
+                                    {zipRevisionForm.processing ? 'Mengirim...' : 'Kirim Permintaan'}
+                                </button>
+                            </div>
+                        </form>
+                    )}
                 </div>
             )}
 

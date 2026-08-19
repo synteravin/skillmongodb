@@ -9,6 +9,8 @@ enum QuestStatus: string
     case ONGOING = 'ongoing';
     case SUBMITTED = 'submitted';
     case APPROVED = 'approved';
+    case PAYMENT = 'payment';
+    case DELIVERED = 'delivered';
     case COMPLETED = 'completed';
     case REJECTED = 'rejected';
     case EXPIRED = 'expired';
@@ -23,6 +25,8 @@ enum QuestStatus: string
             self::ONGOING => 'Sedang Dikerjakan',
             self::SUBMITTED => 'Menunggu Peninjauan',
             self::APPROVED => 'Disetujui',
+            self::PAYMENT => 'Menunggu Berkas Final',
+            self::DELIVERED => 'Menunggu Konfirmasi Berkas Akhir',
             self::COMPLETED => 'Selesai',
             self::REJECTED => 'Ditolak',
             self::EXPIRED => 'Kadaluarsa',
@@ -38,6 +42,6 @@ enum QuestStatus: string
 
     public function isActive(): bool
     {
-        return in_array($this, [self::ONGOING, self::SUBMITTED]);
+        return in_array($this, [self::ONGOING, self::SUBMITTED, self::APPROVED, self::PAYMENT, self::DELIVERED]);
     }
 }

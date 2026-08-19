@@ -413,11 +413,11 @@ class QuestArbitrationTest extends TestCase
 
         $response = $this->actingAs($rejectedWorker)
             ->getJson("/quests/bids/{$bid->_id}/messages");
-        $response->assertStatus(403);
+        $response->assertStatus(200);
 
         $responsePost = $this->actingAs($rejectedWorker)
             ->postJson("/quests/bids/{$bid->_id}/messages", ['message' => 'spam']);
-        $responsePost->assertStatus(403);
+        $responsePost->assertStatus(422);
     }
 
     public function test_submission_clears_revision_note(): void

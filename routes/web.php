@@ -496,6 +496,9 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
         Route::post('/quests/{quest}/extend-deadline', [QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
         Route::post('/quests/{quest}/upload-payment', [QuestController::class, 'uploadPaymentProof'])->name('quests.upload-payment');
+        Route::post('/quests/{quest}/confirm-delivery', [QuestController::class, 'confirmFinalDelivery'])->name('quests.confirm-delivery');
+        Route::post('/quests/{quest}/request-delivery-revision', [QuestController::class, 'requestFinalZipRevision'])->name('quests.request-delivery-revision');
+        Route::post('/quests/{quest}/flag', [QuestController::class, 'storeFlag'])->name('quests.flag');
         Route::post('/notifications/{id}/read', [QuestController::class, 'markNotificationAsRead'])->name('notifications.read');
     });
 

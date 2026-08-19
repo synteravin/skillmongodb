@@ -55,6 +55,7 @@ export default function QuestChatPanel({
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+    const [chatError, setChatError] = useState<string | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const pollingIntervalRef = useRef<any>(null);
@@ -176,12 +177,17 @@ export default function QuestChatPanel({
                 setMessages((prev) => [...prev, newMsg]);
                 setNewMessage('');
                 setAttachmentFile(null);
+                setChatError(null);
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
+            } else {
+                const errData = await response.json().catch(() => ({}));
+                setChatError(errData.error || 'Gagal mengirim pesan.');
             }
         } catch (error) {
             console.error('Failed to send message', error);
+            setChatError('Terjadi kesalahan saat mengirim pesan.');
         } finally {
             setSending(false);
         }
@@ -417,6 +423,20 @@ export default function QuestChatPanel({
                         className="cursor-pointer text-slate-400 hover:text-red-500"
                     >
                         <X size={16} />
+                    </button>
+                </div>
+            )}
+
+            {/* Chat Error Alert */}
+            {chatError && (
+                <div className="flex items-center justify-between border-t border-red-200 bg-red-50 p-2.5 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+                    <span>{chatError}</span>
+                    <button
+                        type="button"
+                        onClick={() => setChatError(null)}
+                        className="cursor-pointer text-red-500 hover:text-red-700"
+                    >
+                        <X size={14} />
                     </button>
                 </div>
             )}

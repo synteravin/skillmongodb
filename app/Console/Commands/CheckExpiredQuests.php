@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Notification;
 use App\Models\Quest;
+use App\Models\QuestBid;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -21,7 +22,7 @@ class CheckExpiredQuests extends Command
      *
      * @var string
      */
-    protected $description = 'Mencari quest ongoing yang telah melewati tenggat waktu dan mengubah statusnya menjadi expired, melepaskan pekerja, serta memberikan penalti ERP.';
+    protected $description = 'Mencari quest open yang telah melewati tenggat waktu dan mengubah statusnya menjadi expired serta membersihkan tawaran pending.';
 
     /**
      * Execute the console command.
@@ -51,11 +52,30 @@ class CheckExpiredQuests extends Command
                     'data' => [
                         'quest_id' => $quest->_id,
                         'title' => $quest->title,
-                        'message' => "Quest '{$quest->title}' telah kadaluarsa karena tidak ada pekerja yang dipilih hingga melewati batas tenggat waktu.",
+                        'message' => "Quest Anda '{$quest->title}' telah kadaluarsa karena tidak ada pekerja yang dipilih hingga melewati batas tenggat waktu.",
                         'type' => 'quest_expired_creator',
                     ],
                     'read_at' => null,
                 ]);
+            }
+
+            // 3. Bersihkan penawaran pending dan beri tahu pelamar
+            $pendingBids = QuestBid::where('quest_id', $quest->_id)->where('status', 'pending')->get();
+            foreach ($pendingBids as $pBid) {
+                $pBid->update(['status' => 'rejected']);
+                if ($pBid->student_id) {
+                    Notification::create([
+                        'notifiable_type' => User::class,
+                        'notifiable_id' => (string) $pBid->student_id,
+                        'data' => [
+                            'quest_id' => (string) $quest->_id,
+                            'title' => $quest->title,
+                            'message' => "Quest '{$quest->title}' telah kadaluarsa melewati batas tenggat waktu.",
+                            'type' => 'quest_expired_bidder',
+                        ],
+                        'read_at' => null,
+                    ]);
+                }
             }
 
             $count++;

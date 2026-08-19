@@ -100,11 +100,22 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                         'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
                 };
             case 'approved':
+                return {
+                    label: 'Disetujui',
+                    className:
+                        'border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/20 dark:text-purple-400',
+                };
             case 'payment':
                 return {
-                    label: 'Pelunasan',
+                    label: 'Transfer Pembayaran',
                     className:
                         'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400',
+                };
+            case 'delivered':
+                return {
+                    label: 'Verifikasi Berkas',
+                    className:
+                        'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400',
                 };
             case 'completed':
                 return {

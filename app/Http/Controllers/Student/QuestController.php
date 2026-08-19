@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Student;
 
 use App\Enums\QuestStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Quest\ApproveQuestWorkRequest;
+use App\Http\Requests\Quest\ExtendQuestDeadlineRequest;
 use App\Http\Requests\Quest\FileDisputeRequest;
+use App\Http\Requests\Quest\RejectQuestWorkRequest;
+use App\Http\Requests\Quest\RequestFinalZipRevisionRequest;
 use App\Http\Requests\Quest\StoreQuestBidRequest;
+use App\Http\Requests\Quest\StoreQuestFlagRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
+use App\Http\Requests\Quest\SubmitFinalZipRequest;
+use App\Http\Requests\Quest\SubmitQuestWorkRequest;
+use App\Http\Requests\Quest\UploadPaymentProofRequest;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
+use App\Models\QuestFlag;
 use App\Models\QuestMessage;
 use App\Models\User;
 use App\Services\Quest\QuestService;
@@ -42,7 +51,7 @@ class QuestController extends Controller
                 ->orWhereIn('_id', $biddedQuestIds);
         })->where('status', 'completed')->count();
 
-        $myQuests = Quest::with('creator')
+        $myQuestsCollection = Quest::with('creator')
             ->where(function ($query) use ($user) {
                 $query->where('creator_id', (string) $user->_id)
                     ->orWhere(function ($q) use ($user) {
@@ -51,30 +60,34 @@ class QuestController extends Controller
                     });
             })
             ->latest()
-            ->get()
-            ->map(function ($quest) {
-                return [
-                    '_id' => (string) $quest->_id,
-                    'id' => (string) $quest->_id,
-                    'slug' => $quest->slug ?: Str::slug($quest->title),
-                    'title' => $quest->title,
-                    'description' => $quest->description,
-                    'min_budget' => $quest->min_budget,
-                    'max_budget' => $quest->max_budget,
-                    'min_salary' => $quest->min_budget,
-                    'max_salary' => $quest->max_budget,
-                    'deadline' => $quest->deadline?->toISOString(),
-                    'status' => $quest->status,
-                    'creator_id' => $quest->creator_id ? (string) $quest->creator_id : null,
-                    'worker_id' => $quest->worker_id ? (string) $quest->worker_id : null,
-                    'rejection_note' => $quest->rejection_note,
-                    'creator' => [
-                        'name' => $quest->creator?->name ?? 'Unknown User',
-                        'role' => $quest->creator?->role ?? 'unknown',
-                    ],
-                    'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
-                ];
-            })
+            ->get();
+
+        $myQuestIds = $myQuestsCollection->pluck('_id')->map(fn ($id) => (string) $id)->toArray();
+        $myBidCounts = QuestBid::whereIn('quest_id', $myQuestIds)->get()->groupBy('quest_id')->map->count();
+
+        $myQuests = $myQuestsCollection->map(function ($quest) use ($myBidCounts) {
+            return [
+                '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
+                'deadline' => $quest->deadline?->toISOString(),
+                'status' => $quest->status,
+                'creator_id' => $quest->creator_id ? (string) $quest->creator_id : null,
+                'worker_id' => $quest->worker_id ? (string) $quest->worker_id : null,
+                'rejection_note' => $quest->rejection_note,
+                'creator' => [
+                    'name' => $quest->creator?->name ?? 'Unknown User',
+                    'role' => $quest->creator?->role ?? 'unknown',
+                ],
+                'bids_count' => $myBidCounts[(string) $quest->_id] ?? 0,
+            ];
+        })
             ->toArray();
 
         return Inertia::render('Student/Quests/Index', [
@@ -209,7 +222,7 @@ class QuestController extends Controller
             return [
                 'name' => $img['name'] ?? 'image.jpg',
                 'path' => $img['path'] ?? '',
-                'url' => isset($img['path']) ? $disk->url($img['path']) : '',
+                'url' => isset($img['path']) ? $disk->temporaryUrl($img['path'], now()->addMinutes(60)) : '',
             ];
         }, $quest->images ?? []);
 
@@ -217,7 +230,7 @@ class QuestController extends Controller
             return [
                 'name' => $file['name'] ?? 'file.dat',
                 'path' => $file['path'] ?? '',
-                'url' => isset($file['path']) ? $disk->url($file['path']) : '',
+                'url' => isset($file['path']) ? $disk->temporaryUrl($file['path'], now()->addMinutes(60)) : '',
                 'size' => $file['size'] ?? 0,
             ];
         }, $quest->files ?? []);
@@ -525,211 +538,37 @@ class QuestController extends Controller
     /**
      * Submit completed work for the quest.
      */
-    public function submitWork(Request $request, Quest $quest)
+    public function submitWork(SubmitQuestWorkRequest $request, Quest $quest)
     {
-        $user = $request->user();
-
-        // Must be the chosen worker
-        if ($quest->worker_id !== $user->_id) {
-            abort(403, 'Hanya pekerja terpilih yang dapat mengirimkan hasil pekerjaan.');
-        }
-
-        // Must be ongoing
-        if ($quest->status !== 'ongoing') {
-            abort(400, 'Hasil pekerjaan hanya dapat dikirimkan jika status quest sedang berjalan.');
-        }
-
-        $request->validate([
-            'submission_file' => 'nullable|file|mimes:zip|max:51200',
-            'submission_link' => 'required|url',
-            'submission_note' => 'nullable|string|max:1000',
-        ], [
-            'submission_file.file' => 'Berkas pengiriman harus berupa file valid.',
-            'submission_file.mimes' => 'Berkas pengiriman harus berformat ZIP.',
-            'submission_file.max' => 'Ukuran berkas pengiriman maksimal adalah 50MB.',
-            'submission_link.required' => 'Link hasil pekerjaan wajib diisi untuk peninjauan.',
-            'submission_link.url' => 'Format link harus berupa URL valid.',
-        ]);
-
-        $updateData = [
-            'submission_link' => $request->submission_link,
-            'submission_note' => $request->submission_note,
-            'submitted_at' => now(),
-            'status' => 'submitted',
-            'revision_note' => null, // clear active revision alert
-        ];
-
-        $submissionFile = null;
-        if ($request->hasFile('submission_file')) {
-            // Delete old ZIP if exists
-            if ($quest->submission_file && isset($quest->submission_file['path'])) {
-                Storage::disk('s3')->delete($quest->submission_file['path']);
-            }
-
-            $file = $request->file('submission_file');
-            $originalName = $file->getClientOriginalName();
-            $path = $file->store('quests/deliverables', 's3');
-            $size = $file->getSize();
-
-            $submissionFile = [
-                'name' => $originalName,
-                'path' => $path,
-                'size' => $size,
-            ];
-            $updateData['submission_file'] = $submissionFile;
-        } else {
-            // Retain old submission file if no new file is uploaded
-            $submissionFile = $quest->submission_file;
-        }
-
-        $history = $quest->submission_history ?? [];
-        $nextVersion = count($history) + 1;
-        $history[] = [
-            'version' => $nextVersion,
-            'submitted_at' => now()->toIso8601String(),
-            'submission_link' => $request->submission_link,
-            'submission_note' => $request->submission_note,
-            'submission_file' => $submissionFile,
-        ];
-
-        $updateData['submission_history'] = $history;
-
-        $quest->update($updateData);
-
-        if ($quest->creator_id) {
-            try {
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => (string) $quest->creator_id,
-                    'data' => [
-                        'quest_id' => (string) $quest->_id,
-                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
-                        'title' => $quest->title,
-                        'message' => "Pekerja '{$user->name}' telah mengunggah hasil pekerjaan untuk quest '{$quest->title}'. Silakan tinjau pekerjaan tersebut.",
-                        'type' => 'work_submitted',
-                    ],
-                    'read_at' => null,
-                ]);
-            } catch (\Throwable $e) {
-                // Ignored for testing DB driver fallback
-            }
-        }
+        $this->questService->submitWork(
+            $request->user(),
+            $quest,
+            array_merge($request->validated(), [
+                'submission_file' => $request->file('submission_file'),
+            ])
+        );
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Hasil pekerjaan berhasil dikirim dan menunggu tinjauan!');
     }
 
-    public function approveWork(Request $request, Quest $quest)
+    /**
+     * Approve submitted work.
+     */
+    public function approveWork(ApproveQuestWorkRequest $request, Quest $quest)
     {
-        $user = $request->user();
-
-        // Must be creator or admin
-        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
-            abort(403, 'Hanya pembuat quest atau admin yang dapat menyetujui hasil pekerjaan.');
-        }
-
-        if ($quest->status !== 'submitted') {
-            abort(400, 'Quest harus dalam status menunggu tinjauan.');
-        }
-
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'rating_comment' => 'nullable|string|max:1000',
-        ], [
-            'rating.required' => 'Rating bintang wajib dipilih.',
-            'rating.integer' => 'Rating harus berupa angka.',
-            'rating.min' => 'Rating minimal 1 bintang.',
-            'rating.max' => 'Rating maksimal 5 bintang.',
-        ]);
-
-        $updateData = [
-            'status' => 'approved',
-            'rating' => (int) $request->rating,
-            'rating_comment' => $request->rating_comment,
-            'revision_note' => null, // clear any past revision note
-        ];
-
-        $quest->update($updateData);
-
-        if ($quest->worker_id) {
-            try {
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => (string) $quest->worker_id,
-                    'data' => [
-                        'quest_id' => (string) $quest->_id,
-                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
-                        'title' => $quest->title,
-                        'message' => "Selamat! Pemilik proyek telah menyetujui hasil pekerjaan Anda untuk quest '{$quest->title}' ({$request->rating}/5⭐).",
-                        'type' => 'work_approved',
-                    ],
-                    'read_at' => null,
-                ]);
-            } catch (\Throwable $e) {
-                // Ignored for testing DB driver fallback
-            }
-        }
-
-        $msg = 'Hasil tinjauan pekerjaan disetujui! Silakan lanjutkan dengan melakukan transfer pembayaran dan unggah bukti transfer.';
+        $this->questService->approveWork($request->user(), $quest, $request->validated());
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
-            ->with('success', $msg);
+            ->with('success', 'Hasil tinjauan pekerjaan disetujui! Silakan lanjutkan dengan melakukan transfer pembayaran dan unggah bukti transfer.');
     }
 
     /**
      * Reject submission and request revision.
      */
-    public function rejectWork(Request $request, Quest $quest)
+    public function rejectWork(RejectQuestWorkRequest $request, Quest $quest)
     {
-        $user = $request->user();
-
-        // Must be creator or admin
-        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
-            abort(403, 'Hanya pembuat quest atau admin yang dapat meminta revisi.');
-        }
-
-        if ($quest->status !== 'submitted') {
-            abort(400, 'Quest harus dalam status menunggu tinjauan.');
-        }
-
-        $request->validate([
-            'revision_note' => 'required|string|max:1000',
-        ], [
-            'revision_note.required' => 'Catatan revisi/feedback wajib diisi agar pekerja tahu apa yang perlu diperbaiki.',
-        ]);
-
-        $revisions = $quest->revisions ?? [];
-        $revisions[] = [
-            'note' => $request->revision_note,
-            'created_at' => now()->toIso8601String(),
-            'author_id' => (string) $user->_id,
-            'author_name' => $user->name,
-        ];
-
-        $quest->update([
-            'status' => 'ongoing',
-            'revision_note' => $request->revision_note,
-            'revisions' => $revisions,
-        ]);
-
-        if ($quest->worker_id) {
-            try {
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => (string) $quest->worker_id,
-                    'data' => [
-                        'quest_id' => (string) $quest->_id,
-                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
-                        'title' => $quest->title,
-                        'message' => "Pemilik proyek meminta revisi untuk quest '{$quest->title}'. Catatan revisi: '{$request->revision_note}'",
-                        'type' => 'work_rejected',
-                    ],
-                    'read_at' => null,
-                ]);
-            } catch (\Throwable $e) {
-                // Ignored for testing DB driver fallback
-            }
-        }
+        $this->questService->rejectWork($request->user(), $quest, $request->validated());
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('warning', 'Pekerjaan ditolak dan revisi diminta dari pekerja.');
@@ -738,164 +577,62 @@ class QuestController extends Controller
     /**
      * Submit final ZIP deliverable for an approved quest.
      */
-    public function submitFinalZip(Request $request, Quest $quest)
+    public function submitFinalZip(SubmitFinalZipRequest $request, Quest $quest)
+    {
+        $this->questService->submitFinalZip($request->user(), $quest, $request->file('submission_file'));
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Berkas Master ZIP final berhasil diunggah! Menunggu verifikasi dan konfirmasi penerimaan dari pembuat quest.');
+    }
+
+    /**
+     * Creator confirms final delivery and completes the quest.
+     */
+    public function confirmFinalDelivery(Request $request, Quest $quest)
+    {
+        $this->questService->confirmFinalDelivery($request->user(), $quest);
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Berkas final berhasil dikonfirmasi! Quest resmi selesai dan hadiah telah dicairkan ke profil pekerja.');
+    }
+
+    /**
+     * Creator requests revision/re-upload of the final master ZIP file.
+     */
+    public function requestFinalZipRevision(RequestFinalZipRevisionRequest $request, Quest $quest)
+    {
+        $this->questService->requestFinalZipRevision($request->user(), $quest, $request->validated()['revision_note']);
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('warning', 'Permintaan perbaikan berkas final telah dikirimkan ke pekerja untuk diunggah ulang.');
+    }
+
+    /**
+     * Report / flag a quest for moderation review.
+     */
+    public function storeFlag(StoreQuestFlagRequest $request, Quest $quest)
     {
         $user = $request->user();
 
-        // Must be the chosen worker
-        if ($quest->worker_id !== $user->_id) {
-            abort(403, 'Hanya pekerja terpilih yang dapat mengunggah berkas final.');
-        }
-
-        // Must be payment status
-        if ($quest->status !== 'payment') {
-            abort(400, 'Berkas ZIP final hanya dapat diunggah setelah bukti transfer pembayaran diunggah.');
-        }
-
-        $request->validate([
-            'submission_file' => 'required|file|mimes:zip|max:51200',
-        ], [
-            'submission_file.required' => 'Berkas ZIP final wajib diunggah.',
-            'submission_file.file' => 'Berkas pengiriman harus berupa file valid.',
-            'submission_file.mimes' => 'Berkas pengiriman harus berformat ZIP.',
-            'submission_file.max' => 'Ukuran berkas pengiriman maksimal adalah 50MB.',
+        QuestFlag::create([
+            'reporter_id' => (string) $user->_id,
+            'reported_user_id' => (string) $quest->creator_id,
+            'quest_id' => (string) $quest->_id,
+            'reason' => $request->reason,
+            'details' => $request->details,
+            'status' => 'pending',
         ]);
 
-        // Upload ZIP to S3
-        $file = $request->file('submission_file');
-        $originalName = $file->getClientOriginalName();
-        $path = $file->store('quests/deliverables', 's3');
-        $size = $file->getSize();
-
-        $submissionFile = [
-            'name' => $originalName,
-            'path' => $path,
-            'size' => $size,
-        ];
-
-        $history = $quest->submission_history ?? [];
-        $nextVersion = count($history) + 1;
-        $history[] = [
-            'version' => $nextVersion,
-            'submitted_at' => now()->toIso8601String(),
-            'submission_link' => $quest->submission_link,
-            'submission_note' => 'Final ZIP Deliverable Uploaded and Payment Confirmed',
-            'submission_file' => $submissionFile,
-        ];
-
-        $quest->update([
-            'submission_file' => $submissionFile,
-            'completed_at' => now(),
-            'payment_confirmed_at' => now(),
-            'status' => 'completed',
-            'submission_history' => $history,
-        ]);
-
-        // Award gamification rewards to worker (Student)
-        if ($quest->worker_id) {
-            $this->questService->awardQuestRewards($quest, $quest->worker_id);
-        }
-
-        // Notify Worker & Creator
-        try {
-            if ($quest->worker_id) {
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => (string) $quest->worker_id,
-                    'data' => [
-                        'quest_id' => (string) $quest->_id,
-                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
-                        'title' => $quest->title,
-                        'message' => "Quest '{$quest->title}' telah resmi selesai! Berkas final dikonfirmasi dan hadiah EXP & Gold telah diterima.",
-                        'type' => 'quest_completed',
-                    ],
-                    'read_at' => null,
-                ]);
-            }
-            if ($quest->creator_id) {
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => (string) $quest->creator_id,
-                    'data' => [
-                        'quest_id' => (string) $quest->_id,
-                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
-                        'title' => $quest->title,
-                        'message' => "Pekerja telah mengunggah berkas ZIP final untuk quest '{$quest->title}'. Seluruh rangkaian quest telah resmi selesai!",
-                        'type' => 'quest_completed',
-                    ],
-                    'read_at' => null,
-                ]);
-            }
-        } catch (\Throwable $e) {
-            // Ignored for DB fallback
-        }
-
-        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
-            ->with('success', 'Konfirmasi pembayaran berhasil! Berkas final berhasil diunggah, quest selesai, dan hadiah telah ditambahkan ke profil Anda.');
+        return redirect()->back()
+            ->with('success', 'Laporan Anda telah berhasil dikirimkan ke tim Admin untuk ditinjau.');
     }
 
     /**
      * Upload payment proof receipt by the creator.
      */
-    public function uploadPaymentProof(Request $request, Quest $quest)
+    public function uploadPaymentProof(UploadPaymentProofRequest $request, Quest $quest)
     {
-        $user = $request->user();
-
-        // Must be the quest creator or admin
-        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
-            abort(403, 'Hanya pembuat quest atau admin yang dapat mengunggah bukti transfer.');
-        }
-
-        // Must be in approved status
-        if ($quest->status !== 'approved') {
-            abort(400, 'Bukti transfer hanya dapat diunggah setelah pekerjaan disetujui.');
-        }
-
-        $request->validate([
-            'payment_proof' => 'required|file|image|max:5120',
-        ], [
-            'payment_proof.required' => 'Bukti transfer wajib diunggah.',
-            'payment_proof.file' => 'Bukti transfer harus berupa file valid.',
-            'payment_proof.image' => 'Bukti transfer harus berupa gambar (JPG, JPEG, PNG).',
-            'payment_proof.max' => 'Ukuran bukti transfer maksimal adalah 5MB.',
-        ]);
-
-        // Upload to S3
-        $file = $request->file('payment_proof');
-        $originalName = $file->getClientOriginalName();
-        $path = $file->store('quests/payments', 's3');
-        $size = $file->getSize();
-
-        $paymentProof = [
-            'name' => $originalName,
-            'path' => $path,
-            'size' => $size,
-        ];
-
-        $quest->update([
-            'payment_proof' => $paymentProof,
-            'payment_uploaded_at' => now(),
-            'status' => 'payment',
-        ]);
-
-        if ($quest->worker_id) {
-            try {
-                Notification::create([
-                    'notifiable_type' => User::class,
-                    'notifiable_id' => (string) $quest->worker_id,
-                    'data' => [
-                        'quest_id' => (string) $quest->_id,
-                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
-                        'title' => $quest->title,
-                        'message' => "Pemilik proyek telah mengunggah bukti transfer pembayaran untuk quest '{$quest->title}'. Silakan unggah berkas final ZIP Anda.",
-                        'type' => 'payment_uploaded',
-                    ],
-                    'read_at' => null,
-                ]);
-            } catch (\Throwable $e) {
-                // Ignored for DB fallback
-            }
-        }
+        $this->questService->uploadPaymentProof($request->user(), $quest, $request->file('payment_proof'));
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Bukti transfer pembayaran berhasil diunggah! Menunggu konfirmasi dari pekerja.');
@@ -923,34 +660,11 @@ class QuestController extends Controller
     /**
      * Extend quest deadline.
      */
-    public function extendDeadline(Request $request, string $questId)
+    public function extendDeadline(ExtendQuestDeadlineRequest $request, string $questId)
     {
         $quest = Quest::findOrFail($questId);
-        $user = $request->user();
 
-        // Check authorization (must be creator or admin)
-        if ($quest->creator_id !== $user->_id && ! $user->isAdmin()) {
-            abort(403, 'Hanya pembuat quest atau admin yang dapat memperpanjang tenggat waktu.');
-        }
-
-        $request->validate([
-            'deadline' => ['required', 'date', 'after:now'],
-        ], [
-            'deadline.required' => 'Tenggat waktu baru wajib diisi.',
-            'deadline.date' => 'Tenggat waktu harus berupa tanggal valid.',
-            'deadline.after' => 'Tenggat waktu baru harus berupa waktu di masa depan.',
-        ]);
-
-        $updateData = [
-            'deadline' => now()->parse($request->deadline),
-        ];
-
-        // If the quest was expired, restore its status
-        if ($quest->status === 'expired') {
-            $updateData['status'] = empty($quest->worker_id) ? 'open' : 'ongoing';
-        }
-
-        $quest->update($updateData);
+        $this->questService->extendDeadline($request->user(), $quest, $request->validated()['deadline']);
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Tenggat waktu quest berhasil diperpanjang!');

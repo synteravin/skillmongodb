@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Quest\ApproveQuestWorkRequest;
+use App\Http\Requests\Quest\RejectQuestWorkRequest;
 use App\Http\Requests\Quest\ResolveArbitrationRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
 use App\Models\Notification;
@@ -48,12 +50,15 @@ class QuestController extends Controller
 
         $paginatedQuests = $query->paginate(10)->withQueryString();
 
+        $questIds = $paginatedQuests->pluck('_id')->map(fn ($id) => (string) $id)->toArray();
+        $bidCounts = QuestBid::whereIn('quest_id', $questIds)->get()->groupBy('quest_id')->map->count();
+
         $acceptedBids = QuestBid::where('status', 'accepted')
-            ->whereIn('quest_id', $paginatedQuests->pluck('_id')->toArray())
+            ->whereIn('quest_id', $questIds)
             ->get()
             ->keyBy('quest_id');
 
-        $quests = $paginatedQuests->through(function ($quest) use ($acceptedBids) {
+        $quests = $paginatedQuests->through(function ($quest) use ($acceptedBids, $bidCounts) {
             $acceptedBid = $acceptedBids->get($quest->_id);
 
             return [
@@ -76,7 +81,7 @@ class QuestController extends Controller
                 'worker' => $quest->worker ? [
                     'name' => $quest->worker->name,
                 ] : null,
-                'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
+                'bids_count' => $bidCounts[(string) $quest->_id] ?? 0,
                 'accepted_bid_amount' => $acceptedBid ? (int) $acceptedBid->bid_amount : null,
             ];
         });
@@ -152,32 +157,32 @@ class QuestController extends Controller
         $resolvedImages = array_map(function ($img) use ($disk) {
             return [
                 'name' => $img['name'] ?? 'image.jpg',
-                'url' => $disk->url($img['path']),
+                'url' => isset($img['path']) ? $disk->temporaryUrl($img['path'], now()->addMinutes(60)) : '',
             ];
         }, $quest->images ?? []);
 
         $resolvedFiles = array_map(function ($file) use ($disk) {
             return [
                 'name' => $file['name'] ?? 'file.dat',
-                'url' => $disk->url($file['path']),
+                'url' => isset($file['path']) ? $disk->temporaryUrl($file['path'], now()->addMinutes(60)) : '',
                 'size' => $file['size'] ?? 0,
             ];
         }, $quest->files ?? []);
 
         $resolvedSubmissionFile = null;
-        if ($quest->submission_file) {
+        if ($quest->submission_file && isset($quest->submission_file['path'])) {
             $resolvedSubmissionFile = [
                 'name' => $quest->submission_file['name'] ?? 'deliverable.zip',
-                'url' => $disk->url($quest->submission_file['path']),
+                'url' => $disk->temporaryUrl($quest->submission_file['path'], now()->addMinutes(60)),
                 'size' => $quest->submission_file['size'] ?? 0,
             ];
         }
 
         $resolvedPaymentProof = null;
-        if ($quest->payment_proof) {
+        if ($quest->payment_proof && isset($quest->payment_proof['path'])) {
             $resolvedPaymentProof = [
                 'name' => $quest->payment_proof['name'] ?? 'receipt.png',
-                'url' => $disk->url($quest->payment_proof['path']),
+                'url' => $disk->temporaryUrl($quest->payment_proof['path'], now()->addMinutes(60)),
                 'size' => $quest->payment_proof['size'] ?? 0,
             ];
         }
@@ -190,7 +195,7 @@ class QuestController extends Controller
                 'submission_note' => $sub['submission_note'] ?? null,
                 'submission_file' => isset($sub['submission_file']['path']) ? [
                     'name' => $sub['submission_file']['name'] ?? 'deliverable.zip',
-                    'url' => $disk->url($sub['submission_file']['path']),
+                    'url' => $disk->temporaryUrl($sub['submission_file']['path'], now()->addMinutes(60)),
                     'size' => $sub['submission_file']['size'] ?? 0,
                 ] : null,
             ];
@@ -370,80 +375,21 @@ class QuestController extends Controller
             ->with('success', 'Pekerja berhasil dipilih oleh Admin!');
     }
 
-    public function approveWork(Request $request, string $questId, QuestService $questService)
+    public function approveWork(ApproveQuestWorkRequest $request, string $questId, QuestService $questService)
     {
         $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
-        if ($quest->status !== 'submitted') {
-            abort(400, 'Quest harus dalam status menunggu tinjauan.');
-        }
-
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'rating_comment' => 'nullable|string|max:1000',
-        ], [
-            'rating.required' => 'Rating bintang wajib dipilih.',
-            'rating.integer' => 'Rating harus berupa angka.',
-            'rating.min' => 'Rating minimal 1 bintang.',
-            'rating.max' => 'Rating maksimal 5 bintang.',
-        ]);
-
-        $hasFile = $quest->submission_file && isset($quest->submission_file['path']);
-        $newStatus = $hasFile ? 'completed' : 'approved';
-
-        $updateData = [
-            'status' => $newStatus,
-            'rating' => (int) $request->rating,
-            'rating_comment' => $request->rating_comment,
-            'revision_note' => null,
-        ];
-
-        if ($hasFile) {
-            $updateData['completed_at'] = now();
-        }
-
-        $quest->update($updateData);
-
-        if ($hasFile && $quest->worker_id) {
-            $questService->awardQuestRewards($quest, $quest->worker_id);
-        }
-
-        $msg = $hasFile
-            ? 'Pekerjaaan disetujui oleh Admin! Quest selesai dan hadiah telah ditambahkan ke profil pekerja.'
-            : 'Pekerjaaan disetujui oleh Admin! Status menjadi disetujui, menunggu pekerja mengunggah berkas ZIP final untuk menyelesaikan quest.';
+        $questService->approveWork($request->user(), $quest, $request->validated());
 
         return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
-            ->with($hasFile ? 'success' : 'warning', $msg);
+            ->with('success', 'Hasil pekerjaan disetujui oleh Admin! Status beralih ke disetujui, menunggu pembuat quest mengunggah bukti transfer pembayaran.');
     }
 
-    public function rejectWork(Request $request, string $questId)
+    public function rejectWork(RejectQuestWorkRequest $request, string $questId, QuestService $questService)
     {
         $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
-        if ($quest->status !== 'submitted') {
-            abort(400, 'Quest harus dalam status menunggu tinjauan.');
-        }
-
-        $request->validate([
-            'revision_note' => 'required|string|max:1000',
-        ], [
-            'revision_note.required' => 'Catatan revisi/feedback wajib diisi agar pekerja tahu apa yang perlu diperbaiki.',
-        ]);
-
-        $user = $request->user();
-        $revisions = $quest->revisions ?? [];
-        $revisions[] = [
-            'note' => $request->revision_note,
-            'created_at' => now()->toIso8601String(),
-            'author_id' => (string) $user->_id,
-            'author_name' => $user->name,
-        ];
-
-        $quest->update([
-            'status' => 'ongoing',
-            'revision_note' => $request->revision_note,
-            'revisions' => $revisions,
-        ]);
+        $questService->rejectWork($request->user(), $quest, $request->validated());
 
         return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('warning', 'Pekerjaan ditolak oleh Admin dan revisi diminta dari pekerja.');
