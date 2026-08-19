@@ -3,12 +3,20 @@
 namespace App\Services\Quest;
 
 use App\Actions\Quest\AcceptQuestBidAction;
+use App\Actions\Quest\ApproveQuestWorkAction;
 use App\Actions\Quest\AwardQuestRewardsAction;
+use App\Actions\Quest\ConfirmFinalDeliveryAction;
 use App\Actions\Quest\CreateQuestAction;
+use App\Actions\Quest\ExtendQuestDeadlineAction;
 use App\Actions\Quest\FileQuestDisputeAction;
 use App\Actions\Quest\PlaceQuestBidAction;
 use App\Actions\Quest\RecordQuestTransactionAction;
+use App\Actions\Quest\RejectQuestWorkAction;
+use App\Actions\Quest\RequestFinalZipRevisionAction;
 use App\Actions\Quest\ResolveQuestArbitrationAction;
+use App\Actions\Quest\SubmitFinalZipAction;
+use App\Actions\Quest\SubmitQuestWorkAction;
+use App\Actions\Quest\UploadQuestPaymentProofAction;
 use App\Enums\QuestBidStatus;
 use App\Enums\QuestStatus;
 use App\Models\Notification;
@@ -18,6 +26,7 @@ use App\Models\QuestMessage;
 use App\Models\QuestTransaction;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -30,7 +39,15 @@ class QuestService
         protected AwardQuestRewardsAction $awardQuestRewardsAction,
         protected FileQuestDisputeAction $fileQuestDisputeAction,
         protected ResolveQuestArbitrationAction $resolveQuestArbitrationAction,
-        protected RecordQuestTransactionAction $recordQuestTransactionAction
+        protected RecordQuestTransactionAction $recordQuestTransactionAction,
+        protected SubmitQuestWorkAction $submitQuestWorkAction,
+        protected ApproveQuestWorkAction $approveQuestWorkAction,
+        protected RejectQuestWorkAction $rejectQuestWorkAction,
+        protected UploadQuestPaymentProofAction $uploadQuestPaymentProofAction,
+        protected SubmitFinalZipAction $submitFinalZipAction,
+        protected ConfirmFinalDeliveryAction $confirmFinalDeliveryAction,
+        protected RequestFinalZipRevisionAction $requestFinalZipRevisionAction,
+        protected ExtendQuestDeadlineAction $extendQuestDeadlineAction
     ) {}
 
     /**
@@ -82,7 +99,11 @@ class QuestService
             $query->limit($limit);
         }
 
-        $items = $query->latest()->get()->map(function ($quest) {
+        $quests = $query->latest()->get();
+        $questIds = $quests->pluck('_id')->map(fn ($id) => (string) $id)->toArray();
+        $bidCounts = QuestBid::whereIn('quest_id', $questIds)->get()->groupBy('quest_id')->map->count();
+
+        $items = $quests->map(function ($quest) use ($bidCounts) {
             $statusVal = $quest->status instanceof QuestStatus ? $quest->status->value : $quest->status;
 
             return [
@@ -103,7 +124,7 @@ class QuestService
                     'name' => $quest->creator?->name ?? 'Unknown User',
                     'role' => $quest->creator?->role ?? 'unknown',
                 ],
-                'bids_count' => QuestBid::where('quest_id', $quest->_id)->count(),
+                'bids_count' => $bidCounts[(string) $quest->_id] ?? 0,
             ];
         })->toArray();
 
@@ -205,32 +226,32 @@ class QuestService
         $resolvedImages = array_map(function ($img) use ($disk) {
             return [
                 'name' => $img['name'] ?? 'image.jpg',
-                'url' => $disk->url($img['path']),
+                'url' => isset($img['path']) ? $disk->temporaryUrl($img['path'], now()->addMinutes(60)) : '',
             ];
         }, $quest->images ?? []);
 
         $resolvedFiles = array_map(function ($file) use ($disk) {
             return [
                 'name' => $file['name'] ?? 'file.dat',
-                'url' => $disk->url($file['path']),
+                'url' => isset($file['path']) ? $disk->temporaryUrl($file['path'], now()->addMinutes(60)) : '',
                 'size' => $file['size'] ?? 0,
             ];
         }, $quest->files ?? []);
 
         $resolvedSubmissionFile = null;
-        if ($quest->submission_file) {
+        if ($quest->submission_file && isset($quest->submission_file['path'])) {
             $resolvedSubmissionFile = [
                 'name' => $quest->submission_file['name'] ?? 'deliverable.zip',
-                'url' => $disk->url($quest->submission_file['path']),
+                'url' => $disk->temporaryUrl($quest->submission_file['path'], now()->addMinutes(60)),
                 'size' => $quest->submission_file['size'] ?? 0,
             ];
         }
 
         $resolvedPaymentProof = null;
-        if ($quest->payment_proof) {
+        if ($quest->payment_proof && isset($quest->payment_proof['path'])) {
             $resolvedPaymentProof = [
                 'name' => $quest->payment_proof['name'] ?? 'receipt.png',
-                'url' => $disk->url($quest->payment_proof['path']),
+                'url' => $disk->temporaryUrl($quest->payment_proof['path'], now()->addMinutes(60)),
                 'size' => $quest->payment_proof['size'] ?? 0,
             ];
         }
@@ -243,7 +264,7 @@ class QuestService
                 'submission_note' => $sub['submission_note'] ?? null,
                 'submission_file' => isset($sub['submission_file']['path']) ? [
                     'name' => $sub['submission_file']['name'] ?? 'deliverable.zip',
-                    'url' => $disk->url($sub['submission_file']['path']),
+                    'url' => $disk->temporaryUrl($sub['submission_file']['path'], now()->addMinutes(60)),
                     'size' => $sub['submission_file']['size'] ?? 0,
                 ] : null,
             ];
@@ -406,6 +427,70 @@ class QuestService
     public function recordTransaction(string $questId, string $userId, int $amount, string $type, string $description): QuestTransaction
     {
         return $this->recordQuestTransactionAction->execute($questId, $userId, $amount, $type, $description);
+    }
+
+    /**
+     * Submit preview work by worker.
+     */
+    public function submitWork(User $worker, Quest $quest, array $data): Quest
+    {
+        return $this->submitQuestWorkAction->execute($worker, $quest, $data);
+    }
+
+    /**
+     * Approve work by creator or admin.
+     */
+    public function approveWork(User $actor, Quest $quest, array $data): Quest
+    {
+        return $this->approveQuestWorkAction->execute($actor, $quest, $data);
+    }
+
+    /**
+     * Request revision on submitted work by creator or admin.
+     */
+    public function rejectWork(User $actor, Quest $quest, array $data): Quest
+    {
+        return $this->rejectQuestWorkAction->execute($actor, $quest, $data);
+    }
+
+    /**
+     * Upload payment proof receipt by creator or admin.
+     */
+    public function uploadPaymentProof(User $actor, Quest $quest, UploadedFile $file): Quest
+    {
+        return $this->uploadQuestPaymentProofAction->execute($actor, $quest, $file);
+    }
+
+    /**
+     * Submit final master ZIP archive by worker.
+     */
+    public function submitFinalZip(User $worker, Quest $quest, UploadedFile $file): Quest
+    {
+        return $this->submitFinalZipAction->execute($worker, $quest, $file);
+    }
+
+    /**
+     * Confirm final delivery and complete the quest.
+     */
+    public function confirmFinalDelivery(User $actor, Quest $quest): Quest
+    {
+        return $this->confirmFinalDeliveryAction->execute($actor, $quest);
+    }
+
+    /**
+     * Request revision / re-upload of final master ZIP archive.
+     */
+    public function requestFinalZipRevision(User $actor, Quest $quest, string $revisionNote): Quest
+    {
+        return $this->requestFinalZipRevisionAction->execute($actor, $quest, $revisionNote);
+    }
+
+    /**
+     * Extend quest deadline by creator or admin.
+     */
+    public function extendDeadline(User $actor, Quest $quest, string $newDeadline): Quest
+    {
+        return $this->extendQuestDeadlineAction->execute($actor, $quest, $newDeadline);
     }
 
     /**

@@ -314,8 +314,57 @@ export default function WorkerProjectPanel({
                 </div>
             )}
 
+            {quest.status === 'delivered' && (
+                <div className="space-y-4 font-['Oxanium']">
+                    <div className="flex flex-col gap-2 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-5 text-center">
+                        <CheckCircle2 className="mx-auto h-8 w-8 text-indigo-500" />
+                        <span className="block text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
+                            Berkas Master ZIP Final Berhasil Diunggah!
+                        </span>
+                        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                            Berkas arsip proyek final Anda telah dikirimkan ke pembuat quest. Saat ini pembuat quest sedang memeriksa kelayakan berkas. Begitu pembuat quest mengonfirmasi berkas sesuai, quest resmi selesai dan seluruh hadiah EXP & Gold akan otomatis dicairkan ke profil Anda.
+                        </p>
+                    </div>
+
+                    {quest.submission_file && (
+                        <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800/60 dark:bg-black/20">
+                            <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                Berkas ZIP Final Terkirim
+                            </span>
+                            <div className="flex items-center justify-between rounded-xl border border-indigo-500/20 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+                                <div className="flex min-w-0 items-center gap-3">
+                                    <FileArchive className="h-6 w-6 shrink-0 text-indigo-500" />
+                                    <div className="min-w-0">
+                                        <p className="truncate text-xs font-bold text-slate-700 dark:text-slate-200">
+                                            {quest.submission_file.name}
+                                        </p>
+                                        <p className="text-[10px] text-slate-400">
+                                            {(quest.submission_file.size / 1024 / 1024).toFixed(2)} MB
+                                        </p>
+                                    </div>
+                                </div>
+                                <a
+                                    href={quest.submission_file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 transition-colors shadow-xs"
+                                >
+                                    <Download size={14} /> Unduh
+                                </a>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
             {quest.status === 'payment' && (
                 <div className="space-y-4 font-['Oxanium']">
+                    {quest.revision_note && (
+                        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-700 dark:text-amber-300">
+                            <strong className="block font-bold mb-1">Catatan Permintaan Perbaikan Berkas Final dari Pembuat Quest:</strong>
+                            <p className="whitespace-pre-wrap">{quest.revision_note}</p>
+                        </div>
+                    )}
                     <div className="flex flex-col gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-center">
                         <CheckCircle2 className="mx-auto h-8 w-8 text-amber-500" />
                         <span className="block text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">

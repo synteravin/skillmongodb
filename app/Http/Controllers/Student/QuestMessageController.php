@@ -29,10 +29,7 @@ class QuestMessageController extends Controller
             return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
         }
 
-        // Block access if bid is rejected
-        if ($bid->status === 'rejected') {
-            return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
-        }
+        // Read-only access is allowed for rejected bids, but we don't block getMessages
 
         // Mark messages as read by the current user
         $unreadMessages = QuestMessage::where('quest_bid_id', $bidId)
@@ -75,10 +72,10 @@ class QuestMessageController extends Controller
                     'name' => $msg->sender?->name ?? 'Unknown User',
                     'role' => $msg->sender?->role ?? 'unknown',
                 ],
-                'file' => $msg->file ? [
-                    'name' => $msg->file['name'],
-                    'url' => $disk->url($msg->file['path']),
-                    'size' => $msg->file['size'],
+                'file' => $msg->file && isset($msg->file['path']) ? [
+                    'name' => $msg->file['name'] ?? 'attachment.dat',
+                    'url' => $disk->temporaryUrl($msg->file['path'], now()->addMinutes(60)),
+                    'size' => $msg->file['size'] ?? 0,
                 ] : null,
             ];
         });
@@ -103,9 +100,9 @@ class QuestMessageController extends Controller
             return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
         }
 
-        // Block access if bid is rejected
+        // Restrict sending new messages if bid is rejected
         if ($bid->status === 'rejected') {
-            return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
+            return response()->json(['error' => 'Penawaran ini telah selesai atau ditolak. Obrolan bersifat hanya-baca (read-only).'], 422);
         }
 
         $request->validate([
@@ -151,10 +148,10 @@ class QuestMessageController extends Controller
                 'name' => $user->name,
                 'role' => $user->role,
             ],
-            'file' => $msg->file ? [
-                'name' => $msg->file['name'],
-                'url' => $disk->url($msg->file['path']),
-                'size' => $msg->file['size'],
+            'file' => $msg->file && isset($msg->file['path']) ? [
+                'name' => $msg->file['name'] ?? 'attachment.dat',
+                'url' => $disk->temporaryUrl($msg->file['path'], now()->addMinutes(60)),
+                'size' => $msg->file['size'] ?? 0,
             ] : null,
         ]);
     }

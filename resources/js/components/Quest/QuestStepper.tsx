@@ -16,6 +16,7 @@ export default function QuestStepper({ status }: QuestStepperProps) {
         { key: 'submitted', label: 'Tinjauan' },
         { key: 'approved', label: 'Disetujui' },
         { key: 'payment', label: 'Pembayaran' },
+        { key: 'delivered', label: 'Verifikasi' },
         { key: 'completed', label: 'Selesai' },
     ];
 
@@ -25,9 +26,9 @@ export default function QuestStepper({ status }: QuestStepperProps) {
     return (
         <div className="relative w-full overflow-hidden rounded-xl border border-slate-300 bg-white p-5 py-6 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
-            <div className="relative z-10 grid grid-cols-6 gap-0">
+            <div className="relative z-10 grid grid-cols-7 gap-0">
                 {/* Stepper Line Container */}
-                <div className="absolute top-[14px] right-[8.33%] left-[8.33%] z-0 h-[2px] -translate-y-1/2 sm:top-[16px]">
+                <div className="absolute top-[14px] right-[7.14%] left-[7.14%] z-0 h-[2px] -translate-y-1/2 sm:top-[16px]">
                     {/* Background Line */}
                     <div className="absolute inset-0 rounded-full bg-slate-100 dark:bg-slate-800" />
 

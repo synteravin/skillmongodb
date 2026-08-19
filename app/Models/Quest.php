@@ -46,6 +46,7 @@ class Quest extends Model
         'payment_proof',
         'payment_uploaded_at',
         'payment_confirmed_at',
+        'accepted_bid_amount',
     ];
 
     protected function casts(): array
@@ -57,6 +58,7 @@ class Quest extends Model
             'max_budget' => 'integer',
             'min_salary' => 'integer',
             'max_salary' => 'integer',
+            'accepted_bid_amount' => 'integer',
             'deadline' => 'datetime',
             'creator_id' => 'string',
             'worker_id' => 'string',

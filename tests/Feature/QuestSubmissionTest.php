@@ -133,7 +133,7 @@ class QuestSubmissionTest extends TestCase
         $this->assertNotNull($quest->payment_proof);
         $this->assertNotNull($quest->payment_uploaded_at);
 
-        // Worker submits final ZIP and completes payment
+        // Worker submits final ZIP and status becomes delivered
         $zipFile = UploadedFile::fake()->create('final.zip', 100, 'application/zip');
         $responseFinal = $this->actingAs($worker)
             ->post("/quests/{$quest->_id}/submit-final-zip", [
@@ -142,6 +142,16 @@ class QuestSubmissionTest extends TestCase
 
         $responseFinal->assertRedirect();
         $responseFinal->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('delivered', $quest->status);
+
+        // Creator confirms final delivery
+        $responseConfirm = $this->actingAs($creator)
+            ->post("/quests/{$quest->_id}/confirm-delivery");
+
+        $responseConfirm->assertRedirect();
+        $responseConfirm->assertSessionHas('success');
 
         $quest->refresh();
         $this->assertEquals('completed', $quest->status);
@@ -314,21 +324,9 @@ class QuestSubmissionTest extends TestCase
         $response->assertSessionHas('success');
 
         $quest->refresh();
-        $this->assertEquals('completed', $quest->status);
+        $this->assertEquals('approved', $quest->status);
         $this->assertEquals(4, $quest->rating);
         $this->assertEquals('Approved by Admin.', $quest->rating_comment);
-
-        // Check gamification rewards
-        $stat = UserStat::where('user_id', (string) $worker->_id)
-            ->where('course_id', 'quest_rewards')
-            ->first();
-
-        $this->assertNotNull($stat);
-        $pathStats = $stat->path_stats;
-        $questKey = (string) $quest->_id;
-        $this->assertEquals(250, $pathStats[$questKey]['exp']);
-        $this->assertEquals(150, $pathStats[$questKey]['gold']);
-        $this->assertEquals(100, $pathStats[$questKey]['quiz_score']);
     }
 
     public function test_admin_can_reject_work_via_admin_url(): void
@@ -484,11 +482,21 @@ class QuestSubmissionTest extends TestCase
         $response3->assertSessionHas('success');
 
         $quest->refresh();
-        $this->assertEquals('completed', $quest->status);
-        $this->assertNotNull($quest->completed_at);
+        $this->assertEquals('delivered', $quest->status);
         $this->assertNotNull($quest->submission_file);
         $this->assertEquals('final.zip', $quest->submission_file['name']);
         Storage::disk('s3')->assertExists($quest->submission_file['path']);
+
+        // 4. Creator confirms final delivery
+        $responseConfirm = $this->actingAs($creator)
+            ->post("/quests/{$quest->_id}/confirm-delivery");
+
+        $responseConfirm->assertRedirect();
+        $responseConfirm->assertSessionHas('success');
+
+        $quest->refresh();
+        $this->assertEquals('completed', $quest->status);
+        $this->assertNotNull($quest->completed_at);
 
         // Verify rewards ARE now given
         $statAfter = UserStat::where('user_id', (string) $worker->_id)

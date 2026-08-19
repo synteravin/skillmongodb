@@ -62,10 +62,34 @@ class AcceptQuestBidAction
             ]);
         }
 
-        // Update quest worker and status
+        // Calculate dynamic rewards based on accepted contract value
+        $agreedAmount = (int) $acceptedBid->bid_amount;
+        $exp = (int) min(1000, max(100, round(100 + $agreedAmount * 0.0001)));
+        $gold = (int) min(500, max(50, round(50 + $agreedAmount * 0.00005)));
+        $rep = (int) min(200, max(20, round(20 + $agreedAmount * 0.00002)));
+
+        $finalRewards = [
+            'exp' => $exp,
+            'gold' => $gold,
+            'rep' => $rep,
+            'erp' => $rep,
+        ];
+
+        if (! empty($quest->custom_rewards)) {
+            $finalRewards = [
+                'exp' => (int) ($quest->custom_rewards['exp'] ?? $finalRewards['exp']),
+                'gold' => (int) ($quest->custom_rewards['gold'] ?? $finalRewards['gold']),
+                'rep' => (int) ($quest->custom_rewards['rep'] ?? $quest->custom_rewards['erp'] ?? $finalRewards['rep']),
+                'erp' => (int) ($quest->custom_rewards['rep'] ?? $quest->custom_rewards['erp'] ?? $finalRewards['erp']),
+            ];
+        }
+
+        // Update quest worker, rewards, and status
         $quest->update([
             'status' => QuestStatus::ONGOING->value,
             'worker_id' => (string) $acceptedBid->student_id,
+            'accepted_bid_amount' => $agreedAmount,
+            'rewards' => $finalRewards,
         ]);
     }
 }

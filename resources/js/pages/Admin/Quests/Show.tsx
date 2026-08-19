@@ -387,6 +387,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                               'payment'
                                                             ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
                                                             : quest.status ===
+                                                                'delivered'
+                                                              ? 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400'
+                                                              : quest.status ===
                                                                 'submitted'
                                                               ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
                                                               : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
@@ -409,6 +412,9 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                           'payment'
                                                         ? 'Pembayaran'
                                                         : quest.status ===
+                                                            'delivered'
+                                                          ? 'Verifikasi Berkas'
+                                                          : quest.status ===
                                                             'submitted'
                                                           ? 'Ditinjau'
                                                           : 'Selesai'}
