@@ -113,8 +113,19 @@ class Quest extends Model
     protected static function booted(): void
     {
         static::saving(function (Quest $quest) {
-            if (empty($quest->slug) && ! empty($quest->title)) {
-                $quest->slug = Str::slug($quest->title);
+            if ($quest->isDirty('title') || empty($quest->slug)) {
+                if (! empty($quest->title)) {
+                    $baseSlug = Str::slug($quest->title);
+                    $slug = $baseSlug;
+                    $counter = 1;
+
+                    while (static::where('slug', $slug)->where('_id', '!=', $quest->_id)->exists()) {
+                        $slug = "{$baseSlug}-{$counter}";
+                        $counter++;
+                    }
+
+                    $quest->slug = $slug;
+                }
             }
         });
     }
