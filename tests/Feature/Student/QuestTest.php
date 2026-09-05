@@ -151,10 +151,11 @@ class QuestTest extends TestCase
             'files' => [$file],
         ]);
 
+        $quest->refresh();
         $updateResponse->assertRedirect(route('student.quests.show', $quest));
 
-        $quest->refresh();
         $this->assertEquals('Updated & Resubmitted Quest', $quest->title);
+        $this->assertEquals('updated-resubmitted-quest', $quest->slug);
         $this->assertEquals('draft', $quest->status);
         $this->assertNull($quest->rejection_note);
         $this->assertNotEmpty($quest->files);
@@ -415,5 +416,31 @@ class QuestTest extends TestCase
             ->has('stats')
             ->has('filters')
         );
+    }
+
+    public function test_quest_slug_automatically_updates_when_title_is_updated(): void
+    {
+        $student = $this->createStudent('Creator');
+        $this->actingAs($student);
+
+        $quest = Quest::create([
+            'title' => 'Judul Awal Quest',
+            'description' => 'Deskripsi proyek',
+            'min_budget' => 500000,
+            'max_budget' => 1000000,
+            'deadline' => now()->addDays(5),
+            'status' => 'draft',
+            'creator_id' => $student->_id,
+        ]);
+
+        $this->assertEquals('judul-awal-quest', $quest->slug);
+
+        // Update title
+        $quest->update([
+            'title' => 'Judul Baru Quest Yang Telah Diperbarui',
+        ]);
+
+        $quest->refresh();
+        $this->assertEquals('judul-baru-quest-yang-telah-diperbarui', $quest->slug);
     }
 }
