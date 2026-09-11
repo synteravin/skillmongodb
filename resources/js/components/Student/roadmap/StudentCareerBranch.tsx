@@ -29,7 +29,7 @@ export default function StudentCareerBranch({
     const isOtherChosen = progress.selected_path_id && !isChosen;
     const isCompleted = group.is_completed;
 
-    const totalModules = group.paths.reduce(
+    const totalModules = (group.paths || []).reduce(
         (sum: number, p: any) => sum + (p.modules?.length || 0),
         0,
     );
@@ -248,7 +248,7 @@ export default function StudentCareerBranch({
                                             : 'text-[#F0E427] dark:text-[#F0E427]'
                                     }`}
                                 >
-                                    Learning Path
+                                    Total Modules
                                 </span>
                                 <span
                                     className={`block text-sm font-bold ${
@@ -257,7 +257,7 @@ export default function StudentCareerBranch({
                                             : 'text-gray-700 dark:text-[#B3B3B3]'
                                     }`}
                                 >
-                                    {totalModules} Units
+                                    {totalModules} Modules
                                 </span>
                             </div>
                         </div>
