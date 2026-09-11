@@ -425,10 +425,10 @@ export default function Index({
                                 ease: [0.22, 1, 0.36, 1], // lebih smooth dari easeInOut
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className="relative w-full max-w-[560px] overflow-hidden rounded-xl border-2 border-[#3B28F6] bg-[#fdfcfc] dark:bg-[#020202] will-change-[clip-path,opacity] md:max-w-[640px] md:rounded-[16px] md:border-[3px] lg:max-w-[720px] xl:max-w-[780px] 2xl:max-w-[860px]"
+                            className="relative flex max-h-[94vh] w-full max-w-[540px] flex-col overflow-hidden rounded-xl border-2 border-[#3B28F6] bg-[#fdfcfc] dark:bg-[#020202] will-change-[clip-path,opacity] md:max-w-[620px] md:rounded-[16px] md:border-[3px] lg:max-w-[700px]"
                         >
                             {/* ================= THUMBNAIL ================= */}
-                            <div className="xs:h-[165px] relative h-[140px] w-full overflow-hidden md:h-[200px] lg:h-[220px]">
+                            <div className="relative h-[135px] min-[400px]:h-[160px] sm:h-[190px] md:h-[220px] lg:h-[240px] landscape:h-[70px] landscape:max-h-[70px] shrink-0 overflow-hidden">
                                 {/* BACKGROUND (ISI AREA) */}
                                 <img
                                     src={selectedCourse.thumbnail}
@@ -447,38 +447,38 @@ export default function Index({
                                 {/* close button */}
                                 <button
                                     onClick={handleCancelDesc}
-                                    className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 transition hover:bg-red-500/80 md:top-3 md:right-3 md:h-9 md:w-9"
+                                    className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-black/70 transition hover:bg-red-500/80 md:top-3 md:right-3 md:h-9 md:w-9"
                                 >
                                     <X className="h-3.5 w-3.5 text-white md:h-4 md:w-4" />
                                 </button>
                             </div>
 
                             {/* ================= BODY ================= */}
-                            <div className="px-4 py-4 md:px-7 md:py-5 lg:px-8">
+                            <div className="flex flex-1 flex-col min-h-0 px-4 py-3 landscape:px-3 landscape:py-1.5 sm:px-6 sm:py-4 md:px-7 md:py-5 lg:px-8">
                                 {/* TITLE */}
-                                <h1 className="xs:text-lg text-base leading-snug font-bold text-slate-900 dark:text-white sm:text-xl md:text-2xl lg:text-3xl">
+                                <h1 className="shrink-0 text-sm leading-tight font-bold text-slate-900 min-[450px]:text-base sm:text-xl md:text-2xl lg:text-3xl landscape:text-xs dark:text-white">
                                     {selectedCourse.title}
                                 </h1>
 
                                 {/* DIVIDER */}
-                                <div className="my-3 flex items-center gap-3 md:my-4">
+                                <div className="shrink-0 my-1.5 flex items-center gap-2 sm:my-2.5 md:my-3 landscape:my-1">
                                     <div className="h-[1px] flex-1 bg-gradient-to-r from-[#3B28F6] to-transparent" />
-                                    <div className="h-2 w-2 rotate-45 border border-blue-500" />
+                                    <div className="h-2 w-2 rotate-45 border border-blue-500 landscape:h-1.5 landscape:w-1.5" />
                                     <div className="h-[1px] flex-1 bg-gradient-to-l from-[#3B28F6] to-transparent" />
                                 </div>
 
-                                {/* ================= DESKRIPSI (SCROLL FIX) ================= */}
-                                <div className="xs:max-h-[110px] xs:text-sm max-h-[85px] overflow-y-auto pr-1.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300 [scrollbar-color:rgba(59,40,246,0.5)_transparent] [scrollbar-width:thin] md:max-h-[130px] md:text-base">
+                                {/* ================= DESKRIPSI ================= */}
+                                <div className="flex-1 min-h-[60px] max-h-[110px] sm:max-h-[160px] md:max-h-[200px] landscape:min-h-[50px] landscape:max-h-[80px] overflow-y-auto mb-2 pb-0.5 pr-1 text-xs leading-relaxed text-slate-600 min-[450px]:text-xs sm:text-sm md:text-base landscape:text-[11px] dark:text-slate-300 [scrollbar-color:rgba(59,40,246,0.5)_transparent] [scrollbar-width:thin]">
                                     {selectedCourse.description}
                                 </div>
 
                                 {/* ================= INFO BOX ================= */}
-                                <div className="mt-4 flex flex-wrap gap-2.5 md:mt-5 md:gap-3">
+                                <div className="shrink-0 mt-auto flex flex-wrap gap-2 sm:gap-2.5 md:gap-3 landscape:gap-1.5">
                                     {/* MODUL */}
-                                    <div className="xs:gap-2 xs:px-3 xs:py-2 xs:min-w-[140px] flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 dark:border-white/10 dark:bg-[#03062C] px-2.5 py-1.5 sm:min-w-[160px]">
-                                        <BookOpen className="h-4 w-4 shrink-0 text-yellow-500 dark:text-yellow-400 sm:h-5 sm:w-5" />
+                                    <div className="flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 px-2.5 py-1.5 sm:min-w-[160px] landscape:min-w-[95px] landscape:px-2 landscape:py-1 dark:border-white/10 dark:bg-[#03062C]">
+                                        <BookOpen className="h-4 w-4 shrink-0 text-yellow-500 sm:h-5 sm:w-5 landscape:h-3 landscape:w-3 dark:text-yellow-400" />
 
-                                        <span className="xs:text-xs text-[11px] leading-none font-extrabold text-slate-800 dark:text-white sm:text-sm md:text-base lg:text-lg">
+                                        <span className="text-xs leading-none font-extrabold text-slate-800 sm:text-sm md:text-base lg:text-lg landscape:text-[10px] dark:text-white">
                                             Modul:{' '}
                                             <span className="font-bold text-[#3B28F6] dark:text-white">
                                                 {selectedCourse.modules_count ??
@@ -488,10 +488,10 @@ export default function Index({
                                     </div>
 
                                     {/* FORMAT */}
-                                    <div className="xs:gap-2 xs:px-3 xs:py-2 xs:min-w-[140px] flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 dark:border-white/10 dark:bg-[#03062C] px-2.5 py-1.5 sm:min-w-[160px]">
-                                        <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-500 dark:text-yellow-400 sm:h-5 sm:w-5" />
+                                    <div className="flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 px-2.5 py-1.5 sm:min-w-[160px] landscape:min-w-[95px] landscape:px-2 landscape:py-1 dark:border-white/10 dark:bg-[#03062C]">
+                                        <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-500 sm:h-5 sm:w-5 landscape:h-3 landscape:w-3 dark:text-yellow-400" />
 
-                                        <span className="xs:text-xs text-[11px] leading-none font-extrabold text-slate-800 dark:text-white sm:text-sm md:text-base lg:text-lg">
+                                        <span className="text-xs leading-none font-extrabold text-slate-800 sm:text-sm md:text-base lg:text-lg landscape:text-[10px] dark:text-white">
                                             Format:{' '}
                                             <span className="font-bold text-[#3B28F6] dark:text-white">
                                                 Video & Project
@@ -503,16 +503,16 @@ export default function Index({
                                 {/* ================= BUTTON ================= */}
                                 <button
                                     onClick={handleLanjutKeConfirm}
-                                    className="xs:text-sm mt-5 flex w-full items-center justify-center gap-2 rounded-md bg-[#FACC15] py-2.5 text-xs font-bold tracking-wide text-[#020202] uppercase transition-all duration-300 hover:bg-yellow-300 active:scale-[0.97] md:mt-6 md:py-3"
+                                    className="shrink-0 mt-2.5 flex w-full items-center justify-center gap-2 rounded-md bg-[#FACC15] py-2 text-xs font-bold tracking-wide text-[#020202] uppercase transition-all duration-300 hover:bg-yellow-300 active:scale-[0.97] sm:mt-3.5 sm:py-2.5 sm:text-sm md:mt-4 md:py-3 landscape:mt-1.5 landscape:py-1.5 landscape:text-[11px]"
                                 >
                                     Mulai →
                                 </button>
-                            </div>
 
-                            {/* FOOTER */}
-                            <p className="pb-3 text-center text-[9px] tracking-widest text-slate-400 dark:text-slate-600 uppercase sm:text-[10px] md:pb-4">
-                                Skillventura · Course
-                            </p>
+                                {/* FOOTER */}
+                                <p className="shrink-0 pt-1.5 pb-0.5 text-center text-[9px] tracking-widest text-slate-400 uppercase sm:text-[10px] landscape:pt-1 landscape:text-[8px] dark:text-slate-600">
+                                    Skillventura · Course
+                                </p>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
@@ -525,7 +525,7 @@ export default function Index({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 dark:bg-black/80 p-4 lg:p-6"
+                        className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 p-4 lg:p-6 dark:bg-black/80"
                     >
                         <motion.div
                             initial={{
@@ -541,7 +541,7 @@ export default function Index({
                                 opacity: 0,
                             }}
                             transition={{ duration: 0.5, ease: 'easeInOut' }}
-                            className="relative w-full max-w-2xl rounded border border-[#FACC15] bg-white dark:bg-[#020202] shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
+                            className="relative flex max-h-[92vh] w-full max-w-2xl flex-col overflow-y-auto rounded border border-[#FACC15] bg-white shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] [scrollbar-width:thin] dark:bg-[#020202] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]"
                         >
                             {/* Header */}
                             <div className="relative z-10 flex items-center gap-3 px-4 py-2.5 md:gap-5 md:px-5 md:py-3">

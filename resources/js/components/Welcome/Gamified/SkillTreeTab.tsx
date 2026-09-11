@@ -135,7 +135,7 @@ export default function SkillTreeTab() {
     const [mobileSelectedTab, setMobileSelectedTab] = useState<'backend' | 'frontend'>('backend');
 
     return (
-        <div className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-blue-500/20 bg-[#fdfcfc] p-3 text-slate-800 shadow-2xl transition-colors duration-500 sm:p-6 md:p-8 dark:bg-[#020202] dark:text-white text-left font-sans">
+        <div className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-[#fdfcfc] p-3 text-slate-800 shadow-2xl transition-colors duration-500 sm:p-6 md:p-8 dark:border-blue-500/20 dark:bg-[#020202] dark:text-white text-left font-sans">
             {/* Latar Belakang Kosmik Bintang Asli Ventura */}
             <StarBackground />
 
@@ -225,7 +225,7 @@ export default function SkillTreeTab() {
                             </div>
 
                             {/* Course Title */}
-                            <h1 className="pointer-events-none absolute right-0 left-0 px-16 text-center font-['Orbitron'] text-base font-bold tracking-[0.08em] text-[#1e3a8a] uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] sm:text-lg md:text-xl md:tracking-[0.12em] lg:text-2xl dark:text-white">
+                            <h1 className="pointer-events-none absolute inset-x-0 px-10 sm:px-16 text-center font-['Orbitron'] text-xs font-bold tracking-[0.05em] text-[#1e3a8a] uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] sm:text-lg md:text-xl md:tracking-[0.12em] lg:text-2xl dark:text-white">
                                 Fullstack Web Developer
                             </h1>
                         </div>
@@ -247,13 +247,13 @@ export default function SkillTreeTab() {
                                     '0 0 0 1px rgba(59,130,246,0.4), 0 2px 12px rgba(99,102,241,0.2)',
                             }}
                         >
-                            <div className="flex h-full w-full items-center gap-3 rounded-sm bg-white p-3 dark:bg-[#0D1037]">
+                            <div className="flex h-full w-full items-center gap-2 sm:gap-3 rounded-sm bg-white p-2.5 sm:p-3 dark:bg-[#0D1037]">
                                 {/* Icon / Thumbnail Box (1:1 from StudentFundamentalNode.tsx) */}
-                                <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-blue-400 bg-blue-100 dark:border-blue-500 dark:bg-blue-900/40">
+                                <div className="flex h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-blue-400 bg-blue-100 dark:border-blue-500 dark:bg-blue-900/40">
                                     <svg
                                         viewBox="0 0 24 24"
                                         fill="none"
-                                        className="h-7 w-7 text-blue-500 dark:text-cyan-400"
+                                        className="h-5 w-5 sm:h-7 sm:w-7 text-blue-500 dark:text-cyan-400"
                                     >
                                         <path
                                             d="M2 6c0-1.1.9-2 2-2h5a3 3 0 0 1 3 3v13a2.5 2.5 0 0 0-2.5-2.5H4a2 2 0 0 1-2-2V6Z"
@@ -271,34 +271,34 @@ export default function SkillTreeTab() {
                                 </div>
 
                                 {/* Info */}
-                                <div className="flex-1 overflow-hidden">
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-['Orbitron'] text-[9px] font-bold tracking-widest text-emerald-500 uppercase dark:text-emerald-400">
+                                <div className="flex-1 min-w-0 overflow-hidden">
+                                    <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                                        <span className="font-['Orbitron'] text-[8px] sm:text-[9px] font-bold tracking-wider text-emerald-500 uppercase dark:text-emerald-400">
                                             Fundamental Track
                                         </span>
-                                        <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[8px] font-bold text-emerald-600 dark:text-emerald-300">
+                                        <span className="rounded bg-emerald-500/20 px-1 py-0.2 sm:px-1.5 sm:py-0.5 text-[7px] sm:text-[8px] font-bold text-emerald-600 dark:text-emerald-300">
                                             ✓ Completed
                                         </span>
                                     </div>
-                                    <h4 className="font-['Orbitron'] text-xs font-bold text-slate-900 transition-colors sm:text-sm dark:text-white">
+                                    <h4 className="font-['Orbitron'] text-[11px] sm:text-sm font-bold text-slate-900 leading-snug transition-colors dark:text-white">
                                         Web & Programming Fundamentals
                                     </h4>
-                                    <p className="line-clamp-1 font-['Oxanium'] text-[11px] text-slate-600 dark:text-slate-300">
+                                    <p className="line-clamp-1 font-['Oxanium'] text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300">
                                         Logika dasar, arsitektur MVC, pemecahan masalah, & skema basis data dasar
                                     </p>
                                 </div>
 
                                 {/* Right Checkmark Status */}
-                                <div className="flex flex-shrink-0 items-center justify-center pr-1">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 shadow-[0_0_10px_rgba(52,211,153,0.5)] dark:text-emerald-400">
-                                        <CheckCircle2 size={18} />
+                                <div className="flex flex-shrink-0 items-center justify-center sm:pr-1">
+                                    <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 shadow-[0_0_10px_rgba(52,211,153,0.5)] dark:text-emerald-400">
+                                        <CheckCircle2 className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Central Vertical Connector Line down to Branch Split */}
-                        <div className="relative flex h-8 w-full flex-col items-center">
+                        <div className="relative flex h-6 sm:h-8 w-full flex-col items-center">
                             <div className="w-[2px] flex-1 bg-blue-500/70 dark:bg-white/80" />
                         </div>
                     </div>
@@ -314,27 +314,27 @@ export default function SkillTreeTab() {
                     </div>
 
                     {/* Mobile Branch Tab Switcher (< lg screens) */}
-                    <div className="mb-6 flex lg:hidden items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#070921] p-1 font-['Orbitron'] text-xs">
+                    <div className="mb-6 flex lg:hidden w-full max-w-xs items-center justify-center gap-1 sm:gap-2 rounded-xl border border-white/10 bg-[#070921] p-1 font-['Orbitron'] text-[11px] sm:text-xs">
                         <button
                             onClick={() => setMobileSelectedTab('backend')}
-                            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 font-bold transition-all ${
+                            className={`flex flex-1 items-center justify-center gap-1 rounded-lg px-2.5 py-1.5 font-bold transition-all whitespace-nowrap ${
                                 mobileSelectedTab === 'backend'
                                     ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(59,130,246,0.6)]'
                                     : 'text-slate-400 hover:text-white'
                             }`}
                         >
-                            <Terminal size={14} />
+                            <Terminal size={13} />
                             <span>Backend Path</span>
                         </button>
                         <button
                             onClick={() => setMobileSelectedTab('frontend')}
-                            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 font-bold transition-all ${
+                            className={`flex flex-1 items-center justify-center gap-1 rounded-lg px-2.5 py-1.5 font-bold transition-all whitespace-nowrap ${
                                 mobileSelectedTab === 'frontend'
                                     ? 'bg-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.6)]'
                                     : 'text-slate-400 hover:text-white'
                             }`}
                         >
-                            <Code2 size={14} />
+                            <Code2 size={13} />
                             <span>Frontend Path</span>
                         </button>
                     </div>
@@ -370,7 +370,7 @@ export default function SkillTreeTab() {
                                         />
 
                                         {/* INNER CARD */}
-                                        <div className="relative flex w-full min-h-[290px] flex-col justify-between rounded-xl p-5 bg-white dark:bg-[#050619]">
+                                        <div className="relative flex w-full min-h-[270px] sm:min-h-[290px] flex-col justify-between rounded-xl p-4 sm:p-5 bg-white dark:bg-[#050619]">
                                             <div>
                                                 {/* Thumbnail Circle */}
                                                 <div className="mb-3 flex justify-center">
@@ -381,24 +381,24 @@ export default function SkillTreeTab() {
                                                             }`}
                                                         />
                                                         <div
-                                                            className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 bg-blue-50 shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-transform duration-300 group-hover:scale-105 dark:bg-[#0b1333] ${
+                                                            className={`relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-full border-2 bg-blue-50 shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-transform duration-300 group-hover:scale-105 dark:bg-[#0b1333] ${
                                                                 group.id === 'backend'
                                                                     ? 'border-blue-500 text-blue-600 dark:text-cyan-400'
                                                                     : 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
                                                             }`}
                                                         >
-                                                            <GroupIcon size={28} />
+                                                            <GroupIcon className="h-6 w-6 sm:h-7 sm:w-7" />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 {/* Title */}
-                                                <h2 className="mb-1 text-center font-['Orbitron'] text-sm font-bold tracking-wider text-slate-900 uppercase sm:text-base dark:text-white">
+                                                <h2 className="mb-1 text-center font-['Orbitron'] text-xs font-bold tracking-wider text-slate-900 uppercase sm:text-base dark:text-white">
                                                     {group.name}
                                                 </h2>
 
                                                 {/* Description */}
-                                                <p className="mb-3 line-clamp-2 text-center text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                                                <p className="mb-3 line-clamp-2 text-center text-[10px] sm:text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
                                                     {group.description}
                                                 </p>
 
@@ -408,7 +408,7 @@ export default function SkillTreeTab() {
                                                         <span className="block text-[8px] font-semibold tracking-wider text-[#1e3a8a] uppercase dark:text-[#F0E427]">
                                                             Learning Path
                                                         </span>
-                                                        <span className="block font-['Orbitron'] text-xs font-bold text-slate-800 dark:text-[#B3B3B3]">
+                                                        <span className="block font-['Orbitron'] text-[11px] sm:text-xs font-bold text-slate-800 dark:text-[#B3B3B3]">
                                                             {group.units} Units · 4 Modules
                                                         </span>
                                                     </div>
@@ -417,9 +417,9 @@ export default function SkillTreeTab() {
 
                                             {/* Footer — Mentor & Action Button */}
                                             <div className="relative z-20 flex items-center justify-between border-t border-slate-200 pt-3 dark:border-[#1A2E99]/80">
-                                                <div className="flex max-w-[60%] items-center gap-2">
+                                                <div className="flex max-w-[58%] items-center gap-1.5 sm:gap-2">
                                                     <div
-                                                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-white text-[10px] font-bold ${
+                                                        className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full border text-white text-[9px] sm:text-[10px] font-bold ${
                                                             group.id === 'backend'
                                                                 ? 'border-blue-500 bg-gradient-to-br from-blue-500 to-indigo-600'
                                                                 : 'border-indigo-500 bg-gradient-to-br from-indigo-500 to-purple-600'
@@ -428,10 +428,10 @@ export default function SkillTreeTab() {
                                                         {group.mentor.name.charAt(0)}
                                                     </div>
                                                     <div className="flex flex-col truncate">
-                                                        <span className="truncate text-[10px] leading-none font-bold text-slate-900 dark:text-[#F0F0F0]">
+                                                        <span className="truncate text-[9px] sm:text-[10px] leading-none font-bold text-slate-900 dark:text-[#F0F0F0]">
                                                             {group.mentor.name}
                                                         </span>
-                                                        <span className="mt-0.5 truncate text-[8px] text-slate-500 dark:text-slate-400">
+                                                        <span className="mt-0.5 truncate text-[7px] sm:text-[8px] text-slate-500 dark:text-slate-400">
                                                             {group.mentor.role}
                                                         </span>
                                                     </div>
@@ -439,7 +439,7 @@ export default function SkillTreeTab() {
 
                                                 <button
                                                     type="button"
-                                                    className={`shrink-0 rounded-lg border px-3 py-1 font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase transition-all duration-300 ${
+                                                    className={`shrink-0 rounded-lg border px-2.5 py-1 font-['Orbitron'] text-[9px] sm:text-[10px] font-bold tracking-wider uppercase transition-all duration-300 ${
                                                         isSelected
                                                             ? 'border-blue-500 bg-blue-600 text-white shadow-[0_0_12px_rgba(59,130,246,0.6)]'
                                                             : 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300'
@@ -452,7 +452,7 @@ export default function SkillTreeTab() {
                                     </div>
 
                                     {/* ── B. VERTICAL CONNECTOR FROM CARD TO PATH NODES ── */}
-                                    <div className="relative flex h-8 w-full flex-col items-center">
+                                    <div className="relative flex h-6 sm:h-8 w-full flex-col items-center">
                                         <div
                                             className={`w-[2px] flex-1 ${
                                                 group.id === 'backend'
@@ -463,7 +463,7 @@ export default function SkillTreeTab() {
                                     </div>
 
                                     {/* Section Path Label */}
-                                    <div className="mb-4 flex items-center gap-2">
+                                    <div className="mb-3 sm:mb-4 flex items-center gap-2">
                                         <div
                                             className={`h-[1px] w-6 bg-gradient-to-l ${
                                                 group.id === 'backend'
@@ -525,7 +525,7 @@ export default function SkillTreeTab() {
                                                                       ? 'bg-slate-100 dark:bg-[#070b18]'
                                                                       : 'bg-white dark:bg-[#081233]'
                                                             }`}
-                                                            style={{ minHeight: '68px' }}
+                                                            style={{ minHeight: '60px' }}
                                                         >
                                                             {/* Flush Left Badge Box (1:1 from StudentModuleNode.tsx) */}
                                                             <div
@@ -535,7 +535,7 @@ export default function SkillTreeTab() {
                                                                         : 'bg-[#030712] dark:bg-black'
                                                                 }`}
                                                                 style={{
-                                                                    width: '74px',
+                                                                    width: '60px',
                                                                     borderRadius: '10px 0 0 10px',
                                                                     overflow: 'hidden',
                                                                 }}
@@ -544,7 +544,7 @@ export default function SkillTreeTab() {
                                                                 <img
                                                                     src={mod.badgeIcon}
                                                                     alt={`${mod.levelName} Badge`}
-                                                                    className={`h-12 w-12 object-contain p-0.5 transition-all duration-300 group-hover:scale-110 ${
+                                                                    className={`h-10 w-10 sm:h-12 sm:w-12 object-contain p-0.5 transition-all duration-300 group-hover:scale-110 ${
                                                                         isLocked
                                                                             ? 'opacity-35 grayscale'
                                                                             : isDone
@@ -558,10 +558,10 @@ export default function SkillTreeTab() {
 
                                                                 {/* Status badge in bottom right (1:1 from StudentModuleNode.tsx) */}
                                                                 <div
-                                                                    className="absolute right-1.5 bottom-1.5 z-20 flex items-center justify-center"
+                                                                    className="absolute right-1 bottom-1 z-20 flex items-center justify-center"
                                                                     style={{
-                                                                        width: '20px',
-                                                                        height: '20px',
+                                                                        width: '18px',
+                                                                        height: '18px',
                                                                         borderRadius: '50%',
                                                                         background: isDone
                                                                             ? '#2563eb'
@@ -581,15 +581,15 @@ export default function SkillTreeTab() {
                                                                     }}
                                                                 >
                                                                     {isLocked ? (
-                                                                        <svg viewBox="0 0 16 16" fill="white" className="h-2.5 w-2.5">
+                                                                        <svg viewBox="0 0 16 16" fill="white" className="h-2 w-2">
                                                                             <path d="M11 7V5a3 3 0 1 0-6 0v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1ZM6 5a2 2 0 1 1 4 0v2H6V5Z" />
                                                                         </svg>
                                                                     ) : isDone ? (
-                                                                        <svg viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-2.5 w-2.5">
+                                                                        <svg viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-2 w-2">
                                                                             <polyline points="2,9 6,13 14,4" />
                                                                         </svg>
                                                                     ) : (
-                                                                        <svg viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-2.5 w-2.5">
+                                                                        <svg viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-2 w-2">
                                                                             <polyline points="5,3 11,8 5,13" />
                                                                         </svg>
                                                                     )}
@@ -597,9 +597,9 @@ export default function SkillTreeTab() {
                                                             </div>
 
                                                             {/* Module Title & Status Label (1:1 Hierarchy) */}
-                                                            <div className="relative flex flex-1 flex-col justify-center gap-0.5 overflow-hidden px-4 py-2">
+                                                            <div className="relative flex flex-1 flex-col justify-center gap-0.5 overflow-hidden px-2.5 py-1.5 sm:px-4 sm:py-2">
                                                                 <span
-                                                                    className={`font-['Orbitron'] text-xs sm:text-sm font-bold leading-snug truncate ${
+                                                                    className={`font-['Orbitron'] text-[11px] sm:text-sm font-bold leading-tight line-clamp-2 ${
                                                                         isDone
                                                                             ? 'text-blue-950 dark:text-blue-200'
                                                                             : isLocked
@@ -612,7 +612,7 @@ export default function SkillTreeTab() {
 
                                                                 <div className="flex items-center gap-1.5 mt-0.5">
                                                                     <span
-                                                                        className={`font-['Oxanium'] text-[11px] font-semibold ${
+                                                                        className={`font-['Oxanium'] text-[10px] sm:text-[11px] font-semibold ${
                                                                             isDone
                                                                                 ? 'text-blue-600 dark:text-blue-400'
                                                                                 : isLocked
@@ -622,9 +622,9 @@ export default function SkillTreeTab() {
                                                                     >
                                                                         {isDone ? 'Completed' : isLocked ? 'Locked' : 'Available'}
                                                                     </span>
-                                                                    <span className="text-[10px] text-slate-300 dark:text-slate-600">•</span>
+                                                                    <span className="text-[9px] text-slate-300 dark:text-slate-600">•</span>
                                                                     <span
-                                                                        className={`font-['Orbitron'] text-[9px] font-bold tracking-wider uppercase ${
+                                                                        className={`font-['Orbitron'] text-[8px] sm:text-[9px] font-bold tracking-wider uppercase ${
                                                                             isDone
                                                                                 ? 'text-blue-500 dark:text-cyan-400'
                                                                                 : isLocked

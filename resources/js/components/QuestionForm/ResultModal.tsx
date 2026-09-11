@@ -61,7 +61,7 @@ function useCountUp(
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const HexDecorLine = ({ isPassed = true }: { isPassed?: boolean }) => (
-    <div className="mb-6 flex items-center justify-center gap-2">
+    <div className="mb-3 sm:mb-6 [@media(max-height:550px)]:mb-2 flex items-center justify-center gap-2">
         <div
             className={`h-px flex-1 ${isPassed ? 'bg-gradient-to-r from-transparent via-[#3b82f6]/60 to-transparent' : 'bg-gradient-to-r from-transparent via-[#ef4444]/60 to-transparent'}`}
         />
@@ -90,8 +90,7 @@ const RewardCard = ({ item, index }: RewardCardProps) => (
             damping: 18,
         }}
         whileHover={{ y: -3, transition: { duration: 0.2 } }}
-        className="relative flex items-center justify-between px-4"
-        style={{ minHeight: 76 }}
+        className="relative flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3.5 [@media(max-height:550px)]:py-1.5 [@media(max-height:550px)]:px-3 min-h-[50px] sm:min-h-[76px] [@media(max-height:550px)]:min-h-[46px]"
     >
         {/* Card BG */}
         <div
@@ -104,9 +103,9 @@ const RewardCard = ({ item, index }: RewardCardProps) => (
         />
 
         {/* Left – icon circle */}
-        <div className="relative flex items-center gap-4">
+        <div className="relative flex items-center gap-2.5 sm:gap-4 [@media(max-height:550px)]:gap-2">
             <div
-                className="relative flex h-12 w-12 items-center justify-center rounded-full"
+                className="relative flex h-9 w-9 sm:h-12 sm:w-12 [@media(max-height:550px)]:h-8 [@media(max-height:550px)]:w-8 shrink-0 items-center justify-center rounded-full"
                 style={{
                     background: 'rgba(6,12,28,0.9)',
                     border: '1.5px solid rgba(234,179,8,0.35)',
@@ -116,13 +115,13 @@ const RewardCard = ({ item, index }: RewardCardProps) => (
                 <img
                     src={item.icon}
                     alt={item.label}
-                    className="h-13 w-13 object-contain"
+                    className="h-8 w-8 sm:h-11 sm:w-11 [@media(max-height:550px)]:h-7 [@media(max-height:550px)]:w-7 object-contain"
                 />
             </div>
 
             {/* Middle – label */}
             <span
-                className="relative text-sm font-bold tracking-widest uppercase"
+                className="relative text-xs sm:text-sm [@media(max-height:550px)]:text-xs font-bold tracking-widest uppercase"
                 style={{
                     fontFamily: "'Orbitron', sans-serif",
                     color: 'rgba(200,220,255,0.85)',
@@ -135,7 +134,7 @@ const RewardCard = ({ item, index }: RewardCardProps) => (
 
         {/* Right – value */}
         <span
-            className="relative text-2xl font-extrabold tracking-wide"
+            className="relative text-lg sm:text-2xl [@media(max-height:550px)]:text-base font-extrabold tracking-wide"
             style={{
                 fontFamily: "'Orbitron', sans-serif",
                 color: item.color,
@@ -212,10 +211,10 @@ export default function ResultModal({
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.72, y: 60 }}
                     transition={{ type: 'spring', stiffness: 130, damping: 16 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center px-4"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto custom-scrollbar"
                 >
                     <div
-                        className="relative w-full max-w-md overflow-hidden rounded-2xl"
+                        className="relative flex flex-col w-full max-w-md landscape:max-w-lg [@media(max-height:550px)]:max-w-lg max-h-[92vh] overflow-y-auto custom-scrollbar rounded-2xl p-5 sm:p-8 landscape:p-4 [@media(max-height:550px)]:p-3.5 landscape:px-6 [@media(max-height:550px)]:px-5"
                         style={{
                             background:
                                 'linear-gradient(160deg, #060d1f 0%, #080f22 50%, #040a18 100%)',
@@ -223,7 +222,6 @@ export default function ResultModal({
                             boxShadow: isPassed
                                 ? '0 0 0 1px rgba(59,40,246,0.2), 0 0 30px rgba(59,40,246,0.5), 0 0 70px rgba(59,40,246,0.25), inset 0 1px 0 rgba(96,165,250,0.08)'
                                 : '0 0 0 1px rgba(239,68,68,0.2), 0 0 30px rgba(239,68,68,0.5), 0 0 70px rgba(239,68,68,0.25), inset 0 1px 0 rgba(248,113,113,0.08)',
-                            padding: '36px 28px 32px',
                         }}
                     >
                         {/* Ambient glow layers */}
@@ -249,17 +247,16 @@ export default function ResultModal({
                             initial={{ opacity: 0, y: -16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.05 }}
-                            className="relative mb-2 text-center"
+                            className="relative mb-1.5 sm:mb-2 [@media(max-height:550px)]:mb-1 text-center"
                         >
                             <h1
-                                className="text-2xl font-black tracking-[0.2em] uppercase sm:text-3xl"
+                                className="text-xl font-black tracking-[0.18em] uppercase sm:text-3xl [@media(max-height:550px)]:text-lg sm:tracking-[0.2em]"
                                 style={{
                                     fontFamily: "'Orbitron', sans-serif",
                                     color: isPassed ? '#f0f8ff' : '#fca5a5',
                                     textShadow: isPassed
                                         ? '0 0 20px rgba(96,165,250,0.5), 0 0 40px rgba(139,92,246,0.25)'
                                         : '0 0 20px rgba(239,68,68,0.5), 0 0 40px rgba(225,29,72,0.25)',
-                                    letterSpacing: '0.12em',
                                 }}
                             >
                                 {isPassed ? 'Congratulations' : 'Belum Lulus'}
@@ -271,7 +268,7 @@ export default function ResultModal({
                         {/* ── Content Body ── */}
                         {isPassed ? (
                             /* ── Reward Cards ── */
-                            <div className="relative mb-8 flex flex-col gap-3">
+                            <div className="relative mb-4 sm:mb-8 [@media(max-height:550px)]:mb-3 flex flex-col gap-2 sm:gap-3 [@media(max-height:550px)]:gap-1.5">
                                 {rewards.map((item, index) => (
                                     <RewardCard
                                         key={item.label}
@@ -282,23 +279,23 @@ export default function ResultModal({
                             </div>
                         ) : (
                             /* ── Failed Message Box ── */
-                            <div className="relative mb-8 flex flex-col items-center justify-center rounded-xl border border-red-500/30 bg-slate-950/60 p-6 text-center">
+                            <div className="relative mb-4 sm:mb-8 [@media(max-height:550px)]:mb-3 flex flex-col items-center justify-center rounded-xl border border-red-500/30 bg-slate-950/60 p-4 sm:p-6 [@media(max-height:550px)]:p-3 text-center">
                                 <div
-                                    className="mb-2 text-4xl font-extrabold text-red-400"
+                                    className="mb-1 sm:mb-2 text-2xl sm:text-4xl [@media(max-height:550px)]:text-xl font-extrabold text-red-400"
                                     style={{
                                         fontFamily: "'Orbitron', sans-serif",
                                     }}
                                 >
                                     {result.score}%
                                 </div>
-                                <p className="text-sm font-semibold text-slate-300">
+                                <p className="text-xs sm:text-sm font-semibold text-slate-300">
                                     Batas kelulusan minimal adalah{' '}
                                     <span className="font-bold text-amber-400">
                                         75%
                                     </span>
                                     .
                                 </p>
-                                <p className="mt-2 text-xs text-slate-400">
+                                <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-slate-400">
                                     Jangan berkecil hati! Silakan pelajari
                                     kembali materi dan coba lagi.
                                 </p>
@@ -306,13 +303,13 @@ export default function ResultModal({
                         )}
 
                         {/* ── Buttons ── */}
-                        <div className="flex flex-wrap items-center justify-center gap-2.5">
+                        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
                             {!isPassed && onRetry && (
                                 <motion.button
                                     whileHover={{ scale: 1.04 }}
                                     whileTap={{ scale: 0.96 }}
                                     onClick={onRetry}
-                                    className="min-w-[120px] flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-lg shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500"
+                                    className="min-w-[110px] flex-1 rounded-xl bg-emerald-600 px-3 sm:px-4 py-2 sm:py-3 [@media(max-height:550px)]:py-1.5 text-[11px] sm:text-xs font-bold tracking-wider text-white uppercase shadow-lg shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500"
                                     style={{
                                         fontFamily: "'Orbitron', sans-serif",
                                     }}
@@ -325,7 +322,7 @@ export default function ResultModal({
                                 whileHover={{ scale: 1.04 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={onViewExplanation || onClose}
-                                className="min-w-[140px] flex-1 rounded-xl border border-yellow-400/60 bg-yellow-400/10 px-4 py-3 text-xs font-bold tracking-wider text-yellow-300 uppercase transition-all duration-300 hover:bg-yellow-400/20"
+                                className="min-w-[120px] flex-1 rounded-xl border border-yellow-400/60 bg-yellow-400/10 px-3 sm:px-4 py-2 sm:py-3 [@media(max-height:550px)]:py-1.5 text-[11px] sm:text-xs font-bold tracking-wider text-yellow-300 uppercase transition-all duration-300 hover:bg-yellow-400/20"
                                 style={{
                                     fontFamily: "'Orbitron', sans-serif",
                                 }}
@@ -337,7 +334,7 @@ export default function ResultModal({
                                 whileHover={{ scale: 1.04 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={onClose}
-                                className={`min-w-[150px] flex-1 rounded-xl px-4 py-3 text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
+                                className={`min-w-[130px] flex-1 rounded-xl px-3 sm:px-4 py-2 sm:py-3 [@media(max-height:550px)]:py-1.5 text-[11px] sm:text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
                                     isPassed
                                         ? 'border border-indigo-400/50 bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 hover:bg-indigo-500'
                                         : 'border border-slate-600/60 bg-slate-800 text-slate-200 hover:bg-slate-700'

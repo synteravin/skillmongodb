@@ -37,28 +37,35 @@ export default function GamifiedMapSection() {
     return (
         <section
             id="learn"
-            className="relative flex w-full items-center justify-center py-12 md:py-20 lg:py-28 overflow-hidden transition-colors duration-300"
+            className="relative flex w-full items-center justify-center py-12 md:py-20 lg:py-28 transition-colors duration-300"
         >
             {/* Ambient Background Glows */}
-            <div className="pointer-events-none absolute top-1/2 left-1/4 -z-10 h-[450px] w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-[180px] dark:bg-blue-600/20" />
-            <div className="pointer-events-none absolute top-1/2 right-1/4 -z-10 h-[400px] w-[400px] -translate-y-1/2 rounded-full bg-purple-600/10 blur-[180px] dark:bg-purple-600/20" />
+            <div className="pointer-events-none absolute top-16 -left-12 z-0">
+                <div className="h-[250px] w-[250px] rounded-full bg-blue-800 blur-[75px]" />
+            </div>
+            <div className="pointer-events-none absolute top-1/2 -right-14 z-0 -translate-y-1/2">
+                <div className="h-[240px] w-[240px] rounded-full bg-blue-800 blur-[75px]" />
+            </div>
+            <div className="pointer-events-none absolute bottom-16 left-10 z-0">
+                <div className="h-[220px] w-[220px] rounded-full bg-blue-800 blur-[70px]" />
+            </div>
 
             <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
                 {/* Main Gamified Card Container */}
-                <div className="relative mx-auto flex w-full max-w-6xl flex-col justify-between rounded-3xl border border-blue-500/20 bg-[#13174D] p-6 text-white shadow-[0_15px_50px_rgba(0,0,0,0.35)] backdrop-blur-md transition-all duration-300 sm:p-8 md:p-10 lg:p-12 dark:border-blue-500/30 dark:bg-[#0c0f33]">
+                <div className="relative mx-auto flex w-full max-w-6xl flex-col justify-between rounded-3xl border border-slate-200/90 bg-white/95 p-6 text-slate-900 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-md transition-all duration-300 sm:p-8 md:p-10 lg:p-12 dark:border-blue-500/30 dark:bg-[#0c0f33] dark:text-white dark:shadow-[0_15px_50px_rgba(0,0,0,0.35)]">
                     {/* Header */}
                     <div className="mb-8 text-center">
-                        <h2 className="mb-2.5 font-['Orbitron'] text-2xl font-black tracking-wide text-white sm:text-3xl md:text-4xl">
+                        <h2 className="mb-2.5 font-['Orbitron'] text-2xl font-black tracking-wide text-slate-900 sm:text-3xl md:text-4xl dark:text-white">
                             Gamified Learning for Every Skill Level
                         </h2>
-                        <p className="mx-auto max-w-2xl font-['Oxanium'] text-xs text-slate-300 sm:text-sm">
+                        <p className="mx-auto max-w-2xl font-['Oxanium'] text-xs text-slate-600 sm:text-sm dark:text-slate-300">
                             Jelajahi ekosistem pembelajaran VENTURA: dari skill tree terstruktur, quest industri berbayar, kompetisi rank, hingga forum kolaborasi.
                         </p>
                     </div>
 
                     {/* Tabs Switcher */}
-                    <div className="mb-8 flex justify-center border-b border-white/10 pb-4">
-                        <div className="flex flex-wrap justify-center gap-2 md:flex-nowrap md:gap-3 lg:gap-4">
+                    <div className="mb-8 flex justify-center border-b border-slate-200 pb-4 dark:border-white/10">
+                        <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 md:flex-nowrap md:gap-3 lg:gap-4">
                             {tabs.map((tab) => {
                                 const isActive = activeTab === tab.id;
                                 const TabIcon = tab.icon;
@@ -67,21 +74,21 @@ export default function GamifiedMapSection() {
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`group relative flex items-center gap-2 rounded-xl px-3.5 py-2 font-['Orbitron'] text-[11px] font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none sm:px-4 sm:py-2.5 sm:text-xs md:text-xs lg:px-5 lg:tracking-widest ${
+                                        className={`group relative flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 font-['Orbitron'] text-[10px] font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none sm:gap-2 sm:px-4 sm:py-2.5 sm:text-xs md:text-xs lg:px-5 lg:tracking-widest ${
                                             isActive
-                                                ? 'border-b-2 border-yellow-400 bg-[#252a6a]/80 text-white shadow-[inset_0_0_12px_rgba(59,130,246,0.35)]'
-                                                : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                                ? 'border-b-2 border-yellow-500 bg-blue-50 text-blue-900 shadow-sm dark:border-yellow-400 dark:bg-[#252a6a]/80 dark:text-white dark:shadow-[inset_0_0_12px_rgba(59,130,246,0.35)]'
+                                                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'
                                         }`}
                                     >
                                         <TabIcon
-                                            size={15}
+                                            size={14}
                                             className={
                                                 isActive
-                                                    ? 'text-yellow-400'
-                                                    : 'text-slate-400 group-hover:text-white'
+                                                    ? 'text-yellow-500 dark:text-yellow-400'
+                                                    : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-white'
                                             }
                                         />
-                                        <span>{tab.label}</span>
+                                        <span className="whitespace-nowrap">{tab.label}</span>
                                     </button>
                                 );
                             })}
@@ -89,7 +96,7 @@ export default function GamifiedMapSection() {
                     </div>
 
                     {/* Dynamic Content Area */}
-                    <div className="relative flex min-h-[520px] flex-1 flex-col justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#07091d]/90 p-4 sm:p-6 md:p-8">
+                    <div className="relative flex min-h-[520px] flex-1 flex-col justify-center overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-50/70 p-3 sm:p-5 md:p-6 dark:border-white/10 dark:bg-[#07091d]/90">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeTab}

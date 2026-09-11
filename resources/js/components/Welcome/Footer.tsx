@@ -1,7 +1,15 @@
 export default function Footer() {
     return (
-        <footer className="border-t border-gray-200 pt-12 pb-10 sm:pt-14 md:pt-16 dark:border-white/10">
-            <div className="container mx-auto grid gap-12 px-6 md:grid-cols-4">
+        <footer className="relative pt-12 pb-10 sm:pt-14 md:pt-16">
+            {/* Ambient Tech Glows */}
+            <div className="pointer-events-none absolute top-0 right-1/4 z-0">
+                <div className="h-[190px] w-[190px] rounded-full bg-blue-800/80 blur-[70px]" />
+            </div>
+            <div className="pointer-events-none absolute bottom-4 left-16 z-0">
+                <div className="h-[170px] w-[170px] rounded-full bg-blue-800/80 blur-[65px]" />
+            </div>
+
+            <div className="relative z-10 container mx-auto grid gap-12 px-6 md:grid-cols-4">
                 {/* BRAND */}
                 <div className="mx-auto max-w-sm text-center md:mx-0 md:text-left">
                     <div className="mb-4 flex items-center justify-center gap-3 md:justify-start">

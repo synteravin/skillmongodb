@@ -127,7 +127,7 @@ export default function RoadmapOnboardingTour({
         : 'left-0 sm:left-2 md:left-0 lg:left-8 xl:left-12 2xl:left-16';
 
     const mainCardClass = isMobileLandscape
-        ? 'absolute bottom-[85px] left-[350px] w-[250px] z-[140] pointer-events-auto animate-fadeIn'
+        ? 'absolute bottom-[85px] left-[200px] w-[260px] z-[140] pointer-events-auto animate-fadeIn'
         : 'absolute bottom-[75px] xs:bottom-[80px] sm:bottom-[90px] md:bottom-[105px] lg:bottom-[200px] xl:bottom-[280px] 2xl:bottom-[310px] left-[145px] xs:left-[165px] sm:left-[205px] md:left-[210px] lg:left-[340px] xl:left-[460px] 2xl:left-[520px] z-[140] w-[calc(100vw-155px)] xs:w-[calc(100vw-175px)] max-w-[190px] xs:max-w-[205px] sm:max-w-none sm:w-[250px] md:w-[250px] lg:w-[360px] xl:w-[380px] 2xl:w-[410px] pointer-events-auto animate-fadeIn';
 
     const glowClass = isMobileLandscape

@@ -24,7 +24,7 @@ export default function BottomNav({
     const isOnboardingActive = Boolean(activeOnboardingTarget);
 
     // Transparent dark background without blur as requested by user
-    const bgClasses = 'bg-[#050a2e]/75 dark:bg-[#050a2e]/75';
+    const bgClasses = 'bg-[#050a2e]/90 dark:bg-[#050a2e]/90';
 
     return (
         <>
@@ -153,7 +153,7 @@ function NavItem({
                 <div
                     className={
                         mobile
-                            ? `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-indigo-300 dark:bg-[#FACC15]`
+                            ? `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-[#FACC15] dark:bg-[#FACC15]`
                             : `pointer-events-none absolute top-0 right-0 h-[160%] w-[1px] origin-top rotate-[32deg] bg-[#FACC15] md:h-[180%] md:w-[2px] lg:h-[200%] 2xl:h-[220%] dark:bg-yellow-400`
                     }
                 />

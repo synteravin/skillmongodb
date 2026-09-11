@@ -140,7 +140,7 @@ export default function TierListTab() {
     };
 
     return (
-        <div className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-blue-500/20 bg-[#fdfcfc] p-3 text-slate-800 shadow-2xl transition-colors duration-500 sm:p-6 md:p-8 dark:bg-[#020202] dark:text-white text-left">
+        <div className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-[#fdfcfc] p-3 text-slate-800 shadow-2xl transition-colors duration-500 sm:p-6 md:p-8 dark:border-blue-500/20 dark:bg-[#020202] dark:text-white text-left">
             {/* Latar Belakang Kosmik Bintang Asli Ventura */}
             <StarBackground />
 

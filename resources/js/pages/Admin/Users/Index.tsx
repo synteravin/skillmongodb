@@ -327,8 +327,8 @@ export default function Index({
 
                     <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                    <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="max-w-2xl space-y-3">
+                    <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="space-y-1.5">
                             <span className="inline-block text-[0.6rem] font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-500">
                                 Administration
                             </span>
@@ -339,53 +339,6 @@ export default function Index({
                                 Manage system users, assigned roles, and access
                                 control.
                             </p>
-                        </div>
-
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                            {/* Search */}
-                            <form onSubmit={handleSearch} className="relative">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    {isSearching ? (
-                                        <Loader2
-                                            size={14}
-                                            className="animate-spin text-indigo-600 dark:text-indigo-400"
-                                        />
-                                    ) : (
-                                        <Search
-                                            size={14}
-                                            className="text-slate-400"
-                                        />
-                                    )}
-                                </div>
-                                <input
-                                    type="text"
-                                    placeholder="Search users..."
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                        setSearchQuery(e.target.value)
-                                    }
-                                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pr-9 pl-9 text-sm text-slate-800 transition-colors outline-none placeholder:text-slate-400 focus:border-indigo-300 sm:w-64 dark:border-slate-800 dark:bg-slate-900/30 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-500/40"
-                                />
-                                {searchQuery && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setSearchQuery('')}
-                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                                        title="Clear search"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                )}
-                            </form>
-
-                            {/* Add User Button */}
-                            <button
-                                onClick={openCreate}
-                                className="inline-flex items-center gap-2 rounded-xl bg-[#3B28F6] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#2a1ce0]"
-                            >
-                                <Plus size={16} />
-                                Add User
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -528,52 +481,104 @@ export default function Index({
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200/60 bg-slate-100/70 p-1 dark:border-slate-800/60 dark:bg-slate-900/50">
-                                {[
-                                    {
-                                        id: 'all',
-                                        label: 'All Users',
-                                        count: stats?.total ?? users.total,
-                                    },
-                                    {
-                                        id: 'student',
-                                        label: 'Students',
-                                        count: stats?.students ?? 0,
-                                    },
-                                    {
-                                        id: 'mentor',
-                                        label: 'Mentors',
-                                        count: stats?.mentors ?? 0,
-                                    },
-                                    {
-                                        id: 'admin',
-                                        label: 'Admins',
-                                        count: stats?.admins ?? 0,
-                                    },
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        type="button"
-                                        onClick={() => setSelectedRole(tab.id)}
-                                        className={`flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
-                                            selectedRole === tab.id
-                                                ? 'bg-white text-indigo-600 shadow-xs dark:bg-slate-800 dark:text-indigo-400'
-                                                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
-                                        }`}
-                                    >
-                                        <span>{tab.label}</span>
-                                        <span
-                                            className={`rounded-full px-1.5 py-0.5 text-[10px] tabular-nums ${
+                            <>
+                                {/* Left Side: Role Filter Tabs */}
+                                <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200/60 bg-slate-100/70 p-1 dark:border-slate-800/60 dark:bg-slate-900/50">
+                                    {[
+                                        {
+                                            id: 'all',
+                                            label: 'All Users',
+                                            count: stats?.total ?? users.total,
+                                        },
+                                        {
+                                            id: 'student',
+                                            label: 'Students',
+                                            count: stats?.students ?? 0,
+                                        },
+                                        {
+                                            id: 'mentor',
+                                            label: 'Mentors',
+                                            count: stats?.mentors ?? 0,
+                                        },
+                                        {
+                                            id: 'admin',
+                                            label: 'Admins',
+                                            count: stats?.admins ?? 0,
+                                        },
+                                    ].map((tab) => (
+                                        <button
+                                            key={tab.id}
+                                            type="button"
+                                            onClick={() => setSelectedRole(tab.id)}
+                                            className={`flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                                                 selectedRole === tab.id
-                                                    ? 'bg-indigo-50 font-bold text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300'
-                                                    : 'bg-slate-200/60 font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                                    ? 'bg-white text-indigo-600 shadow-xs dark:bg-slate-800 dark:text-indigo-400'
+                                                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                                             }`}
                                         >
-                                            {tab.count}
-                                        </span>
+                                            <span>{tab.label}</span>
+                                            <span
+                                                className={`rounded-full px-1.5 py-0.5 text-[10px] tabular-nums ${
+                                                    selectedRole === tab.id
+                                                        ? 'bg-indigo-50 font-bold text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300'
+                                                        : 'bg-slate-200/60 font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                                }`}
+                                            >
+                                                {tab.count}
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Right Side: Search Form & Add User Button */}
+                                <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto">
+                                    {/* Search Form */}
+                                    <form onSubmit={handleSearch} className="relative flex-1 sm:w-auto sm:flex-initial">
+                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            {isSearching ? (
+                                                <Loader2
+                                                    size={14}
+                                                    className="animate-spin text-indigo-600 dark:text-indigo-400"
+                                                />
+                                            ) : (
+                                                <Search
+                                                    size={14}
+                                                    className="text-slate-400"
+                                                />
+                                            )}
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Search users..."
+                                            value={searchQuery}
+                                            onChange={(e) =>
+                                                setSearchQuery(e.target.value)
+                                            }
+                                            className="w-full rounded-lg border border-slate-200 bg-white py-2 pr-8 pl-9 text-xs font-semibold text-slate-800 transition-colors outline-none placeholder:text-slate-400 focus:border-indigo-300 sm:w-56 dark:border-slate-800 dark:bg-slate-900/60 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-500/40"
+                                        />
+                                        {searchQuery && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setSearchQuery('')}
+                                                className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                                title="Clear search"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        )}
+                                    </form>
+
+                                    {/* Add User Button */}
+                                    <button
+                                        type="button"
+                                        onClick={openCreate}
+                                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#3B28F6] px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-[#2a1ce0] active:scale-95 shrink-0"
+                                    >
+                                        <Plus size={15} />
+                                        <span>Add User</span>
                                     </button>
-                                ))}
-                            </div>
+                                </div>
+                            </>
                         )}
                     </div>
 

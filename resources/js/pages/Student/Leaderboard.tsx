@@ -83,10 +83,10 @@ export default function Leaderboard({
 
             <div className="relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col">
                 {/* HEADER */}
-                <div className="-mt-3 mb-4 flex shrink-0 items-center gap-3 sm:-mt-7 sm:mb-6 sm:gap-6 md:mb-8">
+                <div className="-mt-3 mb-4 flex shrink-0 items-center gap-3 sm:-mt-7 sm:mb-6 sm:gap-6 md:mb-8 landscape:-mt-2 landscape:mb-2">
                     <div className="group relative shrink-0 cursor-pointer">
                         <svg
-                            className="h-[36px] w-[80px] overflow-visible sm:h-[49px] sm:w-[110px] md:h-[55px] md:w-[125px]"
+                            className="h-[36px] w-[80px] overflow-visible sm:h-[49px] sm:w-[110px] md:h-[55px] md:w-[125px] landscape:h-[32px] landscape:w-[70px]"
                             viewBox="0 0 110 46"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +120,7 @@ export default function Leaderboard({
                             className="absolute inset-0 flex items-center justify-center text-[#1e3a8a] dark:text-blue-200"
                         >
                             <svg
-                                className="h-8 w-8 sm:h-11 sm:w-11 md:h-12 md:w-12"
+                                className="h-8 w-8 sm:h-11 sm:w-11 md:h-12 md:w-12 landscape:h-6 landscape:w-6"
                                 viewBox="0 0 44 44"
                                 fill="none"
                                 stroke="currentColor"
@@ -134,19 +134,19 @@ export default function Leaderboard({
                         </Link>
                     </div>
 
-                    <h1 className="font-['Orbitron'] text-xl font-extrabold tracking-[0.05em] text-[#1e3a8a] uppercase transition-colors duration-500 sm:text-2xl sm:tracking-[0.1em] md:text-3xl lg:text-4xl dark:text-[#F0F0F0]">
+                    <h1 className="font-['Orbitron'] text-xl font-extrabold tracking-[0.05em] text-[#1e3a8a] uppercase transition-colors duration-500 sm:text-2xl sm:tracking-[0.1em] md:text-3xl lg:text-4xl landscape:text-lg dark:text-[#F0F0F0]">
                         LEADERBOARD
                     </h1>
                 </div>
 
                 {/* MAIN CONTENT AREA */}
-                <div className="grid h-full min-h-0 flex-1 grid-cols-1 gap-4 overflow-hidden lg:grid-cols-12 lg:gap-8">
+                <div className="grid h-full min-h-0 flex-1 grid-cols-1 gap-4 overflow-hidden landscape:grid-cols-12 landscape:gap-4 lg:grid-cols-12 lg:gap-8">
                     {/* LEFT: RANK VISUAL */}
                     {activeUser && (
-                        <div className="flex shrink-0 flex-col items-center justify-center p-2 sm:p-4 lg:col-span-4">
-                            <div className="flex w-full flex-col items-center justify-center gap-1.5 text-center">
+                        <div className="flex shrink-0 flex-col items-center justify-center p-2 sm:p-4 landscape:col-span-5 landscape:p-1 lg:col-span-4">
+                            <div className="flex w-full flex-col items-center justify-center gap-1.5 text-center landscape:gap-0.5">
                                 {/* Dynamic Rank Stars (Above Rank Image) */}
-                                <div className="relative z-20 mt-2 -mb-1 flex shrink-0 items-center gap-1.5 sm:mt-4">
+                                <div className="relative z-20 mt-2 -mb-1 flex shrink-0 items-center gap-1.5 sm:mt-4 landscape:mt-0 landscape:mb-0 landscape:gap-1">
                                     {Array.from({
                                         length: Math.min(
                                             Math.max(
@@ -158,7 +158,7 @@ export default function Leaderboard({
                                     }).map((_, i) => (
                                         <Star
                                             key={i}
-                                            className="h-5 w-5 fill-yellow-400 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)] sm:h-6 sm:w-6 md:h-7 md:w-7"
+                                            className="h-5 w-5 fill-yellow-400 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)] sm:h-6 sm:w-6 md:h-7 md:w-7 landscape:h-4 landscape:w-4"
                                         />
                                     ))}
                                 </div>
@@ -171,7 +171,7 @@ export default function Leaderboard({
                                             '/images/default-rank.png'
                                         }
                                         alt={activeUser.rank?.name ?? 'Rank'}
-                                        className="relative z-10 h-20 w-20 object-contain sm:h-32 sm:w-32 md:h-44 md:w-44 lg:h-56 lg:w-56 xl:h-60 xl:w-60"
+                                        className="relative z-10 h-20 w-20 object-contain sm:h-32 sm:w-32 md:h-44 md:w-44 lg:h-56 lg:w-56 xl:h-60 xl:w-60 landscape:h-28 landscape:w-28 sm:landscape:h-36 sm:landscape:w-36"
                                         style={{
                                             filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 6px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 12px rgba(14, 165, 233, 0.8))',
                                         }}
@@ -180,14 +180,14 @@ export default function Leaderboard({
 
                                 {/* Rank Name & Title */}
                                 <div className="flex flex-col items-center">
-                                    <p className="font-['Orbitron'] text-[10px] font-bold tracking-[0.2em] text-sky-600 uppercase sm:text-xs dark:text-sky-400">
+                                    <p className="font-['Orbitron'] text-[10px] font-bold tracking-[0.2em] text-sky-600 uppercase sm:text-xs landscape:text-[8px] dark:text-sky-400">
                                         YOUR CURRENT RANK
                                     </p>
-                                    <h2 className="mt-1 font-['Orbitron'] text-base font-extrabold text-slate-800 drop-shadow-[0_0_12px_rgba(56,189,248,0.6)] sm:text-lg md:text-xl lg:text-2xl xl:text-3xl dark:text-sky-300">
+                                    <h2 className="mt-1 font-['Orbitron'] text-base font-extrabold text-slate-800 drop-shadow-[0_0_12px_rgba(56,189,248,0.6)] sm:text-lg md:text-xl lg:text-2xl xl:text-3xl landscape:mt-0 landscape:text-sm dark:text-sky-300">
                                         {activeUser.rank?.name || 'Unranked'}
                                     </h2>
                                     {activeUser.position && (
-                                        <span className="mt-1 inline-block rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-0.5 font-['Orbitron'] text-xs font-bold text-sky-600 shadow-[0_0_10px_rgba(56,189,248,0.2)] sm:text-sm dark:bg-sky-400/15 dark:text-sky-300">
+                                        <span className="mt-1 inline-block rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-0.5 font-['Orbitron'] text-xs font-bold text-sky-600 shadow-[0_0_10px_rgba(56,189,248,0.2)] sm:text-sm landscape:mt-0.5 landscape:px-2 landscape:py-0 landscape:text-[10px] dark:bg-sky-400/15 dark:text-sky-300">
                                             PERINGKAT #{activeUser.position}
                                         </span>
                                     )}
@@ -199,19 +199,21 @@ export default function Leaderboard({
                     {/* RIGHT: LIST CONTAINER */}
                     <div
                         className={`flex h-full min-h-0 flex-col ${
-                            activeUser ? 'lg:col-span-8' : 'lg:col-span-12'
+                            activeUser
+                                ? 'landscape:col-span-7 lg:col-span-8'
+                                : 'landscape:col-span-12 lg:col-span-12'
                         }`}
                     >
-                        <div className="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-3xl border border-blue-200 bg-white/80 p-4 shadow-xl backdrop-blur-md sm:p-6 dark:border-blue-500/30 dark:bg-black/60 dark:shadow-2xl">
+                        <div className="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-3xl border border-blue-200 bg-white/80 p-4 shadow-xl backdrop-blur-md sm:p-6 landscape:p-3 dark:border-blue-500/30 dark:bg-black/60 dark:shadow-2xl">
                             {/* Glass reflection accent */}
                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-400/[0.05] to-transparent" />
 
                             {/* TABLE HEADER */}
-                            <div className="grid shrink-0 grid-cols-12 items-center border-b border-blue-200 px-4 pb-3 font-['Orbitron'] text-xs font-bold tracking-widest text-blue-600 uppercase dark:border-blue-500/30 dark:text-blue-300">
+                            <div className="grid shrink-0 grid-cols-12 items-center border-b border-blue-200 px-4 pb-3 font-['Orbitron'] text-xs font-bold tracking-widest text-blue-600 uppercase landscape:pb-2 landscape:text-[10px] dark:border-blue-500/30 dark:text-blue-300">
                                 <div className="col-span-2 text-center">
                                     RANK
                                 </div>
-                                <div className="col-span-7 pl-4 text-left sm:pl-10">
+                                <div className="col-span-7 pl-4 text-left sm:pl-10 landscape:pl-2">
                                     PLAYER
                                 </div>
                                 <div className="col-span-3 text-right">
@@ -225,7 +227,7 @@ export default function Leaderboard({
                                     <p>No players on the leaderboard yet.</p>
                                 </div>
                             ) : (
-                                <div className="custom-scrollbar mt-3 -mr-2 min-h-0 flex-1 space-y-3 overflow-y-auto pr-2">
+                                <div className="custom-scrollbar mt-3 -mr-2 min-h-0 flex-1 space-y-3 overflow-y-auto pr-2 landscape:mt-2 landscape:space-y-1.5">
                                     {leaderboard.map((player, index) => {
                                         const isCurrentUser = Boolean(
                                             currentUser &&
@@ -237,7 +239,7 @@ export default function Leaderboard({
                                         return (
                                             <div
                                                 key={player.name + index}
-                                                className={`group grid grid-cols-12 items-center rounded-2xl border p-2.5 transition-all duration-300 sm:p-3 ${
+                                                className={`group grid grid-cols-12 items-center rounded-2xl border p-2.5 transition-all duration-300 sm:p-3 landscape:p-1.5 ${
                                                     isCurrentUser
                                                         ? 'border-sky-400 bg-gradient-to-r from-sky-500/20 via-blue-500/15 to-cyan-500/20 shadow-[0_0_20px_rgba(56,189,248,0.4)] dark:border-sky-400 dark:from-sky-500/30 dark:via-blue-900/50 dark:to-cyan-900/40'
                                                         : getRankStyle(index)
@@ -249,7 +251,7 @@ export default function Leaderboard({
                                                 </div>
 
                                                 {/* USER INFO */}
-                                                <div className="col-span-7 flex items-center gap-3 overflow-hidden pl-4 sm:gap-4 sm:pl-10">
+                                                <div className="col-span-7 flex items-center gap-3 overflow-hidden pl-4 sm:gap-4 sm:pl-10 landscape:gap-2 landscape:pl-2">
                                                     <div className="relative shrink-0">
                                                         <img
                                                             src={
@@ -269,7 +271,7 @@ export default function Leaderboard({
                                                                         '/images/default-avatar.svg';
                                                                 }
                                                             }}
-                                                            className={`h-9 w-9 rounded-full border-2 object-cover transition-colors duration-300 sm:h-10 sm:w-10 md:h-11 md:w-11 ${
+                                                            className={`h-9 w-9 rounded-full border-2 object-cover transition-colors duration-300 sm:h-10 sm:w-10 md:h-11 md:w-11 landscape:h-7 landscape:w-7 ${
                                                                 isCurrentUser
                                                                     ? 'border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)]'
                                                                     : index ===
@@ -289,7 +291,7 @@ export default function Leaderboard({
 
                                                     <div className="flex min-w-0 flex-col">
                                                         <span
-                                                            className={`truncate font-['Oxanium'] text-xs font-bold transition-colors sm:text-sm md:text-base ${
+                                                            className={`truncate font-['Oxanium'] text-xs font-bold transition-colors sm:text-sm md:text-base landscape:text-xs ${
                                                                 isCurrentUser
                                                                     ? 'font-extrabold text-sky-600 dark:text-sky-300'
                                                                     : getRankColor(
@@ -300,7 +302,7 @@ export default function Leaderboard({
                                                             {player.name}
                                                         </span>
                                                         <div className="mt-0.5 flex min-w-0 items-center gap-2">
-                                                            <span className="truncate font-['Oxanium'] text-[11px] font-medium text-blue-600 sm:text-xs dark:text-cyan-300">
+                                                            <span className="truncate font-['Oxanium'] text-[11px] font-medium text-blue-600 sm:text-xs landscape:text-[10px] dark:text-cyan-300">
                                                                 {player.rank
                                                                     ?.name ||
                                                                     'Unranked'}
@@ -312,7 +314,7 @@ export default function Leaderboard({
                                                 {/* SCORE */}
                                                 <div className="col-span-3 text-right font-['Oxanium']">
                                                     <span
-                                                        className={`text-sm font-black tracking-tight sm:text-base md:text-lg ${
+                                                        className={`text-sm font-black tracking-tight sm:text-base md:text-lg landscape:text-xs ${
                                                             isCurrentUser
                                                                 ? 'text-sky-600 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)] dark:text-sky-300'
                                                                 : index === 0
