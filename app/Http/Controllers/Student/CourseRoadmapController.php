@@ -161,20 +161,9 @@ class CourseRoadmapController extends Controller
 
                             /* ❌ LOCK TOTAL JIKA BASIC BELUM SELESAI */
                             if (! $isBasicCompleted) {
-                                return [
-                                    '_id' => $pathId,
-                                    'name' => $path->name,
-                                    'slug' => $path->slug,
-                                    'description' => $path->description,
-                                    'thumbnail' => $path->thumbnail,
-                                    'is_unlocked' => false,
-                                    'is_selected' => false,
-                                    'is_completed' => false,
-                                ];
-                            }
-
-                            /* 🔒 JIKA SUDAH PILIH BRANCH */
-                            if ($progress->selected_path_id) {
+                                $isUnlocked = false;
+                            } elseif ($progress->selected_path_id) {
+                                /* 🔒 JIKA SUDAH PILIH BRANCH */
                                 $isUnlocked = $isSelected;
                             } else {
                                 /* ✅ SEMUA TERBUKA UNTUK DIPILIH */

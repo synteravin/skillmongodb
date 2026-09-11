@@ -137,10 +137,10 @@ export default function CareerBranch({
                         <div className="mb-4 flex justify-between gap-2">
                             <div className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-lg border border-[#1A2E99] bg-[#020101] p-2 text-center">
                                 <span className="block text-[9px] font-semibold tracking-wider text-[#F0E427] uppercase">
-                                    Learning Path
+                                    Total Modules
                                 </span>
                                 <span className="block text-xs font-bold text-[#B3B3B3]">
-                                    {totalModules} Units
+                                    {totalModules} Modules
                                 </span>
                             </div>
                         </div>

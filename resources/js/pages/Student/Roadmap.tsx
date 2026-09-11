@@ -63,7 +63,7 @@ function MobileCareerCard({
     const isLocked = !basicCompleted || isOtherChosen;
 
     const firstPath = group.paths?.[0];
-    const totalModules = group.paths.reduce(
+    const totalModules = (group.paths || []).reduce(
         (sum: number, p: any) => sum + (p.modules?.length || 0),
         0,
     );
@@ -235,12 +235,12 @@ function MobileCareerCard({
                         <span
                             className={`block text-[9px] font-semibold tracking-wider uppercase ${isLocked ? 'text-blue-300 dark:text-[#F0E427]/50' : 'text-[#F0E427] dark:text-[#F0E427]'}`}
                         >
-                            Learning Path
+                            Total Modules
                         </span>
                         <span
                             className={`block text-sm font-bold ${isLocked ? 'text-blue-300 dark:text-gray-600' : 'text-gray-700 dark:text-[#B3B3B3]'}`}
                         >
-                            {totalModules} Units
+                            {totalModules} Modules
                         </span>
                     </div>
                 </div>
