@@ -167,9 +167,9 @@ function TopBar({
     };
 
     return (
-        <header className="relative z-20 flex w-full items-center justify-between px-3 py-3 md:px-6 md:py-4 lg:px-10 lg:py-6">
+        <header className="relative z-30 flex w-full items-center justify-between px-3 py-3 md:px-6 md:py-4 lg:px-10 lg:py-6">
             {/* LEFT */}
-            <div className="relative flex items-center gap-2 md:absolute md:top-2 md:left-2 md:gap-4 lg:gap-5">
+            <div className="relative flex min-w-0 flex-1 items-center gap-2 md:absolute md:top-2 md:left-2 md:flex-initial md:gap-4 lg:gap-5">
                 <Link
                     href="/profile"
                     className="relative h-[55px] w-[55px] flex-shrink-0 md:h-[70px] md:w-[70px]"
@@ -187,9 +187,9 @@ function TopBar({
                     />
                 </Link>
 
-                <div className="leading-tight">
+                <div className="min-w-0 flex-1 leading-tight">
                     <p
-                        className="max-w-[90px] truncate text-xs font-semibold sm:max-w-[150px] sm:text-sm md:max-w-none md:text-lg lg:text-2xl"
+                        className="min-w-0 max-w-[160px] break-words text-xs font-semibold min-[380px]:max-w-[210px] min-[480px]:max-w-none sm:text-sm md:text-lg lg:text-2xl"
                         style={{ fontFamily: 'Orbitron' }}
                         title={user.username || user.name}
                     >
@@ -236,9 +236,9 @@ function TopBar({
                         <>
                             <div
                                 onClick={() => setShowModal(false)}
-                                className="fixed inset-0 z-40 bg-black/20 md:bg-transparent"
+                                className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-xs"
                             />
-                            <div className="absolute top-full right-2 z-50 mt-2 w-[350px] rounded-2xl border border-slate-200 bg-white/95 p-4 font-sans shadow-2xl backdrop-blur-md sm:right-4 sm:w-[440px] md:right-6 md:w-[480px] dark:border-slate-800 dark:bg-[#0c0e18]/95">
+                            <div className="fixed top-16 right-3 left-3 z-[70] mt-2 rounded-2xl border border-slate-200 bg-white/95 p-4 font-sans shadow-2xl backdrop-blur-md sm:absolute sm:top-full sm:right-4 sm:left-auto sm:w-[440px] md:right-6 md:w-[480px] dark:border-slate-800 dark:bg-[#0c0e18]/95">
                                 <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                                     <div className="flex items-center gap-2">
                                         <Bell className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -352,37 +352,37 @@ function TopBar({
                                                             <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-indigo-600 group-hover:underline dark:text-indigo-400">
                                                                 <span>
                                                                     Buka
-                                                                    Sertifikat
-                                                                </span>
-                                                                <ArrowRight
-                                                                    size={10}
-                                                                />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })
-                                    )}
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </div>
+                                                                     Sertifikat
+                                                                 </span>
+                                                                 <ArrowRight
+                                                                     size={10}
+                                                                 />
+                                                             </div>
+                                                         )}
+                                                     </div>
+                                                 </div>
+                                             );
+                                         })
+                                     )}
+                                 </div>
+                             </div>
+                         </>
+                     )}
+                 </div>
 
-                <button
-                    onClick={toggleTheme}
-                    className="inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-100/90 p-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-200 md:px-3 md:py-2 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
-                    aria-label={
-                        dark ? 'Switch to light mode' : 'Switch to dark mode'
-                    }
-                >
-                    {dark ? (
-                        <MoonStar className="h-5 w-5 text-slate-100 md:h-6 md:w-6" />
-                    ) : (
-                        <SunMedium className="h-5 w-5 text-slate-700 md:h-6 md:w-6" />
-                    )}
-                </button>
+                 <button
+                     onClick={toggleTheme}
+                     className="inline-flex items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-100/90 p-2 shadow-sm shadow-slate-400/10 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-200 md:px-3 md:py-2 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/20 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                     aria-label={
+                         dark ? 'Switch to light mode' : 'Switch to dark mode'
+                     }
+                 >
+                     {dark ? (
+                         <MoonStar className="h-5 w-5 text-slate-100 md:h-6 md:w-6" />
+                     ) : (
+                         <SunMedium className="h-5 w-5 text-slate-700 md:h-6 md:w-6" />
+                     )}
+                 </button>
             </div>
         </header>
     );
@@ -408,7 +408,7 @@ function LevelRankCard({ user }: { user: User }) {
     );
 
     return (
-        <div className="absolute top-20 left-3 z-20 flex w-48 flex-col gap-2 rounded-2xl border border-indigo-500/40 bg-white/85 p-3.5 shadow-lg shadow-indigo-500/10 backdrop-blur-md sm:top-24 sm:left-3 sm:w-60 md:top-28 md:left-2 dark:border-indigo-500/40 dark:bg-[#070918]/85 dark:shadow-black/30">
+        <div className="absolute top-20 left-3 z-10 flex w-48 flex-col gap-2 rounded-2xl border border-indigo-500/40 bg-white/85 p-3.5 shadow-lg shadow-indigo-500/10 backdrop-blur-md sm:top-24 sm:left-3 sm:w-60 md:top-28 md:left-2 dark:border-indigo-500/40 dark:bg-[#070918]/85 dark:shadow-black/30">
             {/* Header: Unwrapped Larger Rank Logo, Name & Stars */}
             <div className="flex items-center gap-3">
                 <img
@@ -418,7 +418,7 @@ function LevelRankCard({ user }: { user: User }) {
                 />
                 <div className="min-w-0 flex-1">
                     <span className="block font-['Orbitron'] text-[8px] font-bold tracking-widest text-indigo-600 uppercase dark:text-indigo-400">
-                        LEVEL RANK ini
+                        LEVEL RANK 
                     </span>
                     <h4 className="truncate font-['Orbitron'] text-xs font-black tracking-wide text-slate-900 sm:text-sm dark:text-white">
                         {rank.name}
@@ -440,7 +440,7 @@ function LevelRankCard({ user }: { user: User }) {
             <div className="space-y-1 border-t border-slate-200/80 pt-2 dark:border-slate-800/80">
                 <div className="flex items-center justify-between text-[10px] font-bold">
                     <span className="text-slate-500 dark:text-slate-400">
-                        ERP Reputasi
+                        ERP 
                     </span>
                     <span className="font-['Orbitron'] text-amber-500 dark:text-amber-400">
                         {rank.current_score}{' '}
@@ -491,6 +491,18 @@ function CharacterSection({
     const [showBubble, setShowBubble] = useState(false);
     const [displayText, setDisplayText] = useState('');
     const [messageIndex, setMessageIndex] = useState(0);
+    const [isMobileLandscape, setIsMobileLandscape] = useState(false);
+
+    useEffect(() => {
+        const checkOrientation = () => {
+            setIsMobileLandscape(
+                window.innerHeight < 500 && window.innerWidth > window.innerHeight
+            );
+        };
+        checkOrientation();
+        window.addEventListener('resize', checkOrientation);
+        return () => window.removeEventListener('resize', checkOrientation);
+    }, []);
 
     // 5 pesan puitis & mendalam tentang belajar dan dunia kerja
     const messages = [
@@ -547,10 +559,22 @@ function CharacterSection({
 
     return (
         <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
-            <div className="pointer-events-auto absolute -bottom-10 left-1/2 -translate-x-1/2 md:right-[32%] md:-bottom-14 md:left-auto md:translate-x-0 lg:right-[36%] lg:-bottom-16 xl:right-[38%] xl:-bottom-20">
-                {/* Speech Bubble Spesial Dashboard (Melayang pas di atas kepala hero) */}
+            <div
+                className={`pointer-events-auto absolute ${
+                    isMobileLandscape
+                        ? '-bottom-12 left-[40%] -translate-x-1/2'
+                        : '-bottom-4 left-1/2 -translate-x-1/2 md:right-[32%] md:-bottom-14 md:left-auto md:translate-x-0 lg:right-[36%] lg:-bottom-16 xl:right-[38%] xl:-bottom-20'
+                }`}
+            >
+                {/* Speech Bubble Spesial Dashboard */}
                 {showBubble && (
-                    <div className="animate-fadeIn pointer-events-auto absolute bottom-[98%] left-[35%] z-50 w-56 sm:bottom-[100%] sm:left-[40%] sm:w-64 md:bottom-[102%] md:left-[45%] md:w-72 lg:w-80">
+                    <div
+                        className={`animate-fadeIn pointer-events-auto absolute z-50 ${
+                            isMobileLandscape
+                                ? 'bottom-[82%] left-[76%] w-60 sm:w-64'
+                                : 'bottom-[102%] left-[35%] w-56 sm:bottom-[104%] sm:left-[40%] sm:w-64 md:bottom-[102%] md:left-[45%] md:w-72 lg:w-80'
+                        }`}
+                    >
                         <div className="relative rounded-2xl border border-[#3B28F6]/50 bg-gradient-to-b from-[#0b0903]/95 via-[#070b24]/95 to-[#05081c]/95 p-3 text-slate-200 shadow-[0_0_25px_-3px_rgba(59,40,246,0.6),0_0_10px_rgba(251,191,36,0.2)] backdrop-blur-md sm:p-4">
                             {/* Top glowing accent line */}
                             <div className="absolute top-0 right-4 left-4 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
@@ -573,8 +597,14 @@ function CharacterSection({
                                 </p>
                             </div>
 
-                            {/* Ekor Arrow (Pointer) di kiri bawah mengarah ke kepala/bahu Hero */}
-                            <div className="absolute -bottom-1.5 left-4 h-3 w-3 rotate-45 border-r border-b border-[#3B28F6]/50 bg-[#05081c] sm:left-6 sm:h-3.5 sm:w-3.5" />
+                            {/* Ekor Arrow (Pointer) - Kiri saat Landscape, Bawah saat Portrait */}
+                            <div
+                                className={`absolute h-3 w-3 rotate-45 border-[#3B28F6]/50 bg-[#05081c] sm:h-3.5 sm:w-3.5 ${
+                                    isMobileLandscape
+                                        ? '-left-1.5 top-1/2 -translate-y-1/2 border-l border-b'
+                                        : '-bottom-1.5 left-4 border-r border-b sm:left-6'
+                                }`}
+                            />
                         </div>
                     </div>
                 )}
@@ -583,7 +613,11 @@ function CharacterSection({
                 <img
                     src={character.avatar}
                     onClick={triggerNextBubble}
-                    className="relative z-20 h-[300px] cursor-pointer transition hover:scale-[1.02] sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[540px]"
+                    className={`relative z-20 cursor-pointer transition hover:scale-[1.02] ${
+                        isMobileLandscape
+                            ? 'h-[280px]'
+                            : 'h-[300px] sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[540px]'
+                    }`}
                     style={{ animation: 'breathe 3s ease-in-out infinite' }}
                     title="Klik hero untuk kata-kata penyemangat!"
                 />

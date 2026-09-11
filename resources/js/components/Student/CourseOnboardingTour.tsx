@@ -186,7 +186,7 @@ export default function CourseOnboardingTour({
         : 'absolute bottom-[270px] xs:bottom-[300px] sm:bottom-[340px] md:bottom-[290px] lg:bottom-[470px] xl:bottom-[550px] 2xl:bottom-[556px] left-[25px] xs:left-[35px] sm:left-[100px] md:left-[90px] lg:left-[230px] xl:left-[350px] 2xl:left-[420px] z-50 w-[calc(100vw-50px)] max-w-[200px] xs:max-w-[220px] sm:max-w-none sm:w-[260px] md:w-[220px] lg:w-[340px] xl:w-[380px] 2xl:w-[340px] pointer-events-auto animate-fadeIn';
 
     const mainCardClass = isMobileLandscape
-        ? 'absolute bottom-[85px] left-[350px] w-[250px] z-50 pointer-events-auto animate-fadeIn'
+        ? 'absolute bottom-[85px] left-[200px] w-[260px] z-50 pointer-events-auto animate-fadeIn'
         : 'absolute bottom-[75px] xs:bottom-[80px] sm:bottom-[90px] md:bottom-[105px] lg:bottom-[200px] xl:bottom-[280px] 2xl:bottom-[310px] left-[145px] xs:left-[165px] sm:left-[205px] md:left-[210px] lg:left-[340px] xl:left-[460px] 2xl:left-[520px] z-50 w-[calc(100vw-155px)] xs:w-[calc(100vw-175px)] max-w-[190px] xs:max-w-[205px] sm:max-w-none sm:w-[250px] md:w-[250px] lg:w-[360px] xl:w-[380px] 2xl:w-[410px] pointer-events-auto animate-fadeIn';
 
     const glowClass = isMobileLandscape

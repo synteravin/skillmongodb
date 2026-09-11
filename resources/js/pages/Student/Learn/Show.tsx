@@ -261,7 +261,7 @@ export default function LearnShow({
                     <div className="flex items-center gap-4 rounded-[4px] bg-white px-4 py-4 shadow-sm md:px-6 dark:bg-[#040812] dark:shadow-none">
                         <Link
                             href={`/courses/${course.slug}`}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-blue-300 bg-[#eff6ff] p-2 transition-colors hover:border-blue-500 hover:bg-blue-100 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-600 dark:hover:bg-blue-900/40"
+                            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded border-2 border-blue-300 bg-[#eff6ff] p-2 transition-all duration-200 hover:scale-105 hover:border-blue-500 hover:bg-blue-100 hover:shadow-md active:scale-95 md:h-12 md:w-12 dark:border-blue-800 dark:bg-[#0b1021] dark:hover:border-blue-500 dark:hover:bg-blue-900/60 dark:hover:shadow-[0_0_12px_rgba(59,130,246,0.4)]"
                         >
                             <svg
                                 viewBox="0 0 48 48"
@@ -677,7 +677,7 @@ export default function LearnShow({
                                         <a
                                             href={item.content.url}
                                             target="_blank"
-                                            className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700 dark:bg-indigo-500/20 dark:font-normal dark:text-indigo-300 dark:hover:bg-indigo-500/20"
+                                            className="cursor-pointer rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-all duration-200 hover:scale-105 hover:bg-blue-500 hover:shadow-md active:scale-95 dark:bg-indigo-600 dark:text-white dark:hover:bg-indigo-500 dark:hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]"
                                         >
                                             Download
                                         </a>
@@ -698,7 +698,7 @@ export default function LearnShow({
                             {prevModule && (
                                 <button
                                     onClick={() => goToModule(prevModule)}
-                                    className="flex-1 rounded-lg border border-blue-300 bg-white px-4 py-2.5 text-center font-['Orbitron'] text-sm font-bold text-[#1e3a8a] transition-all hover:bg-blue-100 sm:flex-none sm:py-2 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/5 dark:hover:brightness-110"
+                                    className="flex-1 cursor-pointer rounded-lg border border-blue-300 bg-white px-4 py-2.5 text-center font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-xs transition-all duration-200 hover:-translate-x-0.5 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 hover:shadow-md active:scale-95 sm:flex-none sm:py-2 dark:border-blue-500/30 dark:bg-blue-950/30 dark:text-blue-200 dark:hover:border-blue-400 dark:hover:bg-blue-900/60 dark:hover:text-white dark:hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]"
                                 >
                                     ← Prev
                                 </button>
@@ -711,10 +711,10 @@ export default function LearnShow({
                                         }
                                     }}
                                     disabled={!isUnlocked(currentIndex + 1)}
-                                    className={`flex-1 rounded-lg px-4 py-2.5 text-center font-['Orbitron'] text-sm font-bold transition-all sm:flex-none sm:py-2 ${
+                                    className={`flex-1 rounded-lg px-4 py-2.5 text-center font-['Orbitron'] text-sm font-bold transition-all duration-200 sm:flex-none sm:py-2 ${
                                         isUnlocked(currentIndex + 1)
-                                            ? 'border border-blue-600 bg-[#2563EB] text-white shadow-sm hover:bg-[#1d4ed8] dark:border-blue-500/40 dark:bg-blue-500/10 dark:shadow-none dark:hover:bg-blue-500/10 dark:hover:brightness-110'
-                                            : 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 opacity-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-500'
+                                            ? 'cursor-pointer border border-blue-600 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:translate-x-0.5 hover:border-blue-400 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-blue-500/35 active:scale-95 dark:border-blue-500/60 dark:bg-gradient-to-r dark:from-blue-600 dark:to-indigo-600 dark:text-white dark:hover:border-blue-300 dark:hover:from-blue-500 dark:hover:to-indigo-500 dark:hover:shadow-[0_0_18px_rgba(99,102,241,0.5)]'
+                                            : 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 opacity-50 dark:border-gray-800 dark:bg-gray-900/40 dark:text-gray-600'
                                     }`}
                                 >
                                     Next Module
@@ -726,7 +726,7 @@ export default function LearnShow({
                             {!isCompleted(module._id) && (
                                 <button
                                     onClick={completeModule}
-                                    className="w-full rounded-lg border border-green-400 bg-green-50 px-5 py-2.5 font-['Orbitron'] text-sm font-bold text-green-700 shadow-sm transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-green-500/50 dark:bg-green-500/15 dark:text-green-400 dark:shadow-none dark:hover:brightness-110"
+                                    className="w-full cursor-pointer rounded-lg border border-emerald-500 bg-emerald-50 px-5 py-2.5 font-['Orbitron'] text-sm font-bold text-emerald-700 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-emerald-600 hover:bg-emerald-600 hover:text-white hover:shadow-md hover:shadow-emerald-500/30 active:scale-95 sm:w-auto sm:py-2 dark:border-emerald-500/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:border-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white dark:hover:shadow-[0_0_18px_rgba(16,185,129,0.5)]"
                                 >
                                     ✓ Tandai Selesai
                                 </button>
@@ -734,13 +734,11 @@ export default function LearnShow({
                             {isLastModule && finalQuizSlug && allCompleted && (
                                 <button
                                     onClick={() =>
-
                                         router.visit(
                                             `/courses/${course.slug}/paths/${path.slug}/quiz`,
                                         )
-
                                     }
-                                    className="w-full rounded-lg border border-yellow-400 bg-[#FACC15] px-6 py-2.5 font-['Orbitron'] text-sm font-bold text-[#1e3a8a] shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all hover:brightness-105 sm:w-auto sm:py-2 dark:border-transparent dark:bg-[#F0C419] dark:text-black dark:shadow-[0_0_16px_rgba(240,196,25,0.4)] dark:hover:brightness-110"
+                                    className="w-full cursor-pointer rounded-lg border border-amber-400 bg-amber-400 px-6 py-2.5 font-['Orbitron'] text-sm font-extrabold text-slate-950 shadow-[0_0_16px_rgba(250,204,21,0.4)] transition-all duration-200 hover:scale-[1.03] hover:border-amber-300 hover:bg-amber-300 hover:shadow-[0_0_24px_rgba(250,204,21,0.7)] active:scale-95 sm:w-auto sm:py-2 dark:border-amber-400 dark:bg-amber-400 dark:text-slate-950 dark:hover:border-amber-300 dark:hover:bg-amber-300 dark:hover:shadow-[0_0_24px_rgba(250,204,21,0.8)]"
                                 >
                                     MULAI TEST →
                                 </button>

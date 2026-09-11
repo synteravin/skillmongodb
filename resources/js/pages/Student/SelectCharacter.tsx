@@ -16,6 +16,66 @@ import {
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
+const getTypeTagClasses = (type: string) => {
+    const normalized = type.toLowerCase().trim();
+    if (normalized.includes('partner') || normalized.includes('patner')) {
+        return 'border-[#06b6d4] bg-[#06b6d4]/10 dark:bg-[#06b6d4]/20 text-[#0891b2] dark:text-[#67e8f9]';
+    }
+    return 'border-[#4F46E5] bg-[#3B28F6]/10 dark:bg-[#3B28F6]/20 text-[#3b28f6] dark:text-[#A096FF]';
+};
+
+const getAbilityStyles = (ability: string) => {
+    const normalized = ability.toLowerCase().trim();
+    if (normalized.includes('visual')) {
+        return {
+            circle: 'bg-blue-100 dark:bg-white/5 border-blue-200 dark:border-white/10 text-blue-600 dark:text-white/70 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
+            text: 'text-blue-600 dark:text-white/40'
+        };
+    }
+    if (normalized.includes('fast') || normalized.includes('agility')) {
+        return {
+            circle: 'bg-yellow-100 dark:bg-white/5 border-yellow-200 dark:border-white/10 text-yellow-600 dark:text-white/70 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
+            text: 'text-yellow-600 dark:text-white/40'
+        };
+    }
+    if (normalized.includes('strategic') || normalized.includes('intelligence')) {
+        return {
+            circle: 'bg-green-100 dark:bg-white/5 border-green-200 dark:border-white/10 text-green-600 dark:text-white/70 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
+            text: 'text-green-600 dark:text-white/40'
+        };
+    }
+    if (normalized.includes('practical') || normalized.includes('wrench')) {
+        return {
+            circle: 'bg-pink-100 dark:bg-white/5 border-pink-200 dark:border-white/10 text-pink-600 dark:text-white/70 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
+            text: 'text-pink-600 dark:text-white/40'
+        };
+    }
+    return {
+        circle: 'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-white/70 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
+        text: 'text-slate-600 dark:text-white/40'
+    };
+};
+
+const getPersonalityTagClasses = (trait: string) => {
+    const normalized = trait.toLowerCase().trim();
+    if (normalized === 'calm') {
+        return 'bg-[#1e1b4b] dark:bg-[#1a1060] text-white border border-[#4338ca] dark:border-[#6041FF]';
+    }
+    if (normalized === 'strategic') {
+        return 'bg-[#e0f2fe] dark:bg-[#0c4a6e] text-[#0369a1] dark:text-[#38bdf8] border border-[#bae6fd] dark:border-[#0284c7]';
+    }
+    if (normalized === 'supportive') {
+        return 'bg-[#fef9c3] dark:bg-[#713f12] text-[#854d0e] dark:text-[#fef08a] border border-[#fef08a] dark:border-[#ca8a04]';
+    }
+    if (normalized === 'brave') {
+        return 'bg-[#fee2e2] dark:bg-[#7f1d1d] text-[#b91c1c] dark:text-[#fca5a5] border border-[#fca5a5] dark:border-[#ef4444]';
+    }
+    if (normalized === 'curious') {
+        return 'bg-[#e0e7ff] dark:bg-[#312e81] text-[#4338ca] dark:text-[#c7d2fe] border border-[#c7d2fe] dark:border-[#4f46e5]';
+    }
+    return 'bg-[#f3f4f6] dark:bg-[#1D215D] text-slate-700 dark:text-[#6041FF] border border-slate-300 dark:border-[#6041FF]';
+};
+
 interface Character {
     _id: string;
     name: string;
@@ -142,21 +202,21 @@ Once confirmed, this cannot be changed or reset.`;
             <Head title="Select Character - SkillVentura" />
 
             {/* Main Background */}
-            <div className="font-primary relative h-screen overflow-hidden bg-[#020202] text-white selection:bg-indigo-500/30">
+            <div className="font-primary relative h-screen overflow-hidden bg-[#f3f4f6] dark:bg-[#020202] text-slate-900 dark:text-white selection:bg-indigo-500/30">
                 {/* Stars Background */}
                 <div
-                    className="absolute inset-0 z-0 opacity-70"
+                    className="absolute inset-0 z-0 opacity-40 dark:opacity-70"
                     style={{
                         backgroundImage: `
                             radial-gradient(1px 1px at 20px 30px, #6042FF, transparent),
                             radial-gradient(2px 2px at 40px 70px, #93c5fd, transparent),
                             radial-gradient(1.5px 1.5px at 130px 80px, #fde68a, transparent),
                             radial-gradient(3px 3px at 160px 30px, #c084fc, transparent),
-                            radial-gradient(2px 2px at 200px 150px, #ffffff, transparent),
+                            radial-gradient(2px 2px at 200px 150px, #3b28f6, transparent),
                             radial-gradient(1px 1px at 300px 200px, #93c5fd, transparent),
                             radial-gradient(2.5px 2.5px at 350px 100px, #facc15, transparent),
                             radial-gradient(10px 10px at 420px 220px, #6042FF, transparent),
-                            radial-gradient(2px 2px at 500px 50px, #ffffff, transparent),
+                            radial-gradient(2px 2px at 500px 50px, #3b28f6, transparent),
                             radial-gradient(3px 3px at 600px 180px, #93c5fd, transparent)
                             `,
                         backgroundSize: '600px 400px',
@@ -164,9 +224,9 @@ Once confirmed, this cannot be changed or reset.`;
                 />
 
                 {/* Blue Glow */}
-                <div className="absolute top-[20%] left-[-10%] h-[500px] w-[500px] rounded-full bg-blue-500/30 blur-[160px]" />
+                <div className="absolute top-[20%] left-[-10%] h-[500px] w-[500px] rounded-full bg-blue-500/20 dark:bg-blue-500/30 blur-[160px]" />
                 {/* Yellow Glow */}
-                <div className="absolute top-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-yellow-400/40 blur-[180px]" />
+                <div className="absolute top-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-yellow-400/20 dark:bg-yellow-400/40 blur-[180px]" />
 
                 {/* ===================== MOBILE LAYOUT ===================== */}
                 <div className="relative z-10 flex h-full flex-col md:hidden">
@@ -177,9 +237,9 @@ Once confirmed, this cannot be changed or reset.`;
                             {/* Arrow Left */}
                             <button
                                 onClick={() => paginate(-1)}
-                                className="absolute left-0 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:border-indigo-500/50 hover:bg-indigo-500/10"
+                                className="absolute left-0 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur-md transition-all duration-300 hover:border-indigo-500/50 hover:bg-indigo-500/10 text-slate-700 dark:text-indigo-400"
                             >
-                                <ChevronLeft className="h-4 w-4 text-indigo-400" />
+                                <ChevronLeft className="h-4 w-4" />
                             </button>
 
                             {/* Character Card */}
@@ -206,13 +266,13 @@ Once confirmed, this cannot be changed or reset.`;
                                     }}
                                     className="relative h-[175px] w-[130px] overflow-hidden rounded-[20px] bg-[linear-gradient(45deg,#1e3a8a_0%,#1e3a8a_25%,transparent_60%,#facc15_100%)] p-[2px]"
                                 >
-                                    <div className="absolute inset-[2px] overflow-hidden rounded-[18px] bg-[#0a0a0f]">
+                                    <div className="absolute inset-[2px] overflow-hidden rounded-[18px] bg-white dark:bg-[#0a0a0f]">
                                         <div
                                             className="absolute inset-0 opacity-40"
                                             style={{
                                                 backgroundImage: `
                                                     radial-gradient(2px 2px at 20px 30px, #60a5fa, transparent),
-                                                    radial-gradient(1px 1px at 90px 80px, white, transparent),
+                                                    radial-gradient(1px 1px at 90px 80px, #3b28f6, transparent),
                                                     radial-gradient(2px 2px at 150px 120px, #fde68a, transparent)
                                                     `,
                                                 backgroundSize: '200px 200px',
@@ -233,9 +293,9 @@ Once confirmed, this cannot be changed or reset.`;
                             {/* Arrow Right */}
                             <button
                                 onClick={() => paginate(1)}
-                                className="absolute right-0 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:border-indigo-500/50 hover:bg-indigo-500/10"
+                                className="absolute right-0 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur-md transition-all duration-300 hover:border-indigo-500/50 hover:bg-indigo-500/10 text-slate-700 dark:text-indigo-400"
                             >
-                                <ChevronRight className="h-4 w-4 text-indigo-400" />
+                                <ChevronRight className="h-4 w-4" />
                             </button>
                         </div>
 
@@ -254,7 +314,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                 );
                                                 setCurrentIndex(idx);
                                             }}
-                                            className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-6 bg-[#FACC15]' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+                                            className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-6 bg-[#FACC15]' : 'w-2 bg-slate-400/30 dark:bg-white/30 hover:bg-slate-400/50 dark:hover:bg-white/50'}`}
                                         />
                                     ));
                                 }
@@ -280,7 +340,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     );
                                                     setCurrentIndex(idx);
                                                 }}
-                                                className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-6 bg-[#FACC15]' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+                                                className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-6 bg-[#FACC15]' : 'w-2 bg-slate-400/30 dark:bg-white/30 hover:bg-slate-400/50 dark:hover:bg-white/50'}`}
                                             />
                                         );
                                     },
@@ -298,9 +358,9 @@ Once confirmed, this cannot be changed or reset.`;
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.25 }}
-                                className="relative flex h-full flex-col overflow-hidden rounded-[10px] border border-b-2 border-l-[3px] border-b-[#3B28F6] border-l-[#3B28F6] bg-[#070927]"
+                                className="relative flex h-full flex-col overflow-hidden rounded-[10px] border border-b-2 border-l-[3px] border-b-[#3B28F6] border-l-[#3B28F6] bg-[#e6e9f6] dark:bg-[#070927] shadow-xl"
                             >
-                                <div className="pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl" />
+                                <div className="pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-3xl" />
 
                                 {/* Scrollable content */}
                                 <div className="custom-scrollbar relative z-10 flex-1 space-y-4 overflow-y-auto px-4 pt-4 pb-2">
@@ -308,7 +368,7 @@ Once confirmed, this cannot be changed or reset.`;
                                     <div className="flex items-center justify-between gap-2">
                                         <h1
                                             style={{ fontFamily: 'Orbitron' }}
-                                            className="text-2xl font-black tracking-widest text-blue-50 uppercase"
+                                            className="text-2xl font-black tracking-widest text-slate-900 dark:text-blue-50 uppercase"
                                         >
                                             {selected.name}
                                         </h1>
@@ -321,7 +381,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="rounded-sm border border-[#4F46E5] bg-[#3B28F6]/20 px-2 py-0.5 text-[9px] tracking-[0.15em] text-[#A096FF] uppercase"
+                                                    className={`rounded-sm border px-2 py-0.5 text-[9px] tracking-[0.15em] uppercase ${getTypeTagClasses(type)}`}
                                                 >
                                                     {type}
                                                 </span>
@@ -332,7 +392,7 @@ Once confirmed, this cannot be changed or reset.`;
                                     {/* Tagline */}
                                     <p
                                         style={{ fontFamily: 'Oxanium' }}
-                                        className="-mt-2 text-xs leading-relaxed text-[#B3B3B3]"
+                                        className="-mt-2 text-xs leading-relaxed text-slate-600 dark:text-[#B3B3B3]"
                                     >
                                         "{selected.tagline}"
                                     </p>
@@ -353,10 +413,10 @@ Once confirmed, this cannot be changed or reset.`;
                                                     key={i}
                                                     className="flex flex-col items-center gap-1"
                                                 >
-                                                    <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70">
+                                                    <div className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all ${getAbilityStyles(ability).circle}`}>
                                                         {getIcon(ability)}
                                                     </div>
-                                                    <span className="text-center text-[8px] font-bold tracking-wider text-white/40 uppercase">
+                                                    <span className={`text-center text-[8px] font-bold tracking-wider uppercase ${getAbilityStyles(ability).text}`}>
                                                         {ability}
                                                     </span>
                                                 </div>
@@ -364,12 +424,12 @@ Once confirmed, this cannot be changed or reset.`;
                                     </div>
 
                                     {/* Divider */}
-                                    <div className="border-t border-white/10" />
+                                    <div className="border-t border-slate-300 dark:border-white/10" />
 
                                     {/* Guide Power — compact */}
-                                    <div className="flex items-center gap-3 rounded-xl border border-[#3B28F6] bg-[#020101]/60 p-3 shadow-[0_0_11px_rgba(59,130,246,0.2)]">
-                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#810AC6]/70 bg-[#6042FF]/40">
-                                            <Layers className="h-4 w-4 text-white" />
+                                    <div className="flex items-center gap-3 rounded-xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-3 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.2)]">
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#810AC6]/30 dark:border-[#810AC6]/70 bg-[#6042FF]/20 dark:bg-[#6042FF]/40 text-[#6042FF] dark:text-white">
+                                            <Layers className="h-4 w-4" />
                                         </div>
                                         <div className="min-w-0">
                                             <h3
@@ -386,7 +446,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                 style={{
                                                     fontFamily: 'Oxanium',
                                                 }}
-                                                className="line-clamp-2 text-[11px] leading-relaxed text-[#B3B3B3]/80"
+                                                className="line-clamp-2 text-[11px] leading-relaxed text-slate-700 dark:text-[#B3B3B3]/80"
                                             >
                                                 {selected.guide_power
                                                     ?.description ||
@@ -396,10 +456,10 @@ Once confirmed, this cannot be changed or reset.`;
                                     </div>
 
                                     {/* Starter Bonuses — compact */}
-                                    <div className="rounded-xl border border-[#3B28F6] bg-[#020101]/60 p-3 shadow-[0_0_11px_rgba(59,130,246,0.2)]">
+                                    <div className="rounded-xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-3 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.2)]">
                                         <h3
                                             style={{ fontFamily: 'Orbitron' }}
-                                            className="mb-3 text-[9px] tracking-widest text-[#FACC15] uppercase"
+                                            className="mb-3 text-[9px] tracking-widest text-amber-600 dark:text-[#FACC15] uppercase font-bold"
                                         >
                                             Starter Bonus
                                         </h3>
@@ -413,7 +473,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="text-[10px] font-semibold text-yellow-400"
+                                                    className="text-[10px] font-semibold text-yellow-600 dark:text-yellow-400"
                                                 >
                                                     +
                                                     {selected.system_bonus
@@ -430,7 +490,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="text-[10px] font-semibold text-amber-400"
+                                                    className="text-[10px] font-semibold text-amber-600 dark:text-amber-400"
                                                 >
                                                     +
                                                     {selected.system_bonus
@@ -447,7 +507,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="text-[10px] text-[#FACC15]"
+                                                    className="text-[10px] text-slate-400 dark:text-[#FACC15]"
                                                 >
                                                     Focus Boost
                                                 </span>
@@ -461,10 +521,10 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="text-[10px] text-[#F0F0F0]"
+                                                    className="text-[10px] text-slate-400 dark:text-[#F0F0F0]"
                                                 >
                                                     Mind{' '}
-                                                    <span className="text-[#FACC15]">
+                                                    <span className="text-amber-500 dark:text-[#FACC15]">
                                                         Sync
                                                     </span>
                                                 </span>
@@ -481,7 +541,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="rounded-full border border-[#6041FF] bg-[#1D215D] px-3 py-1 text-[10px] font-semibold text-[#6041FF]"
+                                                    className={`rounded-full px-3 py-1 text-[10px] font-semibold ${getPersonalityTagClasses(trait)}`}
                                                 >
                                                     {trait}
                                                 </span>
@@ -490,23 +550,24 @@ Once confirmed, this cannot be changed or reset.`;
                                     </div>
 
                                     {/* Origin Story — mobile */}
-                                    <div className="rounded-xl border border-[#3B28F6] bg-[#020101]/60 p-3 shadow-[0_0_11px_rgba(59,130,246,0.2)]">
+                                    <div className="rounded-xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-3 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.2)]">
                                         <div className="mb-2 flex items-center gap-2">
-                                            <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                                            <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3B28F6] dark:bg-sky-400" />
                                             <h2
                                                 style={{
                                                     fontFamily: 'Orbitron',
                                                 }}
-                                                className="text-[10px] font-bold tracking-widest text-slate-200 uppercase"
+                                                className="text-[10px] font-bold tracking-widest text-slate-800 dark:text-slate-200 uppercase"
                                             >
                                                 Origin Story
                                             </h2>
                                         </div>
-                                        <div className="text-[11px] leading-relaxed text-slate-400">
+                                        <div className="text-[11px] leading-relaxed text-slate-700 dark:text-slate-400">
                                             {selected.backstory ? (
-                                                <p className="whitespace-pre-line">
-                                                    {selected.backstory}
-                                                </p>
+                                                <p
+                                                    className="whitespace-pre-line"
+                                                    dangerouslySetInnerHTML={{ __html: selected.backstory }}
+                                                />
                                             ) : (
                                                 <p>
                                                     History lost in the records
@@ -514,31 +575,31 @@ Once confirmed, this cannot be changed or reset.`;
                                                 </p>
                                             )}
                                         </div>
-                                        <div className="mt-3 border-l border-white/20 pl-3 text-[10px] text-slate-400 italic">
+                                        <div className="mt-3 border-l-2 border-slate-300 dark:border-white/20 pl-3 text-[10px] text-slate-600 dark:text-slate-400 italic">
                                             "Learning is not about speed, but
                                             about consistency."
                                         </div>
                                     </div>
 
                                     {/* Quote — mobile */}
-                                    <div className="rounded-xl border border-[#3B28F6] bg-[#020101]/60 p-3 text-center shadow-[0_0_11px_rgba(59,130,246,0.2)]">
+                                    <div className="rounded-xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-3 text-center shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.2)]">
                                         <p
                                             style={{ fontFamily: 'Orbitron' }}
-                                            className="text-[11px] leading-relaxed font-semibold tracking-wide text-slate-200"
+                                            className="text-[11px] leading-relaxed font-semibold tracking-wide text-slate-800 dark:text-slate-200"
                                         >
                                             "
                                             {selected.quote ||
                                                 'Ready for adventure.'}
                                             "
                                         </p>
-                                        <span className="mt-1 block text-[10px] text-slate-500 italic">
+                                        <span className="mt-1 block text-[10px] text-slate-600 dark:text-slate-500 italic">
                                             — {selected.name}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Confirm Button — sticky bottom */}
-                                <div className="flex-shrink-0 border-t border-white/10 p-3">
+                                <div className="flex-shrink-0 border-t border-slate-300 dark:border-white/10 p-3">
                                     <button
                                         onClick={confirmSelection}
                                         style={{ fontFamily: 'Oxanium' }}
@@ -560,15 +621,15 @@ Once confirmed, this cannot be changed or reset.`;
                             <div className="group perspective-1000 relative">
                                 <button
                                     onClick={() => paginate(-1)}
-                                    className="absolute top-1/2 -left-14 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.6)] sm:flex"
+                                    className="absolute top-1/2 -left-14 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.6)] text-slate-700 dark:text-indigo-400 sm:flex"
                                 >
-                                    <ChevronLeft className="h-5 w-5 text-indigo-400 group-hover:text-white" />
+                                    <ChevronLeft className="h-5 w-5" />
                                 </button>
                                 <button
                                     onClick={() => paginate(1)}
-                                    className="absolute top-1/2 -right-14 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.6)] sm:flex"
+                                    className="absolute top-1/2 -right-14 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.6)] text-slate-700 dark:text-indigo-400 sm:flex"
                                 >
-                                    <ChevronRight className="h-5 w-5 text-indigo-400" />
+                                    <ChevronRight className="h-5 w-5" />
                                 </button>
 
                                 <AnimatePresence
@@ -594,13 +655,13 @@ Once confirmed, this cannot be changed or reset.`;
                                         }}
                                         className="relative h-[220px] w-[160px] overflow-hidden rounded-[25px] bg-[linear-gradient(45deg,#1e3a8a_0%,#1e3a8a_25%,transparent_60%,#facc15_100%)] p-[2px] md:h-[270px] md:w-[200px] lg:h-[400px] lg:w-[300px] xl:h-[410px] xl:w-[300px] 2xl:h-[480px] 2xl:w-[340px]"
                                     >
-                                        <div className="absolute inset-[2px] overflow-hidden rounded-[23px] bg-[#0a0a0f]">
+                                        <div className="absolute inset-[2px] overflow-hidden rounded-[23px] bg-white dark:bg-[#0a0a0f]">
                                             <div
                                                 className="absolute inset-0 opacity-40"
                                                 style={{
                                                     backgroundImage: `
                                                         radial-gradient(2px 2px at 20px 30px, #60a5fa, transparent),
-                                                        radial-gradient(1px 1px at 90px 80px, white, transparent),
+                                                        radial-gradient(1px 1px at 90px 80px, #3b28f6, transparent),
                                                         radial-gradient(2px 2px at 150px 120px, #fde68a, transparent)
                                                         `,
                                                     backgroundSize:
@@ -637,7 +698,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     );
                                                     setCurrentIndex(idx);
                                                 }}
-                                                className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-10 bg-[#FACC15]' : 'w-2.5 bg-white/40 hover:bg-white/40'}`}
+                                                className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-10 bg-[#FACC15]' : 'w-2.5 bg-slate-400/30 dark:bg-white/40 hover:bg-slate-400/50 dark:hover:bg-white/50'}`}
                                             />
                                         ));
                                     }
@@ -663,7 +724,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                         );
                                                         setCurrentIndex(idx);
                                                     }}
-                                                    className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-10 bg-[#FACC15]' : 'w-2.5 bg-white/40 hover:bg-white/40'}`}
+                                                    className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-10 bg-[#FACC15]' : 'w-2.5 bg-slate-400/30 dark:bg-white/40 hover:bg-slate-400/50 dark:hover:bg-white/50'}`}
                                                 />
                                             );
                                         },
@@ -681,9 +742,9 @@ Once confirmed, this cannot be changed or reset.`;
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.3 }}
-                                    className="relative flex max-h-screen flex-col overflow-hidden rounded-[10px] border border-b-2 border-l-3 border-b-[#3B28F6] border-l-[#3B28F6] bg-[#070927] shadow-2xl backdrop-blur-3xl lg:h-[550px] xl:h-[590px] 2xl:h-[670px]"
+                                    className="relative flex max-h-screen flex-col overflow-hidden rounded-[10px] border border-b-2 border-l-3 border-b-[#3B28F6] border-l-[#3B28F6] bg-[#e6e9f6] dark:bg-[#070927] shadow-2xl backdrop-blur-3xl lg:h-[550px] xl:h-[590px] 2xl:h-[670px]"
                                 >
-                                    <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-indigo-500/10 p-4 blur-3xl" />
+                                    <div className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 p-4 blur-3xl" />
 
                                     <div className="custom-scrollbar relative z-10 flex-1 overflow-y-auto p-8 lg:p-8">
                                         <div className="mb-8 flex flex-col gap-6">
@@ -698,7 +759,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                             fontFamily:
                                                                 'Oxanium',
                                                         }}
-                                                        className="rounded-sm border border-[#4F46E5] bg-[#3B28F6]/20 px-6 py-2 text-[13px] tracking-[0.2em] text-[#A096FF] uppercase shadow-[0_0_15px_rgba(79,70,229,0.7)] backdrop-blur-sm"
+                                                        className={`rounded-sm border px-6 py-2 text-[13px] tracking-[0.2em] uppercase backdrop-blur-sm ${getTypeTagClasses(type)}`}
                                                     >
                                                         {type}
                                                     </span>
@@ -709,7 +770,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Orbitron',
                                                     }}
-                                                    className="mb-2 text-6xl font-black tracking-tighter tracking-widest text-blue-50 uppercase sm:text-2xl md:text-4xl"
+                                                    className="mb-2 text-6xl font-black tracking-tighter tracking-widest text-slate-900 dark:text-blue-50 uppercase sm:text-2xl md:text-4xl"
                                                 >
                                                     {selected.name}
                                                 </h1>
@@ -717,12 +778,12 @@ Once confirmed, this cannot be changed or reset.`;
                                                     style={{
                                                         fontFamily: 'Oxanium',
                                                     }}
-                                                    className="font-medium text-[#B3B3B3]"
+                                                    className="font-medium text-slate-700 dark:text-[#B3B3B3]"
                                                 >
                                                     "{selected.tagline}"
                                                 </p>
                                             </div>
-                                            <div className="flex flex-wrap items-center gap-8 border-b border-white/60 pb-8">
+                                            <div className="flex flex-wrap items-center gap-8 border-b border-slate-300 dark:border-white/60 pb-8">
                                                 {(
                                                     selected.abilities || [
                                                         'Visual Learn',
@@ -737,12 +798,12 @@ Once confirmed, this cannot be changed or reset.`;
                                                             key={i}
                                                             className="group flex flex-col items-center gap-2"
                                                         >
-                                                            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 shadow-inner transition-all group-hover:border-indigo-500/50 group-hover:bg-indigo-500/10 group-hover:text-indigo-400">
+                                                            <div className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-inner transition-all ${getAbilityStyles(ability).circle}`}>
                                                                 {getIcon(
                                                                     ability,
                                                                 )}
                                                             </div>
-                                                            <span className="text-[9px] font-bold tracking-widest text-white/40 uppercase group-hover:text-white/60">
+                                                            <span className={`text-[9px] font-bold tracking-widest uppercase ${getAbilityStyles(ability).text}`}>
                                                                 {ability}
                                                             </span>
                                                         </div>
@@ -751,9 +812,9 @@ Once confirmed, this cannot be changed or reset.`;
                                         </div>
 
                                         <div className="group mb-8">
-                                            <div className="flex items-center gap-4 rounded-xl border border-[#3B28F6] bg-[#020101]/60 p-5 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
-                                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#810AC6]/70 bg-[#6042FF]/40 shadow-lg">
-                                                    <Layers className="h-7 w-7 text-white" />
+                                            <div className="flex items-center gap-4 rounded-xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-5 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#810AC6]/30 dark:border-[#810AC6]/70 bg-[#6042FF]/20 dark:bg-[#6042FF]/40 text-[#6042FF] dark:text-white shadow-lg">
+                                                    <Layers className="h-7 w-7" />
                                                 </div>
                                                 <div>
                                                     <h3
@@ -784,18 +845,19 @@ Once confirmed, this cannot be changed or reset.`;
                                         </div>
 
                                         {/* Origin Story — desktop */}
-                                        <div className="mb-8 rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                        <div className="mb-8 rounded-2xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.35)]">
                                             <div className="mb-4 flex items-center gap-3">
-                                                <div className="h-2 w-2 rounded-full bg-sky-400" />
-                                                <h2 className="text-lg font-semibold tracking-wide text-slate-200">
+                                                <div className="h-2 w-2 rounded-full bg-[#3B28F6] dark:bg-sky-400" />
+                                                <h2 className="text-lg font-semibold tracking-wide text-slate-800 dark:text-slate-200">
                                                     Origin Story
                                                 </h2>
                                             </div>
-                                            <div className="space-y-4 text-sm leading-relaxed text-slate-400">
+                                            <div className="space-y-4 text-sm leading-relaxed text-slate-700 dark:text-slate-400">
                                                 {selected.backstory ? (
-                                                    <p className="whitespace-pre-line">
-                                                        {selected.backstory}
-                                                    </p>
+                                                    <p
+                                                        className="whitespace-pre-line"
+                                                        dangerouslySetInnerHTML={{ __html: selected.backstory }}
+                                                    />
                                                 ) : (
                                                     <p>
                                                         History lost in the
@@ -803,19 +865,19 @@ Once confirmed, this cannot be changed or reset.`;
                                                     </p>
                                                 )}
                                             </div>
-                                            <div className="mt-6 border-l border-white/20 pl-4 text-sm text-slate-400 italic">
+                                            <div className="mt-6 border-l-2 border-slate-300 dark:border-white/20 pl-4 text-sm text-slate-600 dark:text-slate-400 italic">
                                                 "Learning is not about speed,
                                                 but about consistency."
                                             </div>
                                         </div>
 
                                         <div className="mb-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
-                                            <div className="rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                            <div className="rounded-2xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.35)]">
                                                 <h3
                                                     style={{
                                                         fontFamily: 'Orbitron',
                                                     }}
-                                                    className="mb-6 text-sm font-bold tracking-widest text-[#B3B3B3]/80 uppercase lg:text-base"
+                                                    className="mb-6 text-sm font-bold tracking-widest text-slate-800 dark:text-[#B3B3B3]/80 uppercase lg:text-base"
                                                 >
                                                     Personality
                                                 </h3>
@@ -830,19 +892,19 @@ Once confirmed, this cannot be changed or reset.`;
                                                                 fontFamily:
                                                                     'Oxanium',
                                                             }}
-                                                            className="rounded-full border border-[#6041FF] bg-[#1D215D] px-5 py-2 text-sm font-semibold text-[#6041FF]"
+                                                            className={`rounded-full px-5 py-2 text-sm font-semibold ${getPersonalityTagClasses(trait)}`}
                                                         >
                                                             {trait}
                                                         </span>
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                            <div className="rounded-2xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-6 shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.35)]">
                                                 <h3
                                                     style={{
                                                         fontFamily: 'Orbitron',
                                                     }}
-                                                    className="mb-6 text-lg tracking-widest text-[#FACC15] uppercase lg:text-base"
+                                                    className="mb-6 text-lg tracking-widest text-amber-600 dark:text-[#FACC15] uppercase lg:text-base font-bold"
                                                 >
                                                     Starter Bonus
                                                 </h3>
@@ -857,7 +919,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                                 fontFamily:
                                                                     'Oxanium',
                                                             }}
-                                                            className="text-sm font-semibold tracking-wide text-yellow-400"
+                                                            className="text-sm font-semibold tracking-wide text-yellow-600 dark:text-yellow-400"
                                                         >
                                                             +
                                                             {selected
@@ -877,7 +939,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                                 fontFamily:
                                                                     'Oxanium',
                                                             }}
-                                                            className="text-sm font-semibold tracking-wide text-amber-400"
+                                                            className="text-sm font-semibold tracking-wide text-amber-600 dark:text-amber-400"
                                                         >
                                                             +
                                                             {selected
@@ -897,10 +959,10 @@ Once confirmed, this cannot be changed or reset.`;
                                                                 fontFamily:
                                                                     'Oxanium',
                                                             }}
-                                                            className="text-sm font-medium text-[#FACC15]"
+                                                            className="text-sm font-medium text-slate-400 dark:text-[#FACC15]"
                                                         >
                                                             Focus Boost{' '}
-                                                            <span className="text-[#F0F0F0]">
+                                                            <span className="text-slate-400 dark:text-[#F0F0F0]">
                                                                 Session
                                                             </span>
                                                         </span>
@@ -915,10 +977,10 @@ Once confirmed, this cannot be changed or reset.`;
                                                                 fontFamily:
                                                                     'Oxanium',
                                                             }}
-                                                            className="text-sm font-medium text-[#F0F0F0]"
+                                                            className="text-sm font-medium text-slate-400 dark:text-[#F0F0F0]"
                                                         >
                                                             Mind{' '}
-                                                            <span className="text-[#FACC15]">
+                                                            <span className="text-amber-500 dark:text-[#FACC15]">
                                                                 Sync
                                                             </span>
                                                         </span>
@@ -927,12 +989,12 @@ Once confirmed, this cannot be changed or reset.`;
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-[#3B28F6] bg-[#020101]/60 p-8 text-center shadow-[0_0_11px_rgba(59,130,246,0.35)]">
+                                        <div className="rounded-2xl border border-[#3B28F6] bg-white/70 dark:bg-[#020101]/60 p-8 text-center shadow-[0_0_11px_rgba(59,130,246,0.15)] dark:shadow-[0_0_11px_rgba(59,130,246,0.35)]">
                                             <p
                                                 style={{
                                                     fontFamily: 'Orbitron',
                                                 }}
-                                                className="text-xl leading-relaxed font-semibold tracking-wide text-slate-200"
+                                                className="text-xl leading-relaxed font-semibold tracking-wide text-slate-800 dark:text-slate-200"
                                             >
                                                 "
                                                 {selected.quote ||
@@ -940,7 +1002,7 @@ Once confirmed, this cannot be changed or reset.`;
                                                 "
                                             </p>
                                             <div className="relative mt-4 flex items-center justify-center">
-                                                <span className="text-xs text-slate-500 italic">
+                                                <span className="text-xs text-slate-600 dark:text-slate-500 italic">
                                                     — {selected.name}
                                                 </span>
                                                 <div className="absolute bottom-[-6px] h-[3px] w-24 rounded-full bg-purple-500/50 blur-md" />
@@ -948,7 +1010,7 @@ Once confirmed, this cannot be changed or reset.`;
                                         </div>
                                     </div>
 
-                                    <div className="relative border-t border-white/10 p-6 lg:p-8">
+                                    <div className="relative border-t border-slate-300 dark:border-white/10 p-6 lg:p-8">
                                         <div className="flex flex-col gap-4 sm:flex-row">
                                             <button
                                                 onClick={confirmSelection}
@@ -990,52 +1052,53 @@ Once confirmed, this cannot be changed or reset.`;
                                     opacity: 0,
                                 }}
                                 transition={{
-                                    duration: 0.5,
+                                    duration: 0.45,
                                     ease: 'easeInOut',
                                 }}
-                                className="relative w-full max-w-xl overflow-hidden rounded-xs border border-[#3B28F6]/80 bg-[#020202] p-6 text-center shadow-[0_0_30px_rgba(59,130,246,0.6)] md:p-8 lg:p-10 xl:p-12"
+                                className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-[#3B28F6]/80 bg-white dark:bg-[#020202] p-6 text-center shadow-[0_0_30px_rgba(59,130,246,0.3)] dark:shadow-[0_0_30px_rgba(59,130,246,0.6)] md:p-8 lg:p-10 xl:p-12 landscape:max-w-[460px] landscape:max-h-[94vh] landscape:p-4"
                             >
-                                <div className="absolute -top-20 -left-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
-                                <div className="absolute -right-20 -bottom-20 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl" />
-                                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-yellow-400 bg-[#F0E427]/30">
-                                    <TriangleAlert className="h-8 w-8 text-yellow-400" />
+                                <div className="pointer-events-none absolute -top-20 -left-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
+                                <div className="pointer-events-none absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl" />
+
+                                <div className="mx-auto mb-6 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-yellow-400 bg-[#F0E427]/30 landscape:mb-2 landscape:h-9 landscape:w-9">
+                                    <TriangleAlert className="h-8 w-8 text-yellow-400 landscape:h-4.5 landscape:w-4.5" />
                                 </div>
-                                <h1 className="text-3xl tracking-widest text-white uppercase md:text-4xl">
+                                <h1 className="shrink-0 text-3xl tracking-widest text-slate-900 dark:text-white uppercase md:text-4xl landscape:text-base landscape:tracking-wider">
                                     Confirm Selection
                                 </h1>
-                                <p className="mt-2 mb-6 text-xs tracking-[0.2em] text-[#3B28F6] uppercase">
+                                <p className="shrink-0 mt-2 mb-6 text-xs tracking-[0.2em] text-[#3B28F6] uppercase landscape:mt-[2px] landscape:mb-2 landscape:text-[10px]">
                                     System Alert: Action Final
                                 </p>
-                                <div className="mb-6 flex items-center justify-center gap-3">
-                                    <div className="h-[1px] w-24 bg-[#3B28F6]" />
-                                    <div className="h-3 w-3 rotate-45 border-2 border-blue-500" />
-                                    <div className="h-[1px] w-24 bg-[#3B28F6]" />
+                                <div className="shrink-0 mb-6 flex items-center justify-center gap-3 landscape:mb-2 landscape:gap-2">
+                                    <div className="h-[1px] w-24 bg-[#3B28F6] landscape:w-20" />
+                                    <div className="h-3 w-3 rotate-45 border-2 border-blue-500 landscape:h-2 landscape:w-2" />
+                                    <div className="h-[1px] w-24 bg-[#3B28F6] landscape:w-20" />
                                 </div>
-                                <div className="mb-6 rounded-xl border border-blue-500/30 bg-blue-900/10 p-5 text-left">
-                                    <p className="mb-3 text-center font-semibold text-yellow-400">
+                                <div className="shrink-0 mb-6 rounded-xl border border-blue-500/30 bg-blue-50 dark:bg-blue-900/10 p-5 text-left landscape:mb-3 landscape:p-3 landscape:rounded-lg">
+                                    <p className="mb-3 text-center font-semibold text-yellow-600 dark:text-yellow-400 landscape:mb-1 landscape:text-xs">
                                         Warning: Irreversible Action
                                     </p>
-                                    <p className="font-mono text-sm leading-relaxed text-slate-100 md:text-base">
+                                    <p className="font-mono text-sm leading-relaxed text-slate-800 dark:text-slate-100 md:text-base landscape:text-xs landscape:leading-relaxed">
                                         {typedText}
                                         <span className="animate-pulse">|</span>
                                     </p>
                                 </div>
-                                <div className="flex flex-col gap-3 sm:flex-row">
+                                <div className="shrink-0 flex flex-col gap-3 sm:flex-row landscape:flex-row landscape:gap-2.5">
                                     <button
                                         onClick={() => setShowModal(false)}
-                                        className="flex-1 rounded-sm border border-white/10 bg-white/5 px-6 py-3 text-white/80 hover:bg-white/10"
+                                        className="flex-1 rounded-sm border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-6 py-3 text-slate-700 dark:text-white/80 hover:bg-slate-200 dark:hover:bg-white/10 landscape:px-4 landscape:py-2 landscape:text-xs font-medium"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleSubmit}
                                         disabled={processing}
-                                        className="flex-1 rounded-sm border border-[#4F46E5] bg-[#3B28F6]/20 px-6 py-3 text-[#6252FF] shadow-[0_0_12px_rgba(139,92,246,0.6)] hover:shadow-[0_0_20px_rgba(139,92,246,0.8)]"
+                                        className="flex-1 rounded-sm border border-[#3b28f6] bg-[#3b28f6]/10 dark:bg-[#3B28F6]/20 px-6 py-3 text-[#3b28f6] dark:text-[#6252FF] shadow-[0_0_12px_rgba(139,92,246,0.3)] dark:shadow-[0_0_12px_rgba(139,92,246,0.6)] hover:bg-[#3b28f6]/20 dark:hover:bg-[#3b28f6]/30 landscape:px-4 landscape:py-2 landscape:text-xs font-bold"
                                     >
                                         {processing ? 'Deploying...' : 'Deploy'}
                                     </button>
                                 </div>
-                                <p className="mt-8 text-[10px] tracking-wide text-slate-500">
+                                <p className="shrink-0 mt-8 text-[10px] tracking-wide text-slate-400 dark:text-slate-500 landscape:mt-2 landscape:text-[8.5px]">
                                     SYSTEM ID: SKILLVENTURA CHARACTER
                                 </p>
                             </motion.div>

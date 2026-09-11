@@ -150,7 +150,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
 
     return (
         <div
-            className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-5 transition-all duration-200 ${
+            className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 sm:p-4 md:p-5 transition-all duration-200 ${
                 isCompleted
                     ? 'cursor-default border-emerald-500/30 bg-emerald-50/20 dark:border-emerald-950/60 dark:bg-gradient-to-b dark:from-[#061512] dark:to-[#030807]'
                     : isMyWorker
@@ -165,16 +165,16 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
             <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
             <div className="relative z-10 flex h-full flex-col justify-between">
                 {/* Badge Header */}
-                <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2 text-[10px]">
-                    <div className="flex flex-wrap items-center gap-1.5 font-medium">
+                <div className="mb-2 sm:mb-3.5 flex flex-wrap items-center justify-between gap-1 sm:gap-2 text-[9px] sm:text-[10px]">
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 font-medium">
                         <span
-                            className={`rounded border px-2 py-0.5 font-semibold ${rankInfo.color}`}
+                            className={`rounded border px-1.5 py-0.5 sm:px-2 text-[8.5px] sm:text-[10px] font-semibold ${rankInfo.color}`}
                         >
                             {rankInfo.rank}
                         </span>
 
                         {isMyWorker && !isCompleted && (
-                            <span className="flex items-center gap-1.5 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400">
+                            <span className="flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[8.5px] sm:text-[10px] font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400">
                                 <span className="relative flex h-1.5 w-1.5">
                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
@@ -184,21 +184,21 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                         )}
 
                         {isMyCreator && !isCompleted && (
-                            <span className="rounded border border-indigo-500/30 bg-indigo-500/10 px-2 py-0.5 font-bold text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400">
+                            <span className="rounded border border-indigo-500/30 bg-indigo-500/10 px-1.5 py-0.5 text-[8.5px] sm:text-[10px] font-bold text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400">
                                 Proyek Anda
                             </span>
                         )}
 
                         {isOngoingByOthers && !isCompleted && (
-                            <span className="flex items-center gap-1 rounded border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400">
-                                <Lock size={10} />
+                            <span className="flex items-center gap-1 rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[8.5px] sm:text-[10px] font-bold text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400">
+                                <Lock size={9} />
                                 Terisi
                             </span>
                         )}
                     </div>
 
                     <span
-                        className={`rounded-full border px-2.5 py-0.5 text-[9px] font-extrabold tracking-wider uppercase ${statusBadge.className}`}
+                        className={`rounded-full border px-1.5 sm:px-2.5 py-0.5 text-[8px] sm:text-[9px] font-extrabold tracking-wider uppercase ${statusBadge.className}`}
                     >
                         {statusBadge.label}
                     </span>
@@ -206,7 +206,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
 
                 {/* Title */}
                 <h2
-                    className={`mb-2 line-clamp-1 text-sm font-bold tracking-tight transition-colors sm:text-base ${
+                    className={`mb-1.5 line-clamp-2 text-xs font-bold tracking-tight transition-colors sm:mb-2 sm:text-base ${
                         isCompleted
                             ? 'text-slate-500 dark:text-slate-400'
                             : isMyWorker
@@ -223,7 +223,7 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
 
                 {/* Description */}
                 <p
-                    className={`mb-4.5 line-clamp-3 text-xs leading-relaxed font-normal ${
+                    className={`mb-3 line-clamp-2 sm:line-clamp-3 text-[10px] sm:text-xs leading-relaxed font-normal ${
                         isCompleted
                             ? 'text-slate-500 dark:text-slate-500'
                             : isOngoingByOthers
@@ -235,14 +235,14 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 </p>
 
                 {/* Specifications details */}
-                <div className="mb-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3 text-[11px] sm:grid-cols-3 dark:border-slate-800">
-                    <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                        <div>
-                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                <div className="mb-3 grid grid-cols-1 gap-2 border-t border-slate-200 pt-2 text-[10px] sm:grid-cols-3 sm:gap-3 sm:pt-3 sm:text-[11px] dark:border-slate-800">
+                    <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                        <div className="min-w-0 flex-1">
+                            <span className="block text-[8px] font-bold tracking-wider text-slate-500 uppercase sm:text-[9px] dark:text-slate-400">
                                 Anggaran
                             </span>
                             <span
-                                className={`font-bold ${
+                                className={`block truncate font-bold leading-tight ${
                                     isCompleted || isOngoingByOthers
                                         ? 'text-slate-700 dark:text-slate-300'
                                         : 'text-slate-900 dark:text-white'
@@ -259,13 +259,13 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                        <div>
-                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                    <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                        <div className="min-w-0 flex-1">
+                            <span className="block text-[8px] font-bold tracking-wider text-slate-500 uppercase sm:text-[9px] dark:text-slate-400">
                                 Batas Waktu
                             </span>
                             <span
-                                className={`font-bold ${
+                                className={`block truncate font-bold leading-tight ${
                                     isCompleted || isOngoingByOthers
                                         ? 'text-slate-700 dark:text-slate-300'
                                         : 'text-slate-900 dark:text-white'
@@ -276,13 +276,13 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                         </div>
                     </div>
 
-                    <div className="col-span-2 flex items-center gap-2 text-slate-700 sm:col-span-1 dark:text-slate-300">
-                        <div>
-                            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                    <div className="flex items-center gap-1.5 text-slate-700 sm:col-span-1 dark:text-slate-300">
+                        <div className="min-w-0 flex-1">
+                            <span className="block text-[8px] font-bold tracking-wider text-slate-500 uppercase sm:text-[9px] dark:text-slate-400">
                                 Pelamar
                             </span>
                             <span
-                                className={`font-bold ${
+                                className={`block truncate font-bold leading-tight ${
                                     isCompleted || isOngoingByOthers
                                         ? 'text-slate-700 dark:text-slate-300'
                                         : 'text-indigo-600 dark:text-indigo-400'
@@ -295,24 +295,24 @@ export default function QuestItemCard({ quest }: QuestItemCardProps) {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between border-t border-slate-200 pt-3 dark:border-slate-800">
-                <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 font-extrabold text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+            <div className="flex items-center justify-between border-t border-slate-200 pt-2.5 sm:pt-3 dark:border-slate-800">
+                <div className="flex min-w-0 items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300">
+                    <div className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-slate-200 text-[9px] font-extrabold text-slate-800 sm:h-5 sm:w-5 sm:text-xs dark:bg-slate-800 dark:text-slate-200">
                         {quest.creator.name.substring(0, 1).toUpperCase()}
                     </div>
-                    <span className="max-w-[100px] truncate font-bold text-slate-800 dark:text-slate-200">
+                    <span className="max-w-[60px] truncate text-[10px] font-bold text-slate-800 sm:max-w-[100px] sm:text-xs dark:text-slate-200">
                         {quest.creator.name}
                     </span>
                 </div>
 
                 {isCompleted ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                    <span className="inline-flex shrink-0 items-center gap-1 text-[10px] font-bold text-emerald-700 sm:text-xs dark:text-emerald-400">
                         Selesai
                     </span>
                 ) : (
                     <Link
                         href={`/quests/${quest.slug}`}
-                        className={`inline-flex items-center gap-1 text-xs font-bold transition-colors ${
+                        className={`inline-flex shrink-0 items-center gap-0.5 text-[10px] font-extrabold transition-colors sm:text-xs ${
                             isOngoingByOthers
                                 ? 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                                 : 'text-indigo-700 hover:underline dark:text-indigo-400'

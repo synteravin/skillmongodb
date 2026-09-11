@@ -33,7 +33,7 @@ const mockStudentQuests: QuestCardData[] = [
             'Implementasikan payment flow aman menggunakan Midtrans Snap SDK, signature key validation, dan idempotent webhook listener.',
         rank: 'Intermediate',
         rankStyle:
-            'border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.3)]',
+            'border-emerald-500/40 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 shadow-xs dark:shadow-[0_0_12px_rgba(52,211,153,0.3)]',
         salary: 'Rp 2.500.000',
         deadline: '18 September 2026 23:59',
         bids: 9,
@@ -46,7 +46,7 @@ const mockStudentQuests: QuestCardData[] = [
             'Konversi desain Figma high-fidelity ke komponen modular React modern lengkap dengan dark mode state, dynamic charts, dan micro-animations.',
         rank: 'Entry-Level',
         rankStyle:
-            'border-slate-500/40 bg-slate-700/30 text-slate-200 shadow-[0_0_10px_rgba(148,163,184,0.2)]',
+            'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-500/40 dark:bg-slate-700/30 dark:text-slate-200 shadow-xs dark:shadow-[0_0_10px_rgba(148,163,184,0.2)]',
         salary: 'Rp 1.400.000',
         deadline: '22 September 2026 18:00',
         bids: 14,
@@ -59,7 +59,7 @@ const mockStudentQuests: QuestCardData[] = [
             'Membangun bidirectional socket cluster dengan Redis pub/sub untuk sinkronisasi kursor multi-user dan lobi suara terenkripsi.',
         rank: 'Enterprise',
         rankStyle:
-            'border-blue-500/40 bg-blue-500/15 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.35)]',
+            'border-blue-500/40 bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300 shadow-xs dark:shadow-[0_0_15px_rgba(59,130,246,0.35)]',
         salary: 'Rp 5.500.000',
         deadline: '28 September 2026 21:00',
         bids: 6,
@@ -72,7 +72,7 @@ export default function QuestTab() {
     const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
     return (
-        <div className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-blue-500/20 bg-[#020202] text-white shadow-2xl">
+        <div className="relative flex w-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-[#fdfcfc] text-slate-800 shadow-xl transition-colors duration-300 dark:border-blue-500/20 dark:bg-[#020202] dark:text-white">
             {/* Latar Belakang Kosmik Bintang Asli Ventura */}
             <StarBackground />
 
@@ -110,7 +110,7 @@ export default function QuestTab() {
                                 </defs>
                                 <path
                                     d="M 3,3 H 127 L 97,47 H 3 Z"
-                                    className="fill-blue-50/60 transition-colors dark:fill-[#080e28]/40"
+                                    className="fill-blue-50/80 transition-colors dark:fill-[#080e28]/40"
                                     stroke="url(#back_border_grad_quest_tab)"
                                     strokeWidth="2"
                                     strokeLinejoin="miter"
@@ -125,11 +125,11 @@ export default function QuestTab() {
                         </div>
 
                         {/* Title */}
-                        <h1 className="pointer-events-none absolute right-0 left-0 px-16 text-center font-['Orbitron'] text-sm sm:text-base md:text-lg lg:text-xl font-bold tracking-[0.08em] text-[#1e3a8a] uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] dark:text-white">
+                        <h1 className="pointer-events-none absolute inset-x-0 px-10 sm:px-16 text-center font-['Orbitron'] text-xs sm:text-base md:text-lg lg:text-xl font-bold tracking-[0.05em] text-[#1e3a8a] uppercase dark:text-white dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                             BURSA QUEST & PROYEK
                         </h1>
 
-                        <span className="hidden sm:inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-['Oxanium'] text-[10px] font-bold text-emerald-400">
+                        <span className="hidden sm:inline-block rounded-full border border-emerald-500/30 bg-emerald-50 px-2.5 py-1 font-['Oxanium'] text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
                             ● 24 Quest Tersedia
                         </span>
                     </div>
@@ -139,16 +139,16 @@ export default function QuestTab() {
             {/* ═══════════════════════════════════════════════════════════════
                 STUDENT TOOLBAR CROP (Tabs + Search Bar + Filters)
                ═══════════════════════════════════════════════════════════════ */}
-            <div className="relative z-10 border-b border-white/10 bg-[#070822]/80 p-4 text-left backdrop-blur-sm">
+            <div className="relative z-10 border-b border-slate-200 bg-slate-100/90 p-3 sm:p-4 text-left backdrop-blur-sm dark:border-white/10 dark:bg-[#070822]/80">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     {/* Main Tabs (Bursa Quest vs Quest Saya) */}
-                    <div className="flex rounded-xl border border-white/10 bg-[#030412] p-1 font-['Orbitron'] text-[11px]">
+                    <div className="flex rounded-xl border border-slate-300/80 bg-slate-200/80 p-1 font-['Orbitron'] text-[11px] dark:border-white/10 dark:bg-[#030412]">
                         <button
                             onClick={() => setActiveSubTab('bursa')}
                             className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 font-bold transition-all ${
                                 activeSubTab === 'bursa'
                                     ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(59,130,246,0.6)]'
-                                    : 'text-slate-400 hover:text-white'
+                                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                             }`}
                         >
                             <Compass size={13} />
@@ -159,11 +159,11 @@ export default function QuestTab() {
                             className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 font-bold transition-all ${
                                 activeSubTab === 'saya'
                                     ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(59,130,246,0.6)]'
-                                    : 'text-slate-400 hover:text-white'
+                                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                             }`}
                         >
                             <span>Quest Saya</span>
-                            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500/30 text-[9px]">
+                            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 text-[9px] font-bold text-blue-700 dark:bg-blue-500/30 dark:text-blue-200">
                                 2
                             </span>
                         </button>
@@ -176,14 +176,14 @@ export default function QuestTab() {
                                 size={14}
                                 className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400"
                             />
-                            <div className="w-full rounded-xl border border-white/10 bg-[#0a0d2a] py-1.5 pr-3 pl-9 font-['Oxanium'] text-xs text-slate-300 select-none">
+                            <div className="w-full rounded-xl border border-slate-300/80 bg-white py-1.5 pr-3 pl-9 font-['Oxanium'] text-xs text-slate-700 shadow-xs select-none dark:border-white/10 dark:bg-[#0a0d2a] dark:text-slate-300">
                                 Cari judul quest atau keahlian...
                             </div>
                         </div>
 
-                        <div className="hidden sm:flex items-center gap-1.5 rounded-xl border border-white/10 bg-[#0a0d2a] px-3 py-1.5 font-['Oxanium'] text-xs text-slate-300">
+                        <div className="hidden sm:flex items-center gap-1.5 rounded-xl border border-slate-300/80 bg-white px-3 py-1.5 font-['Oxanium'] text-xs text-slate-700 shadow-xs dark:border-white/10 dark:bg-[#0a0d2a] dark:text-slate-300">
                             <span>Status: Tersedia</span>
-                            <ChevronDown size={12} className="text-slate-400" />
+                            <ChevronDown size={12} className="text-slate-400 dark:text-slate-300" />
                         </div>
                     </div>
                 </div>
@@ -204,8 +204,8 @@ export default function QuestTab() {
                                 onMouseLeave={() => setHoveredCard(null)}
                                 className={`group relative flex cursor-pointer flex-col justify-between rounded-xl border p-5 transition-all duration-300 ${
                                     isHovered
-                                        ? 'border-blue-400 bg-gradient-to-b from-[#111745] to-[#070924] shadow-[0_12px_35px_rgba(59,130,246,0.35)] -translate-y-1.5'
-                                        : 'border-white/10 bg-[#070921]/90 hover:border-white/25'
+                                        ? 'border-blue-500 bg-gradient-to-b from-blue-50/70 to-white shadow-[0_12px_30px_rgba(59,130,246,0.18)] -translate-y-1.5 dark:border-blue-400 dark:bg-gradient-to-b dark:from-[#111745] dark:to-[#070924] dark:shadow-[0_12px_35px_rgba(59,130,246,0.35)]'
+                                        : 'border-slate-200 bg-white shadow-xs hover:border-blue-300 dark:border-white/10 dark:bg-[#070921]/90 dark:hover:border-white/25'
                                 }`}
                             >
                                 <div>
@@ -216,13 +216,13 @@ export default function QuestTab() {
                                         >
                                             {quest.rank}
                                         </span>
-                                        <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-['Oxanium'] text-[9px] font-bold text-emerald-400">
+                                        <span className="rounded-full border border-emerald-500/30 bg-emerald-50 px-2 py-0.5 font-['Oxanium'] text-[9px] font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
                                             ● Tersedia
                                         </span>
                                     </div>
 
                                     {/* Title */}
-                                    <h4 className="font-['Orbitron'] text-sm font-bold text-white transition-colors group-hover:text-cyan-300 line-clamp-2">
+                                    <h4 className="font-['Orbitron'] text-sm font-bold text-slate-900 transition-colors group-hover:text-blue-600 line-clamp-2 dark:text-white dark:group-hover:text-cyan-300">
                                         {quest.title}
                                     </h4>
 
@@ -230,15 +230,15 @@ export default function QuestTab() {
                                     <div className="mt-3 flex items-baseline gap-1">
                                         <DollarSign
                                             size={16}
-                                            className="text-emerald-400 self-center"
+                                            className="text-emerald-600 dark:text-emerald-400 self-center"
                                         />
-                                        <span className="font-['Orbitron'] text-lg font-black text-emerald-400">
+                                        <span className="font-['Orbitron'] text-lg font-black text-emerald-600 dark:text-emerald-400">
                                             {quest.salary}
                                         </span>
                                     </div>
 
                                     {/* Description */}
-                                    <p className="mt-2 font-['Oxanium'] text-xs leading-relaxed text-slate-300 line-clamp-2">
+                                    <p className="mt-2 font-['Oxanium'] text-xs leading-relaxed text-slate-600 line-clamp-2 dark:text-slate-300">
                                         {quest.description}
                                     </p>
 
@@ -247,7 +247,7 @@ export default function QuestTab() {
                                         {quest.skills.map((skill, sIdx) => (
                                             <span
                                                 key={sIdx}
-                                                className="rounded border border-white/5 bg-slate-900/80 px-1.5 py-0.5 font-['Oxanium'] text-[9px] text-slate-300"
+                                                className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-['Oxanium'] text-[9px] font-medium text-slate-700 dark:border-white/5 dark:bg-slate-900/80 dark:text-slate-300"
                                             >
                                                 {skill}
                                             </span>
@@ -256,7 +256,7 @@ export default function QuestTab() {
                                 </div>
 
                                 {/* Bottom Metadata & CTA Button */}
-                                <div className="mt-5 border-t border-white/10 pt-3 text-[10px] font-['Oxanium'] text-slate-400">
+                                <div className="mt-5 border-t border-slate-100 pt-3 text-[10px] font-['Oxanium'] text-slate-500 dark:border-white/10 dark:text-slate-400">
                                     <div className="mb-3 flex items-center justify-between">
                                         <div className="flex items-center gap-1">
                                             <Calendar size={12} className="text-slate-400" />
@@ -268,7 +268,7 @@ export default function QuestTab() {
                                         </div>
                                     </div>
 
-                                    <button className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-blue-500/40 bg-blue-600/30 py-2 font-['Orbitron'] text-xs font-bold text-white shadow-sm transition-all duration-200 group-hover:bg-blue-600 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.6)]">
+                                    <button className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-blue-500/30 bg-blue-50 py-2 font-['Orbitron'] text-xs font-bold text-blue-700 shadow-xs transition-all duration-200 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(59,130,246,0.35)] dark:border-blue-500/40 dark:bg-blue-600/30 dark:text-white dark:group-hover:bg-blue-600 dark:group-hover:shadow-[0_0_15px_rgba(59,130,246,0.6)]">
                                         <span>Detail & Ajukan Proposal</span>
                                         <ArrowRight
                                             size={12}

@@ -263,11 +263,11 @@ export default function CharacterOnboardingTour({
 
     // 1. HERO CHARACTER POSITION & HEIGHT (waist-up, behind bottomnav)
     const heroBottomClass = isMobileLandscape
-        ? '-bottom-[35px]'
+        ? '-bottom-[20px]'
         : '-bottom-[65px] xs:-bottom-[75px] sm:-bottom-[90px] md:-bottom-[85px] lg:-bottom-[180px] xl:-bottom-[230px] 2xl:-bottom-[270px]';
 
     const heroHeightClass = isMobileLandscape
-        ? 'h-[270px]'
+        ? 'h-[200px]'
         : 'h-[285px] xs:h-[310px] sm:h-[340px] md:h-[320px] lg:h-[600px] xl:h-[720px] 2xl:h-[820px]';
 
     const heroLeftClass = isMobileLandscape
@@ -276,22 +276,22 @@ export default function CharacterOnboardingTour({
 
     // 2. WELCOME SPEECH BUBBLE (TOP-RIGHT ABOVE HEAD)
     const welcomeBubbleClass = isMobileLandscape
-        ? 'absolute bottom-[235px] left-[130px] w-[230px] z-50 pointer-events-auto animate-fadeIn'
+        ? 'absolute bottom-[160px] left-[80px] w-[195px] z-50 pointer-events-auto animate-fadeIn'
         : 'absolute bottom-[270px] xs:bottom-[300px] sm:bottom-[340px] md:bottom-[290px] lg:bottom-[470px] xl:bottom-[550px] 2xl:bottom-[556px] left-[25px] xs:left-[35px] sm:left-[100px] md:left-[90px] lg:left-[230px] xl:left-[350px] 2xl:left-[420px] z-50 w-[calc(100vw-50px)] max-w-[200px] xs:max-w-[220px] sm:max-w-none sm:w-[260px] md:w-[220px] lg:w-[340px] xl:w-[380px] 2xl:w-[340px] pointer-events-auto animate-fadeIn';
 
     // 3. MAIN EXPLANATION CARD (SPEECH BUBBLE 2)
     const mainCardClass = isMobileLandscape
-        ? 'absolute bottom-[85px] left-[350px] w-[250px] z-50 pointer-events-auto animate-fadeIn'
+        ? 'absolute bottom-[85px] left-[310px] w-[230px] z-50 pointer-events-auto animate-fadeIn'
         : 'absolute bottom-[75px] xs:bottom-[80px] sm:bottom-[90px] md:bottom-[105px] lg:bottom-[200px] xl:bottom-[280px] 2xl:bottom-[310px] left-[145px] xs:left-[165px] sm:left-[205px] md:left-[210px] lg:left-[340px] xl:left-[460px] 2xl:left-[520px] z-50 w-[calc(100vw-155px)] xs:w-[calc(100vw-175px)] max-w-[190px] xs:max-w-[205px] sm:max-w-none sm:w-[250px] md:w-[250px] lg:w-[360px] xl:w-[380px] 2xl:w-[410px] pointer-events-auto animate-fadeIn';
 
     // 4. REWARDS INFO PANEL (RIGHT SIDE - VISIBLE ON MOBILE LANDSCAPE, MD, LG, XL, 2XL)
     const rewardsCardClass = isMobileLandscape
-        ? 'flex absolute bottom-[85px] left-[620px] w-[115px] z-50 flex-col items-center gap-1.5 shrink-0 pointer-events-auto animate-fadeIn'
+        ? 'flex absolute bottom-[85px] left-[590px] w-[120px] z-50 flex-col items-center gap-1.5 shrink-0 pointer-events-auto animate-fadeIn'
         : 'hidden md:flex absolute md:bottom-[105px] lg:bottom-[190px] xl:bottom-[270px] 2xl:bottom-[300px] md:left-[560px] lg:left-[720px] xl:left-[920px] 2xl:left-[1050px] z-50 flex-col items-center gap-2 md:gap-2.5 lg:gap-3 md:w-[120px] lg:w-[150px] xl:w-[176px] 2xl:w-[190px] shrink-0 pointer-events-auto animate-fadeIn';
 
     // 5. TREASURE TRAIL SVG POSITION & WIDTH
     const svgTrailClass = isMobileLandscape
-        ? 'absolute top-1/2 -translate-y-1/2 -left-[53.5px] w-[53.5px] h-[30px] pointer-events-none overflow-visible z-10'
+        ? 'absolute top-1/2 -translate-y-1/2 -left-[82px] w-[82px] h-[30px] pointer-events-none overflow-visible z-10'
         : 'absolute top-1/2 -translate-y-1/2 md:-left-[132px] md:w-[132px] lg:-left-[67px] lg:w-[67px] xl:-left-[132px] xl:w-[132px] 2xl:-left-[179px] 2xl:w-[179px] h-[35px] pointer-events-none overflow-visible z-10';
 
     // 6. BACKLIGHT GLOW POSITION & SIZE
@@ -613,7 +613,7 @@ export default function CharacterOnboardingTour({
                     </div>
                 </div>
             </div>
-            ,{/* 5. REWARD COMPLETION MODAL (Shows when tour is completed) */}
+            {/* 5. REWARD COMPLETION MODAL (Shows when tour is completed) */}
             <AnimatePresence>
                 {showRewardModal && (
                     <>
@@ -637,10 +637,12 @@ export default function CharacterOnboardingTour({
                                 stiffness: 140,
                                 damping: 16,
                             }}
-                            className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-4"
+                            className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
                         >
                             <div
-                                className="relative w-full max-w-md overflow-hidden rounded-2xl p-6 text-center text-slate-100 shadow-2xl sm:p-8"
+                                className={`relative w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl text-center text-slate-100 shadow-2xl transition-all ${
+                                    isMobileLandscape ? 'p-3.5' : 'p-5 sm:p-8'
+                                }`}
                                 style={{
                                     background:
                                         'linear-gradient(160deg, #060d1f 0%, #080f22 50%, #040a18 100%)',
@@ -650,12 +652,24 @@ export default function CharacterOnboardingTour({
                                 }}
                             >
                                 {/* Header Title */}
-                                <div className="mb-2">
-                                    <div className="mb-3 inline-flex h-12 w-12 animate-bounce items-center justify-center rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">
-                                        <Gift size={24} />
+                                <div className={isMobileLandscape ? 'mb-1' : 'mb-2'}>
+                                    <div
+                                        className={`inline-flex animate-bounce items-center justify-center rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 ${
+                                            isMobileLandscape
+                                                ? 'mb-1 h-7 w-7'
+                                                : 'mb-2 h-10 w-10 sm:h-12 sm:w-12'
+                                        }`}
+                                    >
+                                        <Gift
+                                            size={isMobileLandscape ? 16 : 22}
+                                        />
                                     </div>
                                     <h2
-                                        className="text-xl font-black tracking-widest text-amber-400 uppercase sm:text-2xl"
+                                        className={`font-black tracking-widest text-amber-400 uppercase ${
+                                            isMobileLandscape
+                                                ? 'text-sm'
+                                                : 'text-lg sm:text-2xl'
+                                        }`}
                                         style={{
                                             fontFamily:
                                                 "'Orbitron', sans-serif",
@@ -663,7 +677,13 @@ export default function CharacterOnboardingTour({
                                     >
                                         PANDUAN SELESAI! ✨
                                     </h2>
-                                    <p className="mt-1 font-sans text-xs text-slate-300">
+                                    <p
+                                        className={`mt-0.5 font-sans text-slate-300 ${
+                                            isMobileLandscape
+                                                ? 'text-[9.5px]'
+                                                : 'text-xs'
+                                        }`}
+                                    >
                                         Selamat! Kamu telah menyelesaikan
                                         seluruh Onboarding Tour dan berhak
                                         mengklaim hadiah awalmu:
@@ -671,14 +691,26 @@ export default function CharacterOnboardingTour({
                                 </div>
 
                                 {/* Divider */}
-                                <div className="my-4 flex items-center justify-center gap-2">
+                                <div
+                                    className={`flex items-center justify-center gap-2 ${
+                                        isMobileLandscape
+                                            ? 'my-1.5'
+                                            : 'my-3 sm:my-4'
+                                    }`}
+                                >
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#3b82f6]/60 to-transparent" />
-                                    <div className="h-2 w-2 rotate-45 bg-[#3b82f6]/60" />
+                                    <div className="h-1.5 w-1.5 rotate-45 bg-[#3b82f6]/60" />
                                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#3b82f6]/60 to-transparent" />
                                 </div>
 
-                                {/* Reward Items Grid */}
-                                <div className="my-5 flex flex-col gap-2.5">
+                                {/* Reward Items Grid (Side by side on mobile landscape, stacked on portrait) */}
+                                <div
+                                    className={`grid gap-2 ${
+                                        isMobileLandscape
+                                            ? 'my-2 grid-cols-3'
+                                            : 'my-3 grid-cols-1 sm:my-5 sm:gap-2.5'
+                                    }`}
+                                >
                                     {modalRewards.map((item, idx) => (
                                         <motion.div
                                             key={item.label}
@@ -687,11 +719,25 @@ export default function CharacterOnboardingTour({
                                             transition={{
                                                 delay: 0.1 + idx * 0.1,
                                             }}
-                                            className="relative flex items-center justify-between rounded-xl border border-slate-800 bg-[#070e24]/90 px-4 py-3"
+                                            className={`relative flex items-center rounded-xl border border-slate-800 bg-[#070e24]/90 ${
+                                                isMobileLandscape
+                                                    ? 'flex-col justify-center p-2 text-center'
+                                                    : 'justify-between px-4 py-3'
+                                            }`}
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div
+                                                className={`flex items-center ${
+                                                    isMobileLandscape
+                                                        ? 'flex-col gap-0.5'
+                                                        : 'gap-3'
+                                                }`}
+                                            >
                                                 <div
-                                                    className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900"
+                                                    className={`flex items-center justify-center rounded-full bg-slate-900 ${
+                                                        isMobileLandscape
+                                                            ? 'h-6 w-6'
+                                                            : 'h-9 w-9'
+                                                    }`}
                                                     style={{
                                                         border: '1px solid rgba(234,179,8,0.3)',
                                                         boxShadow: `0 0 10px ${item.glowColor}`,
@@ -700,11 +746,19 @@ export default function CharacterOnboardingTour({
                                                     <img
                                                         src={item.icon}
                                                         alt={item.label}
-                                                        className="h-6 w-6 object-contain"
+                                                        className={`object-contain ${
+                                                            isMobileLandscape
+                                                                ? 'h-4 w-4'
+                                                                : 'h-6 w-6'
+                                                        }`}
                                                     />
                                                 </div>
                                                 <span
-                                                    className="text-xs font-bold tracking-widest text-slate-200 uppercase"
+                                                    className={`font-bold tracking-widest text-slate-200 uppercase ${
+                                                        isMobileLandscape
+                                                            ? 'text-[8.5px]'
+                                                            : 'text-xs'
+                                                    }`}
                                                     style={{
                                                         fontFamily:
                                                             "'Orbitron', sans-serif",
@@ -715,7 +769,11 @@ export default function CharacterOnboardingTour({
                                             </div>
 
                                             <span
-                                                className="text-xl font-black"
+                                                className={`font-black ${
+                                                    isMobileLandscape
+                                                        ? 'mt-0.5 text-xs'
+                                                        : 'text-xl'
+                                                }`}
                                                 style={{
                                                     fontFamily:
                                                         "'Orbitron', sans-serif",
@@ -731,13 +789,19 @@ export default function CharacterOnboardingTour({
 
                                 {/* Claim Reward Action Button */}
                                 <motion.button
-                                    whileHover={{ scale: 1.04 }}
-                                    whileTap={{ scale: 0.96 }}
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.97 }}
                                     onClick={() => finishTour(true)}
                                     disabled={isSubmitting}
-                                    className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-600 py-3.5 font-['Orbitron'] text-xs font-black tracking-widest text-white uppercase shadow-lg shadow-indigo-600/40 transition duration-300 hover:shadow-indigo-500/60 sm:text-sm"
+                                    className={`flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-600 font-['Orbitron'] font-black tracking-widest text-white uppercase shadow-lg shadow-indigo-600/40 transition duration-300 hover:shadow-indigo-500/60 ${
+                                        isMobileLandscape
+                                            ? 'mt-1.5 py-2 text-[9.5px]'
+                                            : 'mt-2 py-3 sm:py-3.5 text-xs sm:text-sm'
+                                    }`}
                                 >
-                                    <CheckCircle2 size={16} />
+                                    <CheckCircle2
+                                        size={isMobileLandscape ? 13 : 16}
+                                    />
                                     <span>KLAIM HADIAH & SELESAI</span>
                                 </motion.button>
                             </div>

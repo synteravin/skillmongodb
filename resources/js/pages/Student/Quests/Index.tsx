@@ -417,7 +417,7 @@ export default function Index({
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 gap-5 pb-8 md:grid-cols-2 lg:grid-cols-3">
+                                <div className="grid grid-cols-2 gap-2.5 pb-8 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                                     {bursaQuests.map((quest) => (
                                         <QuestItemCard
                                             key={quest._id}
@@ -509,7 +509,7 @@ export default function Index({
                                 </div>
                             ) : (
                                 <>
-                                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                                         {displayedWorkerQuests.map((quest) => (
                                             <QuestItemCard
                                                 key={quest._id}
@@ -580,7 +580,7 @@ export default function Index({
                                 </div>
                             ) : (
                                 <>
-                                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                                         {displayedCreatorQuests.map((quest) => (
                                             <QuestItemCard
                                                 key={quest._id}

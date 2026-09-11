@@ -1,6 +1,14 @@
 export default function VisionMissionSection() {
     return (
         <section className="relative -mt-24 py-12 md:py-20 lg:-mt-34 lg:py-24 2xl:py-32">
+            {/* Ambient Tech Glows */}
+            <div className="pointer-events-none absolute top-16 -left-16 z-0">
+                <div className="h-[230px] w-[230px] rounded-full bg-blue-800 blur-[75px]" />
+            </div>
+            <div className="pointer-events-none absolute bottom-10 -right-14 z-0">
+                <div className="h-[220px] w-[220px] rounded-full bg-blue-800 blur-[70px]" />
+            </div>
+
             <div className="relative z-10 container mx-auto px-4 md:px-6">
                 <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
                     {/* ================= MOBILE TITLE (SM ONLY) ================= */}
