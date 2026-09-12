@@ -637,7 +637,9 @@ export default function CharacterOnboardingTour({
                                 stiffness: 140,
                                 damping: 16,
                             }}
-                            className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
+                            className={`pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 ${
+                                isMobileLandscape ? '-translate-y-6' : ''
+                            }`}
                         >
                             <div
                                 className={`relative w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl text-center text-slate-100 shadow-2xl transition-all ${

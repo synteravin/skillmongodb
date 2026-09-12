@@ -83,10 +83,10 @@ export default function Leaderboard({
 
             <div className="relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col">
                 {/* HEADER */}
-                <div className="-mt-3 mb-4 flex shrink-0 items-center gap-3 sm:-mt-7 sm:mb-6 sm:gap-6 md:mb-8 landscape:-mt-2 landscape:mb-2">
+                <div className="-mt-3 mb-4 flex shrink-0 items-center gap-3 sm:-mt-7 sm:mb-6 sm:gap-6 md:mb-8 md:gap-8 lg:gap-10 max-md:landscape:-mt-2 max-md:landscape:mb-2">
                     <div className="group relative shrink-0 cursor-pointer">
                         <svg
-                            className="h-[36px] w-[80px] overflow-visible sm:h-[49px] sm:w-[110px] md:h-[55px] md:w-[125px] landscape:h-[32px] landscape:w-[70px]"
+                            className="h-[40px] w-[90px] overflow-visible sm:h-[49px] sm:w-[110px] md:h-[55px] md:w-[125px] max-md:landscape:h-[32px] max-md:landscape:w-[70px]"
                             viewBox="0 0 110 46"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +120,7 @@ export default function Leaderboard({
                             className="absolute inset-0 flex items-center justify-center text-[#1e3a8a] dark:text-blue-200"
                         >
                             <svg
-                                className="h-8 w-8 sm:h-11 sm:w-11 md:h-12 md:w-12 landscape:h-6 landscape:w-6"
+                                className="h-9 w-9 sm:h-11 sm:w-11 md:h-12 md:w-12 max-md:landscape:h-6 max-md:landscape:w-6"
                                 viewBox="0 0 44 44"
                                 fill="none"
                                 stroke="currentColor"
@@ -134,7 +134,7 @@ export default function Leaderboard({
                         </Link>
                     </div>
 
-                    <h1 className="font-['Orbitron'] text-xl font-extrabold tracking-[0.05em] text-[#1e3a8a] uppercase transition-colors duration-500 sm:text-2xl sm:tracking-[0.1em] md:text-3xl lg:text-4xl landscape:text-lg dark:text-[#F0F0F0]">
+                    <h1 className="font-['Orbitron'] text-xl font-extrabold tracking-[0.05em] text-[#1e3a8a] uppercase transition-colors duration-500 sm:text-2xl sm:tracking-[0.1em] md:text-3xl lg:text-4xl max-md:landscape:text-lg dark:text-[#F0F0F0]">
                         LEADERBOARD
                     </h1>
                 </div>
@@ -146,7 +146,7 @@ export default function Leaderboard({
                         <div className="flex shrink-0 flex-col items-center justify-center p-2 sm:p-4 landscape:col-span-5 landscape:p-1 lg:col-span-4">
                             <div className="flex w-full flex-col items-center justify-center gap-1.5 text-center landscape:gap-0.5">
                                 {/* Dynamic Rank Stars (Above Rank Image) */}
-                                <div className="relative z-20 mt-2 -mb-1 flex shrink-0 items-center gap-1.5 sm:mt-4 landscape:mt-0 landscape:mb-0 landscape:gap-1">
+                                <div className="relative z-20 mt-2 -mb-1 flex shrink-0 items-center gap-1.5 sm:mt-4 max-md:landscape:mt-0 max-md:landscape:mb-0 max-md:landscape:gap-1">
                                     {Array.from({
                                         length: Math.min(
                                             Math.max(
@@ -158,7 +158,7 @@ export default function Leaderboard({
                                     }).map((_, i) => (
                                         <Star
                                             key={i}
-                                            className="h-5 w-5 fill-yellow-400 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)] sm:h-6 sm:w-6 md:h-7 md:w-7 landscape:h-4 landscape:w-4"
+                                            className="h-5 w-5 fill-yellow-400 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)] sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 xl:h-10 xl:w-10 max-md:landscape:h-4 max-md:landscape:w-4"
                                         />
                                     ))}
                                 </div>
@@ -171,7 +171,7 @@ export default function Leaderboard({
                                             '/images/default-rank.png'
                                         }
                                         alt={activeUser.rank?.name ?? 'Rank'}
-                                        className="relative z-10 h-20 w-20 object-contain sm:h-32 sm:w-32 md:h-44 md:w-44 lg:h-56 lg:w-56 xl:h-60 xl:w-60 landscape:h-28 landscape:w-28 sm:landscape:h-36 sm:landscape:w-36"
+                                        className="relative z-10 h-20 w-20 object-contain sm:h-32 sm:w-32 md:h-44 md:w-44 lg:h-56 lg:w-56 xl:h-64 xl:w-64 2xl:h-[280px] 2xl:w-[280px] max-md:landscape:h-28 max-md:landscape:w-28 sm:max-md:landscape:h-36 sm:max-md:landscape:w-36"
                                         style={{
                                             filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 6px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 12px rgba(14, 165, 233, 0.8))',
                                         }}
@@ -180,14 +180,14 @@ export default function Leaderboard({
 
                                 {/* Rank Name & Title */}
                                 <div className="flex flex-col items-center">
-                                    <p className="font-['Orbitron'] text-[10px] font-bold tracking-[0.2em] text-sky-600 uppercase sm:text-xs landscape:text-[8px] dark:text-sky-400">
+                                    <p className="font-['Orbitron'] text-[10px] font-bold tracking-[0.2em] text-sky-600 uppercase sm:text-xs md:text-sm lg:text-base max-md:landscape:text-[8px] dark:text-sky-400">
                                         YOUR CURRENT RANK
                                     </p>
-                                    <h2 className="mt-1 font-['Orbitron'] text-base font-extrabold text-slate-800 drop-shadow-[0_0_12px_rgba(56,189,248,0.6)] sm:text-lg md:text-xl lg:text-2xl xl:text-3xl landscape:mt-0 landscape:text-sm dark:text-sky-300">
+                                    <h2 className="mt-1 font-['Orbitron'] text-base font-extrabold text-slate-800 drop-shadow-[0_0_12px_rgba(56,189,248,0.6)] sm:text-lg md:text-xl lg:text-2xl xl:text-3xl max-md:landscape:mt-0 max-md:landscape:text-sm dark:text-sky-300">
                                         {activeUser.rank?.name || 'Unranked'}
                                     </h2>
                                     {activeUser.position && (
-                                        <span className="mt-1 inline-block rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-0.5 font-['Orbitron'] text-xs font-bold text-sky-600 shadow-[0_0_10px_rgba(56,189,248,0.2)] sm:text-sm landscape:mt-0.5 landscape:px-2 landscape:py-0 landscape:text-[10px] dark:bg-sky-400/15 dark:text-sky-300">
+                                        <span className="mt-1 inline-block rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-0.5 font-['Orbitron'] text-xs font-bold text-sky-600 shadow-[0_0_10px_rgba(56,189,248,0.2)] sm:text-sm md:text-base lg:text-lg max-md:landscape:mt-0.5 max-md:landscape:px-2 max-md:landscape:py-0 max-md:landscape:text-[10px] dark:bg-sky-400/15 dark:text-sky-300">
                                             PERINGKAT #{activeUser.position}
                                         </span>
                                     )}
