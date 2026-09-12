@@ -168,7 +168,7 @@ export default function EditProfile({ user }: Props) {
                             style={{ width: '155px', height: '155px' }}
                         >
                             <div
-                                className="h-full w-full cursor-pointer overflow-hidden rounded-full border-4 border-[#FACC15] transition hover:border-[#3B28F6] dark:border-[#FACC15] dark:hover:border-[#3B28F6]"
+                                className="absolute inset-[22px] cursor-pointer overflow-hidden rounded-full"
                                 onClick={handleAvatarClick}
                             >
                                 <img
@@ -184,10 +184,15 @@ export default function EditProfile({ user }: Props) {
                                     alt="avatar preview"
                                 />
                             </div>
+                            <img
+                                src="/images/border.webp"
+                                className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+                                alt="border"
+                            />
                             <button
                                 type="button"
                                 onClick={handleAvatarClick}
-                                className="absolute right-2 bottom-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-[#3B28F6] text-white shadow-lg transition hover:scale-110 hover:bg-[#FACC15] hover:text-black"
+                                className="absolute right-1 bottom-1 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-[#3B28F6] text-white shadow-lg transition hover:scale-110 hover:bg-[#FACC15] hover:text-black"
                             >
                                 <Camera size={14} strokeWidth={2.5} />
                             </button>

@@ -1055,50 +1055,50 @@ Once confirmed, this cannot be changed or reset.`;
                                     duration: 0.45,
                                     ease: 'easeInOut',
                                 }}
-                                className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-[#3B28F6]/80 bg-white dark:bg-[#020202] p-6 text-center shadow-[0_0_30px_rgba(59,130,246,0.3)] dark:shadow-[0_0_30px_rgba(59,130,246,0.6)] md:p-8 lg:p-10 xl:p-12 landscape:max-w-[460px] landscape:max-h-[94vh] landscape:p-4"
+                                className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-[#3B28F6]/80 bg-white dark:bg-[#020202] p-6 text-center shadow-[0_0_30px_rgba(59,130,246,0.3)] dark:shadow-[0_0_30px_rgba(59,130,246,0.6)] md:p-8 lg:p-10 xl:p-12 landscape:max-w-[460px] landscape:max-h-[94vh] landscape:p-4 max-md:portrait:max-w-[340px] max-md:portrait:p-4"
                             >
                                 <div className="pointer-events-none absolute -top-20 -left-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
                                 <div className="pointer-events-none absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl" />
 
-                                <div className="mx-auto mb-6 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-yellow-400 bg-[#F0E427]/30 landscape:mb-2 landscape:h-9 landscape:w-9">
-                                    <TriangleAlert className="h-8 w-8 text-yellow-400 landscape:h-4.5 landscape:w-4.5" />
+                                <div className="mx-auto mb-6 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-yellow-400 bg-[#F0E427]/30 landscape:mb-2 landscape:h-9 landscape:w-9 max-md:portrait:mb-3 max-md:portrait:h-10 max-md:portrait:w-10">
+                                    <TriangleAlert className="h-8 w-8 text-yellow-400 landscape:h-4.5 landscape:w-4.5 max-md:portrait:h-5 max-md:portrait:w-5" />
                                 </div>
-                                <h1 className="shrink-0 text-3xl tracking-widest text-slate-900 dark:text-white uppercase md:text-4xl landscape:text-base landscape:tracking-wider">
+                                <h1 className="shrink-0 text-3xl tracking-widest text-slate-900 dark:text-white uppercase md:text-4xl landscape:text-base landscape:tracking-wider max-md:portrait:text-lg max-md:portrait:tracking-wider">
                                     Confirm Selection
                                 </h1>
-                                <p className="shrink-0 mt-2 mb-6 text-xs tracking-[0.2em] text-[#3B28F6] uppercase landscape:mt-[2px] landscape:mb-2 landscape:text-[10px]">
+                                <p className="shrink-0 mt-2 mb-6 text-xs tracking-[0.2em] text-[#3B28F6] uppercase landscape:mt-[2px] landscape:mb-2 landscape:text-[10px] max-md:portrait:mt-1 max-md:portrait:mb-2.5 max-md:portrait:text-[10px]">
                                     System Alert: Action Final
                                 </p>
-                                <div className="shrink-0 mb-6 flex items-center justify-center gap-3 landscape:mb-2 landscape:gap-2">
-                                    <div className="h-[1px] w-24 bg-[#3B28F6] landscape:w-20" />
-                                    <div className="h-3 w-3 rotate-45 border-2 border-blue-500 landscape:h-2 landscape:w-2" />
-                                    <div className="h-[1px] w-24 bg-[#3B28F6] landscape:w-20" />
+                                <div className="shrink-0 mb-6 flex items-center justify-center gap-3 landscape:mb-2 landscape:gap-2 max-md:portrait:mb-3 max-md:portrait:gap-2">
+                                    <div className="h-[1px] w-24 bg-[#3B28F6] landscape:w-20 max-md:portrait:w-16" />
+                                    <div className="h-3 w-3 rotate-45 border-2 border-blue-500 landscape:h-2 landscape:w-2 max-md:portrait:h-2 max-md:portrait:w-2" />
+                                    <div className="h-[1px] w-24 bg-[#3B28F6] landscape:w-20 max-md:portrait:w-16" />
                                 </div>
-                                <div className="shrink-0 mb-6 rounded-xl border border-blue-500/30 bg-blue-50 dark:bg-blue-900/10 p-5 text-left landscape:mb-3 landscape:p-3 landscape:rounded-lg">
-                                    <p className="mb-3 text-center font-semibold text-yellow-600 dark:text-yellow-400 landscape:mb-1 landscape:text-xs">
+                                <div className="shrink-0 mb-6 rounded-xl border border-blue-500/30 bg-blue-50 dark:bg-blue-900/10 p-5 text-left landscape:mb-3 landscape:p-3 landscape:rounded-lg max-md:portrait:mb-3 max-md:portrait:p-3.5">
+                                    <p className="mb-3 text-center font-semibold text-yellow-600 dark:text-yellow-400 landscape:mb-1 landscape:text-xs max-md:portrait:mb-1 max-md:portrait:text-xs">
                                         Warning: Irreversible Action
                                     </p>
-                                    <p className="font-mono text-sm leading-relaxed text-slate-800 dark:text-slate-100 md:text-base landscape:text-xs landscape:leading-relaxed">
+                                    <p className="font-mono text-sm leading-relaxed text-slate-800 dark:text-slate-100 md:text-base landscape:text-xs landscape:leading-relaxed max-md:portrait:text-xs">
                                         {typedText}
                                         <span className="animate-pulse">|</span>
                                     </p>
                                 </div>
-                                <div className="shrink-0 flex flex-col gap-3 sm:flex-row landscape:flex-row landscape:gap-2.5">
+                                <div className="shrink-0 flex flex-col gap-3 sm:flex-row landscape:flex-row landscape:gap-2.5 max-md:portrait:gap-2">
                                     <button
                                         onClick={() => setShowModal(false)}
-                                        className="flex-1 rounded-sm border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-6 py-3 text-slate-700 dark:text-white/80 hover:bg-slate-200 dark:hover:bg-white/10 landscape:px-4 landscape:py-2 landscape:text-xs font-medium"
+                                        className="flex-1 rounded-sm border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-6 py-3 text-slate-700 dark:text-white/80 hover:bg-slate-200 dark:hover:bg-white/10 landscape:px-4 landscape:py-2 landscape:text-xs font-medium max-md:portrait:px-4 max-md:portrait:py-2.5 max-md:portrait:text-xs"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleSubmit}
                                         disabled={processing}
-                                        className="flex-1 rounded-sm border border-[#3b28f6] bg-[#3b28f6]/10 dark:bg-[#3B28F6]/20 px-6 py-3 text-[#3b28f6] dark:text-[#6252FF] shadow-[0_0_12px_rgba(139,92,246,0.3)] dark:shadow-[0_0_12px_rgba(139,92,246,0.6)] hover:bg-[#3b28f6]/20 dark:hover:bg-[#3b28f6]/30 landscape:px-4 landscape:py-2 landscape:text-xs font-bold"
+                                        className="flex-1 rounded-sm border border-[#3b28f6] bg-[#3b28f6]/10 dark:bg-[#3B28F6]/20 px-6 py-3 text-[#3b28f6] dark:text-[#6252FF] shadow-[0_0_12px_rgba(139,92,246,0.3)] dark:shadow-[0_0_12px_rgba(139,92,246,0.6)] hover:bg-[#3b28f6]/20 dark:hover:bg-[#3b28f6]/30 landscape:px-4 landscape:py-2 landscape:text-xs font-bold max-md:portrait:px-4 max-md:portrait:py-2.5 max-md:portrait:text-xs"
                                     >
                                         {processing ? 'Deploying...' : 'Deploy'}
                                     </button>
                                 </div>
-                                <p className="shrink-0 mt-8 text-[10px] tracking-wide text-slate-400 dark:text-slate-500 landscape:mt-2 landscape:text-[8.5px]">
+                                <p className="shrink-0 mt-8 text-[10px] tracking-wide text-slate-400 dark:text-slate-500 landscape:mt-2 landscape:text-[8.5px] max-md:portrait:mt-3 max-md:portrait:text-[9px]">
                                     SYSTEM ID: SKILLVENTURA CHARACTER
                                 </p>
                             </motion.div>

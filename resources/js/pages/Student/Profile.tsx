@@ -83,7 +83,7 @@ export default function ProfilePage({ user }: Props) {
                             className="relative mb-3 shrink-0"
                             style={{ width: '140px', height: '140px' }}
                         >
-                            <div className="h-full w-full overflow-hidden rounded-full border-2 border-[#FACC15]">
+                            <div className="absolute inset-[20px] overflow-hidden rounded-full">
                                 <img
                                     src={
                                         user.avatar ??
@@ -93,6 +93,12 @@ export default function ProfilePage({ user }: Props) {
                                     alt="avatar"
                                 />
                             </div>
+
+                            <img
+                                src="/images/border.webp"
+                                className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+                                alt="border"
+                            />
                         </div>
 
                         {/* NAME */}

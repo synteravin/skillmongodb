@@ -402,116 +402,100 @@ export default function Index({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25 }}
+                        transition={{ duration: 0.2 }}
                         onClick={handleCancelDesc}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020202]/30 dark:bg-[#020202]/50 p-4 backdrop-blur-xs lg:p-6"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-3 pt-[70px] backdrop-blur-xs sm:p-6 sm:pt-[90px] md:pt-[105px] [@media(orientation:landscape)_and_(max-height:520px)]:p-2 [@media(orientation:landscape)_and_(max-height:520px)]:pt-2"
                     >
                         {/* ================= CARD MODAL ================= */}
                         <motion.div
                             initial={{
-                                clipPath: 'inset(50% 0% 50% 0%)',
+                                scale: 0.95,
                                 opacity: 0,
                             }}
                             animate={{
-                                clipPath: 'inset(0% 0% 0% 0%)',
+                                scale: 1,
                                 opacity: 1,
                             }}
                             exit={{
-                                clipPath: 'inset(50% 0% 50% 0%)',
+                                scale: 0.95,
                                 opacity: 0,
                             }}
                             transition={{
-                                duration: 0.45,
-                                ease: [0.22, 1, 0.36, 1], // lebih smooth dari easeInOut
+                                duration: 0.3,
+                                ease: [0.22, 1, 0.36, 1],
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className="relative flex max-h-[94vh] w-full max-w-[540px] flex-col overflow-hidden rounded-xl border-2 border-[#3B28F6] bg-[#fdfcfc] dark:bg-[#020202] will-change-[clip-path,opacity] md:max-w-[620px] md:rounded-[16px] md:border-[3px] lg:max-w-[700px]"
+                            className="relative flex max-h-[calc(100vh-90px)] w-full max-w-[520px] flex-col overflow-hidden rounded-2xl border-2 border-[#3B82F6] bg-[#050822] text-white shadow-[0_0_50px_rgba(59,130,246,0.3)] sm:max-h-[calc(100vh-110px)] sm:max-w-[540px] md:max-h-[calc(100vh-130px)] md:max-w-[560px] lg:max-w-[600px] 2xl:max-w-[620px] [@media(orientation:landscape)_and_(max-height:520px)]:max-h-[92vh] [@media(orientation:landscape)_and_(max-height:520px)]:max-w-[480px]"
                         >
+                            {/* Close button */}
+                            <button
+                                onClick={handleCancelDesc}
+                                className="absolute top-3 right-3 z-30 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-red-500/80 [@media(orientation:landscape)_and_(max-height:520px)]:top-2 [@media(orientation:landscape)_and_(max-height:520px)]:right-2 [@media(orientation:landscape)_and_(max-height:520px)]:h-7 [@media(orientation:landscape)_and_(max-height:520px)]:w-7"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+
                             {/* ================= THUMBNAIL ================= */}
-                            <div className="relative h-[135px] min-[400px]:h-[160px] sm:h-[190px] md:h-[220px] lg:h-[240px] landscape:h-[70px] landscape:max-h-[70px] shrink-0 overflow-hidden">
-                                {/* BACKGROUND (ISI AREA) */}
-                                <img
-                                    src={selectedCourse.thumbnail}
-                                    className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20"
-                                />
-                                {/* MAIN IMAGE (TIDAK TERPOTONG) */}
+                            <div className="relative aspect-[16/9] max-h-[180px] w-full shrink-0 overflow-hidden bg-[#020517] sm:max-h-[220px] md:max-h-[250px] [@media(orientation:landscape)_and_(max-height:520px)]:aspect-none [@media(orientation:landscape)_and_(max-height:520px)]:h-[105px] [@media(orientation:landscape)_and_(max-height:520px)]:max-h-none">
                                 <img
                                     src={selectedCourse.thumbnail}
                                     alt={selectedCourse.title}
-                                    className="relative z-10 h-full w-full object-contain object-center"
+                                    className="h-full w-full object-cover object-center"
                                     onError={(e) => {
                                         e.currentTarget.src =
-                                            'https://via.placeholder.com/700x300?text=No+Image';
+                                            'https://via.placeholder.com/700x390?text=No+Image';
                                     }}
                                 />
-                                {/* close button */}
-                                <button
-                                    onClick={handleCancelDesc}
-                                    className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-black/70 transition hover:bg-red-500/80 md:top-3 md:right-3 md:h-9 md:w-9"
-                                >
-                                    <X className="h-3.5 w-3.5 text-white md:h-4 md:w-4" />
-                                </button>
                             </div>
 
                             {/* ================= BODY ================= */}
-                            <div className="flex flex-1 flex-col min-h-0 px-4 py-3 landscape:px-3 landscape:py-1.5 sm:px-6 sm:py-4 md:px-7 md:py-5 lg:px-8">
+                            <div className="flex flex-1 flex-col overflow-hidden p-4 sm:p-6 [@media(orientation:landscape)_and_(max-height:520px)]:p-3">
                                 {/* TITLE */}
-                                <h1 className="shrink-0 text-sm leading-tight font-bold text-slate-900 min-[450px]:text-base sm:text-xl md:text-2xl lg:text-3xl landscape:text-xs dark:text-white">
+                                <h1 className="mb-2 shrink-0 text-xl font-bold tracking-tight text-white sm:text-2xl md:text-3xl [@media(orientation:landscape)_and_(max-height:520px)]:mb-1 [@media(orientation:landscape)_and_(max-height:520px)]:pr-6 [@media(orientation:landscape)_and_(max-height:520px)]:text-base">
                                     {selectedCourse.title}
                                 </h1>
 
-                                {/* DIVIDER */}
-                                <div className="shrink-0 my-1.5 flex items-center gap-2 sm:my-2.5 md:my-3 landscape:my-1">
-                                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#3B28F6] to-transparent" />
-                                    <div className="h-2 w-2 rotate-45 border border-blue-500 landscape:h-1.5 landscape:w-1.5" />
-                                    <div className="h-[1px] flex-1 bg-gradient-to-l from-[#3B28F6] to-transparent" />
-                                </div>
-
-                                {/* ================= DESKRIPSI ================= */}
-                                <div className="flex-1 min-h-[60px] max-h-[110px] sm:max-h-[160px] md:max-h-[200px] landscape:min-h-[50px] landscape:max-h-[80px] overflow-y-auto mb-2 pb-0.5 pr-1 text-xs leading-relaxed text-slate-600 min-[450px]:text-xs sm:text-sm md:text-base landscape:text-[11px] dark:text-slate-300 [scrollbar-color:rgba(59,40,246,0.5)_transparent] [scrollbar-width:thin]">
+                                {/* DESKRIPSI */}
+                                <div className="mb-4 flex-1 min-h-0 overflow-y-auto text-xs leading-relaxed text-slate-300 pr-1 sm:mb-5 sm:text-sm md:text-base [scrollbar-color:rgba(59,130,246,0.4)_transparent] [scrollbar-width:thin] [@media(orientation:landscape)_and_(max-height:520px)]:mb-1.5 [@media(orientation:landscape)_and_(max-height:520px)]:text-xs">
                                     {selectedCourse.description}
                                 </div>
 
-                                {/* ================= INFO BOX ================= */}
-                                <div className="shrink-0 mt-auto flex flex-wrap gap-2 sm:gap-2.5 md:gap-3 landscape:gap-1.5">
-                                    {/* MODUL */}
-                                    <div className="flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 px-2.5 py-1.5 sm:min-w-[160px] landscape:min-w-[95px] landscape:px-2 landscape:py-1 dark:border-white/10 dark:bg-[#03062C]">
-                                        <BookOpen className="h-4 w-4 shrink-0 text-yellow-500 sm:h-5 sm:w-5 landscape:h-3 landscape:w-3 dark:text-yellow-400" />
-
-                                        <span className="text-xs leading-none font-extrabold text-slate-800 sm:text-sm md:text-base lg:text-lg landscape:text-[10px] dark:text-white">
-                                            Modul:{' '}
-                                            <span className="font-bold text-[#3B28F6] dark:text-white">
-                                                {selectedCourse.modules_count ??
-                                                    0}
+                                {/* ================= INFO BADGES & BUTTON ROW ================= */}
+                                <div className="mt-auto flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between [@media(orientation:landscape)_and_(max-height:520px)]:flex-row [@media(orientation:landscape)_and_(max-height:520px)]:items-center [@media(orientation:landscape)_and_(max-height:520px)]:justify-between [@media(orientation:landscape)_and_(max-height:520px)]:gap-2">
+                                    {/* BADGES CONTAINER */}
+                                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:gap-1.5">
+                                        {/* MODUL BADGE */}
+                                        <div className="flex items-center gap-2 rounded-xl border border-blue-500/40 bg-[#091034] px-3.5 py-2 text-xs font-semibold text-white shadow-sm sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1 [@media(orientation:landscape)_and_(max-height:520px)]:text-[11px]">
+                                            <BookOpen className="h-4 w-4 shrink-0 text-yellow-400 [@media(orientation:landscape)_and_(max-height:520px)]:h-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:w-3.5" />
+                                            <span>
+                                                Module :{' '}
+                                                <span className="font-bold text-white">
+                                                    {selectedCourse.modules_count ??
+                                                        0}
+                                                </span>
                                             </span>
-                                        </span>
+                                        </div>
+
+                                        {/* FORMAT BADGE */}
+                                        <div className="flex items-center gap-2 rounded-xl border border-blue-500/40 bg-[#091034] px-3.5 py-2 text-xs font-semibold text-white shadow-sm sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1 [@media(orientation:landscape)_and_(max-height:520px)]:text-[11px]">
+                                            <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-400 [@media(orientation:landscape)_and_(max-height:520px)]:h-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:w-3.5" />
+                                            <span>
+                                                Formats :{' '}
+                                                <span className="font-bold text-white">
+                                                    Video & Project
+                                                </span>
+                                            </span>
+                                        </div>
                                     </div>
 
-                                    {/* FORMAT */}
-                                    <div className="flex min-w-[110px] flex-1 items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50/50 px-2.5 py-1.5 sm:min-w-[160px] landscape:min-w-[95px] landscape:px-2 landscape:py-1 dark:border-white/10 dark:bg-[#03062C]">
-                                        <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-500 sm:h-5 sm:w-5 landscape:h-3 landscape:w-3 dark:text-yellow-400" />
-
-                                        <span className="text-xs leading-none font-extrabold text-slate-800 sm:text-sm md:text-base lg:text-lg landscape:text-[10px] dark:text-white">
-                                            Format:{' '}
-                                            <span className="font-bold text-[#3B28F6] dark:text-white">
-                                                Video & Project
-                                            </span>
-                                        </span>
-                                    </div>
+                                    {/* ================= BUTTON MULAI ================= */}
+                                    <button
+                                        onClick={handleLanjutKeConfirm}
+                                        className="flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2.5 text-xs font-bold text-[#020202] uppercase transition-all duration-200 hover:bg-yellow-300 hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] active:scale-[0.97] sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1.5 [@media(orientation:landscape)_and_(max-height:520px)]:text-xs"
+                                    >
+                                        Mulai →
+                                    </button>
                                 </div>
-
-                                {/* ================= BUTTON ================= */}
-                                <button
-                                    onClick={handleLanjutKeConfirm}
-                                    className="shrink-0 mt-2.5 flex w-full items-center justify-center gap-2 rounded-md bg-[#FACC15] py-2 text-xs font-bold tracking-wide text-[#020202] uppercase transition-all duration-300 hover:bg-yellow-300 active:scale-[0.97] sm:mt-3.5 sm:py-2.5 sm:text-sm md:mt-4 md:py-3 landscape:mt-1.5 landscape:py-1.5 landscape:text-[11px]"
-                                >
-                                    Mulai →
-                                </button>
-
-                                {/* FOOTER */}
-                                <p className="shrink-0 pt-1.5 pb-0.5 text-center text-[9px] tracking-widest text-slate-400 uppercase sm:text-[10px] landscape:pt-1 landscape:text-[8px] dark:text-slate-600">
-                                    Skillventura · Course
-                                </p>
                             </div>
                         </motion.div>
                     </motion.div>

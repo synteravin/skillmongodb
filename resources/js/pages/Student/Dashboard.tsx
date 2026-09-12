@@ -174,7 +174,7 @@ function TopBar({
                     href="/profile"
                     className="relative h-[55px] w-[55px] flex-shrink-0 md:h-[70px] md:w-[70px]"
                 >
-                    <div className="absolute inset-[8px] overflow-hidden rounded-md md:inset-[10px]">
+                    <div className="absolute inset-[8px] overflow-hidden rounded-full md:inset-[10px]">
                         <img
                             src={user.avatar ?? '/images/default-avatar.svg'}
                             className="h-full w-full object-cover"
