@@ -26,6 +26,11 @@ class AcceptQuestBidAction
         // Accept the chosen bid
         $acceptedBid->update(['status' => QuestBidStatus::ACCEPTED->value]);
 
+        // Calculate DP and dynamic rewards based on accepted contract value
+        $agreedAmount = (int) $acceptedBid->bid_amount;
+        $dpPercentage = max(10, (int) ($quest->dp_percentage ?? 10));
+        $dpAmount = (int) round(($agreedAmount * $dpPercentage) / 100);
+
         // Notify the accepted worker
         Notification::create([
             'notifiable_type' => User::class,
@@ -34,8 +39,22 @@ class AcceptQuestBidAction
                 'quest_id' => (string) $quest->_id,
                 'quest_slug' => $quest->slug ?: Str::slug($quest->title),
                 'title' => $quest->title,
-                'message' => "Selamat! Proposal Anda untuk quest '{$quest->title}' telah diterima oleh pemilik proyek. Silakan mulai pengerjaan.",
+                'message' => "Selamat! Proposal Anda untuk quest '{$quest->title}' telah diterima oleh pemilik proyek. Menunggu transfer uang muka (DP {$dpPercentage}%) sebesar Rp ".number_format($dpAmount, 0, ',', '.').'.',
                 'type' => 'bid_accepted',
+            ],
+            'read_at' => null,
+        ]);
+
+        // Notify the creator to transfer DP
+        Notification::create([
+            'notifiable_type' => User::class,
+            'notifiable_id' => (string) $creator->_id,
+            'data' => [
+                'quest_id' => (string) $quest->_id,
+                'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                'title' => $quest->title,
+                'message' => "Pekerja telah dipilih untuk quest '{$quest->title}'. Silakan lakukan transfer uang muka (DP {$dpPercentage}%) sebesar Rp ".number_format($dpAmount, 0, ',', '.').' dan unggah bukti transfer.',
+                'type' => 'bid_selected_creator',
             ],
             'read_at' => null,
         ]);
@@ -62,8 +81,6 @@ class AcceptQuestBidAction
             ]);
         }
 
-        // Calculate dynamic rewards based on accepted contract value
-        $agreedAmount = (int) $acceptedBid->bid_amount;
         $exp = (int) min(1000, max(100, round(100 + $agreedAmount * 0.0001)));
         $gold = (int) min(500, max(50, round(50 + $agreedAmount * 0.00005)));
         $rep = (int) min(200, max(20, round(20 + $agreedAmount * 0.00002)));
@@ -84,11 +101,13 @@ class AcceptQuestBidAction
             ];
         }
 
-        // Update quest worker, rewards, and status
+        // Update quest worker, DP, rewards, and status
         $quest->update([
-            'status' => QuestStatus::ONGOING->value,
+            'status' => QuestStatus::DOWN_PAYMENT->value,
             'worker_id' => (string) $acceptedBid->student_id,
             'accepted_bid_amount' => $agreedAmount,
+            'dp_percentage' => $dpPercentage,
+            'dp_amount' => $dpAmount,
             'rewards' => $finalRewards,
         ]);
     }

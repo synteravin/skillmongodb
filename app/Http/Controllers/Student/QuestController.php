@@ -5,15 +5,17 @@ namespace App\Http\Controllers\Student;
 use App\Enums\QuestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Quest\ApproveQuestWorkRequest;
+use App\Http\Requests\Quest\ConfirmFinalDeliveryRequest;
 use App\Http\Requests\Quest\ExtendQuestDeadlineRequest;
 use App\Http\Requests\Quest\FileDisputeRequest;
-use App\Http\Requests\Quest\RejectQuestWorkRequest;
 use App\Http\Requests\Quest\RequestFinalZipRevisionRequest;
+use App\Http\Requests\Quest\RequestQuestRevisionRequest;
 use App\Http\Requests\Quest\StoreQuestBidRequest;
 use App\Http\Requests\Quest\StoreQuestFlagRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
 use App\Http\Requests\Quest\SubmitFinalZipRequest;
 use App\Http\Requests\Quest\SubmitQuestWorkRequest;
+use App\Http\Requests\Quest\UploadDownPaymentProofRequest;
 use App\Http\Requests\Quest\UploadPaymentProofRequest;
 use App\Models\Notification;
 use App\Models\Quest;
@@ -564,14 +566,14 @@ class QuestController extends Controller
     }
 
     /**
-     * Reject submission and request revision.
+     * Request revision on submitted work.
      */
-    public function rejectWork(RejectQuestWorkRequest $request, Quest $quest)
+    public function rejectWork(RequestQuestRevisionRequest $request, Quest $quest)
     {
-        $this->questService->rejectWork($request->user(), $quest, $request->validated());
+        $this->questService->requestRevision($request->user(), $quest, $request->validated());
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
-            ->with('warning', 'Pekerjaan ditolak dan revisi diminta dari pekerja.');
+            ->with('warning', 'Permintaan perbaikan/revisi telah dikirimkan ke pekerja.');
     }
 
     /**
@@ -586,14 +588,14 @@ class QuestController extends Controller
     }
 
     /**
-     * Creator confirms final delivery and completes the quest.
+     * Creator confirms final delivery and completes the quest with rating & review.
      */
-    public function confirmFinalDelivery(Request $request, Quest $quest)
+    public function confirmFinalDelivery(ConfirmFinalDeliveryRequest $request, Quest $quest)
     {
-        $this->questService->confirmFinalDelivery($request->user(), $quest);
+        $this->questService->confirmFinalDelivery($request->user(), $quest, $request->validated());
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
-            ->with('success', 'Berkas final berhasil dikonfirmasi! Quest resmi selesai dan hadiah telah dicairkan ke profil pekerja.');
+            ->with('success', 'Berkas final berhasil dikonfirmasi dan ulasan Anda telah disimpan! Quest resmi selesai.');
     }
 
     /**
@@ -625,6 +627,28 @@ class QuestController extends Controller
 
         return redirect()->back()
             ->with('success', 'Laporan Anda telah berhasil dikirimkan ke tim Admin untuk ditinjau.');
+    }
+
+    /**
+     * Upload down payment (DP) proof receipt by the creator.
+     */
+    public function uploadDownPaymentProof(UploadDownPaymentProofRequest $request, Quest $quest)
+    {
+        $this->questService->uploadDownPaymentProof($request->user(), $quest, $request->file('dp_proof'));
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Bukti transfer uang muka (DP) berhasil diunggah! Menunggu konfirmasi penerimaan dari pekerja.');
+    }
+
+    /**
+     * Confirm receipt of down payment (DP) by the worker.
+     */
+    public function confirmDownPayment(Request $request, Quest $quest)
+    {
+        $this->questService->confirmDownPayment($request->user(), $quest);
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Penerimaan uang muka (DP) berhasil dikonfirmasi! Quest resmi dimulai.');
     }
 
     /**

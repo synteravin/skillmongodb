@@ -6,7 +6,7 @@ use App\Models\Quest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApproveQuestWorkRequest extends FormRequest
+class RequestQuestRevisionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,8 +32,7 @@ class ApproveQuestWorkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-            'rating_comment' => ['nullable', 'string', 'max:1000'],
+            'revision_note' => ['required', 'string', 'max:2000'],
         ];
     }
 
@@ -45,8 +44,7 @@ class ApproveQuestWorkRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'rating' => 'Rating bintang',
-            'rating_comment' => 'Ulasan penilaian',
+            'revision_note' => 'Catatan revisi',
         ];
     }
 
@@ -58,11 +56,8 @@ class ApproveQuestWorkRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'rating.required' => 'Rating bintang wajib dipilih.',
-            'rating.integer' => 'Rating harus berupa angka.',
-            'rating.min' => 'Rating minimal 1 bintang.',
-            'rating.max' => 'Rating maksimal 5 bintang.',
-            'rating_comment.max' => 'Ulasan maksimal 1000 karakter.',
+            'revision_note.required' => 'Catatan instruksi perbaikan/revisi wajib diisi.',
+            'revision_note.max' => 'Catatan revisi maksimal 2000 karakter.',
         ];
     }
 }

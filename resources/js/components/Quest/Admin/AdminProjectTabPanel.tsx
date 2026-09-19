@@ -40,6 +40,14 @@ export default function AdminProjectTabPanel({
     handleApproveWork,
     handleRejectWork,
 }: AdminProjectTabPanelProps) {
+    const formatCurrency = (num: number) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(num);
+    };
+
     return (
         <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
@@ -113,6 +121,92 @@ export default function AdminProjectTabPanel({
                 </div>
             )}
 
+            {quest.status === 'down_payment' && (
+                <div className="space-y-4 border-t border-slate-200 pt-4 dark:border-slate-800">
+                    <div className="flex flex-col gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center">
+                        <span className="block text-xs font-bold tracking-wider text-amber-700 uppercase dark:text-amber-300">
+                            Tahap Pembayaran Awal (DP {quest.dp_percentage || 10}%)
+                        </span>
+                        <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                            Nominal DP:{' '}
+                            <strong>
+                                {formatCurrency(
+                                    quest.dp_amount ||
+                                        Math.round(
+                                            ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                        ),
+                                )}
+                            </strong>
+                            . {quest.dp_proof
+                                ? 'Pembuat quest telah mengunggah bukti transfer DP. Menunggu konfirmasi penerimaan dari pekerja untuk memulai pengerjaan.'
+                                : 'Menunggu pembuat quest mentransfer dan mengunggah bukti transfer DP.'}
+                        </p>
+                    </div>
+
+                    {quest.dp_proof && (
+                        <div className="rounded-xl border border-slate-300 bg-slate-50/70 p-4 text-xs dark:border-slate-800 dark:bg-[#030712]">
+                            <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                Bukti Transfer DP Pembuat
+                            </span>
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex min-w-0 items-center gap-2">
+                                        <FileImage className="h-5 w-5 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                        <div className="min-w-0">
+                                            <p className="truncate text-xs font-bold text-slate-900 dark:text-slate-200">
+                                                {quest.dp_proof.name}
+                                            </p>
+                                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                                                Diunggah pada:{' '}
+                                                {quest.dp_uploaded_at
+                                                    ? new Date(
+                                                          quest.dp_uploaded_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                          {
+                                                              dateStyle:
+                                                                  'medium',
+                                                          },
+                                                      )
+                                                    : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={quest.dp_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400"
+                                        title="Unduh Bukti Transfer DP"
+                                    >
+                                        <Download size={16} />
+                                    </a>
+                                </div>
+                                <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                                    <a
+                                        href={quest.dp_proof.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group block"
+                                    >
+                                        <img
+                                            src={quest.dp_proof.url}
+                                            alt="Bukti Transfer DP"
+                                            className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
+                                                Perbesar Gambar 🔍
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
             {quest.status === 'ongoing' && (
                 <div className="space-y-4 border-t border-slate-200 pt-4 dark:border-slate-800">
                     <p className="text-xs leading-relaxed font-semibold text-slate-600 dark:text-slate-400">
@@ -143,12 +237,12 @@ export default function AdminProjectTabPanel({
                 <div className="space-y-4 border-t border-slate-200 pt-4 dark:border-slate-800">
                     <div className="flex flex-col gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center">
                         <span className="block text-xs font-bold tracking-wider text-amber-700 uppercase dark:text-amber-300">
-                            Bukti Pembayaran Diunggah & Menunggu Berkas ZIP
+                            Bukti Pembayaran Akhir (Pelunasan) Diunggah & Menunggu Berkas ZIP
                             Final
                         </span>
                         <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
                             Pembuat quest telah mengunggah bukti transfer
-                            pembayaran. Sistem menunggu pekerja mengirim berkas
+                            pelunasan / pembayaran akhir. Sistem menunggu pekerja mengirim berkas
                             proyek final (.zip) untuk menyelesaikan quest.
                         </p>
                     </div>

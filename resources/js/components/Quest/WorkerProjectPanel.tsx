@@ -6,8 +6,9 @@ import {
     Download,
     CheckCircle2,
     FileImage,
+    Clock,
 } from 'lucide-react';
-import RevisionHistory from './RevisionHistory';
+import QuestIterationTimeline from './QuestIterationTimeline';
 import { Quest, Bid } from '@/types/quest';
 
 interface Props {
@@ -27,10 +28,12 @@ export default function WorkerProjectPanel({
         submission_file: File | null;
         submission_link: string;
         submission_note: string;
+        changelog: string;
     }>({
         submission_file: null,
         submission_link: '',
         submission_note: '',
+        changelog: '',
     });
 
     const finalZipForm = useForm<{
@@ -38,6 +41,21 @@ export default function WorkerProjectPanel({
     }>({
         submission_file: null,
     });
+
+    const confirmDpForm = useForm({});
+
+    const handleConfirmDp = (e: React.FormEvent) => {
+        e.preventDefault();
+        confirmDpForm.post(`/quests/${quest.slug}/confirm-dp`);
+    };
+
+    const formatCurrency = (num: number) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(num);
+    };
 
     const handleWorkSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,18 +100,165 @@ export default function WorkerProjectPanel({
                 )}
             </div>
 
-            {quest.status === 'ongoing' && (
+            {quest.status === 'down_payment' && (
+                <div className="space-y-4 font-['Oxanium']">
+                    {!quest.dp_proof ? (
+                        <div className="flex flex-col gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 text-center">
+                            <Clock className="mx-auto h-8 w-8 text-amber-500 animate-pulse" />
+                            <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
+                                Menunggu Pembayaran Awal (DP)
+                            </span>
+                            <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
+                                Tawaran Anda telah diterima! Pembuat quest sedang melakukan transfer pembayaran awal (DP) sebesar{' '}
+                                <strong className="text-slate-800 dark:text-white">
+                                    {formatCurrency(
+                                        quest.dp_amount ||
+                                            Math.round(
+                                                ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                            ),
+                                    )}
+                                </strong>{' '}
+                                ({quest.dp_percentage || 10}% dari total kontrak). Harap tunggu hingga pembuat mengunggah bukti transfer DP.
+                            </p>
+                            <div className="mt-2 flex flex-wrap items-center justify-center gap-4 rounded-lg border border-amber-500/20 bg-white/50 p-2.5 text-xs text-slate-700 dark:bg-black/20 dark:text-slate-300">
+                                <div>
+                                    <span className="text-[10px] text-slate-400 uppercase">Total Kontrak: </span>
+                                    <span className="font-semibold">{formatCurrency(quest.accepted_bid_amount || 0)}</span>
+                                </div>
+                                <div className="h-4 w-px bg-slate-300 dark:bg-slate-700" />
+                                <div>
+                                    <span className="text-[10px] text-amber-500 uppercase">Uang Muka (DP): </span>
+                                    <span className="font-bold text-amber-600 dark:text-amber-400">
+                                        {formatCurrency(
+                                            quest.dp_amount ||
+                                                Math.round(
+                                                    ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                                ),
+                                        )}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            <div className="flex flex-col gap-2 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-4 text-center">
+                                <CheckCircle2 className="mx-auto h-8 w-8 text-indigo-500" />
+                                <span className="block font-['Orbitron'] text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
+                                    Bukti Pembayaran Awal (DP) Telah Diunggah
+                                </span>
+                                <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
+                                    Pembuat quest telah mengunggah bukti transfer DP sebesar{' '}
+                                    <strong className="text-slate-800 dark:text-white">
+                                        {formatCurrency(
+                                            quest.dp_amount ||
+                                                Math.round(
+                                                    ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                                ),
+                                        )}
+                                    </strong>
+                                    . Silakan periksa mutasi rekening Anda. Jika dana telah masuk, klik tombol di bawah untuk mengonfirmasi penerimaan DP dan memulai pengerjaan quest.
+                                </p>
+                            </div>
+
+                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800/60 dark:bg-black/20">
+                                <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                    Bukti Transfer DP dari Pembuat
+                                </span>
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="flex min-w-0 items-center gap-2">
+                                            <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
+                                            <div className="min-w-0">
+                                                <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                                    {quest.dp_proof.name}
+                                                </p>
+                                                <p className="text-[10px] text-slate-400">
+                                                    Diunggah pada:{' '}
+                                                    {quest.dp_uploaded_at
+                                                        ? new Date(
+                                                              quest.dp_uploaded_at,
+                                                          ).toLocaleDateString(
+                                                              'id-ID',
+                                                              {
+                                                                  dateStyle:
+                                                                      'medium',
+                                                              },
+                                                          )
+                                                        : ''}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <a
+                                            href={quest.dp_proof.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400"
+                                            title="Unduh Bukti Transfer DP"
+                                        >
+                                            <Download size={16} />
+                                        </a>
+                                    </div>
+                                    <div className="relative max-w-xs overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+                                        <a
+                                            href={quest.dp_proof.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="group block"
+                                        >
+                                            <img
+                                                src={quest.dp_proof.url}
+                                                alt="Bukti Transfer DP"
+                                                className="max-h-40 w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                                <span className="rounded bg-black/60 px-2 py-1 text-[8px] font-bold tracking-wider text-white uppercase">
+                                                    Perbesar Gambar 🔍
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleConfirmDp} className="pt-2">
+                                <button
+                                    type="submit"
+                                    disabled={confirmDpForm.processing}
+                                    className="w-full cursor-pointer rounded-xl bg-indigo-600 py-3 font-['Orbitron'] text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:bg-indigo-700 disabled:opacity-50"
+                                >
+                                    {confirmDpForm.processing
+                                        ? 'Mengonfirmasi...'
+                                        : 'Konfirmasi Terima DP & Mulai Pengerjaan'}
+                                </button>
+                            </form>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {['ongoing', 'revision'].includes(quest.status) && (
                 <div className="space-y-4">
-                    <RevisionHistory quest={quest} viewType="worker_ongoing" />
+                    {quest.status === 'revision' && (
+                        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-xs font-['Oxanium']">
+                            <strong className="block font-bold text-amber-700 dark:text-amber-300">
+                                ⚠️ Klien Meminta Perbaikan / Revisi
+                            </strong>
+                            <p className="mt-1 leading-relaxed text-slate-600 dark:text-slate-400">
+                                Silakan periksa catatan revisi pada siklus iterasi di bawah, lakukan perbaikan yang diperlukan, dan kirimkan kembali hasil pekerjaan beserta penjelasan perbaikan (changelog).
+                            </p>
+                        </div>
+                    )}
+
+                    <QuestIterationTimeline quest={quest} isWorker={true} formatBytes={formatBytes} />
 
                     <form
                         onSubmit={handleWorkSubmit}
                         className="space-y-4 font-['Oxanium']"
                     >
                         <p className="text-xs leading-relaxed text-slate-500 dark:text-blue-300/60">
-                            Kirimkan hasil pekerjaan Anda agar pemilik quest
-                            dapat meninjau dan memberikan persetujuan
-                            pengerjaan.
+                            {quest.status === 'revision'
+                                ? 'Kirimkan kembali hasil pekerjaan yang telah diperbaiki agar pemilik quest dapat meninjau ulang.'
+                                : 'Kirimkan hasil pekerjaan Anda agar pemilik quest dapat meninjau dan memberikan persetujuan pengerjaan.'}
                         </p>
 
                         {/* ZIP Deliverable File Input with Drag-and-Drop */}
@@ -283,6 +448,32 @@ export default function WorkerProjectPanel({
                             )}
                         </div>
 
+                        {quest.status === 'revision' && (
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-indigo-600 uppercase dark:text-indigo-400">
+                                    Catatan Perbaikan / Changelog Revisi <span className="text-red-500">*</span>
+                                </label>
+                                <textarea
+                                    placeholder="Jelaskan secara rinci apa saja yang telah diperbaiki sesuai catatan klien..."
+                                    rows={3}
+                                    required
+                                    value={submissionForm.data.changelog}
+                                    onChange={(e) =>
+                                        submissionForm.setData(
+                                            'changelog',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="w-full rounded-xl border border-indigo-200 bg-indigo-50/20 px-3.5 py-2.5 text-xs text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-indigo-900/50 dark:bg-black/20 dark:text-white"
+                                />
+                                {submissionForm.errors.changelog && (
+                                    <p className="text-xs font-semibold text-red-500">
+                                        {submissionForm.errors.changelog}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
                         <button
                             type="submit"
                             disabled={submissionForm.processing}
@@ -290,7 +481,9 @@ export default function WorkerProjectPanel({
                         >
                             {submissionForm.processing
                                 ? 'Mengirim...'
-                                : 'Kirim Hasil Pekerjaan'}
+                                : quest.status === 'revision'
+                                  ? 'Kirim Ulang Hasil Revisi'
+                                  : 'Kirim Hasil Pekerjaan'}
                         </button>
                     </form>
                 </div>
@@ -368,11 +561,11 @@ export default function WorkerProjectPanel({
                     <div className="flex flex-col gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-center">
                         <CheckCircle2 className="mx-auto h-8 w-8 text-amber-500" />
                         <span className="block text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
-                            Bukti Pembayaran Diunggah
+                            Bukti Pembayaran Akhir (Pelunasan) Diunggah
                         </span>
                         <p className="dark:text-slate-305 text-xs leading-relaxed text-slate-500">
                             Pembuat quest telah mengunggah bukti transfer
-                            pembayaran. Silakan periksa rekening Anda. Jika dana
+                            pelunasan / pembayaran akhir. Silakan periksa rekening Anda. Jika dana
                             telah masuk, unggah berkas proyek final (.zip) Anda
                             di bawah ini untuk meresmikan penyelesaian quest dan
                             mengklaim hadiah.
@@ -587,7 +780,7 @@ export default function WorkerProjectPanel({
                         >
                             {finalZipForm.processing
                                 ? 'Mengirim...'
-                                : 'Konfirmasi Pembayaran & Kirim Berkas Final'}
+                                : 'Konfirmasi Pelunasan & Kirim Berkas Final'}
                         </button>
                     </form>
                 </div>
@@ -605,76 +798,17 @@ export default function WorkerProjectPanel({
                         </p>
                     </div>
 
-                    <RevisionHistory
+                    <QuestIterationTimeline
                         quest={quest}
-                        viewType="worker_submitted"
+                        isWorker={true}
+                        formatBytes={formatBytes}
                     />
 
-                    <div className="space-y-3.5 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs dark:border-slate-800 dark:bg-black/20">
-                        {quest.submission_file && (
-                            <div className="space-y-1">
-                                <strong className="block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Berkas Dikirim (ZIP)
-                                </strong>
-                                <div className="flex items-center justify-between rounded-xl border border-amber-200/40 bg-amber-50/5 p-2.5 dark:border-amber-500/20 dark:bg-amber-950/10">
-                                    <div className="flex min-w-0 items-center gap-2.5">
-                                        <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
-                                        <div className="min-w-0">
-                                            <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                                {quest.submission_file.name}
-                                            </p>
-                                            <p className="text-[10px] text-slate-400">
-                                                {formatBytes(
-                                                    quest.submission_file.size,
-                                                )}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <a
-                                        href={quest.submission_file.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
-                                        title="Unduh ZIP"
-                                    >
-                                        <Download className="h-4.5 w-4.5" />
-                                    </a>
-                                </div>
-                            </div>
-                        )}
-
-                        {quest.submission_link && (
-                            <div>
-                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Tautan Pekerjaan
-                                </strong>
-                                <a
-                                    href={quest.submission_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="font-semibold break-all text-indigo-500 hover:underline"
-                                >
-                                    {quest.submission_link}
-                                </a>
-                            </div>
-                        )}
-
-                        {quest.submission_note && (
-                            <div>
-                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Catatan Anda
-                                </strong>
-                                <p className="rounded-lg border border-slate-200 bg-white/40 p-2.5 leading-relaxed whitespace-pre-wrap text-slate-700 dark:border-slate-800/40 dark:bg-black/15 dark:text-slate-300">
-                                    {quest.submission_note}
-                                </p>
-                            </div>
-                        )}
-
-                        {quest.payment_proof && (
-                            <div className="mt-2.5 space-y-2">
-                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Bukti Transfer Pembayaran
-                                </strong>
+                    {quest.payment_proof && (
+                        <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs dark:border-slate-800 dark:bg-black/20">
+                            <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
+                                Bukti Transfer Pembayaran
+                            </strong>
                                 <div className="flex items-center justify-between rounded-xl border border-indigo-200/40 bg-indigo-500/5 p-2.5 dark:border-indigo-500/20 dark:bg-indigo-950/10">
                                     <div className="flex min-w-0 items-center gap-2.5">
                                         <FileImage className="h-5 w-5 shrink-0 text-indigo-500" />
@@ -729,8 +863,7 @@ export default function WorkerProjectPanel({
                             </div>
                         )}
                     </div>
-                </div>
-            )}
+                )}
 
             {quest.status === 'completed' && (
                 <div className="space-y-4 font-['Oxanium']">

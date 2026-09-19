@@ -6,7 +6,7 @@ use App\Models\Quest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApproveQuestWorkRequest extends FormRequest
+class ConfirmFinalDeliveryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -46,7 +46,7 @@ class ApproveQuestWorkRequest extends FormRequest
     {
         return [
             'rating' => 'Rating bintang',
-            'rating_comment' => 'Ulasan penilaian',
+            'rating_comment' => 'Ulasan penyelesaian',
         ];
     }
 
@@ -58,7 +58,7 @@ class ApproveQuestWorkRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'rating.required' => 'Rating bintang wajib dipilih.',
+            'rating.required' => 'Rating bintang wajib dipilih saat menyelesaikan quest.',
             'rating.integer' => 'Rating harus berupa angka.',
             'rating.min' => 'Rating minimal 1 bintang.',
             'rating.max' => 'Rating maksimal 5 bintang.',
