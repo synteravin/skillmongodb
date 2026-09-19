@@ -32,7 +32,7 @@ class ApproveQuestWorkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
             'rating_comment' => ['nullable', 'string', 'max:1000'],
         ];
     }

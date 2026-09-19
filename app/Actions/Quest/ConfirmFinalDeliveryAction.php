@@ -17,8 +17,10 @@ class ConfirmFinalDeliveryAction
 
     /**
      * Execute final delivery confirmation and completion of the quest.
+     *
+     * @param  array{rating?: int|null, rating_comment?: string|null}  $data
      */
-    public function execute(User $actor, Quest $quest): Quest
+    public function execute(User $actor, Quest $quest, array $data = []): Quest
     {
         $isCreator = (string) $quest->creator_id === (string) $actor->_id;
         $isAdmin = $actor->isAdmin();
@@ -31,11 +33,18 @@ class ConfirmFinalDeliveryAction
             abort(400, 'Quest harus dalam status menunggu konfirmasi berkas akhir.');
         }
 
-        $quest->update([
+        $updateData = [
             'status' => QuestStatus::COMPLETED->value,
             'completed_at' => now(),
             'payment_confirmed_at' => now(),
-        ]);
+        ];
+
+        if (isset($data['rating'])) {
+            $updateData['rating'] = (int) $data['rating'];
+            $updateData['rating_comment'] = $data['rating_comment'] ?? null;
+        }
+
+        $quest->update($updateData);
 
         if ($quest->worker_id) {
             // Award EXP and Gold rewards

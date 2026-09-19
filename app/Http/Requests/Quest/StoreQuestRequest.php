@@ -21,6 +21,7 @@ class StoreQuestRequest extends FormRequest
             'min_salary' => ['nullable', 'integer', 'min:0'],
             'max_salary' => ['nullable', 'integer'],
             'deadline' => ['required', 'date', 'after:now'],
+            'dp_percentage' => ['nullable', 'integer', 'min:10', 'max:100'],
             'images' => ['nullable', 'array'],
             'images.*' => ['file', 'image', 'max:2048'],
             'files' => ['nullable', 'array'],
@@ -33,6 +34,8 @@ class StoreQuestRequest extends FormRequest
         return [
             'max_budget.gte' => 'Anggaran maksimal harus lebih besar atau sama dengan anggaran minimal.',
             'deadline.after' => 'Tenggat waktu harus berupa tanggal dan waktu di masa depan.',
+            'dp_percentage.min' => 'Besaran uang muka (DP) minimal 10% dari nilai kontrak.',
+            'dp_percentage.max' => 'Besaran uang muka (DP) maksimal 100% dari nilai kontrak.',
             'images.*.max' => 'Setiap gambar tidak boleh lebih dari 2MB.',
             'images.*.image' => 'Setiap berkas gambar harus berupa format gambar valid.',
             'files.*.mimes' => 'Format file pendukung harus berupa PDF, Word, Excel, atau ZIP.',

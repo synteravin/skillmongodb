@@ -35,6 +35,7 @@ class SubmitQuestWorkRequest extends FormRequest
             'submission_link' => ['required', 'url', 'max:255'],
             'submission_note' => ['nullable', 'string', 'max:2000'],
             'submission_file' => ['nullable', 'file', 'mimes:zip,rar,7z,pdf,png,jpg,jpeg', 'max:51200'],
+            'changelog' => ['nullable', 'string', 'max:2000'],
         ];
     }
 
@@ -49,6 +50,7 @@ class SubmitQuestWorkRequest extends FormRequest
             'submission_link' => 'Tautan hasil pekerjaan',
             'submission_note' => 'Catatan hasil pekerjaan',
             'submission_file' => 'Berkas lampiran pekerjaan',
+            'changelog' => 'Catatan perbaikan (changelog)',
         ];
     }
 

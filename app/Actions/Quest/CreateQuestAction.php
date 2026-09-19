@@ -65,6 +65,7 @@ class CreateQuestAction
             'images' => $data['images'] ?? [],
             'files' => $data['files'] ?? [],
             'tier' => $tier,
+            'dp_percentage' => max(10, (int) ($data['dp_percentage'] ?? 10)),
             'custom_rewards' => $data['custom_rewards'] ?? null,
             'rewards' => $calculatedRewards,
             'submission_history' => [],

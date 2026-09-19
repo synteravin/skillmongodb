@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
-import RevisionHistory from '@/components/Quest/RevisionHistory';
 import QuestStepper from '@/components/Quest/QuestStepper';
 import QuestAttachments from '@/components/Quest/QuestAttachments';
 import CreatorProjectPanel from '@/components/Quest/CreatorProjectPanel';
@@ -25,7 +24,6 @@ import PageBackground from '@/components/Student/PageBackground';
 import VisitorBidPanel from '@/components/Quest/VisitorBidPanel';
 import BidsTabPanel from '@/components/Quest/BidsTabPanel';
 import DisputePanel from '@/components/Quest/DisputePanel';
-import VersionControlHistory from '@/components/Quest/VersionControlHistory';
 import { Quest, Bid } from '@/types/quest';
 
 interface Props {
@@ -350,50 +348,58 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     className={`rounded-lg border px-3 py-1 text-xs font-bold uppercase ${
                                         quest.status === 'open'
                                             ? 'border-emerald-250 text-emerald-705 bg-emerald-50 dark:border-slate-800 dark:bg-slate-950 dark:text-emerald-400'
-                                            : quest.status === 'draft'
+                                            : quest.status === 'down_payment'
                                               ? 'border-amber-250 text-amber-705 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
-                                              : quest.status === 'rejected'
-                                                ? 'border-red-255 text-red-705 bg-red-50 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
-                                                : quest.status === 'expired'
+                                              : quest.status === 'draft'
+                                                ? 'border-amber-250 text-amber-705 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
+                                                : quest.status === 'rejected'
                                                   ? 'border-red-255 text-red-705 bg-red-50 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
-                                                  : quest.status === 'ongoing'
-                                                    ? 'border-indigo-250 text-indigo-707 bg-indigo-50 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
-                                                    : quest.status ===
-                                                        'approved'
-                                                      ? 'border-purple-250 text-purple-707 bg-purple-50 dark:border-slate-800 dark:bg-slate-950 dark:text-purple-400'
-                                                      : quest.status ===
-                                                          'payment'
-                                                        ? 'border-amber-250 text-amber-750 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
+                                                  : quest.status === 'expired'
+                                                    ? 'border-red-255 text-red-705 bg-red-50 dark:border-slate-800 dark:bg-slate-950 dark:text-red-400'
+                                                    : quest.status === 'ongoing'
+                                                      ? 'border-indigo-250 text-indigo-707 bg-indigo-50 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
+                                                      : quest.status === 'revision'
+                                                        ? 'border-amber-250 text-amber-705 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
                                                         : quest.status ===
-                                                            'delivered'
-                                                          ? 'border-indigo-250 text-indigo-707 bg-indigo-50 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
+                                                            'approved'
+                                                          ? 'border-purple-250 text-purple-707 bg-purple-50 dark:border-slate-800 dark:bg-slate-950 dark:text-purple-400'
                                                           : quest.status ===
-                                                              'submitted'
-                                                            ? 'border-yellow-255 text-yellow-750 bg-yellow-50 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
-                                                            : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
+                                                              'payment'
+                                                            ? 'border-amber-250 text-amber-750 bg-amber-50 dark:border-slate-800 dark:bg-slate-950 dark:text-amber-400'
+                                                            : quest.status ===
+                                                                'delivered'
+                                                              ? 'border-indigo-250 text-indigo-707 bg-indigo-50 dark:border-slate-800 dark:bg-slate-950 dark:text-indigo-400'
+                                                              : quest.status ===
+                                                                  'submitted'
+                                                                ? 'border-yellow-255 text-yellow-750 bg-yellow-50 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
+                                                                : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
                                     }`}
                                 >
                                     {quest.status === 'open'
                                         ? 'Pendaftaran Dibuka'
-                                        : quest.status === 'draft'
-                                          ? 'Menunggu Moderasi'
-                                          : quest.status === 'rejected'
-                                            ? 'Ditolak'
-                                            : quest.status === 'expired'
-                                              ? 'Kadaluarsa'
-                                              : quest.status === 'ongoing'
-                                                ? 'Pengerjaan Proyek'
-                                                : quest.status === 'approved'
-                                                  ? 'Draf Disetujui'
-                                                  : quest.status === 'payment'
-                                                    ? 'Proses Transfer'
-                                                    : quest.status ===
-                                                        'delivered'
-                                                      ? 'Verifikasi Berkas Final'
-                                                      : quest.status ===
-                                                          'submitted'
-                                                        ? 'Ditinjau Klien'
-                                                        : 'Proyek Selesai'}
+                                        : quest.status === 'down_payment'
+                                          ? 'Pembayaran Awal (DP)'
+                                          : quest.status === 'draft'
+                                            ? 'Menunggu Moderasi'
+                                            : quest.status === 'rejected'
+                                              ? 'Ditolak'
+                                              : quest.status === 'expired'
+                                                ? 'Kadaluarsa'
+                                                : quest.status === 'ongoing'
+                                                  ? 'Pengerjaan Proyek'
+                                                  : quest.status === 'revision'
+                                                    ? 'Dalam Perbaikan Revisi'
+                                                    : quest.status === 'approved'
+                                                      ? 'Draf Disetujui'
+                                                      : quest.status === 'payment'
+                                                        ? 'Pembayaran Akhir (Pelunasan)'
+                                                        : quest.status ===
+                                                            'delivered'
+                                                          ? 'Verifikasi Berkas Final'
+                                                          : quest.status ===
+                                                              'submitted'
+                                                            ? 'Ditinjau Klien'
+                                                            : 'Proyek Selesai'}
                                 </span>
                             </div>
                         </div>
@@ -531,7 +537,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </div>
                         )}
 
-                        {['open', 'ongoing'].includes(quest.status) &&
+                        {['open', 'ongoing', 'revision'].includes(quest.status) &&
                             new Date(quest.deadline).getTime() <
                                 new Date().getTime() && (
                                 <div className="dark:border-slate-805 flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:bg-slate-950">
@@ -703,8 +709,6 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     />
                                 )}
 
-                                <VersionControlHistory quest={quest} />
-
                                 <DisputePanel
                                     quest={quest}
                                     isCreator={isCreator}
@@ -759,13 +763,28 @@ export default function Show({ quest, bids, myBid, can }: Props) {
 
                                     {/* Agreed Price (Nilai Kontrak Disetujui) */}
                                     {agreedPrice && (
-                                        <div className="border-t border-emerald-200/60 pt-2.5 dark:border-emerald-900/40">
-                                            <span className="block text-[9px] font-extrabold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                                NILAI KONTRAK
-                                            </span>
-                                            <span className="font-['Orbitron'] text-sm font-black text-emerald-600 dark:text-emerald-400">
-                                                {formatCurrency(agreedPrice)}
-                                            </span>
+                                        <div className="space-y-1.5 border-t border-emerald-200/60 pt-2.5 dark:border-emerald-900/40">
+                                            <div className="flex items-center justify-between">
+                                                <span className="block text-[9px] font-extrabold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                                    NILAI KONTRAK
+                                                </span>
+                                                <span className="font-['Orbitron'] text-sm font-black text-emerald-600 dark:text-emerald-400">
+                                                    {formatCurrency(agreedPrice)}
+                                                </span>
+                                            </div>
+                                            {quest.dp_percentage && (
+                                                <div className="flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400">
+                                                    <span>Uang Muka (DP {quest.dp_percentage}%):</span>
+                                                    <span className="font-bold text-amber-600 dark:text-amber-400">
+                                                        {formatCurrency(
+                                                            quest.dp_amount ||
+                                                                Math.round(
+                                                                    (agreedPrice * quest.dp_percentage) / 100,
+                                                                ),
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -816,7 +835,9 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             {/* Remaining Time */}
                             {[
                                 'open',
+                                'down_payment',
                                 'ongoing',
+                                'revision',
                                 'submitted',
                                 'disputed',
                                 'expired',
