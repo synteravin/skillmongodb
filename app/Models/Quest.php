@@ -47,6 +47,13 @@ class Quest extends Model
         'payment_uploaded_at',
         'payment_confirmed_at',
         'accepted_bid_amount',
+        'dp_percentage',
+        'dp_amount',
+        'dp_proof',
+        'dp_uploaded_at',
+        'dp_confirmed_at',
+        'rounds',
+        'max_revisions',
     ];
 
     protected function casts(): array
@@ -59,6 +66,8 @@ class Quest extends Model
             'min_salary' => 'integer',
             'max_salary' => 'integer',
             'accepted_bid_amount' => 'integer',
+            'dp_percentage' => 'integer',
+            'dp_amount' => 'integer',
             'deadline' => 'datetime',
             'creator_id' => 'string',
             'worker_id' => 'string',
@@ -66,11 +75,14 @@ class Quest extends Model
             'completed_at' => 'datetime',
             'payment_uploaded_at' => 'datetime',
             'payment_confirmed_at' => 'datetime',
+            'dp_uploaded_at' => 'datetime',
+            'dp_confirmed_at' => 'datetime',
             'rating' => 'integer',
             'images' => 'array',
             'files' => 'array',
             'submission_file' => 'array',
             'payment_proof' => 'array',
+            'dp_proof' => 'array',
             'rejection_note' => 'string',
             'revisions' => 'array',
             'tier' => 'string',
@@ -78,7 +90,101 @@ class Quest extends Model
             'rewards' => 'array',
             'dispute' => 'array',
             'submission_history' => 'array',
+            'rounds' => 'array',
+            'max_revisions' => 'integer',
         ];
+    }
+
+    /**
+     * Accessor for rounds with backward-compatibility for legacy submission_history & revisions.
+     */
+    protected function rounds(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if (! empty($value)) {
+                    $decoded = is_string($value) ? json_decode($value, true) : (array) $value;
+                    if (is_array($decoded) && ! empty($decoded)) {
+                        return $decoded;
+                    }
+                }
+
+                $history = isset($attributes['submission_history'])
+                    ? (is_string($attributes['submission_history']) ? json_decode($attributes['submission_history'], true) : (array) $attributes['submission_history'])
+                    : [];
+
+                if (empty($history) && (! empty($attributes['submission_link']) || ! empty($attributes['submission_file']))) {
+                    $file = isset($attributes['submission_file'])
+                        ? (is_string($attributes['submission_file']) ? json_decode($attributes['submission_file'], true) : (array) $attributes['submission_file'])
+                        : null;
+
+                    $history = [
+                        [
+                            'version' => 1,
+                            'submitted_at' => $attributes['submitted_at'] ?? null,
+                            'submission_link' => $attributes['submission_link'] ?? null,
+                            'submission_note' => $attributes['submission_note'] ?? null,
+                            'submission_file' => $file,
+                            'changelog' => null,
+                        ],
+                    ];
+                }
+
+                if (empty($history)) {
+                    return [];
+                }
+
+                $revisions = isset($attributes['revisions'])
+                    ? (is_string($attributes['revisions']) ? json_decode($attributes['revisions'], true) : (array) $attributes['revisions'])
+                    : [];
+
+                $synthesizedRounds = [];
+                $questStatus = $attributes['status'] ?? 'ongoing';
+
+                foreach ($history as $idx => $item) {
+                    $roundNum = $idx + 1;
+                    $hasRevision = isset($revisions[$idx]);
+
+                    $review = null;
+                    $roundStatus = 'submitted';
+
+                    if ($hasRevision) {
+                        $review = [
+                            'reviewed_at' => $revisions[$idx]['created_at'] ?? null,
+                            'reviewer_id' => $revisions[$idx]['author_id'] ?? null,
+                            'reviewer_name' => $revisions[$idx]['author_name'] ?? 'Pembuat Quest',
+                            'status' => 'changes_requested',
+                            'note' => $revisions[$idx]['note'] ?? null,
+                        ];
+                        $roundStatus = 'changes_requested';
+                    } elseif ($idx === count($history) - 1 && in_array($questStatus, ['approved', 'payment', 'delivered', 'completed'])) {
+                        $review = [
+                            'reviewed_at' => $attributes['completed_at'] ?? null,
+                            'reviewer_id' => $attributes['creator_id'] ?? null,
+                            'reviewer_name' => 'Pembuat Quest',
+                            'status' => 'approved',
+                            'note' => null,
+                        ];
+                        $roundStatus = 'approved';
+                    }
+
+                    $synthesizedRounds[] = [
+                        'round_number' => $roundNum,
+                        'status' => $roundStatus,
+                        'submission' => [
+                            'submitted_at' => $item['submitted_at'] ?? null,
+                            'link' => $item['submission_link'] ?? null,
+                            'note' => $item['submission_note'] ?? null,
+                            'file' => $item['submission_file'] ?? null,
+                            'changelog' => $item['changelog'] ?? null,
+                        ],
+                        'review' => $review,
+                    ];
+                }
+
+                return $synthesizedRounds;
+            }
+        );
     }
 
     /**

@@ -20,6 +20,7 @@ export default function Create() {
         max_budget: 0,
         min_salary: 0,
         max_salary: 0,
+        dp_percentage: 10,
         deadline: '',
         images: [] as File[],
         files: [] as File[],
@@ -328,6 +329,51 @@ export default function Create() {
                                         </span>
                                     )}
                                 </div>
+                            </div>
+
+                            {/* Input: Uang Muka (DP) */}
+                            <div className="space-y-2 rounded-lg border border-indigo-100 bg-indigo-50/40 p-3.5 dark:border-slate-800 dark:bg-[#030712]">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] font-bold tracking-wider text-indigo-700 uppercase dark:text-indigo-400">
+                                        Persentase Pembayaran Awal (DP)
+                                    </label>
+                                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                                        Minimal 10%
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="relative w-36">
+                                        <input
+                                            type="number"
+                                            required
+                                            min={10}
+                                            max={100}
+                                            value={data.dp_percentage}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value) || 0;
+                                                setData('dp_percentage', val);
+                                            }}
+                                            className="w-full rounded-lg border border-slate-300 bg-white py-2 pr-7 pl-3 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                        />
+                                        <span className="absolute top-2 right-2.5 text-xs font-bold text-slate-400 select-none">
+                                            %
+                                        </span>
+                                    </div>
+                                    <div className="text-[11px] leading-tight text-slate-600 dark:text-slate-400">
+                                        {data.max_budget > 0 ? (
+                                            <>
+                                                Estimasi DP: <strong className="text-indigo-600 dark:text-indigo-400">Rp {Math.round((data.max_budget * (data.dp_percentage || 10)) / 100).toLocaleString('id-ID')}</strong> (Pelunasan Akhir: Rp {Math.round((data.max_budget * (100 - (data.dp_percentage || 10))) / 100).toLocaleString('id-ID')})
+                                            </>
+                                        ) : (
+                                            'Uang muka yang akan ditransfer sebelum pekerja memulai proyek.'
+                                        )}
+                                    </div>
+                                </div>
+                                {errors.dp_percentage && (
+                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                        {errors.dp_percentage}
+                                    </span>
+                                )}
                             </div>
 
                             {/* Input: Deadline */}

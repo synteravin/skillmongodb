@@ -233,6 +233,9 @@ Route::middleware(['auth', 'role:admin,mentor'])
         Route::post('/quests/{quest}/reopen-bidding', [App\Http\Controllers\Admin\QuestController::class, 'reopenBidding'])->name('quests.reopen-bidding');
         Route::get('/quests-flags', [App\Http\Controllers\Admin\QuestController::class, 'flagQueue'])->name('quests.flags');
         Route::post('/quests-flags/{flag}/resolve', [App\Http\Controllers\Admin\QuestController::class, 'resolveFlag'])->name('quests.flags.resolve');
+
+        /* ---------------- STUDENT SUBMISSIONS MONITORING ---------------- */
+        Route::get('/submissions', [App\Http\Controllers\Admin\SubmissionController::class, 'index'])->name('submissions.index');
     });
 /*
 |--------------------------------------------------------------------------
@@ -495,6 +498,8 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
         Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
         Route::post('/quests/{quest}/extend-deadline', [QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
+        Route::post('/quests/{quest}/upload-dp', [QuestController::class, 'uploadDownPaymentProof'])->name('quests.upload-dp');
+        Route::post('/quests/{quest}/confirm-dp', [QuestController::class, 'confirmDownPayment'])->name('quests.confirm-dp');
         Route::post('/quests/{quest}/upload-payment', [QuestController::class, 'uploadPaymentProof'])->name('quests.upload-payment');
         Route::post('/quests/{quest}/confirm-delivery', [QuestController::class, 'confirmFinalDelivery'])->name('quests.confirm-delivery');
         Route::post('/quests/{quest}/request-delivery-revision', [QuestController::class, 'requestFinalZipRevision'])->name('quests.request-delivery-revision');

@@ -6,6 +6,7 @@ use App\Actions\Quest\AcceptQuestBidAction;
 use App\Actions\Quest\ApproveQuestWorkAction;
 use App\Actions\Quest\AwardQuestRewardsAction;
 use App\Actions\Quest\ConfirmFinalDeliveryAction;
+use App\Actions\Quest\ConfirmQuestDownPaymentAction;
 use App\Actions\Quest\CreateQuestAction;
 use App\Actions\Quest\ExtendQuestDeadlineAction;
 use App\Actions\Quest\FileQuestDisputeAction;
@@ -13,9 +14,11 @@ use App\Actions\Quest\PlaceQuestBidAction;
 use App\Actions\Quest\RecordQuestTransactionAction;
 use App\Actions\Quest\RejectQuestWorkAction;
 use App\Actions\Quest\RequestFinalZipRevisionAction;
+use App\Actions\Quest\RequestQuestRevisionAction;
 use App\Actions\Quest\ResolveQuestArbitrationAction;
 use App\Actions\Quest\SubmitFinalZipAction;
 use App\Actions\Quest\SubmitQuestWorkAction;
+use App\Actions\Quest\UploadQuestDownPaymentProofAction;
 use App\Actions\Quest\UploadQuestPaymentProofAction;
 use App\Enums\QuestBidStatus;
 use App\Enums\QuestStatus;
@@ -44,9 +47,12 @@ class QuestService
         protected ApproveQuestWorkAction $approveQuestWorkAction,
         protected RejectQuestWorkAction $rejectQuestWorkAction,
         protected UploadQuestPaymentProofAction $uploadQuestPaymentProofAction,
+        protected UploadQuestDownPaymentProofAction $uploadQuestDownPaymentProofAction,
+        protected ConfirmQuestDownPaymentAction $confirmQuestDownPaymentAction,
         protected SubmitFinalZipAction $submitFinalZipAction,
         protected ConfirmFinalDeliveryAction $confirmFinalDeliveryAction,
         protected RequestFinalZipRevisionAction $requestFinalZipRevisionAction,
+        protected RequestQuestRevisionAction $requestQuestRevisionAction,
         protected ExtendQuestDeadlineAction $extendQuestDeadlineAction
     ) {}
 
@@ -256,6 +262,15 @@ class QuestService
             ];
         }
 
+        $resolvedDpProof = null;
+        if ($quest->dp_proof && isset($quest->dp_proof['path'])) {
+            $resolvedDpProof = [
+                'name' => $quest->dp_proof['name'] ?? 'dp_receipt.png',
+                'url' => $disk->temporaryUrl($quest->dp_proof['path'], now()->addMinutes(60)),
+                'size' => $quest->dp_proof['size'] ?? 0,
+            ];
+        }
+
         $resolvedSubmissionHistory = array_map(function ($sub) use ($disk) {
             return [
                 'version' => $sub['version'] ?? 1,
@@ -316,6 +331,11 @@ class QuestService
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
                 'accepted_bid_amount' => $acceptedBidAmount,
+                'dp_percentage' => $quest->dp_percentage ?? 10,
+                'dp_amount' => $quest->dp_amount,
+                'dp_proof' => $resolvedDpProof,
+                'dp_uploaded_at' => $quest->dp_uploaded_at ? $quest->dp_uploaded_at->toISOString() : null,
+                'dp_confirmed_at' => $quest->dp_confirmed_at ? $quest->dp_confirmed_at->toISOString() : null,
                 'payment_proof' => $resolvedPaymentProof,
                 'payment_uploaded_at' => $quest->payment_uploaded_at ? $quest->payment_uploaded_at->toISOString() : null,
                 'payment_confirmed_at' => $quest->payment_confirmed_at ? $quest->payment_confirmed_at->toISOString() : null,
@@ -438,9 +458,9 @@ class QuestService
     }
 
     /**
-     * Approve work by creator or admin.
+     * Approve preview work submitted by worker.
      */
-    public function approveWork(User $actor, Quest $quest, array $data): Quest
+    public function approveWork(User $actor, Quest $quest, array $data = []): Quest
     {
         return $this->approveQuestWorkAction->execute($actor, $quest, $data);
     }
@@ -448,9 +468,33 @@ class QuestService
     /**
      * Request revision on submitted work by creator or admin.
      */
+    public function requestRevision(User $actor, Quest $quest, array $data): Quest
+    {
+        return $this->requestQuestRevisionAction->execute($actor, $quest, $data);
+    }
+
+    /**
+     * Request revision on submitted work (legacy alias).
+     */
     public function rejectWork(User $actor, Quest $quest, array $data): Quest
     {
-        return $this->rejectQuestWorkAction->execute($actor, $quest, $data);
+        return $this->requestRevision($actor, $quest, $data);
+    }
+
+    /**
+     * Upload down payment (DP) proof receipt by creator or admin.
+     */
+    public function uploadDownPaymentProof(User $actor, Quest $quest, UploadedFile $file): Quest
+    {
+        return $this->uploadQuestDownPaymentProofAction->execute($actor, $quest, $file);
+    }
+
+    /**
+     * Confirm receipt of down payment (DP) by worker or admin.
+     */
+    public function confirmDownPayment(User $actor, Quest $quest): Quest
+    {
+        return $this->confirmQuestDownPaymentAction->execute($actor, $quest);
     }
 
     /**
@@ -470,11 +514,11 @@ class QuestService
     }
 
     /**
-     * Confirm final delivery and complete the quest.
+     * Confirm final delivery and complete the quest with optional review/rating.
      */
-    public function confirmFinalDelivery(User $actor, Quest $quest): Quest
+    public function confirmFinalDelivery(User $actor, Quest $quest, array $data = []): Quest
     {
-        return $this->confirmFinalDeliveryAction->execute($actor, $quest);
+        return $this->confirmFinalDeliveryAction->execute($actor, $quest, $data);
     }
 
     /**

@@ -6,7 +6,7 @@ use App\Models\Quest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApproveQuestWorkRequest extends FormRequest
+class UploadDownPaymentProofRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,8 +32,7 @@ class ApproveQuestWorkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-            'rating_comment' => ['nullable', 'string', 'max:1000'],
+            'dp_proof' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
         ];
     }
 
@@ -45,8 +44,7 @@ class ApproveQuestWorkRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'rating' => 'Rating bintang',
-            'rating_comment' => 'Ulasan penilaian',
+            'dp_proof' => 'Bukti transfer uang muka (DP)',
         ];
     }
 
@@ -58,11 +56,11 @@ class ApproveQuestWorkRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'rating.required' => 'Rating bintang wajib dipilih.',
-            'rating.integer' => 'Rating harus berupa angka.',
-            'rating.min' => 'Rating minimal 1 bintang.',
-            'rating.max' => 'Rating maksimal 5 bintang.',
-            'rating_comment.max' => 'Ulasan maksimal 1000 karakter.',
+            'dp_proof.required' => 'Berkas bukti transfer uang muka (DP) wajib diunggah.',
+            'dp_proof.file' => 'Bukti pembayaran DP harus berupa berkas valid.',
+            'dp_proof.image' => 'Bukti pembayaran DP harus berupa gambar.',
+            'dp_proof.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau WEBP.',
+            'dp_proof.max' => 'Ukuran gambar maksimal adalah 10MB.',
         ];
     }
 }

@@ -199,7 +199,7 @@ class QuestSubmissionTest extends TestCase
         $response->assertSessionHas('warning');
 
         $quest->refresh();
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('revision', $quest->status);
         $this->assertEquals('Please fix the footer.', $quest->revision_note);
     }
 
@@ -276,8 +276,9 @@ class QuestSubmissionTest extends TestCase
         $response->assertSessionHas('success');
 
         $quest->refresh();
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('down_payment', $quest->status);
         $this->assertEquals((string) $worker->_id, $quest->worker_id);
+        $this->assertEquals(150, $quest->dp_amount);
 
         $bid->refresh();
         $this->assertEquals('accepted', $bid->status);
@@ -363,7 +364,7 @@ class QuestSubmissionTest extends TestCase
         $response->assertSessionHas('warning');
 
         $quest->refresh();
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('revision', $quest->status);
         $this->assertEquals('Footer missing.', $quest->revision_note);
     }
 
@@ -532,7 +533,7 @@ class QuestSubmissionTest extends TestCase
         $response1->assertRedirect();
 
         $quest->refresh();
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('revision', $quest->status);
         $this->assertEquals('Please fix the footer.', $quest->revision_note);
         $this->assertCount(1, $quest->revisions);
         $this->assertEquals('Please fix the footer.', $quest->revisions[0]['note']);
@@ -549,7 +550,7 @@ class QuestSubmissionTest extends TestCase
         $response2->assertRedirect();
 
         $quest->refresh();
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('revision', $quest->status);
         $this->assertEquals('Header is still broken.', $quest->revision_note);
         $this->assertCount(2, $quest->revisions);
         $this->assertEquals('Please fix the footer.', $quest->revisions[0]['note']);
