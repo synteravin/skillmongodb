@@ -187,6 +187,15 @@ class QuestController extends Controller
             ];
         }
 
+        $resolvedDpProof = null;
+        if ($quest->dp_proof && isset($quest->dp_proof['path'])) {
+            $resolvedDpProof = [
+                'name' => $quest->dp_proof['name'] ?? 'dp_receipt.png',
+                'url' => $disk->temporaryUrl($quest->dp_proof['path'], now()->addMinutes(60)),
+                'size' => $quest->dp_proof['size'] ?? 0,
+            ];
+        }
+
         $resolvedSubmissionHistory = array_map(function ($sub) use ($disk) {
             return [
                 'version' => $sub['version'] ?? 1,
@@ -259,6 +268,11 @@ class QuestController extends Controller
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
                 'accepted_bid_amount' => $acceptedBidAmount,
+                'dp_percentage' => $quest->dp_percentage ?? 10,
+                'dp_amount' => $quest->dp_amount,
+                'dp_proof' => $resolvedDpProof,
+                'dp_uploaded_at' => $quest->dp_uploaded_at ? $quest->dp_uploaded_at->toISOString() : null,
+                'dp_confirmed_at' => $quest->dp_confirmed_at ? $quest->dp_confirmed_at->toISOString() : null,
                 'payment_proof' => $resolvedPaymentProof,
                 'payment_uploaded_at' => $quest->payment_uploaded_at ? $quest->payment_uploaded_at->toISOString() : null,
                 'payment_confirmed_at' => $quest->payment_confirmed_at ? $quest->payment_confirmed_at->toISOString() : null,

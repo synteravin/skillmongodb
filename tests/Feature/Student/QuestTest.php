@@ -258,7 +258,8 @@ class QuestTest extends TestCase
         $bid1->refresh();
         $bid2->refresh();
 
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('down_payment', $quest->status);
+        $this->assertEquals(150000, $quest->dp_amount);
         $this->assertEquals($bidder1->_id, $quest->worker_id);
         $this->assertEquals('accepted', $bid1->status);
         $this->assertEquals('rejected', $bid2->status);
@@ -371,7 +372,7 @@ class QuestTest extends TestCase
         $response->assertRedirect(route('student.quests.show', $quest));
 
         $quest->refresh();
-        $this->assertEquals('ongoing', $quest->status);
+        $this->assertEquals('down_payment', $quest->status);
         $this->assertEquals($bidder->_id, $quest->worker_id);
     }
 

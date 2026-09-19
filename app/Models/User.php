@@ -102,10 +102,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getSignatureUrlAttribute(): ?string
     {
         if ($this->signature_path) {
-            /** @var FilesystemAdapter $disk */
-            $disk = Storage::disk('s3');
-            if ($disk->exists($this->signature_path)) {
+            try {
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk('s3');
+
                 return $disk->temporaryUrl($this->signature_path, now()->addMinutes(30));
+            } catch (\Throwable) {
+                return null;
             }
         }
 

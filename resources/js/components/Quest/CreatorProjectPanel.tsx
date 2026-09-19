@@ -10,7 +10,7 @@ import {
     Calendar,
     AlertCircle,
 } from 'lucide-react';
-import RevisionHistory from './RevisionHistory';
+import QuestIterationTimeline from './QuestIterationTimeline';
 import { Quest, Bid } from '@/types/quest';
 
 interface Props {
@@ -28,10 +28,9 @@ export default function CreatorProjectPanel({
 }: Props) {
     const [showApproveForm, setShowApproveForm] = useState(false);
     const [showRejectForm, setShowRejectForm] = useState(false);
+    const [showConfirmDeliveryModal, setShowConfirmDeliveryModal] = useState(false);
 
     const reviewForm = useForm({
-        rating: 5,
-        rating_comment: '',
         revision_note: '',
     });
 
@@ -74,6 +73,17 @@ export default function CreatorProjectPanel({
         });
     };
 
+    const dpForm = useForm({
+        dp_proof: null as File | null,
+    });
+
+    const handleUploadDpProof = (e: React.FormEvent) => {
+        e.preventDefault();
+        dpForm.post(`/quests/${quest.slug}/upload-dp`, {
+            onSuccess: () => dpForm.reset(),
+        });
+    };
+
     const paymentForm = useForm({
         payment_proof: null as File | null,
     });
@@ -85,7 +95,10 @@ export default function CreatorProjectPanel({
         });
     };
 
-    const confirmDeliveryForm = useForm({});
+    const confirmDeliveryForm = useForm({
+        rating: 5,
+        rating_comment: '',
+    });
     const [showZipRevisionModal, setShowZipRevisionModal] = useState(false);
     const zipRevisionForm = useForm({
         revision_note: '',
@@ -93,7 +106,12 @@ export default function CreatorProjectPanel({
 
     const handleConfirmDelivery = (e: React.FormEvent) => {
         e.preventDefault();
-        confirmDeliveryForm.post(`/quests/${quest.slug}/confirm-delivery`);
+        confirmDeliveryForm.post(`/quests/${quest.slug}/confirm-delivery`, {
+            onSuccess: () => {
+                setShowConfirmDeliveryModal(false);
+                confirmDeliveryForm.reset();
+            },
+        });
     };
 
     const handleRequestZipRevision = (e: React.FormEvent) => {
@@ -160,17 +178,141 @@ export default function CreatorProjectPanel({
                 </div>
             )}
 
-            {quest.status === 'ongoing' && (
+            {quest.status === 'down_payment' && (
                 <div className="space-y-4">
-                    <p className="text-slate-505 dark:text-slate-405 text-xs leading-relaxed">
-                        Pekerja sedang menyelesaikan tugas. Status kontrak saat
-                        ini adalah{' '}
-                        <span className="font-semibold text-slate-700 dark:text-slate-200">
-                            Dalam Pengerjaan
+                    <div className="flex flex-col gap-2 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4 dark:border-slate-800 dark:bg-[#030712]">
+                        <span className="block text-xs font-bold text-indigo-700 dark:text-indigo-400">
+                            Pembayaran Awal (Uang Muka / DP)
                         </span>
-                        .
+                        <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">
+                            Pekerja telah dipilih! Silakan lakukan transfer uang muka (DP) sebesar{' '}
+                            <strong>
+                                {formatCurrency(
+                                    quest.dp_amount ||
+                                        Math.round(
+                                            ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                        ),
+                                )}
+                            </strong>{' '}
+                            ({quest.dp_percentage || 10}% dari total kontrak {formatCurrency(quest.accepted_bid_amount || 0)}) ke rekening pekerja dan unggah bukti transfer di bawah ini.
+                        </p>
+                        <div className="mt-1 flex flex-wrap items-center gap-4 rounded-lg bg-white/80 p-2.5 text-[11px] font-semibold text-slate-700 dark:bg-slate-900/80 dark:text-slate-300">
+                            <div>
+                                <span className="block text-[10px] text-slate-400 uppercase">Total Kontrak:</span>
+                                {formatCurrency(quest.accepted_bid_amount || 0)}
+                            </div>
+                            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
+                            <div>
+                                <span className="block text-[10px] text-indigo-500 uppercase">
+                                    Nominal DP ({quest.dp_percentage || 10}%):
+                                </span>
+                                <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                                    {formatCurrency(
+                                        quest.dp_amount ||
+                                            Math.round(
+                                                ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                            ),
+                                    )}
+                                </span>
+                            </div>
+                            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
+                            <div>
+                                <span className="block text-[10px] text-slate-400 uppercase">Sisa Pelunasan Akhir:</span>
+                                {formatCurrency(
+                                    (quest.accepted_bid_amount || 0) -
+                                        (quest.dp_amount ||
+                                            Math.round(
+                                                ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                            )),
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {!quest.dp_proof ? (
+                        <form onSubmit={handleUploadDpProof} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase">
+                                    Bukti Transfer Uang Muka (DP) <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="file"
+                                    required
+                                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            dpForm.setData('dp_proof', file);
+                                        }
+                                    }}
+                                    className="border-slate-250 w-full rounded-lg border bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                />
+                                {dpForm.errors.dp_proof && (
+                                    <p className="text-xs font-semibold text-red-500">
+                                        {dpForm.errors.dp_proof}
+                                    </p>
+                                )}
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={dpForm.processing}
+                                className="w-full cursor-pointer rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-50 dark:from-indigo-600 dark:to-indigo-500 dark:hover:from-indigo-500 dark:hover:to-indigo-400"
+                            >
+                                {dpForm.processing ? 'Mengirim...' : 'Kirim Bukti Pembayaran DP'}
+                            </button>
+                        </form>
+                    ) : (
+                        <div className="space-y-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+                            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                                <Check className="h-5 w-5" />
+                                <span className="text-xs font-bold">
+                                    Bukti Transfer DP Berhasil Diunggah
+                                </span>
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">
+                                Menunggu pekerja memeriksa mutasi rekening dan memberikan konfirmasi penerimaan uang muka (DP) untuk memulai pengerjaan.
+                            </p>
+                            <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+                                <div className="flex items-center gap-2">
+                                    <FileImage className="h-5 w-5 text-indigo-500" />
+                                    <div>
+                                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                                            {quest.dp_proof.name}
+                                        </p>
+                                        <p className="text-[10px] text-slate-400">
+                                            Diunggah:{' '}
+                                            {quest.dp_uploaded_at
+                                                ? new Date(quest.dp_uploaded_at).toLocaleDateString('id-ID', {
+                                                      dateStyle: 'medium',
+                                                  })
+                                                : ''}
+                                        </p>
+                                    </div>
+                                </div>
+                                <a
+                                    href={quest.dp_proof.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400"
+                                    title="Lihat Bukti DP"
+                                >
+                                    <Download size={16} />
+                                </a>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {['ongoing', 'revision'].includes(quest.status) && (
+                <div className="space-y-4">
+                    <p className="text-slate-500 text-xs leading-relaxed dark:text-slate-400">
+                        {quest.status === 'revision'
+                            ? 'Pekerja sedang melakukan perbaikan sesuai catatan instruksi revisi dari Anda.'
+                            : 'Pekerja sedang menyelesaikan tugas. Status kontrak saat ini adalah Dalam Pengerjaan.'}
                     </p>
-                    <RevisionHistory quest={quest} viewType="creator_ongoing" />
+                    <QuestIterationTimeline quest={quest} isCreator={true} formatBytes={formatBytes} />
                 </div>
             )}
 
@@ -178,14 +320,21 @@ export default function CreatorProjectPanel({
                 <div className="space-y-4">
                     <div className="flex flex-col gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4 dark:border-slate-800 dark:bg-[#030712]">
                         <span className="text-indigo-755 block text-xs font-semibold dark:text-indigo-400">
-                            Hasil Pekerjaan Disetujui! Lanjutkan ke Pembayaran
+                            Hasil Pekerjaan Disetujui! Lanjutkan ke Pembayaran Akhir (Pelunasan)
                         </span>
                         <p className="text-slate-550 text-[11px] leading-relaxed dark:text-slate-400">
-                            Anda telah menyetujui hasil pengerjaan. Langkah
-                            berikutnya adalah melakukan transfer dana pembayaran
-                            secara offline ke pekerja (sesuai kesepakatan bid)
-                            dan mengunggah bukti transfer di bawah ini untuk
-                            memverifikasi proses pembayaran.
+                            Anda telah menyetujui hasil pengerjaan. Langkah berikutnya adalah melakukan transfer pelunasan sisa pembayaran{' '}
+                            (Sisa:{' '}
+                            <strong className="text-indigo-600 dark:text-indigo-400">
+                                {formatCurrency(
+                                    (quest.accepted_bid_amount || 0) -
+                                        (quest.dp_amount ||
+                                            Math.round(
+                                                ((quest.accepted_bid_amount || 0) * (quest.dp_percentage || 10)) / 100,
+                                            )),
+                                )}
+                            </strong>
+                            ) ke rekening pekerja dan mengunggah bukti transfer akhir di bawah ini.
                         </p>
                     </div>
 
@@ -195,13 +344,13 @@ export default function CreatorProjectPanel({
                     >
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-400 uppercase">
-                                Bukti Transfer Pembayaran{' '}
+                                Bukti Transfer Pembayaran Akhir{' '}
                                 <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="file"
                                 required
-                                accept="image/png, image/jpeg, image/jpg"
+                                accept="image/png, image/jpeg, image/jpg, image/webp"
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
@@ -227,7 +376,7 @@ export default function CreatorProjectPanel({
                         >
                             {paymentForm.processing
                                 ? 'Mengirim...'
-                                : 'Kirim Bukti Pembayaran'}
+                                : 'Kirim Bukti Pembayaran Akhir'}
                         </button>
                     </form>
                 </div>
@@ -273,25 +422,98 @@ export default function CreatorProjectPanel({
                         </div>
                     )}
 
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                        <button
-                            type="button"
-                            onClick={handleConfirmDelivery}
-                            disabled={confirmDeliveryForm.processing}
-                            className="flex-1 cursor-pointer rounded-xl bg-emerald-600 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:bg-emerald-700 disabled:opacity-50"
+                    {!showConfirmDeliveryModal && (
+                        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmDeliveryModal(true)}
+                                className="flex-1 cursor-pointer rounded-xl bg-emerald-600 py-3 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:bg-emerald-700"
+                            >
+                                Konfirmasi Berkas Sesuai & Berikan Ulasan
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowZipRevisionModal(true)}
+                                className="cursor-pointer rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs font-bold tracking-wider text-amber-700 dark:text-amber-400 uppercase transition-colors hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                            >
+                                Minta Perbaikan / Kirim Ulang ZIP
+                            </button>
+                        </div>
+                    )}
+
+                    {showConfirmDeliveryModal && (
+                        <form
+                            onSubmit={handleConfirmDelivery}
+                            className="space-y-4 rounded-xl border border-emerald-300/80 bg-emerald-50/30 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/20"
                         >
-                            {confirmDeliveryForm.processing
-                                ? 'Memproses...'
-                                : 'Konfirmasi Berkas Sesuai & Selesaikan'}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setShowZipRevisionModal(true)}
-                            className="cursor-pointer rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs font-bold tracking-wider text-amber-700 dark:text-amber-400 uppercase transition-colors hover:bg-amber-100 dark:hover:bg-amber-900/30"
-                        >
-                            Minta Perbaikan / Kirim Ulang ZIP
-                        </button>
-                    </div>
+                            <h4 className="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase">
+                                Konfirmasi Akhir & Penilaian Kinerja Pekerja
+                            </h4>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">
+                                Berikan penilaian bintang dan ulasan untuk pekerja sebelum meresmikan penyelesaian quest ini.
+                            </p>
+
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                    Rating Bintang <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex justify-center gap-1.5 py-1">
+                                    {[1, 2, 3, 4, 5].map((val) => (
+                                        <button
+                                            key={val}
+                                            type="button"
+                                            onClick={() =>
+                                                confirmDeliveryForm.setData('rating', val)
+                                            }
+                                            className="cursor-pointer transition-transform focus:outline-none active:scale-95"
+                                        >
+                                            <Star
+                                                className={`h-7 w-7 ${
+                                                    val <= confirmDeliveryForm.data.rating
+                                                        ? 'fill-amber-400 text-amber-400'
+                                                        : 'text-slate-300 dark:text-slate-600'
+                                                }`}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                    Ulasan Anda
+                                </label>
+                                <textarea
+                                    placeholder="Berikan ulasan tentang kinerja dan kepuasan Anda terhadap hasil pekerjaan..."
+                                    rows={3}
+                                    value={confirmDeliveryForm.data.rating_comment}
+                                    onChange={(e) =>
+                                        confirmDeliveryForm.setData('rating_comment', e.target.value)
+                                    }
+                                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                />
+                            </div>
+
+                            <div className="flex gap-2">
+                                <button
+                                    type="submit"
+                                    disabled={confirmDeliveryForm.processing}
+                                    className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-emerald-700 disabled:opacity-50"
+                                >
+                                    {confirmDeliveryForm.processing
+                                        ? 'Menyelesaikan...'
+                                        : 'Kirim Ulasan & Selesaikan Quest'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmDeliveryModal(false)}
+                                    className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
+                                >
+                                    Batal
+                                </button>
+                            </div>
+                        </form>
+                    )}
 
                     {showZipRevisionModal && (
                         <form onSubmit={handleRequestZipRevision} className="space-y-3 rounded-xl border border-amber-300/60 bg-amber-50/30 p-4 dark:border-amber-900/40 dark:bg-amber-950/10">
@@ -331,10 +553,10 @@ export default function CreatorProjectPanel({
                 <div className="space-y-4">
                     <div className="flex flex-col gap-1.5 rounded-xl border border-amber-100 bg-amber-50/30 p-4 dark:border-slate-800 dark:bg-[#030712]">
                         <span className="block text-xs font-semibold text-amber-700 dark:text-amber-400">
-                            Menunggu Konfirmasi Pekerja
+                            Menunggu Konfirmasi Pembayaran Akhir & Berkas Final
                         </span>
                         <p className="text-slate-550 text-[11px] leading-relaxed dark:text-slate-400">
-                            Bukti transfer pembayaran Anda telah diunggah. Saat
+                            Bukti transfer pembayaran akhir (pelunasan) Anda telah diunggah. Saat
                             ini sistem menunggu pekerja memverifikasi penerimaan
                             dana di rekeningnya dan menyerahkan Berkas Proyek
                             Final (ZIP) untuk menyelesaikan kontrak ini.
@@ -344,7 +566,7 @@ export default function CreatorProjectPanel({
                     {quest.payment_proof && (
                         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-[#030712]">
                             <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                Bukti Transfer Anda
+                                Bukti Transfer Pembayaran Akhir Anda
                             </span>
                             <div className="flex flex-col gap-3">
                                 <div className="flex items-center justify-between gap-3">
@@ -401,71 +623,11 @@ export default function CreatorProjectPanel({
                         </p>
                     </div>
 
-                    <RevisionHistory
+                    <QuestIterationTimeline
                         quest={quest}
-                        viewType="creator_submitted"
+                        isCreator={true}
+                        formatBytes={formatBytes}
                     />
-
-                    <div className="space-y-3.5 rounded-xl border border-slate-100 bg-slate-50 p-4 text-xs dark:border-slate-800 dark:bg-[#030712]">
-                        {quest.submission_file && (
-                            <div className="space-y-1">
-                                <strong className="block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Berkas Pekerjaan (ZIP)
-                                </strong>
-                                <div className="flex items-center justify-between rounded-xl border border-amber-200/40 bg-amber-500/5 p-2.5 dark:border-slate-800 dark:bg-[#030712]">
-                                    <div className="flex min-w-0 items-center gap-2.5">
-                                        <FileArchive className="h-5 w-5 shrink-0 text-amber-500" />
-                                        <div className="min-w-0">
-                                            <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                                {quest.submission_file.name}
-                                            </p>
-                                            <p className="text-slate-405 text-[10px]">
-                                                {formatBytes(
-                                                    quest.submission_file.size,
-                                                )}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <a
-                                        href={quest.submission_file.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-amber-600 transition-colors hover:bg-amber-500/10 hover:text-amber-700"
-                                        title="Unduh ZIP di Tab Baru"
-                                    >
-                                        <Download className="h-4.5 w-4.5" />
-                                    </a>
-                                </div>
-                            </div>
-                        )}
-
-                        {quest.submission_link && (
-                            <div>
-                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Link Hasil Pekerjaan
-                                </strong>
-                                <a
-                                    href={quest.submission_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="font-semibold break-all text-indigo-600 hover:underline dark:text-indigo-400"
-                                >
-                                    {quest.submission_link}
-                                </a>
-                            </div>
-                        )}
-
-                        {quest.submission_note && (
-                            <div>
-                                <strong className="mb-1 block text-[10px] tracking-wider text-slate-400 uppercase">
-                                    Catatan dari Pekerja
-                                </strong>
-                                <p className="text-slate-650 rounded-lg border border-slate-200 bg-white p-2.5 leading-relaxed whitespace-pre-wrap dark:border-slate-800 dark:bg-[#0d1117] dark:text-slate-300">
-                                    {quest.submission_note}
-                                </p>
-                            </div>
-                        )}
-                    </div>
 
                     {!showApproveForm && !showRejectForm && (
                         <div className="flex gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
@@ -473,13 +635,13 @@ export default function CreatorProjectPanel({
                                 onClick={() => setShowApproveForm(true)}
                                 className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-emerald-700"
                             >
-                                Setujui & Selesai
+                                Setujui Hasil Pekerjaan
                             </button>
                             <button
                                 onClick={() => setShowRejectForm(true)}
-                                className="flex-1 cursor-pointer rounded-lg bg-rose-600 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-rose-700"
+                                className="flex-1 cursor-pointer rounded-lg bg-amber-600 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-amber-700"
                             >
-                                Tolak / Minta Revisi
+                                Minta Revisi / Perbaikan
                             </button>
                         </div>
                     )}
@@ -489,55 +651,11 @@ export default function CreatorProjectPanel({
                             onSubmit={submitApproval}
                             className="space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800"
                         >
-                            <h4 className="text-xs font-bold text-slate-700 uppercase dark:text-indigo-400">
-                                Berikan Penilaian & Ulasan Pekerja
-                            </h4>
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Rating Kinerja
-                                </label>
-                                <div className="flex justify-center gap-1.5 py-1">
-                                    {[1, 2, 3, 4, 5].map((val) => (
-                                        <button
-                                            key={val}
-                                            type="button"
-                                            onClick={() =>
-                                                reviewForm.setData(
-                                                    'rating',
-                                                    val,
-                                                )
-                                            }
-                                            className="cursor-pointer transition-transform focus:outline-none active:scale-95"
-                                        >
-                                            <Star
-                                                className={`h-7 w-7 ${
-                                                    val <=
-                                                    reviewForm.data.rating
-                                                        ? 'fill-amber-400 text-amber-400'
-                                                        : 'text-slate-300 dark:text-slate-600'
-                                                }`}
-                                            />
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Ulasan Anda
-                                </label>
-                                <textarea
-                                    placeholder="Berikan ulasan tentang penyelesaian pekerjaan..."
-                                    rows={3}
-                                    value={reviewForm.data.rating_comment}
-                                    onChange={(e) =>
-                                        reviewForm.setData(
-                                            'rating_comment',
-                                            e.target.value,
-                                        )
-                                    }
-                                    className="focus:border-indigo-650 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
-                                />
+                            <div className="rounded-xl border border-emerald-500/20 bg-emerald-50/50 p-4 text-xs text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-300">
+                                <h4 className="font-bold uppercase">Konfirmasi Persetujuan Hasil</h4>
+                                <p className="mt-1 leading-relaxed text-slate-600 dark:text-slate-400">
+                                    Dengan menyetujui hasil pekerjaan ini, tahap preview pengerjaan dinyatakan selesai dan Anda akan diarahkan untuk melakukan transfer pelunasan pembayaran. Penilaian bintang dan ulasan akan diberikan setelah serah terima berkas Master ZIP final.
+                                </p>
                             </div>
 
                             <div className="flex gap-2">
@@ -547,16 +665,13 @@ export default function CreatorProjectPanel({
                                     className="flex-1 cursor-pointer rounded-lg bg-emerald-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-emerald-700 disabled:opacity-50"
                                 >
                                     {reviewForm.processing
-                                        ? 'Menyelesaikan...'
-                                        : 'Kirim Ulasan & Setujui'}
+                                        ? 'Menyetujui...'
+                                        : 'Ya, Setujui Hasil Pekerjaan'}
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        setShowApproveForm(false);
-                                        reviewForm.reset();
-                                    }}
-                                    className="dark:text-slate-455 rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-white"
+                                    onClick={() => setShowApproveForm(false)}
+                                    className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
                                 >
                                     Batal
                                 </button>
@@ -569,12 +684,12 @@ export default function CreatorProjectPanel({
                             onSubmit={submitRejection}
                             className="space-y-4 border-t border-slate-100 pt-4 dark:border-slate-800"
                         >
-                            <h4 className="text-slate-750 text-xs font-bold uppercase dark:text-rose-400">
-                                Kirim Feedback Revisi
+                            <h4 className="text-xs font-bold uppercase text-amber-700 dark:text-amber-400">
+                                Kirim Catatan Permintaan Revisi
                             </h4>
                             <div className="space-y-1">
                                 <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                    Detail Revisi yang Harus Diperbaiki{' '}
+                                    Rincian Perbaikan yang Harus Dilakukan Pekerja{' '}
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
@@ -588,7 +703,7 @@ export default function CreatorProjectPanel({
                                             e.target.value,
                                         )
                                     }
-                                    className="border-slate-250 w-full rounded-lg border bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-red-500 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-amber-500 focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
                                 />
                             </div>
 
@@ -596,7 +711,7 @@ export default function CreatorProjectPanel({
                                 <button
                                     type="submit"
                                     disabled={reviewForm.processing}
-                                    className="flex-1 cursor-pointer rounded-lg bg-rose-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-rose-700 disabled:opacity-50"
+                                    className="flex-1 cursor-pointer rounded-lg bg-amber-600 py-2 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-amber-700 disabled:opacity-50"
                                 >
                                     {reviewForm.processing
                                         ? 'Mengirim...'
@@ -608,7 +723,7 @@ export default function CreatorProjectPanel({
                                         setShowRejectForm(false);
                                         reviewForm.reset();
                                     }}
-                                    className="dark:text-slate-455 rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-white"
+                                    className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
                                 >
                                     Batal
                                 </button>

@@ -688,6 +688,8 @@ export default function Index({ quests, statusCounts, filters }: Props) {
                                                                 quest.status ===
                                                                 'open'
                                                                     ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
+                                                                    : quest.status === 'down_payment'
+                                                                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
                                                                     : isPendingReview
                                                                       ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
                                                                       : quest.status ===
@@ -705,6 +707,8 @@ export default function Index({ quests, statusCounts, filters }: Props) {
                                                             {quest.status ===
                                                             'open'
                                                                 ? 'Tersedia'
+                                                                : quest.status === 'down_payment'
+                                                                  ? 'DP'
                                                                 : isPendingReview
                                                                   ? 'Draft'
                                                                   : quest.status ===

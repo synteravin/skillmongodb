@@ -371,53 +371,57 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         className={`rounded-lg border px-3.5 py-1 text-xs font-bold uppercase ${
                                             quest.status === 'open'
                                                 ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
-                                                : quest.status === 'draft'
+                                                : quest.status === 'down_payment'
                                                   ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
-                                                  : quest.status === 'rejected'
-                                                    ? 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400'
-                                                    : quest.status === 'expired'
-                                                      ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
-                                                      : quest.status ===
-                                                          'ongoing'
-                                                        ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
+                                                  : quest.status === 'draft'
+                                                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
+                                                    : quest.status === 'rejected'
+                                                      ? 'border-red-500/30 bg-red-500/10 text-red-700 dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-400'
+                                                      : quest.status === 'expired'
+                                                        ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
                                                         : quest.status ===
-                                                            'approved'
-                                                          ? 'border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/20 dark:text-purple-400'
+                                                            'ongoing'
+                                                          ? 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-400'
                                                           : quest.status ===
-                                                              'payment'
-                                                            ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
+                                                              'approved'
+                                                            ? 'border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/20 dark:text-purple-400'
                                                             : quest.status ===
-                                                                'delivered'
-                                                              ? 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400'
+                                                                'payment'
+                                                              ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-400'
                                                               : quest.status ===
-                                                                'submitted'
-                                                              ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
-                                                              : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                                                  'delivered'
+                                                                ? 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400'
+                                                                : quest.status ===
+                                                                  'submitted'
+                                                                ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
+                                                                : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }`}
                                     >
                                         {quest.status === 'open'
                                             ? 'Tersedia'
-                                            : quest.status === 'draft'
-                                              ? 'Menunggu Review'
-                                              : quest.status === 'rejected'
-                                                ? 'Ditolak'
-                                                : quest.status === 'expired'
-                                                  ? 'Kadaluarsa'
-                                                  : quest.status === 'ongoing'
-                                                    ? 'Pengerjaan'
-                                                    : quest.status ===
-                                                        'approved'
-                                                      ? 'Disetujui'
+                                            : quest.status === 'down_payment'
+                                              ? 'Pembayaran Awal'
+                                              : quest.status === 'draft'
+                                                ? 'Menunggu Review'
+                                                : quest.status === 'rejected'
+                                                  ? 'Ditolak'
+                                                  : quest.status === 'expired'
+                                                    ? 'Kadaluarsa'
+                                                    : quest.status === 'ongoing'
+                                                      ? 'Pengerjaan'
                                                       : quest.status ===
-                                                          'payment'
-                                                        ? 'Pembayaran'
+                                                          'approved'
+                                                        ? 'Disetujui'
                                                         : quest.status ===
-                                                            'delivered'
-                                                          ? 'Verifikasi Berkas'
+                                                            'payment'
+                                                          ? 'Pembayaran Akhir'
                                                           : quest.status ===
-                                                            'submitted'
-                                                          ? 'Ditinjau'
-                                                          : 'Selesai'}
+                                                              'delivered'
+                                                            ? 'Verifikasi Berkas'
+                                                            : quest.status ===
+                                                              'submitted'
+                                                            ? 'Ditinjau'
+                                                            : 'Selesai'}
                                     </span>
                                 </div>
                             </div>

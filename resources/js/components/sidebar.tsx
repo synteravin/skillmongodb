@@ -13,6 +13,7 @@ import {
     UserCheckIcon,
     User,
     FileSignature,
+    GraduationCap,
     MessageSquare,
     Briefcase,
 } from 'lucide-react';
@@ -80,6 +81,12 @@ const menu: MenuItem[] = [
         name: 'Quests',
         icon: Briefcase,
         href: '/admin/quests',
+        roles: ['admin'],
+    },
+    {
+        name: 'Proyek Kelulusan',
+        icon: GraduationCap,
+        href: '/admin/submissions',
         roles: ['admin'],
     },
     {

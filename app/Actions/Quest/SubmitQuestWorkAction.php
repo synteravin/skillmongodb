@@ -14,7 +14,7 @@ class SubmitQuestWorkAction
     /**
      * Execute the submission of project preview work.
      *
-     * @param  array{submission_link: string, submission_note?: string|null, submission_file?: UploadedFile|null}  $data
+     * @param  array{submission_link: string, submission_note?: string|null, submission_file?: UploadedFile|null, changelog?: string|null}  $data
      */
     public function execute(User $worker, Quest $quest, array $data): Quest
     {
@@ -22,8 +22,8 @@ class SubmitQuestWorkAction
             abort(403, 'Hanya pekerja terpilih yang dapat mengumpulkan hasil pekerjaan.');
         }
 
-        if ($quest->status !== QuestStatus::ONGOING->value) {
-            abort(400, 'Quest harus dalam status pengerjaan untuk dapat mengumpulkan hasil.');
+        if (! in_array($quest->status, [QuestStatus::ONGOING->value, QuestStatus::REVISION->value])) {
+            abort(400, 'Quest harus dalam status pengerjaan atau revisi untuk dapat mengumpulkan hasil.');
         }
 
         $fileData = null;
@@ -39,12 +39,31 @@ class SubmitQuestWorkAction
 
         $history = $quest->submission_history ?? [];
         $nextVersion = count($history) + 1;
-        $history[] = [
+        $historyItem = [
             'version' => $nextVersion,
             'submitted_at' => now()->toIso8601String(),
             'submission_link' => $data['submission_link'],
             'submission_note' => $data['submission_note'] ?? null,
             'submission_file' => $fileData,
+            'changelog' => $data['changelog'] ?? null,
+        ];
+        $history[] = $historyItem;
+
+        $rounds = $quest->rounds ?? [];
+        if (is_string($rounds)) {
+            $rounds = json_decode($rounds, true) ?: [];
+        }
+        $rounds[] = [
+            'round_number' => $nextVersion,
+            'status' => 'submitted',
+            'submission' => [
+                'submitted_at' => now()->toIso8601String(),
+                'link' => $data['submission_link'],
+                'note' => $data['submission_note'] ?? null,
+                'file' => $fileData,
+                'changelog' => $data['changelog'] ?? null,
+            ],
+            'review' => null,
         ];
 
         $updateData = [
@@ -54,6 +73,7 @@ class SubmitQuestWorkAction
             'status' => QuestStatus::SUBMITTED->value,
             'revision_note' => null,
             'submission_history' => $history,
+            'rounds' => $rounds,
         ];
 
         if ($fileData) {
