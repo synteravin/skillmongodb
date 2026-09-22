@@ -1,5 +1,5 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Calendar,
     DollarSign,
@@ -13,6 +13,7 @@ import {
     ShieldAlert,
     Flag,
     Trash2,
+    Scale,
 } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
@@ -23,7 +24,8 @@ import WorkerProjectPanel from '@/components/Quest/WorkerProjectPanel';
 import PageBackground from '@/components/Student/PageBackground';
 import VisitorBidPanel from '@/components/Quest/VisitorBidPanel';
 import BidsTabPanel from '@/components/Quest/BidsTabPanel';
-import DisputePanel from '@/components/Quest/DisputePanel';
+import ProjectResolutionCenter from '@/components/Quest/ProjectResolutionCenter';
+import MediationWarRoom from '@/components/Quest/MediationWarRoom';
 import { Quest, Bid } from '@/types/quest';
 
 interface Props {
@@ -41,6 +43,14 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const currentUser = props.auth?.user;
     const isCreator = currentUser?.id === quest.creator_id;
     const isWorker = currentUser?.id === quest.worker_id;
+    const isAuthorizedForDispute = Boolean(
+        currentUser && (
+            isCreator ||
+            isWorker ||
+            currentUser.role === 'admin'
+        )
+    );
+    const isDisputed = quest.status === 'disputed' || Boolean(quest.dispute);
 
     const acceptedBid = bids.find(
         (b) =>
@@ -50,10 +60,58 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const agreedPrice =
         quest.accepted_bid_amount ?? acceptedBid?.bid_amount ?? null;
 
+    const isProjectActive =
+        Boolean(quest.worker_id) ||
+        [
+            'down_payment',
+            'ongoing',
+            'revision',
+            'submitted',
+            'approved',
+            'payment',
+            'delivered',
+            'completed',
+            'disputed',
+        ].includes(quest.status);
+
     // Define initial active tab
-    const [activeTab, setActiveTab] = useState<'detail' | 'project' | 'bids'>(
-        isCreator && quest.status === 'open' ? 'bids' : 'detail',
-    );
+    type TabType = 'detail' | 'project' | 'bids' | 'mediation';
+    const [activeTab, setActiveTab] = useState<TabType>(() => {
+        if (isDisputed && isAuthorizedForDispute) {
+            return 'mediation';
+        }
+        if (isCreator && quest.status === 'open') {
+            return 'bids';
+        }
+        if (isProjectActive) {
+            return 'project';
+        }
+        return 'detail';
+    });
+
+    // Ensure activeTab is always valid even during Inertia same-page state retention
+    const effectiveTab: TabType = (() => {
+        if (activeTab === 'mediation' && (!isDisputed || !isAuthorizedForDispute)) {
+            return isProjectActive ? 'project' : 'detail';
+        }
+        if (activeTab === 'bids' && (!isCreator || quest.status !== 'open')) {
+            return isProjectActive ? 'project' : 'detail';
+        }
+        if (activeTab === 'project' && !isProjectActive && isCreator && quest.status === 'open') {
+            return 'bids';
+        }
+        return activeTab;
+    })();
+
+    // Synchronize activeTab state when quest status or worker assignment changes
+    useEffect(() => {
+        if (isDisputed && isAuthorizedForDispute && activeTab !== 'mediation') {
+            setActiveTab('mediation');
+        } else if (activeTab === 'bids' && (!isCreator || quest.status !== 'open')) {
+            setActiveTab(isProjectActive ? 'project' : 'detail');
+        }
+    }, [quest.status, quest.worker_id, isProjectActive, isCreator, isDisputed, isAuthorizedForDispute, activeTab]);
+    const [isBriefExpanded, setIsBriefExpanded] = useState(false);
     const [selectedChatBid, setSelectedChatBid] = useState<{
         id: string;
         name: string;
@@ -372,7 +430,13 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                               : quest.status ===
                                                                   'submitted'
                                                                 ? 'border-yellow-255 text-yellow-750 bg-yellow-50 dark:border-slate-800 dark:bg-slate-950 dark:text-yellow-400'
-                                                                : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
+                                                                : quest.status === 'disputed'
+                                                                  ? 'border-red-500/40 text-red-600 bg-red-50 dark:border-red-500/40 dark:bg-red-950/30 dark:text-red-400 animate-pulse'
+                                                                  : quest.status === 'cancelled'
+                                                                    ? 'border-rose-300 text-rose-700 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/20 dark:text-rose-400'
+                                                                    : quest.status === 'completed'
+                                                                      ? 'border-emerald-500/30 text-emerald-700 bg-emerald-50 dark:border-emerald-500/30 dark:bg-emerald-950/20 dark:text-emerald-400'
+                                                                      : 'border-slate-250 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400'
                                     }`}
                                 >
                                     {quest.status === 'open'
@@ -399,7 +463,11 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                           : quest.status ===
                                                               'submitted'
                                                             ? 'Ditinjau Klien'
-                                                            : 'Proyek Selesai'}
+                                                            : quest.status === 'disputed'
+                                                              ? 'Sengketa Aktif'
+                                                              : quest.status === 'cancelled'
+                                                                ? 'Proyek Dibatalkan'
+                                                                : 'Proyek Selesai'}
                                 </span>
                             </div>
                         </div>
@@ -560,177 +628,297 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                 {/* 2. STEPPER TIMELINE BOX (SEPARATED CARD) */}
                 <QuestStepper status={quest.status} />
 
-                {/* 3. MAIN WORKSPACE GRID */}
-                <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
-                    {/* LEFT AREA: WORKSPACE CONTROL (col-span-8) */}
-                    <div className="space-y-6 lg:col-span-8">
-                        {/* Tabs */}
-                        <div className="border-slate-205 flex shrink-0 gap-6 border-b pb-px text-xs font-bold dark:border-slate-800">
+                {/* 3. MAIN WORKSPACE CONTAINER */}
+                <div className="space-y-6">
+                    {/* Tabs Navigation Bar (Full Width across top) */}
+                    <div className="flex shrink-0 gap-6 border-b border-slate-200 pb-px text-xs font-bold dark:border-slate-800">
+                        {/* Dedicated Mediation War Room Tab (Authorized parties only during dispute) */}
+                        {isDisputed && isAuthorizedForDispute && (
                             <button
-                                onClick={() => setActiveTab('detail')}
+                                onClick={() => setActiveTab('mediation')}
                                 className={`relative cursor-pointer pb-2.5 transition-colors ${
-                                    activeTab === 'detail'
-                                        ? 'text-indigo-650 dark:text-indigo-400'
-                                        : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                    effectiveTab === 'mediation'
+                                        ? 'font-bold text-amber-600 dark:text-amber-400'
+                                        : 'font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                 }`}
                             >
                                 <span className="flex items-center gap-1.5">
-                                    <FileText size={13} />
-                                    Spesifikasi Proyek
+                                    <Scale
+                                        size={14}
+                                        className={
+                                            effectiveTab === 'mediation'
+                                                ? 'text-amber-600 dark:text-amber-400 animate-pulse'
+                                                : 'text-slate-400 dark:text-slate-500'
+                                        }
+                                    />
+                                    Ruang Mediasi Privat
+                                    <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-extrabold uppercase text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                                        Rahasia
+                                    </span>
                                 </span>
-                                {activeTab === 'detail' && (
-                                    <span className="bg-indigo-650 absolute right-0 bottom-0 left-0 h-0.5 rounded dark:bg-indigo-400" />
+                                {effectiveTab === 'mediation' && (
+                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-amber-600 shadow-sm dark:bg-amber-400" />
                                 )}
                             </button>
+                        )}
 
-                            <button
-                                onClick={() => setActiveTab('project')}
-                                className={`relative cursor-pointer pb-2.5 transition-colors ${
-                                    activeTab === 'project'
-                                        ? 'text-indigo-650 dark:text-indigo-400'
-                                        : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
-                                }`}
-                            >
-                                <span className="flex items-center gap-1.5">
-                                    <Briefcase size={13} />
-                                    {isCreator
-                                        ? 'Manajemen Proyek'
-                                        : isWorker
-                                          ? 'Workspace Pengerjaan'
-                                          : 'Status & Pengajuan'}
-                                </span>
-                                {activeTab === 'project' && (
-                                    <span className="bg-indigo-650 absolute right-0 bottom-0 left-0 h-0.5 rounded dark:bg-indigo-400" />
-                                )}
-                            </button>
-
-                            {isCreator && quest.status === 'open' && (
+                        {isProjectActive ? (
+                            <>
                                 <button
-                                    onClick={() => setActiveTab('bids')}
+                                    onClick={() => setActiveTab('project')}
                                     className={`relative cursor-pointer pb-2.5 transition-colors ${
-                                        activeTab === 'bids'
-                                            ? 'text-indigo-650 dark:text-indigo-400'
-                                            : 'text-slate-455 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                        effectiveTab === 'project'
+                                            ? 'font-bold text-indigo-600 dark:text-indigo-400'
+                                            : 'font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                     }`}
                                 >
                                     <span className="flex items-center gap-1.5">
-                                        <MessageSquare size={13} />
-                                        Pelamar Kerja ({bids.length})
+                                        <Briefcase
+                                            size={14}
+                                            className={
+                                                effectiveTab === 'project'
+                                                    ? 'text-indigo-600 dark:text-indigo-400'
+                                                    : 'text-slate-400 dark:text-slate-500'
+                                            }
+                                        />
+                                        {isCreator
+                                            ? isDisputed
+                                                ? 'Manajemen Proyek (Dibekukan)'
+                                                : 'Manajemen Proyek'
+                                            : isWorker
+                                              ? isDisputed
+                                                  ? 'Workspace (Dibekukan)'
+                                                  : 'Workspace Pengerjaan'
+                                              : 'Status & Pengajuan'}
                                     </span>
-                                    {activeTab === 'bids' && (
-                                        <span className="bg-indigo-650 absolute right-0 bottom-0 left-0 h-0.5 rounded dark:bg-indigo-400" />
+                                    {effectiveTab === 'project' && (
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 shadow-sm dark:bg-indigo-400" />
                                     )}
                                 </button>
-                            )}
-                        </div>
 
-                        {/* TAB CONTENT: DETAIL */}
-                        {activeTab === 'detail' && (
-                            <div className="relative space-y-3 overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
-                                <div className="relative z-10 space-y-3">
-                                    <h3 className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
-                                        Detail Penugasan & Deskripsi
-                                    </h3>
-                                    <div className="text-slate-755 dark:text-slate-250 rounded-lg border border-slate-200/60 bg-slate-50/50 p-4 text-xs leading-relaxed whitespace-pre-wrap dark:border-slate-800 dark:bg-[#030712]/40">
-                                        {quest.description}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* TAB CONTENT: PROJECT MANAGEMENT */}
-                        {activeTab === 'project' && (
-                            <div className="space-y-6">
-                                {quest.dispute && (
-                                    <div
-                                        className={`flex gap-3 rounded-lg border p-4 ${
-                                            quest.status === 'disputed'
-                                                ? 'text-red-655 border-red-200 bg-red-50/15 dark:border-slate-800 dark:bg-slate-950/40 dark:text-red-400'
-                                                : 'border-green-200 bg-green-50/15 text-green-700 dark:border-slate-800 dark:bg-slate-950/40 dark:text-green-400'
+                                <button
+                                    onClick={() => setActiveTab('detail')}
+                                    className={`relative cursor-pointer pb-2.5 transition-colors ${
+                                        effectiveTab === 'detail'
+                                            ? 'font-bold text-indigo-600 dark:text-indigo-400'
+                                            : 'font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-1.5">
+                                        <FileText
+                                            size={14}
+                                            className={
+                                                effectiveTab === 'detail'
+                                                    ? 'text-indigo-600 dark:text-indigo-400'
+                                                    : 'text-slate-400 dark:text-slate-500'
+                                            }
+                                        />
+                                        Dokumen Spesifikasi
+                                    </span>
+                                    {effectiveTab === 'detail' && (
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 shadow-sm dark:bg-indigo-400" />
+                                    )}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                {isCreator && quest.status === 'open' && (
+                                    <button
+                                        onClick={() => setActiveTab('bids')}
+                                        className={`relative cursor-pointer pb-2.5 transition-colors ${
+                                            effectiveTab === 'bids'
+                                                ? 'font-bold text-indigo-600 dark:text-indigo-400'
+                                                : 'font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                         }`}
                                     >
-                                        <ShieldAlert className="h-5 w-5 shrink-0 text-red-600" />
-                                        <div className="space-y-1 text-xs">
-                                            <span className="block font-bold tracking-wider uppercase">
-                                                {quest.status === 'disputed'
-                                                    ? 'Proyek Ditangguhkan (Dalam Proses Banding)'
-                                                    : 'Arbitrase Diselesaikan'}
-                                            </span>
-                                            <p className="text-slate-505 leading-relaxed dark:text-slate-400">
-                                                {quest.status === 'disputed'
-                                                    ? `Dispute diajukan oleh ${quest.dispute.filer_name} dengan alasan: "${quest.dispute.reason}". Penyerahan poin/hadiah ditangguhkan sementara menunggu peninjauan administrator.`
-                                                    : `Perselisihan diselesaikan dengan keputusan mediator: ${
-                                                          [
-                                                              'refund',
-                                                              'refund_creator',
-                                                          ].includes(
-                                                              quest.dispute
-                                                                  .ruling ?? '',
-                                                          )
-                                                              ? 'Proyek dibatalkan dan seluruh budget/hadiah dikembalikan ke klien.'
-                                                              : [
-                                                                      'pay_worker',
-                                                                      'release_payout',
-                                                                  ].includes(
-                                                                      quest
-                                                                          .dispute
-                                                                          .ruling ??
-                                                                          '',
-                                                                  )
-                                                                ? 'Seluruh poin & reputasi penuh diserahkan kepada pekerja.'
-                                                                : `Bagi hasil (Kontraktor mendapat ${quest.dispute.split_percentage}%).`
-                                                      } Penjelasan: "${quest.dispute.note}".`}
-                                            </p>
+                                        <span className="flex items-center gap-1.5">
+                                            <MessageSquare
+                                                size={14}
+                                                className={
+                                                    effectiveTab === 'bids'
+                                                        ? 'text-indigo-600 dark:text-indigo-400'
+                                                        : 'text-slate-400 dark:text-slate-500'
+                                                }
+                                            />
+                                            Pelamar Kerja ({bids.length})
+                                        </span>
+                                        {effectiveTab === 'bids' && (
+                                            <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 shadow-sm dark:bg-indigo-400" />
+                                        )}
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={() => setActiveTab('detail')}
+                                    className={`relative cursor-pointer pb-2.5 transition-colors ${
+                                        effectiveTab === 'detail'
+                                            ? 'font-bold text-indigo-600 dark:text-indigo-400'
+                                            : 'font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-1.5">
+                                        <FileText
+                                            size={14}
+                                            className={
+                                                effectiveTab === 'detail'
+                                                    ? 'text-indigo-600 dark:text-indigo-400'
+                                                    : 'text-slate-400 dark:text-slate-500'
+                                            }
+                                        />
+                                        Spesifikasi Proyek
+                                    </span>
+                                    {effectiveTab === 'detail' && (
+                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 shadow-sm dark:bg-indigo-400" />
+                                    )}
+                                </button>
+
+                                {!isCreator && (
+                                    <button
+                                        onClick={() => setActiveTab('project')}
+                                        className={`relative cursor-pointer pb-2.5 transition-colors ${
+                                            effectiveTab === 'project'
+                                                ? 'font-bold text-indigo-600 dark:text-indigo-400'
+                                                : 'font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                        }`}
+                                    >
+                                        <span className="flex items-center gap-1.5">
+                                            <Briefcase
+                                                size={14}
+                                                className={
+                                                    effectiveTab === 'project'
+                                                        ? 'text-indigo-600 dark:text-indigo-400'
+                                                        : 'text-slate-400 dark:text-slate-500'
+                                                }
+                                            />
+                                            Status & Pengajuan
+                                        </span>
+                                        {effectiveTab === 'project' && (
+                                            <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 shadow-sm dark:bg-indigo-400" />
+                                        )}
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    {/* Dynamic View: Full-width for Mediation War Room, or Split Grid for Project/Detail/Bids */}
+                    {effectiveTab === 'mediation' && isDisputed && isAuthorizedForDispute ? (
+                        <div className="w-full">
+                            <MediationWarRoom
+                                quest={quest}
+                                bids={bids}
+                                isCreator={isCreator}
+                                isWorker={isWorker}
+                            />
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+                            {/* LEFT AREA: WORKSPACE CONTROL (col-span-8) */}
+                            <div className="space-y-6 lg:col-span-8">
+                                {/* TAB CONTENT: DETAIL (DOKUMEN SPESIFIKASI LENGKAP) */}
+                                {effectiveTab === 'detail' && (
+                                    <div className="relative space-y-6 overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                        <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+                                        <div className="relative z-10 space-y-6">
+                                            {/* Header Dokumen Spesifikasi */}
+                                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
+                                                <div className="flex items-center gap-2.5">
+                                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+                                                        <FileText className="h-4 w-4" />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
+                                                            Dokumen Spesifikasi Proyek
+                                                        </h3>
+                                                        <p className="text-[11px] text-slate-400">
+                                                            Rincian kebutuhan, batasan tugas, dan materi acuan yang disediakan.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                {quest.category && (
+                                                    <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+                                                        Kategori: {quest.category}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Deskripsi & Scope of Work */}
+                                            <div className="space-y-2">
+                                                <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                                    Deskripsi & Lingkup Pekerjaan (Scope of Work)
+                                                </h4>
+                                                <div className="rounded-xl border border-slate-200/70 bg-slate-50/60 p-4 font-['Oxanium'] text-xs leading-relaxed text-slate-700 whitespace-pre-wrap dark:border-slate-800 dark:bg-[#030712]/50 dark:text-slate-200">
+                                                    {quest.description}
+                                                </div>
+                                            </div>
+
+                                            {/* Lampiran Pendukung di Dokumen Spesifikasi */}
+                                            {((quest.images && quest.images.length > 0) ||
+                                                (quest.files && quest.files.length > 0)) && (
+                                                <div className="space-y-3 border-t border-slate-100 pt-5 dark:border-slate-800">
+                                                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                                        Lampiran & Berkas Pendukung Acuan
+                                                    </h4>
+                                                    <QuestAttachments
+                                                        images={quest.images}
+                                                        files={quest.files}
+                                                        onPreviewImage={setPreviewImage}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}
 
-                                {isCreator ? (
-                                    <CreatorProjectPanel
-                                        quest={quest}
-                                        bids={bids}
-                                        setSelectedChatBid={setSelectedChatBid}
-                                        formatBytes={formatBytes}
-                                    />
-                                ) : isWorker ? (
-                                    <WorkerProjectPanel
-                                        quest={quest}
-                                        myBid={myBid}
-                                        setSelectedChatBid={setSelectedChatBid}
-                                        formatBytes={formatBytes}
-                                    />
-                                ) : (
-                                    <VisitorBidPanel
-                                        quest={quest}
-                                        myBid={myBid}
-                                        can={can}
-                                        setSelectedChatBid={setSelectedChatBid}
-                                    />
+                                {/* TAB CONTENT: PROJECT MANAGEMENT */}
+                                {effectiveTab === 'project' && (
+                                    <div className="space-y-6">
+                                        <ProjectResolutionCenter
+                                            quest={quest}
+                                            isCreator={isCreator}
+                                            isWorker={isWorker}
+                                            onOpenMediation={() => setActiveTab('mediation')}
+                                        />
+
+                                        {isCreator ? (
+                                            <CreatorProjectPanel
+                                                quest={quest}
+                                                bids={bids}
+                                                setSelectedChatBid={setSelectedChatBid}
+                                                formatBytes={formatBytes}
+                                            />
+                                        ) : isWorker ? (
+                                            <WorkerProjectPanel
+                                                quest={quest}
+                                                myBid={myBid}
+                                                setSelectedChatBid={setSelectedChatBid}
+                                                formatBytes={formatBytes}
+                                            />
+                                        ) : (
+                                            <VisitorBidPanel
+                                                quest={quest}
+                                                myBid={myBid}
+                                                can={can}
+                                                setSelectedChatBid={setSelectedChatBid}
+                                            />
+                                        )}
+                                    </div>
                                 )}
 
-                                <DisputePanel
-                                    quest={quest}
-                                    isCreator={isCreator}
-                                    isWorker={isWorker}
-                                />
+                                {/* TAB CONTENT: BIDS / APPLICANTS LIST */}
+                                {effectiveTab === 'bids' &&
+                                    isCreator &&
+                                    quest.status === 'open' && (
+                                        <BidsTabPanel
+                                            quest={quest}
+                                            bids={bids}
+                                            setSelectedChatBid={setSelectedChatBid}
+                                        />
+                                    )}
                             </div>
-                        )}
 
-                        {/* TAB CONTENT: BIDS / APPLICANTS LIST */}
-                        {activeTab === 'bids' &&
-                            isCreator &&
-                            quest.status === 'open' && (
-                                <BidsTabPanel
-                                    quest={quest}
-                                    bids={bids}
-                                    setSelectedChatBid={setSelectedChatBid}
-                                />
-                            )}
-                    </div>
-
-                    {/* RIGHT AREA: SPECIFICATIONS SIDEBAR (col-span-4) */}
-                    <div className="space-y-6 lg:col-span-4">
+                            {/* RIGHT AREA: SPECIFICATIONS SIDEBAR (col-span-4) */}
+                            <div className="space-y-6 lg:col-span-4">
                         {/* Worker assigned & accepted bid info card */}
                         {quest.worker && (
                             <div className="relative overflow-hidden rounded-xl border border-emerald-300/80 bg-emerald-50/60 p-4 shadow-sm dark:border-emerald-800/80 dark:bg-gradient-to-b dark:from-[#0c1813] dark:to-[#070f0b]">
@@ -896,19 +1084,68 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </div>
                         </div>
 
-                        {/* Lampiran Pendukung Card (Positioned directly under Detail Spesifikasi) */}
-                        {((quest.images && quest.images.length > 0) ||
-                            (quest.files && quest.files.length > 0)) && (
-                            <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        {/* Brief & Acuan Tugas Card (Shown when project is active) or Lampiran Pendukung (for open quests) */}
+                        {isProjectActive ? (
+                            <div className="relative space-y-3 overflow-hidden rounded-xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                 <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
-                                <QuestAttachments
-                                    images={quest.images}
-                                    files={quest.files}
-                                    onPreviewImage={setPreviewImage}
-                                />
+                                <div className="relative z-10 space-y-3">
+                                    <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 dark:border-slate-800">
+                                        <div className="flex items-center gap-1.5">
+                                            <FileText className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
+                                            <h3 className="text-xs font-bold text-slate-800 uppercase dark:text-slate-200">
+                                                Brief & Acuan Tugas
+                                            </h3>
+                                        </div>
+                                        {quest.description && quest.description.length > 150 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsBriefExpanded(!isBriefExpanded)}
+                                                className="cursor-pointer text-[10px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                                            >
+                                                {isBriefExpanded ? 'Ringkas' : 'Selengkapnya'}
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div
+                                        className={`font-['Oxanium'] text-xs leading-relaxed text-slate-600 whitespace-pre-wrap dark:text-slate-300 ${
+                                            !isBriefExpanded ? 'line-clamp-4' : ''
+                                        }`}
+                                    >
+                                        {quest.description}
+                                    </div>
+
+                                    {((quest.images && quest.images.length > 0) ||
+                                        (quest.files && quest.files.length > 0)) && (
+                                        <div className="border-t border-slate-100 pt-3 dark:border-slate-800">
+                                            <span className="mb-2 block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                                Lampiran Acuan ({((quest.images?.length ?? 0) + (quest.files?.length ?? 0))})
+                                            </span>
+                                            <QuestAttachments
+                                                images={quest.images}
+                                                files={quest.files}
+                                                onPreviewImage={setPreviewImage}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
+                        ) : (
+                            ((quest.images && quest.images.length > 0) ||
+                                (quest.files && quest.files.length > 0)) && (
+                                <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                    <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
+                                    <QuestAttachments
+                                        images={quest.images}
+                                        files={quest.files}
+                                        onPreviewImage={setPreviewImage}
+                                    />
+                                </div>
+                            )
                         )}
-                    </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

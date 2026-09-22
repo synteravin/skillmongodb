@@ -30,7 +30,7 @@ import QuestStepper from '@/components/Quest/QuestStepper';
 import QuestAttachments from '@/components/Quest/QuestAttachments';
 import { Quest, Bid } from '@/types/quest';
 import AdminModerationCard from '@/components/Quest/Admin/AdminModerationCard';
-import AdminEscrowPanel from '@/components/Quest/Admin/AdminEscrowPanel';
+import AdminPaymentAuditPanel from '@/components/Quest/Admin/AdminPaymentAuditPanel';
 import AdminProjectTabPanel from '@/components/Quest/Admin/AdminProjectTabPanel';
 import AdminBidsTabPanel from '@/components/Quest/Admin/AdminBidsTabPanel';
 import AdminArbitrationTabPanel from '@/components/Quest/Admin/AdminArbitrationTabPanel';
@@ -68,10 +68,10 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     const { props } = usePage<any>();
     const currentUserId = props.auth?.user?.id;
 
-    // Define active tab
+    // Define active tab - auto-focus to arbitration if quest is in dispute
     const [activeTab, setActiveTab] = useState<
         'detail' | 'project' | 'bids' | 'arbitration'
-    >('detail');
+    >(quest.status === 'disputed' || quest.dispute?.status === 'pending' ? 'arbitration' : 'detail');
 
     const approveForm = useForm({
         rating: 5,
@@ -86,6 +86,11 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
         ruling: 'refund' as 'refund' | 'pay_worker' | 'split',
         split_percentage: 50,
         note: '',
+        sanction_type: 'none' as 'none' | 'warning' | 'trust_penalty' | 'temporary_suspension' | 'permanent_ban',
+        sanction_target: 'worker' as 'worker' | 'creator',
+        sanction_reason: '',
+        findings_of_fact: '',
+        ratio_decidendi: '',
     });
 
     const extendDeadlineForm = useForm({
@@ -103,6 +108,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
         arbitrateForm.post(`/admin/quests/${quest.slug}/arbitrate`, {
             onSuccess: () => {
                 arbitrateForm.reset();
+                setShowArbitrateConfirm(false);
             },
         });
     };
@@ -129,7 +135,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     const handleForceCancel = () => {
         if (
             confirm(
-                'Apakah Anda yakin ingin membatalkan quest ini secara paksa? Uang escrow akan dikembalikan penuh ke pembuat quest.',
+                'Apakah Anda yakin ingin membatalkan quest ini secara paksa? Kontrak P2P akan dibatalkan dan reward gamifikasi platform dinonaktifkan.',
             )
         ) {
             router.post(`/admin/quests/${quest.slug}/force-cancel`);
@@ -139,7 +145,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
     const handleReopenBidding = () => {
         if (
             confirm(
-                'Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan uang escrow dikembalikan ke pembuat quest.',
+                'Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan status quest dikembalikan ke bursa lowongan.',
             )
         ) {
             router.post(`/admin/quests/${quest.slug}/reopen-bidding`);
@@ -392,9 +398,15 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                                   'delivered'
                                                                 ? 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-400'
                                                                 : quest.status ===
-                                                                  'submitted'
-                                                                ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
-                                                                : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                                                    'submitted'
+                                                                  ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-400'
+                                                                  : quest.status === 'disputed'
+                                                                    ? 'border-red-500/40 bg-red-500/20 text-red-600 dark:border-red-500/40 dark:bg-red-950/40 dark:text-red-400 animate-pulse'
+                                                                    : quest.status === 'cancelled'
+                                                                      ? 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/20 dark:text-rose-400'
+                                                                      : quest.status === 'completed'
+                                                                        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-400'
+                                                                        : 'border-slate-400/30 bg-slate-500/10 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }`}
                                     >
                                         {quest.status === 'open'
@@ -419,9 +431,13 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                                               'delivered'
                                                             ? 'Verifikasi Berkas'
                                                             : quest.status ===
-                                                              'submitted'
-                                                            ? 'Ditinjau'
-                                                            : 'Selesai'}
+                                                                'submitted'
+                                                              ? 'Ditinjau'
+                                                              : quest.status === 'disputed'
+                                                                ? 'Sengketa Aktif'
+                                                                : quest.status === 'cancelled'
+                                                                  ? 'Dibatalkan'
+                                                                  : 'Selesai'}
                                     </span>
                                 </div>
                             </div>
@@ -505,280 +521,314 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                         </div>
                     </div>
 
-                    {/* MAIN TWO-COLUMN LAYOUT */}
-                    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
-                        {/* LEFT COLUMN: TABS & CONTENT PANELS (lg:col-span-8) */}
-                        <div className="space-y-6 lg:col-span-8">
-                            {/* Moderation Post Card */}
-                            <AdminModerationCard
-                                quest={quest}
-                                setShowApprovePostConfirm={
-                                    setShowApprovePostConfirm
-                                }
-                                setShowRejectPostForm={setShowRejectPostForm}
-                            />
-
-                            {/* Escrow Ledger & Financial Status Panel */}
-                            <AdminEscrowPanel
-                                quest={quest}
-                                formatCurrency={formatCurrency}
-                            />
-
-                            {/* Tab Buttons */}
-                            <div className="flex shrink-0 gap-4 border-b border-slate-200 text-xs font-bold tracking-wider dark:border-slate-800">
+                    {/* Urgent Dispute Alert Banner */}
+                    {(quest.status === 'disputed' || quest.dispute?.status === 'pending') && (
+                        <div className="flex flex-col justify-between gap-3 rounded-2xl border-2 border-red-500/40 bg-gradient-to-r from-red-500/10 via-red-500/5 to-transparent p-4 shadow-sm sm:flex-row sm:items-center dark:bg-gradient-to-r dark:from-red-950/40 dark:via-[#0e0e1a] dark:to-[#090910]">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300">
+                                    <ShieldAlert className="h-5 w-5 animate-pulse" />
+                                </div>
+                                <div>
+                                    <h4 className="font-['Orbitron'] text-xs font-black tracking-wider text-red-950 uppercase dark:text-red-200">
+                                        Perhatian: Kasus Sengketa Aktif Memerlukan Arbitrase
+                                    </h4>
+                                    <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                                        Quest ini sedang berada dalam penanganan sengketa resmi antara Klien dan Pekerja. Dewan Mediator bertugas memeriksa bukti dan menetapkan amar putusan mengikat.
+                                    </p>
+                                </div>
+                            </div>
+                            {activeTab !== 'arbitration' && (
                                 <button
-                                    onClick={() => setActiveTab('detail')}
-                                    className={`relative cursor-pointer pb-3 transition-colors ${
-                                        activeTab === 'detail'
-                                            ? 'font-extrabold text-indigo-600 dark:text-white'
-                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                                    }`}
-                                >
-                                    <span>Spesifikasi Quest</span>
-                                    {activeTab === 'detail' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
-                                    )}
-                                </button>
-
-                                <button
-                                    onClick={() => setActiveTab('project')}
-                                    className={`relative cursor-pointer pb-3 transition-colors ${
-                                        activeTab === 'project'
-                                            ? 'font-extrabold text-indigo-600 dark:text-white'
-                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                                    }`}
-                                >
-                                    <span>Manajemen Pengerjaan</span>
-                                    {activeTab === 'project' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
-                                    )}
-                                </button>
-
-                                <button
-                                    onClick={() => setActiveTab('bids')}
-                                    className={`relative cursor-pointer pb-3 transition-colors ${
-                                        activeTab === 'bids'
-                                            ? 'font-extrabold text-indigo-600 dark:text-white'
-                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                                    }`}
-                                >
-                                    <span>Pelamar ({bids.length})</span>
-                                    {activeTab === 'bids' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
-                                    )}
-                                </button>
-
-                                <button
+                                    type="button"
                                     onClick={() => setActiveTab('arbitration')}
-                                    className={`relative cursor-pointer pb-3 transition-colors ${
-                                        activeTab === 'arbitration'
-                                            ? 'font-extrabold text-indigo-600 dark:text-white'
-                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                                    }`}
+                                    className="shrink-0 cursor-pointer rounded-xl bg-red-600 px-4 py-2 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-colors hover:bg-red-700"
                                 >
-                                    <span>Arbitrase & Kontrol</span>
-                                    {activeTab === 'arbitration' && (
-                                        <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
-                                    )}
+                                    Buka Ruang Arbitrase
                                 </button>
-                            </div>
+                            )}
+                        </div>
+                    )}
 
-                            {/* TAB 1: DETAILS */}
+                    {/* Moderation Post Card (if draft) */}
+                    <AdminModerationCard
+                        quest={quest}
+                        setShowApprovePostConfirm={setShowApprovePostConfirm}
+                        setShowRejectPostForm={setShowRejectPostForm}
+                    />
+
+                    {/* Tab Navigation Buttons */}
+                    <div className="flex shrink-0 gap-4 border-b border-slate-200 text-xs font-bold tracking-wider dark:border-slate-800">
+                        <button
+                            onClick={() => setActiveTab('detail')}
+                            className={`relative cursor-pointer pb-3 transition-colors ${
+                                activeTab === 'detail'
+                                    ? 'font-extrabold text-indigo-600 dark:text-white'
+                                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                            }`}
+                        >
+                            <span>Spesifikasi Quest</span>
                             {activeTab === 'detail' && (
-                                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                    <div className="space-y-3">
-                                        <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                            Deskripsi Pekerjaan
-                                        </h3>
-                                        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-sm leading-relaxed whitespace-pre-wrap text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-200">
-                                            {quest.description}
-                                        </div>
-                                    </div>
-                                </div>
+                                <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                             )}
+                        </button>
 
-                            {/* TAB 2: PROJECT WORKFLOW & VERIFICATION */}
+                        <button
+                            onClick={() => setActiveTab('project')}
+                            className={`relative cursor-pointer pb-3 transition-colors ${
+                                activeTab === 'project'
+                                    ? 'font-extrabold text-indigo-600 dark:text-white'
+                                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                            }`}
+                        >
+                            <span>Manajemen Pengerjaan</span>
                             {activeTab === 'project' && (
-                                <AdminProjectTabPanel
-                                    quest={quest}
-                                    bids={bids}
-                                    setSelectedChatBid={setSelectedChatBid}
-                                    formatBytes={formatBytes}
-                                    showApproveForm={showApproveForm}
-                                    setShowApproveForm={setShowApproveForm}
-                                    showRejectForm={showRejectForm}
-                                    setShowRejectForm={setShowRejectForm}
-                                    approveForm={approveForm}
-                                    rejectForm={rejectForm}
-                                    handleApproveWork={handleApproveWork}
-                                    handleRejectWork={handleRejectWork}
-                                />
+                                <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                             )}
+                        </button>
 
-                            {/* TAB 3: BIDS / CANDIDATES */}
+                        <button
+                            onClick={() => setActiveTab('bids')}
+                            className={`relative cursor-pointer pb-3 transition-colors ${
+                                activeTab === 'bids'
+                                    ? 'font-extrabold text-indigo-600 dark:text-white'
+                                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                            }`}
+                        >
+                            <span>Pelamar ({bids.length})</span>
                             {activeTab === 'bids' && (
-                                <AdminBidsTabPanel
-                                    quest={quest}
-                                    bids={bids}
-                                    formatCurrency={formatCurrency}
-                                    handleAcceptBid={handleAcceptBid}
-                                    handleDeleteBid={handleDeleteBid}
-                                    setSelectedChatBid={setSelectedChatBid}
-                                />
+                                <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                             )}
+                        </button>
 
-                            {/* TAB 4: ARBITRATION & CONTROL */}
-                            {activeTab === 'arbitration' && (
-                                <AdminArbitrationTabPanel
-                                    quest={quest}
-                                    transactions={transactions}
-                                    formatDate={formatDate}
-                                    formatCurrency={formatCurrency}
-                                    extendDeadlineForm={extendDeadlineForm}
-                                    handleExtendDeadline={handleExtendDeadline}
-                                    handleReopenBidding={handleReopenBidding}
-                                    handleForceCancel={handleForceCancel}
-                                    handleArbitrate={handleArbitrate}
-                                    arbitrateForm={arbitrateForm}
-                                    setSelectedChatBid={setSelectedChatBid}
-                                    bids={bids}
-                                />
-                            )}
-                        </div>
-
-                        {/* RIGHT COLUMN: SIDEBAR METADATA INFO (lg:col-span-4) */}
-                        <div className="space-y-6 lg:col-span-4">
-                            {/* WORKER SUMMARY (Right column status card) */}
-                            {quest.worker && (
-                                <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 shadow-sm">
-                                    <div className="flex min-w-0 items-center gap-2.5">
-                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                                        <div className="min-w-0">
-                                            <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                                                Status Pekerja
-                                            </span>
-                                            <span className="block truncate text-xs font-bold text-slate-900 dark:text-white">
-                                                {quest.worker.name}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase dark:text-emerald-300">
-                                        Aktif
+                        <button
+                            onClick={() => setActiveTab('arbitration')}
+                            className={`relative cursor-pointer pb-3 transition-colors ${
+                                activeTab === 'arbitration'
+                                    ? 'font-extrabold text-indigo-600 dark:text-white'
+                                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                            }`}
+                        >
+                            <span className="flex items-center gap-1.5">
+                                Arbitrase & Kontrol
+                                {(quest.status === 'disputed' || quest.dispute?.status === 'pending') && (
+                                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-extrabold uppercase text-red-700 animate-pulse dark:bg-red-950 dark:text-red-300">
+                                        Dispute
                                     </span>
-                                </div>
+                                )}
+                            </span>
+                            {activeTab === 'arbitration' && (
+                                <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                             )}
-                            {/* QUEST METADATA DETAILS */}
-                            <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                <h3 className="border-b border-slate-200 pb-3 text-xs font-bold tracking-wider text-slate-900 uppercase dark:border-slate-800 dark:text-white">
-                                    Rincian Quest
-                                </h3>
+                        </button>
+                    </div>
 
-                                <div className="space-y-4">
-                                    {/* Creator info */}
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                            <User className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                            <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
-                                                Diposting Oleh
-                                            </span>
-                                            <span className="text-xs font-bold text-slate-900 dark:text-white">
-                                                {quest.creator.name}
-                                            </span>
+                    {/* CONTENT AREA: FULL-WIDTH FOR ARBITRATION, SPLIT-GRID FOR OTHERS */}
+                    {activeTab === 'arbitration' ? (
+                        <div className="w-full">
+                            <AdminArbitrationTabPanel
+                                quest={quest}
+                                transactions={transactions}
+                                formatDate={formatDate}
+                                formatCurrency={formatCurrency}
+                                extendDeadlineForm={extendDeadlineForm}
+                                handleExtendDeadline={handleExtendDeadline}
+                                handleReopenBidding={handleReopenBidding}
+                                handleForceCancel={handleForceCancel}
+                                handleArbitrate={handleArbitrate}
+                                arbitrateForm={arbitrateForm}
+                                setSelectedChatBid={setSelectedChatBid}
+                                bids={bids}
+                            />
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+                            {/* LEFT COLUMN: TABS & CONTENT PANELS (lg:col-span-8) */}
+                            <div className="space-y-6 lg:col-span-8">
+                                {/* P2P Payment Audit & Financial Status Panel */}
+                                <AdminPaymentAuditPanel
+                                    quest={quest}
+                                    formatCurrency={formatCurrency}
+                                />
+
+                                {/* TAB 1: DETAILS */}
+                                {activeTab === 'detail' && (
+                                    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                        <div className="space-y-3">
+                                            <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                                Deskripsi Pekerjaan
+                                            </h3>
+                                            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-sm leading-relaxed whitespace-pre-wrap text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-200">
+                                                {quest.description}
+                                            </div>
                                         </div>
                                     </div>
+                                )}
 
-                                    {/* Budget spec */}
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400">
-                                            <DollarSign className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                            <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
-                                                Gaji / Anggaran
-                                            </span>
-                                            <span className="text-xs font-bold text-slate-900 dark:text-white">
-                                                {formatCurrency(
-                                                    quest.min_budget ??
-                                                        quest.min_salary ??
-                                                        0,
-                                                )}{' '}
-                                                -{' '}
-                                                {formatCurrency(
-                                                    quest.max_budget ??
-                                                        quest.max_salary ??
-                                                        0,
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
+                                {/* TAB 2: PROJECT WORKFLOW & VERIFICATION */}
+                                {activeTab === 'project' && (
+                                    <AdminProjectTabPanel
+                                        quest={quest}
+                                        bids={bids}
+                                        setSelectedChatBid={setSelectedChatBid}
+                                        formatBytes={formatBytes}
+                                        showApproveForm={showApproveForm}
+                                        setShowApproveForm={setShowApproveForm}
+                                        showRejectForm={showRejectForm}
+                                        setShowRejectForm={setShowRejectForm}
+                                        approveForm={approveForm}
+                                        rejectForm={rejectForm}
+                                        handleApproveWork={handleApproveWork}
+                                        handleRejectWork={handleRejectWork}
+                                    />
+                                )}
 
-                                    {/* Deadline Spec */}
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                            <Calendar className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                            <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
-                                                Tenggat Waktu
-                                            </span>
-                                            <span className="text-xs font-bold text-slate-900 dark:text-white">
-                                                {formatDate(quest.deadline)}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Countdown Progress */}
-                                    {[
-                                        'open',
-                                        'ongoing',
-                                        'submitted',
-                                        'disputed',
-                                        'expired',
-                                    ].includes(quest.status) &&
-                                        (() => {
-                                            const remaining =
-                                                calculateDaysRemaining();
-                                            return (
-                                                <div className="pt-2">
-                                                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 uppercase dark:text-slate-400">
-                                                        <span>
-                                                            {remaining.isLate
-                                                                ? 'Status Keterlambatan'
-                                                                : 'Sisa Waktu'}
-                                                        </span>
-                                                        <span
-                                                            className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-wider ${remaining.className}`}
-                                                        >
-                                                            {remaining.text}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })()}
-                                </div>
-
-                                {/* RPG Rewards */}
-                                <QuestRewardsCard rewards={quest.rewards} />
+                                {/* TAB 3: BIDS / CANDIDATES */}
+                                {activeTab === 'bids' && (
+                                    <AdminBidsTabPanel
+                                        quest={quest}
+                                        bids={bids}
+                                        formatCurrency={formatCurrency}
+                                        handleAcceptBid={handleAcceptBid}
+                                        handleDeleteBid={handleDeleteBid}
+                                        setSelectedChatBid={setSelectedChatBid}
+                                    />
+                                )}
                             </div>
 
-                            {/* Lampiran Quest (Gambar & File) - Standalone Card under Rincian Quest */}
-                            {((quest.images && quest.images.length > 0) ||
-                                (quest.files && quest.files.length > 0)) && (
-                                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            {/* RIGHT COLUMN: SIDEBAR METADATA INFO (lg:col-span-4) */}
+                            <div className="space-y-6 lg:col-span-4">
+                                {/* WORKER SUMMARY (Right column status card) */}
+                                {quest.worker && (
+                                    <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 shadow-sm">
+                                        <div className="flex min-w-0 items-center gap-2.5">
+                                            <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                                            <div className="min-w-0">
+                                                <span className="block text-[10px] font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                                                    Status Pekerja
+                                                </span>
+                                                <span className="block truncate text-xs font-bold text-slate-900 dark:text-white">
+                                                    {quest.worker.name}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase dark:text-emerald-300">
+                                            Aktif
+                                        </span>
+                                    </div>
+                                )}
+                                {/* QUEST METADATA DETAILS */}
+                                <div className="relative space-y-5 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                                     <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-                                    <QuestAttachments
-                                        images={quest.images}
-                                        files={quest.files}
-                                        onPreviewImage={setPreviewImage}
-                                    />
+                                    <h3 className="border-b border-slate-200 pb-3 text-xs font-bold tracking-wider text-slate-900 uppercase dark:border-slate-800 dark:text-white">
+                                        Rincian Quest
+                                    </h3>
+
+                                    <div className="space-y-4">
+                                        {/* Creator info */}
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                                <User className="h-4 w-4" />
+                                            </div>
+                                            <div>
+                                                <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                                    Diposting Oleh
+                                                </span>
+                                                <span className="text-xs font-bold text-slate-900 dark:text-white">
+                                                    {quest.creator.name}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Budget spec */}
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                                <DollarSign className="h-4 w-4" />
+                                            </div>
+                                            <div>
+                                                <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                                    Gaji / Anggaran
+                                                </span>
+                                                <span className="text-xs font-bold text-slate-900 dark:text-white">
+                                                    {formatCurrency(
+                                                        quest.min_budget ??
+                                                            quest.min_salary ??
+                                                            0,
+                                                    )}{' '}
+                                                    -{' '}
+                                                    {formatCurrency(
+                                                        quest.max_budget ??
+                                                            quest.max_salary ??
+                                                            0,
+                                                    )}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Deadline Spec */}
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                                <Calendar className="h-4 w-4" />
+                                            </div>
+                                            <div>
+                                                <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                                    Tenggat Waktu
+                                                </span>
+                                                <span className="text-xs font-bold text-slate-900 dark:text-white">
+                                                    {formatDate(quest.deadline)}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Countdown Progress */}
+                                        {[
+                                            'open',
+                                            'ongoing',
+                                            'submitted',
+                                            'disputed',
+                                            'expired',
+                                        ].includes(quest.status) &&
+                                            (() => {
+                                                const remaining =
+                                                    calculateDaysRemaining();
+                                                return (
+                                                    <div className="pt-2">
+                                                        <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 uppercase dark:text-slate-400">
+                                                            <span>
+                                                                {remaining.isLate
+                                                                    ? 'Status Keterlambatan'
+                                                                    : 'Sisa Waktu'}
+                                                            </span>
+                                                            <span
+                                                                className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-wider ${remaining.className}`}
+                                                            >
+                                                                {remaining.text}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })()}
+                                    </div>
+
+                                    {/* RPG Rewards */}
+                                    <QuestRewardsCard rewards={quest.rewards} />
                                 </div>
-                            )}
+
+                                {/* Lampiran Quest (Gambar & File) - Standalone Card under Rincian Quest */}
+                                {((quest.images && quest.images.length > 0) ||
+                                    (quest.files && quest.files.length > 0)) && (
+                                    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                                        <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
+                                        <QuestAttachments
+                                            images={quest.images}
+                                            files={quest.files}
+                                            onPreviewImage={setPreviewImage}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
 
@@ -880,15 +930,15 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             {/* Confirm Modal Arbitrase Verdict */}
             <ConfirmModal
                 open={showArbitrateConfirm}
-                title="Kirim Vonis Arbitrase"
-                message={`Apakah Anda yakin ingin menetapkan keputusan "${
+                title="Tetapkan Putusan Arbitrase Mengikat (Inkracht)"
+                message={`Apakah Anda yakin ingin menetapkan putusan arbitrase resmi "${
                     arbitrateForm.data.ruling === 'refund'
-                        ? 'Batalkan & Refund'
+                        ? 'Batalkan Kontrak & Restitusi Penuh Klien'
                         : arbitrateForm.data.ruling === 'pay_worker'
-                          ? 'Bayar Pekerja'
-                          : `Bagi Hasil ${arbitrateForm.data.split_percentage}% Pekerja`
-                }"? Keputusan ini bersifat final, mengikat kedua belah pihak, dan saldo reward akan langsung dicairkan/dikembalikan sesuai vonis.`}
-                confirmText="Kirim Vonis"
+                          ? 'Pelunasan Penuh Pekerja'
+                          : `Bagi Hasil Prorata (${arbitrateForm.data.split_percentage}% Pekerja)`
+                }"? Putusan ini berkekuatan hukum tetap (Inkracht), menerbitkan Akta Ketetapan Resmi Arbitrase, mengalokasikan reward gamifikasi secara otomatis, dan memicu kewajiban transfer pemenuhan P2P dalam batas waktu 72 jam.`}
+                confirmText="Tetapkan Putusan Inkracht"
                 cancelText="Batal"
                 variant={
                     arbitrateForm.data.ruling === 'pay_worker'

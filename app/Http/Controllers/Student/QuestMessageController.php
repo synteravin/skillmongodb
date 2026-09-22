@@ -9,6 +9,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use MongoDB\BSON\ObjectId;
 
 class QuestMessageController extends Controller
 {
@@ -29,13 +30,38 @@ class QuestMessageController extends Controller
             return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
         }
 
+        $channelType = $request->query('channel_type', 'tripartite');
+        if (! in_array($channelType, ['tripartite', 'caucus_creator', 'caucus_worker'], true)) {
+            return response()->json(['error' => 'Tipe saluran chat tidak valid.'], 400);
+        }
+
+        // Channel-specific authorization (Bilateral Caucus Isolation)
+        if ($channelType === 'caucus_creator' && ! $isAdmin && ! $isCreator) {
+            return response()->json(['error' => 'Akses ditolak. Sesi kaukus ini bersifat konfidensial antara Klien dan Mediator.'], 403);
+        }
+
+        if ($channelType === 'caucus_worker' && ! $isAdmin && ! $isApplicant) {
+            return response()->json(['error' => 'Akses ditolak. Sesi kaukus ini bersifat konfidensial antara Pekerja dan Mediator.'], 403);
+        }
+
         // Read-only access is allowed for rejected bids, but we don't block getMessages
 
-        // Mark messages as read by the current user
-        $unreadMessages = QuestMessage::where('quest_bid_id', $bidId)
+        // Mark messages as read by the current user for the active channel
+        $unreadQuery = QuestMessage::where('quest_bid_id', $bidId)
             ->where('sender_id', '!=', $user->_id)
-            ->where('read_by', '!=', $user->_id)
-            ->get();
+            ->where('read_by', '!=', $user->_id);
+
+        if ($channelType === 'tripartite') {
+            $unreadQuery->where(function ($q) {
+                $q->where('channel_type', 'tripartite')
+                    ->orWhereNull('channel_type')
+                    ->orWhere('channel_type', '');
+            });
+        } else {
+            $unreadQuery->where('channel_type', $channelType);
+        }
+
+        $unreadMessages = $unreadQuery->get();
 
         foreach ($unreadMessages as $msg) {
             $readBy = $msg->read_by ?: [];
@@ -47,15 +73,33 @@ class QuestMessageController extends Controller
 
         $query = QuestMessage::where('quest_bid_id', $bidId);
 
-        if ($request->has('after_id') && $request->after_id !== '') {
-            $query->where('_id', '>', $request->after_id);
+        if ($channelType === 'tripartite') {
+            $query->where(function ($q) {
+                $q->where('channel_type', 'tripartite')
+                    ->orWhereNull('channel_type')
+                    ->orWhere('channel_type', '');
+            });
+        } else {
+            $query->where('channel_type', $channelType);
+        }
+
+        if ($request->filled('after_id')) {
+            try {
+                $afterObjId = new ObjectId($request->after_id);
+                $query->where('_id', '>', $afterObjId)->orderBy('_id', 'asc');
+            } catch (\Throwable $e) {
+                $refMsg = QuestMessage::find($request->after_id);
+                if ($refMsg && $refMsg->created_at) {
+                    $query->where('created_at', '>', $refMsg->created_at)->orderBy('created_at', 'asc');
+                }
+            }
         } else {
             $query->latest('created_at')->limit(50);
         }
 
         $messages = $query->with('sender')->get();
 
-        if (! $request->has('after_id')) {
+        if (! $request->filled('after_id')) {
             $messages = $messages->reverse()->values();
         }
 
@@ -65,6 +109,7 @@ class QuestMessageController extends Controller
 
             return [
                 'id' => (string) $msg->_id,
+                'channel_type' => $msg->channel_type ?? 'tripartite',
                 'message' => $msg->message,
                 'created_at' => $msg->created_at->toIso8601String(),
                 'sender' => [
@@ -100,6 +145,20 @@ class QuestMessageController extends Controller
             return response()->json(['error' => 'Unauthorized access to this chat.'], 403);
         }
 
+        $channelType = $request->input('channel_type', 'tripartite');
+        if (! in_array($channelType, ['tripartite', 'caucus_creator', 'caucus_worker'], true)) {
+            return response()->json(['error' => 'Tipe saluran chat tidak valid.'], 400);
+        }
+
+        // Channel-specific authorization (Bilateral Caucus Isolation)
+        if ($channelType === 'caucus_creator' && ! $isAdmin && ! $isCreator) {
+            return response()->json(['error' => 'Akses ditolak. Sesi kaukus ini bersifat konfidensial antara Klien dan Mediator.'], 403);
+        }
+
+        if ($channelType === 'caucus_worker' && ! $isAdmin && ! $isApplicant) {
+            return response()->json(['error' => 'Akses ditolak. Sesi kaukus ini bersifat konfidensial antara Pekerja dan Mediator.'], 403);
+        }
+
         // Restrict sending new messages if bid is rejected
         if ($bid->status === 'rejected') {
             return response()->json(['error' => 'Penawaran ini telah selesai atau ditolak. Obrolan bersifat hanya-baca (read-only).'], 422);
@@ -108,6 +167,7 @@ class QuestMessageController extends Controller
         $request->validate([
             'message' => 'nullable|string|max:10000',
             'file' => 'nullable|file|max:10240',
+            'channel_type' => 'nullable|string|in:tripartite,caucus_creator,caucus_worker',
         ]);
 
         if (empty($request->message) && ! $request->hasFile('file')) {
@@ -131,6 +191,7 @@ class QuestMessageController extends Controller
         $msg = QuestMessage::create([
             'quest_bid_id' => $bidId,
             'sender_id' => $user->_id,
+            'channel_type' => $channelType,
             'message' => $request->message ?? '',
             'read_by' => [(string) $user->_id],
             'file' => $fileData,
@@ -141,6 +202,7 @@ class QuestMessageController extends Controller
 
         return response()->json([
             'id' => (string) $msg->_id,
+            'channel_type' => $msg->channel_type ?? 'tripartite',
             'message' => $msg->message,
             'created_at' => $msg->created_at->toIso8601String(),
             'sender' => [

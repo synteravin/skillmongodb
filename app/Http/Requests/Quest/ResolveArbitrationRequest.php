@@ -17,6 +17,11 @@ class ResolveArbitrationRequest extends FormRequest
             'ruling' => ['required', 'string', 'in:refund,pay_worker,split'],
             'note' => ['required', 'string', 'max:1000'],
             'split_percentage' => ['required_if:ruling,split', 'nullable', 'integer', 'min:1', 'max:99'],
+            'sanction_type' => ['nullable', 'string', 'in:none,warning,trust_penalty,temporary_suspension,permanent_ban'],
+            'sanction_target' => ['nullable', 'string', 'in:creator,worker'],
+            'sanction_reason' => ['nullable', 'string', 'max:500'],
+            'findings_of_fact' => ['nullable', 'string', 'max:2000'],
+            'ratio_decidendi' => ['nullable', 'string', 'max:2000'],
         ];
     }
 

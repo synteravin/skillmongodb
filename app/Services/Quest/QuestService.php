@@ -14,8 +14,12 @@ use App\Actions\Quest\PlaceQuestBidAction;
 use App\Actions\Quest\RecordQuestTransactionAction;
 use App\Actions\Quest\RejectQuestWorkAction;
 use App\Actions\Quest\RequestFinalZipRevisionAction;
+use App\Actions\Quest\RequestMutualCancellationAction;
+use App\Actions\Quest\RequestQuestExtensionAction;
 use App\Actions\Quest\RequestQuestRevisionAction;
 use App\Actions\Quest\ResolveQuestArbitrationAction;
+use App\Actions\Quest\RespondMutualCancellationAction;
+use App\Actions\Quest\RespondQuestExtensionAction;
 use App\Actions\Quest\SubmitFinalZipAction;
 use App\Actions\Quest\SubmitQuestWorkAction;
 use App\Actions\Quest\UploadQuestDownPaymentProofAction;
@@ -53,7 +57,11 @@ class QuestService
         protected ConfirmFinalDeliveryAction $confirmFinalDeliveryAction,
         protected RequestFinalZipRevisionAction $requestFinalZipRevisionAction,
         protected RequestQuestRevisionAction $requestQuestRevisionAction,
-        protected ExtendQuestDeadlineAction $extendQuestDeadlineAction
+        protected ExtendQuestDeadlineAction $extendQuestDeadlineAction,
+        protected RequestQuestExtensionAction $requestQuestExtensionAction,
+        protected RespondQuestExtensionAction $respondQuestExtensionAction,
+        protected RequestMutualCancellationAction $requestMutualCancellationAction,
+        protected RespondMutualCancellationAction $respondMutualCancellationAction
     ) {}
 
     /**
@@ -327,7 +335,11 @@ class QuestService
                 'submission_file' => $resolvedSubmissionFile,
                 'tier' => $quest->tier ?? 'C',
                 'custom_rewards' => $quest->custom_rewards,
-                'dispute' => $this->resolveDispute($quest),
+                'dispute' => ($currentUser && (
+                    (string) $quest->creator_id === (string) $currentUser->_id ||
+                    (string) $quest->worker_id === (string) $currentUser->_id ||
+                    (method_exists($currentUser, 'isAdmin') && $currentUser->isAdmin())
+                )) ? $this->resolveDispute($quest, $currentUser) : null,
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
                 'accepted_bid_amount' => $acceptedBidAmount,
@@ -339,6 +351,9 @@ class QuestService
                 'payment_proof' => $resolvedPaymentProof,
                 'payment_uploaded_at' => $quest->payment_uploaded_at ? $quest->payment_uploaded_at->toISOString() : null,
                 'payment_confirmed_at' => $quest->payment_confirmed_at ? $quest->payment_confirmed_at->toISOString() : null,
+                'rounds' => $quest->rounds ?? [],
+                'max_revisions' => $quest->max_revisions ?? 2,
+                'resolution_requests' => $quest->resolution_requests ?? [],
             ],
             'bids' => $bids,
         ];
@@ -347,13 +362,73 @@ class QuestService
     /**
      * Resolve and format dispute details for frontend compatibility.
      */
-    public function resolveDispute(Quest $quest): ?array
+    public function resolveDispute(Quest $quest, ?User $currentUser = null): ?array
     {
         if (! $quest->dispute) {
             return null;
         }
 
         $disputer = User::find($quest->dispute['disputer_id'] ?? $quest->dispute['filer_id'] ?? null);
+
+        $disk = Storage::disk('s3');
+        $resolvedEvidenceFiles = array_map(function ($file) use ($disk) {
+            return [
+                'name' => $file['name'] ?? 'evidence.dat',
+                'url' => isset($file['path']) ? $disk->temporaryUrl($file['path'], now()->addMinutes(60)) : ($file['url'] ?? ''),
+                'size' => $file['size'] ?? 0,
+            ];
+        }, $quest->dispute['evidence_files'] ?? []);
+
+        $response = $quest->dispute['response'] ?? null;
+        if ($response && isset($response['evidence_files']) && is_array($response['evidence_files'])) {
+            $response['evidence_files'] = array_map(function ($file) use ($disk) {
+                return [
+                    'name' => $file['name'] ?? 'evidence.dat',
+                    'url' => isset($file['path']) ? $disk->temporaryUrl($file['path'], now()->addMinutes(60)) : ($file['url'] ?? ''),
+                    'size' => $file['size'] ?? 0,
+                ];
+            }, $response['evidence_files']);
+        }
+
+        // Confidential Discovery Requests by Mediator
+        $evidenceRequests = $quest->dispute['evidence_requests'] ?? [];
+        if (is_array($evidenceRequests)) {
+            $isAdmin = $currentUser && method_exists($currentUser, 'isAdmin') && $currentUser->isAdmin();
+            if ($currentUser && ! $isAdmin) {
+                $isCreator = (string) $quest->creator_id === (string) $currentUser->_id;
+                $isWorker = (string) $quest->worker_id === (string) $currentUser->_id;
+
+                $evidenceRequests = array_values(array_filter($evidenceRequests, function ($req) use ($isCreator, $isWorker) {
+                    $target = $req['target_party'] ?? 'both';
+                    if ($target === 'both') {
+                        return true;
+                    }
+                    if ($target === 'creator' && $isCreator) {
+                        return true;
+                    }
+                    if ($target === 'worker' && $isWorker) {
+                        return true;
+                    }
+
+                    return false;
+                }));
+            }
+
+            // Resolve temporary URLs for files in each evidence request
+            $evidenceRequests = array_map(function ($req) use ($disk) {
+                if (isset($req['files']) && is_array($req['files'])) {
+                    $req['files'] = array_map(function ($file) use ($disk) {
+                        return [
+                            'name' => $file['name'] ?? 'evidence.dat',
+                            'url' => isset($file['path']) ? $disk->temporaryUrl($file['path'], now()->addMinutes(60)) : ($file['url'] ?? ''),
+                            'size' => $file['size'] ?? 0,
+                        ];
+                    }, $req['files']);
+                }
+
+                return $req;
+            }, $evidenceRequests);
+        }
 
         $resolvedDispute = array_merge([
             'status' => $quest->dispute['status'] ?? 'pending',
@@ -369,6 +444,77 @@ class QuestService
             'filer_name' => $quest->dispute['filer_name'] ?? ($disputer ? $disputer->name : 'User'),
             'ruling' => $quest->dispute['ruling'] ?? null,
         ], $quest->dispute);
+
+        $resolvedDispute['evidence_files'] = $resolvedEvidenceFiles;
+        if ($response) {
+            $resolvedDispute['response'] = $response;
+        }
+        $resolvedDispute['evidence_requests'] = $evidenceRequests;
+
+        $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', QuestBidStatus::ACCEPTED->value)->first();
+        $contractAmount = $acceptedBid ? (int) $acceptedBid->bid_amount : (int) ($quest->accepted_bid_amount ?? $quest->max_budget ?? $quest->max_salary ?? 0);
+        $dpPercentage = (int) ($quest->dp_percentage ?? 10);
+        $dpAmount = (int) ($quest->dp_amount ?? round(($contractAmount * $dpPercentage) / 100));
+        $remainingBalance = max(0, $contractAmount - $dpAmount);
+        $disputedAmount = $quest->dispute['disputed_amount'] ?? $contractAmount;
+
+        $splitPct = (int) ($quest->dispute['split_percentage'] ?? 50);
+        $workerShareSplit = (int) round(($contractAmount * $splitPct) / 100);
+        $splitPayingParty = 'none';
+        $splitReceivingParty = 'none';
+        $splitTransferAmount = 0;
+        $splitDesc = 'Tidak ada transfer tambahan yang diperlukan.';
+
+        if ($workerShareSplit > $dpAmount) {
+            $splitPayingParty = 'creator';
+            $splitReceivingParty = 'worker';
+            $splitTransferAmount = $workerShareSplit - $dpAmount;
+            $splitDesc = 'Klien wajib mentransfer sisa Rp '.number_format($splitTransferAmount, 0, ',', '.')." ke Pekerja (Hak Pekerja: {$splitPct}% = Rp ".number_format($workerShareSplit, 0, ',', '.').' dikurangi DP Rp '.number_format($dpAmount, 0, ',', '.').').';
+        } elseif ($workerShareSplit < $dpAmount) {
+            $splitPayingParty = 'worker';
+            $splitReceivingParty = 'creator';
+            $splitTransferAmount = $dpAmount - $workerShareSplit;
+            $splitDesc = 'Pekerja wajib mengembalikan Rp '.number_format($splitTransferAmount, 0, ',', '.').' ke Klien (Uang Muka Rp '.number_format($dpAmount, 0, ',', '.')." dikurangi Hak Pekerja {$splitPct}% = Rp ".number_format($workerShareSplit, 0, ',', '.').').';
+        }
+
+        $p2pLedger = [
+            'contract_amount' => $contractAmount,
+            'dp_percentage' => $dpPercentage,
+            'dp_amount' => $dpAmount,
+            'remaining_balance' => $remainingBalance,
+            'disputed_amount' => $disputedAmount,
+            'ruling_simulation' => [
+                'refund_creator' => [
+                    'paying_party' => 'worker',
+                    'receiving_party' => 'creator',
+                    'amount' => $dpAmount,
+                    'description' => 'Pekerja wajib mentransfer restitusi Uang Muka (DP) 100% sebesar Rp '.number_format($dpAmount, 0, ',', '.').' kembali ke Klien.',
+                ],
+                'release_payout' => [
+                    'paying_party' => 'creator',
+                    'receiving_party' => 'worker',
+                    'amount' => $remainingBalance,
+                    'description' => 'Klien wajib mentransfer pelunasan sisa kontrak 100% sebesar Rp '.number_format($remainingBalance, 0, ',', '.').' ke Pekerja.',
+                ],
+                'split' => [
+                    'split_percentage' => $splitPct,
+                    'paying_party' => $splitPayingParty,
+                    'receiving_party' => $splitReceivingParty,
+                    'amount' => $splitTransferAmount,
+                    'description' => $splitDesc,
+                ],
+            ],
+        ];
+
+        $resolvedDispute['p2p_ledger'] = $p2pLedger;
+
+        // Resolve P2P compliance proof URL if uploaded
+        if (isset($resolvedDispute['p2p_compliance']['proof_file']['path'])) {
+            $resolvedDispute['p2p_compliance']['proof_file']['url'] = $disk->temporaryUrl(
+                $resolvedDispute['p2p_compliance']['proof_file']['path'],
+                now()->addMinutes(60)
+            );
+        }
 
         if (empty($resolvedDispute['ruling']) && isset($quest->dispute['status']) && str_starts_with($quest->dispute['status'], 'resolved_')) {
             $rulingRaw = substr($quest->dispute['status'], 9);
@@ -426,19 +572,71 @@ class QuestService
     }
 
     /**
-     * File a dispute for the quest.
+     * File a formal dispute for the quest.
      */
-    public function fileDispute(Quest $quest, User $user, string $reason): void
+    public function fileDispute(Quest $quest, User $user, string $reason, ?string $category = null, array $evidenceFiles = []): Quest
     {
-        $this->fileQuestDisputeAction->execute($quest, $user, $reason);
+        return $this->fileQuestDisputeAction->execute($quest, $user, $reason, $category, $evidenceFiles);
     }
 
     /**
-     * Resolve arbitration for the quest.
+     * Respond to a dispute with counter-evidence.
      */
-    public function resolveArbitration(Quest $quest, string $ruling, ?string $note, ?int $splitPercentage = null): void
+    public function respondDispute(Quest $quest, User $user, string $responseNote, array $evidenceFiles = []): Quest
     {
-        $this->resolveQuestArbitrationAction->execute($quest, $ruling, $note, $splitPercentage);
+        return $this->fileQuestDisputeAction->respond($quest, $user, $responseNote, $evidenceFiles);
+    }
+
+    /**
+     * Request deadline extension by worker.
+     */
+    public function requestExtension(User $worker, Quest $quest, string $proposedDeadline, string $reason): Quest
+    {
+        return $this->requestQuestExtensionAction->execute($worker, $quest, $proposedDeadline, $reason);
+    }
+
+    /**
+     * Respond to deadline extension request by creator.
+     */
+    public function respondExtension(User $creator, Quest $quest, string $requestId, bool $accept, ?string $responseNote = null): Quest
+    {
+        return $this->respondQuestExtensionAction->execute($creator, $quest, $requestId, $accept, $responseNote);
+    }
+
+    /**
+     * Request mutual cancellation of the quest.
+     */
+    public function requestMutualCancellation(User $actor, Quest $quest, string $reason, string $dpHandling = 'refund_creator', ?int $splitPercentage = null): Quest
+    {
+        return $this->requestMutualCancellationAction->execute($actor, $quest, $reason, $dpHandling, $splitPercentage);
+    }
+
+    /**
+     * Respond to mutual cancellation request.
+     */
+    public function respondMutualCancellation(User $actor, Quest $quest, string $requestId, bool $accept, ?string $responseNote = null): Quest
+    {
+        return $this->respondMutualCancellationAction->execute($actor, $quest, $requestId, $accept, $responseNote);
+    }
+
+    public function resolveArbitration(
+        Quest $quest,
+        string $ruling,
+        ?string $note,
+        ?int $splitPercentage = null,
+        ?array $sanctionData = null,
+        ?string $findingsOfFact = null,
+        ?string $ratioDecidendi = null
+    ): void {
+        $this->resolveQuestArbitrationAction->execute(
+            $quest,
+            $ruling,
+            $note,
+            $splitPercentage,
+            $sanctionData,
+            $findingsOfFact,
+            $ratioDecidendi
+        );
     }
 
     /**
@@ -612,7 +810,11 @@ class QuestService
                 'revision_note' => $quest->revision_note,
                 'rejection_note' => $quest->rejection_note,
                 'rewards' => $rewards,
-                'dispute' => $this->resolveDispute($quest),
+                'dispute' => ($user && (
+                    (string) $quest->creator_id === (string) $user->_id ||
+                    (string) $quest->worker_id === (string) $user->_id ||
+                    (method_exists($user, 'isAdmin') && $user->isAdmin())
+                )) ? $this->resolveDispute($quest, $user) : null,
             ];
         });
     }

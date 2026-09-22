@@ -54,6 +54,7 @@ class Quest extends Model
         'dp_confirmed_at',
         'rounds',
         'max_revisions',
+        'resolution_requests',
     ];
 
     protected function casts(): array
@@ -92,6 +93,7 @@ class Quest extends Model
             'submission_history' => 'array',
             'rounds' => 'array',
             'max_revisions' => 'integer',
+            'resolution_requests' => 'array',
         ];
     }
 

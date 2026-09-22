@@ -9,7 +9,12 @@ use App\Http\Requests\Quest\ConfirmFinalDeliveryRequest;
 use App\Http\Requests\Quest\ExtendQuestDeadlineRequest;
 use App\Http\Requests\Quest\FileDisputeRequest;
 use App\Http\Requests\Quest\RequestFinalZipRevisionRequest;
+use App\Http\Requests\Quest\RequestMutualCancellationRequest;
+use App\Http\Requests\Quest\RequestQuestExtensionRequest;
 use App\Http\Requests\Quest\RequestQuestRevisionRequest;
+use App\Http\Requests\Quest\RespondDisputeRequest;
+use App\Http\Requests\Quest\RespondMutualCancellationRequest;
+use App\Http\Requests\Quest\RespondQuestExtensionRequest;
 use App\Http\Requests\Quest\StoreQuestBidRequest;
 use App\Http\Requests\Quest\StoreQuestFlagRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
@@ -663,11 +668,11 @@ class QuestController extends Controller
     }
 
     /**
-     * File a dispute.
+     * File a formal dispute for the quest.
      */
     public function fileDispute(FileDisputeRequest $request, string $questId)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
         $user = $request->user();
 
         // Check authorization (must be creator or worker)
@@ -675,10 +680,302 @@ class QuestController extends Controller
             abort(403, 'Anda tidak memiliki hak untuk mengajukan dispute pada quest ini.');
         }
 
-        $this->questService->fileDispute($quest, $user, $request->reason);
+        $evidenceFiles = [];
+        if ($request->hasFile('evidence_files')) {
+            foreach ($request->file('evidence_files') as $file) {
+                $path = $file->store('quests/disputes', 's3');
+                $evidenceFiles[] = [
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'size' => $file->getSize(),
+                ];
+            }
+        }
+
+        $this->questService->fileDispute(
+            $quest,
+            $user,
+            $request->validated('reason'),
+            $request->validated('category'),
+            $evidenceFiles
+        );
 
         return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
-            ->with('success', 'Banding (dispute) berhasil diajukan! Menunggu peninjauan arbitrase oleh Admin.');
+            ->with('success', 'Eskalasi arbitrase berhasil diajukan! Status quest dibekukan menunggu peninjauan Admin.');
+    }
+
+    /**
+     * Respond to a dispute with counter-evidence.
+     */
+    public function respondDispute(RespondDisputeRequest $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+        $user = $request->user();
+
+        $evidenceFiles = [];
+        if ($request->hasFile('evidence_files')) {
+            foreach ($request->file('evidence_files') as $file) {
+                $path = $file->store('quests/disputes', 's3');
+                $evidenceFiles[] = [
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'size' => $file->getSize(),
+                ];
+            }
+        }
+
+        $this->questService->respondDispute(
+            $quest,
+            $user,
+            $request->validated('response_note'),
+            $evidenceFiles
+        );
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Tanggapan sengketa berhasil dikirimkan ke Admin!');
+    }
+
+    /**
+     * Submit additional evidence requested by the Mediator.
+     */
+    public function submitEvidenceRequest(Request $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+        $user = $request->user();
+
+        if ($quest->worker_id !== (string) $user->_id && $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Anda tidak memiliki hak akses pada sengketa quest ini.');
+        }
+
+        $request->validate([
+            'request_id' => 'required|string',
+            'notes' => 'nullable|string|max:1000',
+            'evidence_files' => 'required|array|min:1|max:5',
+            'evidence_files.*' => 'file|max:10240',
+        ], [
+            'request_id.required' => 'ID permintaan bukti wajib dicantumkan.',
+            'evidence_files.required' => 'Wajib melampirkan minimal satu berkas bukti.',
+            'evidence_files.*.max' => 'Ukuran berkas maksimal 10MB per file.',
+        ]);
+
+        $evidenceFiles = [];
+        if ($request->hasFile('evidence_files')) {
+            /** @var FilesystemAdapter $disk */
+            $disk = Storage::disk('s3');
+            foreach ($request->file('evidence_files') as $file) {
+                $path = $file->store('quests/disputes/evidence_requests', 's3');
+                $evidenceFiles[] = [
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'url' => $disk->url($path),
+                    'size' => $file->getSize(),
+                ];
+            }
+        }
+
+        $dispute = $quest->dispute ?? [];
+        $requests = $dispute['evidence_requests'] ?? [];
+        $found = false;
+
+        foreach ($requests as &$req) {
+            if (($req['id'] ?? '') === $request->request_id) {
+                $targetParty = $req['target_party'] ?? 'both';
+                if ($targetParty === 'creator' && (string) $user->_id !== (string) $quest->creator_id) {
+                    abort(403, 'Permintaan bukti ini bersifat konfidensial dan hanya ditujukan untuk Pembuat Quest.');
+                }
+                if ($targetParty === 'worker' && (string) $user->_id !== (string) $quest->worker_id) {
+                    abort(403, 'Permintaan bukti ini bersifat konfidensial dan hanya ditujukan untuk Pekerja.');
+                }
+
+                $req['status'] = 'submitted';
+                $req['submitted_at'] = now()->toIso8601String();
+                $req['submitted_by'] = $user->name;
+                $req['notes'] = $request->notes;
+                $req['files'] = $evidenceFiles;
+                $found = true;
+                break;
+            }
+        }
+        unset($req);
+
+        if (! $found) {
+            abort(404, 'Permintaan bukti tambahan tidak ditemukan.');
+        }
+
+        $dispute['evidence_requests'] = $requests;
+        $quest->update(['dispute' => $dispute]);
+
+        // Notify admins
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $admin->_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                    'title' => 'Bukti Tambahan Sengketa Telah Diunggah',
+                    'message' => "Pengguna {$user->name} telah mengunggah berkas bukti tambahan untuk sengketa quest '{$quest->title}'.",
+                    'type' => 'evidence_submitted',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Berkas bukti tambahan berhasil diserahkan kepada Dewan Mediator!');
+    }
+
+    /**
+     * Upload proof of P2P transfer compliance post-ruling.
+     */
+    public function uploadP2pComplianceProof(Request $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+        $user = $request->user();
+
+        if ($quest->worker_id !== (string) $user->_id && $quest->creator_id !== (string) $user->_id && ! $user->isAdmin()) {
+            abort(403, 'Anda tidak memiliki hak akses pada quest ini.');
+        }
+
+        $request->validate([
+            'compliance_proof' => 'required|file|mimes:jpeg,png,jpg,pdf|max:10240',
+            'transfer_note' => 'required|string|max:1000',
+            'bank_source' => 'required|string|max:50',
+            'account_name_destination' => 'required|string|max:100',
+            'transaction_ref_no' => 'required|string|max:100',
+            'transferred_at' => 'nullable|string',
+            'amount' => 'nullable|numeric|min:1',
+        ], [
+            'compliance_proof.required' => 'Bukti struk transfer kepatuhan wajib diunggah.',
+            'compliance_proof.max' => 'Ukuran berkas bukti maksimal 10MB.',
+            'transfer_note.required' => 'Catatan transfer / keterangan mutasi wajib diisi.',
+            'bank_source.required' => 'Nama bank/e-wallet pengirim wajib dicantumkan.',
+            'account_name_destination.required' => 'Nama pemilik rekening tujuan wajib diisi.',
+            'transaction_ref_no.required' => 'Nomor referensi transaksi / RRN wajib diisi untuk audit forensik.',
+        ]);
+
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('s3');
+        $path = $request->file('compliance_proof')->store('quests/disputes/compliance', 's3');
+
+        $dispute = $quest->dispute ?? [];
+        $compliance = $dispute['p2p_compliance'] ?? [];
+        $compliance['status'] = 'pending_verification';
+        $compliance['proof_uploaded_at'] = now()->toIso8601String();
+        $compliance['uploaded_by'] = $user->name;
+        $compliance['transfer_note'] = $request->transfer_note;
+        $compliance['bank_source'] = $request->bank_source;
+        $compliance['account_name_destination'] = $request->account_name_destination;
+        $compliance['transaction_ref_no'] = $request->transaction_ref_no;
+        $compliance['transferred_at'] = $request->transferred_at ?: now()->toIso8601String();
+        if ($request->filled('amount')) {
+            $compliance['amount'] = (float) $request->amount;
+        }
+        $compliance['proof_file'] = [
+            'name' => $request->file('compliance_proof')->getClientOriginalName(),
+            'path' => $path,
+            'url' => $disk->url($path),
+            'size' => $request->file('compliance_proof')->getSize(),
+        ];
+
+        $dispute['p2p_compliance'] = $compliance;
+        $quest->update(['dispute' => $dispute]);
+
+        // Notify admins
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $admin->_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                    'title' => 'Bukti Kepatuhan P2P Diunggah',
+                    'message' => "Pengguna {$user->name} telah mengunggah bukti kepatuhan transfer P2P untuk sengketa quest '{$quest->title}' dan menunggu verifikasi Admin.",
+                    'type' => 'p2p_compliance_uploaded',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Bukti transfer kepatuhan P2P berhasil diunggah dan menunggu verifikasi Dewan Mediator!');
+    }
+
+    /**
+     * Request deadline extension by worker.
+     */
+    public function requestExtension(RequestQuestExtensionRequest $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $this->questService->requestExtension(
+            $request->user(),
+            $quest,
+            $request->validated('proposed_deadline'),
+            $request->validated('reason')
+        );
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Permohonan perpanjangan tenggat waktu berhasil diajukan!');
+    }
+
+    /**
+     * Respond to deadline extension request by creator.
+     */
+    public function respondExtension(RespondQuestExtensionRequest $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $this->questService->respondExtension(
+            $request->user(),
+            $quest,
+            $request->validated('request_id'),
+            (bool) $request->validated('accept'),
+            $request->validated('response_note')
+        );
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Respons permohonan perpanjangan waktu berhasil dikirimkan!');
+    }
+
+    /**
+     * Request mutual cancellation of the quest.
+     */
+    public function requestCancellation(RequestMutualCancellationRequest $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $this->questService->requestMutualCancellation(
+            $request->user(),
+            $quest,
+            $request->validated('reason'),
+            $request->validated('dp_handling'),
+            $request->validated('split_percentage')
+        );
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Permohonan pembatalan kesepakatan damai berhasil diajukan!');
+    }
+
+    /**
+     * Respond to mutual cancellation request.
+     */
+    public function respondCancellation(RespondMutualCancellationRequest $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $this->questService->respondMutualCancellation(
+            $request->user(),
+            $quest,
+            $request->validated('request_id'),
+            (bool) $request->validated('accept'),
+            $request->validated('response_note')
+        );
+
+        return redirect()->route('student.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Respons permohonan pembatalan berhasil diproses!');
     }
 
     /**
