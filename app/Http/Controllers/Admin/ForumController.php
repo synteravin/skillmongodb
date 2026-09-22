@@ -182,10 +182,10 @@ class ForumController extends Controller
                         'avatar' => $avatarUrl,
                         'role' => $msg->sender->role,
                     ] : [
-                        'id' => 'system',
-                        'name' => 'Sistem',
+                        'id' => (string) ($msg->user_id ?? 'deleted'),
+                        'name' => 'Pengguna Dihapus',
                         'avatar' => null,
-                        'role' => 'system',
+                        'role' => 'student',
                     ],
                 ];
             });
@@ -261,10 +261,10 @@ class ForumController extends Controller
                     'avatar' => $avatarUrl,
                     'role' => $msg->sender->role,
                 ] : [
-                    'id' => 'system',
-                    'name' => 'Sistem',
+                    'id' => (string) ($msg->user_id ?? 'deleted'),
+                    'name' => 'Pengguna Dihapus',
                     'avatar' => null,
-                    'role' => 'system',
+                    'role' => 'student',
                 ],
             ];
         });
@@ -281,7 +281,7 @@ class ForumController extends Controller
 
         $request->validate([
             'message' => 'required_without:attachment|nullable|string|max:10000',
-            'attachment' => 'nullable|image|max:5120',
+            'attachment' => 'nullable|image|max:2048',
             'parent_id' => 'nullable|string',
         ]);
 

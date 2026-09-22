@@ -131,6 +131,7 @@ export default function MessageInput({
     isMentorOrAdmin = false,
 }: MessageInputProps) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [fileError, setFileError] = useState<string | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const emojiPickerRef = useRef<HTMLDivElement | null>(null);
@@ -170,6 +171,17 @@ export default function MessageInput({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                setFileError('Ukuran file/foto tidak boleh melebihi 2 MB.');
+                setData('attachment', null);
+                setImagePreview(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                return;
+            }
+
+            setFileError(null);
             setData('attachment', file);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -180,6 +192,7 @@ export default function MessageInput({
     };
 
     const removeImage = () => {
+        setFileError(null);
         setData('attachment', null);
         setImagePreview(null);
         if (fileInputRef.current) {
@@ -401,17 +414,17 @@ export default function MessageInput({
                 </div>
 
                 {/* Status & Validation Error Row */}
-                {(errors?.message || errors?.attachment) && (
+                {(errors?.message || errors?.attachment || fileError) && (
                     <div className="flex items-start justify-between px-1 text-xs select-none">
                         <div className="flex-1 font-medium text-red-500">
                             {errors?.message && (
-                                <span className="animate-fade-in block">
+                                <span className="block animate-fade-in">
                                     ⚠️ {errors.message}
                                 </span>
                             )}
-                            {errors?.attachment && (
-                                <span className="animate-fade-in block">
-                                    ⚠️ {errors.attachment}
+                            {(errors?.attachment || fileError) && (
+                                <span className="block animate-fade-in">
+                                    ⚠️ {errors?.attachment || fileError}
                                 </span>
                             )}
                         </div>

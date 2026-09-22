@@ -1,6 +1,5 @@
 import { Head, usePage } from '@inertiajs/react';
-
-import { useState, useEffect } from 'react';
+import { useAppearance } from '@/hooks/use-appearance';
 
 // Sections
 import Navbar from '@/components/Welcome/Navbar';
@@ -15,33 +14,12 @@ import Footer from '@/components/Welcome/Footer';
 
 export default function Welcome({ auth }: { auth: { user: any } }) {
     const { url } = usePage();
+    const { resolvedAppearance, updateAppearance } = useAppearance();
 
-    const [darkMode, setDarkMode] = useState(false);
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-            setDarkMode(true);
-        } else {
-            document.documentElement.classList.remove('dark');
-            setDarkMode(false);
-        }
-    }, []);
+    const darkMode = resolvedAppearance === 'dark';
 
     const toggleTheme = () => {
-        const html = document.documentElement;
-
-        if (darkMode) {
-            html.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        } else {
-            html.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        }
-
-        setDarkMode(!darkMode);
+        updateAppearance(darkMode ? 'light' : 'dark');
     };
     return (
         <>

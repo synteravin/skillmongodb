@@ -27,7 +27,13 @@ const setCookie = (name: string, value: string, days = 365): void => {
 const getStoredAppearance = (): Appearance => {
     if (typeof window === 'undefined') return 'system';
 
-    return (localStorage.getItem('appearance') as Appearance) || 'system';
+    const appearance = localStorage.getItem('appearance') as Appearance;
+    if (appearance) return appearance;
+
+    const theme = localStorage.getItem('theme') as Appearance;
+    if (theme) return theme;
+
+    return 'system';
 };
 
 const isDarkMode = (appearance: Appearance): boolean => {
@@ -65,9 +71,15 @@ const handleSystemThemeChange = (): void => {
 export function initializeTheme(): void {
     if (typeof window === 'undefined') return;
 
-    if (!localStorage.getItem('appearance')) {
+    const storedAppearance = localStorage.getItem('appearance');
+    const storedTheme = localStorage.getItem('theme');
+
+    if (!storedAppearance && !storedTheme) {
         localStorage.setItem('appearance', 'system');
         setCookie('appearance', 'system');
+    } else if (!storedAppearance && storedTheme) {
+        localStorage.setItem('appearance', storedTheme);
+        setCookie('appearance', storedTheme);
     }
 
     currentAppearance = getStoredAppearance();
@@ -94,9 +106,11 @@ export function useAppearance(): UseAppearanceReturn {
 
         // Store in localStorage for client-side persistence...
         localStorage.setItem('appearance', mode);
+        localStorage.setItem('theme', mode);
 
         // Store in cookie for SSR...
         setCookie('appearance', mode);
+        setCookie('theme', mode);
 
         applyTheme(mode);
         notify();

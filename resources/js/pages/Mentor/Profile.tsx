@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { useForm } from '@inertiajs/react';
-import { Camera, Save, Loader2 } from 'lucide-react';
+import { Camera, Save, Loader2, AlertTriangle } from 'lucide-react';
 import ProfileFormBasic from '@/components/Mentor/ProfileFormBasic';
 import ProfileFormWorkExperience from '@/components/Mentor/ProfileFormWorkExperience';
 import ProfileFormEducation from '@/components/Mentor/ProfileFormEducation';
@@ -50,18 +50,38 @@ export default function Profile({ mentor }: Props) {
 
     const [preview, setPreview] = useState<string | null>(mentor.avatar);
     const [cropSrc, setCropSrc] = useState<string | null>(null);
+    const [fileSizeError, setFileSizeError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const objectUrl = URL.createObjectURL(e.target.files[0]);
-            setCropSrc(objectUrl);
-            // Reset file input so the same file can be picked again
+        const file = e.target.files?.[0];
+        if (file) {
+            const sizeMB = file.size / (1024 * 1024);
+            if (file.size > 2 * 1024 * 1024) {
+                const formattedSize = sizeMB.toFixed(2);
+                setFileSizeError(
+                    `Ukuran foto Anda (${formattedSize} MB) melebihi batas maksimal 2 MB! Silakan pilih foto yang lebih kecil.`,
+                );
+                setCropSrc(null);
+                e.target.value = '';
+                return;
+            }
+            setFileSizeError(null);
+            setCropSrc(URL.createObjectURL(file));
             e.target.value = '';
         }
     };
 
     const handleCropConfirm = (croppedFile: File) => {
+        if (croppedFile.size > 2 * 1024 * 1024) {
+            const formattedSize = (croppedFile.size / (1024 * 1024)).toFixed(2);
+            setFileSizeError(
+                `Ukuran foto hasil crop (${formattedSize} MB) melebihi batas maksimal 2 MB!`,
+            );
+            setCropSrc(null);
+            return;
+        }
+        setFileSizeError(null);
         setData('avatar', croppedFile);
         setPreview(URL.createObjectURL(croppedFile));
         setCropSrc(null);
@@ -174,6 +194,19 @@ export default function Profile({ mentor }: Props) {
                                             onChange={handleFileChange}
                                         />
                                     </div>
+
+                                    {/* WARNING NOTICE FOR FILE SIZE */}
+                                    {(fileSizeError || errors.avatar) && (
+                                        <div className="mb-4 flex w-full max-w-[240px] items-start gap-2 rounded-lg border border-red-500/50 bg-red-500/10 p-2.5 text-xs text-red-600 dark:border-red-500/60 dark:bg-red-950/40 dark:text-red-300">
+                                            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-500" />
+                                            <div className="flex flex-col text-left">
+                                                <span className="font-bold">Ukuran Foto Terlalu Besar</span>
+                                                <span className="text-[11px] leading-snug">
+                                                    {fileSizeError || errors.avatar}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {/* Name & Title */}
                                     <h2 className="mb-1 text-center text-lg font-semibold break-all text-slate-800 dark:text-white">

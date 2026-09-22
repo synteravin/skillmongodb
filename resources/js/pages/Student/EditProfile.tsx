@@ -12,6 +12,7 @@ import {
     Link2,
     Mail,
     Shield,
+    AlertTriangle,
 } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import AvatarCropper from '@/components/AvatarCropper';
@@ -51,19 +52,41 @@ export default function EditProfile({ user }: Props) {
     // ══════════ AVATAR STATES & REFS ══════════
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [cropSrc, setCropSrc] = useState<string | null>(null);
+    const [fileSizeError, setFileSizeError] = useState<string | null>(null);
 
     const handleAvatarClick = () => {
         fileInputRef.current?.click();
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setCropSrc(URL.createObjectURL(e.target.files[0]));
+        const file = e.target.files?.[0];
+        if (file) {
+            const sizeMB = file.size / (1024 * 1024);
+            if (file.size > 2 * 1024 * 1024) {
+                const formattedSize = sizeMB.toFixed(2);
+                setFileSizeError(
+                    `Ukuran foto Anda (${formattedSize} MB) melebihi batas maksimal 2 MB! Silakan pilih foto yang lebih kecil.`,
+                );
+                setCropSrc(null);
+                e.target.value = '';
+                return;
+            }
+            setFileSizeError(null);
+            setCropSrc(URL.createObjectURL(file));
             e.target.value = '';
         }
     };
 
     const handleCropConfirm = (croppedFile: File) => {
+        if (croppedFile.size > 2 * 1024 * 1024) {
+            const formattedSize = (croppedFile.size / (1024 * 1024)).toFixed(2);
+            setFileSizeError(
+                `Ukuran foto hasil crop (${formattedSize} MB) melebihi batas maksimal 2 MB!`,
+            );
+            setCropSrc(null);
+            return;
+        }
+        setFileSizeError(null);
         profileForm.setData('avatar', croppedFile);
         setCropSrc(null);
     };
@@ -207,6 +230,21 @@ export default function EditProfile({ user }: Props) {
                         <p className="text-center font-['Outfit'] text-[11px] text-gray-500 dark:text-gray-400">
                             Click avatar to upload · Max size 2MB
                         </p>
+
+                        {/* WARNING NOTICE IF FILE IS TOO LARGE OR ON AVATAR ERROR */}
+                        {(fileSizeError || profileForm.errors.avatar) && (
+                            <div className="mt-3 flex w-full max-w-[260px] items-start gap-2.5 rounded-lg border border-red-500/60 bg-red-500/10 p-3 font-['Outfit'] text-xs text-red-600 shadow-[0_0_12px_rgba(239,68,68,0.15)] dark:border-red-500/70 dark:bg-red-950/50 dark:text-red-300">
+                                <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-500 animate-pulse" />
+                                <div className="flex flex-col text-left">
+                                    <span className="font-bold tracking-wide text-red-600 dark:text-red-400">
+                                        Peringatan Ukuran File!
+                                    </span>
+                                    <span className="mt-0.5 text-[11px] leading-snug text-red-700/90 dark:text-red-300">
+                                        {fileSizeError || profileForm.errors.avatar}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* SEBELAH KANAN: Input Profil */}
