@@ -204,9 +204,10 @@ export default function Dashboard({
     },
     disputeQueue = [],
     disputeExposure = {
+        total_disputed_count: 0,
         total_disputed_amount: 0,
-        currency: 'IDR',
-        active_disputes_count: 0,
+        total_active_quests: 0,
+        total_active_exposure: 0,
     },
     popularCourses = [],
     activityTrends = [],

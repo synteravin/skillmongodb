@@ -292,4 +292,5 @@ export interface DashboardContractExposure {
     total_disputed_amount: number;
     total_active_quests: number;
     total_active_exposure: number;
+    currency?: string;
 }
