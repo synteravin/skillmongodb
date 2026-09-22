@@ -10,6 +10,7 @@ import {
     Info,
     ArrowRight,
     Clock,
+    Scale,
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import SpeechBubble from '@/components/SpeechBubble';
@@ -18,6 +19,18 @@ import CharacterOnboardingTour from '@/components/Student/CharacterOnboardingTou
 import { Link, router } from '@inertiajs/react';
 import { useAppearance } from '@/hooks/use-appearance';
 import PageBackground from '@/components/Student/PageBackground';
+
+export interface StudentDisputeItem {
+    id: string;
+    slug: string;
+    title: string;
+    role: 'client' | 'worker';
+    status: string;
+    phase: string;
+    sla_remaining_hours: number;
+    evidence_deadline?: string;
+    requires_action: boolean;
+}
 
 interface Character {
     name: string;
@@ -66,9 +79,11 @@ interface NotificationItem {
 export default function Dashboard({
     user,
     notifications = [],
+    activeDisputes = [],
 }: {
     user: User;
     notifications?: NotificationItem[];
+    activeDisputes?: StudentDisputeItem[];
 }) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const dark = resolvedAppearance === 'dark';
@@ -102,6 +117,11 @@ export default function Dashboard({
             />
 
             <LevelRankCard user={user} />
+
+            {/* URGENT DISPUTE / TRIPARTITE ARBITRATION ALERT */}
+            {activeDisputes.length > 0 && (
+                <UrgentDisputeAlertCard disputes={activeDisputes} />
+            )}
 
             {!showTour && <CharacterSection character={user.character} />}
 
@@ -621,6 +641,111 @@ function CharacterSection({
                     style={{ animation: 'breathe 3s ease-in-out infinite' }}
                     title="Klik hero untuk kata-kata penyemangat!"
                 />
+            </div>
+        </div>
+    );
+}
+
+/* =========================================================
+   URGENT DISPUTE ALERT CARD (P2P ARBITRATION WAR ROOM)
+========================================================= */
+
+function UrgentDisputeAlertCard({
+    disputes,
+}: {
+    disputes: StudentDisputeItem[];
+}) {
+    const [isMinimized, setIsMinimized] = useState(false);
+    if (!disputes || disputes.length === 0) return null;
+
+    const primaryDispute = disputes[0];
+
+    if (isMinimized) {
+        return (
+            <div className="fixed right-3 bottom-16 z-40 sm:right-6 sm:bottom-20 md:top-28 md:right-4 md:bottom-auto">
+                <button
+                    onClick={() => setIsMinimized(false)}
+                    className="flex cursor-pointer items-center gap-2 rounded-full border border-rose-500/50 bg-rose-600/90 px-3.5 py-2 text-xs font-bold text-white shadow-lg shadow-rose-600/30 backdrop-blur-md transition-all hover:bg-rose-500"
+                >
+                    <Scale className="h-4 w-4 animate-pulse" />
+                    <span>{disputes.length} Sengketa Aktif</span>
+                </button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="fixed right-3 bottom-16 left-3 z-40 sm:right-4 sm:bottom-20 sm:left-auto sm:w-84 md:absolute md:top-28 md:right-4 md:bottom-auto md:left-auto md:w-80 lg:w-96">
+            <div className="relative overflow-hidden rounded-2xl border border-rose-500/40 bg-white/95 p-4 shadow-xl shadow-rose-500/10 backdrop-blur-md dark:border-rose-500/30 dark:bg-[#0d0a14]/95 dark:shadow-black/40">
+                {/* Accent top gradient */}
+                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-500" />
+
+                <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400">
+                            <Scale className="h-4 w-4" />
+                        </span>
+                        <div>
+                            <span className="inline-flex items-center gap-1 text-[9px] font-black tracking-wider text-rose-600 uppercase dark:text-rose-400">
+                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-rose-500" />
+                                Mediasi Tripartit Aktif
+                            </span>
+                            <h4 className="line-clamp-1 text-xs font-black text-slate-900 dark:text-white">
+                                {primaryDispute.title}
+                            </h4>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setIsMinimized(true)}
+                        className="cursor-pointer rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                        title="Perkecil Notifikasi"
+                    >
+                        <X size={14} />
+                    </button>
+                </div>
+
+                <div className="mt-3 space-y-2 text-xs">
+                    <div className="flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-1.5 dark:bg-slate-900/60">
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Peran Anda
+                        </span>
+                        <span className="font-semibold text-slate-800 capitalize dark:text-slate-200">
+                            {primaryDispute.role === 'client'
+                                ? 'Pemberi Kerja (Klien)'
+                                : 'Penerima Kerja (Freelancer)'}
+                        </span>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-1.5 dark:bg-slate-900/60">
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Fase Sengketa
+                        </span>
+                        <span className="font-semibold text-amber-600 dark:text-amber-400">
+                            {primaryDispute.phase}
+                        </span>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg bg-rose-50/60 px-2.5 py-1.5 dark:bg-rose-950/20">
+                        <span className="text-[11px] text-rose-700 dark:text-rose-300">
+                            Batas Waktu SLA
+                        </span>
+                        <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
+                            {primaryDispute.sla_remaining_hours <= 0
+                                ? 'SLA Kedaluwarsa'
+                                : `${primaryDispute.sla_remaining_hours} Jam Tersisa`}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="mt-3 pt-2">
+                    <Link
+                        href={`/quests/${primaryDispute.slug || primaryDispute.id}`}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-600 py-2 text-xs font-bold text-white shadow-sm shadow-rose-600/25 transition-all hover:bg-rose-500 active:scale-95"
+                    >
+                        <span>Masuk Ruang Mediasi Tripartit</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                </div>
             </div>
         </div>
     );

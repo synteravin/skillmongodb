@@ -52,6 +52,25 @@ class ExtendQuestDeadlineAction
             }
         }
 
+        if ($isAdmin && $quest->creator_id && (string) $quest->creator_id !== (string) $actor->_id) {
+            try {
+                Notification::create([
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => (string) $quest->creator_id,
+                    'data' => [
+                        'quest_id' => (string) $quest->_id,
+                        'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                        'title' => $quest->title,
+                        'message' => "Admin telah memperbarui tenggat waktu quest '{$quest->title}' hingga {$parsedDeadline->translatedFormat('d F Y H:i')}.",
+                        'type' => 'deadline_extended',
+                    ],
+                    'read_at' => null,
+                ]);
+            } catch (\Throwable $e) {
+                // Ignore fallback
+            }
+        }
+
         return $quest;
     }
 }

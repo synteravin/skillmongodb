@@ -45,6 +45,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'user_experience',
         'work_experiences',
         'educations',
+        'blocked_worker_ids',
     ];
 
     /**
@@ -72,6 +73,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'has_completed_onboarding' => 'boolean',
+            'blocked_worker_ids' => 'array',
         ];
     }
 
@@ -97,6 +99,36 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    public function isWorkerBlocked(string|User $worker): bool
+    {
+        $workerId = $worker instanceof User ? (string) $worker->_id : (string) $worker;
+        $blocked = (array) ($this->blocked_worker_ids ?? []);
+
+        return in_array($workerId, $blocked, true);
+    }
+
+    public function blockWorker(string|User $worker): void
+    {
+        $workerId = $worker instanceof User ? (string) $worker->_id : (string) $worker;
+        $blocked = (array) ($this->blocked_worker_ids ?? []);
+
+        if (! in_array($workerId, $blocked, true)) {
+            $blocked[] = $workerId;
+            $this->update(['blocked_worker_ids' => $blocked]);
+        }
+    }
+
+    public function unblockWorker(string|User $worker): void
+    {
+        $workerId = $worker instanceof User ? (string) $worker->_id : (string) $worker;
+        $blocked = (array) ($this->blocked_worker_ids ?? []);
+
+        if (in_array($workerId, $blocked, true)) {
+            $blocked = array_values(array_filter($blocked, fn ($id) => (string) $id !== $workerId));
+            $this->update(['blocked_worker_ids' => $blocked]);
+        }
     }
 
     public function getSignatureUrlAttribute(): ?string

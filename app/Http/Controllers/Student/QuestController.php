@@ -476,6 +476,10 @@ class QuestController extends Controller
         // Authorizations to pass to frontend
         $canBid = Gate::allows('bid', $quest);
         $canAccept = Gate::allows('acceptBid', $quest);
+        $isBlockedByCreator = false;
+        if ($user && $quest->creator && method_exists($quest->creator, 'isWorkerBlocked')) {
+            $isBlockedByCreator = $quest->creator->isWorkerBlocked($user);
+        }
 
         return Inertia::render('Student/Quests/Show', [
             'quest' => $details['quest'],
@@ -484,6 +488,7 @@ class QuestController extends Controller
             'can' => [
                 'bid' => $canBid,
                 'accept' => $canAccept,
+                'blocked_by_creator' => $isBlockedByCreator,
             ],
         ]);
     }
@@ -983,7 +988,7 @@ class QuestController extends Controller
      */
     public function extendDeadline(ExtendQuestDeadlineRequest $request, string $questId)
     {
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
         $this->questService->extendDeadline($request->user(), $quest, $request->validated()['deadline']);
 

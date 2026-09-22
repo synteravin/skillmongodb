@@ -264,3 +264,32 @@ export interface HistoryQuest extends Quest {
         portfolio?: string;
     } | null;
 }
+
+export interface DashboardDisputeItem {
+    id: string;
+    slug: string;
+    title: string;
+    contract_amount: number;
+    dp_amount: number;
+    creator: {
+        id: string;
+        name: string;
+    };
+    worker?: {
+        id: string;
+        name: string;
+    } | null;
+    phase: 'response_pending' | 'evidence_gathering' | 'ruling_pending' | 'compliance_pending';
+    phase_label: string;
+    urgent_action: string;
+    sla_deadline?: string | null;
+    sla_hours_remaining?: number | null;
+    created_at: string;
+}
+
+export interface DashboardContractExposure {
+    total_disputed_count: number;
+    total_disputed_amount: number;
+    total_active_quests: number;
+    total_active_exposure: number;
+}

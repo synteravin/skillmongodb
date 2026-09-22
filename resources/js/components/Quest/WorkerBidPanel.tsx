@@ -10,6 +10,7 @@ import {
     Clock,
     Upload,
     X,
+    ShieldAlert,
 } from 'lucide-react';
 import { Quest, Bid } from '@/types/quest';
 
@@ -18,6 +19,7 @@ interface Props {
     myBid: Bid | null;
     can: {
         bid: boolean;
+        blocked_by_creator?: boolean;
     };
     setSelectedChatBid: (bid: { id: string; name: string } | null) => void;
 }
@@ -86,8 +88,20 @@ export default function WorkerBidPanel({
                 </h3>
             </div>
 
-            {/* Case A: Already Bid */}
-            {myBid ? (
+            {/* Case 0: Blocked by Creator */}
+            {can?.blocked_by_creator ? (
+                <div className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-xs text-amber-900 dark:text-amber-300">
+                    <ShieldAlert className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+                    <div className="space-y-1">
+                        <span className="font-bold text-xs uppercase block">
+                            Penerimaan Proposal Dibatasi
+                        </span>
+                        <p className="text-[11px] text-slate-700 dark:text-slate-300 leading-relaxed">
+                            Anda tidak dapat mengajukan proposal pada proyek dari pembuat quest ini sesuai preferensi kerja sama yang ditetapkan. Anda tetap dapat mengajukan proposal pada proyek dari pembuat quest lainnya di bursa lowongan.
+                        </p>
+                    </div>
+                </div>
+            ) : myBid ? (
                 <div className="space-y-4">
                     <div
                         className={`flex items-start gap-3 rounded-xl border p-4 ${

@@ -66,7 +66,7 @@ export default function Index({ quests, statusCounts, filters }: Props) {
 
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
     const [statusFilter, setStatusFilter] = useState<string>(
-        filters?.status || 'all',
+        filters?.status === 'disputed' ? 'dispute' : (filters?.status || 'all'),
     );
     const [sortBy, setSortBy] = useState<
         'latest' | 'highest_salary' | 'closest_deadline'

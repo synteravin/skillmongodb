@@ -41,8 +41,8 @@ class QuestController extends Controller
         if ($status && $status !== 'all') {
             if ($status === 'pending' || $status === 'draft') {
                 $query->whereIn('status', ['draft', 'pending_approval']);
-            } elseif ($status === 'dispute' || $status === 'in_dispute') {
-                $query->whereIn('status', ['in_dispute', 'dispute']);
+            } elseif ($status === 'dispute' || $status === 'in_dispute' || $status === 'disputed') {
+                $query->whereIn('status', ['disputed', 'in_dispute', 'dispute']);
             } else {
                 $query->where('status', $status);
             }
@@ -91,7 +91,7 @@ class QuestController extends Controller
             'pending' => Quest::whereIn('status', ['draft', 'pending_approval'])->count(),
             'open' => Quest::where('status', 'open')->count(),
             'ongoing' => Quest::where('status', 'ongoing')->count(),
-            'dispute' => Quest::whereIn('status', ['in_dispute', 'dispute'])->count(),
+            'dispute' => Quest::whereIn('status', ['disputed', 'in_dispute', 'dispute'])->count(),
             'completed' => Quest::where('status', 'completed')->count(),
         ];
 
@@ -650,12 +650,18 @@ class QuestController extends Controller
         ]);
 
         $dispute = $quest->dispute ?? [];
-        $dispute['p2p_compliance'] = [
+        $existingCompliance = $dispute['p2p_compliance'] ?? [];
+        $awardFinancial = $dispute['award']['financial_order'] ?? [];
+
+        $dispute['p2p_compliance'] = array_merge([
+            'paying_party' => $awardFinancial['paying_party'] ?? null,
+            'amount' => $awardFinancial['amount'] ?? 0,
+        ], $existingCompliance, [
             'status' => $request->compliance_status,
             'audit_note' => $request->audit_note,
             'verified_at' => now()->toIso8601String(),
             'verified_by' => Auth::user()?->name ?? 'Admin',
-        ];
+        ]);
 
         $quest->update(['dispute' => $dispute]);
 
@@ -694,7 +700,7 @@ class QuestController extends Controller
     /**
      * Extend quest deadline.
      */
-    public function extendDeadline(Request $request, string $questId)
+    public function extendDeadline(Request $request, string $questId, QuestService $questService)
     {
         $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
@@ -705,18 +711,10 @@ class QuestController extends Controller
             'deadline.after' => 'Tanggal deadline harus berupa tanggal di masa depan.',
         ]);
 
-        $updateData = [
-            'deadline' => now()->parse($request->deadline),
-        ];
-
-        if ($quest->status === 'expired') {
-            $updateData['status'] = empty($quest->worker_id) ? 'open' : 'ongoing';
-        }
-
-        $quest->update($updateData);
+        $questService->extendDeadline($request->user(), $quest, $request->deadline);
 
         return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
-            ->with('success', 'Tenggat waktu pengerjaan berhasil diperpanjang!');
+            ->with('success', 'Tenggat waktu quest berhasil diperpanjang!');
     }
 
     /**
@@ -726,17 +724,49 @@ class QuestController extends Controller
     {
         $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
-        if (in_array($quest->status, ['completed', 'cancelled'])) {
-            abort(400, 'Quest yang sudah selesai atau dibatalkan tidak dapat dibuka kembali bidding-nya.');
+        if ($quest->status === 'completed') {
+            abort(400, 'Quest yang sudah selesai secara tuntas tidak dapat dibuka kembali bidding-nya.');
         }
 
         $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();
+        $disputedWorkerId = $quest->worker_id ?: ($acceptedBid?->student_id);
+
+        // 1. Blacklist problematic worker from this creator specifically
+        if ($disputedWorkerId && $quest->creator) {
+            $quest->creator->blockWorker($disputedWorkerId);
+        }
+
+        // 2. Reject the problematic worker's bid
         if ($acceptedBid) {
             $acceptedBid->update(['status' => 'rejected']);
         }
 
+        // 3. Reset other applicants' bids back to 'pending' so creator can reconsider them
+        if ($acceptedBid) {
+            QuestBid::where('quest_id', $quest->_id)
+                ->where('_id', '!=', $acceptedBid->_id)
+                ->update(['status' => 'pending']);
+        } else {
+            QuestBid::where('quest_id', $quest->_id)
+                ->update(['status' => 'pending']);
+        }
+
+        // 4. Archive previous dispute into history and reset quest back to open
+        $disputeHistory = (array) ($quest->dispute_history ?? []);
+        if (! empty($quest->dispute)) {
+            $prevDispute = $quest->dispute;
+            $prevDispute['reopened_at'] = now()->toIso8601String();
+            $disputeHistory[] = $prevDispute;
+        }
+
+        // 5. Ensure deadline is in the future so quest does not immediately expire
+        $newDeadline = $quest->deadline && $quest->deadline > now()
+            ? $quest->deadline
+            : now()->addDays(7);
+
         $quest->update([
             'status' => 'open',
+            'deadline' => $newDeadline,
             'worker_id' => null,
             'submission_link' => null,
             'submission_note' => null,
@@ -745,10 +775,27 @@ class QuestController extends Controller
             'revision_note' => null,
             'submission_file' => null,
             'dispute' => null,
+            'dispute_history' => $disputeHistory,
         ]);
 
+        // 5. Send notification to creator
+        if ($quest->creator) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => (string) $quest->creator->_id,
+                'data' => [
+                    'quest_id' => (string) $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                    'title' => $quest->title,
+                    'message' => "Bidding untuk quest '{$quest->title}' telah dibuka kembali oleh Admin. Pekerja bermasalah telah diblokir dan kandidat pelamar lainnya dapat Anda tinjau kembali.",
+                    'type' => 'bidding_reopened',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
         return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
-            ->with('success', 'Bidding quest berhasil dibuka kembali oleh Admin!');
+            ->with('success', 'Bidding quest berhasil dibuka kembali! Pekerja bermasalah telah diblokir dari pembuat quest ini dan kandidat pelamar lainnya dikembalikan ke status aktif.');
     }
 
     /**
