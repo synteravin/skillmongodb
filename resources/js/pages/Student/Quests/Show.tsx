@@ -130,6 +130,21 @@ export default function Show({ quest, bids, myBid, can }: Props) {
     const [showDeleteDraftModal, setShowDeleteDraftModal] = useState(false);
     const [isDeletingDraft, setIsDeletingDraft] = useState(false);
 
+    const [showExtendDeadlineModal, setShowExtendDeadlineModal] = useState(false);
+    const extendDeadlineForm = useForm({
+        deadline: '',
+    });
+
+    const handleExtendDeadline = (e: React.FormEvent) => {
+        e.preventDefault();
+        extendDeadlineForm.post(`/quests/${quest.slug || quest.id || quest._id}/extend-deadline`, {
+            onSuccess: () => {
+                setShowExtendDeadlineModal(false);
+                extendDeadlineForm.reset();
+            },
+        });
+    };
+
     const handleDeleteDraft = () => {
         router.delete(`/quests/${quest.slug || quest.id || quest._id}`, {
             onStart: () => setIsDeletingDraft(true),
@@ -589,19 +604,28 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         )}
 
                         {quest.status === 'expired' && (
-                            <div className="dark:border-slate-805 flex gap-3 rounded-lg border border-red-200 bg-red-50/15 p-4 dark:bg-slate-950">
-                                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
-                                <div>
-                                    <span className="text-red-705 block text-xs font-bold dark:text-red-400">
-                                        Proyek Kadaluarsa (Expired)
-                                    </span>
-                                    <p className="dark:text-slate-405 mt-1 text-xs leading-relaxed text-slate-500">
-                                        Proyek ini telah melewati batas masa
-                                        pendaftaran atau tenggat kerja tanpa
-                                        adanya deliverables diserahkan. Kontrak
-                                        dibatalkan secara otomatis oleh sistem.
-                                    </p>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50/15 p-4 dark:border-red-900/40 dark:bg-slate-950">
+                                <div className="flex items-start gap-3">
+                                    <Clock className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+                                    <div>
+                                        <span className="block text-xs font-bold text-red-700 dark:text-red-400">
+                                            Proyek Kadaluarsa (Expired)
+                                        </span>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                            Proyek ini telah melewati batas masa pendaftaran atau tenggat kerja.
+                                            {isCreator && ' Sebagai pemilik proyek, Anda dapat menentukan tenggat waktu baru di bawah ini untuk membuka kembali pendaftaran proyek atau melanjutkan pengerjaan.'}
+                                        </p>
+                                    </div>
                                 </div>
+                                {isCreator && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowExtendDeadlineModal(true)}
+                                        className="shrink-0 cursor-pointer rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-colors hover:bg-indigo-700"
+                                    >
+                                        Perpanjang & Buka Kembali
+                                    </button>
+                                )}
                             </div>
                         )}
 
@@ -1009,7 +1033,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </div>
 
                             {/* Deadline Spec */}
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between gap-3">
                                 <div>
                                     <span className="block text-[10px] font-bold text-slate-400 uppercase">
                                         Tenggat Waktu
@@ -1018,6 +1042,15 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         {formatDate(quest.deadline)}
                                     </span>
                                 </div>
+                                {isCreator && ['open', 'expired'].includes(quest.status) && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowExtendDeadlineModal(true)}
+                                        className="cursor-pointer rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-1 text-[11px] font-bold text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400 transition-colors"
+                                    >
+                                        {quest.status === 'expired' ? 'Buka Kembali' : 'Perpanjang'}
+                                    </button>
+                                )}
                             </div>
 
                             {/* Remaining Time */}
@@ -1329,6 +1362,57 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                             </button>
                         </div>
                     </div>
+                </Modal>
+            )}
+
+            {/* Extend Quest Deadline Modal */}
+            {showExtendDeadlineModal && (
+                <Modal
+                    open={showExtendDeadlineModal}
+                    onClose={() => setShowExtendDeadlineModal(false)}
+                    title={quest.status === 'expired' ? 'Buka Kembali & Perpanjang Lowongan' : 'Perpanjang Tenggat Waktu Lowongan'}
+                >
+                    <form onSubmit={handleExtendDeadline} className="space-y-4 text-xs">
+                        <p className="text-slate-600 dark:text-slate-400">
+                            Tentukan tanggal dan batas waktu baru untuk quest ini. Jika quest sebelumnya kadaluarsa, memperbarui tenggat waktu akan otomatis mengaktifkan kembali lowongan bagi para pelamar.
+                        </p>
+
+                        <div className="space-y-1.5">
+                            <label className="font-bold text-slate-700 dark:text-slate-300">
+                                Tenggat Waktu Baru <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="datetime-local"
+                                required
+                                min={new Date().toISOString().slice(0, 16)}
+                                value={extendDeadlineForm.data.deadline}
+                                onChange={(e) => extendDeadlineForm.setData('deadline', e.target.value)}
+                                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
+                            {extendDeadlineForm.errors.deadline && (
+                                <p className="text-xs font-semibold text-red-500">
+                                    {extendDeadlineForm.errors.deadline}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                            <button
+                                type="button"
+                                onClick={() => setShowExtendDeadlineModal(false)}
+                                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={extendDeadlineForm.processing}
+                                className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors disabled:opacity-50 shadow-xs"
+                            >
+                                {extendDeadlineForm.processing ? 'Menyimpan...' : 'Simpan Tenggat Baru'}
+                            </button>
+                        </div>
+                    </form>
                 </Modal>
             )}
         </div>

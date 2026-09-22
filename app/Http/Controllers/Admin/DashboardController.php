@@ -13,6 +13,7 @@ use App\Models\QuestFlag;
 use App\Models\StudentSubmission;
 use App\Models\User;
 use App\Models\UserStat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,12 +36,83 @@ class DashboardController extends Controller
         $pendingQuests = Quest::where('status', 'submitted')->count();
         $draftCourses = Course::where('is_active', false)->count();
 
+        // Real Contract Disputes (P2P Arbitration in Quests)
+        $disputedQuestsQuery = Quest::where('status', 'disputed')->with(['creator', 'worker']);
+        $activeDisputes = $disputedQuestsQuery->count();
+        $disputedQuests = $disputedQuestsQuery->latest('updated_at')->get();
+
+        $totalDisputedAmount = $disputedQuests->sum(function ($q) {
+            return (int) ($q->max_budget ?? $q->max_salary ?? 0);
+        });
+
+        $disputeQueue = $disputedQuests->take(5)->map(function ($q) {
+            $dispute = $q->dispute ?? [];
+            $contractAmount = (int) ($q->max_budget ?? $q->max_salary ?? 0);
+            $dpAmount = (int) ($q->dp_amount ?? (($contractAmount * (int) ($q->dp_percentage ?? 30)) / 100));
+
+            // Determine mediation phase
+            $phase = 'response_pending';
+            $phaseLabel = 'Fase 1: Tanggapan Pihak Terlapor';
+            $urgentAction = 'Menunggu tanggapan dari pihak lawan';
+            $slaDeadline = null;
+            $slaHoursRemaining = null;
+
+            if (! empty($dispute['p2p_compliance'])) {
+                $phase = 'compliance_pending';
+                $phaseLabel = 'Fase 4: Kepatuhan Transfer P2P';
+                $urgentAction = 'Verifikasi struk mutasi transfer P2P';
+            } elseif (! empty($dispute['ruling']) || ! empty($q->dispute_award)) {
+                $phase = 'ruling_pending';
+                $phaseLabel = 'Fase 3: Putusan Arbitrase (Inkracht)';
+                $urgentAction = 'Putusan inkracht telah ditetapkan';
+            } elseif (! empty($dispute['evidence_requests'])) {
+                $phase = 'evidence_gathering';
+                $phaseLabel = 'Fase 2: Uji Pembuktian Tambahan';
+                $urgentAction = 'Pemeriksaan berkas pembuktian oleh Mediator';
+            } elseif (! empty($dispute['response'])) {
+                $phase = 'evidence_gathering';
+                $phaseLabel = 'Fase 2: Uji Pembuktian & Musyawarah';
+                $urgentAction = 'Tanggapan telah masuk, siap untuk kaukus / putusan';
+            }
+
+            if (! empty($dispute['created_at'])) {
+                $slaExtendedHours = (int) ($dispute['sla_extended_hours'] ?? 0);
+                $totalSlaHours = 72 + $slaExtendedHours;
+                $deadline = Carbon::parse($dispute['created_at'])->addHours($totalSlaHours);
+                $slaDeadline = $deadline->toIso8601String();
+                $slaHoursRemaining = max(0, (int) now()->diffInHours($deadline, false));
+            }
+
+            return [
+                'id' => (string) $q->_id,
+                'slug' => $q->slug ?: (string) $q->_id,
+                'title' => $q->title,
+                'contract_amount' => $contractAmount,
+                'dp_amount' => $dpAmount,
+                'creator' => [
+                    'id' => (string) ($q->creator?->_id ?? $q->creator_id),
+                    'name' => $q->creator?->name ?? 'Klien',
+                ],
+                'worker' => $q->worker ? [
+                    'id' => (string) $q->worker->_id,
+                    'name' => $q->worker->name,
+                ] : null,
+                'phase' => $phase,
+                'phase_label' => $phaseLabel,
+                'urgent_action' => $urgentAction,
+                'sla_deadline' => $slaDeadline,
+                'sla_hours_remaining' => $slaHoursRemaining,
+                'created_at' => $q->created_at ? $q->created_at->toIso8601String() : now()->toIso8601String(),
+            ];
+        })->values()->toArray();
+
         $actionRequired = [
-            'pending_submissions' => $pendingSubmissions,
+            'active_disputes' => $activeDisputes,
             'quest_flags' => $questFlags,
+            'pending_submissions' => $pendingSubmissions,
             'pending_quests' => $pendingQuests,
             'draft_courses' => $draftCourses,
-            'total_alerts' => $pendingSubmissions + $questFlags + $pendingQuests,
+            'total_alerts' => $activeDisputes + $questFlags + $pendingSubmissions + $pendingQuests,
         ];
 
         $totalStudents = User::where('role', 'student')->count();
@@ -94,9 +166,17 @@ class DashboardController extends Controller
                     'active' => $activeQuests,
                     'completed' => $completedQuests,
                     'pending_approval' => $pendingQuests,
+                    'disputed' => $activeDisputes,
                 ],
             ],
             'actionRequired' => $actionRequired,
+            'disputeQueue' => $disputeQueue,
+            'disputeExposure' => [
+                'total_disputed_count' => $activeDisputes,
+                'total_disputed_amount' => $totalDisputedAmount,
+                'total_active_quests' => $activeQuests,
+                'total_active_exposure' => (int) Quest::whereIn('status', ['open', 'ongoing'])->sum('max_budget'),
+            ],
             'popularCourses' => $this->getPopularCourses(),
             'activityTrends' => $this->getActivityTrends($days),
             'careerBranchDistribution' => $this->getCareerBranchDistribution(),
@@ -369,11 +449,29 @@ class DashboardController extends Controller
                 ];
             });
 
+        $disputeActs = Quest::whereNotNull('dispute')
+            ->latest('updated_at')
+            ->take(3)
+            ->get()
+            ->map(function ($q) {
+                $isResolved = in_array($q->status, ['completed', 'cancelled']) || ! empty($q->dispute['ruling']);
+                $actText = $isResolved ? 'Putusan arbitrase ditetapkan pada' : 'Sengketa diajukan pada';
+
+                return [
+                    'id' => (string) $q->_id,
+                    'type' => 'dispute',
+                    'title' => $actText.' quest '.$q->title,
+                    'time' => $q->updated_at ? $q->updated_at->diffForHumans() : 'Baru saja',
+                    'timestamp' => $q->updated_at ? $q->updated_at->timestamp : 0,
+                ];
+            });
+
         return $enrollmentActs
             ->concat($submissionActs)
             ->concat($forumActs)
+            ->concat($disputeActs)
             ->sortByDesc('timestamp')
-            ->take(5)
+            ->take(6)
             ->values()
             ->toArray();
     }

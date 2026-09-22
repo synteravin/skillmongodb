@@ -23,6 +23,11 @@ class QuestPolicy extends BasePolicy
             return false;
         }
 
+        // Check if creator has blocked this worker from their quests
+        if ($quest->creator && method_exists($quest->creator, 'isWorkerBlocked') && $quest->creator->isWorkerBlocked($user)) {
+            return false;
+        }
+
         // Must be open
         if ($quest->status !== 'open') {
             return false;

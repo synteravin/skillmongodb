@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Models\Quest;
 use App\Models\Rank;
 use App\Models\UserStat;
+use Carbon\Carbon;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -108,8 +110,45 @@ class DashboardController extends Controller
             $notifications = collect();
         }
 
+        // =========================
+        // 🔥 ACTIVE DISPUTES & ARBITRATION
+        // =========================
+        $activeDisputes = Quest::where(function ($q) use ($user) {
+            $q->where('creator_id', (string) $user->_id)
+                ->orWhere('worker_id', (string) $user->_id);
+        })
+            ->where('status', 'disputed')
+            ->get()
+            ->map(function ($quest) use ($user) {
+                $isClient = (string) $quest->creator_id === (string) $user->_id;
+                $dispute = $quest->dispute ?? [];
+
+                $evidenceDeadline = isset($dispute['evidence_deadline']) ? Carbon::parse($dispute['evidence_deadline']) : null;
+                $slaHoursRemaining = $evidenceDeadline ? max(0, (int) now()->diffInHours($evidenceDeadline, false)) : 48;
+
+                $phaseLabels = [
+                    'fase_1_negosiasi' => 'Fase 1: Negosiasi Mandiri',
+                    'fase_2_bukti' => 'Fase 2: Pengajuan Bukti',
+                    'fase_3_penyelidikan' => 'Fase 3: Penyelidikan Tripartit',
+                    'fase_4_putusan' => 'Fase 4: Putusan Eksekutif Admin',
+                ];
+
+                return [
+                    'id' => (string) $quest->_id,
+                    'slug' => $quest->slug ?: (string) $quest->_id,
+                    'title' => $quest->title,
+                    'role' => $isClient ? 'client' : 'worker',
+                    'status' => $quest->status,
+                    'phase' => $phaseLabels[$dispute['phase'] ?? ''] ?? 'Fase Mediasi Tripartit',
+                    'sla_remaining_hours' => $slaHoursRemaining,
+                    'evidence_deadline' => $evidenceDeadline?->toISOString(),
+                    'requires_action' => in_array($dispute['phase'] ?? '', ['fase_1_negosiasi', 'fase_2_bukti']),
+                ];
+            });
+
         return Inertia::render('Student/Dashboard', [
             'notifications' => $notifications,
+            'activeDisputes' => $activeDisputes,
             'user' => [
                 'id' => (string) $user->_id,
                 'name' => $user->name,

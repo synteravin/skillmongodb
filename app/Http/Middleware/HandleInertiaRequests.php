@@ -49,6 +49,12 @@ class HandleInertiaRequests extends Middleware
             'pendingCounts' => fn () => $request->user()?->isAdmin() ? [
                 'quests' => Quest::whereIn('status', ['draft', 'pending_approval'])->count(),
             ] : [],
+
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'message' => fn () => $request->session()->get('message'),
+            ],
         ]);
     }
 }

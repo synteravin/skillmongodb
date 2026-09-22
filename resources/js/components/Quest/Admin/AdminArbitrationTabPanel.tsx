@@ -58,6 +58,7 @@ interface AdminArbitrationTabPanelProps {
     arbitrateForm: any;
     setSelectedChatBid: (bid: { id: string; name: string } | null) => void;
     bids: Bid[];
+    openExtendDeadlineModal?: () => void;
 }
 
 export default function AdminArbitrationTabPanel({
@@ -73,6 +74,7 @@ export default function AdminArbitrationTabPanel({
     arbitrateForm,
     setSelectedChatBid,
     bids,
+    openExtendDeadlineModal,
 }: AdminArbitrationTabPanelProps) {
     const dispute = quest.dispute;
     const isDisputed = quest.status === 'disputed' || dispute?.status === 'pending';
@@ -1299,9 +1301,9 @@ export default function AdminArbitrationTabPanel({
                                         <div>
                                             <span className="text-slate-500 block">Pihak Pembayar:</span>
                                             <span className="font-bold text-slate-800 dark:text-slate-200">
-                                                {dispute.p2p_compliance.paying_party === 'creator'
+                                                {(dispute.p2p_compliance.paying_party || dispute.award?.financial_order?.paying_party) === 'creator'
                                                     ? 'Klien (Pembuat Quest)'
-                                                    : dispute.p2p_compliance.paying_party === 'worker'
+                                                    : (dispute.p2p_compliance.paying_party || dispute.award?.financial_order?.paying_party) === 'worker'
                                                       ? 'Pekerja (Freelancer)'
                                                       : '-'}
                                             </span>
@@ -1309,7 +1311,7 @@ export default function AdminArbitrationTabPanel({
                                         <div>
                                             <span className="text-slate-500 block">Nominal Kewajiban:</span>
                                             <span className="font-extrabold text-amber-600 dark:text-amber-400">
-                                                {formatCurrency(dispute.p2p_compliance.amount ?? 0)}
+                                                {formatCurrency(dispute.p2p_compliance.amount || dispute.award?.financial_order?.amount || 0)}
                                             </span>
                                         </div>
                                     </div>
@@ -1419,6 +1421,16 @@ export default function AdminArbitrationTabPanel({
                                 <RefreshCw size={14} />
                                 Buka Kembali Bidding
                             </button>
+                            {openExtendDeadlineModal && (
+                                <button
+                                    type="button"
+                                    onClick={openExtendDeadlineModal}
+                                    className="w-full cursor-pointer rounded-xl border border-indigo-500/30 bg-indigo-500/10 py-2.5 text-center text-xs font-bold tracking-wider text-indigo-700 uppercase transition-all hover:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center gap-1.5"
+                                >
+                                    <Calendar size={14} />
+                                    Ubah / Perpanjang Tenggat Waktu
+                                </button>
+                            )}
                             <button
                                 type="button"
                                 onClick={handleForceCancel}

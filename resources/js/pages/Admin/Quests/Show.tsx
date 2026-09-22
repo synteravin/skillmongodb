@@ -23,6 +23,7 @@ import {
 import React, { useState } from 'react';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
 import ConfirmModal from '@/components/ConfirmModal';
+import Modal from '@/components/ui/Modal';
 import QuestRewardsCard from '@/components/Quest/QuestRewardsCard';
 
 import RevisionHistory from '@/components/Quest/RevisionHistory';
@@ -93,6 +94,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
         ratio_decidendi: '',
     });
 
+    const [showExtendDeadlineModal, setShowExtendDeadlineModal] = useState(false);
     const extendDeadlineForm = useForm({
         deadline: '',
     });
@@ -125,31 +127,34 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
             deadline: utcDeadline,
         }));
 
-        extendDeadlineForm.post(`/admin/quests/${quest.slug}/extend-deadline`, {
+        extendDeadlineForm.post(`/admin/quests/${quest.slug || quest._id}/extend-deadline`, {
             onSuccess: () => {
+                setShowExtendDeadlineModal(false);
                 extendDeadlineForm.reset();
             },
         });
     };
 
+    const [showReopenBiddingConfirm, setShowReopenBiddingConfirm] =
+        useState(false);
+    const [showForceCancelConfirm, setShowForceCancelConfirm] = useState(false);
+
     const handleForceCancel = () => {
-        if (
-            confirm(
-                'Apakah Anda yakin ingin membatalkan quest ini secara paksa? Kontrak P2P akan dibatalkan dan reward gamifikasi platform dinonaktifkan.',
-            )
-        ) {
-            router.post(`/admin/quests/${quest.slug}/force-cancel`);
-        }
+        setShowForceCancelConfirm(true);
+    };
+
+    const handleConfirmForceCancel = () => {
+        setShowForceCancelConfirm(false);
+        router.post(`/admin/quests/${quest.slug}/force-cancel`);
     };
 
     const handleReopenBidding = () => {
-        if (
-            confirm(
-                'Apakah Anda yakin ingin membuka kembali bidding? Pekerja terpilih saat ini akan dilepas dan status quest dikembalikan ke bursa lowongan.',
-            )
-        ) {
-            router.post(`/admin/quests/${quest.slug}/reopen-bidding`);
-        }
+        setShowReopenBiddingConfirm(true);
+    };
+
+    const handleConfirmReopenBidding = () => {
+        setShowReopenBiddingConfirm(false);
+        router.post(`/admin/quests/${quest.slug}/reopen-bidding`);
     };
 
     const handleApproveWork = (e: React.FormEvent) => {
@@ -638,6 +643,7 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 arbitrateForm={arbitrateForm}
                                 setSelectedChatBid={setSelectedChatBid}
                                 bids={bids}
+                                openExtendDeadlineModal={() => setShowExtendDeadlineModal(true)}
                             />
                         </div>
                     ) : (
@@ -766,18 +772,27 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                         </div>
 
                                         {/* Deadline Spec */}
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                                <Calendar className="h-4 w-4" />
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                                    <Calendar className="h-4 w-4" />
+                                                </div>
+                                                <div>
+                                                    <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
+                                                        Tenggat Waktu
+                                                    </span>
+                                                    <span className="text-xs font-bold text-slate-900 dark:text-white">
+                                                        {formatDate(quest.deadline)}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span className="block text-[10px] font-bold tracking-wider text-slate-600 uppercase dark:text-slate-400">
-                                                    Tenggat Waktu
-                                                </span>
-                                                <span className="text-xs font-bold text-slate-900 dark:text-white">
-                                                    {formatDate(quest.deadline)}
-                                                </span>
-                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowExtendDeadlineModal(true)}
+                                                className="cursor-pointer rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-1 text-[11px] font-bold text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400 transition-colors"
+                                            >
+                                                Ubah Tenggat
+                                            </button>
                                         </div>
 
                                         {/* Countdown Progress */}
@@ -949,6 +964,30 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                 onClose={() => setShowArbitrateConfirm(false)}
             />
 
+            {/* Confirm Modal Buka Kembali Bidding */}
+            <ConfirmModal
+                open={showReopenBiddingConfirm}
+                title="Buka Kembali Bidding Quest"
+                message="Apakah Anda yakin ingin membuka kembali bidding? Pekerja bermasalah saat ini akan dilepas dan diblokir dari proyek milik pembuat quest ini, status kandidat pelamar lainnya dikembalikan ke status aktif (pending), dan quest dipublikasikan kembali ke bursa lowongan."
+                confirmText="Buka Kembali Bidding"
+                cancelText="Batal"
+                variant="primary"
+                onConfirm={handleConfirmReopenBidding}
+                onClose={() => setShowReopenBiddingConfirm(false)}
+            />
+
+            {/* Confirm Modal Batalkan Quest Secara Paksa */}
+            <ConfirmModal
+                open={showForceCancelConfirm}
+                title="Batalkan Quest & Batalkan Reward"
+                message="Apakah Anda yakin ingin membatalkan quest ini secara permanen? Kontrak pengerjaan P2P akan dibatalkan total, seluruh reward gamifikasi platform dinonaktifkan, dan quest akan diarsipkan."
+                confirmText="Batalkan Quest & Reward"
+                cancelText="Batal"
+                variant="danger"
+                onConfirm={handleConfirmForceCancel}
+                onClose={() => setShowForceCancelConfirm(false)}
+            />
+
             {/* Reject Post Modal */}
             {showRejectPostForm && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
@@ -1012,6 +1051,57 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                         </form>
                     </div>
                 </div>
+            )}
+
+            {/* Admin Extend Deadline Modal */}
+            {showExtendDeadlineModal && (
+                <Modal
+                    open={showExtendDeadlineModal}
+                    onClose={() => setShowExtendDeadlineModal(false)}
+                    title="Ubah / Perpanjang Tenggat Waktu Quest"
+                >
+                    <form onSubmit={handleExtendDeadline} className="space-y-4 text-xs">
+                        <p className="text-slate-600 dark:text-slate-400">
+                            Sebagai Administrator, Anda memiliki wewenang untuk mengatur ulang tenggat waktu quest. Jika quest berstatus kadaluarsa (expired), memperbarui tenggat waktu akan otomatis memulihkan status quest ke aktif.
+                        </p>
+
+                        <div className="space-y-1.5">
+                            <label className="font-bold text-slate-700 dark:text-slate-300">
+                                Tenggat Waktu Baru <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="datetime-local"
+                                required
+                                min={new Date().toISOString().slice(0, 16)}
+                                value={extendDeadlineForm.data.deadline}
+                                onChange={(e) => extendDeadlineForm.setData('deadline', e.target.value)}
+                                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
+                            {extendDeadlineForm.errors.deadline && (
+                                <p className="text-xs font-semibold text-red-500">
+                                    {extendDeadlineForm.errors.deadline}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                            <button
+                                type="button"
+                                onClick={() => setShowExtendDeadlineModal(false)}
+                                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={extendDeadlineForm.processing}
+                                className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors disabled:opacity-50 shadow-xs"
+                            >
+                                {extendDeadlineForm.processing ? 'Menyimpan...' : 'Simpan Perubahan'}
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
             )}
         </AppLayout>
     );
