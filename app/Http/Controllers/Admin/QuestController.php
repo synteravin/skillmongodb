@@ -264,7 +264,7 @@ class QuestController extends Controller
                 'submission_file' => $resolvedSubmissionFile,
                 'tier' => $quest->tier ?? 'C',
                 'custom_rewards' => $quest->custom_rewards,
-                'dispute' => $questService->resolveDispute($quest),
+                'dispute' => $questService->resolveDispute($quest, Auth::user()),
                 'submission_history' => $resolvedSubmissionHistory,
                 'rewards' => $rewards,
                 'accepted_bid_amount' => $acceptedBidAmount,
@@ -507,10 +507,162 @@ class QuestController extends Controller
             $ruling = 'release_payout';
         }
 
-        $questService->resolveArbitration($quest, $ruling, $request->note, $request->split_percentage);
+        $sanctionData = null;
+        if ($request->filled('sanction_type') && $request->sanction_type !== 'none') {
+            $sanctionData = [
+                'sanction_type' => $request->sanction_type,
+                'sanction_target' => $request->sanction_target ?? 'worker',
+                'sanction_reason' => $request->sanction_reason ?? $request->note,
+            ];
+        }
+
+        $questService->resolveArbitration(
+            $quest,
+            $ruling,
+            $request->note,
+            $request->split_percentage,
+            $sanctionData,
+            $request->findings_of_fact,
+            $request->ratio_decidendi
+        );
 
         return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('success', 'Arbitrase berhasil diselesaikan oleh Admin!');
+    }
+
+    /**
+     * Request additional evidence from parties during dispute mediation.
+     */
+    public function requestEvidence(Request $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $request->validate([
+            'target_party' => ['required', 'string', 'in:creator,worker,both'],
+            'instruction' => ['required', 'string', 'max:1000'],
+            'deadline_hours' => ['required', 'integer', 'in:24,48,72'],
+        ], [
+            'instruction.required' => 'Instruksi berkas bukti wajib diisi.',
+            'deadline_hours.required' => 'Batas waktu pengunggahan wajib ditentukan.',
+        ]);
+
+        $dispute = $quest->dispute ?? [];
+        $evidenceRequests = $dispute['evidence_requests'] ?? [];
+
+        $newRequest = [
+            'id' => (string) Str::uuid(),
+            'target_party' => $request->target_party,
+            'instruction' => $request->instruction,
+            'requested_at' => now()->toIso8601String(),
+            'deadline' => now()->addHours((int) $request->deadline_hours)->toIso8601String(),
+            'deadline_hours' => (int) $request->deadline_hours,
+            'status' => 'pending',
+        ];
+
+        $evidenceRequests[] = $newRequest;
+        $dispute['evidence_requests'] = $evidenceRequests;
+
+        $quest->update(['dispute' => $dispute]);
+
+        // Send notifications
+        $targets = [];
+        if (in_array($request->target_party, ['creator', 'both']) && $quest->creator_id) {
+            $targets[] = $quest->creator_id;
+        }
+        if (in_array($request->target_party, ['worker', 'both']) && $quest->worker_id) {
+            $targets[] = $quest->worker_id;
+        }
+
+        foreach ($targets as $targetId) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $targetId,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                    'title' => 'Permintaan Bukti Tambahan oleh Mediator',
+                    'message' => "Mediator meminta bukti tambahan untuk sengketa quest '{$quest->title}'. Batas waktu: {$request->deadline_hours} jam. Instruksi: {$request->instruction}",
+                    'type' => 'evidence_requested',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Permintaan bukti tambahan berhasil dikirimkan kepada para pihak!');
+    }
+
+    /**
+     * Extend dispute response SLA window.
+     */
+    public function extendDisputeSla(Request $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $request->validate([
+            'additional_hours' => ['required', 'integer', 'in:24,48,72'],
+            'reason' => ['required', 'string', 'max:500'],
+        ], [
+            'reason.required' => 'Alasan perpanjangan SLA wajib diisi.',
+        ]);
+
+        $dispute = $quest->dispute ?? [];
+        $currentHours = (int) ($dispute['sla_extended_hours'] ?? 0);
+        $newHours = $currentHours + (int) $request->additional_hours;
+
+        $dispute['sla_extended_hours'] = $newHours;
+        $dispute['sla_extension_reason'] = $request->reason;
+        $dispute['sla_extended_at'] = now()->toIso8601String();
+
+        $quest->update(['dispute' => $dispute]);
+
+        if ($quest->worker_id) {
+            Notification::create([
+                'notifiable_type' => User::class,
+                'notifiable_id' => $quest->worker_id,
+                'data' => [
+                    'quest_id' => $quest->_id,
+                    'quest_slug' => $quest->slug ?: Str::slug($quest->title),
+                    'title' => 'Perpanjangan Masa Tanggapan Sengketa',
+                    'message' => "Masa tanggapan sengketa quest '{$quest->title}' diperpanjang +{$request->additional_hours} jam oleh Mediator.",
+                    'type' => 'sla_extended',
+                ],
+                'read_at' => null,
+            ]);
+        }
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', "Batas waktu masa tanggapan sengketa berhasil diperpanjang +{$request->additional_hours} jam!");
+    }
+
+    /**
+     * Verify P2P execution compliance post-ruling.
+     */
+    public function verifyP2pCompliance(Request $request, string $questId)
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $request->validate([
+            'compliance_status' => ['required', 'string', 'in:verified,non_compliant'],
+            'audit_note' => ['required', 'string', 'max:1000'],
+        ], [
+            'audit_note.required' => 'Catatan audit kepatuhan transfer wajib diisi.',
+        ]);
+
+        $dispute = $quest->dispute ?? [];
+        $dispute['p2p_compliance'] = [
+            'status' => $request->compliance_status,
+            'audit_note' => $request->audit_note,
+            'verified_at' => now()->toIso8601String(),
+            'verified_by' => Auth::user()?->name ?? 'Admin',
+        ];
+
+        $quest->update(['dispute' => $dispute]);
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', $request->compliance_status === 'verified'
+                ? 'Kepatuhan pelaksanaan transfer P2P berhasil diverifikasi! Kasus sengketa ditutup tuntas.'
+                : 'Pihak terkait ditandai melakukan pembangkangan/wanprestasi terhadap putusan arbitrase.');
     }
 
     /**

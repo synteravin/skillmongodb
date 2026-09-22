@@ -4,7 +4,7 @@ namespace App\Http\Requests\Quest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FileDisputeRequest extends FormRequest
+class RespondDisputeRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,9 +14,7 @@ class FileDisputeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reason' => ['required', 'string', 'max:2000'],
-            'category' => ['nullable', 'string'],
-            'binding_agreement_accepted' => ['nullable', 'boolean'],
+            'response_note' => ['required', 'string', 'max:2000'],
             'evidence_files' => ['nullable', 'array', 'max:5'],
             'evidence_files.*' => ['file', 'mimes:jpg,jpeg,png,pdf,zip', 'max:10240'],
         ];
@@ -25,8 +23,8 @@ class FileDisputeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'reason.required' => 'Alasan & kronologi pengajuan sengketa wajib diisi.',
-            'reason.max' => 'Alasan sengketa maksimal 2000 karakter.',
+            'response_note.required' => 'Tanggapan sengketa wajib diisi.',
+            'response_note.max' => 'Tanggapan maksimal 2000 karakter.',
             'evidence_files.max' => 'Maksimal 5 berkas bukti yang dapat dilampirkan.',
             'evidence_files.*.file' => 'Berkas bukti harus berupa file yang valid.',
             'evidence_files.*.mimes' => 'Format berkas bukti harus berupa JPG, PNG, PDF, atau ZIP.',

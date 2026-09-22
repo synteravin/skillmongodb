@@ -1,14 +1,16 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+import { Check, AlertTriangle } from 'lucide-react';
 
 interface QuestStepperProps {
     status: string;
 }
 
 export default function QuestStepper({ status }: QuestStepperProps) {
-    if (status === 'draft' || status === 'rejected') {
+    if (status === 'draft' || status === 'rejected' || status === 'cancelled') {
         return null;
     }
+
+    const isDisputed = status === 'disputed';
 
     const steps = [
         { key: 'open', label: 'Bidding' },
@@ -30,7 +32,22 @@ export default function QuestStepper({ status }: QuestStepperProps) {
     return (
         <div className="relative w-full overflow-hidden rounded-xl border border-slate-300 bg-white p-5 py-6 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
-            <div className="relative z-10 grid grid-cols-8 gap-0">
+            
+            {isDisputed && (
+                <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-xs text-red-700 dark:border-red-500/30 dark:bg-red-950/30 dark:text-red-400">
+                    <div className="flex items-center gap-2.5 font-medium">
+                        <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400 animate-pulse" />
+                        <span>
+                            <strong>PROGRES DIBEKUKAN SEMENTARA:</strong> Proyek sedang berada dalam penanganan sengketa aktif. Seluruh tahapan pengerjaan dan transaksi dihentikan hingga tercapai kesepakatan atau putusan arbitrase resmi.
+                        </span>
+                    </div>
+                    <span className="self-start sm:self-auto shrink-0 rounded bg-red-600 px-2.5 py-1 text-[10px] font-extrabold text-white uppercase tracking-wider shadow-xs">
+                        Dispute Frozen
+                    </span>
+                </div>
+            )}
+
+            <div className={`relative z-10 grid grid-cols-8 gap-0 ${isDisputed ? 'opacity-50 pointer-events-none filter grayscale-[40%]' : ''}`}>
                 {/* Stepper Line Container */}
                 <div className="absolute top-[14px] right-[6.25%] left-[6.25%] z-0 h-[2px] -translate-y-1/2 sm:top-[16px]">
                     {/* Background Line */}

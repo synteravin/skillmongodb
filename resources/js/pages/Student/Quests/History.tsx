@@ -445,7 +445,13 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                   : item.status ===
                                                                       'expired'
                                                                     ? 'border-red-500/40 bg-red-100 text-red-900 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400'
-                                                                    : 'border-slate-300 bg-slate-200/80 text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
+                                                                    : item.status ===
+                                                                        'disputed'
+                                                                      ? 'border-rose-500/40 bg-rose-100 text-rose-900 dark:border-slate-800 dark:bg-[#030712] dark:text-rose-400'
+                                                                      : item.status ===
+                                                                          'cancelled'
+                                                                        ? 'border-red-500/40 bg-red-100 text-red-900 dark:border-slate-800 dark:bg-[#030712] dark:text-red-400'
+                                                                        : 'border-slate-300 bg-slate-200/80 text-slate-800 dark:border-slate-800 dark:bg-[#030712] dark:text-slate-400'
                                                     }`}
                                                 >
                                                     {item.status === 'completed'
@@ -461,15 +467,21 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                               'delivered'
                                                             ? 'Verifikasi Berkas'
                                                             : item.status ===
-                                                              'submitted'
-                                                            ? 'Ditinjau'
-                                                            : item.status ===
-                                                                'ongoing'
-                                                              ? 'Pengerjaan'
+                                                                'submitted'
+                                                              ? 'Ditinjau'
                                                               : item.status ===
-                                                                  'expired'
-                                                                ? 'Kadaluarsa'
-                                                                : 'Bidding'}
+                                                                  'ongoing'
+                                                                ? 'Pengerjaan'
+                                                                : item.status ===
+                                                                    'expired'
+                                                                  ? 'Kadaluarsa'
+                                                                  : item.status ===
+                                                                      'disputed'
+                                                                    ? 'Sengketa'
+                                                                    : item.status ===
+                                                                        'cancelled'
+                                                                      ? 'Dibatalkan'
+                                                                      : 'Bidding'}
                                                 </span>
 
                                                 {/* Role Badge */}
@@ -963,7 +975,7 @@ export default function HistoryPage({ quests, stats, filters }: Props) {
                                                                         {item.status ===
                                                                         'completed'
                                                                             ? 'Tuntas / Cair'
-                                                                            : 'Ditahan (Escrow)'}
+                                                                            : 'Menunggu Pelunasan P2P'}
                                                                     </span>
                                                                 </div>
                                                             </div>

@@ -226,8 +226,10 @@ Route::middleware(['auth', 'role:admin,mentor'])
         Route::post('/quests/{quest}/approve-post', [App\Http\Controllers\Admin\QuestController::class, 'approvePublish'])->name('quests.approve-post');
         Route::post('/quests/{quest}/approve-publish', [App\Http\Controllers\Admin\QuestController::class, 'approvePublish'])->name('quests.approve-publish');
         Route::post('/quests/{quest}/reject-post', [App\Http\Controllers\Admin\QuestController::class, 'rejectPublish'])->name('quests.reject-post');
-        Route::post('/quests/{quest}/reject-publish', [App\Http\Controllers\Admin\QuestController::class, 'rejectPublish'])->name('quests.reject-publish');
         Route::post('/quests/{quest}/arbitrate', [App\Http\Controllers\Admin\QuestController::class, 'arbitrate'])->name('quests.arbitrate');
+        Route::post('/quests/{quest}/request-evidence', [App\Http\Controllers\Admin\QuestController::class, 'requestEvidence'])->name('quests.request-evidence');
+        Route::post('/quests/{quest}/extend-dispute-sla', [App\Http\Controllers\Admin\QuestController::class, 'extendDisputeSla'])->name('quests.extend-dispute-sla');
+        Route::post('/quests/{quest}/verify-p2p-compliance', [App\Http\Controllers\Admin\QuestController::class, 'verifyP2pCompliance'])->name('quests.verify-p2p-compliance');
         Route::post('/quests/{quest}/force-cancel', [App\Http\Controllers\Admin\QuestController::class, 'forceCancel'])->name('quests.force-cancel');
         Route::post('/quests/{quest}/extend-deadline', [App\Http\Controllers\Admin\QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
         Route::post('/quests/{quest}/reopen-bidding', [App\Http\Controllers\Admin\QuestController::class, 'reopenBidding'])->name('quests.reopen-bidding');
@@ -497,6 +499,13 @@ Route::middleware(['auth', 'role:student,admin', 'has.character'])
         Route::post('/quests/{quest}/approve', [QuestController::class, 'approveWork'])->name('quests.approve-work');
         Route::post('/quests/{quest}/reject', [QuestController::class, 'rejectWork'])->name('quests.reject-work');
         Route::post('/quests/{quest}/dispute', [QuestController::class, 'fileDispute'])->name('quests.dispute');
+        Route::post('/quests/{quest}/respond-dispute', [QuestController::class, 'respondDispute'])->name('quests.respond-dispute');
+        Route::post('/quests/{quest}/submit-evidence-request', [QuestController::class, 'submitEvidenceRequest'])->name('quests.submit-evidence-request');
+        Route::post('/quests/{quest}/upload-p2p-compliance-proof', [QuestController::class, 'uploadP2pComplianceProof'])->name('quests.upload-p2p-compliance-proof');
+        Route::post('/quests/{quest}/request-extension', [QuestController::class, 'requestExtension'])->name('quests.request-extension');
+        Route::post('/quests/{quest}/respond-extension', [QuestController::class, 'respondExtension'])->name('quests.respond-extension');
+        Route::post('/quests/{quest}/request-cancellation', [QuestController::class, 'requestCancellation'])->name('quests.request-cancellation');
+        Route::post('/quests/{quest}/respond-cancellation', [QuestController::class, 'respondCancellation'])->name('quests.respond-cancellation');
         Route::post('/quests/{quest}/extend-deadline', [QuestController::class, 'extendDeadline'])->name('quests.extend-deadline');
         Route::post('/quests/{quest}/upload-dp', [QuestController::class, 'uploadDownPaymentProof'])->name('quests.upload-dp');
         Route::post('/quests/{quest}/confirm-dp', [QuestController::class, 'confirmDownPayment'])->name('quests.confirm-dp');

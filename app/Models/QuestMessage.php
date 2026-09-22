@@ -14,6 +14,7 @@ class QuestMessage extends Model
     protected $fillable = [
         'quest_bid_id',
         'sender_id',
+        'channel_type',
         'message',
         'read_by',
         'file',
@@ -25,6 +26,7 @@ class QuestMessage extends Model
             '_id' => 'string',
             'quest_bid_id' => 'string',
             'sender_id' => 'string',
+            'channel_type' => 'string',
             'read_by' => 'array',
             'file' => 'array',
         ];

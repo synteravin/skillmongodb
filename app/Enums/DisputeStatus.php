@@ -14,9 +14,9 @@ enum DisputeStatus: string
     {
         return match ($this) {
             self::PENDING => 'Menunggu Arbitrase Admin',
-            self::RESOLVED_APPROVED => 'Disetujui (Pembayaran ke Pekerja)',
-            self::RESOLVED_REFUNDED => 'Pengembalian Dana ke Pembuat Quest',
-            self::RESOLVED_SPLIT => 'Pembagian Dana (Split Escrow)',
+            self::RESOLVED_APPROVED => 'Disetujui (Pelunasan Hak Pekerja)',
+            self::RESOLVED_REFUNDED => 'Pembatalan Kontrak & Restitusi ke Pembuat Quest',
+            self::RESOLVED_SPLIT => 'Kesepakatan Damai Pembagian Hak (Prorata P2P)',
             self::RESOLVED_CANCELLED => 'Dibatalkan',
         };
     }

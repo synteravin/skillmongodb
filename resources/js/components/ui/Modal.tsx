@@ -2,14 +2,16 @@ import { ReactNode, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 
 type Props = {
-    open: boolean
+    open?: boolean
+    isOpen?: boolean
     title: string
     onClose: () => void
     children: ReactNode
     maxWidth?: string
 }
 
-export default function Modal({ open, title, onClose, children, maxWidth = "max-w-lg" }: Props) {
+export default function Modal({ open, isOpen, title, onClose, children, maxWidth = "max-w-lg" }: Props) {
+    const isModalOpen = open ?? isOpen ?? false
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
@@ -17,7 +19,7 @@ export default function Modal({ open, title, onClose, children, maxWidth = "max-
         return () => setMounted(false)
     }, [])
 
-    if (!open || !mounted) return null
+    if (!isModalOpen || !mounted) return null
 
     return createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
