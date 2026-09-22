@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\CourseStudent;
 use App\Models\ForumMessage;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -427,5 +428,19 @@ class ForumTest extends TestCase
                 'linkedin',
                 'courses',
             ]);
+    }
+
+    public function test_student_cannot_upload_attachment_exceeding_2mb(): void
+    {
+        $this->actingAs($this->student);
+
+        $largeFile = UploadedFile::fake()->image('large_photo.jpg')->size(3072); // 3 MB
+
+        $response = $this->post("/forum/{$this->course->slug}/messages", [
+            'message' => 'Foto terlalu besar',
+            'attachment' => $largeFile,
+        ]);
+
+        $response->assertSessionHasErrors(['attachment']);
     }
 }

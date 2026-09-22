@@ -404,39 +404,39 @@ export default function Index({
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         onClick={handleCancelDesc}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-3 pt-[70px] backdrop-blur-xs sm:p-6 sm:pt-[90px] md:pt-[105px] [@media(orientation:landscape)_and_(max-height:520px)]:p-2 [@media(orientation:landscape)_and_(max-height:520px)]:pt-2"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-3 pt-[70px] bg-slate-900/40 backdrop-blur-xs sm:p-6 sm:pt-[90px] md:pt-[105px] dark:bg-black/80 [@media(orientation:landscape)_and_(max-height:520px)]:p-2 [@media(orientation:landscape)_and_(max-height:520px)]:pt-2"
                     >
                         {/* ================= CARD MODAL ================= */}
                         <motion.div
                             initial={{
-                                scale: 0.95,
+                                clipPath: 'inset(50% 0% 50% 0%)',
                                 opacity: 0,
                             }}
                             animate={{
-                                scale: 1,
+                                clipPath: 'inset(0% 0% 0% 0%)',
                                 opacity: 1,
                             }}
                             exit={{
-                                scale: 0.95,
+                                clipPath: 'inset(50% 0% 50% 0%)',
                                 opacity: 0,
                             }}
                             transition={{
-                                duration: 0.3,
-                                ease: [0.22, 1, 0.36, 1],
+                                duration: 0.45,
+                                ease: 'easeInOut',
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className="relative flex max-h-[calc(100vh-90px)] w-full max-w-[520px] flex-col overflow-hidden rounded-2xl border-2 border-[#3B82F6] bg-[#050822] text-white shadow-[0_0_50px_rgba(59,130,246,0.3)] sm:max-h-[calc(100vh-110px)] sm:max-w-[540px] md:max-h-[calc(100vh-130px)] md:max-w-[560px] lg:max-w-[600px] 2xl:max-w-[620px] [@media(orientation:landscape)_and_(max-height:520px)]:max-h-[92vh] [@media(orientation:landscape)_and_(max-height:520px)]:max-w-[480px]"
+                            className="relative flex max-h-[calc(100vh-90px)] w-full max-w-[520px] flex-col overflow-hidden rounded-2xl border-2 border-blue-400/80 bg-white text-slate-900 shadow-2xl shadow-blue-500/15 dark:border-[#3B82F6] dark:bg-[#050822] dark:text-white dark:shadow-[0_0_50px_rgba(59,130,246,0.3)] sm:max-h-[calc(100vh-110px)] sm:max-w-[540px] md:max-h-[calc(100vh-130px)] md:max-w-[560px] lg:max-w-[600px] 2xl:max-w-[620px] [@media(orientation:landscape)_and_(max-height:520px)]:max-h-[92vh] [@media(orientation:landscape)_and_(max-height:520px)]:max-w-[480px]"
                         >
                             {/* Close button */}
                             <button
                                 onClick={handleCancelDesc}
-                                className="absolute top-3 right-3 z-30 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-red-500/80 [@media(orientation:landscape)_and_(max-height:520px)]:top-2 [@media(orientation:landscape)_and_(max-height:520px)]:right-2 [@media(orientation:landscape)_and_(max-height:520px)]:h-7 [@media(orientation:landscape)_and_(max-height:520px)]:w-7"
+                                className="absolute top-3 right-3 z-30 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-md transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white dark:border-white/20 dark:bg-black/60 dark:text-white dark:hover:bg-red-500/80 [@media(orientation:landscape)_and_(max-height:520px)]:top-2 [@media(orientation:landscape)_and_(max-height:520px)]:right-2 [@media(orientation:landscape)_and_(max-height:520px)]:h-7 [@media(orientation:landscape)_and_(max-height:520px)]:w-7"
                             >
                                 <X className="h-4 w-4" />
                             </button>
 
                             {/* ================= THUMBNAIL ================= */}
-                            <div className="relative aspect-[16/9] max-h-[180px] w-full shrink-0 overflow-hidden bg-[#020517] sm:max-h-[220px] md:max-h-[250px] [@media(orientation:landscape)_and_(max-height:520px)]:aspect-none [@media(orientation:landscape)_and_(max-height:520px)]:h-[105px] [@media(orientation:landscape)_and_(max-height:520px)]:max-h-none">
+                            <div className="relative aspect-[16/9] max-h-[180px] w-full shrink-0 overflow-hidden border-b border-slate-200/80 bg-slate-100 dark:border-blue-900/30 dark:bg-[#020517] sm:max-h-[220px] md:max-h-[250px] [@media(orientation:landscape)_and_(max-height:520px)]:aspect-none [@media(orientation:landscape)_and_(max-height:520px)]:h-[105px] [@media(orientation:landscape)_and_(max-height:520px)]:max-h-none">
                                 <img
                                     src={selectedCourse.thumbnail}
                                     alt={selectedCourse.title}
@@ -451,12 +451,12 @@ export default function Index({
                             {/* ================= BODY ================= */}
                             <div className="flex flex-1 flex-col overflow-hidden p-4 sm:p-6 [@media(orientation:landscape)_and_(max-height:520px)]:p-3">
                                 {/* TITLE */}
-                                <h1 className="mb-2 shrink-0 text-xl font-bold tracking-tight text-white sm:text-2xl md:text-3xl [@media(orientation:landscape)_and_(max-height:520px)]:mb-1 [@media(orientation:landscape)_and_(max-height:520px)]:pr-6 [@media(orientation:landscape)_and_(max-height:520px)]:text-base">
+                                <h1 className="mb-2 shrink-0 text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl md:text-3xl [@media(orientation:landscape)_and_(max-height:520px)]:mb-1 [@media(orientation:landscape)_and_(max-height:520px)]:pr-6 [@media(orientation:landscape)_and_(max-height:520px)]:text-base">
                                     {selectedCourse.title}
                                 </h1>
 
                                 {/* DESKRIPSI */}
-                                <div className="mb-4 flex-1 min-h-0 overflow-y-auto text-xs leading-relaxed text-slate-300 pr-1 sm:mb-5 sm:text-sm md:text-base [scrollbar-color:rgba(59,130,246,0.4)_transparent] [scrollbar-width:thin] [@media(orientation:landscape)_and_(max-height:520px)]:mb-1.5 [@media(orientation:landscape)_and_(max-height:520px)]:text-xs">
+                                <div className="mb-4 flex-1 min-h-0 overflow-y-auto pr-1 text-xs leading-relaxed text-slate-700 dark:text-slate-300 sm:mb-5 sm:text-sm md:text-base [scrollbar-color:rgba(59,130,246,0.35)_transparent] dark:[scrollbar-color:rgba(59,130,246,0.4)_transparent] [scrollbar-width:thin] [@media(orientation:landscape)_and_(max-height:520px)]:mb-1.5 [@media(orientation:landscape)_and_(max-height:520px)]:text-xs">
                                     {selectedCourse.description}
                                 </div>
 
@@ -465,11 +465,11 @@ export default function Index({
                                     {/* BADGES CONTAINER */}
                                     <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:gap-1.5">
                                         {/* MODUL BADGE */}
-                                        <div className="flex items-center gap-2 rounded-xl border border-blue-500/40 bg-[#091034] px-3.5 py-2 text-xs font-semibold text-white shadow-sm sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1 [@media(orientation:landscape)_and_(max-height:520px)]:text-[11px]">
-                                            <BookOpen className="h-4 w-4 shrink-0 text-yellow-400 [@media(orientation:landscape)_and_(max-height:520px)]:h-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:w-3.5" />
+                                        <div className="flex items-center gap-2 rounded-xl border border-blue-200/90 bg-blue-50/90 px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-xs dark:border-blue-500/40 dark:bg-[#091034] dark:text-white sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1 [@media(orientation:landscape)_and_(max-height:520px)]:text-[11px]">
+                                            <BookOpen className="h-4 w-4 shrink-0 text-amber-500 dark:text-yellow-400 [@media(orientation:landscape)_and_(max-height:520px)]:h-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:w-3.5" />
                                             <span>
                                                 Module :{' '}
-                                                <span className="font-bold text-white">
+                                                <span className="font-bold text-slate-900 dark:text-white">
                                                     {selectedCourse.modules_count ??
                                                         0}
                                                 </span>
@@ -477,11 +477,11 @@ export default function Index({
                                         </div>
 
                                         {/* FORMAT BADGE */}
-                                        <div className="flex items-center gap-2 rounded-xl border border-blue-500/40 bg-[#091034] px-3.5 py-2 text-xs font-semibold text-white shadow-sm sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1 [@media(orientation:landscape)_and_(max-height:520px)]:text-[11px]">
-                                            <MonitorPlay className="h-4 w-4 shrink-0 text-yellow-400 [@media(orientation:landscape)_and_(max-height:520px)]:h-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:w-3.5" />
+                                        <div className="flex items-center gap-2 rounded-xl border border-blue-200/90 bg-blue-50/90 px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-xs dark:border-blue-500/40 dark:bg-[#091034] dark:text-white sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-2.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1 [@media(orientation:landscape)_and_(max-height:520px)]:text-[11px]">
+                                            <MonitorPlay className="h-4 w-4 shrink-0 text-amber-500 dark:text-yellow-400 [@media(orientation:landscape)_and_(max-height:520px)]:h-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:w-3.5" />
                                             <span>
                                                 Formats :{' '}
-                                                <span className="font-bold text-white">
+                                                <span className="font-bold text-slate-900 dark:text-white">
                                                     Video & Project
                                                 </span>
                                             </span>
@@ -491,7 +491,7 @@ export default function Index({
                                     {/* ================= BUTTON MULAI ================= */}
                                     <button
                                         onClick={handleLanjutKeConfirm}
-                                        className="flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#FACC15] px-6 py-2.5 text-xs font-bold text-[#020202] uppercase transition-all duration-200 hover:bg-yellow-300 hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] active:scale-[0.97] sm:text-sm [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1.5 [@media(orientation:landscape)_and_(max-height:520px)]:text-xs"
+                                        className="flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-yellow-400/80 bg-[#FACC15] px-6 py-2.5 text-xs font-bold text-slate-950 uppercase shadow-[0_4px_16px_rgba(250,204,21,0.35)] transition-all duration-200 hover:bg-yellow-400 hover:shadow-[0_6px_22px_rgba(250,204,21,0.5)] active:scale-[0.97] sm:text-sm dark:border-transparent dark:bg-[#FACC15] dark:text-[#020202] dark:hover:bg-yellow-300 dark:hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] [@media(orientation:landscape)_and_(max-height:520px)]:rounded-lg [@media(orientation:landscape)_and_(max-height:520px)]:px-3.5 [@media(orientation:landscape)_and_(max-height:520px)]:py-1.5 [@media(orientation:landscape)_and_(max-height:520px)]:text-xs"
                                     >
                                         Mulai →
                                     </button>

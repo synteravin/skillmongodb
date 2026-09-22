@@ -91,13 +91,18 @@ export default function MessageBubble({
     quickReactions,
     domRef,
 }: MessageBubbleProps) {
-    const isSelf = msg.sender.id === currentUserId;
-    const isSystem = msg.sender.role === 'system';
+    const senderRole = msg.sender?.role || 'student';
+    const senderId = msg.sender?.id || 'deleted';
+    const isSelf = Boolean(senderId && senderId === currentUserId);
+    const isSystem =
+        senderRole === 'system' &&
+        senderId === 'system' &&
+        Boolean(msg.message && msg.message.length < 80);
 
     if (isSystem) {
         return (
-            <div className="my-2 flex justify-center">
-                <span className="text-slate-650 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 font-['Oxanium'] text-[10px] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-500">
+            <div className="my-2 flex justify-center select-none">
+                <span className="text-slate-650 max-w-[85%] rounded-lg border border-slate-200 bg-slate-100 px-3.5 py-1 text-center font-['Oxanium'] text-[10px] leading-relaxed break-words whitespace-pre-wrap dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-500">
                     {msg.message}
                 </span>
             </div>
@@ -151,17 +156,17 @@ export default function MessageBubble({
             {!isSelf &&
                 (!isConsecutive ? (
                     <div
-                        onClick={() => handleShowProfile(msg.sender.id)}
+                        onClick={() => handleShowProfile(senderId)}
                         className={`shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-[#3B28F6] bg-slate-900 transition hover:scale-105 ${
                             isMentorOrAdmin
                                 ? 'h-8 w-8 md:h-8 md:w-8 lg:h-9 lg:w-9'
                                 : 'h-9 w-9 md:h-11 md:w-11'
                         }`}
                     >
-                        {msg.sender.avatar ? (
+                        {msg.sender?.avatar ? (
                             <img
                                 src={msg.sender.avatar}
-                                alt={msg.sender.name}
+                                alt={msg.sender.name || 'User'}
                                 className="h-full w-full object-cover"
                             />
                         ) : (
@@ -351,14 +356,14 @@ export default function MessageBubble({
                             <span
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleShowProfile(msg.sender.id);
+                                    handleShowProfile(senderId);
                                 }}
                                 className="cursor-pointer font-['Oxanium'] text-xs font-bold hover:underline"
                                 style={{
-                                    color: getNameColor(msg.sender.id),
+                                    color: getNameColor(senderId),
                                 }}
                             >
-                                {msg.sender.name}
+                                {msg.sender?.name || 'Pengguna Dihapus'}
                             </span>
                         </div>
                     )}

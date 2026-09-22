@@ -13,8 +13,11 @@ import {
     Sword,
     TriangleAlert,
     Layers,
+    Sun,
+    Moon,
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useAppearance } from '@/hooks/use-appearance';
 
 const getTypeTagClasses = (type: string) => {
     const normalized = type.toLowerCase().trim();
@@ -102,6 +105,13 @@ interface Props {
 }
 
 export default function SelectCharacter({ characters }: Props) {
+    const { resolvedAppearance, updateAppearance } = useAppearance();
+    const isDark = resolvedAppearance === 'dark';
+
+    const toggleTheme = () => {
+        updateAppearance(isDark ? 'light' : 'dark');
+    };
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [prevIndex, setPrevIndex] = useState(0);
     const [showModal, setShowModal] = useState(false);
@@ -203,6 +213,18 @@ Once confirmed, this cannot be changed or reset.`;
 
             {/* Main Background */}
             <div className="font-primary relative h-screen overflow-hidden bg-[#f3f4f6] dark:bg-[#020202] text-slate-900 dark:text-white selection:bg-indigo-500/30">
+                {/* Theme Toggle Button */}
+                <button
+                    onClick={toggleTheme}
+                    className="absolute top-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-white/10 backdrop-blur-md shadow-md transition-all duration-300 hover:scale-105 active:scale-95 text-slate-700 dark:text-yellow-400"
+                    title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                >
+                    {isDark ? (
+                        <Sun className="h-5 w-5 text-yellow-400" />
+                    ) : (
+                        <Moon className="h-5 w-5 text-slate-700" />
+                    )}
+                </button>
                 {/* Stars Background */}
                 <div
                     className="absolute inset-0 z-0 opacity-40 dark:opacity-70"
