@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAppearance } from '@/hooks/use-appearance';
+import { store as storeCharacter } from '@/routes/character';
 
 const getTypeTagClasses = (type: string) => {
     const normalized = type.toLowerCase().trim();
@@ -137,7 +138,7 @@ export default function SelectCharacter({ characters }: Props) {
         if (!selected) return;
         setProcessing(true);
         router.post(
-            '/select-character',
+            storeCharacter.url(),
             {
                 character_id: selected._id,
             },

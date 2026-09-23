@@ -29,21 +29,38 @@ class SocialController extends Controller
             ->stateless()
             ->user();
 
-        $user = User::where('email', $googleUser->getEmail())->first();
+        $user = User::where('email', Str::lower($googleUser->getEmail()))->first();
 
         if (! $user) {
+            $baseUsername = Str::slug($googleUser->getName() ?? '', '_');
+            if (empty($baseUsername)) {
+                $baseUsername = Str::slug(explode('@', $googleUser->getEmail())[0], '_');
+            }
+
+            $username = $baseUsername;
+            $counter = 1;
+            while (User::where('username', $username)->exists()) {
+                $username = "{$baseUsername}_{$counter}";
+                $counter++;
+            }
+
             $user = User::create([
                 'name' => $googleUser->getName(),
-                'username' => Str::slug($googleUser->getName()).rand(100, 999),
-                'email' => $googleUser->getEmail(),
-                'password' => bcrypt(Str::random(24)),
+                'username' => $username,
+                'email' => Str::lower($googleUser->getEmail()),
+                'password' => Str::random(32),
                 'role' => 'student',
+                'character_id' => null,
             ]);
             $user->email_verified_at = now();
             $user->save();
         }
 
         Auth::login($user);
+
+        if ($user->isStudent() && ! $user->hasCharacter()) {
+            return redirect()->route('character.select');
+        }
 
         return redirect($this->redirectByRole($user->role));
     }

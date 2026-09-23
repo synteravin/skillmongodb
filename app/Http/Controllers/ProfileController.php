@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Settings\PasswordUpdateRequest;
 use App\Models\Module;
 use App\Models\Rank;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -258,15 +259,10 @@ class ProfileController extends Controller
         return back()->with('success', 'Profile updated successfully.');
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(PasswordUpdateRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'current_password' => ['required', 'string', 'current_password'],
-            'password' => ['required', 'string', Password::default(), 'confirmed'],
-        ]);
-
         $request->user()->update([
-            'password' => $validated['password'],
+            'password' => $request->password,
         ]);
 
         return back()->with('success', 'Password updated successfully.');

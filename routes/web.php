@@ -541,7 +541,7 @@ Route::middleware(['auth'])
 |--------------------------------------------------------------------------
 */
 
-Route::controller(SelectCharacterController::class)->group(function () {
+Route::middleware(['auth', 'role:student'])->controller(SelectCharacterController::class)->group(function () {
     Route::get('/select-character', 'index')->name('character.select');
     Route::post('/select-character', 'store')->name('character.store');
 });
