@@ -1,6 +1,7 @@
 import { Form, Head } from '@inertiajs/react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -23,7 +24,7 @@ export default function Register() {
                 <div className="flex w-full items-center justify-center bg-gradient-to-b from-gray-100 via-white to-gray-200 px-4 py-10 sm:px-6 lg:w-1/2 dark:from-[#0f0f1a] dark:via-[#14002c] dark:to-black">
                     <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg sm:max-w-sm sm:rounded-3xl sm:p-8 lg:max-w-sm lg:p-10 dark:bg-[#0f0f1a]">
                         {/* Neon Border */}
-                        <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-yellow-400/70 sm:rounded-3xl dark:border-yellow-400" />
+                        <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-yellow-400 sm:rounded-3xl" />
 
                         <h2 className="mb-2 text-xl font-semibold text-gray-900 sm:text-2xl lg:text-3xl dark:text-white">
                             Create an Account
@@ -48,7 +49,10 @@ export default function Register() {
                                         <Input
                                             name="name"
                                             placeholder="Name"
-                                            className="border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
+                                            required
+                                            autoFocus
+                                            autoComplete="name"
+                                            className="border border-gray-300 bg-white text-black placeholder:text-gray-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
                                         />
                                         <InputError message={errors.name} />
                                     </div>
@@ -58,7 +62,9 @@ export default function Register() {
                                         <Input
                                             name="username"
                                             placeholder="Username"
-                                            className="border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
+                                            required
+                                            autoComplete="username"
+                                            className="border border-gray-300 bg-white text-black placeholder:text-gray-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
                                         />
                                         <InputError message={errors.username} />
                                     </div>
@@ -69,7 +75,9 @@ export default function Register() {
                                             name="email"
                                             type="email"
                                             placeholder="Email"
-                                            className="border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
+                                            required
+                                            autoComplete="email"
+                                            className="border border-gray-300 bg-white text-black placeholder:text-gray-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
                                         />
                                         <InputError message={errors.email} />
                                     </div>
@@ -83,14 +91,22 @@ export default function Register() {
                                                     ? 'text'
                                                     : 'password'
                                             }
-                                            placeholder="Password"
-                                            className="border border-gray-200 bg-gray-50 pr-10 text-gray-900 placeholder:text-gray-400 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
+                                            placeholder="Password (min. 8 characters)"
+                                            required
+                                            minLength={8}
+                                            autoComplete="new-password"
+                                            className="border border-gray-300 bg-white pr-10 text-black placeholder:text-gray-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
                                         />
 
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 setShowPassword(!showPassword)
+                                            }
+                                            aria-label={
+                                                showPassword
+                                                    ? 'Hide password'
+                                                    : 'Show password'
                                             }
                                             className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-black dark:text-slate-400 dark:hover:text-white"
                                         >
@@ -114,13 +130,21 @@ export default function Register() {
                                                     : 'password'
                                             }
                                             placeholder="Confirm Password"
-                                            className="border border-gray-200 bg-gray-50 pr-10 text-gray-900 placeholder:text-gray-400 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
+                                            required
+                                            minLength={8}
+                                            autoComplete="new-password"
+                                            className="border border-gray-300 bg-white pr-10 text-black placeholder:text-gray-500 dark:border-none dark:bg-[#1c1c2b] dark:text-white dark:placeholder:text-slate-400"
                                         />
 
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 setShowConfirm(!showConfirm)
+                                            }
+                                            aria-label={
+                                                showConfirm
+                                                    ? 'Hide confirm password'
+                                                    : 'Show confirm password'
                                             }
                                             className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-black dark:text-slate-400 dark:hover:text-white"
                                         >
@@ -142,11 +166,34 @@ export default function Register() {
                                     <Button
                                         type="submit"
                                         disabled={processing}
-                                        className="w-full bg-indigo-600 text-white hover:bg-indigo-700"
+                                        className="w-full bg-[#3B28F6] text-white hover:opacity-90"
                                     >
                                         {processing && <Spinner />}
                                         Create account
                                     </Button>
+
+                                    {/* GOOGLE SIGN UP */}
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 text-gray-600 dark:text-slate-400">
+                                            <div className="h-px flex-1 bg-gray-300 dark:bg-slate-600" />
+                                            <span className="text-xs sm:text-sm">
+                                                Or sign up with
+                                            </span>
+                                            <div className="h-px flex-1 bg-gray-300 dark:bg-slate-600" />
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                (window.location.href =
+                                                    '/auth/google')
+                                            }
+                                            className="flex w-full items-center justify-center gap-3 rounded-xl border-2 border-indigo-500 py-3 text-gray-800 transition-all duration-300 hover:scale-[1.02] hover:bg-indigo-500/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.7)] active:scale-[0.98] dark:text-white"
+                                        >
+                                            <FcGoogle size={20} />
+                                            Sign up with Google
+                                        </button>
+                                    </div>
 
                                     {/* LOGIN LINK */}
                                     <TextLink
