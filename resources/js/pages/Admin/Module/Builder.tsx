@@ -7,6 +7,7 @@ import {
     Trash2,
     GripVertical,
     Type,
+    Code2,
     Image as ImageIcon,
     Video,
     FileText,
@@ -19,6 +20,8 @@ import {
 } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import RenderTextContent from '@/components/Module/RenderTextContent';
+import RichEditor from '@/components/Module/RichEditor';
 
 import {
     DndContext,
@@ -38,7 +41,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 /* ================= TYPES ================= */
-type ContentType = 'text' | 'image' | 'video' | 'file' | 'youtube';
+/* ================= TYPES ================= */
+type ContentType = 'text' | 'code' | 'image' | 'video' | 'file' | 'youtube';
 
 type ModuleContent = {
     _id?: any;
@@ -48,6 +52,8 @@ type ModuleContent = {
     content: {
         title?: string;
         description?: string;
+        code?: string;
+        language?: string;
         url?: string;
     };
 };
@@ -97,6 +103,7 @@ const getYoutubeEmbed = (url: string) => {
 /* ================= ICONS & COLORS ================= */
 const typeIcons = {
     text: <Type size={14} className="text-blue-500 dark:text-blue-400" />,
+    code: <Code2 size={14} className="text-cyan-500 dark:text-cyan-400" />,
     image: (
         <ImageIcon
             size={14}
@@ -110,6 +117,7 @@ const typeIcons = {
 
 const typeColors = {
     text: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50',
+    code: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-900/50',
     image: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50',
     video: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-900/50',
     file: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/50',
@@ -138,6 +146,12 @@ const SortableContent = ({
     const [localDesc, setLocalDesc] = useState(
         content.content?.description || '',
     );
+    const [localCode, setLocalCode] = useState(
+        content.content?.code || content.content?.description || '',
+    );
+    const [localLang, setLocalLang] = useState(
+        content.content?.language || 'html',
+    );
     const [localUrl, setLocalUrl] = useState(content.content?.url || '');
     const [localFile, setLocalFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -147,6 +161,8 @@ const SortableContent = ({
         if (isEditing) {
             setLocalTitle(content.content?.title || '');
             setLocalDesc(content.content?.description || '');
+            setLocalCode(content.content?.code || content.content?.description || '');
+            setLocalLang(content.content?.language || 'html');
             setLocalUrl(content.content?.url || '');
             setLocalFile(null);
         }
@@ -164,7 +180,7 @@ const SortableContent = ({
         <div
             ref={setNodeRef}
             style={style}
-            className={`group flex gap-3 rounded-xl border bg-white p-3 backdrop-blur-sm transition-all duration-200 sm:p-4 dark:bg-[#060B1A]/80 ${isEditing ? 'border-[#3B28F6] shadow-lg shadow-[#3B28F6]/5 dark:border-[#7C5CFF]' : 'hover:border-slate-350 border-slate-200 hover:bg-slate-50 dark:border-slate-800/80 dark:hover:border-slate-700 dark:hover:bg-slate-800/30'}`}
+            className={`group flex gap-3 rounded-xl border bg-white p-3 backdrop-blur-sm transition-all duration-200 sm:p-4 dark:bg-[#060B1A]/80 ${isEditing ? 'border-[#3B28F6] shadow-lg shadow-[#3B28F6]/5 dark:border-[#7C5CFF]' : 'hover:border-slate-300 border-slate-200 hover:bg-slate-50 dark:border-slate-800/80 dark:hover:border-slate-700 dark:hover:bg-slate-800/30'}`}
         >
             {/* DRAG */}
             <div
@@ -196,18 +212,64 @@ const SortableContent = ({
 
                             {content.type === 'text' && (
                                 <div>
-                                    <label className="mb-1.5 ml-1 block text-xs font-bold tracking-[0.15em] text-slate-400 uppercase dark:text-slate-500">
-                                        Description / Text Content
-                                    </label>
-                                    <textarea
+                                    <div className="mb-1.5 flex items-center justify-between">
+                                        <label className="ml-1 block text-xs font-bold tracking-[0.15em] text-slate-400 uppercase dark:text-slate-500">
+                                            Materi Teks (Rich Text Toolbar)
+                                        </label>
+                                    </div>
+                                    <RichEditor
                                         value={localDesc}
-                                        onChange={(e) =>
-                                            setLocalDesc(e.target.value)
-                                        }
-                                        placeholder="Write your content here..."
-                                        className="min-h-[120px] w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-900 transition-all outline-none placeholder:text-slate-400 focus:border-[#3B28F6] focus:ring-1 focus:ring-[#3B28F6] dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-[#7C5CFF] dark:focus:ring-[#7C5CFF]"
-                                        rows={4}
+                                        onChange={setLocalDesc}
+                                        placeholder="Tuliskan materi teks di sini..."
+                                        minHeight="180px"
                                     />
+                                </div>
+                            )}
+
+                            {content.type === 'code' && (
+                                <div className="space-y-3">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <label className="ml-1 block text-xs font-bold tracking-[0.15em] text-slate-400 uppercase dark:text-slate-500">
+                                            Code Block / Code Editor
+                                        </label>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Language:</span>
+                                            <select
+                                                value={localLang}
+                                                onChange={(e) => setLocalLang(e.target.value)}
+                                                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 outline-none hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                            >
+                                                <option value="html">HTML</option>
+                                                <option value="css">CSS</option>
+                                                <option value="javascript">JavaScript (JS / TS)</option>
+                                                <option value="php">PHP</option>
+                                                <option value="sql">SQL / Query</option>
+                                                <option value="terminal">Command / Terminal (Bash)</option>
+                                                <option value="json">JSON</option>
+                                                <option value="python">Python</option>
+                                                <option value="cpp">C / C++</option>
+                                                <option value="java">Java</option>
+                                                <option value="rust">Rust</option>
+                                                <option value="go">Go</option>
+                                                <option value="markdown">Markdown</option>
+                                                <option value="text">Plain Text</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <textarea
+                                        value={localCode}
+                                        onChange={(e) => {
+                                            setLocalCode(e.target.value);
+                                            setLocalDesc(e.target.value);
+                                        }}
+                                        placeholder="Paste atau tuliskan kode/syntax teknis di sini..."
+                                        className="min-h-[180px] w-full resize-y rounded-xl border border-slate-800 bg-[#060a12] p-4 font-mono text-xs leading-relaxed text-sky-300 transition-all outline-none placeholder:text-slate-600 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 sm:text-sm"
+                                        rows={7}
+                                    />
+                                    <p className="mt-1 ml-1 text-[11px] text-slate-500 dark:text-slate-400">
+                                        💡 Kode akan ditampilkan dalam window IDE khusus lengkap dengan tombol copy & syntax highlighting.
+                                    </p>
                                 </div>
                             )}
 
@@ -361,6 +423,8 @@ const SortableContent = ({
                                                 {
                                                     title: localTitle,
                                                     description: localDesc,
+                                                    code: localCode,
+                                                    language: localLang,
                                                     url: localUrl,
                                                     file: localFile,
                                                 },
@@ -373,6 +437,8 @@ const SortableContent = ({
                                                     ...content.content,
                                                     title: localTitle,
                                                     description: localDesc,
+                                                    code: localCode,
+                                                    language: localLang,
                                                     url: localUrl,
                                                 },
                                             };
@@ -387,6 +453,18 @@ const SortableContent = ({
                                                 id,
                                                 'description',
                                                 localDesc,
+                                            );
+                                            updateContentLocal(
+                                                moduleId,
+                                                id,
+                                                'code',
+                                                localCode,
+                                            );
+                                            updateContentLocal(
+                                                moduleId,
+                                                id,
+                                                'language',
+                                                localLang,
                                             );
                                             updateContentLocal(
                                                 moduleId,
@@ -438,17 +516,28 @@ const SortableContent = ({
                         </div>
 
                         {/* PREVIEW WRAPPER */}
-                        <div className="mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50 shadow-inner sm:mt-3 dark:border-slate-800/80 dark:bg-slate-950/40">
+                        <div className="mt-2 w-full overflow-hidden rounded-xl border border-slate-200/80 bg-slate-50/80 shadow-xs sm:mt-3 dark:border-slate-800/80 dark:bg-[#070b16]">
                             {/* TEXT PREVIEW */}
                             {content.type === 'text' &&
                                 content.content?.description && (
-                                    <div className="w-full overflow-hidden p-4 sm:p-5">
-                                        <p
-                                            className="dark:text-slate-350 text-sm break-words whitespace-pre-wrap text-slate-700 sm:text-base"
-                                            style={{ wordBreak: 'break-word' }}
-                                        >
-                                            {content.content.description}
-                                        </p>
+                                    <div className="relative w-full border-l-4 border-l-[#3B28F6] p-4.5 sm:p-5 dark:border-l-[#7C5CFF]">
+                                        <RenderTextContent
+                                            description={
+                                                content.content.description
+                                            }
+                                        />
+                                    </div>
+                                )}
+
+                            {/* CODE PREVIEW */}
+                            {content.type === 'code' &&
+                                (content.content?.code || content.content?.description) && (
+                                    <div className="w-full p-2 sm:p-3">
+                                        <RenderTextContent
+                                            type="code"
+                                            code={content.content?.code || content.content?.description}
+                                            language={content.content?.language || 'html'}
+                                        />
                                     </div>
                                 )}
 
@@ -561,6 +650,157 @@ const SortableContent = ({
                     </div>
                 )}
             </div>
+        </div>
+    );
+};
+
+/* ================= SORTABLE MODULE CARD ================= */
+const SortableModuleCard = ({
+    module,
+    isOpen,
+    setOpenModule,
+    deleteModule,
+    sensors,
+    getId,
+    handleDragEnd,
+    SortableContent,
+    editingId,
+    setEditingId,
+    updateContentLocal,
+    saveContent,
+    deleteContent,
+    cancelDraft,
+    submitDraft,
+    renderAddButtons,
+}: any) => {
+    const moduleId = getId(module);
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+        useSortable({ id: moduleId });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.6 : 1,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 dark:border-white/8 dark:bg-[#060B1A]/80 ${isDragging ? 'z-50 shadow-2xl ring-2 ring-[#3B28F6] dark:ring-[#7C5CFF]' : ''}`}
+        >
+            {/* Top accent line */}
+            <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
+
+            <div
+                onClick={() => setOpenModule(isOpen ? null : moduleId)}
+                className={`flex cursor-pointer items-center justify-between p-5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/20 ${isOpen ? 'border-b border-slate-100 bg-slate-50/50 dark:border-white/5 dark:bg-slate-800/10' : ''}`}
+            >
+                <div className="flex items-center gap-3 sm:gap-4">
+                    {/* DRAG HANDLE FOR MODULE */}
+                    <div
+                        {...listeners}
+                        {...attributes}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex cursor-grab touch-none items-center p-1 text-slate-400 transition-colors hover:text-[#3B28F6] active:cursor-grabbing dark:hover:text-[#7C5CFF]"
+                        title="Geser untuk mengubah urutan modul"
+                    >
+                        <GripVertical size={20} />
+                    </div>
+
+                    <div
+                        className={`rounded-lg p-2 transition-colors ${isOpen ? 'bg-[#3B28F6]/10 text-[#3B28F6] dark:bg-[#7C5CFF]/15 dark:text-[#7C5CFF]' : 'border border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'}`}
+                    >
+                        <Layers size={20} />
+                    </div>
+                    <h2 className="text-base font-bold text-slate-800 sm:text-lg dark:text-white">
+                        {module.title}
+                    </h2>
+                    <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+                        {module.contents.length} items
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            deleteModule(module);
+                        }}
+                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10"
+                        title="Delete Module"
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                    <div
+                        className={`rounded-full p-2 transition-all duration-300 ${isOpen ? 'rotate-180 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+                    >
+                        <ChevronDown size={20} />
+                    </div>
+                </div>
+            </div>
+
+            {isOpen && (
+                <div className="flex flex-col gap-5 bg-slate-50/10 p-5 dark:bg-slate-950/20">
+                    <div className="space-y-4">
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={(e) => handleDragEnd(e, module)}
+                        >
+                            <SortableContext
+                                items={module.contents.map((c: any) => getId(c))}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                <div className="flex flex-col gap-4">
+                                    {module.contents.map((c: any) => (
+                                        <SortableContent
+                                            key={getId(c)}
+                                            content={c}
+                                            moduleId={moduleId}
+                                            editingId={editingId}
+                                            setEditingId={setEditingId}
+                                            updateContentLocal={updateContentLocal}
+                                            saveContent={saveContent}
+                                            deleteContent={deleteContent}
+                                            cancelDraft={cancelDraft}
+                                            submitDraft={submitDraft}
+                                        />
+                                    ))}
+                                </div>
+                            </SortableContext>
+                        </DndContext>
+
+                        {module.contents.length === 0 && (
+                            <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/30 p-8 text-center sm:p-12 dark:border-slate-800/60 dark:bg-slate-900/10">
+                                <Layers
+                                    size={40}
+                                    className="mb-4 text-slate-400 opacity-50 dark:text-slate-600"
+                                />
+                                <p className="mb-1 font-semibold text-slate-700 dark:text-slate-300">
+                                    No content in this module yet.
+                                </p>
+                                <p className="mb-8 text-xs text-slate-500 dark:text-slate-500">
+                                    Add your first content block to get started.
+                                </p>
+
+                                <div className="w-full max-w-3xl">
+                                    {renderAddButtons(moduleId, module, true)}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {module.contents.length > 0 && (
+                        <div className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-5 dark:border-slate-800/80">
+                            <span className="text-slate-455 pl-1 text-xs font-bold tracking-wider uppercase dark:text-slate-500">
+                                Add Content Block
+                            </span>
+                            {renderAddButtons(moduleId, module, false)}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
@@ -741,6 +981,8 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                 type,
                 title: data.title,
                 description: data.description,
+                code: data.code,
+                language: data.language,
                 url: data.url,
             },
             {
@@ -769,37 +1011,42 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                 {[
                     {
                         type: 'text',
+                        label: 'Teks',
                         icon: Type,
                         color: 'hover:border-blue-500/50 hover:text-blue-400 hover:bg-blue-500/10 border-slate-700/80 bg-slate-900/80',
                     },
                     {
                         type: 'image',
+                        label: 'Gambar',
                         icon: ImageIcon,
                         color: 'hover:border-emerald-500/50 hover:text-emerald-400 hover:bg-emerald-500/10 border-slate-700/80 bg-slate-900/80',
                     },
                     {
                         type: 'video',
+                        label: 'Video',
                         icon: Video,
                         color: 'hover:border-purple-500/50 hover:text-purple-400 hover:bg-purple-500/10 border-slate-700/80 bg-slate-900/80',
                     },
                     {
                         type: 'file',
+                        label: 'Berkas',
                         icon: FileText,
                         color: 'hover:border-amber-500/50 hover:text-amber-400 hover:bg-amber-500/10 border-slate-700/80 bg-slate-900/80',
                     },
                     {
                         type: 'youtube',
+                        label: 'YouTube',
                         icon: Youtube,
                         color: 'hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 border-slate-700/80 bg-slate-900/80',
                     },
-                ].map(({ type, icon: Icon, color }) => (
+                ].map(({ type, label, icon: Icon, color }) => (
                     <button
                         key={type}
                         onClick={() => addContent(module, type as ContentType)}
                         className={`flex min-w-[100px] flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium text-slate-300 transition-all duration-200 ${color} shadow-sm`}
                     >
                         <Icon size={16} className="opacity-80" />
-                        <span className="capitalize">{type}</span>
+                        <span>{label || type}</span>
                     </button>
                 ))}
             </div>
@@ -974,6 +1221,32 @@ export default function ModuleBuilder({ path }: { path: Path }) {
         });
     };
 
+    const handleModuleDragEnd = (event: any) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = modules.findIndex((m) => getId(m) === active.id);
+        const newIndex = modules.findIndex((m) => getId(m) === over.id);
+
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const newModules = arrayMove(modules, oldIndex, newIndex);
+        setModules(newModules);
+
+        router.put(
+            '/admin/modules/reorder',
+            {
+                modules: newModules.map((m, i) => ({
+                    id: getId(m),
+                    order: i + 1,
+                })),
+            },
+            {
+                preserveScroll: true,
+            },
+        );
+    };
+
     return (
         <AppLayout>
             <div
@@ -1033,7 +1306,7 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                                         Path:
                                     </span>
-                                    <span className="dark:text-slate-350 rounded border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                                    <span className="rounded border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
                                         {path.name}
                                     </span>
                                 </div>
@@ -1116,183 +1389,56 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                     </div>
 
                     {/* MODULES LIST */}
-                    <div className="space-y-4">
-                        {modules.map((module) => {
-                            const moduleId = getId(module);
-                            const isOpen = openModule === moduleId;
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleModuleDragEnd}
+                    >
+                        <SortableContext
+                            items={modules.map((m) => getId(m))}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            <div className="space-y-4">
+                                {modules.map((module) => (
+                                    <SortableModuleCard
+                                        key={getId(module)}
+                                        module={module}
+                                        isOpen={openModule === getId(module)}
+                                        setOpenModule={setOpenModule}
+                                        deleteModule={deleteModule}
+                                        sensors={sensors}
+                                        getId={getId}
+                                        handleDragEnd={handleDragEnd}
+                                        SortableContent={SortableContent}
+                                        editingId={editingId}
+                                        setEditingId={setEditingId}
+                                        updateContentLocal={updateContentLocal}
+                                        saveContent={saveContent}
+                                        deleteContent={deleteContent}
+                                        cancelDraft={cancelDraft}
+                                        submitDraft={submitDraft}
+                                        renderAddButtons={renderAddButtons}
+                                    />
+                                ))}
 
-                            return (
-                                <div
-                                    key={moduleId}
-                                    className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 dark:border-white/8 dark:bg-[#060B1A]/80"
-                                >
-                                    {/* Top accent line */}
-                                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
-
-                                    <div
-                                        onClick={() =>
-                                            setOpenModule(
-                                                isOpen ? null : moduleId,
-                                            )
-                                        }
-                                        className={`flex cursor-pointer items-center justify-between p-5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/20 ${isOpen ? 'border-b border-slate-100 bg-slate-50/50 dark:border-white/5 dark:bg-slate-800/10' : ''}`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div
-                                                className={`rounded-lg p-2 transition-colors ${isOpen ? 'bg-[#3B28F6]/10 text-[#3B28F6] dark:bg-[#7C5CFF]/15 dark:text-[#7C5CFF]' : 'border border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'}`}
-                                            >
-                                                <Layers size={20} />
-                                            </div>
-                                            <h2 className="text-lg font-bold text-slate-800 dark:text-white">
-                                                {module.title}
-                                            </h2>
-                                            <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-                                                {module.contents.length} items
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    deleteModule(module);
-                                                }}
-                                                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10"
-                                                title="Delete Module"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                            <div
-                                                className={`rounded-full p-2 transition-all duration-300 ${isOpen ? 'rotate-180 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
-                                            >
-                                                <ChevronDown size={20} />
-                                            </div>
-                                        </div>
+                                {modules.length === 0 && (
+                                    <div className="rounded-xl border-2 border-dashed border-slate-200 bg-white py-20 text-center shadow-sm dark:border-slate-800/60 dark:bg-[#060B1A]/80">
+                                        <Layers
+                                            className="mx-auto mb-4 text-slate-400 dark:text-slate-600"
+                                            size={48}
+                                        />
+                                        <h3 className="mb-1 text-lg font-semibold text-slate-700 dark:text-white">
+                                            No Modules Created
+                                        </h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                                            Start building your learning path by
+                                            creating a module above.
+                                        </p>
                                     </div>
-
-                                    {isOpen && (
-                                        <div className="flex flex-col gap-5 bg-slate-50/10 p-5 dark:bg-slate-950/20">
-                                            <div className="space-y-4">
-                                                <DndContext
-                                                    sensors={sensors}
-                                                    collisionDetection={
-                                                        closestCenter
-                                                    }
-                                                    onDragEnd={(e) =>
-                                                        handleDragEnd(e, module)
-                                                    }
-                                                >
-                                                    <SortableContext
-                                                        items={module.contents.map(
-                                                            (c) => getId(c),
-                                                        )}
-                                                        strategy={
-                                                            verticalListSortingStrategy
-                                                        }
-                                                    >
-                                                        <div className="flex flex-col gap-4">
-                                                            {module.contents.map(
-                                                                (c) => (
-                                                                    <SortableContent
-                                                                        key={getId(
-                                                                            c,
-                                                                        )}
-                                                                        content={
-                                                                            c
-                                                                        }
-                                                                        moduleId={
-                                                                            moduleId
-                                                                        }
-                                                                        editingId={
-                                                                            editingId
-                                                                        }
-                                                                        setEditingId={
-                                                                            setEditingId
-                                                                        }
-                                                                        updateContentLocal={
-                                                                            updateContentLocal
-                                                                        }
-                                                                        saveContent={
-                                                                            saveContent
-                                                                        }
-                                                                        deleteContent={
-                                                                            deleteContent
-                                                                        }
-                                                                        cancelDraft={
-                                                                            cancelDraft
-                                                                        }
-                                                                        submitDraft={
-                                                                            submitDraft
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            )}
-                                                        </div>
-                                                    </SortableContext>
-                                                </DndContext>
-
-                                                {module.contents.length ===
-                                                    0 && (
-                                                    <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/30 p-8 text-center sm:p-12 dark:border-slate-800/60 dark:bg-slate-900/10">
-                                                        <Layers
-                                                            size={40}
-                                                            className="mb-4 text-slate-400 opacity-50 dark:text-slate-600"
-                                                        />
-                                                        <p className="mb-1 font-semibold text-slate-700 dark:text-slate-300">
-                                                            No content in this
-                                                            module yet.
-                                                        </p>
-                                                        <p className="mb-8 text-xs text-slate-500 dark:text-slate-500">
-                                                            Add your first
-                                                            content block to get
-                                                            started.
-                                                        </p>
-
-                                                        <div className="w-full max-w-3xl">
-                                                            {renderAddButtons(
-                                                                moduleId,
-                                                                module,
-                                                                true,
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {module.contents.length > 0 && (
-                                                <div className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-5 dark:border-slate-800/80">
-                                                    <span className="text-slate-455 pl-1 text-xs font-bold tracking-wider uppercase dark:text-slate-500">
-                                                        Add Content Block
-                                                    </span>
-                                                    {renderAddButtons(
-                                                        moduleId,
-                                                        module,
-                                                        false,
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-
-                        {modules.length === 0 && (
-                            <div className="rounded-xl border-2 border-dashed border-slate-200 bg-white py-20 text-center shadow-sm dark:border-slate-800/60 dark:bg-[#060B1A]/80">
-                                <Layers
-                                    className="mx-auto mb-4 text-slate-400 dark:text-slate-600"
-                                    size={48}
-                                />
-                                <h3 className="mb-1 text-lg font-semibold text-slate-700 dark:text-white">
-                                    No Modules Created
-                                </h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">
-                                    Start building your learning path by
-                                    creating a module above.
-                                </p>
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </SortableContext>
+                    </DndContext>
                 </div>
             </div>
             <ConfirmModal

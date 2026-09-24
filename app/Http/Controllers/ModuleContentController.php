@@ -36,6 +36,8 @@ class ModuleContentController extends Controller
         $updatedData = array_merge($existingContent, array_filter([
             'title' => $request->title,
             'description' => $request->description,
+            'code' => $request->code,
+            'language' => $request->language,
             'url' => $request->url, // Will overwrite only if sent
         ], fn ($val) => ! is_null($val)));
 

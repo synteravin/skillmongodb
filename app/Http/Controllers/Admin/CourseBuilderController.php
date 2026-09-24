@@ -224,6 +224,21 @@ class CourseBuilderController extends Controller
         return back()->with('success', 'Paths reordered');
     }
 
+    public function reorderModules(Request $request)
+    {
+        $data = $request->validate([
+            'modules' => ['required', 'array'],
+            'modules.*.id' => ['required', 'string'],
+            'modules.*.order' => ['required', 'integer'],
+        ]);
+
+        foreach ($data['modules'] as $m) {
+            Module::where('_id', $m['id'])->update(['order' => (int) $m['order']]);
+        }
+
+        return back()->with('success', 'Modules reordered');
+    }
+
     public function updateCareerGroup(Request $request, CareerGroup $group)
     {
         $data = $request->validate([

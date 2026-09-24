@@ -65,6 +65,18 @@ class ModuleContentService
             ];
         }
 
+        // ================= CODE =================
+        if ($type === 'code') {
+            $codeStr = $item['code'] ?? $description ?? '';
+
+            return [
+                'title' => $title,
+                'description' => $codeStr,
+                'code' => $codeStr,
+                'language' => $item['language'] ?? 'html',
+            ];
+        }
+
         // ================= YOUTUBE =================
         if ($type === 'youtube') {
             return [

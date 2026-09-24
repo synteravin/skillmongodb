@@ -22,6 +22,8 @@ type Course = {
     modules_count?: number;
 };
 
+
+
 export default function Index({
     courses,
     character,
