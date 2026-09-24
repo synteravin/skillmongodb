@@ -16,7 +16,7 @@ import RenderTextContent from '@/components/Module/RenderTextContent';
 /* ================= TYPES ================= */
 type Content = {
     _id: string;
-    type: 'text' | 'youtube' | 'image' | 'video' | 'file' | string;
+    type: 'text' | 'youtube' | 'image' | 'file' | string;
     content: any;
 };
 
@@ -657,28 +657,6 @@ export default function LearnShow({
                                 {/* ── IMAGE ── */}
                                 {item.type === 'image' && (
                                     <ImageContent item={item} />
-                                )}
-
-                                {/* ── VIDEO ── */}
-                                {item.type === 'video' && (
-                                    <div className="mb-5 overflow-hidden rounded-xl border border-blue-200 shadow-md dark:border-blue-500/20 dark:shadow-lg dark:shadow-black/50">
-                                        <div className="flex items-center gap-2 border-b border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-500/20 dark:bg-blue-500/10">
-                                            <span className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400 dark:shadow-[0_0_8px_#4ade80]" />
-                                            <span className="text-[10px] font-semibold tracking-widest text-blue-500 uppercase dark:text-gray-400">
-                                                Video
-                                            </span>
-                                        </div>
-                                        <div className="aspect-video w-full">
-                                            <video
-                                                controls
-                                                className="block h-full w-full bg-[#f8faff] dark:bg-black"
-                                            >
-                                                <source
-                                                    src={item.content.url}
-                                                />
-                                            </video>
-                                        </div>
-                                    </div>
                                 )}
 
                                 {/* ── FILE ── */}

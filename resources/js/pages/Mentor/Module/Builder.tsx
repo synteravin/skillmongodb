@@ -9,7 +9,6 @@ import {
     Type,
     Code2,
     Image as ImageIcon,
-    Video,
     FileText,
     Youtube,
     X,
@@ -41,7 +40,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 /* ================= TYPES ================= */
-type ContentType = 'text' | 'code' | 'image' | 'video' | 'file' | 'youtube';
+type ContentType = 'text' | 'code' | 'image' | 'file' | 'youtube';
 
 type ModuleContent = {
     _id?: any;
@@ -112,7 +111,6 @@ const typeIcons = {
     text: <Type size={14} className="text-blue-400" />,
     code: <Code2 size={14} className="text-cyan-400" />,
     image: <ImageIcon size={14} className="text-emerald-400" />,
-    video: <Video size={14} className="text-purple-400" />,
     file: <FileText size={14} className="text-amber-400" />,
     youtube: <Youtube size={14} className="text-red-500" />,
 };
@@ -121,7 +119,6 @@ const typeColors = {
     text: 'bg-blue-50/80 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20',
     code: 'bg-cyan-50/80 text-cyan-600 border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-400 dark:border-cyan-500/20',
     image: 'bg-emerald-50/80 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20',
-    video: 'bg-purple-50/80 text-purple-600 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20',
     file: 'bg-amber-50/80 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20',
     youtube:
         'bg-red-50/80 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20',
@@ -300,15 +297,12 @@ const SortableContent = ({
                             )}
 
                             {(content.type === 'image' ||
-                                content.type === 'video' ||
                                 content.type === 'file') && (
                                 <div>
                                     <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
                                         {content.type === 'image'
                                             ? 'Upload Image File'
-                                            : content.type === 'video'
-                                              ? 'Upload Video File'
-                                              : 'Upload Attachment File'}
+                                            : 'Upload Attachment File'}
                                     </label>
                                     <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-indigo-500/50 dark:border-slate-800 dark:bg-slate-950/50 dark:hover:border-indigo-500/50">
                                         <input
@@ -316,9 +310,7 @@ const SortableContent = ({
                                             accept={
                                                 content.type === 'image'
                                                     ? 'image/*'
-                                                    : content.type === 'video'
-                                                      ? 'video/*'
-                                                      : '*/*'
+                                                    : '*/*'
                                             }
                                             onChange={(e) => {
                                                 const f = e.target.files?.[0];
@@ -368,10 +360,7 @@ const SortableContent = ({
                                                 <p className="text-[10px] text-slate-400">
                                                     {content.type === 'image'
                                                         ? 'PNG, JPG, WEBP up to 20MB'
-                                                        : content.type ===
-                                                            'video'
-                                                          ? 'MP4, WEBM up to 50MB'
-                                                          : 'PDF, ZIP, DOCX files'}
+                                                        : 'PDF, ZIP, DOCX files'}
                                                 </p>
                                             </div>
                                         )}
@@ -556,18 +545,6 @@ const SortableContent = ({
                                             }
                                         />
                                         <div className="pointer-events-none absolute inset-0 bg-slate-900/0 transition-colors group-hover/img:bg-slate-900/10"></div>
-                                    </div>
-                                )}
-
-                            {/* VIDEO PREVIEW */}
-                            {content.type === 'video' &&
-                                content.content?.url && (
-                                    <div className="flex justify-center bg-black/80 p-2 sm:p-4">
-                                        <video
-                                            src={content.content.url}
-                                            controls
-                                            className="h-auto max-h-[300px] w-auto max-w-full rounded-lg shadow-lg outline-none sm:max-h-[400px]"
-                                        />
                                     </div>
                                 )}
 
@@ -947,12 +924,14 @@ export default function ModuleBuilder({
         data: {
             title: string;
             description: string;
+            code?: string;
+            language?: string;
             url: string;
             file: File | null;
         },
         setIsSubmitting: (val: boolean) => void,
     ) => {
-        if (type === 'image' || type === 'video' || type === 'file') {
+        if (type === 'image' || type === 'file') {
             if (!data.file) {
                 alert('Silakan pilih berkas file terlebih dahulu.');
                 return;
@@ -1027,12 +1006,6 @@ export default function ModuleBuilder({
                         label: 'Gambar',
                         icon: ImageIcon,
                         color: 'hover:border-emerald-500/50 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80',
-                    },
-                    {
-                        type: 'video',
-                        label: 'Video',
-                        icon: Video,
-                        color: 'hover:border-purple-500/50 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-500/5 dark:hover:bg-purple-500/10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80',
                     },
                     {
                         type: 'file',

@@ -4,7 +4,6 @@ import {
     Trash2,
     Plus,
     FileText,
-    Video,
     Image as ImageIcon,
     ArrowLeft,
 } from 'lucide-react';
@@ -79,24 +78,6 @@ export default function ModuleShow({ module }: any) {
                                     className="h-auto w-full object-cover"
                                 />
                             </div>
-                        )}
-                    </div>
-                );
-
-            case 'video':
-                return (
-                    <div className="flex flex-col gap-3">
-                        {item.content.title && (
-                            <h3 className="text-lg font-bold text-slate-800 dark:text-white">
-                                {item.content.title}
-                            </h3>
-                        )}
-                        {url && (
-                            <video
-                                src={url}
-                                controls
-                                className="w-full max-w-2xl rounded-xl border border-slate-200 dark:border-white/10"
-                            />
                         )}
                     </div>
                 );

@@ -9,7 +9,6 @@ import {
     Type,
     Code2,
     Image as ImageIcon,
-    Video,
     FileText,
     Youtube,
     X,
@@ -42,7 +41,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 /* ================= TYPES ================= */
 /* ================= TYPES ================= */
-type ContentType = 'text' | 'code' | 'image' | 'video' | 'file' | 'youtube';
+type ContentType = 'text' | 'code' | 'image' | 'file' | 'youtube';
 
 type ModuleContent = {
     _id?: any;
@@ -110,7 +109,6 @@ const typeIcons = {
             className="text-emerald-500 dark:text-emerald-400"
         />
     ),
-    video: <Video size={14} className="text-purple-500 dark:text-purple-400" />,
     file: <FileText size={14} className="text-amber-500 dark:text-amber-400" />,
     youtube: <Youtube size={14} className="text-red-500" />,
 };
@@ -119,7 +117,6 @@ const typeColors = {
     text: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50',
     code: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-900/50',
     image: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50',
-    video: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-900/50',
     file: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/50',
     youtube:
         'bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50',
@@ -298,15 +295,12 @@ const SortableContent = ({
                             )}
 
                             {(content.type === 'image' ||
-                                content.type === 'video' ||
                                 content.type === 'file') && (
                                 <div>
                                     <label className="mb-1.5 ml-1 block text-xs font-bold tracking-[0.15em] text-slate-400 uppercase dark:text-slate-500">
                                         {content.type === 'image'
                                             ? 'Upload Image File'
-                                            : content.type === 'video'
-                                              ? 'Upload Video File'
-                                              : 'Upload Attachment File'}
+                                            : 'Upload Attachment File'}
                                     </label>
                                     <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-[#3B28F6]/50 dark:border-slate-800 dark:bg-slate-950/50 dark:hover:border-[#7C5CFF]/50">
                                         <input
@@ -314,9 +308,7 @@ const SortableContent = ({
                                             accept={
                                                 content.type === 'image'
                                                     ? 'image/*'
-                                                    : content.type === 'video'
-                                                      ? 'video/*'
-                                                      : '*/*'
+                                                    : '*/*'
                                             }
                                             onChange={(e) => {
                                                 const f = e.target.files?.[0];
@@ -366,10 +358,7 @@ const SortableContent = ({
                                                 <p className="text-[10px] text-slate-400">
                                                     {content.type === 'image'
                                                         ? 'PNG, JPG, WEBP up to 20MB'
-                                                        : content.type ===
-                                                            'video'
-                                                          ? 'MP4, WEBM up to 50MB'
-                                                          : 'PDF, ZIP, DOCX files'}
+                                                        : 'PDF, ZIP, DOCX files'}
                                                 </p>
                                             </div>
                                         )}
@@ -554,18 +543,6 @@ const SortableContent = ({
                                             }
                                         />
                                         <div className="pointer-events-none absolute inset-0 bg-slate-900/0 transition-colors group-hover/img:bg-slate-900/5 dark:group-hover/img:bg-slate-900/10"></div>
-                                    </div>
-                                )}
-
-                            {/* VIDEO PREVIEW */}
-                            {content.type === 'video' &&
-                                content.content?.url && (
-                                    <div className="flex justify-center bg-black/10 p-2 sm:p-4 dark:bg-black/80">
-                                        <video
-                                            src={content.content.url}
-                                            controls
-                                            className="h-auto max-h-[300px] w-auto max-w-full rounded-lg shadow-lg outline-none sm:max-h-[400px]"
-                                        />
                                     </div>
                                 )}
 
@@ -940,12 +917,14 @@ export default function ModuleBuilder({ path }: { path: Path }) {
         data: {
             title: string;
             description: string;
+            code?: string;
+            language?: string;
             url: string;
             file: File | null;
         },
         setIsSubmitting: (val: boolean) => void,
     ) => {
-        if (type === 'image' || type === 'video' || type === 'file') {
+        if (type === 'image' || type === 'file') {
             if (!data.file) {
                 alert('Silakan pilih berkas file terlebih dahulu.');
                 return;
@@ -1020,12 +999,6 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                         label: 'Gambar',
                         icon: ImageIcon,
                         color: 'hover:border-emerald-500/50 hover:text-emerald-400 hover:bg-emerald-500/10 border-slate-700/80 bg-slate-900/80',
-                    },
-                    {
-                        type: 'video',
-                        label: 'Video',
-                        icon: Video,
-                        color: 'hover:border-purple-500/50 hover:text-purple-400 hover:bg-purple-500/10 border-slate-700/80 bg-slate-900/80',
                     },
                     {
                         type: 'file',
