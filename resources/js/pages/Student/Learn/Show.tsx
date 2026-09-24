@@ -11,6 +11,7 @@ import {
     ChevronDown,
     BookOpen,
 } from 'lucide-react';
+import RenderTextContent from '@/components/Module/RenderTextContent';
 
 /* ================= TYPES ================= */
 type Content = {
@@ -597,10 +598,38 @@ export default function LearnShow({
                                                 </h3>
                                             </div>
                                         )}
-                                        <p className="border-l-2 border-blue-300 pl-4 text-[13px] leading-relaxed whitespace-pre-wrap text-[#334155] md:pl-6 md:text-[14px] lg:text-[15px] dark:border-blue-500/20 dark:text-gray-300">
-                                            {item.content?.description ||
-                                                item.content?.text}
-                                        </p>
+                                        <div className="border-l-2 border-blue-300 pl-4 md:pl-6 dark:border-blue-500/30">
+                                            <RenderTextContent
+                                                description={
+                                                    item.content?.description ||
+                                                    item.content?.text
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* ── CODE BLOCK ── */}
+                                {item.type === 'code' && (
+                                    <div className="mb-5">
+                                        {item.content?.title && (
+                                            <div className="mb-2 flex items-center gap-2">
+                                                <span className="rounded border border-cyan-300 bg-cyan-100 px-2 py-0.5 text-[10px] font-bold tracking-widest text-cyan-600 uppercase dark:border-cyan-500/30 dark:bg-cyan-500/15 dark:text-cyan-400">
+                                                    {String(index + 1).padStart(
+                                                        2,
+                                                        '0',
+                                                    )}
+                                                </span>
+                                                <h3 className="font-['Orbitron'] text-sm font-bold text-cyan-700 md:text-base dark:text-cyan-300">
+                                                    {item.content.title}
+                                                </h3>
+                                            </div>
+                                        )}
+                                        <RenderTextContent
+                                            type="code"
+                                            code={item.content?.code || item.content?.description}
+                                            language={item.content?.language || 'html'}
+                                        />
                                     </div>
                                 )}
 

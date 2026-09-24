@@ -139,6 +139,8 @@ Route::middleware(['auth', 'role:admin,mentor'])
 
         Route::post('/modules', [CourseBuilderController::class, 'storeModule'])
             ->name('modules.store');
+        Route::put('/modules/reorder', [CourseBuilderController::class, 'reorderModules'])
+            ->name('modules.reorder');
         Route::delete('/modules/{module}', [CourseBuilderController::class, 'destroyModule'])
             ->name('modules.destroy');
 
@@ -338,6 +340,11 @@ Route::middleware(['auth', 'role:mentor'])
             '/modules',
             [CourseBuilderController::class, 'storeModule']
         )->name('modules.store');
+
+        Route::put(
+            '/modules/reorder',
+            [CourseBuilderController::class, 'reorderModules']
+        )->name('modules.reorder');
 
         Route::delete(
             '/modules/{module}',
