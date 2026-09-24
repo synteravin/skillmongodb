@@ -15,7 +15,7 @@ class StoreContentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|in:text,code,image,video,file,youtube',
+            'type' => 'required|in:text,code,image,file,youtube',
             'title' => 'nullable|string',
             'description' => 'nullable|string',
             'code' => 'nullable|string',

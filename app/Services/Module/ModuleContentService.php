@@ -93,13 +93,8 @@ class ModuleContentService
                 throw new \Exception('Invalid image file');
             }
 
-            if ($type === 'video' && ! str_starts_with($file->getMimeType(), 'video')) {
-                throw new \Exception('Invalid video file');
-            }
-
             $folder = match ($type) {
                 'image' => 'modules/images',
-                'video' => 'modules/videos',
                 default => 'modules/files',
             };
 

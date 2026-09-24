@@ -85,24 +85,7 @@ export default function ModuleShow({ module }: any) {
                                                 </div>
                                             )}
 
-                                        {item.type === 'video' &&
-                                            item.content?.url && (
-                                                <div className="flex justify-center rounded-xl bg-black/10 p-2 dark:bg-black/80">
-                                                    <video
-                                                        controls
-                                                        className="max-h-96 w-auto max-w-full rounded-lg"
-                                                    >
-                                                        <source
-                                                            src={
-                                                                item.content.url
-                                                            }
-                                                        />
-                                                    </video>
-                                                </div>
-                                            )}
-
                                         {item.type !== 'image' &&
-                                            item.type !== 'video' &&
                                             item.content?.url && (
                                                 <div className="dark:border-slate-850 flex w-fit items-center gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:bg-slate-900/50">
                                                     <FileText

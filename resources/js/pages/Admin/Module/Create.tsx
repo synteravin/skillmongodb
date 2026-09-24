@@ -7,7 +7,6 @@ import {
     X,
     FileText,
     Image as ImageIcon,
-    Video,
     ArrowLeft,
 } from 'lucide-react';
 
@@ -31,7 +30,6 @@ export default function CreateModule({ pathId }: Props) {
 
     const detectType = (file: File) => {
         if (file.type.startsWith('image')) return 'image';
-        if (file.type.startsWith('video')) return 'video';
         return 'file';
     };
 
@@ -39,8 +37,6 @@ export default function CreateModule({ pathId }: Props) {
         const type = detectType(file);
         if (type === 'image')
             return <ImageIcon size={20} className="text-emerald-400" />;
-        if (type === 'video')
-            return <Video size={20} className="text-purple-400" />;
         return <FileText size={20} className="text-amber-400" />;
     };
 
@@ -126,8 +122,7 @@ export default function CreateModule({ pathId }: Props) {
                                 Create New Module
                             </h1>
                             <p className="m-0 text-xs text-slate-600/75 sm:text-sm dark:text-slate-400/70">
-                                Add a new learning module with images, videos,
-                                or files.
+                                Add a new learning module with images or files.
                             </p>
                         </div>
                     </header>
@@ -182,8 +177,7 @@ export default function CreateModule({ pathId }: Props) {
                                                 Click to upload or drag and drop
                                             </p>
                                             <p className="dark:text-slate-550 mt-1 text-xs text-slate-500">
-                                                Images, Videos, PDFs, or other
-                                                documents
+                                                Images, PDFs, or other documents
                                             </p>
                                         </div>
                                     </div>
