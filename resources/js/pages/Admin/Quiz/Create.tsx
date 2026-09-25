@@ -23,7 +23,6 @@ type Answer = {
 
 type Question = {
     question_text: string;
-    explanation?: string;
     media_url?: string;
     media_file?: File;
     answers: Answer[];
@@ -50,7 +49,6 @@ export default function Create({
             : [
                   {
                       question_text: '',
-                      explanation: '',
                       media_url: '',
                       media_file: undefined,
                       answers: [
@@ -175,9 +173,6 @@ export default function Create({
 
         questions.forEach((q, i) => {
             formData.append(`questions[${i}][question_text]`, q.question_text);
-            if (q.explanation) {
-                formData.append(`questions[${i}][explanation]`, q.explanation);
-            }
 
             // MEDIA FILE
             if (q.media_file) {
@@ -206,24 +201,20 @@ export default function Create({
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-slate-50 p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-gradient-to-br dark:from-[#020617] dark:via-[#020617] dark:to-black dark:text-white">
+            <div className="min-h-screen bg-transparent p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-transparent dark:text-white">
                 <div className="mx-auto w-full space-y-6 sm:space-y-8">
                     {/* HEADER */}
-                    <header
-                        className="relative w-full overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-900/50 dark:shadow-lg"
-                        style={{
-                            backgroundImage: `
-                                linear-gradient(rgba(148,163,184,0.05) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(148,163,184,0.05) 1px, transparent 1px)
-                            `,
-                            backgroundSize: '40px 40px',
-                        }}
-                    >
-                        {/* Corner brackets */}
-                        <span className="absolute top-3.5 left-3.5 h-3 w-3 border-t border-l border-slate-300 dark:border-slate-700" />
-                        <span className="absolute top-3.5 right-3.5 h-3 w-3 border-t border-r border-slate-300 dark:border-slate-700" />
-                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l border-slate-300 dark:border-slate-700" />
-                        <span className="absolute right-3.5 bottom-3.5 h-3 w-3 border-r border-b border-slate-300 dark:border-slate-700" />
+                    <header className="relative w-full overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-900/50 dark:shadow-lg">
+                        {/* Ambient Glow Motif */}
+                        <div
+                            className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-40"
+                            style={{
+                                backgroundImage: `
+                                    radial-gradient(circle at top right, rgba(124, 92, 255, 0.12), transparent 70%),
+                                    radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.08), transparent 60%)
+                                `,
+                            }}
+                        />
 
                         <div className="relative z-10 flex flex-col gap-2">
                             <button
@@ -442,21 +433,7 @@ function QuestionCard({
                     />
                 </div>
 
-                {/* EXPLANATION */}
-                <div>
-                    <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                        Pembahasan / Catatan Penjelasan Soal (Opsional)
-                    </label>
-                    <textarea
-                        placeholder="Contoh: Jawaban A benar karena fungsi ini..."
-                        value={data.explanation || ''}
-                        onChange={(e) =>
-                            onChange({ ...data, explanation: e.target.value })
-                        }
-                        rows={2}
-                        className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
-                    />
-                </div>
+
 
                 {/* IMAGE UPLOAD */}
                 <div>

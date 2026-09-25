@@ -39,7 +39,7 @@ class CertificateDesignTest extends TestCase
             'background' => $file,
         ]);
 
-        $response->assertRedirect(route('admin.assets.index'));
+        $response->assertRedirect(route('admin.assets.index', ['tab' => 'certificates']));
 
         $design = CertificateDesign::where('title', 'Custom Design 2026')->first();
         $this->assertNotNull($design);
@@ -67,7 +67,7 @@ class CertificateDesignTest extends TestCase
 
         $response = $this->actingAs($admin)->post("/admin/assets/certificate-designs/{$design2->_id}/active");
 
-        $response->assertRedirect(route('admin.assets.index'));
+        $response->assertRedirect(route('admin.assets.index', ['tab' => 'certificates']));
 
         $this->assertFalse((bool) $design1->fresh()->is_active);
         $this->assertTrue((bool) $design2->fresh()->is_active);
@@ -86,8 +86,35 @@ class CertificateDesignTest extends TestCase
 
         $response = $this->actingAs($admin)->delete("/admin/assets/certificate-designs/{$design->_id}");
 
-        $response->assertRedirect(route('admin.assets.index'));
+        $response->assertRedirect(route('admin.assets.index', ['tab' => 'certificates']));
         $this->assertNull(CertificateDesign::find($design->_id));
+    }
+
+    public function test_admin_can_bulk_delete_certificate_designs(): void
+    {
+        Storage::fake('s3');
+        $admin = $this->createAdmin();
+
+        $design1 = CertificateDesign::create([
+            'title' => 'Bulk Design 1',
+            'background_path' => 'certificates/templates/bulk1.png',
+            'is_active' => false,
+        ]);
+
+        $design2 = CertificateDesign::create([
+            'title' => 'Bulk Design 2',
+            'background_path' => 'certificates/templates/bulk2.png',
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($admin)->post('/admin/assets/certificate-designs/bulk-delete', [
+            'ids' => [(string) $design1->_id, (string) $design2->_id],
+        ]);
+
+        $response->assertRedirect(route('admin.assets.index', ['tab' => 'certificates']));
+        $response->assertSessionHas('success');
+        $this->assertNull(CertificateDesign::find($design1->_id));
+        $this->assertNull(CertificateDesign::find($design2->_id));
     }
 
     public function test_non_admin_cannot_manage_certificate_designs(): void

@@ -63,15 +63,21 @@ Route::middleware(['auth', 'role:admin,mentor'])
                     ->name('index');
 
                 // RANK
+                Route::post('ranks/bulk-delete', [RankController::class, 'bulkDestroy'])
+                    ->name('ranks.bulk-destroy');
                 Route::resource('ranks', RankController::class);
                 Route::post('ranks/reorder', [RankController::class, 'reorder'])
                     ->name('ranks.reorder');
 
                 // CHARACTER
+                Route::post('characters/bulk-delete', [CharacterController::class, 'bulkDestroy'])
+                    ->name('characters.bulk-destroy');
                 Route::resource('characters', CharacterController::class)
                     ->except(['show']);
 
                 // BADGE
+                Route::post('badges/bulk-delete', [LevelBadgeController::class, 'bulkDestroy'])
+                    ->name('badges.bulk-destroy');
                 Route::resource('badges', LevelBadgeController::class);
                 Route::post('badges/reorder', [LevelBadgeController::class, 'reorder'])
                     ->name('badges.reorder');
@@ -79,6 +85,8 @@ Route::middleware(['auth', 'role:admin,mentor'])
                 // CERTIFICATE DESIGN
                 Route::post('certificate-designs', [CertificateDesignController::class, 'store'])
                     ->name('certificates.store');
+                Route::post('certificate-designs/bulk-delete', [CertificateDesignController::class, 'bulkDestroy'])
+                    ->name('certificates.bulk-destroy');
                 Route::post('certificate-designs/{id}/active', [CertificateDesignController::class, 'setActive'])
                     ->name('certificates.active');
                 Route::delete('certificate-designs/{id}', [CertificateDesignController::class, 'destroy'])

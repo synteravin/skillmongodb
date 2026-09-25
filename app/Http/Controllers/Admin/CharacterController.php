@@ -56,8 +56,8 @@ class CharacterController extends Controller
         Character::create($data);
 
         return redirect()
-            ->route('admin.assets.index')
-            ->with('success', 'Character operation successful');
+            ->route('admin.assets.index', ['tab' => 'characters'])
+            ->with('success', 'Karakter berhasil ditambahkan.');
     }
 
     public function edit(Character $character)
@@ -90,7 +90,6 @@ class CharacterController extends Controller
 
         // 🔥 handle avatar update
         if ($request->hasFile('avatar')) {
-
             // hapus avatar lama
             if ($character->avatar) {
                 Storage::disk('s3')->delete($character->avatar);
@@ -112,16 +111,14 @@ class CharacterController extends Controller
         $character->update($data);
 
         return redirect()
-            ->route('admin.assets.index')
-            ->with('success', 'Character updated');
+            ->route('admin.assets.index', ['tab' => 'characters'])
+            ->with('success', 'Karakter berhasil diperbarui.');
     }
 
     public function destroy(Character $character)
     {
         if ($character->isUsed()) {
-            return back()->withErrors([
-                'character' => 'Character is already used by students.',
-            ]);
+            return back()->with('error', 'Karakter tidak dapat dihapus karena sedang digunakan oleh siswa.');
         }
 
         // 🔥 hapus avatar
@@ -132,7 +129,49 @@ class CharacterController extends Controller
         $character->delete();
 
         return redirect()
-            ->route('admin.assets.index')
-            ->with('success', 'Character deleted');
+            ->route('admin.assets.index', ['tab' => 'characters'])
+            ->with('success', 'Karakter berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'string',
+        ]);
+
+        $characters = Character::whereIn('_id', $request->ids)->get();
+        $deleted = 0;
+        $skipped = 0;
+
+        foreach ($characters as $character) {
+            if ($character->isUsed()) {
+                $skipped++;
+
+                continue;
+            }
+
+            if ($character->avatar) {
+                Storage::disk('s3')->delete($character->avatar);
+            }
+
+            $character->delete();
+            $deleted++;
+        }
+
+        if ($skipped > 0 && $deleted === 0) {
+            return redirect()
+                ->route('admin.assets.index', ['tab' => 'characters'])
+                ->with('error', 'Semua karakter yang dipilih tidak dapat dihapus karena sedang digunakan oleh siswa.');
+        }
+
+        $msg = "{$deleted} karakter berhasil dihapus.";
+        if ($skipped > 0) {
+            $msg .= " ({$skipped} karakter dilewati karena sedang digunakan siswa).";
+        }
+
+        return redirect()
+            ->route('admin.assets.index', ['tab' => 'characters'])
+            ->with('success', $msg);
     }
 }

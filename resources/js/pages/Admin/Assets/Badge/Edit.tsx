@@ -54,7 +54,7 @@ export default function Edit({ badge }: { badge: Badge }) {
     return (
         <AppLayout>
             <div
-                className="min-h-screen bg-[#f8fafc] px-4 py-8 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-[#030712]"
+                className="min-h-screen bg-transparent px-4 py-8 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-transparent"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 <div className="w-full space-y-6">
@@ -62,7 +62,7 @@ export default function Edit({ badge }: { badge: Badge }) {
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <Link
-                                href="/admin/assets"
+                                href="/admin/assets?tab=badges"
                                 className="mb-3 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                             >
                                 <ArrowLeft className="h-4 w-4" />

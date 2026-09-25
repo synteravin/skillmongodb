@@ -53,7 +53,6 @@ class CreateQuizAction
             $question = QuizQuestion::create([
                 'quiz_id' => (string) $quiz->_id,
                 'question_text' => $q['question_text'] ?? '',
-                'explanation' => $q['explanation'] ?? null,
                 'media_url' => $mediaPath,
                 'media_path' => $mediaS3Path,
                 'order' => $qIndex + 1,

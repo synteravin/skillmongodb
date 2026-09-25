@@ -30,7 +30,7 @@ class RankController extends Controller
         $path = $request->file('image')->store('ranks', 's3');
 
         // ✅ AUTO ORDER (SAFE)
-        $order = (Rank::max('order') ?? 0) + 1;
+        $order = (int) ((Rank::max('order') ?? 0) + 1);
 
         Rank::create([
             'name' => $request->name,
@@ -38,7 +38,8 @@ class RankController extends Controller
             'order' => $order,
         ]);
 
-        return redirect()->route('admin.assets.ranks.index');
+        return redirect()->route('admin.assets.index', ['tab' => 'ranks'])
+            ->with('success', 'Rank berhasil ditambahkan.');
     }
 
     public function edit(Rank $rank)
@@ -61,7 +62,6 @@ class RankController extends Controller
 
         // ✅ HANDLE IMAGE REPLACE
         if ($request->hasFile('image')) {
-
             // hapus file lama
             if ($rank->image) {
                 Storage::disk('s3')->delete($rank->image);
@@ -72,22 +72,24 @@ class RankController extends Controller
 
         $rank->update($data);
 
-        return redirect()->route('admin.assets.index')
-            ->with('success', 'Rank updated');
+        return redirect()->route('admin.assets.index', ['tab' => 'ranks'])
+            ->with('success', 'Rank berhasil diperbarui.');
     }
 
     public function reorder(Request $request)
     {
         $request->validate([
             'ranks' => 'required|array',
+            'ranks.*.id' => 'required|string',
+            'ranks.*.order' => 'required|integer',
         ]);
 
         foreach ($request->ranks as $rank) {
             Rank::where('_id', $rank['id'])
-                ->update(['order' => $rank['order']]);
+                ->update(['order' => (int) $rank['order']]);
         }
 
-        return back();
+        return back()->with('success', 'Urutan rank berhasil diperbarui.');
     }
 
     public function destroy(Rank $rank)
@@ -98,6 +100,29 @@ class RankController extends Controller
 
         $rank->delete();
 
-        return redirect()->route('admin.assets.ranks.index');
+        return redirect()->route('admin.assets.index', ['tab' => 'ranks'])
+            ->with('success', 'Rank berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'string',
+        ]);
+
+        $ranks = Rank::whereIn('_id', $request->ids)->get();
+        $count = 0;
+
+        foreach ($ranks as $rank) {
+            if ($rank->image) {
+                Storage::disk('s3')->delete($rank->image);
+            }
+            $rank->delete();
+            $count++;
+        }
+
+        return redirect()->route('admin.assets.index', ['tab' => 'ranks'])
+            ->with('success', "{$count} rank berhasil dihapus.");
     }
 }

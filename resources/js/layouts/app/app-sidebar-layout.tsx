@@ -5,6 +5,7 @@ import Sidebar from '@/components/sidebar';
 import { Menu, CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import type { AppLayoutProps } from '@/types';
+import AdminMentorBackground from '@/components/AdminMentorBackground';
 
 export default function AppSidebarLayout({
     children,
@@ -53,8 +54,10 @@ export default function AppSidebarLayout({
             <Sidebar isOpen={isOpen} setSidebarOpen={setSidebarOpen} />
             <AppContent
                 variant="sidebar"
-                className={`ml-0 min-h-screen bg-[#f8fafc] transition-all duration-300 dark:bg-background ${isOpen ? 'md:ml-64' : 'md:ml-16'} ${isForum ? 'h-screen overflow-hidden' : 'overflow-x-hidden'} `}
+                className={`relative ml-0 min-h-screen transition-all duration-300 ${isOpen ? 'md:ml-64' : 'md:ml-16'} ${isForum ? 'h-screen overflow-hidden' : 'overflow-x-hidden'}`}
             >
+                {/* Admin & Mentor Styled Background with Ambient Ornaments */}
+                <AdminMentorBackground />
                 {/* Global Toast Notification */}
                 {toast && (
                     <div className="fixed top-5 right-5 z-[99999] flex max-w-md items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-top-3 dark:border-slate-800 dark:bg-[#0d111a]">
@@ -116,7 +119,9 @@ export default function AppSidebarLayout({
                     </div>
                 </header>
 
-                {children}
+                <div className="relative z-10 w-full flex-1">
+                    {children}
+                </div>
             </AppContent>
         </AppShell>
     );

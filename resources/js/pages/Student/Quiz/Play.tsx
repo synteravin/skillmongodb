@@ -861,14 +861,7 @@ function BoxSoal({
                                                 Jawaban)
                                             </span>
                                         )}
-                                        {question.explanation && (
-                                            <div className="mt-3 rounded-xl border border-indigo-500/40 bg-indigo-950/60 p-3 text-xs text-indigo-200 shadow-sm">
-                                                <span className="font-bold text-yellow-400">
-                                                    💡 Pembahasan:{' '}
-                                                </span>
-                                                {question.explanation}
-                                            </div>
-                                        )}
+
                                     </div>
                                 </div>
                             </div>
@@ -1190,10 +1183,7 @@ export default function Play({
         router.visit(getExitUrl());
     };
 
-    const handleViewExplanation = () => {
-        setShowResult(false);
-        setIsReviewMode(true);
-    };
+
 
     if (!quiz?.questions?.length) return null;
 
@@ -1367,17 +1357,10 @@ export default function Play({
                         </p>
                     </div>
 
-                    <div className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
-                        <button
-                            onClick={() => setIsReviewMode(true)}
-                            className="flex-1 cursor-pointer rounded border border-yellow-400 bg-yellow-400 py-3 text-xs font-bold tracking-wider text-black uppercase shadow-[0_0_12px_rgba(250,204,21,0.25)] transition-all duration-300 hover:bg-yellow-300 md:text-sm"
-                            style={{ fontFamily: 'Oxanium' }}
-                        >
-                            💡 LIHAT PEMBAHASAN
-                        </button>
+                    <div className="mx-auto flex max-w-md justify-center">
                         <button
                             onClick={handleExit}
-                            className="flex-1 cursor-pointer rounded border border-slate-700 bg-slate-800 py-3 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-slate-700 md:text-sm"
+                            className="w-full cursor-pointer rounded border border-[#3B28F6] bg-[#3B28F6] py-3 text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_15px_rgba(59,40,246,0.3)] transition-all duration-300 hover:bg-[#2d1ed9] md:text-sm"
                             style={{ fontFamily: 'Oxanium' }}
                         >
                             KEMBALI KE COURSE
@@ -1413,7 +1396,6 @@ export default function Play({
                     open={showResult}
                     result={finalResult}
                     onClose={handleExit}
-                    onViewExplanation={handleViewExplanation}
                     onRetry={handleRetry}
                 />
                 <TimeExpiredModal
@@ -1536,7 +1518,6 @@ export default function Play({
                 open={showResult}
                 result={finalResult}
                 onClose={handleExit}
-                onViewExplanation={handleViewExplanation}
                 onRetry={handleRetry}
             />
             <TimeExpiredModal

@@ -325,19 +325,18 @@ export default function Dashboard({
 
     return (
         <AppLayout>
-            <div className="relative min-h-screen overflow-hidden bg-slate-50/50 px-4 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-[#030712] dark:text-white">
+            <div className="relative min-h-screen overflow-hidden bg-transparent px-4 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-transparent dark:text-white">
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
                     {/* TOP HERO & CONTEXT HEADER */}
                     <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-[#f8f9ff] to-indigo-50/30 p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-gradient-to-br dark:from-[#0d0f17] dark:via-[#090b12] dark:to-[#07080f]">
-                        {/* Decorative background grid pattern */}
+                        {/* Decorative background radial ambient glow */}
                         <div
-                            className="pointer-events-none absolute inset-0 z-0 opacity-40 dark:opacity-20"
+                            className="pointer-events-none absolute inset-0 z-0 opacity-60 dark:opacity-40"
                             style={{
                                 backgroundImage: `
-                                    linear-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-                                    linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px)
+                                    radial-gradient(circle at top right, rgba(124, 92, 255, 0.12), transparent 70%),
+                                    radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.08), transparent 60%)
                                 `,
-                                backgroundSize: '32px 32px',
                             }}
                         />
                         <div className="absolute top-0 right-10 left-10 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />

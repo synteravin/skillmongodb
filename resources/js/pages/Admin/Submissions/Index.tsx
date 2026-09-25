@@ -116,7 +116,7 @@ export default function Index({ submissions, filters, counts }: Props) {
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-slate-50/50 px-4 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-[#030712] dark:text-white">
+            <div className="min-h-screen bg-transparent px-4 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-transparent dark:text-white">
                 <div className="mx-auto max-w-7xl space-y-6">
                     {/* Header */}
                     <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-slate-50 to-indigo-50/20 p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-gradient-to-br dark:from-[#0d0f17] dark:via-[#090b12] dark:to-[#07080f]">

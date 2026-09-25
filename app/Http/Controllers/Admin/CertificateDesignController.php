@@ -39,7 +39,7 @@ class CertificateDesignController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.assets.index')
+            ->route('admin.assets.index', ['tab' => 'certificates'])
             ->with('success', 'Desain sertifikat berhasil diunggah.');
     }
 
@@ -56,7 +56,7 @@ class CertificateDesignController extends Controller
         (new CertificateService)->regenerateAllForUser();
 
         return redirect()
-            ->route('admin.assets.index')
+            ->route('admin.assets.index', ['tab' => 'certificates'])
             ->with('success', 'Desain sertifikat aktif berhasil diperbarui.');
     }
 
@@ -82,11 +82,56 @@ class CertificateDesignController extends Controller
             $nextActive = CertificateDesign::latest()->first();
             if ($nextActive) {
                 $nextActive->update(['is_active' => true]);
+                (new CertificateService)->regenerateAllForUser();
             }
         }
 
         return redirect()
-            ->route('admin.assets.index')
+            ->route('admin.assets.index', ['tab' => 'certificates'])
             ->with('success', 'Desain sertifikat berhasil dihapus.');
+    }
+
+    /**
+     * Remove multiple certificate designs.
+     */
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'string',
+        ]);
+
+        $designs = CertificateDesign::whereIn('_id', $request->ids)->get();
+        $count = 0;
+        $wasAnyActive = false;
+
+        foreach ($designs as $design) {
+            if ($design->is_active) {
+                $wasAnyActive = true;
+            }
+
+            if ($design->background_path) {
+                Storage::disk('s3')->delete($design->background_path);
+            }
+
+            if ($design->logo_path) {
+                Storage::disk('s3')->delete($design->logo_path);
+            }
+
+            $design->delete();
+            $count++;
+        }
+
+        if ($wasAnyActive) {
+            $nextActive = CertificateDesign::latest()->first();
+            if ($nextActive) {
+                $nextActive->update(['is_active' => true]);
+                (new CertificateService)->regenerateAllForUser();
+            }
+        }
+
+        return redirect()
+            ->route('admin.assets.index', ['tab' => 'certificates'])
+            ->with('success', "{$count} desain sertifikat berhasil dihapus.");
     }
 }

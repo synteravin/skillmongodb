@@ -92,9 +92,36 @@ export default function AssetsPage({
     badges = [],
     certificates = [],
 }: AssetsPageProps) {
+    const getInitialTab = (): 'ranks' | 'characters' | 'badges' | 'certificates' => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const tabParam = params.get('tab');
+            if (
+                tabParam === 'ranks' ||
+                tabParam === 'characters' ||
+                tabParam === 'badges' ||
+                tabParam === 'certificates'
+            ) {
+                return tabParam;
+            }
+        }
+        return 'ranks';
+    };
+
     const [activeTab, setActiveTab] = useState<
         'ranks' | 'characters' | 'badges' | 'certificates'
-    >('ranks');
+    >(getInitialTab);
+
+    const handleTabChange = (
+        tab: 'ranks' | 'characters' | 'badges' | 'certificates',
+    ) => {
+        setActiveTab(tab);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', tab);
+            window.history.replaceState({}, '', url.toString());
+        }
+    };
 
     // State for drag & drop lists
     const [rankItems, setRankItems] = useState<Rank[]>(ranks);
@@ -103,6 +130,13 @@ export default function AssetsPage({
         useState<Character[]>(characters);
     const [certificateItems, setCertificateItems] =
         useState<CertificateDesign[]>(certificates);
+
+    // Selection states for bulk actions (SEMUA ASSETS)
+    const [selectedRankIds, setSelectedRankIds] = useState<string[]>([]);
+    const [selectedBadgeIds, setSelectedBadgeIds] = useState<string[]>([]);
+    const [selectedCharacterIds, setSelectedCharacterIds] = useState<string[]>([]);
+    const [selectedCertificateIds, setSelectedCertificateIds] = useState<string[]>([]);
+    const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
     // Character Modal state
     const [selectedCharacter, setSelectedCharacter] =
@@ -131,16 +165,50 @@ export default function AssetsPage({
 
     useEffect(() => {
         setRankItems(ranks);
+        setSelectedRankIds((prev) =>
+            prev.filter((id) => ranks.some((r) => r.id === id)),
+        );
     }, [ranks]);
+
     useEffect(() => {
         setBadgeItems(badges);
+        setSelectedBadgeIds((prev) =>
+            prev.filter((id) => badges.some((b) => b.id === id)),
+        );
     }, [badges]);
+
     useEffect(() => {
         setCharacterItems(characters);
+        setSelectedCharacterIds((prev) =>
+            prev.filter((id) => characters.some((c) => c.id === id)),
+        );
     }, [characters]);
+
     useEffect(() => {
         setCertificateItems(certificates);
+        setSelectedCertificateIds((prev) =>
+            prev.filter((id) => certificates.some((c) => c.id === id)),
+        );
     }, [certificates]);
+
+    // Listen to browser navigation / history pops
+    useEffect(() => {
+        const handlePopState = () => {
+            const params = new URLSearchParams(window.location.search);
+            const tabParam = params.get('tab');
+            if (
+                tabParam === 'ranks' ||
+                tabParam === 'characters' ||
+                tabParam === 'badges' ||
+                tabParam === 'certificates'
+            ) {
+                setActiveTab(tabParam);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, []);
 
     const [confirmModal, setConfirmModal] = useState<{
         open: boolean;
@@ -185,6 +253,7 @@ export default function AssetsPage({
             '/admin/assets/ranks/reorder',
             { ranks: payload },
             {
+                preserveScroll: true,
                 onFinish: () => setIsSavingRankOrder(false),
             },
         );
@@ -200,12 +269,175 @@ export default function AssetsPage({
             '/admin/assets/badges/reorder',
             { badges: payload },
             {
+                preserveScroll: true,
                 onFinish: () => setIsSavingBadgeOrder(false),
             },
         );
     };
 
-    /* ================= DELETE HANDLERS ================= */
+    /* ================= BULK SELECT HELPERS ================= */
+    const toggleSelectAllRanks = () => {
+        if (selectedRankIds.length === rankItems.length) {
+            setSelectedRankIds([]);
+        } else {
+            setSelectedRankIds(rankItems.map((r) => r.id));
+        }
+    };
+
+    const toggleSelectRank = (id: string) => {
+        setSelectedRankIds((prev) =>
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+        );
+    };
+
+    const toggleSelectAllBadges = () => {
+        if (selectedBadgeIds.length === badgeItems.length) {
+            setSelectedBadgeIds([]);
+        } else {
+            setSelectedBadgeIds(badgeItems.map((b) => b.id));
+        }
+    };
+
+    const toggleSelectBadge = (id: string) => {
+        setSelectedBadgeIds((prev) =>
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+        );
+    };
+
+    const toggleSelectAllCharacters = () => {
+        if (selectedCharacterIds.length === characterItems.length) {
+            setSelectedCharacterIds([]);
+        } else {
+            setSelectedCharacterIds(characterItems.map((c) => c.id));
+        }
+    };
+
+    const toggleSelectCharacter = (id: string) => {
+        setSelectedCharacterIds((prev) =>
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+        );
+    };
+
+    const toggleSelectAllCertificates = () => {
+        if (selectedCertificateIds.length === certificateItems.length) {
+            setSelectedCertificateIds([]);
+        } else {
+            setSelectedCertificateIds(certificateItems.map((c) => c.id));
+        }
+    };
+
+    const toggleSelectCertificate = (id: string) => {
+        setSelectedCertificateIds((prev) =>
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+        );
+    };
+
+    /* ================= BULK DELETE HANDLERS ================= */
+    const handleBulkDeleteRanks = () => {
+        if (selectedRankIds.length === 0) return;
+        const count = selectedRankIds.length;
+        setConfirmModal({
+            open: true,
+            title: `Hapus ${count} Rank Terpilih`,
+            message: `Apakah Anda yakin ingin menghapus ${count} rank yang ditandai? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: `Hapus ${count} Rank`,
+            variant: 'danger',
+            onConfirm: () => {
+                setIsBulkDeleting(true);
+                router.post(
+                    '/admin/assets/ranks/bulk-delete',
+                    { ids: selectedRankIds },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setSelectedRankIds([]);
+                        },
+                        onFinish: () => setIsBulkDeleting(false),
+                    },
+                );
+            },
+        });
+    };
+
+    const handleBulkDeleteBadges = () => {
+        if (selectedBadgeIds.length === 0) return;
+        const count = selectedBadgeIds.length;
+        setConfirmModal({
+            open: true,
+            title: `Hapus ${count} Badge Terpilih`,
+            message: `Apakah Anda yakin ingin menghapus ${count} level badge yang ditandai? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: `Hapus ${count} Badge`,
+            variant: 'danger',
+            onConfirm: () => {
+                setIsBulkDeleting(true);
+                router.post(
+                    '/admin/assets/badges/bulk-delete',
+                    { ids: selectedBadgeIds },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setSelectedBadgeIds([]);
+                        },
+                        onFinish: () => setIsBulkDeleting(false),
+                    },
+                );
+            },
+        });
+    };
+
+    const handleBulkDeleteCharacters = () => {
+        if (selectedCharacterIds.length === 0) return;
+        const count = selectedCharacterIds.length;
+        setConfirmModal({
+            open: true,
+            title: `Hapus ${count} Karakter Terpilih`,
+            message: `Apakah Anda yakin ingin menghapus ${count} karakter yang ditandai? Karakter yang sedang digunakan oleh siswa akan dilewati. Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: `Hapus ${count} Karakter`,
+            variant: 'danger',
+            onConfirm: () => {
+                setIsBulkDeleting(true);
+                router.post(
+                    '/admin/assets/characters/bulk-delete',
+                    { ids: selectedCharacterIds },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setSelectedCharacterIds([]);
+                        },
+                        onFinish: () => setIsBulkDeleting(false),
+                    },
+                );
+            },
+        });
+    };
+
+    const handleBulkDeleteCertificates = () => {
+        if (selectedCertificateIds.length === 0) return;
+        const count = selectedCertificateIds.length;
+        setConfirmModal({
+            open: true,
+            title: `Hapus ${count} Desain Sertifikat Terpilih`,
+            message: `Apakah Anda yakin ingin menghapus ${count} desain sertifikat yang ditandai? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: `Hapus ${count} Desain`,
+            variant: 'danger',
+            onConfirm: () => {
+                setIsBulkDeleting(true);
+                router.post(
+                    '/admin/assets/certificate-designs/bulk-delete',
+                    { ids: selectedCertificateIds },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            setSelectedCertificateIds([]);
+                        },
+                        onFinish: () => setIsBulkDeleting(false),
+                    },
+                );
+            },
+        });
+    };
+
+    /* ================= SINGLE DELETE HANDLERS ================= */
     const deleteRank = (id: string, name: string) => {
         setConfirmModal({
             open: true,
@@ -214,7 +446,14 @@ export default function AssetsPage({
             confirmText: 'Hapus Rank',
             variant: 'danger',
             onConfirm: () => {
-                router.delete(`/admin/assets/ranks/${id}`);
+                router.delete(`/admin/assets/ranks/${id}`, {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setSelectedRankIds((prev) =>
+                            prev.filter((i) => i !== id),
+                        );
+                    },
+                });
             },
         });
     };
@@ -227,8 +466,17 @@ export default function AssetsPage({
             confirmText: 'Hapus Karakter',
             variant: 'danger',
             onConfirm: () => {
-                router.delete(`/admin/assets/characters/${id}`);
-                if (selectedCharacter?.id === id) setSelectedCharacter(null);
+                router.delete(`/admin/assets/characters/${id}`, {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setSelectedCharacterIds((prev) =>
+                            prev.filter((i) => i !== id),
+                        );
+                        if (selectedCharacter?.id === id) {
+                            setSelectedCharacter(null);
+                        }
+                    },
+                });
             },
         });
     };
@@ -241,7 +489,14 @@ export default function AssetsPage({
             confirmText: 'Hapus Badge',
             variant: 'danger',
             onConfirm: () => {
-                router.delete(`/admin/assets/badges/${id}`);
+                router.delete(`/admin/assets/badges/${id}`, {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setSelectedBadgeIds((prev) =>
+                            prev.filter((i) => i !== id),
+                        );
+                    },
+                });
             },
         });
     };
@@ -319,7 +574,7 @@ export default function AssetsPage({
     return (
         <AppLayout>
             <div
-                className="relative min-h-screen overflow-hidden bg-[#f8fafc] px-4 py-6 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-[#030712] dark:text-white"
+                className="relative min-h-screen overflow-hidden bg-transparent px-4 py-6 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-transparent dark:text-white"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Ambient Glow */}
@@ -328,15 +583,14 @@ export default function AssetsPage({
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
                     {/* HEADER */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17]">
-                        {/* Grid Pattern Motif */}
+                        {/* Ambient Glow Motif */}
                         <div
-                            className="pointer-events-none absolute inset-0 z-0"
+                            className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-40"
                             style={{
                                 backgroundImage: `
-                                    linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
-                                    linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                                    radial-gradient(circle at top right, rgba(124, 92, 255, 0.12), transparent 70%),
+                                    radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.08), transparent 60%)
                                 `,
-                                backgroundSize: '40px 40px',
                             }}
                         />
 
@@ -364,7 +618,7 @@ export default function AssetsPage({
                         {/* RANK CARD */}
                         <button
                             type="button"
-                            onClick={() => setActiveTab('ranks')}
+                            onClick={() => handleTabChange('ranks')}
                             className={`group relative cursor-pointer overflow-hidden rounded-xl border p-5 text-left transition-all duration-200 ${
                                 activeTab === 'ranks'
                                     ? 'border-[#7C5CFF] bg-white shadow-lg ring-2 shadow-[#7C5CFF]/10 ring-[#7C5CFF]/30 dark:bg-[#0d0f1a] dark:shadow-[#7C5CFF]/15'
@@ -396,7 +650,7 @@ export default function AssetsPage({
                         {/* CHARACTER CARD */}
                         <button
                             type="button"
-                            onClick={() => setActiveTab('characters')}
+                            onClick={() => handleTabChange('characters')}
                             className={`group relative cursor-pointer overflow-hidden rounded-xl border p-5 text-left transition-all duration-200 ${
                                 activeTab === 'characters'
                                     ? 'border-[#7C5CFF] bg-white shadow-lg ring-2 shadow-[#7C5CFF]/10 ring-[#7C5CFF]/30 dark:bg-[#0d0f1a] dark:shadow-[#7C5CFF]/15'
@@ -427,7 +681,7 @@ export default function AssetsPage({
                         {/* BADGE CARD */}
                         <button
                             type="button"
-                            onClick={() => setActiveTab('badges')}
+                            onClick={() => handleTabChange('badges')}
                             className={`group relative cursor-pointer overflow-hidden rounded-xl border p-5 text-left transition-all duration-200 ${
                                 activeTab === 'badges'
                                     ? 'border-[#7C5CFF] bg-white shadow-lg ring-2 shadow-[#7C5CFF]/10 ring-[#7C5CFF]/30 dark:bg-[#0d0f1a] dark:shadow-[#7C5CFF]/15'
@@ -458,7 +712,7 @@ export default function AssetsPage({
                         {/* CERTIFICATE CARD */}
                         <button
                             type="button"
-                            onClick={() => setActiveTab('certificates')}
+                            onClick={() => handleTabChange('certificates')}
                             className={`group relative cursor-pointer overflow-hidden rounded-xl border p-5 text-left transition-all duration-200 ${
                                 activeTab === 'certificates'
                                     ? 'border-[#7C5CFF] bg-white shadow-lg ring-2 shadow-[#7C5CFF]/10 ring-[#7C5CFF]/30 dark:bg-[#0d0f1a] dark:shadow-[#7C5CFF]/15'
@@ -529,6 +783,79 @@ export default function AssetsPage({
                                     </div>
                                 </div>
 
+                                {/* BULK ACTIONS TOOLBAR (RANKS) */}
+                                {rankItems.length > 0 && (
+                                    <div
+                                        className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${
+                                            selectedRankIds.length > 0
+                                                ? 'border-rose-200 bg-rose-50/70 dark:border-rose-900/30 dark:bg-rose-950/20'
+                                                : 'border-slate-200/80 bg-slate-50/60 dark:border-white/5 dark:bg-white/[0.02]'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <label className="flex cursor-pointer select-none items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        selectedRankIds.length >
+                                                            0 &&
+                                                        selectedRankIds.length ===
+                                                            rankItems.length
+                                                    }
+                                                    onChange={
+                                                        toggleSelectAllRanks
+                                                    }
+                                                    className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                />
+                                                <span>
+                                                    Pilih Semua (
+                                                    {rankItems.length})
+                                                </span>
+                                            </label>
+                                            {selectedRankIds.length > 0 && (
+                                                <span className="rounded-full bg-rose-500/10 px-2.5 py-0.5 text-xs font-bold text-rose-600 dark:bg-rose-500/20 dark:text-rose-400">
+                                                    {selectedRankIds.length}{' '}
+                                                    rank ditandai
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {selectedRankIds.length > 0 && (
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedRankIds([])
+                                                    }
+                                                    className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:bg-white/10"
+                                                >
+                                                    Batal
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={
+                                                        handleBulkDeleteRanks
+                                                    }
+                                                    disabled={isBulkDeleting}
+                                                    className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-700 disabled:opacity-50"
+                                                >
+                                                    {isBulkDeleting ? (
+                                                        <Loader2
+                                                            size={13}
+                                                            className="animate-spin"
+                                                        />
+                                                    ) : (
+                                                        <Trash2 size={13} />
+                                                    )}
+                                                    Hapus{' '}
+                                                    {selectedRankIds.length}{' '}
+                                                    Terpilih
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                                 {rankItems.length === 0 ? (
                                     <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-white/10">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -563,9 +890,30 @@ export default function AssetsPage({
                                                         index,
                                                     );
                                                 }}
-                                                className="flex cursor-grab items-center justify-between p-4 transition-colors hover:bg-slate-100/50 active:cursor-grabbing dark:hover:bg-white/[0.02]"
+                                                className={`flex cursor-grab items-center justify-between p-4 transition-colors active:cursor-grabbing ${
+                                                    selectedRankIds.includes(
+                                                        rank.id,
+                                                    )
+                                                        ? 'bg-[#7C5CFF]/10 dark:bg-[#7C5CFF]/15'
+                                                        : 'hover:bg-slate-100/50 dark:hover:bg-white/[0.02]'
+                                                }`}
                                             >
                                                 <div className="flex items-center gap-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedRankIds.includes(
+                                                            rank.id,
+                                                        )}
+                                                        onChange={() =>
+                                                            toggleSelectRank(
+                                                                rank.id,
+                                                            )
+                                                        }
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                        className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                    />
                                                     <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 dark:border-white/10 dark:bg-white/5">
                                                         <img
                                                             src={
@@ -647,6 +995,86 @@ export default function AssetsPage({
                                     </Link>
                                 </div>
 
+                                {/* BULK ACTIONS TOOLBAR (CHARACTERS) */}
+                                {characterItems.length > 0 && (
+                                    <div
+                                        className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${
+                                            selectedCharacterIds.length > 0
+                                                ? 'border-rose-200 bg-rose-50/70 dark:border-rose-900/30 dark:bg-rose-950/20'
+                                                : 'border-slate-200/80 bg-slate-50/60 dark:border-white/5 dark:bg-white/[0.02]'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <label className="flex cursor-pointer select-none items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        selectedCharacterIds.length >
+                                                            0 &&
+                                                        selectedCharacterIds.length ===
+                                                            characterItems.length
+                                                    }
+                                                    onChange={
+                                                        toggleSelectAllCharacters
+                                                    }
+                                                    className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                />
+                                                <span>
+                                                    Pilih Semua (
+                                                    {characterItems.length})
+                                                </span>
+                                            </label>
+                                            {selectedCharacterIds.length >
+                                                0 && (
+                                                <span className="rounded-full bg-rose-500/10 px-2.5 py-0.5 text-xs font-bold text-rose-600 dark:bg-rose-500/20 dark:text-rose-400">
+                                                    {
+                                                        selectedCharacterIds.length
+                                                    }{' '}
+                                                    karakter ditandai
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {selectedCharacterIds.length > 0 && (
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedCharacterIds(
+                                                            [],
+                                                        )
+                                                    }
+                                                    className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:bg-white/10"
+                                                >
+                                                    Batal
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={
+                                                        handleBulkDeleteCharacters
+                                                    }
+                                                    disabled={isBulkDeleting}
+                                                    className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-700 disabled:opacity-50"
+                                                >
+                                                    {isBulkDeleting ? (
+                                                        <Loader2
+                                                            size={13}
+                                                            className="animate-spin"
+                                                        />
+                                                    ) : (
+                                                        <Trash2 size={13} />
+                                                    )}
+                                                    Hapus{' '}
+                                                    {
+                                                        selectedCharacterIds.length
+                                                    }{' '}
+                                                    Terpilih
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                                 {characterItems.length === 0 ? (
                                     <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-white/10">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -662,9 +1090,36 @@ export default function AssetsPage({
                                                 onClick={() =>
                                                     setSelectedCharacter(char)
                                                 }
-                                                className="group relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50 p-4 transition-all hover:border-[#7C5CFF]/40 hover:bg-slate-100/50 hover:shadow-md dark:border-white/10 dark:bg-white/[0.02] dark:hover:bg-white/[0.05]"
+                                                className={`group relative cursor-pointer overflow-hidden rounded-xl border p-4 transition-all hover:shadow-md ${
+                                                    selectedCharacterIds.includes(
+                                                        char.id,
+                                                    )
+                                                        ? 'border-[#7C5CFF] bg-[#7C5CFF]/5 ring-2 ring-[#7C5CFF]/30 dark:bg-[#7C5CFF]/10'
+                                                        : 'border-slate-200 bg-slate-50/50 hover:border-[#7C5CFF]/40 hover:bg-slate-100/50 dark:border-white/10 dark:bg-white/[0.02] dark:hover:bg-white/[0.05]'
+                                                }`}
                                             >
-                                                <div className="flex items-center gap-4">
+                                                {/* Select Checkbox */}
+                                                <div
+                                                    className="absolute top-3.5 right-3.5 z-10"
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedCharacterIds.includes(
+                                                            char.id,
+                                                        )}
+                                                        onChange={() =>
+                                                            toggleSelectCharacter(
+                                                                char.id,
+                                                            )
+                                                        }
+                                                        className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                    />
+                                                </div>
+
+                                                <div className="flex items-center gap-4 pr-6">
                                                     <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 dark:border-white/10 dark:bg-white/5">
                                                         <img
                                                             src={
@@ -739,6 +1194,79 @@ export default function AssetsPage({
                                     </div>
                                 </div>
 
+                                {/* BULK ACTIONS TOOLBAR (BADGES) */}
+                                {badgeItems.length > 0 && (
+                                    <div
+                                        className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${
+                                            selectedBadgeIds.length > 0
+                                                ? 'border-rose-200 bg-rose-50/70 dark:border-rose-900/30 dark:bg-rose-950/20'
+                                                : 'border-slate-200/80 bg-slate-50/60 dark:border-white/5 dark:bg-white/[0.02]'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <label className="flex cursor-pointer select-none items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        selectedBadgeIds.length >
+                                                            0 &&
+                                                        selectedBadgeIds.length ===
+                                                            badgeItems.length
+                                                    }
+                                                    onChange={
+                                                        toggleSelectAllBadges
+                                                    }
+                                                    className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                />
+                                                <span>
+                                                    Pilih Semua (
+                                                    {badgeItems.length})
+                                                </span>
+                                            </label>
+                                            {selectedBadgeIds.length > 0 && (
+                                                <span className="rounded-full bg-rose-500/10 px-2.5 py-0.5 text-xs font-bold text-rose-600 dark:bg-rose-500/20 dark:text-rose-400">
+                                                    {selectedBadgeIds.length}{' '}
+                                                    badge ditandai
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {selectedBadgeIds.length > 0 && (
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedBadgeIds([])
+                                                    }
+                                                    className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:bg-white/10"
+                                                >
+                                                    Batal
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={
+                                                        handleBulkDeleteBadges
+                                                    }
+                                                    disabled={isBulkDeleting}
+                                                    className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-700 disabled:opacity-50"
+                                                >
+                                                    {isBulkDeleting ? (
+                                                        <Loader2
+                                                            size={13}
+                                                            className="animate-spin"
+                                                        />
+                                                    ) : (
+                                                        <Trash2 size={13} />
+                                                    )}
+                                                    Hapus{' '}
+                                                    {selectedBadgeIds.length}{' '}
+                                                    Terpilih
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                                 {badgeItems.length === 0 ? (
                                     <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-white/10">
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -773,9 +1301,30 @@ export default function AssetsPage({
                                                         index,
                                                     );
                                                 }}
-                                                className="flex cursor-grab items-center justify-between p-4 transition-colors hover:bg-slate-100/50 active:cursor-grabbing dark:hover:bg-white/[0.02]"
+                                                className={`flex cursor-grab items-center justify-between p-4 transition-colors active:cursor-grabbing ${
+                                                    selectedBadgeIds.includes(
+                                                        badge.id,
+                                                    )
+                                                        ? 'bg-[#7C5CFF]/10 dark:bg-[#7C5CFF]/15'
+                                                        : 'hover:bg-slate-100/50 dark:hover:bg-white/[0.02]'
+                                                }`}
                                             >
                                                 <div className="flex items-center gap-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedBadgeIds.includes(
+                                                            badge.id,
+                                                        )}
+                                                        onChange={() =>
+                                                            toggleSelectBadge(
+                                                                badge.id,
+                                                            )
+                                                        }
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                        className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                    />
                                                     <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 dark:border-white/10 dark:bg-white/5">
                                                         <img
                                                             src={
@@ -947,10 +1496,101 @@ export default function AssetsPage({
 
                                 {/* GALLERY GRID */}
                                 <div>
-                                    <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                                        Galeri Desain Sertifikat (
-                                        {certificateItems.length})
-                                    </h4>
+                                    <div className="mb-4 flex flex-col gap-3">
+                                        <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                                            Galeri Desain Sertifikat (
+                                            {certificateItems.length})
+                                        </h4>
+
+                                        {/* BULK ACTIONS TOOLBAR (CERTIFICATES) */}
+                                        {certificateItems.length > 0 && (
+                                            <div
+                                                className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 transition-colors ${
+                                                    selectedCertificateIds.length >
+                                                    0
+                                                        ? 'border-rose-200 bg-rose-50/70 dark:border-rose-900/30 dark:bg-rose-950/20'
+                                                        : 'border-slate-200/80 bg-slate-50/60 dark:border-white/5 dark:bg-white/[0.02]'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <label className="flex cursor-pointer select-none items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={
+                                                                selectedCertificateIds.length >
+                                                                    0 &&
+                                                                selectedCertificateIds.length ===
+                                                                    certificateItems.length
+                                                            }
+                                                            onChange={
+                                                                toggleSelectAllCertificates
+                                                            }
+                                                            className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] focus:ring-[#7C5CFF]"
+                                                        />
+                                                        <span>
+                                                            Pilih Semua (
+                                                            {
+                                                                certificateItems.length
+                                                            }
+                                                            )
+                                                        </span>
+                                                    </label>
+                                                    {selectedCertificateIds.length >
+                                                        0 && (
+                                                        <span className="rounded-full bg-rose-500/10 px-2.5 py-0.5 text-xs font-bold text-rose-600 dark:bg-rose-500/20 dark:text-rose-400">
+                                                            {
+                                                                selectedCertificateIds.length
+                                                            }{' '}
+                                                            desain ditandai
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {selectedCertificateIds.length >
+                                                    0 && (
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setSelectedCertificateIds(
+                                                                    [],
+                                                                )
+                                                            }
+                                                            className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:bg-white/10"
+                                                        >
+                                                            Batal
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={
+                                                                handleBulkDeleteCertificates
+                                                            }
+                                                            disabled={
+                                                                isBulkDeleting
+                                                            }
+                                                            className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-rose-700 disabled:opacity-50"
+                                                        >
+                                                            {isBulkDeleting ? (
+                                                                <Loader2
+                                                                    size={13}
+                                                                    className="animate-spin"
+                                                                />
+                                                            ) : (
+                                                                <Trash2
+                                                                    size={13}
+                                                                />
+                                                            )}
+                                                            Hapus{' '}
+                                                            {
+                                                                selectedCertificateIds.length
+                                                            }{' '}
+                                                            Terpilih
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
 
                                     {certificateItems.length === 0 ? (
                                         <div className="rounded-xl border border-dashed border-slate-200 p-10 text-center dark:border-white/10">
@@ -974,9 +1614,13 @@ export default function AssetsPage({
                                                 <div
                                                     key={item.id}
                                                     className={`group relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-200 ${
-                                                        item.is_active
-                                                            ? 'border-emerald-500/50 bg-emerald-500/[0.02] shadow-md ring-2 ring-emerald-500/30 dark:border-emerald-500/40 dark:bg-emerald-500/[0.04]'
-                                                            : 'border-slate-200 bg-white hover:border-[#7C5CFF]/40 hover:shadow-md dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-white/20'
+                                                        selectedCertificateIds.includes(
+                                                            item.id,
+                                                        )
+                                                            ? 'border-[#7C5CFF] ring-2 ring-[#7C5CFF]/30 dark:border-[#7C5CFF]'
+                                                            : item.is_active
+                                                              ? 'border-emerald-500/50 bg-emerald-500/[0.02] shadow-md ring-2 ring-emerald-500/30 dark:border-emerald-500/40 dark:bg-emerald-500/[0.04]'
+                                                              : 'border-slate-200 bg-white hover:border-[#7C5CFF]/40 hover:shadow-md dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-white/20'
                                                     }`}
                                                 >
                                                     {/* Card Header Thumbnail */}
@@ -989,12 +1633,33 @@ export default function AssetsPage({
                                                             alt={item.title}
                                                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                         />
-                                                        {item.is_active && (
-                                                            <div className="absolute top-3 left-3 rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-bold text-white shadow-md">
-                                                                ✓ Aktif
-                                                                Digunakan
-                                                            </div>
-                                                        )}
+
+                                                        {/* Top Selection & Status Badges */}
+                                                        <div
+                                                            className="absolute top-3 left-3 z-10 flex items-center gap-2"
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedCertificateIds.includes(
+                                                                    item.id,
+                                                                )}
+                                                                onChange={() =>
+                                                                    toggleSelectCertificate(
+                                                                        item.id,
+                                                                    )
+                                                                }
+                                                                className="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#7C5CFF] shadow-sm focus:ring-[#7C5CFF]"
+                                                            />
+                                                            {item.is_active && (
+                                                                <div className="rounded-full bg-emerald-500 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-md">
+                                                                    ✓ Aktif
+                                                                    Digunakan
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                         {item.logo_url && (
                                                             <div className="absolute right-3 bottom-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 p-1 shadow-md backdrop-blur-sm">
                                                                 <img
