@@ -76,6 +76,39 @@ class QuizController extends Controller
         ]);
     }
 
+    public function restartLegacy(string $id)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $userId = (string) $user->_id;
+
+        $quiz = Quiz::where('_id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+        $quizId = (string) $quiz->_id;
+
+        QuizAttempt::where('user_id', $userId)
+            ->where('quiz_id', $quizId)
+            ->where('is_active', true)
+            ->update([
+                'is_active' => false,
+                'completed_at' => now(),
+            ]);
+
+        QuizAttempt::create([
+            'user_id' => $userId,
+            'quiz_id' => $quizId,
+            'started_at' => now(),
+            'is_active' => true,
+        ]);
+
+        $durationSeconds = ((int) ($quiz->duration ?? 15)) * 60;
+
+        return response()->json([
+            'remaining_seconds' => $durationSeconds,
+        ]);
+    }
+
     public function showLegacy(string $id)
     {
         /** @var User $user */

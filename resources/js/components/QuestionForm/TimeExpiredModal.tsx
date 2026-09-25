@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface TimeExpiredModalProps {
     open: boolean;
     onProceed: () => void;
+    onRetry?: () => void;
 }
 
 export default function TimeExpiredModal({
     open,
     onProceed,
+    onRetry,
 }: TimeExpiredModalProps) {
     if (!open) return null;
 
@@ -37,14 +39,26 @@ export default function TimeExpiredModal({
                         otomatis.
                     </p>
 
-                    <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={onProceed}
-                        className="w-full rounded-xl border border-yellow-400 bg-yellow-400 py-3 font-['Orbitron'] text-sm font-bold tracking-wider text-black shadow-lg shadow-yellow-400/20 transition-all hover:bg-yellow-300"
-                    >
-                        Lihat Hasil Kuis
-                    </motion.button>
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                        {onRetry && (
+                            <motion.button
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                                onClick={onRetry}
+                                className="flex-1 rounded-xl bg-emerald-600 py-3 font-['Orbitron'] text-sm font-bold tracking-wider text-white shadow-lg shadow-emerald-600/30 transition-all hover:bg-emerald-500 uppercase"
+                            >
+                                🔄 Coba Lagi
+                            </motion.button>
+                        )}
+                        <motion.button
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={onProceed}
+                            className="flex-1 rounded-xl border border-yellow-400 bg-yellow-400 py-3 font-['Orbitron'] text-sm font-bold tracking-wider text-black shadow-lg shadow-yellow-400/20 transition-all hover:bg-yellow-300 uppercase"
+                        >
+                            Lihat Hasil
+                        </motion.button>
+                    </div>
                 </motion.div>
             </div>
         </AnimatePresence>
