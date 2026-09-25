@@ -49,7 +49,7 @@ export default function Index({ quizzes }: { quizzes: Quiz[] }) {
 
     return (
         <AppLayout>
-            <div className="relative mx-auto min-h-screen w-full overflow-hidden bg-slate-50 p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-[#030712] dark:text-white">
+            <div className="relative mx-auto min-h-screen w-full overflow-hidden bg-transparent p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-transparent dark:text-white">
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[400px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.08),transparent_50%)] select-none dark:bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.12),transparent_50%)]" />
 
                 <div className="relative z-10 mx-auto w-full space-y-6 sm:space-y-8">

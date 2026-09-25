@@ -913,7 +913,7 @@ export default function Show({ user, details }: { user: any; details: any }) {
 
     return (
         <AppLayout>
-            <div className="relative min-h-screen overflow-hidden bg-[#f8fafc] px-6 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-[#030712] dark:text-white">
+            <div className="relative min-h-screen overflow-hidden bg-transparent px-6 py-6 text-slate-900 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-transparent dark:text-white">
                 {/* Subtle topglow */}
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[400px] w-full max-w-7xl -translate-x-1/2 bg-gradient-to-b from-indigo-500/5 to-transparent blur-3xl" />
 

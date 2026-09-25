@@ -252,7 +252,7 @@ export default function Index({ quests, statusCounts, filters }: Props) {
     return (
         <AppLayout>
             <div
-                className="relative min-h-screen overflow-hidden bg-[#f8fafc] px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-[#030712] dark:text-white"
+                className="relative min-h-screen overflow-hidden bg-transparent px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-10 dark:bg-transparent dark:text-white"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Ambient Glow */}
@@ -262,13 +262,12 @@ export default function Index({ quests, statusCounts, filters }: Props) {
                     {/* HEADER */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                         <div
-                            className="pointer-events-none absolute inset-0 z-0"
+                            className="pointer-events-none absolute inset-0 z-0 opacity-60 dark:opacity-30"
                             style={{
                                 backgroundImage: `
-                                    linear-gradient(rgba(59, 40, 246, 0.04) 1px, transparent 1px),
-                                    linear-gradient(90deg, rgba(59, 40, 246, 0.04) 1px, transparent 1px)
+                                    radial-gradient(circle at top right, rgba(124, 92, 255, 0.10), transparent 70%),
+                                    radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.06), transparent 60%)
                                 `,
-                                backgroundSize: '40px 40px',
                             }}
                         />
 

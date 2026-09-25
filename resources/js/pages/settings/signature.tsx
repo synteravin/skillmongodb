@@ -23,15 +23,14 @@ export default function Signature() {
             >
                 {/* Header Hero Section */}
                 <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800 dark:bg-[#0d0f17]">
-                    {/* Grid Pattern Motif */}
+                    {/* Ambient Glow Motif */}
                     <div
-                        className="pointer-events-none absolute inset-0 z-0"
+                        className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-40"
                         style={{
                             backgroundImage: `
-                                linear-gradient(rgba(59, 40, 246, 0.07) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(59, 40, 246, 0.07) 1px, transparent 1px)
+                                radial-gradient(circle at top right, rgba(124, 92, 255, 0.12), transparent 70%),
+                                radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.08), transparent 60%)
                             `,
-                            backgroundSize: '40px 40px',
                         }}
                     />
 

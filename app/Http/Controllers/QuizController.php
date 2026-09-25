@@ -320,7 +320,6 @@ class QuizController extends Controller
                     return [
                         'id' => $qId,
                         'question_text' => $q->question_text,
-                        'explanation' => $q->explanation,
                         'media_url' => $q->media_url
                             ? (str_starts_with($q->media_url, 'http') ? $q->media_url : url('storage/'.$q->media_url))
                             : null,

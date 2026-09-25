@@ -25,7 +25,6 @@ type Answer = {
 type Question = {
     id?: string;
     question_text: string;
-    explanation?: string;
     media_url?: string;
     media_file?: File;
     answers: Answer[];
@@ -166,9 +165,6 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
                 formData.append(`questions[${i}][id]`, q.id);
             }
             formData.append(`questions[${i}][question_text]`, q.question_text);
-            if (q.explanation) {
-                formData.append(`questions[${i}][explanation]`, q.explanation);
-            }
 
             if (q.media_file) {
                 formData.append(`questions[${i}][media]`, q.media_file);
@@ -197,7 +193,7 @@ export default function Edit({ quiz }: { quiz: Quiz }) {
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-slate-50 p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-gradient-to-br dark:from-[#020617] dark:via-[#020617] dark:to-black dark:text-white">
+            <div className="min-h-screen bg-transparent p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-transparent dark:text-white">
                 <div className="mx-auto w-full space-y-6 sm:space-y-8">
                     {/* HEADER */}
                     <div className="flex flex-col justify-center gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-900/50 dark:shadow-lg">
@@ -425,21 +421,7 @@ function QuestionCard({
                     />
                 </div>
 
-                {/* EXPLANATION */}
-                <div>
-                    <label className="mb-1.5 ml-1 block text-xs font-semibold text-slate-500 dark:text-slate-400">
-                        Pembahasan / Catatan Penjelasan Soal (Opsional)
-                    </label>
-                    <textarea
-                        placeholder="Contoh: Jawaban A benar karena fungsi ini..."
-                        value={data.explanation || ''}
-                        onChange={(e) =>
-                            onChange({ ...data, explanation: e.target.value })
-                        }
-                        rows={2}
-                        className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white dark:placeholder:text-slate-600"
-                    />
-                </div>
+
 
                 {/* IMAGE UPLOAD */}
                 <div>

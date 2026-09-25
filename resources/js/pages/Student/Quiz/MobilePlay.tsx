@@ -136,14 +136,7 @@ const QuestionBox = ({
                         (Pilih {question.max_selectable} Jawaban)
                     </span>
                 )}
-                {question.explanation && (
-                    <div className="mt-2.5 rounded-lg border border-indigo-500/40 bg-indigo-950/60 p-2.5 text-xs text-indigo-200">
-                        <span className="font-bold text-yellow-400">
-                            💡 Pembahasan:{' '}
-                        </span>
-                        {question.explanation}
-                    </div>
-                )}
+
             </div>
         </div>
     );

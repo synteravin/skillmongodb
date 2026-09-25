@@ -724,8 +724,8 @@ class QuestController extends Controller
     {
         $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
 
-        if ($quest->status === 'completed') {
-            abort(400, 'Quest yang sudah selesai secara tuntas tidak dapat dibuka kembali bidding-nya.');
+        if (in_array($quest->status, ['completed', 'cancelled'])) {
+            abort(400, 'Quest yang sudah selesai atau dibatalkan tidak dapat dibuka kembali bidding-nya.');
         }
 
         $acceptedBid = QuestBid::where('quest_id', $quest->_id)->where('status', 'accepted')->first();

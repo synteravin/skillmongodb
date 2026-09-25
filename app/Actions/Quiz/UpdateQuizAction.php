@@ -68,7 +68,6 @@ class UpdateQuizAction
                 if ($question) {
                     $question->update([
                         'question_text' => $q['question_text'],
-                        'explanation' => $q['explanation'] ?? null,
                         'media_url' => $mediaUrl,
                         'media_path' => $mediaPath,
                         'order' => $qIndex + 1,
@@ -77,7 +76,6 @@ class UpdateQuizAction
                     $question = QuizQuestion::create([
                         'quiz_id' => (string) $quiz->_id,
                         'question_text' => $q['question_text'],
-                        'explanation' => $q['explanation'] ?? null,
                         'media_url' => $mediaUrl,
                         'media_path' => $mediaPath,
                         'order' => $qIndex + 1,
@@ -87,7 +85,6 @@ class UpdateQuizAction
                 $question = QuizQuestion::create([
                     'quiz_id' => (string) $quiz->_id,
                     'question_text' => $q['question_text'],
-                    'explanation' => $q['explanation'] ?? null,
                     'media_url' => $mediaUrl,
                     'media_path' => $mediaPath,
                     'order' => $qIndex + 1,

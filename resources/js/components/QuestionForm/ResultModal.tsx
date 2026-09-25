@@ -14,7 +14,6 @@ interface ResultModalProps {
     open: boolean;
     result: Result | null;
     onClose: () => void;
-    onViewExplanation?: () => void;
     onRetry?: () => void;
 }
 
@@ -152,7 +151,6 @@ export default function ResultModal({
     open,
     result,
     onClose,
-    onViewExplanation,
     onRetry,
 }: ResultModalProps) {
     const active = open && !!result;
@@ -318,17 +316,6 @@ export default function ResultModal({
                                 </motion.button>
                             )}
 
-                            <motion.button
-                                whileHover={{ scale: 1.04 }}
-                                whileTap={{ scale: 0.96 }}
-                                onClick={onViewExplanation || onClose}
-                                className="min-w-[120px] flex-1 rounded-xl border border-yellow-400/60 bg-yellow-400/10 px-3 sm:px-4 py-2 sm:py-3 [@media(max-height:550px)]:py-1.5 text-[11px] sm:text-xs font-bold tracking-wider text-yellow-300 uppercase transition-all duration-300 hover:bg-yellow-400/20"
-                                style={{
-                                    fontFamily: "'Orbitron', sans-serif",
-                                }}
-                            >
-                                💡 Lihat
-                            </motion.button>
 
                             <motion.button
                                 whileHover={{ scale: 1.04 }}

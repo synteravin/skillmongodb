@@ -136,24 +136,20 @@ export default function ModuleShow({ module }: any) {
 
     return (
         <AppLayout>
-            <div className="relative min-h-screen overflow-hidden bg-[#f8fafc] p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-[#030712] dark:text-white">
+            <div className="relative min-h-screen overflow-hidden bg-transparent p-4 text-slate-800 sm:p-6 lg:p-8 dark:bg-transparent dark:text-white">
                 <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-6">
                     {/* HEADER */}
-                    <header
-                        className="relative overflow-hidden rounded-xl border border-slate-200 bg-[#f5f6ff] px-6 py-5 dark:border-white/5 dark:bg-[#0d0f17]"
-                        style={{
-                            backgroundImage: `
-                                linear-gradient(rgba(59,40,246,0.07) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(59,40,246,0.07) 1px, transparent 1px)
-                            `,
-                            backgroundSize: '40px 40px',
-                        }}
-                    >
-                        {/* Corner brackets */}
-                        <span className="absolute top-3.5 left-3.5 h-3 w-3 border-t border-l border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute top-3.5 right-3.5 h-3 w-3 border-t border-r border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute right-3.5 bottom-3.5 h-3 w-3 border-r border-b border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
+                    <header className="relative overflow-hidden rounded-xl border border-slate-200 bg-[#f5f6ff] px-6 py-5 dark:border-white/5 dark:bg-[#0d0f17]">
+                        {/* Ambient Glow Motif */}
+                        <div
+                            className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-40"
+                            style={{
+                                backgroundImage: `
+                                    radial-gradient(circle at top right, rgba(124, 92, 255, 0.12), transparent 70%),
+                                    radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.08), transparent 60%)
+                                `,
+                            }}
+                        />
 
                         <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-col gap-2">

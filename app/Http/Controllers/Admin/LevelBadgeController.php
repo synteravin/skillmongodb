@@ -28,6 +28,8 @@ class LevelBadgeController extends Controller
             'icon' => 'required|image|max:2048',
         ]);
 
+        $data['order'] = (int) $data['order'];
+
         if ($request->hasFile('icon')) {
             $data['icon'] = $request->file('icon')->store('badges', 's3');
         }
@@ -35,8 +37,8 @@ class LevelBadgeController extends Controller
         LevelBadge::create($data);
 
         return redirect()
-            ->route('admin.assets.index')
-            ->with('success', 'Badge operation successful');
+            ->route('admin.assets.index', ['tab' => 'badges'])
+            ->with('success', 'Badge berhasil ditambahkan.');
     }
 
     public function edit(string $id)
@@ -76,22 +78,24 @@ class LevelBadgeController extends Controller
         $badge->update($data);
 
         return redirect()
-            ->route('admin.assets.index')
-            ->with('success', 'Badge updated');
+            ->route('admin.assets.index', ['tab' => 'badges'])
+            ->with('success', 'Badge berhasil diperbarui.');
     }
 
     public function reorder(Request $request)
     {
         $request->validate([
             'badges' => 'required|array',
+            'badges.*.id' => 'required|string',
+            'badges.*.order' => 'required|integer',
         ]);
 
         foreach ($request->badges as $badge) {
             LevelBadge::where('_id', $badge['id'])
-                ->update(['order' => $badge['order']]);
+                ->update(['order' => (int) $badge['order']]);
         }
 
-        return back();
+        return back()->with('success', 'Urutan badge berhasil diperbarui.');
     }
 
     public function destroy(string $id)
@@ -106,7 +110,30 @@ class LevelBadgeController extends Controller
         $badge->delete();
 
         return redirect()
-            ->route('admin.assets.index')
-            ->with('success', 'Badge deleted');
+            ->route('admin.assets.index', ['tab' => 'badges'])
+            ->with('success', 'Badge berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'string',
+        ]);
+
+        $badges = LevelBadge::whereIn('_id', $request->ids)->get();
+        $count = 0;
+
+        foreach ($badges as $badge) {
+            if ($badge->icon) {
+                Storage::disk('s3')->delete($badge->icon);
+            }
+            $badge->delete();
+            $count++;
+        }
+
+        return redirect()
+            ->route('admin.assets.index', ['tab' => 'badges'])
+            ->with('success', "{$count} badge berhasil dihapus.");
     }
 }

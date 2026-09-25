@@ -102,21 +102,20 @@ export default function StudentJourneyIndex({
             <Head title="Student Journey" />
 
             <div
-                className="min-h-screen bg-slate-50/50 pt-6 pb-20 dark:bg-[#090910]"
+                className="min-h-screen bg-transparent pt-6 pb-20 dark:bg-transparent"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
                     {/* Header & Stats Banner */}
                     <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-[#f8f9ff] via-[#f0f2fe] to-[#e8ebff] p-6 shadow-md shadow-indigo-100/50 sm:p-8 dark:border-slate-800/80 dark:from-[#0d0f17] dark:via-[#111424] dark:to-[#0a0c14] dark:shadow-none">
-                        {/* Grid Pattern Background Motif */}
+                        {/* Ambient Glow Background Motif */}
                         <div
-                            className="pointer-events-none absolute inset-0 z-0 opacity-40 dark:opacity-20"
+                            className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-40"
                             style={{
                                 backgroundImage: `
-                                    linear-gradient(rgba(79, 70, 229, 0.15) 1px, transparent 1px),
-                                    linear-gradient(90deg, rgba(79, 70, 229, 0.15) 1px, transparent 1px)
+                                    radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 70%),
+                                    radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.08), transparent 60%)
                                 `,
-                                backgroundSize: '32px 32px',
                             }}
                         />
 

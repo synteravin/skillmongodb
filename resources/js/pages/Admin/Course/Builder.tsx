@@ -629,7 +629,7 @@ export default function Builder({
     return (
         <AppLayout>
             <div
-                className="min-h-screen bg-[#f8fafc] px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-[#030712] dark:text-white"
+                className="min-h-screen bg-transparent px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-transparent dark:text-white"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 <div className="mx-auto w-full space-y-8">
@@ -654,10 +654,9 @@ export default function Builder({
                         className="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm dark:border-slate-800 dark:bg-[#0d0f17]"
                         style={{
                             backgroundImage: `
-                            linear-gradient(rgba(59,40,246,0.03) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(59,40,246,0.03) 1px, transparent 1px)
+                            radial-gradient(circle at top right, rgba(124, 92, 255, 0.10), transparent 70%),
+                            radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.06), transparent 60%)
                             `,
-                            backgroundSize: '40px 40px',
                         }}
                     >
                         {/* Corner brackets */}

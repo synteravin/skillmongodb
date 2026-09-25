@@ -37,7 +37,7 @@ export default function ModuleIndex({ path }: any) {
 
     return (
         <AppLayout>
-            <div className="relative min-h-screen overflow-hidden bg-[#030712] p-6 text-white">
+            <div className="relative min-h-screen overflow-hidden bg-transparent p-6 text-slate-900 dark:text-white">
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[400px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top_center,rgba(124,92,255,0.12),transparent_50%)] select-none" />
 
                 <div className="relative z-10 mx-auto flex w-full flex-col gap-6">

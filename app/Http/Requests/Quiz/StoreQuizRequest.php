@@ -33,8 +33,6 @@ class StoreQuizRequest extends FormRequest
 
             'questions.*.question_text' => ['required', 'string'],
 
-            'questions.*.explanation' => ['nullable', 'string'],
-
             /* ================= ANSWERS ================= */
             'questions.*.answers' => ['required', 'array', 'min:2'],
 

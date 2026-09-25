@@ -64,7 +64,7 @@ export default function Edit({ course }: { course: Course }) {
     return (
         <AppLayout>
             <div
-                className="min-h-screen bg-[#f8fafc] px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-[#030712] dark:text-white"
+                className="min-h-screen bg-transparent px-4 py-8 text-slate-800 transition-colors duration-200 sm:px-6 lg:px-8 dark:bg-transparent dark:text-white"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 <div className="mx-auto max-w-[1200px] space-y-6 sm:space-y-8">
