@@ -520,12 +520,15 @@ export default function Play({
     }, [current, isReviewMode, currentQuestion]);
 
     const handleRetry = async () => {
+        const fullDuration = (quiz?.duration || 15) * 60;
+        setTimeLeft(fullDuration);
+        setShowTimeExpired(false);
+        setShowResult(false);
+        setFinalResult(null);
         setIsReviewMode(false);
         setCurrent(0);
         setAnswers([]);
         setSelected([]);
-        setShowResult(false);
-        setFinalResult(null);
 
         const csrf = document
             .querySelector('meta[name="csrf-token"]')
@@ -545,9 +548,11 @@ export default function Play({
                 credentials: 'include',
             });
             const data = await res.json();
-            setTimeLeft(data.remaining_seconds ?? (quiz?.duration || 15) * 60);
+            if (data?.remaining_seconds) {
+                setTimeLeft(data.remaining_seconds);
+            }
         } catch {
-            setTimeLeft((quiz?.duration || 15) * 60);
+            setTimeLeft(fullDuration);
         }
     };
 
@@ -745,6 +750,7 @@ export default function Play({
             </div>
         );
     }
+
 
     return (
         <>
@@ -966,6 +972,7 @@ export default function Play({
             <TimeExpiredModal
                 open={showTimeExpired}
                 onProceed={handleProceedTimeExpired}
+                onRetry={handleRetry}
             />
 
             {showQuizTour && (
