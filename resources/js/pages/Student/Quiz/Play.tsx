@@ -3,876 +3,308 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
 import TimeExpiredModal from '@/components/QuestionForm/TimeExpiredModal';
 import { router, usePage } from '@inertiajs/react';
-import { Flag, AlertOctagon, TriangleAlert } from 'lucide-react';
+import { Clock, Flag, AlertOctagon, TriangleAlert, Gamepad2 } from 'lucide-react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
-import MobilePlay from './MobilePlay';
-import './quizLandscape.css';
 
-interface FooterProps {
-    current: number;
-    total: number;
-    selected: string | null;
-    isReviewMode?: boolean;
-    loading: boolean;
-    handleBack: () => void;
-    next: () => void;
+/* ============================================================================
+   1. CODE BLOCK COMPONENT (IDE Style with Syntax Colors & Line Numbers)
+   ============================================================================ */
+function renderHighlightedLine(line: string) {
+    if (!line) return <span>&nbsp;</span>;
+
+    const tokens = line.split(/(<[^>]+>|"[^"]*"|'[^']*')/g);
+
+    return (
+        <>
+            {tokens.map((token, idx) => {
+                if (token.startsWith('<') && token.endsWith('>')) {
+                    const tagParts = token.split(/(\s+)/);
+                    return (
+                        <span key={idx} className="text-cyan-400 font-semibold">
+                            {tagParts.map((p, pIdx) => {
+                                if (p.includes('=')) {
+                                    const [attr, val] = p.split('=');
+                                    return (
+                                        <span key={pIdx}>
+                                            <span className="text-emerald-400">{attr}</span>=
+                                            <span className="text-yellow-300">{val}</span>
+                                        </span>
+                                    );
+                                }
+                                return p;
+                            })}
+                        </span>
+                    );
+                }
+                if (
+                    (token.startsWith('"') && token.endsWith('"')) ||
+                    (token.startsWith("'") && token.endsWith("'"))
+                ) {
+                    return (
+                        <span key={idx} className="text-yellow-300">
+                            {token}
+                        </span>
+                    );
+                }
+                return <span key={idx} className="text-slate-200">{token}</span>;
+            })}
+        </>
+    );
 }
 
-function Footer({
-    current,
-    total,
-    selected,
-    isReviewMode,
-    loading,
-    handleBack,
-    next,
-}: FooterProps) {
+function CodeBlock({ code }: { code: string }) {
+    const lines = code.trim().split('\n');
     return (
-        <div className="quiz-footer fixed bottom-4 left-0 z-40 h-[90px] w-full max-[767px]:bottom-[5px] max-[767px]:h-[62px] lg:h-[110px]">
-            <div className="pointer-events-none absolute inset-0">
-                {/* ── DIAGONAL KIRI ── */}
-                <div className="footer-diag-left absolute -bottom-[2px] left-0 block h-[30px] w-[81px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,calc(100%_-_30px)_100%,0_100%)] min-[390px]:max-[767px]:w-[95px] min-[500px]:max-[767px]:w-[130px] min-[620px]:max-[767px]:w-[172px] min-[700px]:max-[767px]:w-[199px] md:hidden" />
-                <div
-                    className="footer-diag-left absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] md:block lg:hidden"
-                    style={{
-                        width: 210,
-                        height: 50,
-                        clipPath:
-                            'polygon(0 0, 100% 0, calc(100% - 52px) 100%, 0 100%)',
-                    }}
-                />
-                <div
-                    className="footer-diag-left absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] lg:block xl:hidden"
-                    style={{
-                        width: 320,
-                        height: 65,
-                        clipPath:
-                            'polygon(0 0, 100% 0, calc(100% - 60px) 100%, 0 100%)',
-                    }}
-                />
-                <div
-                    className="footer-diag-left absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] xl:block 2xl:hidden"
-                    style={{
-                        width: 375,
-                        height: 60,
-                        clipPath:
-                            'polygon(0 0, 100% 0, calc(100% - 56px) 100%, 0 100%)',
-                    }}
-                />
-                <div
-                    className="footer-diag-left absolute -bottom-[2px] left-0 hidden bg-[#3B28F6] 2xl:block"
-                    style={{
-                        width: 442,
-                        height: 65,
-                        clipPath:
-                            'polygon(0 0, 100% 0, calc(100% - 68px) 100%, 0 100%)',
-                    }}
-                />
-
-                {/* ── DIAGONAL KANAN ── */}
-                <div className="footer-diag-right absolute right-0 -bottom-[2px] block h-[30px] w-[83px] bg-[#3B28F6] [clip-path:polygon(0_0,100%_0,100%_100%,30px_100%)] min-[390px]:max-[767px]:w-[98px] min-[500px]:max-[767px]:w-[133px] min-[620px]:max-[767px]:w-[172px] min-[700px]:max-[767px]:w-[199px] md:hidden" />
-                <div
-                    className="footer-diag-right absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] md:block lg:hidden"
-                    style={{
-                        width: 208,
-                        height: 50,
-                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 52px 100%)',
-                    }}
-                />
-                <div
-                    className="footer-diag-right absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] lg:block xl:hidden"
-                    style={{
-                        width: 320,
-                        height: 65,
-                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 60px 100%)',
-                    }}
-                />
-                <div
-                    className="footer-diag-right absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] xl:block 2xl:hidden"
-                    style={{
-                        width: 370,
-                        height: 60,
-                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 56px 100%)',
-                    }}
-                />
-                <div
-                    className="footer-diag-right absolute right-0 -bottom-[2px] hidden bg-[#3B28F6] 2xl:block"
-                    style={{
-                        width: 442,
-                        height: 65,
-                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 65px 100%)',
-                    }}
-                />
-
-                {/* ── GARIS KUNING TENGAH ATAS — MOBILE TANPA CLAMP ── */}
-                <div className="footer-bar-top absolute top-[55%] right-[83px] left-[81px] h-[3px] rounded-tl-lg rounded-tr-lg bg-[#FACC15] min-[390px]:max-[767px]:right-[97px] min-[390px]:max-[767px]:left-[94px] min-[500px]:max-[767px]:right-[133px] min-[500px]:max-[767px]:left-[130px] min-[620px]:max-[767px]:right-[172px] min-[620px]:max-[767px]:left-[173px] min-[700px]:max-[767px]:right-[199px] min-[700px]:max-[767px]:left-[199px] md:top-[46.5%] md:right-[209px] md:left-[209px] md:h-[5px] lg:top-[43%] lg:right-[317px] lg:left-[318px] xl:top-[47%] xl:right-[369px] xl:left-[378px] 2xl:top-[42%] 2xl:right-[440px] 2xl:left-[442px]" />
-
-                {/* ── GARIS KUNING BAWAH KIRI ── */}
-                <div className="footer-bar-bottom-left absolute -bottom-1 left-0 block h-[3px] w-[54px] bg-[#FACC15] min-[390px]:max-[767px]:w-[68px] min-[500px]:max-[767px]:w-[104px] min-[620px]:max-[767px]:w-[147px] min-[700px]:max-[767px]:w-[173px] md:hidden" />
-                <div
-                    className="footer-bar-bottom-left absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] md:block lg:hidden"
-                    style={{ width: 161 }}
-                />
-                <div
-                    className="footer-bar-bottom-left absolute -bottom-2 left-0 hidden h-[5px] rounded-br-xs bg-[#FACC15] lg:block xl:hidden"
-                    style={{ width: 263 }}
-                />
-                <div
-                    className="footer-bar-bottom-left absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] xl:block 2xl:hidden"
-                    style={{ width: 323 }}
-                />
-                <div
-                    className="footer-bar-bottom-left absolute -bottom-2 left-0 hidden h-[5px] bg-[#FACC15] 2xl:block"
-                    style={{ width: 381 }}
-                />
-
-                {/* ── GARIS KUNING BAWAH KANAN ── */}
-                <div className="footer-bar-bottom-right absolute right-0 -bottom-1 block h-[3px] w-[58px] rounded-bl-xs bg-[#FACC15] min-[390px]:max-[767px]:w-[72px] min-[500px]:max-[767px]:w-[109px] min-[620px]:max-[767px]:w-[147px] min-[700px]:max-[767px]:w-[174px] md:hidden" />
-                <div
-                    className="footer-bar-bottom-right absolute right-0 -bottom-2 hidden h-[5px] rounded-bl-xs bg-[#FACC15] md:block lg:hidden"
-                    style={{ width: 159 }}
-                />
-                <div
-                    className="footer-bar-bottom-right absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] lg:block xl:hidden"
-                    style={{ width: 262 }}
-                />
-                <div
-                    className="footer-bar-bottom-right absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] xl:block 2xl:hidden"
-                    style={{ width: 318 }}
-                />
-                <div
-                    className="footer-bar-bottom-right absolute right-0 -bottom-2 hidden h-[5px] bg-[#FACC15] 2xl:block"
-                    style={{ width: 381 }}
-                />
-
-                {/* ── GARIS DIAGONAL KUNING KIRI ── */}
-                <div className="footer-slash-left absolute -bottom-[14px] left-[82px] block h-[42px] w-[3px] origin-top-left rotate-45 rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:left-[96px] min-[500px]:max-[767px]:left-[132px] min-[620px]:max-[767px]:left-[174px] min-[700px]:max-[767px]:left-[201px] md:hidden" />
-                <div
-                    className="footer-slash-left absolute -bottom-7 hidden w-[4px] rounded-tl-sm rounded-br-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] md:block lg:hidden"
-                    style={{
-                        left: 212,
-                        height: 77,
-                        transform: 'rotate(45deg)',
-                        transformOrigin: 'top left',
-                    }}
-                />
-                <div
-                    className="footer-slash-left absolute -bottom-8 hidden w-[5px] rounded-tl-sm rounded-br-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] lg:block xl:hidden"
-                    style={{
-                        left: 322,
-                        height: 95,
-                        transform: 'rotate(43deg)',
-                        transformOrigin: 'top left',
-                    }}
-                />
-                <div
-                    className="footer-slash-left absolute -bottom-7 hidden w-[5px] rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:block 2xl:hidden"
-                    style={{
-                        left: 380,
-                        height: 88,
-                        transform: 'rotate(43deg)',
-                        transformOrigin: 'top left',
-                    }}
-                />
-                <div
-                    className="footer-slash-left absolute -bottom-8 hidden w-[5px] rounded-tl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] 2xl:block"
-                    style={{
-                        left: 444,
-                        height: 95,
-                        transform: 'rotate(45deg)',
-                        transformOrigin: 'top left',
-                    }}
-                />
-
-                {/* ── GARIS DIAGONAL KUNING KANAN ── */}
-                <div className="footer-slash-right absolute right-[82px] -bottom-[14px] block h-[42px] w-[3px] origin-top-right -translate-x-full -rotate-45 rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] min-[390px]:max-[767px]:right-[96px] min-[500px]:max-[767px]:right-[132px] min-[620px]:max-[767px]:right-[171px] min-[700px]:max-[767px]:right-[198px] md:hidden" />
-                <div
-                    className="footer-slash-right absolute -bottom-7 hidden w-[4px] rounded-tr-sm rounded-bl-xs bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] md:block lg:hidden"
-                    style={{
-                        right: 206,
-                        height: 77,
-                        transform: 'translateX(-100%) rotate(-45deg)',
-                        transformOrigin: 'top right',
-                    }}
-                />
-                <div
-                    className="footer-slash-right absolute -bottom-8 hidden w-[5px] rounded-tr-sm rounded-bl-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] lg:block xl:hidden"
-                    style={{
-                        right: 317,
-                        height: 95,
-                        transform: 'translateX(-100%) rotate(-43deg)',
-                        transformOrigin: 'top right',
-                    }}
-                />
-                <div
-                    className="footer-slash-right absolute -bottom-7 hidden w-[5px] rounded-tr-sm bg-[#FACC15] shadow-[0_0_12px_rgba(250,204,21,0.8)] xl:block 2xl:hidden"
-                    style={{
-                        right: 369,
-                        height: 88,
-                        transform: 'translateX(-100%) rotate(-43deg)',
-                        transformOrigin: 'top right',
-                    }}
-                />
-                <div
-                    className="footer-slash-right absolute -bottom-8 hidden w-[5px] rounded-tr-sm bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] 2xl:block"
-                    style={{
-                        right: 440,
-                        height: 95,
-                        transform: 'translateX(-100%) rotate(-45deg)',
-                        transformOrigin: 'top right',
-                    }}
-                />
-            </div>
-
-            {/* ── WRAPPER TOMBOL (MOBILE ONLY) ── */}
-            <div className="footer-btn-wrapper absolute top-[calc(41%+2px)] left-1/2 block h-[38px] w-[230px] -translate-x-1/2 min-[390px]:max-[767px]:w-[250px] min-[500px]:max-[767px]:w-[270px] min-[620px]:max-[767px]:w-[288px] min-[700px]:max-[767px]:w-[300px] md:hidden">
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleBack}
-                    disabled={current === 0}
-                    className={`footer-btn-back absolute top-[12px] left-4 h-[26px] w-[66px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:left-[3px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[84px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:left-[-4px] min-[500px]:max-[767px]:h-[27px] min-[500px]:max-[767px]:w-[97px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:left-[-13px] min-[620px]:max-[767px]:h-[26px] min-[620px]:max-[767px]:w-[114px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:left-[-21px] min-[700px]:max-[767px]:h-[27px] min-[700px]:max-[767px]:w-[118px] ${current === 0 ? 'opacity-40' : 'opacity-100'}`}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M108 0 H258 V45 H0 V45 L0 45 Z"
-                            className="[d:path('M108_0_H258_V45_H0_V45_L0_45_Z')] min-[390px]:max-[767px]:[d:path('M83_0_H258_V45_H0_V45_L0_45_Z')] min-[500px]:max-[767px]:[d:path('M72_0_H258_V45_H0_V45_L0_45_Z')] min-[620px]:max-[767px]:[d:path('M63_0_H258_V45_H0_V45_L0_45_Z')] min-[700px]:max-[767px]:[d:path('M60_0_H258_V45_H0_V45_L0_45_Z')]"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={3}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="footer-btn-back-text relative z-10 flex h-full w-full translate-x-[6px] items-center justify-center font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[767px]:translate-x-[7px] min-[390px]:max-[767px]:text-[10px] min-[500px]:max-[767px]:translate-x-[4px] min-[500px]:max-[767px]:text-[10px] min-[620px]:max-[767px]:translate-x-[6px] min-[620px]:max-[767px]:text-[11px] min-[700px]:max-[767px]:translate-x-[8px] min-[700px]:max-[767px]:text-[12px]">
-                        &lt;&lt; BACK
-                    </span>
-                </motion.button>
-
-                <div className="-top-translate-x-1/2 footer-counter absolute top-[12px] left-[37%] flex h-[24px] w-[58px] items-center justify-center border-[3px] border-[#FACC15] text-[13px] font-bold tracking-[1px] text-[#FACC15] min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:left-[37%] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[64px] min-[390px]:max-[767px]:text-[14px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:left-[37%] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[70px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:left-[38%] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[70px] min-[620px]:max-[767px]:text-[15px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:left-[34%] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[95px] min-[700px]:max-[767px]:text-[16px]">
-                    {String(current + 1).padStart(2, '0')}
-                    <span className="mx-1 opacity-50">/</span>
-                    {String(total).padStart(2, '0')}
+        <div className="my-1.5 sm:my-3 rounded-lg sm:rounded-xl border border-cyan-500/30 bg-[#050914] p-2 sm:p-3 md:p-4 font-mono text-[10px] sm:text-xs md:text-sm text-slate-200 shadow-[inset_0_0_20px_rgba(0,162,255,0.05)] overflow-x-auto hp-landscape-codeblock-el sm-md-codeblock-el md-lg-codeblock-el">
+            <div className="flex gap-2 sm:gap-3">
+                {/* Line Numbers */}
+                <div className="select-none text-right text-slate-600 pr-2 sm:pr-3 border-r border-slate-800 font-mono">
+                    {lines.map((_, i) => (
+                        <div key={i} className="leading-snug sm:leading-relaxed">
+                            {i + 1}
+                        </div>
+                    ))}
                 </div>
-
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={next}
-                    disabled={
-                        isReviewMode ? loading : !selected?.length || loading
-                    }
-                    className={`footer-btn-next absolute top-[12px] right-4 h-[26px] w-[68px] font-bold min-[390px]:max-[767px]:top-[12px] min-[390px]:max-[767px]:right-[4px] min-[390px]:max-[767px]:h-[26px] min-[390px]:max-[767px]:w-[85px] min-[500px]:max-[767px]:top-[12px] min-[500px]:max-[767px]:right-[-4px] min-[500px]:max-[767px]:h-[28px] min-[500px]:max-[767px]:w-[98px] min-[620px]:max-[767px]:top-[12px] min-[620px]:max-[767px]:right-[-15px] min-[620px]:max-[767px]:h-[28px] min-[620px]:max-[767px]:w-[116px] min-[700px]:max-[767px]:top-[12px] min-[700px]:max-[767px]:right-[-21px] min-[700px]:max-[767px]:h-[28px] min-[700px]:max-[767px]:w-[118px] ${(!isReviewMode && !selected?.length) || loading ? 'opacity-40' : 'opacity-100'}`}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0 0 H150 L258 45 H0 Z"
-                            className="[d:path('M0_0_H150_L258_45_H0_Z')] min-[390px]:max-[767px]:[d:path('M0_0_H170_L251_45_H0_Z')] min-[500px]:max-[767px]:[d:path('M0_0_H182_L258_45_H0_Z')] min-[620px]:max-[767px]:[d:path('M0_0_H194_L258_45_H0_Z')] min-[700px]:max-[767px]:[d:path('M0_0_H205_L258_45_H0_Z')]"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={3}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="footer-btn-next-text relative z-10 flex h-full w-full translate-x-[-6px] items-center justify-center gap-1 font-['orbitron'] text-[7px] tracking-[1px] text-white min-[390px]:max-[767px]:translate-x-[-7px] min-[390px]:max-[767px]:text-[10px] min-[500px]:max-[767px]:translate-x-[-6px] min-[500px]:max-[767px]:text-[10px] min-[620px]:max-[767px]:translate-x-[-6px] min-[620px]:max-[767px]:text-[11px] min-[700px]:max-[767px]:translate-x-[-8px] min-[700px]:max-[767px]:text-[12px]">
-                        {loading ? (
-                            '...'
-                        ) : current + 1 === total ? (
-                            isReviewMode ? (
-                                'KELUAR'
-                            ) : (
-                                <>
-                                    <span>FINISH</span>
-                                    <Flag
-                                        className="h-3.5 w-3.5 text-white"
-                                        strokeWidth={3}
-                                    />
-                                </>
-                            )
-                        ) : (
-                            'NEXT >>'
-                        )}
-                    </span>
-                </motion.button>
-            </div>
-
-            {/* ── WRAPPER TOMBOL (MD KE ATAS) ── */}
-            <div
-                className="footer-btn-wrapper absolute hidden md:block"
-                style={{
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    top: 'calc(43% + 12px)',
-                    width: 'clamp(320px, 42vw, 760px)',
-                    height: 70,
-                }}
-            >
-                {/* BACK — md */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleBack}
-                    disabled={current === 0}
-                    className="footer-btn-back absolute top-[-1px] block font-bold lg:hidden"
-                    style={{
-                        left: -52,
-                        width: 160,
-                        height: 48,
-                        opacity: current === 0 ? 0.4 : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M73 0 H258 V45 H0 V45 L0 45 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="footer-btn-back-text relative z-10 flex h-full w-full items-center justify-center font-['orbitron'] text-lg text-white">
-                        &lt;&lt; BACK
-                    </span>
-                </motion.button>
-
-                {/* BACK — lg */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleBack}
-                    disabled={current === 0}
-                    className="footer-btn-back absolute top-[-4px] hidden font-bold lg:block xl:hidden"
-                    style={{
-                        left: -26,
-                        width: 172,
-                        height: 62,
-                        opacity: current === 0 ? 0.4 : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M87 0 H258 V45 H0 V45 L0 45 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="relative z-10 flex h-full w-full translate-x-[9px] items-center justify-center font-['orbitron'] text-lg text-white">
-                        &lt;&lt; BACK
-                    </span>
-                </motion.button>
-
-                {/* BACK — xl */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleBack}
-                    disabled={current === 0}
-                    className="footer-btn-back absolute top-0 hidden font-bold xl:block 2xl:hidden"
-                    style={{
-                        left: -39,
-                        width: 215,
-                        height: 58,
-                        opacity: current === 0 ? 0.4 : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M63 0 H258 V45 H0 V45 L0 46 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="relative z-10 flex h-full w-full items-center justify-center font-['orbitron'] text-[26px] text-white">
-                        &lt;&lt; BACK
-                    </span>
-                </motion.button>
-
-                {/* BACK — 2xl */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleBack}
-                    disabled={current === 0}
-                    className="absolute top-[-4px] hidden font-bold 2xl:block"
-                    style={{
-                        left: -49,
-                        width: 280,
-                        height: 62,
-                        opacity: current === 0 ? 0.4 : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M55 0 H258 V45 H0 V45 L0 45 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="relative z-10 flex h-full w-full items-center justify-center font-['orbitron'] text-[32px] text-white">
-                        &lt;&lt; BACK
-                    </span>
-                </motion.button>
-
-                {/* NOMOR */}
-                <div
-                    className="footer-counter absolute block flex items-center justify-center border-4 border-[#FACC15] font-bold text-[#FACC15] lg:hidden"
-                    style={{
-                        left: '54%',
-                        marginLeft: -60,
-                        top: -1,
-                        width: 100,
-                        height: 48,
-                        fontSize: 22,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    {String(current + 1).padStart(2, '0')}
-                    <span className="mx-2 opacity-50">/</span>
-                    {String(total).padStart(2, '0')}
+                {/* Code Lines */}
+                <div className="flex-1 overflow-x-auto whitespace-pre font-mono">
+                    {lines.map((line, i) => (
+                        <div key={i} className="leading-snug sm:leading-relaxed">
+                            {renderHighlightedLine(line)}
+                        </div>
+                    ))}
                 </div>
-
-                <div
-                    className="footer-counter absolute flex hidden items-center justify-center border-4 border-[#FACC15] font-bold text-[#FACC15] lg:flex xl:hidden"
-                    style={{
-                        left: '49%',
-                        marginLeft: -60,
-                        top: -4,
-                        width: 130,
-                        height: 62,
-                        fontSize: 26,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    {String(current + 1).padStart(2, '0')}
-                    <span className="mx-2 opacity-50">/</span>
-                    {String(total).padStart(2, '0')}
-                </div>
-
-                <div
-                    className="footer-counter absolute flex hidden items-center justify-center border-3 border-[#FACC15] font-bold text-[#FACC15] xl:flex 2xl:hidden"
-                    style={{
-                        left: '49%',
-                        marginLeft: -78,
-                        top: 1,
-                        width: 176,
-                        height: 57,
-                        fontSize: 29,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    {String(current + 1).padStart(2, '0')}
-                    <span className="mx-2 opacity-50">/</span>
-                    {String(total).padStart(2, '0')}
-                </div>
-
-                <div
-                    className="absolute flex hidden items-center justify-center border-4 border-[#FACC15] font-bold text-[#FACC15] 2xl:flex"
-                    style={{
-                        left: '49%',
-                        marginLeft: -70,
-                        top: -4,
-                        width: 155,
-                        height: 62,
-                        fontSize: 28,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    {String(current + 1).padStart(2, '0')}
-                    <span className="mx-2 opacity-50">/</span>
-                    {String(total).padStart(2, '0')}
-                </div>
-
-                {/* NEXT — md */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={next}
-                    disabled={
-                        isReviewMode ? loading : !selected?.length || loading
-                    }
-                    className="footer-btn-next absolute top-[-1px] block font-bold lg:hidden"
-                    style={{
-                        right: -56,
-                        width: 160,
-                        height: 48,
-                        opacity:
-                            (!isReviewMode && !selected?.length) || loading
-                                ? 0.4
-                                : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0 0 H185 L258 45 H0 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="footer-btn-next-text relative z-10 flex h-full w-full items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
-                        {loading ? (
-                            '...'
-                        ) : current + 1 === total ? (
-                            isReviewMode ? (
-                                'KELUAR'
-                            ) : (
-                                <>
-                                    <span>FINISH</span>
-                                    <Flag
-                                        className="h-4 w-4 text-white"
-                                        strokeWidth={3}
-                                    />
-                                </>
-                            )
-                        ) : (
-                            'NEXT >>'
-                        )}
-                    </span>
-                </motion.button>
-
-                {/* NEXT — lg */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={next}
-                    disabled={
-                        isReviewMode ? loading : !selected?.length || loading
-                    }
-                    className="footer-btn-next absolute top-[-4px] hidden font-bold lg:block xl:hidden"
-                    style={{
-                        right: -30,
-                        width: 172,
-                        height: 62,
-                        opacity:
-                            (!isReviewMode && !selected?.length) || loading
-                                ? 0.4
-                                : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-[#000000] h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0 0 H173 L258 45 H0 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="relative z-10 flex h-full w-full translate-x-[-9px] items-center justify-center gap-2 font-['orbitron'] text-lg text-white">
-                        {loading ? (
-                            '...'
-                        ) : current + 1 === total ? (
-                            isReviewMode ? (
-                                'KELUAR'
-                            ) : (
-                                <>
-                                    <span>FINISH</span>
-                                    <Flag
-                                        className="h-4 w-4 text-white"
-                                        strokeWidth={3}
-                                    />
-                                </>
-                            )
-                        ) : (
-                            'NEXT >>'
-                        )}
-                    </span>
-                </motion.button>
-
-                {/* NEXT — xl */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={next}
-                    disabled={
-                        isReviewMode ? loading : !selected?.length || loading
-                    }
-                    className="footer-btn-next absolute top-0 hidden font-bold xl:block 2xl:hidden"
-                    style={{
-                        right: -43,
-                        width: 215,
-                        height: 58,
-                        opacity:
-                            (!isReviewMode && !selected?.length) || loading
-                                ? 0.4
-                                : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0 0 H197 L258 44 H0 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="relative z-10 flex h-full w-full items-center justify-center gap-2 font-['orbitron'] text-[26px] text-white">
-                        {loading ? (
-                            '...'
-                        ) : current + 1 === total ? (
-                            isReviewMode ? (
-                                'KELUAR'
-                            ) : (
-                                <>
-                                    <span>FINISH</span>
-                                    <Flag
-                                        className="h-5 w-5 text-white"
-                                        strokeWidth={3}
-                                    />
-                                </>
-                            )
-                        ) : (
-                            'NEXT >>'
-                        )}
-                    </span>
-                </motion.button>
-
-                {/* NEXT — 2xl */}
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={next}
-                    disabled={
-                        isReviewMode ? loading : !selected?.length || loading
-                    }
-                    className="absolute top-[-4px] hidden font-bold 2xl:block"
-                    style={{
-                        right: -49,
-                        width: 280,
-                        height: 62,
-                        opacity:
-                            (!isReviewMode && !selected?.length) || loading
-                                ? 0.4
-                                : 1,
-                        letterSpacing: '3px',
-                    }}
-                >
-                    <svg
-                        className="absolute inset-0 h-full w-full"
-                        viewBox="0 0 260 45"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M0 0 H205 L258 45 H0 Z"
-                            fill="none"
-                            stroke="#FACC15"
-                            strokeWidth={6}
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                    <span className="relative z-10 flex h-full w-full items-center justify-center gap-2 font-['orbitron'] text-[32px] text-white">
-                        {loading ? (
-                            '...'
-                        ) : current + 1 === total ? (
-                            isReviewMode ? (
-                                'KELUAR'
-                            ) : (
-                                <>
-                                    <span>FINISH</span>
-                                    <Flag
-                                        className="h-6 w-6 text-white"
-                                        strokeWidth={3}
-                                    />
-                                </>
-                            )
-                        ) : (
-                            'NEXT >>'
-                        )}
-                    </span>
-                </motion.button>
             </div>
         </div>
     );
 }
 
-function BoxSoal({
-    question,
-    isReviewMode,
+/* ============================================================================
+   2. QUESTION CONTENT PARSER & FORMATTER
+   ============================================================================ */
+function parseQuestionContent(questionText: string) {
+    if (!questionText) return { codeSnippet: null, questionPrompt: '' };
+
+    const codeBlockMatch = questionText.match(
+        /```(?:html|css|js|javascript|php)?\s*([\s\S]*?)```/i,
+    );
+    if (codeBlockMatch) {
+        const codeSnippet = codeBlockMatch[1].trim();
+        const questionPrompt = questionText
+            .replace(/```(?:html|css|js|javascript|php)?\s*[\s\S]*?```/i, '')
+            .trim();
+        return { codeSnippet, questionPrompt };
+    }
+
+    if (
+        questionText.includes('<!DOCTYPE') ||
+        (questionText.includes('<html') && questionText.includes('</html>'))
+    ) {
+        const htmlEndIndex = questionText.indexOf('</html>');
+        if (htmlEndIndex !== -1) {
+            const codeSnippet = questionText
+                .substring(0, htmlEndIndex + 7)
+                .trim();
+            const questionPrompt = questionText
+                .substring(htmlEndIndex + 7)
+                .trim();
+            return { codeSnippet, questionPrompt };
+        }
+    }
+
+    return { codeSnippet: null, questionPrompt: questionText };
+}
+
+function FormattedQuestionText({ text }: { text: string }) {
+    if (!text) return null;
+
+    const len = text ? text.length : 0;
+    const parts = text.split(/(<[^>]+>|\b\w+\/)/g);
+
+    let textClass = 'text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl leading-relaxed text-slate-200 font-medium hp-landscape-prompt-text-long sm-md-prompt-text-long md-lg-prompt-text-long';
+    if (len < 100) {
+        textClass = 'text-base sm:text-lg md:text-2xl lg:text-3xl leading-relaxed text-slate-100 font-extrabold hp-landscape-prompt-text-short sm-md-prompt-text-short md-lg-prompt-text-short';
+    } else if (len < 200) {
+        textClass = 'text-sm sm:text-base md:text-xl lg:text-2xl leading-relaxed text-slate-100 font-bold hp-landscape-prompt-text-medium sm-md-prompt-text-medium md-lg-prompt-text-medium';
+    }
+
+    return (
+        <p className={textClass}>
+            {parts.map((part, idx) => {
+                if (part.startsWith('<') && part.endsWith('>')) {
+                    return (
+                        <span
+                            key={idx}
+                            className="mx-0.5 inline-block font-mono font-bold text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-400/20"
+                        >
+                            {part}
+                        </span>
+                    );
+                }
+                if (/\b(one\/|two\/|three\/|\w+\/)/.test(part)) {
+                    return (
+                        <span key={idx} className="mx-0.5 font-mono font-bold text-yellow-400">
+                            {part}
+                        </span>
+                    );
+                }
+                return <span key={idx}>{part}</span>;
+            })}
+        </p>
+    );
+}
+
+/* ============================================================================
+   3. REUSABLE CHAMFER CARD FRAME (Clean Siku Bevel Cut Corners & Full Unclipped Glow)
+   ============================================================================ */
+function ChamferCard({
+    children,
+    className = '',
 }: {
-    current: number;
-    total: number;
-    question: any;
-    isReviewMode?: boolean;
+    children: React.ReactNode;
+    className?: string;
 }) {
     return (
-        <div className="quiz-question-inner relative h-full w-full p-[2px] md:p-6 lg:p-8">
-            <div className="h-full w-full bg-[#3B28F6] p-[3px] md:p-[4px]">
-                <div className="h-full w-full bg-[#04080f] p-[7px] md:p-[15px]">
-                    <div className="h-full w-full bg-[#3B28F6] p-[2px] md:p-[4px]">
-                        <div className="h-full w-full bg-[#04080f] p-[6px] md:p-[15px]">
-                            <div className="quiz-box-soal relative flex h-full min-h-0 w-full flex-col overflow-visible border-2 border-[#3B28F6] bg-[#04080f] px-[10px] py-[12px] md:min-h-[350px] md:border-4 md:px-4 md:py-6">
-                                <div className="absolute top-[-8px] left-1/2 z-20 h-[9px] w-[210px] origin-bottom -translate-x-1/2 scale-[0.38] overflow-visible min-[390px]:max-[767px]:top-[-8px] min-[390px]:max-[767px]:scale-[0.42] min-[500px]:max-[767px]:top-[-8px] min-[500px]:max-[767px]:scale-[0.42] min-[620px]:max-[767px]:top-[-8px] min-[620px]:max-[767px]:scale-[0.42] min-[700px]:max-[767px]:top-[-8px] min-[700px]:max-[767px]:scale-[0.42] md:-top-4 md:w-[270px] md:scale-100">
-                                    <div className="relative flex h-full w-full items-center justify-center">
-                                        <div
-                                            className="absolute -top-2 left-1/2 h-[8.5px] w-[264px] -translate-x-1/2 bg-yellow-400 max-[767px]:top-[-17px] max-[767px]:w-[314px]"
-                                            style={{
-                                                clipPath:
-                                                    'polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%)',
-                                            }}
-                                        />
+        <div className={`relative flex flex-col h-full w-full ${className}`}>
+            {/* Outer SVG Non-scaling Blue Border Frame with Soft Ambient Glow */}
+            <svg
+                className="absolute inset-0 h-full w-full overflow-visible pointer-events-none z-0 filter drop-shadow-[0_0_16px_rgba(59,130,246,0.85)]"
+                preserveAspectRatio="none"
+                viewBox="0 0 500 600"
+            >
+                <path
+                    d="M 16 2 L 484 2 L 498 16 L 498 584 L 484 598 L 16 598 L 2 584 L 2 16 Z"
+                    fill="#070e20"
+                    stroke="#3b82f6"
+                    strokeWidth="2.5"
+                    vectorEffect="non-scaling-stroke"
+                />
+            </svg>
 
-                                        <div className="absolute top-0.5 left-34 h-[5.5px] w-[227px] -translate-x-1/2 bg-[#3B28F6] max-[767px]:top-[-7px] max-[767px]:left-[50%] max-[767px]:h-[4px] max-[767px]:w-[265px]" />
-
-                                        <div className="absolute top-2 left-1/2 flex w-[227px] -translate-x-1/2 justify-between px-2 max-[767px]:top-[1px] max-[767px]:left-[49%] max-[767px]:w-[210px] max-[767px]:px-1">
-                                            {Array.from({ length: 10 }).map(
-                                                (_, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className="h-2 w-2 rounded-full bg-yellow-400 max-[767px]:h-[10px] max-[767px]:w-[10px]"
-                                                    />
-                                                ),
-                                            )}
-                                        </div>
-
-                                        <div className="absolute right-3 mt-7 -translate-y-1/2 max-[767px]:mt-2">
-                                            <div className="relative h-[32px] w-[32px]">
-                                                <div className="absolute top-1/2 -left-58 h-[4.5px] w-[32px] origin-right rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-left-56" />
-                                                <div className="absolute top-1/2 -left-58 h-[4px] w-[32px] origin-right -rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-left-56" />
-                                            </div>
-                                        </div>
-
-                                        <div className="absolute left-3 mt-7 -translate-y-1/2 max-[767px]:mt-2">
-                                            <div className="relative h-[32px] w-[32px]">
-                                                <div className="absolute top-1/2 -right-58 h-[4.5px] w-[32px] origin-left -rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-right-56" />
-                                                <div className="absolute top-1/2 -right-58 h-[4px] w-[32px] origin-left rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-right-56" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="absolute bottom-[-8px] left-1/2 z-20 h-[9px] w-[210px] origin-top -translate-x-1/2 scale-[0.38] overflow-visible min-[390px]:max-[767px]:bottom-[-8px] min-[390px]:max-[767px]:scale-[0.42] min-[500px]:max-[767px]:bottom-[-8px] min-[500px]:max-[767px]:scale-[0.42] min-[620px]:max-[767px]:bottom-[-8px] min-[620px]:max-[767px]:scale-[0.42] min-[700px]:max-[767px]:bottom-[-8px] min-[700px]:max-[767px]:scale-[0.42] md:-bottom-4 md:w-[270px] md:scale-100">
-                                    <div className="relative flex h-full w-full items-center justify-center">
-                                        <div className="absolute -top-2 left-1/2 flex w-[227px] -translate-x-1/2 justify-between px-2 max-[767px]:top-[-13px] max-[767px]:left-[49%] max-[767px]:w-[210px] max-[767px]:px-1">
-                                            {Array.from({ length: 10 }).map(
-                                                (_, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className="h-2 w-2 rounded-full bg-yellow-400 max-[767px]:h-[12px] max-[767px]:w-[10px]"
-                                                    />
-                                                ),
-                                            )}
-                                        </div>
-
-                                        <div className="absolute top-0.5 left-1/2 h-[5.5px] w-[227px] -translate-x-1/2 bg-[#3B28F6] max-[767px]:top-[-1px] max-[767px]:left-[49%] max-[767px]:h-[4px] max-[767px]:w-[268px]" />
-
-                                        <div
-                                            className="absolute top-2 left-1/2 h-[9px] w-[264px] -translate-x-1/2 bg-yellow-400 max-[767px]:top-[5px] max-[767px]:left-[50%] max-[767px]:h-[7px] max-[767px]:w-[302px]"
-                                            style={{
-                                                clipPath:
-                                                    'polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%)',
-                                            }}
-                                        />
-
-                                        <div className="absolute right-3 mt-7 -translate-y-1/2 max-[767px]:mt-5.5">
-                                            <div className="relative h-[32px] w-[32px]">
-                                                <div className="absolute top-1/2 -left-58 h-[4.5px] w-[32px] origin-right rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-left-56" />
-                                                <div className="absolute top-1/2 -left-58 h-[4px] w-[32px] origin-right -rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-left-56" />
-                                            </div>
-                                        </div>
-
-                                        <div className="absolute left-3 mt-7 -translate-y-1/2 max-[767px]:mt-5.5">
-                                            <div className="relative h-[32px] w-[32px]">
-                                                <div className="absolute top-1/2 -right-58 h-[4.5px] w-[32px] origin-left -rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-right-56" />
-                                                <div className="absolute top-1/2 -right-58 h-[4px] w-[32px] origin-left rotate-[19deg] rounded-full bg-[#3B28F6] max-[767px]:-right-56" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="quiz-mask-top1 absolute top-[-14px] left-1/2 z-10 h-[8px] w-[120px] -translate-x-1/2 bg-[#04080f] min-[390px]:max-[767px]:w-[128px] min-[500px]:max-[767px]:w-[128px] min-[620px]:max-[767px]:w-[128px] min-[700px]:max-[767px]:w-[128px] md:-top-6 md:w-[270px]" />
-
-                                <div className="quiz-mask-top2 absolute top-[-5px] left-1/2 z-10 h-[9px] w-[120px] -translate-x-1/2 bg-[#04080f] min-[390px]:max-[767px]:w-[128px] min-[500px]:max-[767px]:w-[128px] min-[620px]:max-[767px]:w-[128px] min-[700px]:max-[767px]:w-[128px] md:-top-2 md:w-[270px]" />
-
-                                <div className="quiz-mask-bot1 absolute bottom-[-14px] left-1/2 z-10 h-[8px] w-[120px] -translate-x-1/2 bg-[#04080f] min-[390px]:max-[767px]:w-[128px] min-[500px]:max-[767px]:w-[128px] min-[620px]:max-[767px]:w-[128px] min-[700px]:max-[767px]:w-[128px] md:-bottom-6 md:w-[270px]" />
-
-                                <div className="quiz-mask-bot2 absolute bottom-[-5px] left-1/2 z-10 h-[10px] w-[120px] -translate-x-1/2 bg-[#04080f] min-[390px]:max-[767px]:w-[128px] min-[500px]:max-[767px]:w-[128px] min-[620px]:max-[767px]:w-[128px] min-[700px]:max-[767px]:w-[128px] md:-bottom-2 md:w-[270px]" />
-                                <div className="flex min-h-0 w-full flex-1 flex-col gap-4">
-                                    {/* {isReviewMode &&
-                                        question.question_score !==
-                                            undefined && (
-                                            <div className="mb-1 flex items-center justify-between">
-                                                <span
-                                                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-['orbitron'] text-xs font-bold tracking-wider ${
-                                                        question.is_user_correct
-                                                            ? 'border border-emerald-500/40 bg-emerald-500/20 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                                                            : 'border border-rose-500/40 bg-rose-500/20 text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
-                                                    }`}
-                                                >
-                                                    {question.is_user_correct
-                                                    ? `✓ Benar (+${question.question_score} Poin)`
-                                                    : `✕ Salah (0 Poin)`}
-                                                </span>
-                                            </div>
-                                        )} */}
-                                    {question.media_url && (
-                                        <div className="quiz-media -mt-1 flex h-[70px] w-full flex-shrink-0 items-center justify-center md:-mt-4 md:h-[150px] lg:h-[180px]">
-                                            <img
-                                                src={question.media_url}
-                                                alt="Soal"
-                                                className="h-full w-full object-contain"
-                                            />
-                                        </div>
-                                    )}
-                                    <div className="quiz-question-text mx-auto min-h-0 w-full max-w-none flex-1 [scrollbar-width:thin] [scrollbar-color:#3B28F6_#0d0d1a] overflow-y-auto px-[2px] text-[11px] leading-[1.4] font-semibold text-white sm:text-[11px] md:px-0 md:text-xs md:leading-normal lg:text-xs xl:text-sm 2xl:text-lg [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#3B28F6] [&::-webkit-scrollbar-thumb:hover]:bg-[#5a46ff] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#0d0d1a]">
-                                        {question.question_text}
-                                        {question.max_selectable > 1 && (
-                                            <span className="ml-2 inline-block rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-400">
-                                                (Pilih {question.max_selectable}{' '}
-                                                Jawaban)
-                                            </span>
-                                        )}
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {/* Inner Content Container */}
+            <div className="relative z-10 flex flex-col h-full w-full p-3 sm:p-5 md:p-6 lg:p-7 hp-landscape-card-inner-box sm-md-card-inner-box md-lg-card-inner-box overflow-hidden">
+                {children}
             </div>
         </div>
     );
 }
-function AnswerButton({
+
+/* ============================================================================
+   4. REUSABLE HEXAGON BUTTON FRAME (SVG Vector Stroke - Segi 6)
+   ============================================================================ */
+function HexagonButton({
+    children,
+    selected,
+    isCorrect,
+    isReviewMode,
+    isYellowFill,
+    onClick,
+    disabled,
+    className = '',
+}: {
+    children: React.ReactNode;
+    selected?: boolean;
+    isCorrect?: boolean;
+    isReviewMode?: boolean;
+    isYellowFill?: boolean;
+    onClick?: () => void;
+    disabled?: boolean;
+    className?: string;
+}) {
+    let borderColor = selected ? '#FACC15' : '#3B28F6';
+    let bgColor = selected ? '#0c1428' : '#070e20';
+
+    if (isYellowFill) {
+        borderColor = '#FACC15';
+        bgColor = '#FACC15';
+    }
+
+    if (isReviewMode) {
+        if (selected && isCorrect) {
+            borderColor = '#10B981';
+            bgColor = 'rgba(6, 78, 59, 0.5)';
+        } else if (selected && !isCorrect) {
+            borderColor = '#F43F5E';
+            bgColor = 'rgba(136, 19, 55, 0.5)';
+        } else if (isCorrect) {
+            borderColor = '#10B981';
+            bgColor = 'rgba(6, 78, 59, 0.2)';
+        } else {
+            borderColor = '#1e293b';
+            bgColor = '#070e20';
+        }
+    }
+
+    return (
+        <button
+            onClick={onClick}
+            disabled={disabled}
+            className={`group relative flex items-center justify-between w-full transition-all duration-300 outline-none ${
+                disabled
+                    ? 'opacity-40 cursor-not-allowed'
+                    : 'cursor-pointer hover:brightness-110'
+            } ${className}`}
+        >
+            {/* SVG Non-scaling Full Border Hexagon (Segi 6) Frame */}
+            <svg
+                className="absolute inset-0 h-full w-full overflow-visible pointer-events-none"
+                preserveAspectRatio="none"
+                viewBox="0 0 400 60"
+            >
+                <path
+                    d="M 22 2 L 378 2 L 398 30 L 378 58 L 22 58 L 2 30 Z"
+                    fill={bgColor}
+                    stroke={borderColor}
+                    strokeWidth="2.5"
+                    vectorEffect="non-scaling-stroke"
+                />
+            </svg>
+
+            {/* Inner Content with spacious padding away from slanted tips */}
+            <div className="relative z-10 flex items-center justify-between w-full pl-6 sm:pl-8 md:pl-9 xl:pl-10 pr-4 sm:pr-5 md:pr-6 hp-landscape-hexagon-inner sm-md-hexagon-inner md-lg-hexagon-inner py-1.5 sm:py-2 md:py-2.5 lg:py-3">
+                {children}
+            </div>
+        </button>
+    );
+}
+
+/* ============================================================================
+   5. DYNAMIC HELPER FOR ANSWER OPTION SIZES & STYLES (DYNAMIC SCALING)
+   ============================================================================ */
+function getOptionStyles(text: string) {
+    const len = text ? text.length : 0;
+
+    if (len < 40) {
+        return {
+            fontSizeClass: 'text-xs sm:text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl leading-snug font-bold hp-landscape-option-font-1 sm-md-option-font-1 md-lg-option-font-1',
+            buttonClass: '!min-h-[38px] sm:!min-h-[42px] md:!min-h-[48px] lg:!min-h-[52px] xl:!min-h-[64px] 2xl:!min-h-[72px] !py-2 sm:!py-2.5 md:!py-2.5 lg:!py-3 xl:!py-4 2xl:!py-4.5 hp-landscape-option-btn-1 sm-md-option-btn-1 md-lg-option-btn-1',
+            badgeClass: 'h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-8 lg:w-8 xl:h-10 xl:w-10 2xl:h-11 2xl:w-11 text-xs sm:text-xs md:text-sm xl:text-base 2xl:text-lg hp-landscape-option-badge-1 sm-md-option-badge-1 md-lg-option-badge-1',
+        };
+    }
+    if (len < 80) {
+        return {
+            fontSizeClass: 'text-[11px] sm:text-xs md:text-xs lg:text-sm xl:text-base 2xl:text-lg leading-snug font-medium hp-landscape-option-font-2 sm-md-option-font-2 md-lg-option-font-2',
+            buttonClass: '!min-h-[34px] sm:!min-h-[38px] md:!min-h-[44px] lg:!min-h-[46px] xl:!min-h-[58px] 2xl:!min-h-[64px] !py-1.5 sm:!py-1.5 md:!py-2 lg:!py-2.5 xl:!py-3.5 2xl:!py-4 hp-landscape-option-btn-2 sm-md-option-btn-2 md-lg-option-btn-2',
+            badgeClass: 'h-5.5 w-5.5 sm:h-6 sm:w-6 md:h-6.5 md:w-6.5 lg:h-7 lg:w-7 xl:h-9 xl:w-9 2xl:h-10 2xl:w-10 text-[10px] sm:text-xs md:text-xs xl:text-sm 2xl:text-base hp-landscape-option-badge-2 sm-md-option-badge-2 md-lg-option-badge-2',
+        };
+    }
+    if (len < 140) {
+        return {
+            fontSizeClass: 'text-[10px] sm:text-[11px] md:text-[11px] lg:text-xs xl:text-sm 2xl:text-base leading-tight font-medium hp-landscape-option-font-3 sm-md-option-font-3 md-lg-option-font-3',
+            buttonClass: '!min-h-[32px] sm:!min-h-[36px] md:!min-h-[40px] lg:!min-h-[42px] xl:!min-h-[52px] 2xl:!min-h-[58px] !py-1 sm:!py-1.5 md:!py-1.5 lg:!py-2 xl:!py-3 2xl:!py-3.5 hp-landscape-option-btn-3 sm-md-option-btn-3 md-lg-option-btn-3',
+            badgeClass: 'h-5 w-5 sm:h-5.5 sm:w-5.5 md:h-6 md:w-6 lg:h-6.5 lg:w-6.5 xl:h-8.5 xl:w-8.5 2xl:h-9.5 2xl:w-9.5 text-[9px] sm:text-[10px] md:text-[10px] xl:text-xs 2xl:text-sm hp-landscape-option-badge-3 sm-md-option-badge-3 md-lg-option-badge-3',
+        };
+    }
+    return {
+        fontSizeClass: 'text-[9px] sm:text-[10px] md:text-[10px] lg:text-[11px] xl:text-xs 2xl:text-sm leading-tight font-medium hp-landscape-option-font-4 sm-md-option-font-4 md-lg-option-font-4',
+        buttonClass: '!min-h-[30px] sm:!min-h-[34px] md:!min-h-[36px] lg:!min-h-[38px] xl:!min-h-[48px] 2xl:!min-h-[54px] !py-1 sm:!py-1 md:!py-1.5 lg:!py-1.5 xl:!py-2.5 2xl:!py-3 hp-landscape-option-btn-4 sm-md-option-btn-4 md-lg-option-btn-4',
+        badgeClass: 'h-4.5 w-4.5 sm:h-5 sm:w-5 md:h-5.5 md:w-5.5 lg:h-6 lg:w-6 xl:h-8 xl:w-8 2xl:h-9 2xl:w-9 text-[8px] sm:text-[9px] md:text-[9px] xl:text-xs 2xl:text-xs hp-landscape-option-badge-4 sm-md-option-badge-4 md-lg-option-badge-4',
+    };
+}
+
+/* ============================================================================
+   6. ANSWER OPTION COMPONENT
+   ============================================================================ */
+function AnswerOption({
     label,
     text,
     selected,
@@ -880,139 +312,100 @@ function AnswerButton({
     isReviewMode,
     questionScore,
     onClick,
-}: any) {
-    const outerClip =
-        'polygon(0 0, 30px 0, 45px 15px, 120px 15px, 135px 0, 100% 0, 100% 100%, 0 100%)';
-    const innerClip =
-        'polygon(0 0, 27px 0, 42px 15px, 119px 15px, 134px 0, 100% 0, 100% 100%, 0 100%)';
+}: {
+    label: string;
+    text: string;
+    selected: boolean;
+    isCorrect?: boolean;
+    isReviewMode?: boolean;
+    questionScore?: number;
+    onClick?: () => void;
+}) {
+    let hexBadgeBg = selected
+        ? 'bg-[#FACC15] text-black font-black shadow-[0_0_10px_rgba(250,204,21,0.5)]'
+        : 'bg-[#3B28F6] text-white font-bold';
 
-    let borderBg = selected
-        ? 'bg-[#FACC15]'
-        : 'bg-[#3B28F6] group-hover:bg-[#00e5ff]';
-    let contentBg = selected ? 'bg-[#1a1505]' : 'bg-[#0a0f1d]';
-    let labelColor = selected
-        ? 'text-[#FACC15]'
-        : 'text-[#3B28F6] group-hover:text-[#00e5ff]';
-    let textColor = selected
-        ? 'text-white'
-        : 'text-gray-300 group-hover:text-white';
-
-    let strokeColorClass = selected
-        ? 'text-[#FACC15]'
-        : 'text-[#3B28F6] group-hover:text-[#00e5ff]';
+    let textClass = selected ? 'text-white font-bold' : 'text-slate-200';
 
     if (isReviewMode) {
         if (selected && isCorrect) {
-            borderBg = 'bg-emerald-500';
-            contentBg = 'bg-emerald-950/60';
-            labelColor = 'text-emerald-400';
-            textColor = 'text-emerald-100 font-semibold';
-            strokeColorClass = 'text-emerald-500';
+            hexBadgeBg = 'bg-emerald-500 text-white font-black';
+            textClass = 'text-emerald-100 font-bold';
         } else if (selected && !isCorrect) {
-            borderBg = 'bg-rose-500';
-            contentBg = 'bg-rose-950/60';
-            labelColor = 'text-rose-400';
-            textColor = 'text-rose-200';
-            strokeColorClass = 'text-rose-500';
+            hexBadgeBg = 'bg-rose-500 text-white font-black';
+            textClass = 'text-rose-200';
+        } else if (isCorrect) {
+            hexBadgeBg = 'bg-emerald-600 text-white';
+            textClass = 'text-emerald-300';
         } else {
-            borderBg = 'bg-slate-800/60';
-            contentBg = 'bg-[#0a0f1d]';
-            labelColor = 'text-slate-500';
-            textColor = 'text-slate-400';
-            strokeColorClass = 'text-slate-700';
+            hexBadgeBg = 'bg-slate-800 text-slate-400';
+            textClass = 'text-slate-400';
         }
     }
 
+    const { fontSizeClass, buttonClass, badgeClass } = getOptionStyles(text);
+
     return (
-        <motion.button
-            whileTap={!isReviewMode ? { scale: 0.98 } : undefined}
-            onClick={!isReviewMode ? onClick : undefined}
-            className={`quiz-answer-btn group relative mt-[3px] mb-[3px] block w-full origin-center scale-[0.86] text-left outline-none md:mt-7 md:mb-6 md:scale-100 ${isReviewMode ? 'cursor-default' : 'cursor-pointer'}`}
+        <HexagonButton
+            selected={selected}
+            isCorrect={isCorrect}
+            isReviewMode={isReviewMode}
+            onClick={onClick}
+            className={buttonClass}
         >
-            <div className="relative">
-                {/* Top Trapezoid Ornament (Closed Shape with Bottom Notch) */}
+            <div className="flex items-center gap-2.5 sm:gap-3.5 md:gap-4.5 flex-1 min-w-0 py-0.5">
+                {/* Left Hexagon Letter Badge */}
                 <div
-                    className={`absolute -top-[14px] left-0 z-[1] h-[27px] w-[165px] transition-colors duration-300 ${strokeColorClass}`}
+                    className={`flex shrink-0 items-center justify-center font-['Orbitron',sans-serif] transition-transform duration-300 group-hover:scale-105 ${badgeClass} ${hexBadgeBg}`}
+                    style={{
+                        clipPath:
+                            'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+                    }}
                 >
-                    <svg
-                        className="absolute inset-0 h-full w-full overflow-visible"
-                        viewBox="0 0 165 27"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M15 0 L150 0 L165 12 L135 12 L120 27 L45 27 L30 12 L0 12 Z"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.2"
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
+                    {label}
                 </div>
-                {/* SVG Notch Border (Centerline Aligned to Box) */}
-                <div
-                    className={`absolute top-0 left-0 z-[2] h-5 w-[150px] transition-colors duration-300 ${strokeColorClass}`}
+
+                {/* Option Text */}
+                <span
+                    className={`font-mono text-left break-words whitespace-normal overflow-hidden ${fontSizeClass} ${textClass}`}
                 >
-                    <svg
-                        className="absolute inset-0 h-full w-full overflow-visible"
-                        viewBox="0 0 150 20"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                            d="M30 1 L45 16 L120 16 L135 1"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            vectorEffect="non-scaling-stroke"
-                        />
-                    </svg>
-                </div>
+                    {text}
+                </span>
             </div>
 
-            <div
-                className={`p-[2px] transition-colors duration-300 ${borderBg}`}
-                style={{ clipPath: outerClip }}
-            >
-                <div
-                    className={`h-full w-full pt-4 transition-colors duration-300 ${contentBg}`}
-                    style={{ clipPath: innerClip }}
-                >
-                    <div
-                        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
-                        style={{
-                            background:
-                                'linear-gradient(90deg, rgba(59,40,246,0.2) 0%, transparent 100%)',
-                        }}
-                    />
-                    <div className="quiz-answer-content relative z-10 flex items-center justify-between px-2 py-[3px] pb-[5px] md:gap-4 md:py-2">
-                        <div className="flex items-start gap-2 md:gap-4">
-                            <span
-                                className={`mt-0.5 font-mono text-[13px] font-bold md:text-lg ${labelColor}`}
-                            >
-                                {label}.
-                            </span>
-                            <span
-                                className={`text-[11px] leading-[1.3] md:text-base md:leading-relaxed ${textColor}`}
-                            >
-                                {text}
-                            </span>
-                        </div>
-                        {isReviewMode && selected && isCorrect && (
-                            <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/20 px-2.5 py-0.5 font-['orbitron'] text-xs font-bold text-emerald-400">
-                                (+{questionScore || 20} Poin)
-                            </span>
-                        )}
-                        {isReviewMode && selected && !isCorrect && (
-                            <span className="shrink-0 rounded-full border border-rose-400/40 bg-rose-400/20 px-2.5 py-0.5 font-['orbitron'] text-xs font-bold text-rose-400">
-                                (0 Poin)
-                            </span>
+            {/* Right Selection Indicator */}
+            <div className="flex items-center gap-1.5 shrink-0 ml-2 sm:ml-3.5">
+                {isReviewMode && selected && isCorrect && (
+                    <span className="rounded-full border border-emerald-400/40 bg-emerald-400/20 px-1.5 py-0.5 font-['Orbitron',sans-serif] text-[8px] sm:text-xs font-bold text-emerald-400">
+                        (+{questionScore || 20} Poin)
+                    </span>
+                )}
+                {isReviewMode && selected && !isCorrect && (
+                    <span className="rounded-full border border-rose-400/40 bg-rose-400/20 px-1.5 py-0.5 font-['Orbitron',sans-serif] text-[8px] sm:text-xs font-bold text-rose-400">
+                        (0 Poin)
+                    </span>
+                )}
+
+                {!isReviewMode && (
+                    <div className="flex h-4.5 w-4.5 sm:h-6 sm:w-6 items-center justify-center">
+                        {selected ? (
+                            <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center">
+                                <div className="absolute inset-0 rounded-full border-2 border-[#FACC15] animate-pulse" />
+                                <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full border-2 border-[#FACC15] bg-[#FACC15]" />
+                            </div>
+                        ) : (
+                            <div className="h-3.5 w-3.5 sm:h-5 sm:w-5 rounded-full border-2 border-[#3B28F6] group-hover:border-cyan-400 transition-colors" />
                         )}
                     </div>
-                </div>
+                )}
             </div>
-        </motion.button>
+        </HexagonButton>
     );
 }
 
+/* ============================================================================
+   7. MAIN PLAY COMPONENT
+   ============================================================================ */
 export default function Play({
     quiz,
     has_submitted,
@@ -1041,20 +434,6 @@ export default function Play({
     const [loading, setLoading] = useState(false);
     const [showResult, setShowResult] = useState(false);
     const [finalResult, setFinalResult] = useState<any>(null);
-
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(
-                window.innerWidth < 768 ||
-                    (window.innerWidth < 1024 && window.innerHeight < 600),
-            );
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     const initialTimeLeft =
         typeof quiz?.remaining_seconds === 'number'
@@ -1183,8 +562,6 @@ export default function Play({
         router.visit(getExitUrl());
     };
 
-
-
     if (!quiz?.questions?.length) return null;
 
     const question = currentQuestion;
@@ -1312,45 +689,44 @@ export default function Play({
         }
     };
 
+    const { codeSnippet, questionPrompt } = parseQuestionContent(
+        question.question_text || '',
+    );
+
     if (has_submitted && !isReviewMode) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#04080f] p-4 font-['Rajdhani',sans-serif]">
-                <div className="relative w-full max-w-xl rounded border border-[#FACC15] bg-white p-8 text-center shadow-[0_0_0_2px_rgba(59,40,246,0.1),0_0_30px_rgba(250,204,21,0.15)] md:p-10 dark:bg-[#020202] dark:shadow-[0_0_0_2px_rgba(0,191,255,0.2),0_0_50px_rgba(250,204,21,0.25)]">
-                    {/* Header Icon */}
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[#FACC15] bg-yellow-500/10 dark:bg-yellow-500/15">
-                        <TriangleAlert className="h-6 w-6 text-yellow-500 dark:text-yellow-400" />
+            <div className="flex min-h-screen items-center justify-center bg-[#040814] p-4 font-['Rajdhani',sans-serif]">
+                <div className="relative w-full max-w-xl rounded-2xl border border-[#FACC15] bg-[#070e20] p-8 text-center shadow-[0_0_50px_rgba(250,204,21,0.2)] md:p-10 text-white">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#FACC15] bg-yellow-500/10">
+                        <TriangleAlert className="h-7 w-7 text-yellow-400" />
                     </div>
 
                     <h1
-                        className="mb-4 text-2xl font-bold tracking-[4px] text-slate-900 uppercase md:text-3xl dark:text-white"
+                        className="mb-4 text-2xl font-bold tracking-[4px] text-white uppercase md:text-3xl"
                         style={{ fontFamily: 'Orbitron, sans-serif' }}
                     >
                         MISSION COMPLETED
                     </h1>
 
-                    <p className="mb-6 text-base font-semibold text-slate-800 md:text-lg dark:text-white">
+                    <p className="mb-6 text-base font-semibold text-slate-200 md:text-lg">
                         Kamu sudah menyelesaikan quiz ini.
                     </p>
 
-                    {/* Warning box style copied from course index confirmation modal */}
-                    <div className="mx-auto mb-8 max-w-lg rounded border border-red-300 bg-red-50/50 p-4 text-left shadow-[inset_0_0_15px_rgba(180,0,0,0.05)] dark:border-[#cc0000] dark:bg-[#110000] dark:shadow-[inset_0_0_15px_rgba(180,0,0,0.1)]">
+                    <div className="mx-auto mb-8 max-w-lg rounded-xl border border-red-500/40 bg-red-950/30 p-4 text-left shadow-[inset_0_0_15px_rgba(180,0,0,0.2)]">
                         <div className="mb-2 flex items-center gap-2">
-                            <div className="text-red-600">
+                            <div className="text-red-400">
                                 <AlertOctagon className="h-5 w-5 font-bold" />
                             </div>
                             <p
-                                className="text-xs font-bold tracking-widest text-red-500 uppercase"
-                                style={{ fontFamily: 'Oxanium' }}
+                                className="text-xs font-bold tracking-widest text-red-400 uppercase"
+                                style={{ fontFamily: 'Orbitron, sans-serif' }}
                             >
                                 System Warning
                             </p>
                         </div>
-                        <p
-                            className="text-xs leading-relaxed text-slate-800 md:text-sm dark:text-white"
-                            style={{ fontFamily: 'Oxanium' }}
-                        >
+                        <p className="text-xs leading-relaxed text-slate-300 md:text-sm">
                             Quiz ini telah disubmit. Anda{' '}
-                            <span className="font-bold text-[#EE0202]">
+                            <span className="font-bold text-red-400">
                                 tidak dapat mengubah
                             </span>{' '}
                             jawaban atau mengirim ulang kuis ini lagi.
@@ -1360,8 +736,7 @@ export default function Play({
                     <div className="mx-auto flex max-w-md justify-center">
                         <button
                             onClick={handleExit}
-                            className="w-full cursor-pointer rounded border border-[#3B28F6] bg-[#3B28F6] py-3 text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_15px_rgba(59,40,246,0.3)] transition-all duration-300 hover:bg-[#2d1ed9] md:text-sm"
-                            style={{ fontFamily: 'Oxanium' }}
+                            className="w-full cursor-pointer rounded-xl border border-[#3B28F6] bg-[#3B28F6] py-3 text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_15px_rgba(59,40,246,0.4)] transition-all duration-300 hover:bg-[#2d1ed9] md:text-sm font-['Orbitron',sans-serif]"
                         >
                             KEMBALI KE COURSE
                         </button>
@@ -1371,147 +746,215 @@ export default function Play({
         );
     }
 
-    if (isMobile) {
-        return (
-            <>
-                <MobilePlay
-                    quiz={quiz}
-                    has_submitted={has_submitted}
-                    isReviewMode={isReviewMode}
-                    user_stats={
-                        user_stats || { level: 1, xp: 0, exp_max: 500, gold: 0 }
-                    }
-                    current={current}
-                    setCurrent={setCurrent}
-                    answers={answers}
-                    setAnswers={setAnswers}
-                    selected={selected}
-                    setSelected={setSelected}
-                    loading={loading}
-                    next={next}
-                    handleBack={handleBack}
-                    timeLeft={timeLeft}
-                />
-                <ResultModal
-                    open={showResult}
-                    result={finalResult}
-                    onClose={handleExit}
-                    onRetry={handleRetry}
-                />
-                <TimeExpiredModal
-                    open={showTimeExpired}
-                    onProceed={handleProceedTimeExpired}
-                />
-
-                {showQuizTour && (
-                    <CourseOnboardingTour
-                        character={activeCharacter}
-                        phase="quiz"
-                        onClose={() => {
-                            setShowQuizTour(false);
-                            if (typeof window !== 'undefined') {
-                                localStorage.setItem(
-                                    `course_guide_quiz_completed_${auth?.user?.id || 'guest'}`,
-                                    'true',
-                                );
-                            }
-                        }}
-                    />
-                )}
-            </>
-        );
-    }
-
     return (
         <>
-            <div className="quiz-page flex h-screen flex-col overflow-hidden bg-[#04080f] font-['Rajdhani',sans-serif]">
-                <div className="flex items-center justify-between px-4 pt-3 pb-1 text-white">
-                    <div className="flex items-center gap-2 font-['orbitron'] text-xs font-bold tracking-wider text-slate-400">
-                        {isReviewMode && (
-                            <span className="rounded-md border border-yellow-400/40 bg-yellow-400/20 px-2.5 py-1 font-bold text-yellow-300">
-                                💡 MODE REVIEW JAWABAN
+            <div className="h-screen w-screen bg-[#040814] font-['Rajdhani',sans-serif] text-white flex flex-col justify-between overflow-hidden p-1.5 sm:p-3 md:p-5 hp-landscape-container sm-md-container md-lg-container">
+                {/* ── 1. HEADER (FLOATING TOP BAR) ── */}
+                <div className="w-full flex items-center justify-between px-1.5 sm:px-4 md:px-6 pt-0 sm:pt-1 pb-0 sm:pb-1 mb-0.5 sm:mb-1 shrink-0 hp-landscape-header-bar sm-md-header-bar md-lg-header-bar">
+                    {/* Logo & Stacked Text Left */}
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <img
+                            src="/images/logo.webp"
+                            alt="Skill Ventura Logo"
+                            className="h-5 sm:h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_10px_rgba(59,40,246,0.5)] hp-landscape-logo-img sm-md-logo-img md-lg-logo-img"
+                        />
+                        <div className="flex flex-col leading-tight font-['Orbitron',sans-serif]">
+                            <span className="text-white font-extrabold text-[9px] sm:text-xs md:text-base tracking-[1px] sm:tracking-[2px] hp-landscape-logo-text-1 sm-md-logo-text-1 md-lg-logo-text-1">
+                                SKILL
                             </span>
+                            <span className="text-[#FACC15] font-black text-[10px] sm:text-sm md:text-lg tracking-[1px] sm:tracking-[2px] hp-landscape-logo-text-2 sm-md-logo-text-2 md-lg-logo-text-2">
+                                VENTURA
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Timer Right */}
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {isReviewMode ? (
+                            <div className="w-[100px] sm:w-[140px] md:w-[190px] hp-landscape-timer-container sm-md-timer-container md-lg-timer-container">
+                                <HexagonButton className="!my-0 !py-0.5 !px-1.5 min-h-[26px] sm:min-h-[36px] hp-landscape-timer-button sm-md-timer-button md-lg-timer-button cursor-default">
+                                    <span className="font-['Orbitron',sans-serif] text-[9px] sm:text-xs font-bold text-yellow-300">
+                                        💡 REVIEW
+                                    </span>
+                                </HexagonButton>
+                            </div>
+                        ) : (
+                            quiz.duration && (
+                                <div className="w-[95px] sm:w-[135px] md:w-[190px] hp-landscape-timer-container sm-md-timer-container md-lg-timer-container">
+                                    <HexagonButton className="!my-0 !py-0.5 !px-1.5 min-h-[26px] sm:min-h-[36px] hp-landscape-timer-button sm-md-timer-button md-lg-timer-button cursor-default">
+                                        <div
+                                            className={`flex items-center justify-center gap-1 sm:gap-2 font-['Orbitron',sans-serif] text-[9px] sm:text-xs md:text-sm font-bold tracking-wider hp-landscape-timer-text-wrap sm-md-timer-text-wrap md-lg-timer-text-wrap ${
+                                                timeLeft < 60
+                                                    ? 'text-rose-400 animate-pulse'
+                                                    : 'text-[#FACC15]'
+                                            }`}
+                                        >
+                                            <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-[#FACC15] hp-landscape-timer-clock-icon sm-md-timer-clock-icon md-lg-timer-clock-icon" />
+                                            <span>TIME: {formatTimer(timeLeft)}</span>
+                                        </div>
+                                    </HexagonButton>
+                                </div>
+                            )
                         )}
                     </div>
+                </div>
 
-                    {!isReviewMode && quiz.duration && (
-                        <div
-                            className={`flex items-center gap-2 rounded-full px-3.5 py-1 font-['orbitron'] text-xs font-bold tracking-widest ${
-                                timeLeft < 60
-                                    ? 'animate-pulse border border-rose-500/60 bg-rose-500/20 text-rose-400'
-                                    : 'border border-indigo-500/40 bg-indigo-500/20 text-indigo-300'
-                            }`}
-                        >
-                            <span>⏱️ TIME: {formatTimer(timeLeft)}</span>
+                {/* ── 2. MAIN BODY AREA (2-COLUMN GRID IN LANDSCAPE & DESKTOP, STACKED IN PORTRAIT) ── */}
+                <div className="w-full flex-1 flex flex-col md:grid md:grid-cols-12 gap-2 sm:gap-3 md:gap-4 lg:gap-5 min-h-0 mb-1 sm:mb-2 overflow-visible">
+                    {/* ── LEFT COLUMN: QUESTION BOX (TOP IN PORTRAIT) ── */}
+                    <div className="h-[52%] sm:h-[55%] md:h-full w-full flex-1 md:flex-none md:col-span-6 lg:col-span-6 flex flex-col min-h-0 relative p-1 sm:p-2 md:p-3 lg:p-4 sm-md-question-col">
+                        <div className="flex-1 min-h-0 w-full relative">
+                            <ChamferCard>
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={question.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.25 }}
+                                        className="flex flex-col h-full overflow-hidden"
+                                    >
+                                        {/* 1. FIXED TOP NAVBAR inside Question Box */}
+                                        <div className="shrink-0 mb-1.5 sm:mb-2 pb-1.5 sm:pb-2 border-b border-indigo-900/40 flex items-center gap-2 sm:gap-3 w-full bg-[#070e20] z-20 hp-landscape-card-top-nav sm-md-card-top-nav md-lg-card-top-nav">
+                                            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                                                <Gamepad2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-[#FACC15] fill-[#FACC15]/20 hp-landscape-gamepad-icon-el sm-md-gamepad-icon-el md-lg-gamepad-icon-el" />
+                                                <span className="font-['Orbitron',sans-serif] text-[10px] sm:text-xs md:text-sm font-extrabold text-white tracking-widest hp-landscape-quiz-counter-text sm-md-quiz-counter-text md-lg-quiz-counter-text">
+                                                    QUIZ{' '}
+                                                    <span className="text-[#6366f1] font-bold ml-0.5 sm:ml-1">
+                                                        {String(current + 1).padStart(2, '0')}{' '}
+                                                        / {String(total).padStart(2, '0')}
+                                                    </span>
+                                                </span>
+                                            </div>
+
+                                            {/* Progress Bar Line */}
+                                            <div className="flex-1 h-1 sm:h-1.5 bg-slate-900/80 rounded-full overflow-hidden relative border border-indigo-900/50 hp-landscape-progress-bar-h sm-md-progress-bar-h md-lg-progress-bar-h">
+                                                <motion.div
+                                                    className="h-full bg-[#6366f1] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.6)]"
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${((current + 1) / total) * 100}%` }}
+                                                    transition={{ duration: 0.3 }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* 2. FIXED PHOTO / IMAGE MEDIA (If present) */}
+                                        {question.media_url && (
+                                            <div className="shrink-0 my-1 sm:my-1.5 flex w-full justify-center overflow-hidden rounded-xl border border-slate-700/50 bg-[#050914] p-1 sm:p-2">
+                                                <img
+                                                    src={question.media_url}
+                                                    alt="Media Soal"
+                                                    className="max-h-[80px] sm:max-h-[140px] md:max-h-[220px] w-auto object-contain"
+                                                />
+                                            </div>
+                                        )}
+
+                                        {/* 3. SCROLLABLE QUESTION PROMPT & CODE SECTION */}
+                                        <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-1.5 sm:gap-2">
+                                            {codeSnippet && <CodeBlock code={codeSnippet} />}
+
+                                            <div className="mt-0.5 sm:mt-1">
+                                                <div className="flex items-center gap-2 mb-1 hp-landscape-question-header-row sm-md-question-header-row md-lg-question-header-row">
+                                                    <div className="flex h-4.5 w-4.5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-[#3B28F6] text-white text-[9px] sm:text-xs font-bold font-['Orbitron',sans-serif] hp-landscape-question-badge-circle sm-md-question-badge-circle md-lg-question-badge-circle">
+                                                        ?
+                                                    </div>
+                                                    <h3 className="font-['Orbitron',sans-serif] font-bold text-xs sm:text-sm md:text-lg text-cyan-400 tracking-wide hp-landscape-question-title-text sm-md-question-title-text md-lg-question-title-text">
+                                                        Pertanyaan
+                                                    </h3>
+                                                </div>
+
+                                                <FormattedQuestionText text={questionPrompt} />
+
+                                                {question.max_selectable > 1 && (
+                                                    <span className="mt-1 sm:mt-1.5 inline-block rounded-full bg-yellow-400/20 px-2.5 py-0.5 text-[9px] sm:text-xs font-bold text-yellow-400 border border-yellow-400/30 font-['Orbitron',sans-serif]">
+                                                        (Pilih {question.max_selectable} Jawaban)
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                </AnimatePresence>
+                            </ChamferCard>
                         </div>
-                    )}
-                </div>
-
-                <div className="quiz-layout mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-0 overflow-hidden px-[2px] pt-1 pb-[14px] md:flex-row md:gap-4 md:px-4 md:pt-2 md:pb-[100px]">
-                    <div className="quiz-question h-[39%] w-full shrink-0 overflow-visible md:h-full md:w-[58%]">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={question.id}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ duration: 0.3 }}
-                                className="h-full w-full"
-                            >
-                                <BoxSoal
-                                    current={current}
-                                    total={total}
-                                    question={question}
-                                    isReviewMode={isReviewMode}
-                                />
-                            </motion.div>
-                        </AnimatePresence>
                     </div>
 
-                    <div className="quiz-answer flex w-full flex-1 [scrollbar-width:none] flex-col justify-center overflow-y-auto px-0 py-[2px] md:w-[42%] md:flex-none md:p-0 [&::-webkit-scrollbar]:hidden">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={question.id + '-answers'}
-                                initial={{ opacity: 0, x: 40 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -40 }}
-                                transition={{ duration: 0.3 }}
-                                className="w-full"
-                            >
-                                {question.answers.map((a: any, idx: number) => (
-                                    <AnswerButton
-                                        key={a.id}
-                                        label={labels[idx] ?? String(idx + 1)}
-                                        text={a.answer_text}
-                                        selected={selected.includes(a.id)}
-                                        isCorrect={a.is_correct}
-                                        isReviewMode={isReviewMode}
-                                        questionScore={
-                                            question.max_score ||
-                                            question.question_score ||
-                                            20
-                                        }
-                                        onClick={() => selectAnswer(a.id)}
-                                    />
-                                ))}
-                            </motion.div>
-                        </AnimatePresence>
+                    {/* ── RIGHT COLUMN: ANSWER OPTIONS (BOTTOM IN PORTRAIT, RIGHT IN LANDSCAPE) ── */}
+                    <div className="h-[48%] sm:h-[45%] md:h-full w-full shrink-0 md:shrink md:col-span-6 lg:col-span-6 flex flex-col justify-center min-h-0 relative p-0.5 sm:p-2 md:px-3 lg:px-6 sm-md-answers-col">
+                        <div className="flex flex-col justify-start md:justify-center gap-2 sm:gap-2.5 md:gap-2 hp-landscape-options-wrapper sm-md-options-wrapper md-lg-options-wrapper my-auto max-h-full overflow-y-auto py-1 pr-1">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={question.id + '-answers'}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.25 }}
+                                    className="flex flex-col gap-2 sm:gap-2.5 md:gap-2 hp-landscape-options-wrapper sm-md-options-wrapper md-lg-options-wrapper"
+                                >
+                                    {question.answers.map((a: any, idx: number) => (
+                                        <AnswerOption
+                                            key={a.id}
+                                            label={labels[idx] ?? String(idx + 1)}
+                                            text={a.answer_text}
+                                            selected={selected.includes(a.id)}
+                                            isCorrect={a.is_correct}
+                                            isReviewMode={isReviewMode}
+                                            questionScore={
+                                                question.max_score ||
+                                                question.question_score ||
+                                                20
+                                            }
+                                            onClick={() => selectAnswer(a.id)}
+                                        />
+                                    ))}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
                     </div>
                 </div>
 
-                <Footer
-                    current={current}
-                    total={total}
-                    selected={selected.length > 0 ? 'selected' : null}
-                    isReviewMode={isReviewMode}
-                    loading={loading}
-                    handleBack={handleBack}
-                    next={
-                        current + 1 === total && isReviewMode
-                            ? handleExit
-                            : next
-                    }
-                />
+                {/* ── 3. BOTTOM FOOTER BAR WITH HEXAGON BACK & NEXT BUTTONS ── */}
+                <div className="w-full flex items-center justify-between px-2 sm:px-4 md:px-6 py-1 sm:py-2 shrink-0 border-t border-indigo-900/30 bg-[#040814]/80 backdrop-blur-sm hp-landscape-footer-bar sm-md-footer-bar md-lg-footer-bar">
+                    {/* BACK BUTTON (Bottom Left) */}
+                    <div className="w-[110px] sm:w-[150px] md:w-[200px] hp-landscape-footer-btn-container sm-md-footer-btn-container md-lg-footer-btn-container">
+                        <HexagonButton
+                            onClick={handleBack}
+                            disabled={current === 0}
+                            className="!my-0 !py-0.5 sm:!py-1 min-h-[28px] sm:min-h-[36px] md:min-h-[44px] hp-landscape-footer-btn-el sm-md-footer-btn-el md-lg-footer-btn-el"
+                        >
+                            <span className="flex items-center justify-center w-full gap-1.5 sm:gap-2 font-['Orbitron',sans-serif] font-bold text-[10px] sm:text-xs md:text-sm text-white hp-landscape-footer-btn-label sm-md-footer-btn-label md-lg-footer-btn-label">
+                                <span>&lt;</span> KEMBALI
+                            </span>
+                        </HexagonButton>
+                    </div>
+
+                    {/* NEXT / FINISH BUTTON (Bottom Right - Solid Yellow Fill) */}
+                    <div className="w-[110px] sm:w-[150px] md:w-[200px] hp-landscape-footer-btn-container sm-md-footer-btn-container md-lg-footer-btn-container">
+                        <HexagonButton
+                            onClick={next}
+                            isYellowFill={true}
+                            disabled={(!isReviewMode && !selected?.length) || loading}
+                            className="!my-0 !py-0.5 sm:!py-1 min-h-[28px] sm:min-h-[36px] md:min-h-[44px] hp-landscape-footer-btn-el sm-md-footer-btn-el md-lg-footer-btn-el"
+                        >
+                            <span className="flex items-center justify-center w-full gap-1.5 sm:gap-2 font-['Orbitron',sans-serif] font-black text-[10px] sm:text-xs md:text-sm text-black hp-landscape-footer-btn-label sm-md-footer-btn-label md-lg-footer-btn-label">
+                                {loading ? (
+                                    '...'
+                                ) : current + 1 === total ? (
+                                    isReviewMode ? (
+                                        'KELUAR'
+                                    ) : (
+                                        <>
+                                            FINISH <Flag className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-black" strokeWidth={3} />
+                                        </>
+                                    )
+                                ) : (
+                                    <>
+                                        LANJUT <span>&gt;</span>
+                                    </>
+                                )}
+                            </span>
+                        </HexagonButton>
+                    </div>
+                </div>
             </div>
 
             <ResultModal

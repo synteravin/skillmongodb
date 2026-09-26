@@ -94,6 +94,17 @@ export default function Flags({ flags }: Props) {
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none dark:bg-indigo-500/5" />
 
                 <div className="relative z-10 mx-auto max-w-7xl space-y-6">
+                    {/* Back Button */}
+                    <div>
+                        <Link
+                            href="/admin/quests"
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-xs transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-800"
+                        >
+                            <ArrowLeft className="h-4 w-4 stroke-[2.5]" />
+                            Kembali ke Daftar Quest
+                        </Link>
+                    </div>
+
                     {/* Header */}
                     <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-6 shadow-sm sm:p-8 md:p-10 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                         {/* Background Grid Motif */}
@@ -110,26 +121,16 @@ export default function Flags({ flags }: Props) {
 
                         <div className="absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
 
-                        <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="max-w-2xl space-y-2">
-                                <span className="inline-block text-[10px] font-bold tracking-widest text-amber-600 uppercase dark:text-amber-400">
-                                    Moderation & Compliance Queue
-                                </span>
-                                <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl dark:text-white">
-                                    Antrean Laporan Moderasi Quest
-                                </h1>
-                                <p className="text-xs leading-relaxed font-semibold text-slate-600 dark:text-slate-400">
-                                    Tinjau laporan dugaan kecurangan, spam, atau konten tidak pantas yang dilaporkan oleh pengguna bursa lowongan.
-                                </p>
-                            </div>
-
-                            <Link
-                                href="/admin/quests"
-                                className="relative z-10 inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-                            >
-                                <ArrowLeft className="h-4 w-4 stroke-[2.5]" />
-                                Kembali ke Daftar Quest
-                            </Link>
+                        <div className="relative z-10 space-y-2">
+                            <span className="inline-block text-[10px] font-bold tracking-widest text-amber-600 uppercase dark:text-amber-400">
+                                Moderation & Compliance Queue
+                            </span>
+                            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl dark:text-white">
+                                Antrean Laporan Moderasi Quest
+                            </h1>
+                            <p className="text-xs leading-relaxed font-semibold text-slate-600 dark:text-slate-400 max-w-3xl">
+                                Tinjau laporan dugaan kecurangan, spam, atau konten tidak pantas yang dilaporkan oleh pengguna bursa lowongan.
+                            </p>
                         </div>
                     </div>
 

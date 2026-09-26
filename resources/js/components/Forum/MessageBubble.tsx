@@ -136,7 +136,7 @@ export default function MessageBubble({
     return (
         <div
             ref={domRef}
-            className={`group animate-fade-in-slide-up relative flex max-w-[78%] min-w-0 rounded-2xl transition-all duration-500 sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] ${
+            className={`group animate-fade-in-slide-up relative flex max-w-[86%] min-w-0 rounded-2xl transition-all duration-500 sm:max-w-[82%] md:max-w-[75%] lg:max-w-[70%] ${
                 isMentorOrAdmin
                     ? 'gap-3.5 md:gap-4 lg:gap-4.5'
                     : 'gap-2 md:gap-3'
@@ -279,8 +279,8 @@ export default function MessageBubble({
                     }
                     className={`chat-bubble-body relative flex min-w-0 cursor-pointer flex-col transition duration-200 select-none active:scale-[0.99] ${
                         isMentorOrAdmin
-                            ? 'pt-1.5 pr-[48px] pb-1.5 pl-[10px]'
-                            : 'pt-2 pr-[51px] pb-2 pl-[12px]'
+                            ? 'px-3 pt-1.5 pb-2.5'
+                            : 'px-3 pt-2 pb-2.5'
                     } ${
                         isMentorOrAdmin
                             ? isSelf
@@ -352,7 +352,7 @@ export default function MessageBubble({
 
                     {/* Nama & Peran Pengirim */}
                     {!isSelf && !isConsecutive && (
-                        <div className="mb-1.5 flex items-center pr-[45px]">
+                        <div className="mb-1 flex items-center pr-2">
                             <span
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -382,7 +382,7 @@ export default function MessageBubble({
                                         e.stopPropagation(); // Mencegah menu terbuka jika mengklik kutipan
                                         scrollToMessage(msg.parent!.id);
                                     }}
-                                    className={`mb-2.5 max-w-[220px] cursor-pointer bg-slate-100/90 text-left transition hover:bg-slate-200/90 sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px] dark:bg-slate-900 dark:hover:bg-slate-950 ${
+                                    className={`mb-2.5 w-full max-w-full cursor-pointer bg-slate-100/90 text-left transition hover:bg-slate-200/90 dark:bg-slate-900 dark:hover:bg-slate-950 ${
                                         isFullBorder
                                             ? 'rounded border border-indigo-200 px-3 py-1.5 dark:border-[#3B28F6]'
                                             : 'rounded-xs border border-indigo-200 py-1 pl-3 dark:border-[#3B28F6]'
@@ -422,18 +422,22 @@ export default function MessageBubble({
                     {/* Teks Pesan */}
                     {msg.message && (
                         <p
-                            className={`font-['Oxanium'] text-xs leading-relaxed break-words whitespace-pre-wrap text-slate-800 select-text dark:text-slate-100 ${
+                            className={`w-full font-['Oxanium'] text-xs leading-relaxed break-words whitespace-pre-wrap text-slate-800 select-text dark:text-slate-100 sm:text-sm ${
                                 isMentorOrAdmin
                                     ? 'md:text-[13px] lg:text-[13px] xl:text-[13px]'
                                     : 'md:text-sm'
                             }`}
                         >
                             {msg.message}
+                            <span
+                                className="inline-block h-3.5 w-[46px] select-none"
+                                aria-hidden="true"
+                            />
                         </p>
                     )}
 
                     {/* Waktu Kirim */}
-                    <span className="absolute right-2.5 bottom-1.5 text-[9px] text-slate-500 uppercase select-none dark:text-slate-500">
+                    <span className="absolute right-2.5 bottom-1 text-[9.5px] text-slate-500 uppercase select-none dark:text-slate-400 font-sans">
                         {formatTime(msg.created_at)}
                     </span>
 
