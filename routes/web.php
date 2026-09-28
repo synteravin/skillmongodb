@@ -225,8 +225,10 @@ Route::middleware(['auth', 'role:admin,mentor'])
 
         // ADMIN QUEST CRUD
         Route::get('/quests', [App\Http\Controllers\Admin\QuestController::class, 'index'])->name('quests.index');
+        Route::get('/quests/create', [App\Http\Controllers\Admin\QuestController::class, 'create'])->name('quests.create');
         Route::post('/quests', [App\Http\Controllers\Admin\QuestController::class, 'store'])->name('quests.store');
         Route::get('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'show'])->name('quests.show');
+        Route::get('/quests/{quest}/edit', [App\Http\Controllers\Admin\QuestController::class, 'edit'])->name('quests.edit');
         Route::put('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'update'])->name('quests.update');
         Route::delete('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'destroy'])->name('quests.destroy');
         Route::delete('/quests/{quest}/bids/{bid}', [App\Http\Controllers\Admin\QuestController::class, 'destroyBid'])->name('quests.bids.destroy');
