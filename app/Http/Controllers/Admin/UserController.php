@@ -69,9 +69,12 @@ class UserController extends Controller
             'name' => ['required', 'string'],
             'username' => ['required', 'string', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'min:6'],
+            'password' => ['required', 'min:6', 'confirmed'],
             'role' => ['required', 'in:admin,mentor,student'],
             'avatar' => ['nullable', 'image', 'max:2048'],
+        ], [
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal harus :min karakter.',
         ]);
 
         /* ---------- UPLOAD AVATAR ---------- */
@@ -132,7 +135,14 @@ class UserController extends Controller
             ]);
         }
 
-        $data = $request->validate($rules);
+        if ($request->filled('password')) {
+            $rules['password'] = ['nullable', 'min:6', 'confirmed'];
+        }
+
+        $data = $request->validate($rules, [
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal harus :min karakter.',
+        ]);
 
         if ($user->isMentor()) {
             $data['name'] = $data['name'] ?? $user->name;
