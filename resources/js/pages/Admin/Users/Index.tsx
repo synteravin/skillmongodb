@@ -15,6 +15,8 @@ import {
     Shield,
     Camera,
     Eye,
+    EyeOff,
+    Check,
     Search,
     Loader2,
     Save,
@@ -59,6 +61,8 @@ export default function Index({
 }) {
     const [showModal, setShowModal] = useState(false);
     const [editUser, setEditUser] = useState<User | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
     const [selectedRole, setSelectedRole] = useState(filters?.role || 'all');
@@ -149,6 +153,7 @@ export default function Index({
             username: '',
             email: '',
             password: '',
+            password_confirmation: '',
             role: 'student',
             avatar: null as File | null,
             _method: 'post',
@@ -221,7 +226,18 @@ export default function Index({
         reset();
         clearErrors();
         setPreview(null);
-        setData('_method', 'post');
+        setShowPassword(false);
+        setShowConfirmPassword(false);
+        setData({
+            name: '',
+            username: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
+            role: 'student',
+            avatar: null,
+            _method: 'post',
+        });
         setShowModal(true);
     };
 
@@ -229,11 +245,14 @@ export default function Index({
         setEditUser(user);
         clearErrors();
         setPreview(user.avatar || null);
+        setShowPassword(false);
+        setShowConfirmPassword(false);
         setData({
             name: user.name,
             username: user.username,
             email: user.email,
             password: '',
+            password_confirmation: '',
             role: user.role,
             avatar: null,
             _method: 'put',
@@ -1077,77 +1096,40 @@ export default function Index({
                                         </div>
                                     </div>
 
-                                    {/* Email */}
-                                    <div>
-                                        <label className={labelClass}>
-                                            Email Address{' '}
-                                            <span className="text-rose-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <div className="relative">
-                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                <Mail
-                                                    size={14}
-                                                    className="text-slate-400"
-                                                />
-                                            </div>
-                                            <input
-                                                type="email"
-                                                placeholder="john@example.com"
-                                                value={data.email}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'email',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={`${inputClass} pl-9`}
-                                                required
-                                            />
-                                        </div>
-                                        {errors.email && (
-                                            <span className="mt-1.5 block text-xs font-medium text-rose-500">
-                                                {errors.email}
-                                            </span>
-                                        )}
-                                    </div>
-
+                                    {/* Email and Role */}
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        {/* Password */}
+                                        {/* Email */}
                                         <div>
                                             <label className={labelClass}>
-                                                Password{' '}
-                                                {editUser ? (
-                                                    <span className="font-normal text-slate-400 normal-case">
-                                                        (optional)
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-rose-500">
-                                                        *
-                                                    </span>
-                                                )}
+                                                Email Address{' '}
+                                                <span className="text-rose-500">
+                                                    *
+                                                </span>
                                             </label>
-                                            <input
-                                                type="password"
-                                                placeholder={
-                                                    editUser
-                                                        ? 'Leave blank to keep'
-                                                        : '••••••••'
-                                                }
-                                                value={data.password}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'password',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={inputClass}
-                                                required={!editUser}
-                                            />
-                                            {errors.password && (
+                                            <div className="relative">
+                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <Mail
+                                                        size={14}
+                                                        className="text-slate-400"
+                                                    />
+                                                </div>
+                                                <input
+                                                    type="email"
+                                                    placeholder="john@example.com"
+                                                    value={data.email}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'email',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className={`${inputClass} pl-9`}
+                                                    required
+                                                />
+                                            </div>
+                                            {errors.email && (
                                                 <span className="mt-1.5 block text-xs font-medium text-rose-500">
-                                                    {errors.password}
+                                                    {errors.email}
                                                 </span>
                                             )}
                                         </div>
@@ -1207,6 +1189,142 @@ export default function Index({
                                             {errors.role && (
                                                 <span className="mt-1.5 block text-xs font-medium text-rose-500">
                                                     {errors.role}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Password & Password Confirmation */}
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        {/* Password */}
+                                        <div>
+                                            <label className={labelClass}>
+                                                Password{' '}
+                                                {editUser ? (
+                                                    <span className="font-normal text-slate-400 normal-case">
+                                                        (opsional)
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-rose-500">
+                                                        *
+                                                    </span>
+                                                )}
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    placeholder={
+                                                        editUser
+                                                            ? 'Biarkan kosong jika tetap'
+                                                            : 'Minimal 6 karakter'
+                                                    }
+                                                    value={data.password}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'password',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className={`${inputClass} pr-10`}
+                                                    required={!editUser}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    tabIndex={-1}
+                                                    className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                                                >
+                                                    {showPassword ? (
+                                                        <EyeOff size={16} />
+                                                    ) : (
+                                                        <Eye size={16} />
+                                                    )}
+                                                </button>
+                                            </div>
+                                            {errors.password && (
+                                                <span className="mt-1.5 block text-xs font-medium text-rose-500">
+                                                    {errors.password}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Password Confirmation */}
+                                        <div>
+                                            <label className={labelClass}>
+                                                Konfirmasi Password{' '}
+                                                {editUser ? (
+                                                    <span className="font-normal text-slate-400 normal-case">
+                                                        (opsional)
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-rose-500">
+                                                        *
+                                                    </span>
+                                                )}
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type={showConfirmPassword ? 'text' : 'password'}
+                                                    placeholder={
+                                                        editUser
+                                                            ? 'Ulangi password baru'
+                                                            : 'Ulangi password'
+                                                    }
+                                                    value={data.password_confirmation}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'password_confirmation',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className={`${inputClass} pr-10 ${
+                                                        data.password_confirmation &&
+                                                        data.password &&
+                                                        data.password !== data.password_confirmation
+                                                            ? 'border-rose-400 focus:border-rose-500 dark:border-rose-500/50'
+                                                            : data.password_confirmation &&
+                                                              data.password &&
+                                                              data.password === data.password_confirmation
+                                                            ? 'border-emerald-400 focus:border-emerald-500 dark:border-emerald-500/50'
+                                                            : ''
+                                                    }`}
+                                                    required={!editUser || Boolean(data.password)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    tabIndex={-1}
+                                                    className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                                                >
+                                                    {showConfirmPassword ? (
+                                                        <EyeOff size={16} />
+                                                    ) : (
+                                                        <Eye size={16} />
+                                                    )}
+                                                </button>
+                                            </div>
+                                            {errors.password_confirmation && (
+                                                <span className="mt-1.5 block text-xs font-medium text-rose-500">
+                                                    {errors.password_confirmation}
+                                                </span>
+                                            )}
+                                            {data.password && data.password_confirmation && (
+                                                <span
+                                                    className={`mt-1.5 flex items-center gap-1 text-[11px] font-medium ${
+                                                        data.password === data.password_confirmation
+                                                            ? 'text-emerald-500'
+                                                            : 'text-rose-500'
+                                                    }`}
+                                                >
+                                                    {data.password === data.password_confirmation ? (
+                                                        <>
+                                                            <Check size={12} /> Password cocok
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <X size={12} /> Password belum cocok
+                                                        </>
+                                                    )}
                                                 </span>
                                             )}
                                         </div>

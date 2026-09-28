@@ -11,8 +11,8 @@ test('new users can register', function () {
         'name' => 'Test User',
         'username' => 'testuser_'.uniqid(),
         'email' => 'test_'.uniqid().'@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'Password123!',
+        'password_confirmation' => 'Password123!',
     ]);
 
     $this->assertAuthenticated();
