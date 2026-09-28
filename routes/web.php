@@ -589,8 +589,10 @@ Route::get('/auth/google/callback', [SocialController::class, 'callback']);
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
+    Route::get('/quests/{quest}/chat-unread-status', [QuestMessageController::class, 'getUnreadStatus'])->name('quests.chat.unread_status');
     Route::get('/quests/bids/{bid}/messages', [QuestMessageController::class, 'getMessages'])->name('quests.bids.messages');
     Route::post('/quests/bids/{bid}/messages', [QuestMessageController::class, 'store'])->name('quests.bids.messages.store');
+    Route::post('/quests/bids/{bid}/mark-read', [QuestMessageController::class, 'markAsRead'])->name('quests.bids.mark_read');
 });
 
 require __DIR__.'/settings.php';

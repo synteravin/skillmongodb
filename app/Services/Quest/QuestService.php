@@ -210,9 +210,10 @@ class QuestService
             ->map(function ($bid) use ($currentUser) {
                 $unreadCount = 0;
                 if ($currentUser) {
-                    $unreadCount = QuestMessage::where('quest_bid_id', $bid->_id)
-                        ->where('sender_id', '!=', $currentUser->_id)
-                        ->where('read_by', '!=', $currentUser->_id)
+                    $cUserId = (string) $currentUser->_id;
+                    $unreadCount = QuestMessage::where('quest_bid_id', (string) $bid->_id)
+                        ->where('sender_id', '!=', $cUserId)
+                        ->where('read_by', '!=', $cUserId)
                         ->count();
                 }
 

@@ -141,9 +141,11 @@ export default function AdminBidsTabPanel({
                                     className="relative flex-1 cursor-pointer rounded-lg bg-indigo-600 py-1.5 text-[10px] font-bold tracking-wider text-white uppercase shadow-sm transition-all duration-200 hover:bg-indigo-700"
                                 >
                                     Chat
-                                    {bid.unread_messages_count > 0 && (
-                                        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 animate-pulse items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white dark:ring-slate-900">
-                                            {bid.unread_messages_count}
+                                    {Boolean(bid.unread_messages_count && bid.unread_messages_count > 0) && (
+                                        <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-extrabold text-white ring-2 ring-white animate-pulse dark:ring-slate-900">
+                                            {bid.unread_messages_count > 99
+                                                ? '99+'
+                                                : bid.unread_messages_count}
                                         </span>
                                     )}
                                 </button>

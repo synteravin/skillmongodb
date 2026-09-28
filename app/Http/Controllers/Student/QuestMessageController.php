@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -47,9 +48,10 @@ class QuestMessageController extends Controller
         // Read-only access is allowed for rejected bids, but we don't block getMessages
 
         // Mark messages as read by the current user for the active channel
+        $userId = (string) $user->_id;
         $unreadQuery = QuestMessage::where('quest_bid_id', $bidId)
-            ->where('sender_id', '!=', $user->_id)
-            ->where('read_by', '!=', $user->_id);
+            ->where('sender_id', '!=', $userId)
+            ->where('read_by', '!=', $userId);
 
         if ($channelType === 'tripartite') {
             $unreadQuery->where(function ($q) {
@@ -65,9 +67,9 @@ class QuestMessageController extends Controller
 
         foreach ($unreadMessages as $msg) {
             $readBy = $msg->read_by ?: [];
-            if (! in_array((string) $user->_id, $readBy)) {
-                $readBy[] = (string) $user->_id;
-                $msg->update(['read_by' => $readBy]);
+            if (! in_array($userId, $readBy, true)) {
+                $readBy[] = $userId;
+                $msg->update(['read_by' => array_values(array_unique($readBy))]);
             }
         }
 
@@ -216,5 +218,98 @@ class QuestMessageController extends Controller
                 'size' => $msg->file['size'] ?? 0,
             ] : null,
         ]);
+    }
+
+    /**
+     * Get real-time unread messages count for a quest.
+     */
+    public function getUnreadStatus(Request $request, string $questId): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user) {
+            return response()->json(['bids' => [], 'my_bid_unread' => 0]);
+        }
+
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->first();
+        if (! $quest) {
+            return response()->json(['bids' => [], 'my_bid_unread' => 0]);
+        }
+
+        $userId = (string) $user->_id;
+        $bids = QuestBid::where('quest_id', (string) $quest->_id)->get();
+        $bidIds = $bids->pluck('_id')->map(fn ($id) => (string) $id)->toArray();
+
+        $unreadMessages = QuestMessage::whereIn('quest_bid_id', $bidIds)
+            ->where('sender_id', '!=', $userId)
+            ->where('read_by', '!=', $userId)
+            ->get(['quest_bid_id', 'channel_type']);
+
+        $bidsUnreadCounts = [];
+        foreach ($bidIds as $bId) {
+            $bidsUnreadCounts[$bId] = 0;
+        }
+
+        $isCreator = (string) $quest->creator_id === $userId;
+        $isAdmin = $user->isAdmin();
+
+        foreach ($unreadMessages as $msg) {
+            $bId = (string) $msg->quest_bid_id;
+            $cType = $msg->channel_type ?? 'tripartite';
+
+            if ($cType === 'caucus_creator' && ! $isAdmin && ! $isCreator) {
+                continue;
+            }
+
+            $bidObj = $bids->firstWhere('_id', $bId);
+            $isApplicant = $bidObj && (string) $bidObj->student_id === $userId;
+            if ($cType === 'caucus_worker' && ! $isAdmin && ! $isApplicant) {
+                continue;
+            }
+
+            $bidsUnreadCounts[$bId] = ($bidsUnreadCounts[$bId] ?? 0) + 1;
+        }
+
+        $myBidRecord = $bids->firstWhere('student_id', $userId);
+        $myBidUnread = $myBidRecord ? ($bidsUnreadCounts[(string) $myBidRecord->_id] ?? 0) : 0;
+
+        return response()->json([
+            'bids' => $bidsUnreadCounts,
+            'my_bid_unread' => $myBidUnread,
+        ]);
+    }
+
+    /**
+     * Explicitly mark messages as read for a specific bid thread.
+     */
+    public function markAsRead(Request $request, string $bidId): JsonResponse
+    {
+        $user = $request->user();
+        $userId = (string) $user->_id;
+        $channelType = $request->input('channel_type', 'tripartite');
+
+        $unreadQuery = QuestMessage::where('quest_bid_id', $bidId)
+            ->where('sender_id', '!=', $userId)
+            ->where('read_by', '!=', $userId);
+
+        if ($channelType === 'tripartite') {
+            $unreadQuery->where(function ($q) {
+                $q->where('channel_type', 'tripartite')
+                    ->orWhereNull('channel_type')
+                    ->orWhere('channel_type', '');
+            });
+        } else {
+            $unreadQuery->where('channel_type', $channelType);
+        }
+
+        $unreadMessages = $unreadQuery->get();
+        foreach ($unreadMessages as $msg) {
+            $readBy = $msg->read_by ?: [];
+            if (! in_array($userId, $readBy, true)) {
+                $readBy[] = $userId;
+                $msg->update(['read_by' => array_values(array_unique($readBy))]);
+            }
+        }
+
+        return response()->json(['success' => true]);
     }
 }

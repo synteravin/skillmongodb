@@ -26,4 +26,22 @@ trait PasswordValidationRules
     {
         return ['required', 'string', 'current_password'];
     }
+
+    /**
+     * Get the validation error messages for password rules.
+     *
+     * @return array<string, string>
+     */
+    protected function passwordMessages(): array
+    {
+        return [
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal harus :min karakter.',
+            'password.mixed' => 'Password harus mengandung setidaknya satu huruf besar dan satu huruf kecil.',
+            'password.letters' => 'Password harus mengandung setidaknya satu huruf.',
+            'password.numbers' => 'Password harus mengandung setidaknya satu angka.',
+            'password.symbols' => 'Password harus mengandung setidaknya satu karakter spesial / simbol (@#$ dll).',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ];
+    }
 }

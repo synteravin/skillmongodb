@@ -320,13 +320,24 @@ export default function BidsTabPanel({
                                                         name: bid.student.name,
                                                     })
                                                 }
-                                                className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase shadow-sm transition-all active:scale-[0.98] ${
+                                                className={`relative flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase shadow-sm transition-all active:scale-[0.98] ${
                                                     bid.status === 'accepted'
                                                         ? 'flex-1 border border-emerald-400/30 bg-emerald-600 text-white hover:bg-emerald-500'
                                                         : 'w-full border border-indigo-500/40 bg-indigo-600 text-white hover:bg-indigo-500 min-[400px]:flex-1 dark:border-indigo-400/40 dark:bg-indigo-600 dark:hover:bg-indigo-500'
                                                 }`}
                                             >
+                                                <MessageSquare size={14} />
                                                 Chat
+                                                {Boolean(
+                                                    bid.unread_messages_count &&
+                                                        bid.unread_messages_count > 0,
+                                                ) && (
+                                                    <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-extrabold text-white ring-2 ring-white animate-pulse dark:ring-slate-950">
+                                                        {bid.unread_messages_count > 99
+                                                            ? '99+'
+                                                            : bid.unread_messages_count}
+                                                    </span>
+                                                )}
                                             </button>
                                         )}
                                     </div>

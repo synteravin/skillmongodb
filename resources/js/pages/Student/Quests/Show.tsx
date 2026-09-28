@@ -112,10 +112,105 @@ export default function Show({ quest, bids, myBid, can }: Props) {
         }
     }, [quest.status, quest.worker_id, isProjectActive, isCreator, isDisputed, isAuthorizedForDispute, activeTab]);
     const [isBriefExpanded, setIsBriefExpanded] = useState(false);
+    const [localBids, setLocalBids] = useState<Bid[]>(bids);
+    const [localMyBid, setLocalMyBid] = useState<Bid | null>(myBid);
+
+    useEffect(() => {
+        setLocalBids(bids);
+    }, [bids]);
+
+    useEffect(() => {
+        setLocalMyBid(myBid);
+    }, [myBid]);
+
     const [selectedChatBid, setSelectedChatBid] = useState<{
         id: string;
         name: string;
     } | null>(null);
+
+    const handleSetSelectedChatBid = (
+        bid: { id: string; name: string } | null,
+    ) => {
+        setSelectedChatBid(bid);
+        if (bid) {
+            setLocalBids((prev) =>
+                prev.map((b) =>
+                    b._id === bid.id ? { ...b, unread_messages_count: 0 } : b,
+                ),
+            );
+            setLocalMyBid((prev) =>
+                prev && prev._id === bid.id
+                    ? { ...prev, unread_messages_count: 0 }
+                    : prev,
+            );
+
+            const token =
+                (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ||
+                (window as any).csrfToken ||
+                '';
+            fetch(`/quests/bids/${bid.id}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            }).catch(() => {});
+        }
+    };
+
+    // Fast, lightweight real-time polling for unread chat status (WhatsApp-like)
+    useEffect(() => {
+        const questIdentifier = quest.slug || quest.id || quest._id;
+        if (!questIdentifier) return;
+
+        const checkUnread = async () => {
+            try {
+                const res = await fetch(`/quests/${questIdentifier}/chat-unread-status`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.bids) {
+                    setLocalBids((prev) =>
+                        prev.map((b) => {
+                            if (selectedChatBid && selectedChatBid.id === b._id) {
+                                return b.unread_messages_count !== 0
+                                    ? { ...b, unread_messages_count: 0 }
+                                    : b;
+                            }
+                            const count = data.bids[b._id] ?? 0;
+                            return b.unread_messages_count !== count
+                                ? { ...b, unread_messages_count: count }
+                                : b;
+                        })
+                    );
+                    setLocalMyBid((prev) => {
+                        if (!prev) return prev;
+                        if (selectedChatBid && selectedChatBid.id === prev._id) {
+                            return prev.unread_messages_count !== 0
+                                ? { ...prev, unread_messages_count: 0 }
+                                : prev;
+                        }
+                        const count = data.my_bid_unread ?? 0;
+                        return prev.unread_messages_count !== count
+                            ? { ...prev, unread_messages_count: count }
+                            : prev;
+                    });
+                }
+            } catch (err) {
+                // Ignore background polling errors
+            }
+        };
+
+        checkUnread();
+        const interval = setInterval(checkUnread, 2500);
+
+        return () => clearInterval(interval);
+    }, [quest.slug, quest.id, quest._id, selectedChatBid]);
+
+    const totalUnreadBidsCount = localBids.reduce(
+        (sum, b) => sum + (b.unread_messages_count || 0),
+        0,
+    );
     const [previewImage, setPreviewImage] = useState<{
         url: string;
         name: string;
@@ -764,7 +859,14 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                                         : 'text-slate-400 dark:text-slate-500'
                                                 }
                                             />
-                                            Pelamar Kerja ({bids.length})
+                                            Pelamar Kerja ({localBids.length})
+                                            {totalUnreadBidsCount > 0 && (
+                                                <span className="ml-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-extrabold text-white animate-pulse">
+                                                    {totalUnreadBidsCount > 99
+                                                        ? '99+'
+                                                        : totalUnreadBidsCount}
+                                                </span>
+                                            )}
                                         </span>
                                         {effectiveTab === 'bids' && (
                                             <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 shadow-sm dark:bg-indigo-400" />
@@ -830,7 +932,7 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                         <div className="w-full">
                             <MediationWarRoom
                                 quest={quest}
-                                bids={bids}
+                                bids={localBids}
                                 isCreator={isCreator}
                                 isWorker={isWorker}
                             />
@@ -907,23 +1009,23 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                         {isCreator ? (
                                             <CreatorProjectPanel
                                                 quest={quest}
-                                                bids={bids}
-                                                setSelectedChatBid={setSelectedChatBid}
+                                                bids={localBids}
+                                                setSelectedChatBid={handleSetSelectedChatBid}
                                                 formatBytes={formatBytes}
                                             />
                                         ) : isWorker ? (
                                             <WorkerProjectPanel
                                                 quest={quest}
-                                                myBid={myBid}
-                                                setSelectedChatBid={setSelectedChatBid}
+                                                myBid={localMyBid}
+                                                setSelectedChatBid={handleSetSelectedChatBid}
                                                 formatBytes={formatBytes}
                                             />
                                         ) : (
                                             <VisitorBidPanel
                                                 quest={quest}
-                                                myBid={myBid}
+                                                myBid={localMyBid}
                                                 can={can}
-                                                setSelectedChatBid={setSelectedChatBid}
+                                                setSelectedChatBid={handleSetSelectedChatBid}
                                             />
                                         )}
                                     </div>
@@ -935,8 +1037,8 @@ export default function Show({ quest, bids, myBid, can }: Props) {
                                     quest.status === 'open' && (
                                         <BidsTabPanel
                                             quest={quest}
-                                            bids={bids}
-                                            setSelectedChatBid={setSelectedChatBid}
+                                            bids={localBids}
+                                            setSelectedChatBid={handleSetSelectedChatBid}
                                         />
                                     )}
                             </div>
