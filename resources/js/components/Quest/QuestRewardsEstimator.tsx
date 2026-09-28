@@ -50,19 +50,19 @@ export default function QuestRewardsEstimator({
         }
 
         setRewards({ exp, gold, erp, rank });
-    }, [maxSalary]);
+    }, [maxSalary, maxBudget, minBudget]);
 
     return (
         <div className="relative space-y-4 overflow-hidden rounded-xl border border-slate-200/80 bg-white p-5 dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
             <div className="pointer-events-none absolute top-0 right-8 left-8 z-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent select-none dark:via-slate-700" />
             <div className="relative z-10 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                    <ShieldCheck className="text-indigo-650 h-4.5 w-4.5 dark:text-indigo-400" />
+                    <ShieldCheck className="h-4.5 w-4.5 text-indigo-600 dark:text-indigo-400" />
                     <h3 className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                         Platform Poin Kontribusi
                     </h3>
                 </div>
-                <span className="text-indigo-650 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold dark:border-slate-800 dark:bg-[#030712] dark:text-indigo-400">
+                <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-indigo-600 dark:border-slate-800 dark:bg-[#030712] dark:text-indigo-400">
                     Proyek: {rewards.rank}
                 </span>
             </div>

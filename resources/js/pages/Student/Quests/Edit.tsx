@@ -14,8 +14,12 @@ import {
     File as FileIcon,
     Download,
     Sparkles,
+    ShieldCheck,
+    Coins,
+    Award,
+    Percent,
+    Info,
 } from 'lucide-react';
-import QuestRewardsEstimator from '@/components/Quest/QuestRewardsEstimator';
 import PageBackground from '@/components/Student/PageBackground';
 
 interface ExistingAttachment {
@@ -66,17 +70,51 @@ export default function Edit({ quest }: QuestEditProps) {
         _method: 'put',
         title: quest.title || '',
         description: quest.description || '',
-        min_budget: quest.min_budget || quest.min_salary || 0,
-        max_budget: quest.max_budget || quest.max_salary || 0,
-        min_salary: quest.min_budget || quest.min_salary || 0,
-        max_salary: quest.max_budget || quest.max_salary || 0,
-        dp_percentage: quest.dp_percentage || 10,
-        deadline: quest.deadline ? (quest.deadline.includes('T') ? quest.deadline.slice(0, 16) : quest.deadline) : '',
+        min_budget: (quest.min_budget || quest.min_salary || '') as number | string,
+        max_budget: (quest.max_budget || quest.max_salary || '') as number | string,
+        min_salary: (quest.min_budget || quest.min_salary || '') as number | string,
+        max_salary: (quest.max_budget || quest.max_salary || '') as number | string,
+        dp_percentage: (quest.dp_percentage || 10) as number | string,
+        deadline: quest.deadline
+            ? quest.deadline.includes('T')
+                ? quest.deadline.slice(0, 16)
+                : quest.deadline
+            : '',
         retained_images: (quest.images || []).map((i) => i.path),
         retained_files: (quest.files || []).map((f) => f.path),
         images: [] as File[],
         files: [] as File[],
     });
+
+    // Format bytes for uploaded files
+    const formatBytes = (bytes: number) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = 1;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    };
+
+    // Format Rupiah currency
+    const formatRupiah = (val: number | string | null | undefined): string => {
+        const num = typeof val === 'string' ? parseInt(val, 10) || 0 : val || 0;
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0,
+        }).format(num);
+    };
+
+    // Format number with thousand dots separator automatically (e.g. 1000000 -> 1.000.000)
+    const formatNumberWithDots = (
+        val: number | string | null | undefined,
+    ): string => {
+        if (!val && val !== 0) return '';
+        const clean = String(val).replace(/\D/g, '');
+        if (!clean) return '';
+        return new Intl.NumberFormat('id-ID').format(parseInt(clean, 10));
+    };
 
     const handleRemoveExistingImage = (path: string) => {
         const updated = existingImages.filter((img) => img.path !== path);
@@ -154,20 +192,61 @@ export default function Edit({ quest }: QuestEditProps) {
         }
     };
 
+    // Realtime Calculations
+    const minBudgetNum = parseInt(String(data.min_budget), 10) || 0;
+    const maxBudgetNum = parseInt(String(data.max_budget), 10) || 0;
+    const avgBudgetNum = (minBudgetNum + maxBudgetNum) / 2;
+    const dpPercent = Math.max(10, Math.min(100, Number(data.dp_percentage) || 10));
+
+    const estimatedDpAmount = Math.round((maxBudgetNum * dpPercent) / 100);
+    const estimatedFinalAmount = Math.max(0, maxBudgetNum - estimatedDpAmount);
+
+    // Gamification Tier
+    let tier = 'D';
+    let tierLabel = 'Starter Task';
+    let tierColor = 'border-slate-500/30 bg-slate-500/10 text-slate-600 dark:text-slate-300';
+
+    if (maxBudgetNum >= 10000000) {
+        tier = 'S';
+        tierLabel = 'Mythic Enterprise';
+        tierColor = 'border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400';
+    } else if (maxBudgetNum >= 5000000) {
+        tier = 'A';
+        tierLabel = 'Expert Specialist';
+        tierColor = 'border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-400';
+    } else if (maxBudgetNum >= 2500000) {
+        tier = 'B';
+        tierLabel = 'Intermediate Pro';
+        tierColor = 'border-indigo-500/40 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
+    } else if (maxBudgetNum >= 1000000) {
+        tier = 'C';
+        tierLabel = 'Regular Standard';
+        tierColor = 'border-sky-500/40 bg-sky-500/10 text-sky-600 dark:text-sky-400';
+    }
+
+    const calculatedExp = Math.min(
+        1000,
+        Math.max(100, Math.round(100 + avgBudgetNum * 0.0001)),
+    );
+    const calculatedGold = Math.min(
+        500,
+        Math.max(50, Math.round(50 + maxBudgetNum * 0.00005)),
+    );
+    const calculatedRep = Math.min(
+        200,
+        Math.max(20, Math.round(20 + avgBudgetNum * 0.00002)),
+    );
+
+    // Minimum datetime allowed (now + 5 mins)
+    const minDateTime = new Date(Date.now() + 5 * 60 * 1000)
+        .toISOString()
+        .slice(0, 16);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/quests/${quest.slug || quest.id || quest._id}/update`);
-    };
-
-    const formatBytes = (bytes: number) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = 2;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return (
-            parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
-        );
+        post(`/quests/${quest.slug || quest.id || quest._id}/update`, {
+            forceFormData: true,
+        });
     };
 
     const isRejected = quest.status === 'rejected';
@@ -265,7 +344,7 @@ export default function Edit({ quest }: QuestEditProps) {
 
                             {/* Workflow Stepper Mini Guide */}
                             <div className="rounded-xl border border-red-200/60 bg-red-100/40 p-3 text-xs dark:border-red-900/40 dark:bg-red-950/40 lg:max-w-xs">
-                                <span className="block text-[10px] font-black tracking-wider text-red-800 uppercase dark:text-red-300">
+                                <span className="block font-['Orbitron'] text-[10px] font-black tracking-wider text-red-800 uppercase dark:text-red-300">
                                     Alur Verifikasi Ulang:
                                 </span>
                                 <ul className="mt-2 space-y-1.5 text-[11px] text-slate-700 dark:text-slate-300">
@@ -320,12 +399,12 @@ export default function Edit({ quest }: QuestEditProps) {
                 {/* FORM BODY SPLIT LAYOUT */}
                 <form
                     onSubmit={handleSubmit}
-                    className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12"
+                    className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12"
                 >
                     {/* LEFT COLUMN: FORM INPUTS (col-span-8) */}
                     <div className="space-y-6 lg:col-span-8">
                         {/* CARD 1: INFORMASI UTAMA */}
-                        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="space-y-6 rounded-2xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
                                 <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-800 uppercase dark:text-slate-200">
                                     <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -339,53 +418,67 @@ export default function Edit({ quest }: QuestEditProps) {
                             </div>
 
                             {/* Input: Judul Proyek */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                    Judul Proyek Kerja <span className="text-red-500">*</span>
-                                </label>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Judul Proyek Kerja
+                                    </label>
+                                    <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+                                        Wajib
+                                    </span>
+                                </div>
                                 <input
                                     type="text"
                                     required
                                     placeholder="Contoh: Pembuatan Landing Page Startup EdTech"
                                     value={data.title}
                                     onChange={(e) => setData('title', e.target.value)}
-                                    className="w-full rounded-xl border border-slate-300 bg-slate-50/90 px-3.5 py-2.5 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-600"
+                                    className={`w-full rounded-xl border bg-slate-50/90 px-4 py-3 text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 ${
+                                        errors.title
+                                            ? 'border-red-500 focus:border-red-600'
+                                            : 'border-slate-300 focus:border-indigo-600 dark:border-slate-800'
+                                    }`}
                                 />
                                 {errors.title && (
-                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
-                                        {errors.title}
-                                    </span>
+                                    <p className="flex items-center gap-1 text-[11px] font-bold text-red-500">
+                                        <AlertCircle size={13} /> {errors.title}
+                                    </p>
                                 )}
                             </div>
 
                             {/* Input: Deskripsi */}
-                            <div className="space-y-1.5">
+                            <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                        Deskripsi & Spesifikasi Penugasan <span className="text-red-500">*</span>
+                                    <label className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Deskripsi & Spesifikasi Deliverables
                                     </label>
-                                    <span className="text-[10px] text-slate-400">
+                                    <span className="text-[11px] text-slate-400">
                                         {data.description.length} Karakter
                                     </span>
                                 </div>
                                 <textarea
                                     required
-                                    rows={8}
-                                    placeholder="Tuliskan secara detail mengenai kebutuhan proyek, deliverables yang diharapkan, repositori acuan, serta instruksi khusus..."
+                                    rows={10}
+                                    placeholder="Tuliskan secara komprehensif spesifikasi proyek, deliverables yang diharapkan, repositori acuan, serta kriteria evaluasi penugasan..."
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
-                                    className="w-full rounded-xl border border-slate-300 bg-slate-50/90 px-3.5 py-2.5 text-xs font-semibold leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-600"
+                                    className={`w-full min-h-[220px] rounded-xl border bg-slate-50/90 p-4 text-xs font-semibold leading-relaxed text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none dark:bg-[#030712] dark:text-white dark:placeholder:text-slate-500 ${
+                                        errors.description
+                                            ? 'border-red-500 focus:border-red-600'
+                                            : 'border-slate-300 focus:border-indigo-600 dark:border-slate-800'
+                                    }`}
                                 />
                                 {errors.description && (
-                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                    <p className="flex items-center gap-1 text-[11px] font-bold text-red-500">
+                                        <AlertCircle size={13} />{' '}
                                         {errors.description}
-                                    </span>
+                                    </p>
                                 )}
                             </div>
                         </div>
 
                         {/* CARD 2: ANGGARAN & DEADLINE */}
-                        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="space-y-6 rounded-2xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                             <div className="border-b border-slate-100 pb-3 dark:border-slate-800">
                                 <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-800 uppercase dark:text-slate-200">
                                     <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Rp</span>
@@ -395,139 +488,225 @@ export default function Edit({ quest }: QuestEditProps) {
 
                             {/* Input: Anggaran (Salary) */}
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                        Anggaran Minimal (IDR) <span className="text-red-500">*</span>
+                                {/* Min Budget */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Anggaran Minimal (IDR)
                                     </label>
                                     <div className="relative">
                                         <input
-                                            type="number"
+                                            type="text"
+                                            inputMode="numeric"
                                             required
-                                            min={0}
-                                            value={data.min_budget || ''}
+                                            placeholder="Contoh: 1.000.000"
+                                            value={formatNumberWithDots(data.min_budget)}
                                             onChange={(e) => {
-                                                const val = parseInt(e.target.value) || 0;
+                                                const raw = e.target.value.replace(/\D/g, '');
+                                                const val = raw ? parseInt(raw, 10) : '';
                                                 setData((prev) => ({
                                                     ...prev,
                                                     min_budget: val,
                                                     min_salary: val,
                                                 }));
                                             }}
-                                            className="w-full rounded-xl border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                            className={`w-full rounded-xl border bg-slate-50/90 py-3 pr-4 pl-11 text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none dark:bg-[#030712] dark:text-white ${
+                                                errors.min_budget || errors.min_salary
+                                                    ? 'border-red-500 focus:border-red-600'
+                                                    : 'border-slate-300 focus:border-indigo-600 dark:border-slate-800'
+                                            }`}
                                         />
-                                        <span className="absolute top-2.5 left-3 text-xs font-extrabold text-slate-500 select-none dark:text-slate-400">
+                                        <span className="absolute top-3 left-4 text-xs font-extrabold text-slate-500 select-none dark:text-slate-400">
                                             Rp
                                         </span>
                                     </div>
+                                    <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                        Terbaca: {formatRupiah(data.min_budget)}
+                                    </span>
                                     {(errors.min_budget || errors.min_salary) && (
-                                        <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                        <p className="flex items-center gap-1 text-[11px] font-bold text-red-500">
+                                            <AlertCircle size={13} />{' '}
                                             {errors.min_budget || errors.min_salary}
-                                        </span>
+                                        </p>
                                     )}
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                        Anggaran Maksimal (IDR) <span className="text-red-500">*</span>
+                                {/* Max Budget */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Anggaran Maksimal (IDR)
                                     </label>
                                     <div className="relative">
                                         <input
-                                            type="number"
+                                            type="text"
+                                            inputMode="numeric"
                                             required
-                                            min={0}
-                                            value={data.max_budget || ''}
+                                            placeholder="Contoh: 2.500.000"
+                                            value={formatNumberWithDots(data.max_budget)}
                                             onChange={(e) => {
-                                                const val = parseInt(e.target.value) || 0;
+                                                const raw = e.target.value.replace(/\D/g, '');
+                                                const val = raw ? parseInt(raw, 10) : '';
                                                 setData((prev) => ({
                                                     ...prev,
                                                     max_budget: val,
                                                     max_salary: val,
                                                 }));
                                             }}
-                                            className="w-full rounded-xl border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                            className={`w-full rounded-xl border bg-slate-50/90 py-3 pr-4 pl-11 text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none dark:bg-[#030712] dark:text-white ${
+                                                errors.max_budget || errors.max_salary
+                                                    ? 'border-red-500 focus:border-red-600'
+                                                    : 'border-slate-300 focus:border-indigo-600 dark:border-slate-800'
+                                            }`}
                                         />
-                                        <span className="absolute top-2.5 left-3 text-xs font-extrabold text-slate-500 select-none dark:text-slate-400">
+                                        <span className="absolute top-3 left-4 text-xs font-extrabold text-slate-500 select-none dark:text-slate-400">
                                             Rp
                                         </span>
                                     </div>
+                                    <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                        Terbaca: {formatRupiah(data.max_budget)}
+                                    </span>
                                     {(errors.max_budget || errors.max_salary) && (
-                                        <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                        <p className="flex items-center gap-1 text-[11px] font-bold text-red-500">
+                                            <AlertCircle size={13} />{' '}
                                             {errors.max_budget || errors.max_salary}
-                                        </span>
+                                        </p>
                                     )}
                                 </div>
                             </div>
 
                             {/* Input: Uang Muka (DP) */}
-                            <div className="space-y-2 rounded-xl border border-indigo-100 bg-indigo-50/40 p-3.5 dark:border-slate-800 dark:bg-[#030712]">
+                            <div className="space-y-3 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4.5 dark:border-slate-800 dark:bg-[#030712]">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-[10px] font-bold tracking-wider text-indigo-700 uppercase dark:text-indigo-400">
-                                        Persentase Pembayaran Awal (DP) <span className="text-red-500">*</span>
+                                    <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-indigo-700 uppercase dark:text-indigo-400">
+                                        <Percent size={15} /> Persentase Uang Muka (DP)
                                     </label>
-                                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                                        Minimal 10%
+                                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                                        Batas Ketentuan: 10% - 100%
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="relative w-36">
-                                        <input
-                                            type="number"
-                                            required
-                                            min={10}
-                                            max={100}
-                                            value={data.dp_percentage}
-                                            onChange={(e) => {
-                                                const val = parseInt(e.target.value) || 0;
-                                                setData('dp_percentage', val);
-                                            }}
-                                            className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-7 pl-3 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-                                        />
-                                        <span className="absolute top-2 right-2.5 text-xs font-bold text-slate-400 select-none">
-                                            %
-                                        </span>
+
+                                <div className="space-y-3">
+                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                                        <div className="relative w-full sm:w-40">
+                                            <input
+                                                type="text"
+                                                inputMode="numeric"
+                                                required
+                                                placeholder="10"
+                                                value={data.dp_percentage}
+                                                onChange={(e) => {
+                                                    const raw = e.target.value.replace(/\D/g, '');
+                                                    if (raw === '') {
+                                                        setData('dp_percentage', '');
+                                                        return;
+                                                    }
+                                                    const num = parseInt(raw, 10);
+                                                    setData('dp_percentage', num > 100 ? 100 : num);
+                                                }}
+                                                onBlur={() => {
+                                                    const num = parseInt(String(data.dp_percentage), 10);
+                                                    if (!num || num < 10) {
+                                                        setData('dp_percentage', 10);
+                                                    } else if (num > 100) {
+                                                        setData('dp_percentage', 100);
+                                                    }
+                                                }}
+                                                className={`w-full rounded-xl border bg-white py-2.5 pr-8 pl-3.5 text-xs font-bold text-slate-900 focus:outline-none dark:bg-slate-950 dark:text-white ${
+                                                    errors.dp_percentage
+                                                        ? 'border-red-500 focus:border-red-600'
+                                                        : 'border-slate-300 focus:border-indigo-600 dark:border-slate-800'
+                                                }`}
+                                            />
+                                            <span className="absolute top-2.5 right-3 text-xs font-bold text-slate-400 select-none">
+                                                %
+                                            </span>
+                                        </div>
+
+                                        <div className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                                            {maxBudgetNum > 0 ? (
+                                                <>
+                                                    Estimasi DP Awal:{' '}
+                                                    <strong className="text-indigo-600 dark:text-indigo-400">
+                                                        {formatRupiah(estimatedDpAmount)}
+                                                    </strong>{' '}
+                                                    &bull; Pelunasan Akhir:{' '}
+                                                    <strong className="text-emerald-600 dark:text-emerald-400">
+                                                        {formatRupiah(estimatedFinalAmount)}
+                                                    </strong>
+                                                </>
+                                            ) : (
+                                                'Uang muka akan ditransfer ke pekerja setelah proposal penawaran diterima.'
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="text-[11px] leading-tight text-slate-600 dark:text-slate-400">
-                                        {data.max_budget > 0 ? (
-                                            <>
-                                                Estimasi DP: <strong className="text-indigo-600 dark:text-indigo-400">Rp {Math.round((data.max_budget * (data.dp_percentage || 10)) / 100).toLocaleString('id-ID')}</strong> (Pelunasan: Rp {Math.round((data.max_budget * (100 - (data.dp_percentage || 10))) / 100).toLocaleString('id-ID')})
-                                            </>
-                                        ) : (
-                                            'Uang muka yang akan ditransfer sebelum pekerja memulai proyek.'
-                                        )}
+
+                                    {/* Quick Preset Chips */}
+                                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                        <span className="text-[10px] font-semibold text-slate-400 select-none">
+                                            Pilihan Cepat:
+                                        </span>
+                                        {[10, 25, 50, 100].map((preset) => (
+                                            <button
+                                                key={preset}
+                                                type="button"
+                                                onClick={() => setData('dp_percentage', preset)}
+                                                className={`cursor-pointer rounded-lg border px-2.5 py-1 text-[11px] font-bold transition-all ${
+                                                    Number(data.dp_percentage) === preset
+                                                        ? 'border-indigo-600 bg-indigo-600 text-white shadow-xs'
+                                                        : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700'
+                                                }`}
+                                            >
+                                                {preset}%{preset === 10 ? ' (Min)' : preset === 100 ? ' (Penuh)' : ''}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                                 {errors.dp_percentage && (
-                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                    <p className="flex items-center gap-1 text-[11px] font-bold text-red-500">
+                                        <AlertCircle size={13} />{' '}
                                         {errors.dp_percentage}
-                                    </span>
+                                    </p>
                                 )}
                             </div>
 
                             {/* Input: Deadline */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
-                                    Batas Tenggat Waktu (Deadline Pengerjaan) <span className="text-red-500">*</span>
-                                </label>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                        Batas Tenggat Waktu (Deadline)
+                                    </label>
+                                    <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+                                        Wajib
+                                    </span>
+                                </div>
                                 <div className="relative">
                                     <input
                                         type="datetime-local"
                                         required
+                                        min={minDateTime}
                                         value={data.deadline}
                                         onChange={(e) => setData('deadline', e.target.value)}
-                                        className="w-full rounded-xl border border-slate-300 bg-slate-50/90 py-2.5 pr-3.5 pl-10 text-xs font-semibold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-[#030712] dark:text-white"
+                                        className={`w-full rounded-xl border bg-slate-50/90 py-3 pr-4 pl-11 text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none dark:bg-[#030712] dark:text-white ${
+                                            errors.deadline
+                                                ? 'border-red-500 focus:border-red-600'
+                                                : 'border-slate-300 focus:border-indigo-600 dark:border-slate-800'
+                                        }`}
                                     />
-                                    <Calendar className="absolute top-3 left-3 h-4 w-4 text-slate-500 dark:text-slate-400" />
+                                    <Calendar className="absolute top-3 left-4 h-5 w-5 text-slate-500 select-none dark:text-slate-400" />
                                 </div>
+                                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                                    Tentukan batas waktu pengerjaan final yang realistis bagi pelamar proyek.
+                                </span>
                                 {errors.deadline && (
-                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
+                                    <p className="flex items-center gap-1 text-[11px] font-bold text-red-500">
+                                        <AlertCircle size={13} />{' '}
                                         {errors.deadline}
-                                    </span>
+                                    </p>
                                 )}
                             </div>
                         </div>
 
                         {/* CARD 3: MANAJEMEN LAMPIRAN & BERKAS */}
-                        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                        <div className="space-y-6 rounded-2xl border border-slate-300 bg-white p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
                             <div className="border-b border-slate-100 pb-3 dark:border-slate-800">
                                 <h3 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-800 uppercase dark:text-slate-200">
                                     <CloudUpload className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -541,9 +720,9 @@ export default function Edit({ quest }: QuestEditProps) {
                             {/* Existing Images */}
                             {existingImages.length > 0 && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                    <span className="text-[11px] font-bold text-slate-600 uppercase dark:text-slate-400">
                                         Gambar Tersimpan ({existingImages.length})
-                                    </label>
+                                    </span>
                                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                                         {existingImages.map((img, idx) => (
                                             <div
@@ -575,9 +754,9 @@ export default function Edit({ quest }: QuestEditProps) {
                             {/* Existing Files */}
                             {existingFiles.length > 0 && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                    <span className="text-[11px] font-bold text-slate-600 uppercase dark:text-slate-400">
                                         Dokumen & Berkas Tersimpan ({existingFiles.length})
-                                    </label>
+                                    </span>
                                     <div className="space-y-2">
                                         {existingFiles.map((file, idx) => (
                                             <div
@@ -625,7 +804,7 @@ export default function Edit({ quest }: QuestEditProps) {
 
                             {/* Drag & Drop Upload Zone for New Attachments */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
+                                <label className="text-xs font-bold tracking-wider text-slate-700 uppercase dark:text-slate-300">
                                     Tambah Berkas / Gambar Baru
                                 </label>
                                 <div
@@ -663,9 +842,9 @@ export default function Edit({ quest }: QuestEditProps) {
                             {(newAttachmentPreviews.images.length > 0 ||
                                 newAttachmentPreviews.files.length > 0) && (
                                 <div className="space-y-3 pt-2">
-                                    <h4 className="text-xs font-bold text-slate-700 uppercase dark:text-slate-300">
+                                    <span className="text-[11px] font-bold text-slate-600 uppercase dark:text-slate-400">
                                         Berkas Baru Siap Diunggah:
-                                    </h4>
+                                    </span>
 
                                     {newAttachmentPreviews.images.length > 0 && (
                                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -721,80 +900,179 @@ export default function Edit({ quest }: QuestEditProps) {
                     </div>
 
                     {/* RIGHT COLUMN: REWARDS ESTIMATOR & ACTION SIDEBAR (col-span-4) */}
-                    <div className="space-y-6 lg:col-span-4">
-                        {/* REWARDS ESTIMATOR */}
-                        <div className="sticky top-6 space-y-6">
-                            <QuestRewardsEstimator
-                                minBudget={data.min_budget}
-                                maxBudget={data.max_budget}
-                            />
-
-                            {/* REVISION GUIDELINES CARD */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <h4 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-800 uppercase dark:text-slate-200">
-                                    <Sparkles className="h-4 w-4 text-amber-500" />
-                                    Tips Sukses Kurasi Admin
-                                </h4>
-                                <ul className="mt-3 space-y-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                                    <li className="flex items-start gap-2">
-                                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
-                                        <span>
-                                            Gunakan judul yang ringkas, spesifik, dan tidak ambigu.
-                                        </span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
-                                        <span>
-                                            Rincikan format deliverable akhir (contoh: ZIP, GitHub, link Figma).
-                                        </span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
-                                        <span>
-                                            Tetapkan tenggat waktu yang realistis agar pengerja dapat menyelesaikan proyek dengan prima.
-                                        </span>
-                                    </li>
-                                </ul>
+                    <div className="space-y-5 lg:sticky lg:top-8 lg:col-span-4">
+                        {/* Card 1: Tier & Rewards Classification */}
+                        <div className="space-y-4 rounded-2xl border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                                <div className="flex items-center gap-2">
+                                    <Sparkles
+                                        size={17}
+                                        className="text-amber-500"
+                                    />
+                                    <h3 className="font-['Orbitron'] text-xs font-bold text-slate-800 uppercase dark:text-slate-200">
+                                        Klasifikasi Quest
+                                    </h3>
+                                </div>
+                                <span
+                                    className={`rounded-full border px-2.5 py-0.5 font-['Orbitron'] text-[11px] font-extrabold ${tierColor}`}
+                                >
+                                    Tier {tier}
+                                </span>
                             </div>
 
-                            {/* ACTION SUBMIT CARD */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
-                                <div className="flex flex-col gap-3">
-                                    <button
-                                        type="submit"
-                                        disabled={processing}
-                                        className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3 font-['Orbitron'] text-xs font-black tracking-wider text-white uppercase shadow-md transition-all duration-300 disabled:opacity-50 ${
-                                            isRejected
-                                                ? 'bg-gradient-to-r from-red-600 via-red-500 to-amber-600 hover:from-red-500 hover:to-amber-500 shadow-red-500/20'
-                                                : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 shadow-indigo-500/20'
-                                        }`}
-                                    >
-                                        {processing ? (
-                                            <>
-                                                <RotateCcw className="h-4 w-4 animate-spin" />
-                                                Menyimpan & Mengirim...
-                                            </>
-                                        ) : isRejected ? (
-                                            <>
-                                                <RotateCcw className="h-4 w-4" />
-                                                Kirim Ulang ke Admin
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Save className="h-4 w-4" />
-                                                Simpan Perubahan
-                                            </>
-                                        )}
-                                    </button>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 dark:text-white">
+                                    {tierLabel}
+                                </p>
+                                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                    Tier dan poin reputasi dihitung secara otomatis berdasarkan batas maksimal penawaran anggaran proyek.
+                                </p>
+                            </div>
 
-                                    <Link
-                                        href={`/quests/${quest.slug || quest.id || quest._id}`}
-                                        className="flex w-full items-center justify-center rounded-xl border border-slate-300 bg-slate-50 py-2.5 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-[#0b1021] dark:text-slate-300 dark:hover:bg-slate-800"
-                                    >
-                                        Batal & Kembali
-                                    </Link>
+                            {/* Rewards Grid */}
+                            <div className="space-y-2 pt-1">
+                                <span className="text-[10px] font-bold text-slate-600 uppercase dark:text-slate-400">
+                                    Estimasi Hadiah Pekerja
+                                </span>
+                                <div className="grid grid-cols-3 gap-2 text-center">
+                                    <div className="flex flex-col items-center rounded-xl border border-slate-100 bg-slate-50/80 p-2.5 dark:border-slate-800 dark:bg-[#030712]">
+                                        <Award
+                                            size={15}
+                                            className="mb-1 text-indigo-500"
+                                        />
+                                        <span className="text-[9px] font-medium text-slate-400">
+                                            XP Kerja
+                                        </span>
+                                        <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                                            +{calculatedExp}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col items-center rounded-xl border border-slate-100 bg-slate-50/80 p-2.5 dark:border-slate-800 dark:bg-[#030712]">
+                                        <Coins
+                                            size={15}
+                                            className="mb-1 text-amber-500"
+                                        />
+                                        <span className="text-[9px] font-medium text-slate-400">
+                                            Gold Token
+                                        </span>
+                                        <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                                            +{calculatedGold}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col items-center rounded-xl border border-slate-100 bg-slate-50/80 p-2.5 dark:border-slate-800 dark:bg-[#030712]">
+                                        <ShieldCheck
+                                            size={15}
+                                            className="mb-1 text-emerald-500"
+                                        />
+                                        <span className="text-[9px] font-medium text-slate-400">
+                                            Reputasi
+                                        </span>
+                                        <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                                            +{calculatedRep}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* Financial Breakdown */}
+                            <div className="space-y-2 border-t border-slate-100 pt-3 dark:border-slate-800">
+                                <span className="text-[10px] font-bold text-slate-600 uppercase dark:text-slate-400">
+                                    Struktur Nilai Kontrak
+                                </span>
+                                <div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 text-xs dark:border-slate-800/80 dark:bg-[#030712]/50">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-500 dark:text-slate-400">
+                                            Total Anggaran:
+                                        </span>
+                                        <span className="font-bold text-slate-900 dark:text-white">
+                                            {formatRupiah(maxBudgetNum)}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-500 dark:text-slate-400">
+                                            Uang Muka ({dpPercent}%):
+                                        </span>
+                                        <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                                            {formatRupiah(estimatedDpAmount)}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between border-t border-slate-200/60 pt-2 dark:border-slate-800">
+                                        <span className="text-slate-500 dark:text-slate-400">
+                                            Pelunasan Akhir:
+                                        </span>
+                                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                                            {formatRupiah(
+                                                estimatedFinalAmount,
+                                            )}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* REVISION GUIDELINES CARD */}
+                        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]">
+                            <h4 className="flex items-center gap-2 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-800 uppercase dark:text-slate-200">
+                                <Sparkles className="h-4 w-4 text-amber-500" />
+                                Tips Sukses Kurasi Admin
+                            </h4>
+                            <ul className="mt-3 space-y-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                                <li className="flex items-start gap-2">
+                                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                                    <span>
+                                        Gunakan judul yang ringkas, spesifik, dan tidak ambigu.
+                                    </span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                                    <span>
+                                        Rincikan format deliverable akhir (contoh: ZIP, GitHub, link Figma).
+                                    </span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                                    <span>
+                                        Tetapkan tenggat waktu yang realistis agar pengerja dapat menyelesaikan proyek dengan prima.
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* ACTION SUBMIT CARD */}
+                        <div className="space-y-2.5 pt-1">
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3.5 font-['Orbitron'] text-xs font-black tracking-wider text-white uppercase shadow-md transition-all duration-300 disabled:opacity-50 ${
+                                    isRejected
+                                        ? 'bg-gradient-to-r from-red-600 via-red-500 to-amber-600 hover:from-red-500 hover:to-amber-500 shadow-red-500/20'
+                                        : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 shadow-indigo-500/20'
+                                }`}
+                            >
+                                {processing ? (
+                                    <>
+                                        <RotateCcw className="h-4 w-4 animate-spin" />
+                                        Menyimpan & Mengirim...
+                                    </>
+                                ) : isRejected ? (
+                                    <>
+                                        <RotateCcw className="h-4 w-4" />
+                                        Kirim Ulang ke Admin
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="h-4 w-4" />
+                                        Simpan Perubahan
+                                    </>
+                                )}
+                            </button>
+
+                            <Link
+                                href={`/quests/${quest.slug || quest.id || quest._id}`}
+                                className="flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white py-3 font-['Orbitron'] text-xs font-bold tracking-wider text-slate-700 uppercase transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-[#0b1021] dark:text-slate-300 dark:hover:bg-slate-800"
+                            >
+                                Batal & Kembali
+                            </Link>
                         </div>
                     </div>
                 </form>

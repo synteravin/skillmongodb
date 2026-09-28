@@ -83,6 +83,8 @@ class QuestController extends Controller
                 ] : null,
                 'bids_count' => $bidCounts[(string) $quest->_id] ?? 0,
                 'accepted_bid_amount' => $acceptedBid ? (int) $acceptedBid->bid_amount : null,
+                'dp_percentage' => $quest->dp_percentage ?? 10,
+                'tier' => $quest->tier,
             ];
         });
 
@@ -105,9 +107,44 @@ class QuestController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Admin/Quests/Create');
+    }
+
     public function store(StoreQuestRequest $request, QuestService $questService)
     {
         $data = $request->validated();
+
+        $images = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                if ($image->isValid()) {
+                    $path = $image->store('quests/images', 's3');
+                    $images[] = [
+                        'path' => $path,
+                        'name' => $image->getClientOriginalName(),
+                    ];
+                }
+            }
+        }
+
+        $files = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                if ($file->isValid()) {
+                    $path = $file->store('quests/files', 's3');
+                    $files[] = [
+                        'path' => $path,
+                        'name' => $file->getClientOriginalName(),
+                        'size' => $file->getSize(),
+                    ];
+                }
+            }
+        }
+
+        $data['images'] = $images;
+        $data['files'] = $files;
 
         $questService->createQuest(
             $request->user(),
@@ -282,6 +319,31 @@ class QuestController extends Controller
         ]);
     }
 
+    public function edit(string $id)
+    {
+        $quest = Quest::where('slug', $id)->orWhere('_id', $id)->firstOrFail();
+
+        return Inertia::render('Admin/Quests/Edit', [
+            'quest' => [
+                '_id' => (string) $quest->_id,
+                'id' => (string) $quest->_id,
+                'slug' => $quest->slug ?: Str::slug($quest->title),
+                'title' => $quest->title,
+                'description' => $quest->description,
+                'min_budget' => $quest->min_budget,
+                'max_budget' => $quest->max_budget,
+                'min_salary' => $quest->min_budget,
+                'max_salary' => $quest->max_budget,
+                'dp_percentage' => $quest->dp_percentage ?? 10,
+                'deadline' => $quest->deadline?->toISOString(),
+                'status' => $quest->status,
+                'tier' => $quest->tier,
+                'images' => $quest->images ?? [],
+                'files' => $quest->files ?? [],
+            ],
+        ]);
+    }
+
     public function update(Request $request, string $id)
     {
         $quest = Quest::where('slug', $id)->orWhere('_id', $id)->firstOrFail();
@@ -293,9 +355,12 @@ class QuestController extends Controller
             'max_budget' => ['required_without:max_salary', 'nullable', 'integer', 'gte:min_budget'],
             'min_salary' => ['nullable', 'integer', 'min:0'],
             'max_salary' => ['nullable', 'integer'],
+            'dp_percentage' => ['nullable', 'integer', 'min:10', 'max:100'],
             'deadline' => ['required', 'date'],
         ], [
             'max_budget.gte' => 'Anggaran maksimal harus lebih besar atau sama dengan anggaran minimal.',
+            'dp_percentage.min' => 'Besaran uang muka (DP) minimal 10% dari nilai kontrak.',
+            'dp_percentage.max' => 'Besaran uang muka (DP) maksimal 100% dari nilai kontrak.',
         ]);
 
         $maxBudget = (int) ($data['max_budget'] ?? $data['max_salary'] ?? 0);
@@ -339,6 +404,7 @@ class QuestController extends Controller
             'max_budget' => $maxBudget,
             'min_salary' => $minBudget,
             'max_salary' => $maxBudget,
+            'dp_percentage' => max(10, min(100, (int) ($data['dp_percentage'] ?? $quest->dp_percentage ?? 10))),
             'deadline' => now()->parse($data['deadline']),
             'tier' => $tier,
             'rewards' => $calculatedRewards,
