@@ -455,9 +455,10 @@ class QuestController extends Controller
                 ->first();
 
             if ($bidRecord) {
-                $unreadCount = QuestMessage::where('quest_bid_id', $bidRecord->_id)
-                    ->where('sender_id', '!=', $user->_id)
-                    ->where('read_by', '!=', $user->_id)
+                $uidStr = (string) $user->_id;
+                $unreadCount = QuestMessage::where('quest_bid_id', (string) $bidRecord->_id)
+                    ->where('sender_id', '!=', $uidStr)
+                    ->where('read_by', '!=', $uidStr)
                     ->count();
 
                 $myBid = [

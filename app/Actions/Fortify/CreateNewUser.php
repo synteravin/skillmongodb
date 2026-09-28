@@ -62,6 +62,18 @@ class CreateNewUser implements CreatesNewUsers
                 ]),
             ],
             'password' => $this->passwordRules(),
+        ], [
+            ...$this->passwordMessages(),
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.min' => 'Username minimal :min karakter.',
+            'username.max' => 'Username maksimal :max karakter.',
+            'username.alpha_dash' => 'Username hanya boleh berisi huruf, angka, tanda minus, dan garis bawah.',
+            'username.unique' => 'Username sudah digunakan, silakan pilih yang lain.',
+            'username.not_in' => 'Username tersebut tidak diizinkan.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar di sistem.',
         ])->validate();
 
         return User::create([

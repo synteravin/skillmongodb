@@ -214,10 +214,20 @@ export default function WorkerBidPanel({
                                     name: quest.creator.name,
                                 })
                             }
-                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500"
+                            className="relative flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-600 dark:to-indigo-500"
                         >
                             <MessageSquare size={15} />
                             Hubungi Klien
+                            {Boolean(
+                                myBid.unread_messages_count &&
+                                    myBid.unread_messages_count > 0,
+                            ) && (
+                                <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-extrabold text-white ring-2 ring-white animate-pulse dark:ring-slate-950">
+                                    {myBid.unread_messages_count! > 99
+                                        ? '99+'
+                                        : myBid.unread_messages_count}
+                                </span>
+                            )}
                         </button>
                     )}
                 </div>

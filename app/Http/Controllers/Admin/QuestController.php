@@ -130,9 +130,10 @@ class QuestController extends Controller
             ->latest()
             ->get()
             ->map(function ($bid) use ($user) {
-                $unreadCount = QuestMessage::where('quest_bid_id', $bid->_id)
-                    ->where('sender_id', '!=', $user->_id)
-                    ->where('read_by', '!=', $user->_id)
+                $uidStr = (string) $user->_id;
+                $unreadCount = QuestMessage::where('quest_bid_id', (string) $bid->_id)
+                    ->where('sender_id', '!=', $uidStr)
+                    ->where('read_by', '!=', $uidStr)
                     ->count();
 
                 return [

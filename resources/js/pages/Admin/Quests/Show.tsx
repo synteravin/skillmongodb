@@ -20,7 +20,7 @@ import {
     ShieldAlert,
     CheckCircle2,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import QuestChatPanel from '@/components/Quest/QuestChatPanel';
 import ConfirmModal from '@/components/ConfirmModal';
 import Modal from '@/components/ui/Modal';
@@ -54,10 +54,83 @@ interface Props {
 }
 
 export default function Show({ quest, bids, transactions = [] }: Props) {
+    const [localBids, setLocalBids] = useState<Bid[]>(bids);
+
+    useEffect(() => {
+        setLocalBids(bids);
+    }, [bids]);
+
     const [selectedChatBid, setSelectedChatBid] = useState<{
         id: string;
         name: string;
     } | null>(null);
+
+    const handleSetSelectedChatBid = (
+        bid: { id: string; name: string } | null,
+    ) => {
+        setSelectedChatBid(bid);
+        if (bid) {
+            setLocalBids((prev) =>
+                prev.map((b) =>
+                    b._id === bid.id ? { ...b, unread_messages_count: 0 } : b,
+                ),
+            );
+
+            const token =
+                (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ||
+                (window as any).csrfToken ||
+                '';
+            fetch(`/quests/bids/${bid.id}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            }).catch(() => {});
+        }
+    };
+
+    // Fast, lightweight real-time polling for unread chat status (WhatsApp-like)
+    useEffect(() => {
+        const questIdentifier = quest.slug || quest.id || quest._id;
+        if (!questIdentifier) return;
+
+        const checkUnread = async () => {
+            try {
+                const res = await fetch(`/quests/${questIdentifier}/chat-unread-status`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.bids) {
+                    setLocalBids((prev) =>
+                        prev.map((b) => {
+                            if (selectedChatBid && selectedChatBid.id === b._id) {
+                                return b.unread_messages_count !== 0
+                                    ? { ...b, unread_messages_count: 0 }
+                                    : b;
+                            }
+                            const count = data.bids[b._id] ?? 0;
+                            return b.unread_messages_count !== count
+                                ? { ...b, unread_messages_count: count }
+                                : b;
+                        })
+                    );
+                }
+            } catch (err) {
+                // Ignore background polling errors
+            }
+        };
+
+        checkUnread();
+        const interval = setInterval(checkUnread, 2500);
+
+        return () => clearInterval(interval);
+    }, [quest.slug, quest.id, quest._id, selectedChatBid]);
+
+    const totalUnreadBidsCount = localBids.reduce(
+        (sum, b) => sum + (b.unread_messages_count || 0),
+        0,
+    );
     const [previewImage, setPreviewImage] = useState<{
         url: string;
         name: string;
@@ -598,7 +671,16 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                             }`}
                         >
-                            <span>Pelamar ({bids.length})</span>
+                            <span className="flex items-center gap-1">
+                                Pelamar ({localBids.length})
+                                {totalUnreadBidsCount > 0 && (
+                                    <span className="ml-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-extrabold text-white animate-pulse">
+                                        {totalUnreadBidsCount > 99
+                                            ? '99+'
+                                            : totalUnreadBidsCount}
+                                    </span>
+                                )}
+                            </span>
                             {activeTab === 'bids' && (
                                 <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-500" />
                             )}
@@ -640,8 +722,8 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 handleForceCancel={handleForceCancel}
                                 handleArbitrate={handleArbitrate}
                                 arbitrateForm={arbitrateForm}
-                                setSelectedChatBid={setSelectedChatBid}
-                                bids={bids}
+                                setSelectedChatBid={handleSetSelectedChatBid}
+                                bids={localBids}
                                 openExtendDeadlineModal={() => setShowExtendDeadlineModal(true)}
                             />
                         </div>
@@ -674,8 +756,8 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 {activeTab === 'project' && (
                                     <AdminProjectTabPanel
                                         quest={quest}
-                                        bids={bids}
-                                        setSelectedChatBid={setSelectedChatBid}
+                                        bids={localBids}
+                                        setSelectedChatBid={handleSetSelectedChatBid}
                                         formatBytes={formatBytes}
                                         showApproveForm={showApproveForm}
                                         setShowApproveForm={setShowApproveForm}
@@ -692,11 +774,11 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
                                 {activeTab === 'bids' && (
                                     <AdminBidsTabPanel
                                         quest={quest}
-                                        bids={bids}
+                                        bids={localBids}
                                         formatCurrency={formatCurrency}
                                         handleAcceptBid={handleAcceptBid}
                                         handleDeleteBid={handleDeleteBid}
-                                        setSelectedChatBid={setSelectedChatBid}
+                                        setSelectedChatBid={handleSetSelectedChatBid}
                                     />
                                 )}
                             </div>

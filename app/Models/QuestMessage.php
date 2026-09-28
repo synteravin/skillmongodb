@@ -27,9 +27,37 @@ class QuestMessage extends Model
             'quest_bid_id' => 'string',
             'sender_id' => 'string',
             'channel_type' => 'string',
-            'read_by' => 'array',
             'file' => 'array',
         ];
+    }
+
+    public function getReadByAttribute($value): array
+    {
+        if (is_array($value)) {
+            return array_map('strval', array_values($value));
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? array_map('strval', array_values($decoded)) : [];
+        }
+
+        return [];
+    }
+
+    public function setReadByAttribute($value): void
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            $this->attributes['read_by'] = is_array($decoded)
+                ? array_map('strval', array_values($decoded))
+                : [(string) $value];
+        } elseif (is_array($value)) {
+            $this->attributes['read_by'] = array_map('strval', array_values($value));
+        } else {
+            $this->attributes['read_by'] = [];
+        }
     }
 
     /* ================= RELATIONS ================= */
