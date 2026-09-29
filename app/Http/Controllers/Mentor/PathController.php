@@ -73,8 +73,8 @@ class PathController extends Controller
 
         $data = $request->validated();
 
-        $phase = $request->input('phase', 'career_branch');
-        if ($phase === 'basic_fundamental') {
+        $isBasic = $request->input('phase') === 'basic_fundamental' || $request->boolean('is_fundamental');
+        if ($isBasic) {
             $data['career_group_id'] = null;
             $data['phase'] = 'basic_fundamental';
         } else {
@@ -88,8 +88,13 @@ class PathController extends Controller
         return back()->with('success', 'Path created');
     }
 
-    public function update(Request $request, Path $path)
+    public function update(Request $request, ...$args)
     {
+        $path = end($args);
+        if (! ($path instanceof Path)) {
+            $path = Path::where('slug', $path)->orWhere('_id', $path)->firstOrFail();
+        }
+
         /** @var User $user */
         $user = $request->user();
 
@@ -113,8 +118,13 @@ class PathController extends Controller
         return back()->with('success', 'Path updated successfully');
     }
 
-    public function destroy(Request $request, Path $path)
+    public function destroy(Request $request, ...$args)
     {
+        $path = end($args);
+        if (! ($path instanceof Path)) {
+            $path = Path::where('slug', $path)->orWhere('_id', $path)->firstOrFail();
+        }
+
         /** @var User $user */
         $user = $request->user();
 
@@ -184,6 +194,35 @@ class PathController extends Controller
         }
 
         return back()->with('success', 'Paths reordered');
+    }
+
+    public function reorderGroupPaths(Request $request, CareerGroup $group)
+    {
+        $this->authorize('update', $group);
+
+        $pathIds = $request->input('path_ids', []);
+        foreach ($pathIds as $index => $id) {
+            Path::where('_id', (string) $id)
+                ->where('career_group_id', (string) $group->_id)
+                ->update(['order' => $index + 1]);
+        }
+
+        return back()->with('success', 'Paths reordered successfully');
+    }
+
+    public function reorderFundamentalPaths(Request $request, CareerGroup $group)
+    {
+        $this->authorize('update', $group);
+
+        $pathIds = $request->input('basic_path_ids', []);
+        foreach ($pathIds as $index => $id) {
+            Path::where('_id', (string) $id)
+                ->where('course_id', (string) $group->course_id)
+                ->where('phase', 'basic_fundamental')
+                ->update(['order' => $index + 1]);
+        }
+
+        return back()->with('success', 'Basic paths reordered successfully');
     }
 
     public function updateStatus(Request $request, CareerGroup $group)

@@ -289,12 +289,20 @@ Route::middleware(['auth', 'role:mentor'])
 
         Route::put('/paths/reorder', [PathController::class, 'reorder'])
             ->name('paths.reorder');
+        Route::post('/career-groups/{group}/paths/reorder', [PathController::class, 'reorderGroupPaths'])
+            ->name('career-groups.paths.reorder');
+        Route::post('/career-groups/{group}/paths/reorder-fundamentals', [PathController::class, 'reorderFundamentalPaths'])
+            ->name('career-groups.paths.reorder-fundamentals');
 
         Route::put('/paths/{path}', [PathController::class, 'update'])
             ->name('paths.update');
+        Route::put('/career-groups/{group}/paths/{path}', [PathController::class, 'update'])
+            ->name('career-groups.paths.update');
 
         Route::delete('/paths/{path}', [PathController::class, 'destroy'])
             ->name('paths.destroy');
+        Route::delete('/career-groups/{group}/paths/{path}', [PathController::class, 'destroy'])
+            ->name('career-groups.paths.destroy');
 
         Route::post('/submissions/{submission}/publish', [SubmissionController::class, 'publish'])
             ->name('submissions.publish');
