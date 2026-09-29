@@ -17,11 +17,18 @@ export default function CreatePathModal({
     const { data, setData, post, processing, reset, errors } = useForm({
         name: '',
         description: '',
+        phase: phase ?? 'career_branch',
         is_fundamental: phase === 'basic_fundamental',
     });
 
     useEffect(() => {
-        setData('is_fundamental', phase === 'basic_fundamental');
+        if (phase) {
+            setData((prev) => ({
+                ...prev,
+                phase: phase,
+                is_fundamental: phase === 'basic_fundamental',
+            }));
+        }
     }, [phase]);
 
     if (!phase) return null;

@@ -10,7 +10,13 @@ class MentorCreatePathAction
 {
     public function execute(CareerGroup $group, array $data): Path
     {
-        $slug = Str::slug($data['name']);
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Path::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
 
         $phase = $data['phase'] ?? 'career_branch';
         $careerGroupId = $phase === 'basic_fundamental' ? null : (string) $group->_id;

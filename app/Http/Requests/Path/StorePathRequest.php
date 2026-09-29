@@ -14,11 +14,18 @@ class StorePathRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $group = $this->route('group');
+        $isBasic = $this->input('phase') === 'basic_fundamental' || $this->boolean('is_fundamental');
 
-        if ($group && ! $this->has('career_group_id')) {
+        if ($isBasic) {
+            $this->merge([
+                'career_group_id' => null,
+                'phase' => 'basic_fundamental',
+            ]);
+        } elseif ($group && ! $this->has('career_group_id')) {
             $groupId = is_object($group) ? (string) $group->_id : (string) $group;
             $this->merge([
                 'career_group_id' => $groupId,
+                'phase' => 'career_branch',
             ]);
         }
     }

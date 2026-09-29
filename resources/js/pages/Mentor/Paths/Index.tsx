@@ -72,10 +72,13 @@ export default function Index({
         const newOrder = arrayMove(basicList, oldIndex, newIndex);
         setBasicList(newOrder);
 
-        router.post(
-            `/mentor/career-groups/${group.slug || group.id}/paths/reorder-fundamentals`,
+        router.put(
+            '/mentor/paths/reorder',
             {
-                basic_path_ids: newOrder.map((p) => p.id),
+                paths: newOrder.map((p, idx) => ({
+                    id: p.id,
+                    order: idx + 1,
+                })),
             },
             { preserveScroll: true },
         );
@@ -92,10 +95,13 @@ export default function Index({
         const newOrder = arrayMove(careerList, oldIndex, newIndex);
         setCareerList(newOrder);
 
-        router.post(
-            `/mentor/career-groups/${group.slug || group.id}/paths/reorder`,
+        router.put(
+            '/mentor/paths/reorder',
             {
-                path_ids: newOrder.map((p) => p.id),
+                paths: newOrder.map((p, idx) => ({
+                    id: p.id,
+                    order: idx + 1,
+                })),
             },
             { preserveScroll: true },
         );
@@ -112,12 +118,7 @@ export default function Index({
     };
 
     const handleToggleCourseStatus = () => {
-        if (!course) return;
-        router.post(
-            `/admin/courses/${course.slug || course.id}/publish`,
-            {},
-            { preserveScroll: true },
-        );
+        // Status Course dikelola oleh Administrator
     };
 
     return (

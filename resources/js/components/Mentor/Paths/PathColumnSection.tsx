@@ -132,26 +132,32 @@ export default function PathColumnSection({
                     </button>
 
                     {/* Status Action Button */}
-                    {isPublished ? (
-                        <button
-                            type="button"
-                            onClick={onToggleStatus}
-                            className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition-all active:scale-95 ${theme.toggleBtnDraft}`}
-                            title="Beralih status katalog ke Draft"
-                        >
-                            <RefreshCw className="h-3.5 w-3.5" />
-                            <span>{theme.toggleBtnDraftText}</span>
-                        </button>
+                    {!isBasic ? (
+                        isPublished ? (
+                            <button
+                                type="button"
+                                onClick={onToggleStatus}
+                                className={`inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition-all active:scale-95 ${theme.toggleBtnDraft}`}
+                                title="Beralih status katalog ke Draft"
+                            >
+                                <RefreshCw className="h-3.5 w-3.5" />
+                                <span>{theme.toggleBtnDraftText}</span>
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={onToggleStatus}
+                                className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-600 transition-all hover:bg-emerald-500/20 active:scale-95 dark:text-emerald-400"
+                                title="Publish agar dapat diakses publik"
+                            >
+                                <Check className="h-3.5 w-3.5" />
+                                <span>{theme.toggleBtnPublishText}</span>
+                            </button>
+                        )
                     ) : (
-                        <button
-                            type="button"
-                            onClick={onToggleStatus}
-                            className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-600 transition-all hover:bg-emerald-500/20 active:scale-95 dark:text-emerald-400"
-                            title="Publish agar dapat diakses publik"
-                        >
-                            <Check className="h-3.5 w-3.5" />
-                            <span>{theme.toggleBtnPublishText}</span>
-                        </button>
+                        <span className="hidden sm:inline-flex items-center text-[11px] font-medium text-slate-400 dark:text-slate-500 px-1">
+                            Status Course dikelola Administrator
+                        </span>
                     )}
                 </div>
             </div>
