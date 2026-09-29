@@ -9,7 +9,13 @@ class AdminCreatePathAction
 {
     public function execute(array $data): Path
     {
-        $slug = Str::slug($data['name']);
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Path::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
 
         $phase = $data['phase'] ?? 'career_branch';
         $careerGroupId = $data['career_group_id'] ?? null;

@@ -18,6 +18,8 @@ use App\Models\Module;
 use App\Models\ModuleContent;
 use App\Models\Path;
 use App\Models\Quiz;
+use App\Models\QuizAnswer;
+use App\Models\QuizQuestion;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
@@ -246,9 +248,17 @@ class CourseBuilderController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (CareerGroup::where('slug', $slug)->where('_id', '!=', (string) $group->_id)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
         $group->name = $data['name'];
         $group->description = $data['description'] ?? null;
-        $group->slug = Str::slug($data['name']);
+        $group->slug = $slug;
         $group->save();
 
         return back()->with('success', 'Career branch updated');
@@ -273,9 +283,17 @@ class CourseBuilderController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Path::where('slug', $slug)->where('_id', '!=', (string) $path->_id)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
         $path->name = $data['name'];
         $path->description = $data['description'] ?? null;
-        $path->slug = Str::slug($data['name']);
+        $path->slug = $slug;
         $path->save();
 
         return back()->with('success', 'Path updated');
@@ -286,10 +304,24 @@ class CourseBuilderController extends Controller
         $modules = Module::where('path_id', (string) $path->_id)->get();
         foreach ($modules as $module) {
             ModuleContent::where('module_id', (string) $module->_id)->delete();
-            Quiz::where('module_id', (string) $module->_id)->delete();
+            $quizzes = Quiz::where('module_id', (string) $module->_id)->get();
+            foreach ($quizzes as $q) {
+                $questionIds = QuizQuestion::where('quiz_id', (string) $q->_id)->pluck('_id')->toArray();
+                QuizAnswer::whereIn('question_id', $questionIds)->delete();
+                QuizQuestion::where('quiz_id', (string) $q->_id)->delete();
+                $q->delete();
+            }
             $module->delete();
         }
-        Quiz::where('path_id', (string) $path->_id)->delete();
+
+        $pathQuizzes = Quiz::where('path_id', (string) $path->_id)->get();
+        foreach ($pathQuizzes as $q) {
+            $questionIds = QuizQuestion::where('quiz_id', (string) $q->_id)->pluck('_id')->toArray();
+            QuizAnswer::whereIn('question_id', $questionIds)->delete();
+            QuizQuestion::where('quiz_id', (string) $q->_id)->delete();
+            $q->delete();
+        }
+
         $path->delete();
 
         return back()->with('success', 'Path deleted');
