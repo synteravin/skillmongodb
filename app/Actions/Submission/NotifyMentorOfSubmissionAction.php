@@ -8,6 +8,8 @@ use App\Models\StudentSubmission;
 use App\Models\Submission;
 use App\Models\User;
 use App\Notifications\StudentSubmissionNotification;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class NotifyMentorOfSubmissionAction
 {
@@ -39,13 +41,20 @@ class NotifyMentorOfSubmissionAction
         $mentors = User::whereIn('_id', $mentorIds)->get();
 
         foreach ($mentors as $mentor) {
-            /** @var User $mentor */
-            $mentor->notify(new StudentSubmissionNotification(
-                (string) $studentSubmission->_id,
-                $student->name,
-                $submission->title ?? 'Tugas',
-                $careerGroup->name ?? 'Career Path'
-            ));
+            try {
+                /** @var User $mentor */
+                $mentor->notify(new StudentSubmissionNotification(
+                    (string) $studentSubmission->_id,
+                    $student->name,
+                    $submission->title ?? 'Tugas',
+                    $careerGroup->name ?? 'Career Path'
+                ));
+            } catch (Throwable $e) {
+                Log::error('Failed to notify mentor of submission: '.$e->getMessage(), [
+                    'mentor_id' => (string) $mentor->_id,
+                    'student_submission_id' => (string) $studentSubmission->_id,
+                ]);
+            }
         }
     }
 }
