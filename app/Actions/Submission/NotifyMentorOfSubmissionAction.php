@@ -41,6 +41,17 @@ class NotifyMentorOfSubmissionAction
         $mentors = User::whereIn('_id', $mentorIds)->get();
 
         foreach ($mentors as $mentor) {
+            // Tandai notifikasi submission lama yang masih unread untuk submission ini sebagai read
+            // agar tidak terjadi penumpukan antrian jika student mengupdate tugas berulang kali
+            try {
+                $mentor->unreadNotifications()
+                    ->where('data.student_submission_id', (string) $studentSubmission->_id)
+                    ->get()
+                    ->each(fn ($n) => $n->markAsRead());
+            } catch (Throwable $e) {
+                // Abaikan jika ada kegagalan query notifikasi
+            }
+
             try {
                 /** @var User $mentor */
                 $mentor->notify(new StudentSubmissionNotification(

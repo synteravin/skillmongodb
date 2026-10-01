@@ -75,6 +75,18 @@ class SubmissionController extends Controller
         $subId = (string) ($submission->id ?? $submission->_id);
         $studentId = (string) Auth::id();
 
+        // Cegah perubahan jika tugas sudah dinilai oleh mentor
+        $existing = StudentSubmission::where('submission_id', $subId)
+            ->where('student_id', $studentId)
+            ->first();
+
+        if ($existing && ($existing->status === 'graded' || $existing->grade !== null)) {
+            return back()->withErrors([
+                'file' => 'Tugas ini sudah dinilai oleh mentor dan tidak dapat diubah lagi.',
+                'link' => 'Tugas ini sudah dinilai oleh mentor dan tidak dapat diubah lagi.',
+            ]);
+        }
+
         $data = [
             'submission_id' => $subId,
             'student_id' => $studentId,
