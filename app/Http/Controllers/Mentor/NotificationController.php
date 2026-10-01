@@ -16,6 +16,16 @@ class NotificationController extends Controller
             $notification->markAsRead();
 
             if ($studentSubmissionId) {
+                // Tandai semua notifikasi unread terkait student submission ini sebagai sudah dibaca
+                try {
+                    $request->user()->unreadNotifications()
+                        ->where('data.student_submission_id', (string) $studentSubmissionId)
+                        ->get()
+                        ->each(fn ($n) => $n->markAsRead());
+                } catch (\Throwable $e) {
+                    // Abaikan jika ada kegagalan query notifikasi
+                }
+
                 return redirect()->to('/mentor/student-submissions/'.$studentSubmissionId);
             }
         }

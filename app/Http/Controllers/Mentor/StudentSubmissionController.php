@@ -43,6 +43,16 @@ class StudentSubmissionController extends Controller
 
         $studentSubmission->update($updateData);
 
+        // Tandai semua notifikasi mentor terkait submission ini sebagai sudah dibaca (read)
+        try {
+            Notification::where('data.student_submission_id', (string) $studentSubmission->_id)
+                ->whereNull('read_at')
+                ->get()
+                ->each(fn ($n) => $n->markAsRead());
+        } catch (\Throwable $e) {
+            // Abaikan jika ada kegagalan query notifikasi
+        }
+
         (new CertificateService)->generateForSubmission($studentSubmission, Auth::User());
 
         try {
