@@ -147,6 +147,13 @@ export default function MessageInput({
         }
     }, [data.message]);
 
+    // Reset file input element if attachment is removed
+    useEffect(() => {
+        if (!data.attachment && !imagePreview && fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    }, [data.attachment, imagePreview]);
+
     // Click outside emoji picker to close it
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {

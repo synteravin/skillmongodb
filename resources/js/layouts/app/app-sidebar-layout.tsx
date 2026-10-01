@@ -119,7 +119,9 @@ export default function AppSidebarLayout({
                     </div>
                 </header>
 
-                <div className="relative z-10 w-full flex-1">
+                <div
+                    className={`relative z-10 w-full flex-1 ${isForum ? 'flex min-h-0 flex-col h-full' : ''}`}
+                >
                     {children}
                 </div>
             </AppContent>
