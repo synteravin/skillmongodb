@@ -219,7 +219,7 @@ class ForumController extends Controller
         return Inertia::render('Student/Forum/Index', [
             'courses' => $courseList,
             'selectedCourse' => [
-                'id' => $course->_id,
+                'id' => (string) $course->_id,
                 'title' => $course->title,
                 'slug' => $course->slug,
                 'thumbnail' => $course->thumbnail_url,
@@ -238,17 +238,17 @@ class ForumController extends Controller
 
         // Validasi akses siswa
         if ($user->isStudent()) {
-            $isEnrolled = CourseStudent::where('user_id', $user->_id)
-                ->where('course_id', $course->_id)
+            $isEnrolled = CourseStudent::where('user_id', (string) $user->_id)
+                ->where('course_id', (string) $course->_id)
                 ->exists();
             if (! $isEnrolled) {
                 return response()->json(['error' => 'Forbidden'], 403);
             }
         }
 
-        $query = ForumMessage::where('course_id', $course->_id);
+        $query = ForumMessage::where('course_id', (string) $course->_id);
 
-        if ($request->has('after_id') && $request->after_id !== '') {
+        if ($request->filled('after_id')) {
             $query->where('_id', '>', $request->after_id);
         } else {
             $query->latest('created_at')->limit(50);
@@ -256,7 +256,7 @@ class ForumController extends Controller
 
         $messages = $query->with(['sender', 'parent.sender'])->get();
 
-        if (! $request->has('after_id')) {
+        if (! $request->filled('after_id')) {
             $messages = $messages->reverse()->values();
         }
 
@@ -463,7 +463,7 @@ class ForumController extends Controller
         $user = $request->user();
 
         // Hanya pemilik pesan yang boleh mengedit
-        if ($message->user_id !== $user->_id) {
+        if ((string) $message->user_id !== (string) $user->_id) {
             abort(403, 'Anda tidak diizinkan mengubah pesan ini.');
         }
 
@@ -486,7 +486,7 @@ class ForumController extends Controller
         $user = $request->user();
 
         // Pemilik pesan OR mentor/admin boleh menghapus
-        $isOwner = $message->user_id === $user->_id;
+        $isOwner = (string) $message->user_id === (string) $user->_id;
         $isModerator = $user->isMentor() || $user->isAdmin();
 
         if (! $isOwner && ! $isModerator) {
@@ -496,8 +496,9 @@ class ForumController extends Controller
         // Hapus attachment jika ada
         if (! empty($message->attachments)) {
             foreach ($message->attachments as $attachment) {
-                if (isset($attachment['path'])) {
-                    Storage::disk('s3')->delete($attachment['path']);
+                $path = is_array($attachment) ? ($attachment['path'] ?? null) : $attachment;
+                if ($path && is_string($path)) {
+                    Storage::disk('s3')->delete($path);
                 }
             }
         }

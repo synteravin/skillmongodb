@@ -118,6 +118,7 @@ export default function ForumWorkspace({
 
     const chatEndRef = useRef<HTMLDivElement | null>(null);
     const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+    const prevCourseIdRef = useRef<string | null>(null);
 
     // Dynamic base route path & dashboard route
     const basePath =
@@ -146,13 +147,18 @@ export default function ForumWorkspace({
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Update list pesan lokal saat kursus berubah
+    // Update list pesan lokal saat kursus berubah atau props diperbarui
     useEffect(() => {
+        const courseChanged = prevCourseIdRef.current !== selectedCourse?.id;
+        prevCourseIdRef.current = selectedCourse?.id ?? null;
+
         setLocalMessages(messages);
         setReplyingTo(null);
         setEditingMessage(null);
-        setTimeout(scrollToBottom, 100);
-    }, [messages]);
+        if (courseChanged) {
+            setTimeout(scrollToBottom, 100);
+        }
+    }, [messages, selectedCourse?.id]);
 
     // Polling real-time ringan
     useEffect(() => {
@@ -161,10 +167,11 @@ export default function ForumWorkspace({
         let isMounted = true;
         const interval = setInterval(() => {
             const lastMsg = localMessages[localMessages.length - 1];
-            const lastId = lastMsg ? lastMsg.id : '';
+            const lastId = lastMsg && lastMsg.id ? lastMsg.id : '';
+            const queryParam = lastId ? `?after_id=${encodeURIComponent(lastId)}` : '';
 
             fetch(
-                `${basePath}/${selectedCourse.slug}/messages?after_id=${lastId}`,
+                `${basePath}/${selectedCourse.slug}/messages${queryParam}`,
             )
                 .then((res) => {
                     if (res.status === 200) {
@@ -402,6 +409,7 @@ export default function ForumWorkspace({
             onSuccess: () => {
                 setActiveMenuMessageId(null);
                 setMessageIdToDelete(null);
+                setDeleteModalOpen(false);
             },
             onError: (errors: any) => {
                 console.error('Gagal menghapus pesan:', errors);
@@ -410,10 +418,16 @@ export default function ForumWorkspace({
     };
 
     const handleShowProfile = (userId: string) => {
+        if (!userId || userId === 'deleted') return;
         setProfileLoading(true);
         setProfileModalOpen(true);
         fetch(`${basePath}/user/${userId}/profile`)
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error('Gagal memuat profil');
+                }
+                return res.json();
+            })
             .then((data) => {
                 setSelectedProfile(data);
                 setProfileLoading(false);

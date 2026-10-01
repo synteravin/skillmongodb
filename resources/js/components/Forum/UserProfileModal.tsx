@@ -129,7 +129,7 @@ export default function UserProfileModal({
                                     </span>
                                     <div className="flex items-center gap-1.5">
                                         <span className="font-['Orbitron'] text-xs font-black text-[#3B28F6] dark:text-[#99E4FD]">
-                                            {profile.courses.length}
+                                            {profile.courses?.length ?? 0}
                                         </span>
                                         <svg
                                             className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 dark:text-[#99E4FD]/60 ${isCoursesExpanded ? 'rotate-90' : ''}`}
@@ -206,12 +206,12 @@ export default function UserProfileModal({
                                                       parts[parts.length - 1];
                                                   return handle
                                                       ? `@${handle}`
-                                                      : `@${profile.username}`;
+                                                      : `@${profile.username ?? profile.name ?? 'user'}`;
                                               } catch {
-                                                  return `@${profile.username}`;
+                                                  return `@${profile.username ?? profile.name ?? 'user'}`;
                                               }
                                           })()
-                                        : `@${profile.username}`}
+                                        : `@${profile.username ?? profile.name ?? 'user'}`}
                                 </span>
                                 {profile.linkedin ? (
                                     <a
