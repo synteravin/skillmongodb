@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import { login } from '@/routes';
 import { Link, router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
@@ -33,19 +35,18 @@ export default function HeroSection({
     const isAdminOrMentor =
         auth?.user?.role === 'admin' || auth?.user?.role === 'mentor';
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
     const handleDeleteBanner = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        setIsDeleteModalOpen(true);
+    };
 
-        if (
-            confirm(
-                'Apakah Anda yakin ingin menghapus banner donasi dari halaman Home?',
-            )
-        ) {
-            router.delete('/donation-banner', {
-                preserveScroll: true,
-            });
-        }
+    const handleConfirmDelete = () => {
+        router.delete('/donation-banner', {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -323,6 +324,17 @@ export default function HeroSection({
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal
+                open={isDeleteModalOpen}
+                title="Hapus Banner Donasi"
+                message="Apakah Anda yakin ingin menghapus banner donasi dari halaman Home? Banner akan dinonaktifkan dan disembunyikan dari pengunjung."
+                confirmText="Ya, Hapus"
+                cancelText="Batal"
+                variant="danger"
+                onConfirm={handleConfirmDelete}
+                onClose={() => setIsDeleteModalOpen(false)}
+            />
         </section>
     );
 }

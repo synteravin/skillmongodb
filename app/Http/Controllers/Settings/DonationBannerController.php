@@ -17,12 +17,23 @@ class DonationBannerController extends Controller
         $banner = DonationBanner::latest()->first();
         $hasRecord = $banner !== null;
 
+        $imageUrl = null;
+        if ($hasRecord) {
+            if ($banner->image_path) {
+                $imageUrl = $banner->image_url;
+            } elseif ($banner->is_active) {
+                $imageUrl = '/images/donation-banner.jpg';
+            }
+        } else {
+            $imageUrl = '/images/donation-banner.jpg';
+        }
+
         return Inertia::render('settings/donation-banner', [
             'banner' => $hasRecord ? [
                 'id' => (string) $banner->_id,
                 'title' => $banner->title,
                 'url' => $banner->url,
-                'image_url' => $banner->image_url ?? ($banner->is_active ? '/images/donation-banner.jpg' : null),
+                'image_url' => $imageUrl,
                 'is_active' => (bool) $banner->is_active,
             ] : [
                 'id' => 'default',
