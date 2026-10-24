@@ -668,6 +668,35 @@ def create_evidence_item(item_title, caption_text, instruction_text):
     cap_run.font.italic = True
     cap_run.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
 
+def create_evidence_item_with_image(item_title, caption_text, image_path, width=Inches(6.5)):
+    h = doc.add_paragraph()
+    h.paragraph_format.keep_with_next = True
+    h.paragraph_format.space_before = Pt(10)
+    h.paragraph_format.space_after = Pt(3)
+    hrun = h.add_run(item_title)
+    hrun.font.name = "Arial"
+    hrun.font.size = Pt(10)
+    hrun.font.bold = True
+    hrun.font.color.rgb = RGBColor(0x1B, 0x36, 0x5D)
+
+    p_img = doc.add_paragraph()
+    p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_img.paragraph_format.space_before = Pt(4)
+    p_img.paragraph_format.space_after = Pt(2)
+    p_img.paragraph_format.keep_with_next = True
+    run_img = p_img.add_run()
+    run_img.add_picture(image_path, width=width)
+
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap.paragraph_format.space_before = Pt(3)
+    cap.paragraph_format.space_after = Pt(12)
+    cap_run = cap.add_run(caption_text)
+    cap_run.font.name = "Arial"
+    cap_run.font.size = Pt(8.5)
+    cap_run.font.italic = True
+    cap_run.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
+
 # 4.1 Lampiran Student
 add_section_heading("Lampiran Pengujian 3.1", level=2)
 student_evidences = [
@@ -702,25 +731,29 @@ for item_t, cap_t, ins_t in student_evidences:
 # 4.2 Lampiran Mentor
 doc.add_page_break()
 add_section_heading("Lampiran Pengujian 3.2", level=2)
+
+admin_media_dir = r"C:\Users\An\.gemini\antigravity\brain\7dc1db5d-88bb-4a9e-abd2-bc7ebaae043c\scratch\new_extracted\word\media"
+mentor_media_dir = r"C:\Users\An\.gemini\antigravity\brain\7dc1db5d-88bb-4a9e-abd2-bc7ebaae043c\scratch\mentor_extracted"
+
 mentor_evidences = [
     ("Lampiran 3.2.1: Bukti Pengujian Dasbor Pengajar & Tanda Tangan Digital",
      "Gambar 3.2.1: Dasbor instruktur menampilkan ringkasan siswa aktif dan panel penyimpanan goresan tanda tangan digital resmi.",
-     "Tempelkan screenshot antarmuka Dasbor Instruktur dan halaman pengaturan tanda tangan digital pengajar."),
+     os.path.join(mentor_media_dir, "image3.png")),
     ("Lampiran 3.2.2: Bukti Pengujian Pemantauan Progres Siswa (Student Journey)",
      "Gambar 3.2.2: Lembar pemantauan kemajuan belajar siswa bimbingan menampilkan persentase ketuntasan modul dan skor kuis.",
-     "Tempelkan screenshot daftar pemantauan rekam jejak belajar siswa pada grup karir bimbingan."),
+     os.path.join(mentor_media_dir, "image92.png")),
     ("Lampiran 3.2.3: Bukti Pengujian Penyusun Modul & Konten Pembelajaran",
      "Gambar 3.2.3: Antarmuka penyusun kurikulum modul dengan fitur seret-lepas (drag-and-drop reorder) dan formulir penambahan materi ajar.",
-     "Tempelkan screenshot lembar penyusun modul pembelajaran dan editor materi panduan teks/gambar."),
+     os.path.join(mentor_media_dir, "image42.png")),
     ("Lampiran 3.2.4: Bukti Pengujian Penilaian Tugas & Umpan Balik Masukan",
      "Gambar 3.2.4: Formulir koreksi tugas siswa dengan input nilai angka (skala 0-100) dan catatan masukan bimbingan pengajar.",
-     "Tempelkan screenshot lembar pemeriksaan karya siswa saat menginput skor nilai dan catatan ulasan feedback."),
+     os.path.join(mentor_media_dir, "image88.png")),
     ("Lampiran 3.2.5: Bukti Pengujian Forum Diskusi & Penyematan Pesan Penting",
      "Gambar 3.2.5: Ruang forum kelas dengan balasan pengajar beridentitas khusus dan pesan pengumuman penting yang tersemat di posisi teratas.",
-     "Tempelkan screenshot ruang diskusi forum kelas yang memperlihatkan pesan tersisa di bagian atas (pinned message).")
+     os.path.join(admin_media_dir, "image78.png"))
 ]
-for item_t, cap_t, ins_t in mentor_evidences:
-    create_evidence_item(item_t, cap_t, ins_t)
+for item_t, cap_t, img_path in mentor_evidences:
+    create_evidence_item_with_image(item_t, cap_t, img_path)
 
 # 4.3 Lampiran Admin
 doc.add_page_break()
@@ -728,28 +761,28 @@ add_section_heading("Lampiran Pengujian 3.3", level=2)
 admin_evidences = [
     ("Lampiran 3.3.1: Bukti Pengujian Manajemen Pengguna & Perubahan Peran (RBAC)",
      "Gambar 3.3.1: Daftar akun pengguna terdata di panel admin dan dialog perubahan hak akses peran pengguna menjadi Pengajar (Mentor).",
-     "Tempelkan screenshot tabel manajemen pengguna di konsol admin beserta notifikasi keberhasilan perubahan hak akses."),
+     os.path.join(admin_media_dir, "image8.png")),
     ("Lampiran 3.3.2: Bukti Pengujian Pengelolaan Aset Master Game RPG & Template Sertifikat",
      "Gambar 3.3.2: Panel konfigurasi karakter avatar RPG, tingkatan pangkat, lencana level, dan penetapan template aktif sertifikat kelulusan.",
-     "Tempelkan screenshot antarmuka pengelolaan master aset RPG dan status template sertifikat aktif."),
+     os.path.join(admin_media_dir, "image13.png")),
     ("Lampiran 3.3.3: Bukti Pengujian Publikasi Kursus & Penugasan Pengajar Pembimbing",
      "Gambar 3.3.3: Formulir penetapan pengajar bimbingan (Assign Mentor) dan tombol pengaktifan publikasi kursus.",
-     "Tempelkan screenshot lembar pengaturan kursus saat mengaitkan mentor dan mengubah status menjadi terpublikasi."),
+     os.path.join(admin_media_dir, "image43.png")),
     ("Lampiran 3.3.4: Bukti Pengujian Lembar Moderasi Lowongan Quest Draf",
      "Gambar 3.3.4: Antrean lowongan quest baru berstatus draf di panel moderasi dengan opsi aksi persetujuan publikasi atau penolakan.",
-     "Tempelkan screenshot antrean moderasi lowongan proyek freelance pada panel administrator."),
+     os.path.join(admin_media_dir, "image80.png")),
     ("Lampiran 3.3.5: Bukti Pengujian Lembar Sidang Arbitrase & Penerbitan Amar Putusan",
      "Gambar 3.3.5: Lembar kendali sidang arbitrase sengketa menampilkan kronologi perkara, opsi kaukus bilateral, dan sertifikat amar putusan.",
-     "Tempelkan screenshot lembar sidang investigasi arbitrase dan formulir penerbitan putusan resmi perkara."),
+     os.path.join(admin_media_dir, "image87.png")),
     ("Lampiran 3.3.6: Bukti Pengujian Pengawasan Submisi Tugas Siswa Lintas Kursus",
      "Gambar 3.3.6: Tabel pengawasan tugas siswa di panel admin menampilkan ringkasan tugas terkumpul dan pengajar pemeriksa.",
-     "Tempelkan screenshot tabel pemantauan submisi tugas siswa di konsol administrator."),
+     os.path.join(admin_media_dir, "image89.png")),
     ("Lampiran 3.3.7: Bukti Pengujian Manajemen Footer CMS & Banner Donasi Halaman Depan",
      "Gambar 3.3.7: Antarmuka pengelolaan tautan media sosial footer dan pengaturan banner donasi publik.",
-     "Tempelkan screenshot panel pengaturan footer CMS serta tampilan banner donasi di halaman beranda depan.")
+     os.path.join(admin_media_dir, "image96.png"))
 ]
-for item_t, cap_t, ins_t in admin_evidences:
-    create_evidence_item(item_t, cap_t, ins_t)
+for item_t, cap_t, img_path in admin_evidences:
+    create_evidence_item_with_image(item_t, cap_t, img_path)
 
 # -------------------------------------------------------------
 # 5.0 LEMBAR KESIMPULAN & PENGESAHAN PENERIMAAN PENGGUNA
@@ -833,5 +866,10 @@ for cell in row_date.cells:
 output_path_root = r"c:\Users\An\Herd\skillmongo\Dokumen_UAT_SkillMongo_Verifikasi_Lengkap.docx"
 output_path_final = r"c:\Users\An\Herd\skillmongo\Dokumen_UAT_SkillMongo_Final.docx"
 doc.save(output_path_root)
-doc.save(output_path_final)
-print(f"Document successfully created at {output_path_root} and {output_path_final}")
+print(f"Document successfully created at {output_path_root}")
+
+try:
+    doc.save(output_path_final)
+    print(f"Document successfully created at {output_path_final}")
+except PermissionError:
+    print(f"[PERINGATAN] {output_path_final} sedang terbuka di Microsoft Word. Silakan tutup dokumen di Word untuk memperbarui berkas tersebut, atau gunakan Dokumen_UAT_SkillMongo_Verifikasi_Lengkap.docx yang telah terbarui sempurna.")
