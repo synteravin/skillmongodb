@@ -90,6 +90,7 @@ interface DashboardProps {
         courses: {
             total: number;
             published: number;
+            draft?: number;
             total_enrollments: number;
         };
         submissions: {
@@ -858,15 +859,15 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* Card 2: Pendaftaran Kursus */}
+                        {/* Card 2: Katalog Kursus */}
                         <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
                             <div className="flex items-start justify-between">
                                 <div>
                                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                                        Pendaftaran Kursus
+                                        Katalog Kursus
                                     </span>
                                     <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
-                                        {metrics.courses.total_enrollments.toLocaleString()}
+                                        {metrics.courses.total.toLocaleString()}
                                     </p>
                                 </div>
                                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
@@ -878,8 +879,16 @@ export default function Dashboard({
                                 <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                                     {metrics.courses.published} Terpublikasi
                                 </span>
-                                <span>dari</span>
-                                <span>{metrics.courses.total} Total Kursus</span>
+                                <span>•</span>
+                                <span>
+                                    {metrics.courses.draft ??
+                                        Math.max(
+                                            0,
+                                            metrics.courses.total -
+                                                metrics.courses.published,
+                                        )}{' '}
+                                    Draf
+                                </span>
                             </div>
 
                             <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">

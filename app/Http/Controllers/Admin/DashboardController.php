@@ -150,6 +150,7 @@ class DashboardController extends Controller
                 'courses' => [
                     'total' => $totalCourses,
                     'published' => $publishedCourses,
+                    'draft' => $draftCourses,
                     'total_enrollments' => $totalEnrollments,
                 ],
                 'submissions' => [
