@@ -824,32 +824,38 @@ export default function Dashboard({
                     {/* ZONE 2: CORE VITAL KPIS (4 ENTERPRISE CARDS) */}
                     <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         {/* Card 1: Siswa & Pengguna */}
-                        <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                                        Total Siswa
+                        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
+                            <div>
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                            Total Siswa
+                                        </span>
+                                        <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
+                                            {metrics.users.student.toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                        <Users className="h-5 w-5" />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex min-h-[42px] flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                    <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 font-semibold text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                                        {metrics.users.active_students} Siswa Aktif
                                     </span>
-                                    <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
-                                        {metrics.users.student.toLocaleString()}
-                                    </p>
-                                </div>
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                                    <Users className="h-5 w-5" />
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                                        <span>{metrics.users.mentor} Mentor</span>
+                                    </span>
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                                        <span>{metrics.users.admin} Admin</span>
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                                <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 font-semibold text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                    {metrics.users.active_students} Siswa Aktif
-                                </span>
-                                <span>•</span>
-                                <span>{metrics.users.mentor} Mentor</span>
-                                <span>•</span>
-                                <span>{metrics.users.admin} Admin</span>
-                            </div>
-
-                            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                            <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800/80">
                                 <Link
                                     href="/admin/users"
                                     className="inline-flex items-center text-xs font-semibold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400"
@@ -860,38 +866,42 @@ export default function Dashboard({
                         </div>
 
                         {/* Card 2: Katalog Kursus */}
-                        <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                                        Katalog Kursus
+                        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
+                            <div>
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                            Katalog Kursus
+                                        </span>
+                                        <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
+                                            {metrics.courses.total.toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                                        <BookOpen className="h-5 w-5" />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex min-h-[42px] flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                    <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+                                        {metrics.courses.published} Terpublikasi
                                     </span>
-                                    <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
-                                        {metrics.courses.total.toLocaleString()}
-                                    </p>
-                                </div>
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
-                                    <BookOpen className="h-5 w-5" />
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                                        <span>
+                                            {metrics.courses.draft ??
+                                                Math.max(
+                                                    0,
+                                                    metrics.courses.total -
+                                                        metrics.courses.published,
+                                                )}{' '}
+                                            Draf
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                                <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-                                    {metrics.courses.published} Terpublikasi
-                                </span>
-                                <span>•</span>
-                                <span>
-                                    {metrics.courses.draft ??
-                                        Math.max(
-                                            0,
-                                            metrics.courses.total -
-                                                metrics.courses.published,
-                                        )}{' '}
-                                    Draf
-                                </span>
-                            </div>
-
-                            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                            <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800/80">
                                 <Link
                                     href="/admin/courses"
                                     className="inline-flex items-center text-xs font-semibold text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400"
@@ -902,32 +912,36 @@ export default function Dashboard({
                         </div>
 
                         {/* Card 3: Sertifikat & Penilaian */}
-                        <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                                        Kelulusan & Sertifikat
+                        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
+                            <div>
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                            Kelulusan & Sertifikat
+                                        </span>
+                                        <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
+                                            {metrics.certificates.issued.toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                                        <Award className="h-5 w-5" />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex min-h-[42px] flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                    <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                                        {metrics.submissions.graded} Proyek Dinilai
                                     </span>
-                                    <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
-                                        {metrics.certificates.issued.toLocaleString()}
-                                    </p>
-                                </div>
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
-                                    <Award className="h-5 w-5" />
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                                        <span>
+                                            {metrics.submissions.pending} Menunggu Review
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                                <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-                                    {metrics.submissions.graded} Proyek Dinilai
-                                </span>
-                                <span>•</span>
-                                <span>
-                                    {metrics.submissions.pending} Menunggu Review
-                                </span>
-                            </div>
-
-                            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                            <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800/80">
                                 <Link
                                     href="/admin/submissions"
                                     className="inline-flex items-center text-xs font-semibold text-amber-600 transition-colors hover:text-amber-700 dark:text-amber-400"
@@ -938,38 +952,42 @@ export default function Dashboard({
                         </div>
 
                         {/* Card 4: Ekosistem Quest */}
-                        <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                                        Ekosistem Quest
-                                    </span>
-                                    <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
-                                        {metrics.quests.total.toLocaleString()}
-                                    </p>
-                                </div>
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-                                    <Target className="h-5 w-5" />
-                                </div>
-                            </div>
-
-                            <div className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                                <span className="inline-flex items-center rounded-md bg-rose-50 px-2 py-0.5 font-semibold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
-                                    {metrics.quests.active} Sedang Berjalan
-                                </span>
-                                <span>•</span>
-                                <span>{metrics.quests.completed} Selesai</span>
-                                {metrics.quests.disputed > 0 && (
-                                    <>
-                                        <span>•</span>
-                                        <span className="inline-flex items-center rounded-md bg-rose-500/10 px-2 py-0.5 font-bold text-rose-600 dark:text-rose-400">
-                                            {metrics.quests.disputed} Sengketa
+                        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-slate-800 dark:bg-[#0c0e17]">
+                            <div>
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                                            Ekosistem Quest
                                         </span>
-                                    </>
-                                )}
+                                        <p className="mt-1 font-mono text-3xl font-black text-slate-900 dark:text-white">
+                                            {metrics.quests.total.toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
+                                        <Target className="h-5 w-5" />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex min-h-[42px] flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                    <span className="inline-flex items-center rounded-md bg-rose-50 px-2 py-0.5 font-semibold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
+                                        {metrics.quests.active} Sedang Berjalan
+                                    </span>
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                                        <span>{metrics.quests.completed} Selesai</span>
+                                    </span>
+                                    {metrics.quests.disputed > 0 && (
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <span className="text-slate-300 dark:text-slate-700">•</span>
+                                            <span className="inline-flex items-center rounded-md bg-rose-500/10 px-2 py-0.5 font-bold text-rose-600 dark:text-rose-400">
+                                                {metrics.quests.disputed} Sengketa
+                                            </span>
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                            <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800/80">
                                 <Link
                                     href="/admin/quests"
                                     className="inline-flex items-center text-xs font-semibold text-rose-600 transition-colors hover:text-rose-700 dark:text-rose-400"
