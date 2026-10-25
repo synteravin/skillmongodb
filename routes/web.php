@@ -190,7 +190,8 @@ Route::middleware(['auth', 'role:admin,mentor'])
             ->name('module-contents.store');
         Route::delete('/module-contents/{content}', [ModuleContentController::class, 'destroy'])
             ->name('module-contents.destroy');
-        Route::put('/module-contents/reorder', [ModuleContentController::class, 'reorder']);
+        Route::put('/module-contents/reorder', [ModuleContentController::class, 'reorder'])
+            ->name('module-contents.reorder');
 
         Route::put('/module-contents/{content}', [ModuleContentController::class, 'update'])
             ->name('module-contents.update');
@@ -394,7 +395,7 @@ Route::middleware(['auth', 'role:mentor'])
         Route::put(
             '/module-contents/reorder',
             [ModuleContentController::class, 'reorder']
-        );
+        )->name('module-contents.reorder');
 
         Route::put(
             '/module-contents/{content}',
