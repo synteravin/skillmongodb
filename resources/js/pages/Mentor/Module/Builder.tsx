@@ -21,6 +21,7 @@ import AppLayout from '@/layouts/app-layout';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import RenderTextContent from '@/components/Module/RenderTextContent';
 import RichEditor from '@/components/Module/RichEditor';
+import FileResourceCard from '@/components/Module/FileResourceCard';
 
 import {
     DndContext,
@@ -53,6 +54,10 @@ type ModuleContent = {
         code?: string;
         language?: string;
         url?: string;
+        path?: string;
+        name?: string;
+        size?: number;
+        mime?: string;
     };
 };
 
@@ -338,14 +343,20 @@ const SortableContent = ({
                                             </div>
                                         ) : content.content?.url ? (
                                             <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-200">
-                                                <Check
-                                                    className="text-emerald-500"
-                                                    size={18}
-                                                />
-                                                <span className="font-medium text-slate-600 dark:text-slate-400">
-                                                    File uploaded (Click to
-                                                    change)
-                                                </span>
+                                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+                                                    <Check size={18} />
+                                                </div>
+                                                <div className="flex flex-col text-left">
+                                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                                        {content.content.name ||
+                                                            content.content.url
+                                                                .split('/')
+                                                                .pop()}
+                                                    </span>
+                                                    <span className="text-[11px] text-slate-400">
+                                                        Berkas tersimpan (Klik atau seret untuk mengganti)
+                                                    </span>
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center gap-1.5 text-center">
@@ -581,36 +592,20 @@ const SortableContent = ({
                                     </div>
                                 )}
 
-                            {/* PDF PREVIEW */}
+                            {/* FILE CONTENT CARD */}
                             {content.type === 'file' &&
-                                content.content?.url?.endsWith('.pdf') && (
-                                    <div className="h-[300px] bg-slate-900/50 sm:h-[450px]">
-                                        <iframe
-                                            src={content.content.url}
-                                            className="h-full w-full"
+                                content.content?.url && (
+                                    <div className="bg-slate-900/30 p-3 sm:p-4">
+                                        <FileResourceCard
+                                            title={content.content.title}
+                                            description={
+                                                content.content.description
+                                            }
+                                            url={content.content.url}
+                                            name={content.content.name}
+                                            size={content.content.size}
+                                            mime={content.content.mime}
                                         />
-                                    </div>
-                                )}
-
-                            {/* OTHER FILE PREVIEW */}
-                            {content.type === 'file' &&
-                                content.content?.url &&
-                                !content.content.url.endsWith('.pdf') && (
-                                    <div className="flex items-center justify-center bg-slate-900/30 p-4 sm:p-6">
-                                        <a
-                                            href={content.content.url}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="group/link flex flex-col items-center gap-3 text-indigo-400 hover:text-indigo-300"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <div className="rounded-2xl bg-indigo-500/10 p-4 transition-all duration-300 group-hover/link:scale-110 group-hover/link:bg-indigo-500/20">
-                                                <FileText size={32} />
-                                            </div>
-                                            <span className="text-sm font-medium hover:underline">
-                                                Download Attached File
-                                            </span>
-                                        </a>
                                     </div>
                                 )}
                         </div>

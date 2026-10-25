@@ -12,6 +12,7 @@ import {
     BookOpen,
 } from 'lucide-react';
 import RenderTextContent from '@/components/Module/RenderTextContent';
+import FileResourceCard from '@/components/Module/FileResourceCard';
 
 /* ================= TYPES ================= */
 type Content = {
@@ -661,33 +662,17 @@ export default function LearnShow({
 
                                 {/* ── FILE ── */}
                                 {item.type === 'file' && (
-                                    <div className="mb-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 dark:border-gray-700 dark:bg-[#0f1226]">
-                                        {/* icon */}
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-300 bg-blue-100 dark:border-transparent dark:bg-indigo-500/10">
-                                            <FileText className="h-5 w-5 text-blue-600 dark:text-indigo-400" />
-                                        </div>
-
-                                        {/* content */}
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-sm font-semibold text-[#1e3a8a] dark:text-white">
-                                                Materi File
-                                            </p>
-
-                                            <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                                                {item.content.url
-                                                    .split('/')
-                                                    .pop()}
-                                            </p>
-                                        </div>
-
-                                        {/* action */}
-                                        <a
-                                            href={item.content.url}
-                                            target="_blank"
-                                            className="cursor-pointer rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-all duration-200 hover:scale-105 hover:bg-blue-500 hover:shadow-md active:scale-95 dark:bg-indigo-600 dark:text-white dark:hover:bg-indigo-500 dark:hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]"
-                                        >
-                                            Download
-                                        </a>
+                                    <div className="mb-4">
+                                        <FileResourceCard
+                                            title={item.content?.title}
+                                            description={
+                                                item.content?.description
+                                            }
+                                            url={item.content?.url}
+                                            name={item.content?.name}
+                                            size={item.content?.size}
+                                            mime={item.content?.mime}
+                                        />
                                     </div>
                                 )}
 

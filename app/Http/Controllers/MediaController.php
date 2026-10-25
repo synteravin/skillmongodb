@@ -48,6 +48,7 @@ class MediaController extends Controller
             'Content-Type' => $mimeType,
             'Content-Disposition' => "{$dispositionType}; filename=\"{$filename}\"",
             'Cache-Control' => 'public, max-age=86400',
+            'X-Frame-Options' => 'SAMEORIGIN',
         ]);
     }
 }
