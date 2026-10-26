@@ -54,27 +54,17 @@ class QuizController extends Controller
     {
         $this->authorize('create', Quiz::class);
 
-        $path->load('quiz.questions.answers');
+        $path->load('quiz');
+
+        // 🔥 Jika kuis sudah ada, cegah duplicate dan alihkan ke mode edit
+        if ($path->quiz) {
+            return redirect()->route('admin.quiz.edit', $path->quiz->slug ?: (string) $path->quiz->_id)
+                ->with('info', 'Final Quiz sudah ada untuk path ini. Anda dialihkan ke mode pengeditan.');
+        }
 
         return Inertia::render('Admin/Quiz/Create', [
             'pathId' => $path->slug ?: (string) $path->_id,
-            'quiz' => $path->quiz ? [
-                'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
-                'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
-                'difficulty' => $path->quiz->difficulty,
-                'questions' => $path->quiz->questions->map(function ($q) {
-                    return [
-                        'question_text' => $q->question_text,
-                        'media_url' => $q->media_url,
-                        'answers' => $q->answers->map(function ($a) {
-                            return [
-                                'answer_text' => $a->answer_text,
-                                'is_correct' => $a->is_correct,
-                            ];
-                        }),
-                    ];
-                }),
-            ] : null,
+            'quiz' => null,
         ]);
     }
 
@@ -92,7 +82,8 @@ class QuizController extends Controller
 
         app(CreateQuizAction::class)->execute($data);
 
-        return redirect()->back()->with('success', 'Quiz created successfully');
+        return redirect()->route('admin.paths.modules', $path->slug ?: (string) $path->_id)
+            ->with('success', 'Final Quiz berhasil dibuat dan siap digunakan!');
     }
 
     /* ===============================
