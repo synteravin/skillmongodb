@@ -60,28 +60,17 @@ class MentorQuizController extends Controller
             );
         }
 
-        $path->load('quiz.questions.answers');
+        $path->load('quiz');
+
+        // 🔥 Jika kuis sudah ada, cegah duplicate dan alihkan ke mode edit
+        if ($path->quiz) {
+            return redirect()->route('mentor.quiz.edit', $path->quiz->slug ?: (string) $path->quiz->_id)
+                ->with('info', 'Final Quiz sudah ada untuk path ini. Anda dialihkan ke mode pengeditan.');
+        }
 
         return Inertia::render('Mentor/Quiz/Create', [
             'pathId' => $path->slug ?: (string) $path->_id,
-            'quiz' => $path->quiz ? [
-                'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
-                'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
-                'difficulty' => $path->quiz->difficulty,
-                'duration' => (int) ($path->quiz->duration ?? 15),
-                'questions' => $path->quiz->questions->map(function ($q) {
-                    return [
-                        'question_text' => $q->question_text,
-                        'media_url' => $q->media_url,
-                        'answers' => $q->answers->map(function ($a) {
-                            return [
-                                'answer_text' => $a->answer_text,
-                                'is_correct' => $a->is_correct,
-                            ];
-                        }),
-                    ];
-                }),
-            ] : null,
+            'quiz' => null,
         ]);
     }
 
@@ -94,7 +83,16 @@ class MentorQuizController extends Controller
 
         app(CreateQuizAction::class)->execute($data);
 
-        return redirect()->back()->with('success', 'Quiz created successfully');
+        $group = $path->careerGroup ?: CareerGroup::where('course_id', $path->course_id)->first();
+
+        if ($group) {
+            return redirect()->route('mentor.paths.modules', [
+                'group' => $group->slug ?: (string) $group->_id,
+                'path' => $path->slug ?: (string) $path->_id,
+            ])->with('success', 'Final Quiz berhasil dibuat dan siap digunakan!');
+        }
+
+        return redirect()->route('mentor.quiz.index')->with('success', 'Final Quiz berhasil dibuat!');
     }
 
     public function edit(Quiz $quiz)

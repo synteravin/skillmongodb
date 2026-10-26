@@ -13,15 +13,17 @@ import {
     Youtube,
     X,
     Check,
-    ArrowLeft,
     Upload,
     Loader2,
+    Edit3,
+    PlusCircle,
 } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import RenderTextContent from '@/components/Module/RenderTextContent';
 import RichEditor from '@/components/Module/RichEditor';
 import FileResourceCard from '@/components/Module/FileResourceCard';
+import ModuleBuilderHeader from '@/components/Module/ModuleBuilderHeader';
 
 import {
     DndContext,
@@ -77,11 +79,7 @@ type Path = {
     name: string;
     description?: string;
     modules: Module[];
-    quiz?: {
-        id: string;
-        _id?: string;
-        slug?: string;
-    } | null;
+    quiz?: QuizInfo | null;
 };
 
 /* ================= ID ================= */
@@ -1225,103 +1223,13 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                 <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-[450px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-indigo-500/5 blur-[120px] select-none dark:bg-indigo-500/5" />
 
                 <div className="relative z-10 mx-auto w-full space-y-6">
-                    {/* HEADER */}
-                    <header
-                        className="relative w-full overflow-hidden rounded-xl border border-slate-200 bg-[#f5f6ff] px-6 py-5 dark:border-white/5 dark:bg-[#0d0f17]"
-                        style={{
-                            backgroundImage: `
-                                radial-gradient(circle at top right, rgba(124, 92, 255, 0.10), transparent 70%),
-                                radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.06), transparent 60%)
-                            `,
-                        }}
-                    >
-                        {/* Corner brackets */}
-                        <span className="absolute top-3.5 left-3.5 h-3 w-3 border-t border-l border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute top-3.5 right-3.5 h-3 w-3 border-t border-r border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute bottom-3.5 left-3.5 h-3 w-3 border-b border-l border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-                        <span className="absolute right-3.5 bottom-3.5 h-3 w-3 border-r border-b border-[rgba(59,40,246,0.2)] dark:border-[rgba(59,40,246,0.45)]" />
-
-                        <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="flex flex-col gap-2">
-                                <button
-                                    onClick={() => window.history.back()}
-                                    className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-slate-500 uppercase transition-colors hover:text-[#3B28F6] dark:text-slate-400 dark:hover:text-[#7C5CFF]"
-                                >
-                                    <ArrowLeft size={14} /> Back
-                                </button>
-
-                                {/* Badge */}
-                                <div className="mt-1 inline-flex w-fit items-center gap-1.5 rounded border border-[rgba(59,40,246,0.2)] bg-[rgba(59,40,246,0.06)] px-2.5 py-1 dark:border-[rgba(59,40,246,0.35)] dark:bg-[rgba(59,40,246,0.1)]">
-                                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B28F6]" />
-                                    <span className="text-[10px] font-bold tracking-[0.12em] text-[#3B28F6] uppercase">
-                                        Path Module Builder
-                                    </span>
-                                </div>
-
-                                {/* Title */}
-                                <h1
-                                    className="m-0 text-2xl leading-none font-bold tracking-tight text-[#3B28F6] sm:text-3xl dark:text-[#7C5CFF]"
-                                    style={{
-                                        fontFamily: 'Orbitron, sans-serif',
-                                    }}
-                                >
-                                    Module Builder
-                                </h1>
-
-                                {/* Subtitle */}
-                                <div className="mt-1 flex items-center gap-2">
-                                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                                        Path:
-                                    </span>
-                                    <span className="rounded border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                                        {path.name}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        if (
-                                            path.quiz?.slug ||
-                                            path.quiz?.id ||
-                                            path.quiz?._id
-                                        ) {
-                                            router.get(
-                                                `/admin/quiz/${path.quiz.slug || path.quiz.id || path.quiz._id}/edit`,
-                                            );
-                                        } else {
-                                            router.get(
-                                                `/admin/paths/${path.slug || getId(path)}/quiz/create`,
-                                            );
-                                        }
-                                    }}
-                                    className="relative flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-200/80 transition-all hover:bg-slate-50 hover:shadow-md hover:shadow-slate-200 active:scale-95 active:shadow-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-neutral-300 dark:shadow-zinc-900 dark:hover:bg-zinc-700 dark:hover:shadow-zinc-900"
-                                >
-                                    <span className="h-3.5 w-0.5 shrink-0 bg-indigo-500" />
-                                    <span>Manage Final Quiz</span>
-                                </button>
-                                {(path.quiz?.id || path.quiz?._id) && (
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            deleteQuiz(
-                                                path.quiz!.slug ||
-                                                    path.quiz!.id ||
-                                                    path.quiz!._id ||
-                                                    '',
-                                            )
-                                        }
-                                        className="cursor-pointer rounded-lg border border-rose-500/20 bg-rose-500/10 p-2.5 text-rose-500 transition-colors hover:bg-rose-500/20"
-                                        title="Delete Final Quiz"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </header>
+                    {/* UNIFIED HEADER & FINAL QUIZ */}
+                    <ModuleBuilderHeader
+                        path={path}
+                        modulesCount={modules.length}
+                        role="admin"
+                        onDeleteQuiz={deleteQuiz}
+                    />
 
                     {/* CREATE MODULE */}
                     <div className="relative flex flex-col items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row dark:border-white/8 dark:bg-[#060B1A]/80">
@@ -1406,6 +1314,8 @@ export default function ModuleBuilder({ path }: { path: Path }) {
                             </div>
                         </SortableContext>
                     </DndContext>
+
+
                 </div>
             </div>
             <ConfirmModal

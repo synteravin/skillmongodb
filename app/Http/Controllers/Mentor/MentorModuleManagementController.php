@@ -27,7 +27,7 @@ class MentorModuleManagementController extends Controller
         }
 
         $path->load([
-            'quiz',
+            'quiz.questions',
             'modules.contents',
             'modules.quiz',
         ]);
@@ -51,6 +51,9 @@ class MentorModuleManagementController extends Controller
                     'id' => $path->quiz->slug ?: (string) $path->quiz->_id,
                     '_id' => (string) $path->quiz->_id,
                     'slug' => $path->quiz->slug ?: (string) $path->quiz->_id,
+                    'difficulty' => $path->quiz->difficulty ?? 'medium',
+                    'duration' => (int) ($path->quiz->duration ?? 15),
+                    'questions_count' => $path->quiz->questions ? $path->quiz->questions->count() : 0,
                 ] : null,
 
                 'modules' => $path->modules->map(function ($module) {

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { router, Link } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import {
     ChevronDown,
     Plus,
@@ -13,7 +13,6 @@ import {
     Youtube,
     X,
     Check,
-    ArrowLeft,
     Upload,
     Loader2,
 } from 'lucide-react';
@@ -22,6 +21,7 @@ import ConfirmModal from '@/components/ui/ConfirmModal';
 import RenderTextContent from '@/components/Module/RenderTextContent';
 import RichEditor from '@/components/Module/RichEditor';
 import FileResourceCard from '@/components/Module/FileResourceCard';
+import ModuleBuilderHeader from '@/components/Module/ModuleBuilderHeader';
 
 import {
     DndContext,
@@ -75,13 +75,7 @@ type Path = {
     slug?: string;
     name: string;
     description?: string;
-
-    quiz?: {
-        id: string;
-        _id?: string;
-        slug?: string;
-    } | null;
-
+    quiz?: QuizInfo | null;
     modules: Module[];
 };
 
@@ -1230,80 +1224,15 @@ export default function ModuleBuilder({
                 className="mx-auto w-full space-y-6 p-4 sm:space-y-8 sm:p-6 lg:p-8"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
-                {/* HEADER */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-6 shadow-sm shadow-slate-100/50 dark:border-slate-800">
-                    <div className="absolute inset-0 bg-white dark:bg-gradient-to-b dark:from-[#0e0e1a] dark:to-[#090910]" />
-                    <div className="absolute top-0 right-8 left-8 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700" />
-
-                    <div className="relative z-10 flex w-full flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <Link
-                                    href={`/mentor/career-groups/${group.slug}/paths`}
-                                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-indigo-300 hover:bg-slate-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:bg-slate-700 dark:hover:text-indigo-400"
-                                >
-                                    <ArrowLeft size={18} />
-                                </Link>
-
-                                <h1 className="flex items-center gap-3 text-2xl font-bold text-slate-800 sm:text-3xl dark:text-white">
-                                    <div className="rounded-lg bg-indigo-500/10 p-2">
-                                        <Layers
-                                            className="text-indigo-500"
-                                            size={24}
-                                        />
-                                    </div>
-                                    Module Builder
-                                </h1>
-                            </div>
-
-                            <div className="mt-2 ml-14 flex items-center gap-2">
-                                <span className="text-sm text-slate-400 dark:text-slate-500">
-                                    Path:
-                                </span>
-
-                                <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 shadow-inner dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                                    {path.name}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    if (path.quiz?.slug || path.quiz?.id) {
-                                        router.get(
-                                            `/mentor/quiz/${path.quiz.slug || path.quiz.id}/edit`,
-                                        );
-                                    } else {
-                                        router.get(
-                                            `/mentor/career-groups/${group.slug}/paths/${path.slug}/quiz/create`,
-                                        );
-                                    }
-                                }}
-                                className="group flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-5 py-2.5 text-sm font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:from-purple-500 hover:to-pink-500 hover:shadow-lg"
-                            >
-                                <span>🎯 Manage Final Quiz</span>
-                            </button>
-                            {(path.quiz?.slug || path.quiz?.id) && (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        deleteQuiz(
-                                            path.quiz!.slug ||
-                                                path.quiz!.id ||
-                                                '',
-                                        )
-                                    }
-                                    className="cursor-pointer rounded-xl border border-rose-500/20 bg-rose-500/10 p-2.5 text-rose-500 transition-colors hover:bg-rose-500/20"
-                                    title="Delete Final Quiz"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
+                {/* UNIFIED HEADER & FINAL QUIZ */}
+                <ModuleBuilderHeader
+                    path={path}
+                    modulesCount={modules.length}
+                    role="mentor"
+                    careerGroupSlug={group.slug}
+                    backHref={`/mentor/career-groups/${group.slug}/paths`}
+                    onDeleteQuiz={deleteQuiz}
+                />
 
                 {/* CREATE MODULE */}
                 <div className="relative overflow-hidden rounded-xl border border-slate-200/80 p-5 shadow-sm shadow-slate-100/50 dark:border-slate-800">
@@ -1390,6 +1319,8 @@ export default function ModuleBuilder({
                         </div>
                     </SortableContext>
                 </DndContext>
+
+
             </div>
             <ConfirmModal
                 open={confirmModal.open}
