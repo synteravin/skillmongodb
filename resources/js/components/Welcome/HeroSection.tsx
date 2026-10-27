@@ -24,6 +24,7 @@ import {
     Trash2,
 } from 'lucide-react';
 import type { PublicDonationBanner } from '@/pages/welcome';
+import DonationBannerCard from '@/components/Welcome/DonationBannerCard';
 
 export default function HeroSection({
     donationBanner = null,
@@ -69,86 +70,31 @@ export default function HeroSection({
                 <div className="flex flex-col items-center gap-8 lg:flex-row">
                     {/* LEFT TEXT */}
                     <div className="w-full flex-1 px-6 text-center lg:ml-6 lg:text-left">
-                        {/* DONATION / PLATFORM SUPPORT BANNER - TOP LEFT */}
+                        {/* DONATION / PLATFORM SUPPORT BANNER */}
                         {donationBanner ? (
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35 }}
-                                className="relative mr-auto mb-4 w-full max-w-[200px] text-left sm:max-w-[225px]"
+                                className="mx-auto mb-3.5 w-full max-w-[175px] sm:max-w-[185px] lg:mx-0 text-left"
                             >
-                                <div className="relative overflow-hidden rounded-lg border border-[#FACC15]/80 bg-[#13174D] shadow-[0_6px_18px_rgba(0,0,0,0.25)] transition-all duration-300 hover:border-[#FACC15] hover:shadow-[0_0_16px_rgba(250,204,21,0.35)]">
-                                    <a
-                                        href={
-                                            donationBanner.url ||
-                                            'https://teer.id/fot98sbqcmggbrot2l0l'
-                                        }
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group block"
-                                    >
-                                        <div className="relative overflow-hidden">
-                                            <img
-                                                src={
-                                                    donationBanner.image_url ||
-                                                    '/images/donation-banner.jpg'
-                                                }
-                                                alt={
-                                                    donationBanner.title ||
-                                                    'Support Platform via Saweria / Trakteer'
-                                                }
-                                                className="h-14 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] sm:h-16"
-                                            />
-                                            <div className="flex items-center justify-between gap-1.5 bg-gradient-to-r from-[#13174D] via-[#1D215D] to-[#13174D] px-2.5 py-1.5 text-white">
-                                                <div className="flex min-w-0 items-center gap-1.5">
-                                                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#FACC15] text-slate-950 shadow">
-                                                        <HeartHandshake className="h-2.5 w-2.5" />
-                                                    </span>
-                                                    <span className="truncate font-['Oxanium'] text-[10px] font-bold tracking-wide sm:text-[11px]">
-                                                        {donationBanner.title ||
-                                                            'Support Trakteer'}
-                                                    </span>
-                                                </div>
-                                                <span className="inline-flex shrink-0 items-center gap-0.5 rounded bg-[#FACC15] px-1.5 py-0.5 font-['Orbitron'] text-[9px] font-extrabold text-slate-950 transition group-hover:bg-yellow-300">
-                                                    Donate
-                                                    <ExternalLink className="h-2.5 w-2.5" />
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    {isAdminOrMentor && (
-                                        <div className="absolute top-1.5 right-1.5 z-20 flex items-center gap-1">
-                                            <Link
-                                                href="/donation-banner"
-                                                title="Edit Banner"
-                                                className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-slate-950/85 px-2 py-0.5 text-[9px] font-semibold text-white backdrop-blur-md transition hover:bg-[#7C5CFF]"
-                                            >
-                                                <Settings className="h-2.5 w-2.5" />
-                                                Edit
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                onClick={handleDeleteBanner}
-                                                title="Hapus Banner"
-                                                className="inline-flex cursor-pointer items-center gap-0.5 rounded-full border border-rose-400/30 bg-rose-600/90 px-1.5 py-0.5 text-[9px] font-semibold text-white backdrop-blur-md transition hover:bg-rose-500"
-                                            >
-                                                <Trash2 className="h-2.5 w-2.5" />
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
+                                <DonationBannerCard
+                                    title={donationBanner.title}
+                                    url={donationBanner.url}
+                                    imageUrl={donationBanner.image_url}
+                                    isAdminOrMentor={isAdminOrMentor}
+                                    onDelete={handleDeleteBanner}
+                                />
                             </motion.div>
                         ) : (
                             isAdminOrMentor && (
-                                <div className="mr-auto mb-4 text-left">
+                                <div className="mx-auto mb-3.5 text-center lg:mx-0 lg:text-left">
                                     <Link
                                         href="/donation-banner"
-                                        className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-[#7C5CFF]/60 bg-[#7C5CFF]/10 px-3 py-1.5 text-xs font-semibold text-[#7C5CFF] transition hover:bg-[#7C5CFF]/20 dark:border-[#FACC15]/50 dark:bg-[#FACC15]/10 dark:text-[#FACC15]"
+                                        className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-indigo-400/40 bg-indigo-50/50 px-2.5 py-1 text-[10px] font-semibold text-indigo-600 shadow-2xs transition-all hover:border-indigo-500 hover:bg-indigo-100/60 active:scale-95 dark:border-indigo-500/30 dark:bg-indigo-950/30 dark:text-indigo-300 dark:hover:bg-indigo-900/40"
                                     >
-                                        <Plus className="h-3.5 w-3.5" />
-                                        Pasang Banner Donasi
+                                        <HeartHandshake className="h-3 w-3 text-amber-500" />
+                                        <span>+ Pasang Banner Donasi</span>
                                     </Link>
                                 </div>
                             )
