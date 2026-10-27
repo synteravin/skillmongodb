@@ -252,9 +252,9 @@ export default function QuizEditor({
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 <div className="mx-auto w-full max-w-5xl space-y-6">
-                    {/* ================= HEADER HERO ================= */}
+                    {/* ================= HEADER HERO BANNER ================= */}
                     <header
-                        className="relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur-xl dark:border-white/5 dark:bg-[#0d0f17]"
+                        className="relative w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-sm backdrop-blur-xl sm:p-6 dark:border-white/5 dark:bg-[#0d0f17]"
                         style={{
                             backgroundImage: `
                                 radial-gradient(circle at top right, rgba(124, 92, 255, 0.12), transparent 70%),
@@ -265,54 +265,61 @@ export default function QuizEditor({
                         {/* Top Gradient Line */}
                         <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
-                        <div className="relative z-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                            <div className="flex items-start gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        if (backUrl) {
-                                            router.get(backUrl);
-                                        } else {
-                                            window.history.back();
-                                        }
-                                    }}
-                                    className="mt-1 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 transition-all hover:border-indigo-300 hover:bg-white hover:text-indigo-600 active:scale-95 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-400 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800 dark:hover:text-white"
-                                    title="Kembali"
-                                >
-                                    <ArrowLeft size={18} />
-                                </button>
+                        <div className="relative z-10 flex flex-col gap-4">
+                            {/* Top Bar: Navigation & Breadcrumbs */}
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3.5 dark:border-slate-800/60">
+                                <div className="flex flex-wrap items-center gap-2.5">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            if (backUrl) {
+                                                router.get(backUrl);
+                                            } else {
+                                                window.history.back();
+                                            }
+                                        }}
+                                        className="group flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 transition-all hover:border-indigo-300 hover:bg-white hover:text-indigo-600 active:scale-95 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-400 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800 dark:hover:text-white"
+                                        title="Kembali"
+                                    >
+                                        <ArrowLeft
+                                            size={16}
+                                            className="transition-transform group-hover:-translate-x-0.5"
+                                        />
+                                    </button>
 
-                                <div className="space-y-1.5">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.1em] text-indigo-600 uppercase dark:text-indigo-400">
-                                            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" />
-                                            <span>Final Quiz Builder</span>
-                                        </div>
+                                    <div className="h-5 w-px bg-slate-200 dark:bg-slate-800" />
 
-                                        <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
-                                            {mode === 'create'
-                                                ? 'Pembuatan Kuis Baru'
-                                                : 'Mode Edit Kuis'}
-                                        </span>
+                                    <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.1em] text-indigo-600 uppercase dark:text-indigo-400">
+                                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" />
+                                        <span>Final Quiz Builder</span>
                                     </div>
 
-                                    <h1
-                                        className="m-0 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white"
-                                        style={{
-                                            fontFamily: 'Orbitron, sans-serif',
-                                        }}
-                                    >
+                                    <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
                                         {mode === 'create'
-                                            ? 'Buat Final Quiz'
-                                            : 'Edit Final Quiz'}
-                                    </h1>
-
-                                    <p className="max-w-2xl text-xs text-slate-500 sm:text-sm dark:text-slate-400">
-                                        {mode === 'create'
-                                            ? 'Rancang butir pertanyaan, tentukan kunci jawaban, serta atur durasi dan kesulitan evaluasi kelulusan.'
-                                            : 'Perbarui butir pertanyaan, kunci jawaban, durasi pengerjaan, dan tingkat kesulitan kuis.'}
-                                    </p>
+                                            ? 'Pembuatan Kuis Baru'
+                                            : 'Mode Edit Kuis'}
+                                    </span>
                                 </div>
+                            </div>
+
+                            {/* Main Title & Description */}
+                            <div className="space-y-1">
+                                <h1
+                                    className="m-0 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-800 bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl dark:from-white dark:via-slate-100 dark:to-indigo-200"
+                                    style={{
+                                        fontFamily: 'Orbitron, sans-serif',
+                                    }}
+                                >
+                                    {mode === 'create'
+                                        ? 'Buat Final Quiz'
+                                        : 'Edit Final Quiz'}
+                                </h1>
+
+                                <p className="max-w-2xl text-xs text-slate-500 sm:text-sm dark:text-slate-400">
+                                    {mode === 'create'
+                                        ? 'Rancang butir pertanyaan, tentukan kunci jawaban, serta atur durasi dan kesulitan evaluasi kelulusan.'
+                                        : 'Perbarui butir pertanyaan, kunci jawaban, durasi pengerjaan, dan tingkat kesulitan kuis.'}
+                                </p>
                             </div>
                         </div>
                     </header>
