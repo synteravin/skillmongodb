@@ -15,6 +15,10 @@ class LoginResponse implements LoginResponseContract
     {
         $user = $request->user();
 
+        if ($user && method_exists($user, 'isStudent') && $user->isStudent() && method_exists($user, 'hasCharacter') && ! $user->hasCharacter()) {
+            return redirect()->route('character.select');
+        }
+
         return match ($user->role) {
             'admin' => redirect()->intended('/admin/dashboard'),
             'mentor' => redirect()->intended('/mentor/dashboard'),
