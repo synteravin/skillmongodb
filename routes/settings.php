@@ -15,6 +15,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
+        ->name('two-factor.show');
+
     Route::middleware(['role:admin,mentor'])->group(function () {
         Route::get('signature', [SignatureController::class, 'edit'])->name('profile.signature.edit');
         Route::post('signature', [SignatureController::class, 'update'])->name('profile.signature.update');
@@ -42,7 +45,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return Inertia::render('settings/appearance');
     })->name('appearance.edit');
-
-    Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
-        ->name('two-factor.show');
 });
