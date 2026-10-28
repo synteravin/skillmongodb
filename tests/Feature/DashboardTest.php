@@ -23,3 +23,19 @@ test('authenticated users can visit the dashboard', function () {
     $response = $this->get(route('dashboard'));
     $response->assertOk();
 });
+
+test('admin is redirected to admin dashboard when visiting dashboard', function () {
+    $user = createUser(['role' => 'admin']);
+    $this->actingAs($user);
+
+    $response = $this->get(route('dashboard'));
+    $response->assertRedirect('/admin/dashboard');
+});
+
+test('mentor is redirected to mentor dashboard when visiting dashboard', function () {
+    $user = createUser(['role' => 'mentor']);
+    $this->actingAs($user);
+
+    $response = $this->get(route('dashboard'));
+    $response->assertRedirect('/mentor/dashboard');
+});
