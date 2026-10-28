@@ -43,6 +43,7 @@ use App\Http\Controllers\Student\SelectPathController;
 use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Student\SubmissionController as StudentSubmission;
 use App\Models\DonationBanner;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -456,8 +457,22 @@ Route::middleware(['auth', 'role:mentor'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:student', 'has.character'])->group(function () {
-    Route::get('/dashboard', [StudentDashboard::class, 'index'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function (Request $request) {
+        if ($request->user()->role === 'admin') {
+            return redirect('/admin/dashboard');
+        }
+
+        if ($request->user()->role === 'mentor') {
+            return redirect('/mentor/dashboard');
+        }
+
+        if (! $request->user()->hasCharacter()) {
+            return redirect()->route('character.select');
+        }
+
+        return app(StudentDashboard::class)->index($request);
+    })->name('dashboard');
 });
 
 Route::middleware(['auth', 'role:student', 'has.character'])
