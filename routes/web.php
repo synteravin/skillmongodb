@@ -238,6 +238,11 @@ Route::middleware(['auth', 'role:admin,mentor'])
         Route::delete('/quests/{quest}', [App\Http\Controllers\Admin\QuestController::class, 'destroy'])->name('quests.destroy');
         Route::delete('/quests/{quest}/bids/{bid}', [App\Http\Controllers\Admin\QuestController::class, 'destroyBid'])->name('quests.bids.destroy');
         Route::post('/quests/{quest}/accept-bid/{bid}', [App\Http\Controllers\Admin\QuestController::class, 'acceptBid'])->name('quests.accept-bid');
+        Route::post('/quests/{quest}/upload-dp', [App\Http\Controllers\Admin\QuestController::class, 'uploadDownPaymentProof'])->name('quests.upload-dp');
+        Route::post('/quests/{quest}/confirm-dp', [App\Http\Controllers\Admin\QuestController::class, 'confirmDownPayment'])->name('quests.confirm-dp');
+        Route::post('/quests/{quest}/upload-payment', [App\Http\Controllers\Admin\QuestController::class, 'uploadPaymentProof'])->name('quests.upload-payment');
+        Route::post('/quests/{quest}/confirm-delivery', [App\Http\Controllers\Admin\QuestController::class, 'confirmFinalDelivery'])->name('quests.confirm-delivery');
+        Route::post('/quests/{quest}/request-delivery-revision', [App\Http\Controllers\Admin\QuestController::class, 'requestFinalZipRevision'])->name('quests.request-delivery-revision');
         Route::post('/quests/{quest}/approve', [App\Http\Controllers\Admin\QuestController::class, 'approveWork'])->name('quests.approve-work');
         Route::post('/quests/{quest}/reject', [App\Http\Controllers\Admin\QuestController::class, 'rejectWork'])->name('quests.reject-work');
         Route::post('/quests/{quest}/approve-post', [App\Http\Controllers\Admin\QuestController::class, 'approvePublish'])->name('quests.approve-post');

@@ -338,6 +338,35 @@ html {
 .sidebar-scrollbar::-webkit-scrollbar-thumb:active {
     background: linear-gradient(180deg, #7C5CFF, #38BDF8);
 }
+/* Cyberpunk Quiz Scrollbar */
+.quiz-scrollbar {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.45) transparent;
+}
+.quiz-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.quiz-scrollbar::-webkit-scrollbar-track {
+    background: rgba(7, 14, 32, 0.4);
+    border-radius: 9999px;
+    margin-block: 4px;
+}
+.quiz-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.5), rgba(56, 189, 248, 0.4));
+    border-radius: 9999px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    transition: all 0.2s ease;
+}
+.quiz-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.85), rgba(56, 189, 248, 0.8));
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+}
+.quiz-scrollbar::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #6366f1, #38bdf8);
+}
+
 .sidebar-scroll-mask {
     mask-image: linear-gradient(
         to bottom,
@@ -580,7 +609,7 @@ html {
    Shrinks Header & Footer so Question & Answer Boxes get maximum vertical space!
    Does NOT affect sm (< 768px), HP Landscape (<= 500px height), or xl/2xl (>= 1280px)!
    ============================================================================ */
-@media (min-width: 768px) and (max-width: 1279px) and (min-height: 501px) {
+@media (min-width: 768px) and (max-width: 1279px) and (min-height: 501px), (min-width: 768px) and (max-height: 768px) and (min-height: 501px) {
     .md-lg-container {
         padding: 0.375rem !important; /* 6px outer padding */
     }

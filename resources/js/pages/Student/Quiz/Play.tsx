@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ResultModal from '@/components/QuestionForm/ResultModal';
 import TimeExpiredModal from '@/components/QuestionForm/TimeExpiredModal';
 import { router, usePage } from '@inertiajs/react';
-import { Clock, Flag, AlertOctagon, TriangleAlert, Gamepad2 } from 'lucide-react';
+import { Clock, Flag, AlertOctagon, TriangleAlert, Gamepad2, Check } from 'lucide-react';
 import CourseOnboardingTour from '@/components/Student/CourseOnboardingTour';
 
 /* ============================================================================
@@ -260,7 +260,7 @@ function HexagonButton({
             </svg>
 
             {/* Inner Content with spacious padding away from slanted tips */}
-            <div className="relative z-10 flex items-center justify-between w-full pl-6 sm:pl-8 md:pl-9 xl:pl-10 pr-4 sm:pr-5 md:pr-6 hp-landscape-hexagon-inner sm-md-hexagon-inner md-lg-hexagon-inner py-1.5 sm:py-2 md:py-2.5 lg:py-3">
+            <div className="relative z-10 flex items-center justify-between w-full pl-6 sm:pl-7 md:pl-8 xl:pl-9 pr-6 sm:pr-7 md:pr-8 xl:pr-9 hp-landscape-hexagon-inner sm-md-hexagon-inner md-lg-hexagon-inner py-1.5 sm:py-2 md:py-2 lg:py-2.5">
                 {children}
             </div>
         </button>
@@ -270,34 +270,53 @@ function HexagonButton({
 /* ============================================================================
    5. DYNAMIC HELPER FOR ANSWER OPTION SIZES & STYLES (DYNAMIC SCALING)
    ============================================================================ */
-function getOptionStyles(text: string) {
+function getOptionStyles(text: string, totalOptions: number = 4) {
     const len = text ? text.length : 0;
+    const isMany = totalOptions >= 5;
 
     if (len < 40) {
         return {
-            fontSizeClass: 'text-xs sm:text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl leading-snug font-bold hp-landscape-option-font-1 sm-md-option-font-1 md-lg-option-font-1',
-            buttonClass: '!min-h-[38px] sm:!min-h-[42px] md:!min-h-[48px] lg:!min-h-[52px] xl:!min-h-[64px] 2xl:!min-h-[72px] !py-2 sm:!py-2.5 md:!py-2.5 lg:!py-3 xl:!py-4 2xl:!py-4.5 hp-landscape-option-btn-1 sm-md-option-btn-1 md-lg-option-btn-1',
-            badgeClass: 'h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-8 lg:w-8 xl:h-10 xl:w-10 2xl:h-11 2xl:w-11 text-xs sm:text-xs md:text-sm xl:text-base 2xl:text-lg hp-landscape-option-badge-1 sm-md-option-badge-1 md-lg-option-badge-1',
+            fontSizeClass: isMany
+                ? 'text-xs sm:text-[13px] md:text-sm lg:text-base leading-snug font-semibold hp-landscape-option-font-1 sm-md-option-font-1 md-lg-option-font-1'
+                : 'text-xs sm:text-sm md:text-base lg:text-lg leading-snug font-bold hp-landscape-option-font-1 sm-md-option-font-1 md-lg-option-font-1',
+            buttonClass: isMany
+                ? '!min-h-[36px] sm:!min-h-[40px] md:!min-h-[44px] lg:!min-h-[48px] !py-1 sm:!py-1.5 md:!py-2 lg:!py-2.5 hp-landscape-option-btn-1 sm-md-option-btn-1 md-lg-option-btn-1'
+                : '!min-h-[38px] sm:!min-h-[44px] md:!min-h-[48px] lg:!min-h-[52px] !py-1.5 sm:!py-2 md:!py-2.5 lg:!py-3 hp-landscape-option-btn-1 sm-md-option-btn-1 md-lg-option-btn-1',
+            badgeClass: isMany
+                ? 'h-5.5 w-5.5 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-7.5 lg:w-7.5 text-xs sm:text-xs md:text-sm hp-landscape-option-badge-1 sm-md-option-badge-1 md-lg-option-badge-1'
+                : 'h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-8.5 lg:w-8.5 text-xs sm:text-xs md:text-sm hp-landscape-option-badge-1 sm-md-option-badge-1 md-lg-option-badge-1',
         };
     }
     if (len < 80) {
         return {
-            fontSizeClass: 'text-[11px] sm:text-xs md:text-xs lg:text-sm xl:text-base 2xl:text-lg leading-snug font-medium hp-landscape-option-font-2 sm-md-option-font-2 md-lg-option-font-2',
-            buttonClass: '!min-h-[34px] sm:!min-h-[38px] md:!min-h-[44px] lg:!min-h-[46px] xl:!min-h-[58px] 2xl:!min-h-[64px] !py-1.5 sm:!py-1.5 md:!py-2 lg:!py-2.5 xl:!py-3.5 2xl:!py-4 hp-landscape-option-btn-2 sm-md-option-btn-2 md-lg-option-btn-2',
-            badgeClass: 'h-5.5 w-5.5 sm:h-6 sm:w-6 md:h-6.5 md:w-6.5 lg:h-7 lg:w-7 xl:h-9 xl:w-9 2xl:h-10 2xl:w-10 text-[10px] sm:text-xs md:text-xs xl:text-sm 2xl:text-base hp-landscape-option-badge-2 sm-md-option-badge-2 md-lg-option-badge-2',
+            fontSizeClass: isMany
+                ? 'text-[11px] sm:text-xs md:text-xs lg:text-sm leading-snug font-medium hp-landscape-option-font-2 sm-md-option-font-2 md-lg-option-font-2'
+                : 'text-[11px] sm:text-xs md:text-sm lg:text-base leading-snug font-medium hp-landscape-option-font-2 sm-md-option-font-2 md-lg-option-font-2',
+            buttonClass: isMany
+                ? '!min-h-[34px] sm:!min-h-[38px] md:!min-h-[42px] lg:!min-h-[46px] !py-1 sm:!py-1.5 md:!py-2 lg:!py-2 hp-landscape-option-btn-2 sm-md-option-btn-2 md-lg-option-btn-2'
+                : '!min-h-[36px] sm:!min-h-[40px] md:!min-h-[44px] lg:!min-h-[48px] !py-1.5 sm:!py-2 md:!py-2.5 lg:!py-3 hp-landscape-option-btn-2 sm-md-option-btn-2 md-lg-option-btn-2',
+            badgeClass: isMany
+                ? 'h-5 w-5 sm:h-5.5 sm:w-5.5 md:h-6 md:w-6 lg:h-6.5 lg:w-6.5 text-[10px] sm:text-xs md:text-xs hp-landscape-option-badge-2 sm-md-option-badge-2 md-lg-option-badge-2'
+                : 'h-5.5 w-5.5 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-7.5 lg:w-7.5 text-[10px] sm:text-xs md:text-xs hp-landscape-option-badge-2 sm-md-option-badge-2 md-lg-option-badge-2',
         };
     }
     if (len < 140) {
         return {
-            fontSizeClass: 'text-[10px] sm:text-[11px] md:text-[11px] lg:text-xs xl:text-sm 2xl:text-base leading-tight font-medium hp-landscape-option-font-3 sm-md-option-font-3 md-lg-option-font-3',
-            buttonClass: '!min-h-[32px] sm:!min-h-[36px] md:!min-h-[40px] lg:!min-h-[42px] xl:!min-h-[52px] 2xl:!min-h-[58px] !py-1 sm:!py-1.5 md:!py-1.5 lg:!py-2 xl:!py-3 2xl:!py-3.5 hp-landscape-option-btn-3 sm-md-option-btn-3 md-lg-option-btn-3',
-            badgeClass: 'h-5 w-5 sm:h-5.5 sm:w-5.5 md:h-6 md:w-6 lg:h-6.5 lg:w-6.5 xl:h-8.5 xl:w-8.5 2xl:h-9.5 2xl:w-9.5 text-[9px] sm:text-[10px] md:text-[10px] xl:text-xs 2xl:text-sm hp-landscape-option-badge-3 sm-md-option-badge-3 md-lg-option-badge-3',
+            fontSizeClass: isMany
+                ? 'text-[10px] sm:text-[11px] md:text-xs lg:text-[13px] leading-tight font-medium hp-landscape-option-font-3 sm-md-option-font-3 md-lg-option-font-3'
+                : 'text-[10px] sm:text-[11px] md:text-xs lg:text-sm leading-tight font-medium hp-landscape-option-font-3 sm-md-option-font-3 md-lg-option-font-3',
+            buttonClass: isMany
+                ? '!min-h-[32px] sm:!min-h-[36px] md:!min-h-[38px] lg:!min-h-[42px] !py-1 sm:!py-1 md:!py-1.5 lg:!py-2 hp-landscape-option-btn-3 sm-md-option-btn-3 md-lg-option-btn-3'
+                : '!min-h-[34px] sm:!min-h-[38px] md:!min-h-[42px] lg:!min-h-[46px] !py-1 sm:!py-1.5 md:!py-2 lg:!py-2.5 hp-landscape-option-btn-3 sm-md-option-btn-3 md-lg-option-btn-3',
+            badgeClass: isMany
+                ? 'h-4.5 w-4.5 sm:h-5 sm:w-5 md:h-5.5 md:w-5.5 lg:h-6 lg:w-6 text-[9px] sm:text-[10px] md:text-[10px] hp-landscape-option-badge-3 sm-md-option-badge-3 md-lg-option-badge-3'
+                : 'h-5 w-5 sm:h-5.5 sm:w-5.5 md:h-6.5 md:w-6.5 lg:h-7 lg:w-7 text-[9px] sm:text-[10px] md:text-[10px] hp-landscape-option-badge-3 sm-md-option-badge-3 md-lg-option-badge-3',
         };
     }
     return {
-        fontSizeClass: 'text-[9px] sm:text-[10px] md:text-[10px] lg:text-[11px] xl:text-xs 2xl:text-sm leading-tight font-medium hp-landscape-option-font-4 sm-md-option-font-4 md-lg-option-font-4',
-        buttonClass: '!min-h-[30px] sm:!min-h-[34px] md:!min-h-[36px] lg:!min-h-[38px] xl:!min-h-[48px] 2xl:!min-h-[54px] !py-1 sm:!py-1 md:!py-1.5 lg:!py-1.5 xl:!py-2.5 2xl:!py-3 hp-landscape-option-btn-4 sm-md-option-btn-4 md-lg-option-btn-4',
-        badgeClass: 'h-4.5 w-4.5 sm:h-5 sm:w-5 md:h-5.5 md:w-5.5 lg:h-6 lg:w-6 xl:h-8 xl:w-8 2xl:h-9 2xl:w-9 text-[8px] sm:text-[9px] md:text-[9px] xl:text-xs 2xl:text-xs hp-landscape-option-badge-4 sm-md-option-badge-4 md-lg-option-badge-4',
+        fontSizeClass: 'text-[9px] sm:text-[10px] md:text-[11px] lg:text-xs leading-tight font-medium hp-landscape-option-font-4 sm-md-option-font-4 md-lg-option-font-4',
+        buttonClass: '!min-h-[30px] sm:!min-h-[34px] md:!min-h-[36px] lg:!min-h-[40px] !py-1 sm:!py-1 md:!py-1.5 lg:!py-2 hp-landscape-option-btn-4 sm-md-option-btn-4 md-lg-option-btn-4',
+        badgeClass: 'h-4.5 w-4.5 sm:h-5 sm:w-5 md:h-5.5 md:w-5.5 lg:h-6 lg:w-6 text-[8px] sm:text-[9px] md:text-[9px] hp-landscape-option-badge-4 sm-md-option-badge-4 md-lg-option-badge-4',
     };
 }
 
@@ -311,6 +330,8 @@ function AnswerOption({
     isCorrect,
     isReviewMode,
     questionScore,
+    isMultiSelect = false,
+    totalOptions = 4,
     onClick,
 }: {
     label: string;
@@ -319,13 +340,15 @@ function AnswerOption({
     isCorrect?: boolean;
     isReviewMode?: boolean;
     questionScore?: number;
+    isMultiSelect?: boolean;
+    totalOptions?: number;
     onClick?: () => void;
 }) {
     let hexBadgeBg = selected
         ? 'bg-[#FACC15] text-black font-black shadow-[0_0_10px_rgba(250,204,21,0.5)]'
-        : 'bg-[#3B28F6] text-white font-bold';
+        : 'bg-[#3B28F6] text-white font-bold group-hover:bg-[#4f3bf7]';
 
-    let textClass = selected ? 'text-white font-bold' : 'text-slate-200';
+    let textClass = selected ? 'text-white font-bold' : 'text-slate-200 group-hover:text-white';
 
     if (isReviewMode) {
         if (selected && isCorrect) {
@@ -343,7 +366,7 @@ function AnswerOption({
         }
     }
 
-    const { fontSizeClass, buttonClass, badgeClass } = getOptionStyles(text);
+    const { fontSizeClass, buttonClass, badgeClass } = getOptionStyles(text, totalOptions);
 
     return (
         <HexagonButton
@@ -351,9 +374,9 @@ function AnswerOption({
             isCorrect={isCorrect}
             isReviewMode={isReviewMode}
             onClick={onClick}
-            className={buttonClass}
+            className={`${buttonClass} active:scale-[0.99] transition-transform`}
         >
-            <div className="flex items-center gap-2.5 sm:gap-3.5 md:gap-4.5 flex-1 min-w-0 py-0.5">
+            <div className="flex items-center gap-2.5 sm:gap-3.5 md:gap-4 flex-1 min-w-0 py-0.5">
                 {/* Left Hexagon Letter Badge */}
                 <div
                     className={`flex shrink-0 items-center justify-center font-['Orbitron',sans-serif] transition-transform duration-300 group-hover:scale-105 ${badgeClass} ${hexBadgeBg}`}
@@ -365,16 +388,16 @@ function AnswerOption({
                     {label}
                 </div>
 
-                {/* Option Text */}
+                {/* Option Text - Clear Readable Sans-Serif font */}
                 <span
-                    className={`font-mono text-left break-words whitespace-normal overflow-hidden ${fontSizeClass} ${textClass}`}
+                    className={`font-sans tracking-wide text-left break-words whitespace-normal overflow-hidden ${fontSizeClass} ${textClass}`}
                 >
                     {text}
                 </span>
             </div>
 
             {/* Right Selection Indicator */}
-            <div className="flex items-center gap-1.5 shrink-0 ml-2 sm:ml-3.5">
+            <div className="flex items-center gap-1.5 shrink-0 ml-2 sm:ml-3">
                 {isReviewMode && selected && isCorrect && (
                     <span className="rounded-full border border-emerald-400/40 bg-emerald-400/20 px-1.5 py-0.5 font-['Orbitron',sans-serif] text-[8px] sm:text-xs font-bold text-emerald-400">
                         (+{questionScore || 20} Poin)
@@ -387,8 +410,20 @@ function AnswerOption({
                 )}
 
                 {!isReviewMode && (
-                    <div className="flex h-4.5 w-4.5 sm:h-6 sm:w-6 items-center justify-center">
-                        {selected ? (
+                    <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center">
+                        {isMultiSelect ? (
+                            <div
+                                className={`flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded transition-all duration-200 ${
+                                    selected
+                                        ? 'border-2 border-[#FACC15] bg-[#FACC15] text-black shadow-[0_0_10px_rgba(250,204,21,0.6)]'
+                                        : 'border-2 border-[#3B28F6] bg-slate-900/40 group-hover:border-cyan-400'
+                                }`}
+                            >
+                                {selected && (
+                                    <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-black stroke-[3.5]" />
+                                )}
+                            </div>
+                        ) : selected ? (
                             <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center">
                                 <div className="absolute inset-0 rounded-full border-2 border-[#FACC15] animate-pulse" />
                                 <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full border-2 border-[#FACC15] bg-[#FACC15]" />
@@ -632,6 +667,66 @@ export default function Play({
         }
     };
 
+        // Keyboard navigation (friendly user experience)
+    useEffect(() => {
+        if (showResult || showTimeExpired || showQuizTour) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (
+                e.target instanceof HTMLInputElement ||
+                e.target instanceof HTMLTextAreaElement
+            ) {
+                return;
+            }
+
+            const key = e.key.toUpperCase();
+
+            // Number keys 1..5
+            if (['1', '2', '3', '4', '5'].includes(key)) {
+                const idx = parseInt(key, 10) - 1;
+                if (question?.answers?.[idx]) {
+                    e.preventDefault();
+                    selectAnswer(question.answers[idx].id);
+                }
+            }
+
+            // Letter keys A..E
+            if (['A', 'B', 'C', 'D', 'E'].includes(key)) {
+                const idx = key.charCodeAt(0) - 65;
+                if (question?.answers?.[idx]) {
+                    e.preventDefault();
+                    selectAnswer(question.answers[idx].id);
+                }
+            }
+
+            // Enter key to proceed
+            if (e.key === 'Enter') {
+                if (isReviewMode || selected.length > 0) {
+                    e.preventDefault();
+                    next();
+                }
+            }
+
+            // ArrowLeft to go back
+            if (e.key === 'ArrowLeft' && current > 0) {
+                e.preventDefault();
+                handleBack();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [
+        showResult,
+        showTimeExpired,
+        showQuizTour,
+        question,
+        selected,
+        isReviewMode,
+        current,
+        total,
+    ]);
+
     const handleProceedTimeExpired = () => {
         setShowTimeExpired(false);
         setShowResult(true);
@@ -872,9 +967,21 @@ export default function Play({
                                                 <FormattedQuestionText text={questionPrompt} />
 
                                                 {question.max_selectable > 1 && (
-                                                    <span className="mt-1 sm:mt-1.5 inline-block rounded-full bg-yellow-400/20 px-2.5 py-0.5 text-[9px] sm:text-xs font-bold text-yellow-400 border border-yellow-400/30 font-['Orbitron',sans-serif]">
-                                                        (Pilih {question.max_selectable} Jawaban)
-                                                    </span>
+                                                    <div className="mt-1.5 sm:mt-2 flex items-center gap-2">
+                                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-400/15 px-2.5 py-0.5 text-[9px] sm:text-xs font-bold text-yellow-400 border border-yellow-400/30 font-['Orbitron',sans-serif]">
+                                                            <span>Pilih {question.max_selectable} Jawaban</span>
+                                                            <span className="text-yellow-400/50">•</span>
+                                                            <span
+                                                                className={
+                                                                    selected.length === question.max_selectable
+                                                                        ? 'text-emerald-400 font-extrabold'
+                                                                        : 'text-yellow-200'
+                                                                }
+                                                            >
+                                                                {selected.length} / {question.max_selectable} dipilih
+                                                            </span>
+                                                        </span>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
@@ -885,35 +992,46 @@ export default function Play({
                     </div>
 
                     {/* ── RIGHT COLUMN: ANSWER OPTIONS (BOTTOM IN PORTRAIT, RIGHT IN LANDSCAPE) ── */}
-                    <div className="h-[48%] sm:h-[45%] md:h-full w-full shrink-0 md:shrink md:col-span-6 lg:col-span-6 flex flex-col justify-center min-h-0 relative p-0.5 sm:p-2 md:px-3 lg:px-6 sm-md-answers-col">
-                        <div className="flex flex-col justify-start md:justify-center gap-2 sm:gap-2.5 md:gap-2 hp-landscape-options-wrapper sm-md-options-wrapper md-lg-options-wrapper my-auto max-h-full overflow-y-auto py-1 pr-1">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={question.id + '-answers'}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    transition={{ duration: 0.25 }}
-                                    className="flex flex-col gap-2 sm:gap-2.5 md:gap-2 hp-landscape-options-wrapper sm-md-options-wrapper md-lg-options-wrapper"
-                                >
-                                    {question.answers.map((a: any, idx: number) => (
-                                        <AnswerOption
-                                            key={a.id}
-                                            label={labels[idx] ?? String(idx + 1)}
-                                            text={a.answer_text}
-                                            selected={selected.includes(a.id)}
-                                            isCorrect={a.is_correct}
-                                            isReviewMode={isReviewMode}
-                                            questionScore={
-                                                question.max_score ||
-                                                question.question_score ||
-                                                20
-                                            }
-                                            onClick={() => selectAnswer(a.id)}
-                                        />
-                                    ))}
-                                </motion.div>
-                            </AnimatePresence>
+                    <div className="flex-1 md:flex-none h-[48%] sm:h-[45%] md:h-full w-full shrink-0 md:shrink md:col-span-6 lg:col-span-6 flex flex-col min-h-0 relative p-0.5 sm:p-2 md:px-2 lg:px-4 sm-md-answers-col">
+                        <div className="flex-1 min-h-0 w-full overflow-y-auto quiz-scrollbar pr-2 sm:pr-3 py-1">
+                            <div
+                                className="min-h-full w-full flex flex-col py-1"
+                                style={{ justifyContent: 'safe center' }}
+                            >
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={question.id + '-answers'}
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        transition={{ duration: 0.25 }}
+                                        className={`w-full flex flex-col ${
+                                            question.answers.length >= 5
+                                                ? 'gap-1.5 sm:gap-2'
+                                                : 'gap-2 sm:gap-2.5 md:gap-3'
+                                        } hp-landscape-options-wrapper sm-md-options-wrapper md-lg-options-wrapper`}
+                                    >
+                                        {question.answers.map((a: any, idx: number) => (
+                                            <AnswerOption
+                                                key={a.id}
+                                                label={labels[idx] ?? String(idx + 1)}
+                                                text={a.answer_text}
+                                                selected={selected.includes(a.id)}
+                                                isCorrect={a.is_correct}
+                                                isReviewMode={isReviewMode}
+                                                isMultiSelect={question.max_selectable > 1}
+                                                totalOptions={question.answers.length}
+                                                questionScore={
+                                                    question.max_score ||
+                                                    question.question_score ||
+                                                    20
+                                                }
+                                                onClick={() => selectAnswer(a.id)}
+                                            />
+                                        ))}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Quest\ApproveQuestWorkRequest;
+use App\Http\Requests\Quest\ConfirmFinalDeliveryRequest;
 use App\Http\Requests\Quest\RejectQuestWorkRequest;
+use App\Http\Requests\Quest\RequestFinalZipRevisionRequest;
 use App\Http\Requests\Quest\ResolveArbitrationRequest;
 use App\Http\Requests\Quest\StoreQuestRequest;
+use App\Http\Requests\Quest\UploadDownPaymentProofRequest;
+use App\Http\Requests\Quest\UploadPaymentProofRequest;
 use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
@@ -16,6 +20,7 @@ use App\Models\QuestTransaction;
 use App\Models\User;
 use App\Services\Quest\QuestService;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -474,6 +479,56 @@ class QuestController extends Controller
 
         return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
             ->with('warning', 'Pekerjaan ditolak oleh Admin dan revisi diminta dari pekerja.');
+    }
+
+    public function uploadDownPaymentProof(UploadDownPaymentProofRequest $request, string $questId, QuestService $questService): RedirectResponse
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $questService->uploadDownPaymentProof($request->user(), $quest, $request->file('dp_proof'));
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Bukti transfer uang muka (DP) berhasil diunggah! Menunggu konfirmasi penerimaan dari pekerja.');
+    }
+
+    public function confirmDownPayment(Request $request, string $questId, QuestService $questService): RedirectResponse
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $questService->confirmDownPayment($request->user(), $quest);
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Penerimaan uang muka (DP) berhasil dikonfirmasi! Quest resmi dimulai.');
+    }
+
+    public function uploadPaymentProof(UploadPaymentProofRequest $request, string $questId, QuestService $questService): RedirectResponse
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $questService->uploadPaymentProof($request->user(), $quest, $request->file('payment_proof'));
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Bukti transfer pelunasan berhasil diunggah! Menunggu pekerja mengirim berkas proyek final (ZIP).');
+    }
+
+    public function confirmFinalDelivery(ConfirmFinalDeliveryRequest $request, string $questId, QuestService $questService): RedirectResponse
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $questService->confirmFinalDelivery($request->user(), $quest, $request->validated());
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('success', 'Berkas final berhasil dikonfirmasi dan ulasan Anda telah disimpan! Quest resmi selesai.');
+    }
+
+    public function requestFinalZipRevision(RequestFinalZipRevisionRequest $request, string $questId, QuestService $questService): RedirectResponse
+    {
+        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+
+        $questService->requestFinalZipRevision($request->user(), $quest, $request->validated()['revision_note']);
+
+        return redirect()->route('admin.quests.show', $quest->slug ?: $quest->_id)
+            ->with('warning', 'Permintaan perbaikan berkas final telah dikirim ke pekerja.');
     }
 
     /**
