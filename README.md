@@ -70,48 +70,8 @@ Jalankan perintah berikut untuk meng-generate `APP_KEY` baru di dalam berkas `.e
 php artisan key:generate
 ```
 
-### Langkah 5: Masukkan API Keys & Kredensial ke `.env`
-Buka berkas `.env` menggunakan teks editor Anda, lalu lengkapi variabel berikut dengan API key dan kredensial yang telah disiapkan pada **Bagian 2**:
-
-```dotenv
-APP_NAME="SkillVentura"
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-
-# 1. Database MongoDB
-DB_CONNECTION=mongodb
-MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=SkillVentura"
-MONGODB_DATABASE=skillventura
-
-SESSION_DRIVER=mongodb
-CACHE_STORE=mongodb
-QUEUE_CONNECTION=mongodb
-
-# 2. Object Storage (S3 / Cloudflare R2)
-FILESYSTEM_DISK=s3
-AWS_ACCESS_KEY_ID="<access_key_id>"
-AWS_SECRET_ACCESS_KEY="<secret_access_key>"
-AWS_DEFAULT_REGION=auto
-AWS_BUCKET="<nama_bucket>"
-AWS_ENDPOINT="https://<account_id>.r2.cloudflarestorage.com"
-AWS_USE_PATH_STYLE_ENDPOINT=true
-
-# 3. SMTP Email (Gmail App Password)
-MAIL_MAILER=smtp
-MAIL_SCHEME=smtps
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=465
-MAIL_USERNAME="<email_pengirim@gmail.com>"
-MAIL_PASSWORD="<16_digit_app_password_tanpa_spasi>"
-MAIL_FROM_ADDRESS="<email_pengirim@gmail.com>"
-MAIL_FROM_NAME="${APP_NAME}"
-
-# 4. Google OAuth 2.0 (Google Login)
-GOOGLE_CLIENT_ID="<google_client_id>"
-GOOGLE_CLIENT_SECRET="<google_client_secret>"
-GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
-```
+### Langkah 5: Konfigurasi Berkas `.env`
+Buka berkas `.env` menggunakan teks editor Anda, lalu lengkapi variabel koneksi database MongoDB, Object Storage (S3/R2), Google OAuth, dan SMTP sesuai dengan petunjuk yang telah disediakan di dalam berkas `.env.example`.
 
 ### Langkah 6: Hubungkan Storage Symlink & Generate TypeScript Routes
 ```bash
@@ -122,9 +82,11 @@ php artisan storage:link
 php artisan wayfinder:generate
 ```
 
-### Langkah 7: Jalankan Migrasi Indeks Database MongoDB
+### Langkah 7: Jalankan Migrasi & Database Seeder
+Jalankan migrasi indeks dan database seeder bawaan aplikasi:
 ```bash
 php artisan migrate --force
+php artisan db:seed --force
 ```
 
 ### Langkah 8: Install Dependensi Node.js & Frontend
@@ -151,20 +113,19 @@ Buka peramban (browser) dan akses: **`http://localhost:8000`**.
 > ```bash
 > composer run setup
 > ```
-> Perintah di atas akan mengeksekusi `composer install`, menyalin `.env`, menjalankan `key:generate`, migrasi database, `npm install`, dan `npm run build` secara berurutan. Setelah itu, Anda tinggal mengisi variabel pada `.env` dan menjalankan `composer run dev`.
+> Perintah di atas akan mengeksekusi `composer install`, menyalin `.env`, menjalankan `key:generate`, migrasi database, `npm install`, dan `npm run build` secara berurutan. Setelah itu, jalankan `php artisan db:seed`, lengkapi variabel pada `.env`, dan jalankan `composer run dev`.
 
 ---
 
-## 4. Inisialisasi Data Master (Melalui Panel Admin)
+## 4. Inisialisasi Data Master Kursus & Aset
 
-Karena basis data awal dalam kondisi kosong tanpa data dummy, Anda dapat mengisi data master melalui menu navigasi Admin berikut agar seluruh alur fitur dapat diuji:
+Setelah migrasi dan database seeder selesai dijalankan, Anda dapat melengkapi aset dan kurikulum pembelajaran melalui menu navigasi Admin:
 
 * **Menu Assets (`/admin/assets`)**:
   - **Characters (Wajib)**: Tambahkan minimal 1 karakter agar alur pemilihan karakter siswa baru (`/select-character`) dapat diselesaikan sebelum masuk ke dashboard.
   - **Ranks & Badges**: Atur urutan level pangkat dan lencana kursus.
   - **Certificate Design**: Unggah desain template sertifikat lalu klik **Set Active**.
 * **Menu Signature (`/signature`)**: Simpan tanda tangan digital Admin & Mentor agar tercetak pada PDF sertifikat kelulusan siswa.
-* **Menu Users (`/admin/users`)**: Ubah role akun pengajar menjadi `mentor`.
 * **Menu Courses (`/admin/courses`)**: Buat kursus baru beserta alur kurikulum (*Basic Fundamental Path*, *Career Group*, *Module*, dan *Final Quiz*).
 * **Menu Footer & Banner (`/admin/footer` & `/donation-banner`)**: Kelola informasi tautan footer publik dan banner donasi halaman depan.
 
