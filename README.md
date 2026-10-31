@@ -1,31 +1,18 @@
-# Panduan Teknis & Setup Proyek — SkillVentura
+# Panduan Setup & Alur Pengembangan — SkillVentura
 
-Dokumen ini merupakan panduan resmi bagi **Tim IT / Developer** untuk melakukan instalasi, konfigurasi environment, deployment, serta inisialisasi data awal pada aplikasi **SkillVentura**.
-
----
-
-## 1. Spesifikasi Teknis Proyek
-
-| Komponen | Spesifikasi yang Digunakan |
-| :--- | :--- |
-| **Backend** | PHP `>= 8.4`, Laravel `12.x` |
-| **Frontend** | React `19.x`, TypeScript `5.7`, Inertia.js `2.0`, Tailwind CSS `4.0`, Vite `7` |
-| **Database Utama** | **MongoDB** (`mongodb/laravel-mongodb` `^5.8`) — digunakan untuk seluruh koleksi data, *Session*, *Cache*, dan *Queue* |
-| **Penyimpanan File (Storage)** | **Laravel Cloud Object Storage (S3 / Cloudflare R2)** dengan *Internal Media Proxy* pada route `/media/{path}` |
-| **Autentikasi** | Laravel Fortify (Email/Password & 2FA) + Laravel Socialite (Google OAuth 2.0) |
-| **Generator Sertifikat** | `barryvdh/laravel-dompdf` (`^3.1`) |
+Dokumen ini merupakan panduan resmi bagi **Developer** untuk melakukan instalasi dari awal (*clone repository*) hingga aplikasi berjalan, siap melakukan perubahan kode (*development*), dan memverifikasi kualitas kode.
 
 ---
 
-## 2. Prasyarat Server / Perangkat Lokal
+## 1. Prasyarat Sistem
 
-Pastikan perangkat lokal atau server memiliki komponen berikut sebelum menjalankan instalasi:
+Sebelum memulai instalasi, pastikan perangkat lokal Anda telah memenuhi prasyarat berikut:
 
-1. **PHP `>= 8.4`** dengan ekstensi berikut wajib aktif di `php.ini`:
-   - `ext-mongodb` (**Wajib** — tanpa ekstensi ini `composer install` akan gagal)
-   - `ext-gd` dan `ext-dom` (**Wajib** — digunakan oleh `DomPDF` untuk merender sertifikat PDF)
+1. **PHP `>= 8.4`** dengan ekstensi berikut aktif di `php.ini`:
+   - `ext-mongodb` (**Wajib** — driver utama MongoDB)
+   - `ext-gd` dan `ext-dom` (**Wajib** — digunakan DomPDF untuk merender sertifikat PDF)
    - `ext-mbstring`, `ext-xml`, `ext-curl`, `ext-openssl`
-   - Cek status ekstensi MongoDB dengan perintah:
+   - Periksa status ekstensi MongoDB dengan perintah:
      ```bash
      php --ri mongodb
      ```
@@ -34,54 +21,58 @@ Pastikan perangkat lokal atau server memiliki komponen berikut sebelum menjalank
 
 ---
 
-## 3. Layanan Eksternal yang Harus Disiapkan
+## 2. Persiapan API Keys & Layanan Eksternal
 
-Sebelum menjalankan aplikasi, siapkan 4 kredensial layanan berikut untuk dimasukkan ke dalam file `.env`:
+Aplikasi membutuhkan 4 kredensial layanan eksternal untuk dimasukkan ke dalam berkas `.env`:
 
-### A. MongoDB Atlas
-1. Buat cluster dan database bernama `skillventura` di [MongoDB Atlas](https://cloud.mongodb.com).
-2. Buat *Database User* dengan hak akses `readWrite` pada database `skillventura`.
-3. Masuk ke menu **Security $\rightarrow$ Network Access** di MongoDB Atlas:
-   - Daftarkan IP perangkat/server Anda, atau tambahkan `0.0.0.0/0` jika aplikasi dijalankan di Laravel Cloud.
-4. Salin **Connection String** (`mongodb+srv://...`) untuk variabel `DB_DSN`.
-
-### B. Laravel Cloud Object Storage (S3 Bucket)
-Digunakan untuk menyimpan seluruh file upload (avatar karakter, rank, badge, thumbnail course, gambar/dokumen materi modul, lampiran forum, file quest, desain sertifikat, PDF sertifikat, tanda tangan digital, dan banner donasi).
-- Siapkan kredensial bucket: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_BUCKET`, dan `AWS_ENDPOINT`.
-- Bucket **tidak perlu** dibuat publik (`AWS_URL` tidak digunakan). Seluruh file S3 di-stream secara internal melalui route aplikasi `/media/{path}` (`App\Http\Controllers\MediaController`).
-
-### C. Google OAuth 2.0 (Login dengan Google)
-1. Buat *OAuth 2.0 Client ID* di [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
-2. Daftarkan **Authorized Redirect URI** berikut:
-   - Lokal: `http://localhost:8000/auth/google/callback`
-   - Production: `https://<domain-aplikasi>/auth/google/callback`
-3. Salin `GOOGLE_CLIENT_ID` dan `GOOGLE_CLIENT_SECRET`.
-
-### D. SMTP Email (Google App Password)
-Digunakan untuk pengiriman email *Forgot Password / Reset Password*:
-1. Aktifkan *2-Step Verification* pada akun Gmail pengirim.
-2. Buat **App Password** (16 karakter tanpa spasi) di menu *Google Account $\rightarrow$ Security $\rightarrow$ App Passwords*.
+| Layanan | Kredensial / API Key | Keterangan & Cara Mendapatkan |
+| :--- | :--- | :--- |
+| **MongoDB Atlas** | `MONGODB_URI`<br>`MONGODB_DATABASE` | Buat cluster & database `skillventura` di [MongoDB Atlas](https://cloud.mongodb.com). Buat database user (`readWrite`) dan whitelist IP lokal Anda pada menu **Network Access**. |
+| **Object Storage (S3 / R2)** | `AWS_ACCESS_KEY_ID`<br>`AWS_SECRET_ACCESS_KEY`<br>`AWS_BUCKET`<br>`AWS_ENDPOINT` | Kredensial Cloudflare R2 / AWS S3 untuk menyimpan avatar, materi modul, PDF sertifikat, dan tanda tangan digital. |
+| **Google Cloud Console** | `GOOGLE_CLIENT_ID`<br>`GOOGLE_CLIENT_SECRET` | Buat OAuth 2.0 Client ID di [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Tambahkan Redirect URI: `http://localhost:8000/auth/google/callback`. |
+| **Gmail SMTP** | `MAIL_USERNAME`<br>`MAIL_PASSWORD` | Digunakan untuk email reset password. Gunakan akun Gmail dengan **16-digit App Password** (dibuat dari menu *Google Account $\rightarrow$ Security $\rightarrow$ 2-Step Verification $\rightarrow$ App Passwords*). |
 
 ---
 
-## 4. Langkah Instalasi Pertama Kali (Local Development)
+## 3. Langkah Instalasi Lengkap (Step-by-Step dari Clone ke Run)
 
-### Langkah 1: Clone & Install Dependensi
+Ikuti urutan langkah instalasi berikut secara berurutan:
+
+### Langkah 1: Clone Repositori
 ```bash
 git clone <repository-url> skillmongo
 cd skillmongo
-
-composer install
-npm install
 ```
 
-### Langkah 2: Salin & Konfigurasi `.env`
+### Langkah 2: Install Dependensi PHP (Composer)
 ```bash
-cp .env.example .env
+composer install
+```
+
+### Langkah 3: Salin File Konfigurasi Environment (`.env`)
+Salin berkas `.env.example` menjadi `.env`:
+- **Linux / macOS / Git Bash:**
+  ```bash
+  cp .env.example .env
+  ```
+- **Windows Command Prompt (CMD):**
+  ```cmd
+  copy .env.example .env
+  ```
+- **Windows PowerShell:**
+  ```powershell
+  Copy-Item .env.example .env
+  ```
+
+### Langkah 4: Generate Application Encryption Key (`APP_KEY`)
+Jalankan perintah berikut untuk meng-generate `APP_KEY` baru di dalam berkas `.env`:
+```bash
 php artisan key:generate
 ```
 
-Buka file `.env` dan sesuaikan nilainya seperti berikut:
+### Langkah 5: Masukkan API Keys & Kredensial ke `.env`
+Buka berkas `.env` menggunakan teks editor Anda, lalu lengkapi variabel berikut dengan API key dan kredensial yang telah disiapkan pada **Bagian 2**:
+
 ```dotenv
 APP_NAME="SkillVentura"
 APP_ENV=local
@@ -90,14 +81,14 @@ APP_URL=http://localhost:8000
 
 # 1. Database MongoDB
 DB_CONNECTION=mongodb
-DB_DSN="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=SkillVentura"
-DB_DATABASE=skillventura
+MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=SkillVentura"
+MONGODB_DATABASE=skillventura
 
 SESSION_DRIVER=mongodb
 CACHE_STORE=mongodb
 QUEUE_CONNECTION=mongodb
 
-# 2. Object Storage (S3)
+# 2. Object Storage (S3 / Cloudflare R2)
 FILESYSTEM_DISK=s3
 AWS_ACCESS_KEY_ID="<access_key_id>"
 AWS_SECRET_ACCESS_KEY="<secret_access_key>"
@@ -106,97 +97,113 @@ AWS_BUCKET="<nama_bucket>"
 AWS_ENDPOINT="https://<account_id>.r2.cloudflarestorage.com"
 AWS_USE_PATH_STYLE_ENDPOINT=true
 
-# 3. SMTP Email
+# 3. SMTP Email (Gmail App Password)
 MAIL_MAILER=smtp
 MAIL_SCHEME=smtps
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=465
 MAIL_USERNAME="<email_pengirim@gmail.com>"
-MAIL_PASSWORD="<16_digit_google_app_password_tanpa_spasi>"
+MAIL_PASSWORD="<16_digit_app_password_tanpa_spasi>"
 MAIL_FROM_ADDRESS="<email_pengirim@gmail.com>"
 MAIL_FROM_NAME="${APP_NAME}"
 
-# 4. Google OAuth
+# 4. Google OAuth 2.0 (Google Login)
 GOOGLE_CLIENT_ID="<google_client_id>"
 GOOGLE_CLIENT_SECRET="<google_client_secret>"
 GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
 ```
 
-### Langkah 3: Jalankan Migrasi Indeks MongoDB
+### Langkah 6: Hubungkan Storage Symlink & Generate TypeScript Routes
+```bash
+# Buat symlink storage lokal (jika diperlukan fallback aset publik)
+php artisan storage:link
+
+# Generate fungsi TypeScript untuk route backend (Laravel Wayfinder)
+php artisan wayfinder:generate
+```
+
+### Langkah 7: Jalankan Migrasi Indeks Database MongoDB
 ```bash
 php artisan migrate --force
 ```
 
-### Langkah 4: Buat Akun Admin Pertama
-Karena proyek ini tidak menggunakan *dummy seeder*, buat akun **Admin** pertama kali menggunakan perintah berikut:
+### Langkah 8: Install Dependensi Node.js & Frontend
 ```bash
-php artisan tinker --execute "App\Models\User::updateOrCreate(['email' => 'admin@skillventura.com'], ['name' => 'Guild Master', 'username' => 'admin', 'password' => bcrypt('Admin123!'), 'role' => 'admin', 'email_verified_at' => now()]);"
+npm install
 ```
 
-### Langkah 5: Jalankan Aplikasi
+### Langkah 9: Jalankan Aplikasi untuk Pengembangan
 ```bash
 composer run dev
 ```
-Perintah di atas otomatis menjalankan `php artisan serve`, `php artisan queue:listen`, dan `npm run dev` (Vite) secara bersamaan.
+Perintah ini akan menjalankan 3 proses latar belakang secara paralel:
+1. **Laravel HTTP Server** pada `http://localhost:8000`
+2. **Queue Worker** (`php artisan queue:listen --tries=1`) untuk memproses email dan antrean tugas
+3. **Vite Development Server** dengan *Hot Module Replacement* (HMR)
+
+Buka peramban (browser) dan akses: **`http://localhost:8000`**.
 
 ---
 
-## 5. Urutan Konfigurasi Awal di Dalam Aplikasi (Setelah Login Admin)
-
-Jika aplikasi dijalankan pada database baru yang masih kosong, **Admin wajib mengisi data master berikut secara berurutan** agar alur *Student* dan *Mentor* berjalan normal:
-
-1. **Master Assets (`/admin/assets`)**:
-   - **Character (Wajib)**: Tambahkan minimal 1 *Character*. Setiap akun *Student* baru diwajibkan memilih karakter di `/select-character` (melalui middleware `has.character`) sebelum dapat mengakses `/dashboard`.
-   - **Rank**: Tambahkan daftar *Rank* sesuai urutan level pangkat.
-   - **Level Badge**: Tambahkan ikon *Badge* untuk level kursus.
-   - **Certificate Design**: Unggah gambar *Background* dan *Logo* sertifikat, lalu klik **Set Active** agar template PDF sertifikat aktif.
-2. **Digital Signature (`/settings/signature`)**:
-   - Admin dan Mentor wajib menyimpan tanda tangan digital pada menu **Settings $\rightarrow$ Signature** agar tanda tangan tampil pada file PDF sertifikat kelulusan siswa.
-3. **Role Pengguna (`/admin/users`)**:
-   - Ubah role pengguna yang bertugas sebagai pengajar menjadi `mentor` melalui halaman `/admin/users`.
-4. **Course & Kurikulum (`/admin/courses`)**:
-   - Buat *Course* baru, lalu masuk ke **Course Builder** (`/admin/courses/{slug}`).
-   - Buat **Basic Fundamental Path**, buat **Career Group** beserta penugasan Mentor (*Assign Mentor*), tambahkan **Module**, **Module Content**, dan **Final Quiz**.
-   - Klik **Publish** agar *Course* tampil di halaman *Student*.
-5. **Footer CMS & Donation Banner (`/admin/footer` & `/settings/donation-banner`)**:
-   - Kelola informasi brand, tautan sosial media, serta konten halaman publik di `/admin/footer`.
-   - Kelola gambar dan tautan banner donasi halaman utama di `/settings/donation-banner`.
+> [!TIP]
+> **Shortcut Setup Otomatis:**
+> Proyek ini juga menyediakan script instalasi otomatis di `composer.json`. Setelah mengklon repositori, Anda dapat langsung menjalankan:
+> ```bash
+> composer run setup
+> ```
+> Perintah di atas akan mengeksekusi `composer install`, menyalin `.env`, menjalankan `key:generate`, migrasi database, `npm install`, dan `npm run build` secara berurutan. Setelah itu, Anda tinggal mengisi variabel pada `.env` dan menjalankan `composer run dev`.
 
 ---
 
-## 6. Konfigurasi Deployment (Laravel Cloud)
+## 4. Inisialisasi Data Master (Melalui Panel Admin)
 
-### Build Commands
-```bash
-composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-npm ci --audit false
-npm run build
-```
+Karena basis data awal dalam kondisi kosong tanpa data dummy, Anda dapat mengisi data master melalui menu navigasi Admin berikut agar seluruh alur fitur dapat diuji:
 
-### Deploy Commands
-```bash
-php artisan migrate --force
-```
-
-### Ketentuan Environment Variables di Production
-- Pastikan `APP_ENV=production`, `APP_DEBUG=false`, dan `APP_URL` menggunakan `https://`.
-- Pastikan `DB_CONNECTION=mongodb`, `SESSION_DRIVER=mongodb`, `CACHE_STORE=mongodb`, dan `QUEUE_CONNECTION=mongodb`.
-- Untuk SMTP dengan port `465`, gunakan `MAIL_SCHEME=smtps` (jangan gunakan variabel `MAIL_ENCRYPTION` karena sudah tidak digunakan di Laravel 12).
+* **Menu Assets (`/admin/assets`)**:
+  - **Characters (Wajib)**: Tambahkan minimal 1 karakter agar alur pemilihan karakter siswa baru (`/select-character`) dapat diselesaikan sebelum masuk ke dashboard.
+  - **Ranks & Badges**: Atur urutan level pangkat dan lencana kursus.
+  - **Certificate Design**: Unggah desain template sertifikat lalu klik **Set Active**.
+* **Menu Signature (`/signature`)**: Simpan tanda tangan digital Admin & Mentor agar tercetak pada PDF sertifikat kelulusan siswa.
+* **Menu Users (`/admin/users`)**: Ubah role akun pengajar menjadi `mentor`.
+* **Menu Courses (`/admin/courses`)**: Buat kursus baru beserta alur kurikulum (*Basic Fundamental Path*, *Career Group*, *Module*, dan *Final Quiz*).
+* **Menu Footer & Banner (`/admin/footer` & `/donation-banner`)**: Kelola informasi tautan footer publik dan banner donasi halaman depan.
 
 ---
 
-## 7. Pemeriksaan Kualitas Kode & Pengujian
+## 5. Alur Pengembangan & Update Kode (Development Workflow)
+
+### A. Memperbarui Frontend (React + Inertia.js + Tailwind CSS v4)
+- Komponen halaman berada di direktori `resources/js/pages/`.
+- Komponen antarmuka yang dapat digunakan kembali berada di `resources/js/components/`.
+- Styling menggunakan **Tailwind CSS v4** dengan berkas konfigurasi di `resources/css/app.css`.
+- Selama `composer run dev` aktif, setiap perubahan kode pada `resources/js/` atau `resources/css/` akan langsung ter-render otomatis di browser tanpa reload (*Hot Module Replacement*).
+- Untuk menguji hasil kompilasi produksi aset frontend:
+  ```bash
+  npm run build
+  ```
+
+### B. Memperbarui Backend (Laravel 12 + MongoDB)
+- Model Eloquent MongoDB berada di `app/Models/` (menggunakan base class dari driver `mongodb/laravel-mongodb`).
+- Controller berada di `app/Http/Controllers/`.
+- Rute aplikasi didefinisikan di `routes/web.php` dan `routes/settings.php`.
+- **Laravel Wayfinder**: Jika Anda menambahkan atau mengubah rute di backend, Wayfinder akan otomatis memperbarui fungsi rute TypeScript di frontend (`@/actions/` atau `@/routes/`). Anda juga dapat menjalankannya manual dengan:
+  ```bash
+  php artisan wayfinder:generate
+  ```
+
+### C. Standardisasi Kode & Pengujian Sebelum Commit
+Sebelum melakukan *commit* atau membuat *Pull Request*, jalankan pemeriksaan berikut untuk memastikan kode sesuai standar:
 
 ```bash
-# Format kode PHP sesuai standar proyek (Laravel Pint)
+# 1. Format kode PHP sesuai standar PSR / Laravel Pint
 vendor/bin/pint
 
-# Cek tipe TypeScript pada frontend React
+# 2. Periksa tipe data TypeScript frontend
 npm run types
 
-# Jalankan linter ESLint pada frontend
+# 3. Jalankan linter frontend (ESLint)
 npm run lint
 
-# Jalankan pengujian otomatis (Pest)
+# 4. Jalankan pengujian otomatis (Pest)
 php artisan test --compact
 ```

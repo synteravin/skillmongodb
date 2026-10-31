@@ -114,18 +114,12 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
-        //         'mongodb' => [
-        //     'driver' => 'mongodb',
-        //     'dsn' => env('DB_URI'),
-        //     'database' => 'lms_gam_rpg',
-        // ],
-
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('MONGODB_URI')
-                ? preg_replace('#(?<!:)/{2,}#', '/', trim((string) env('MONGODB_URI'), " \t\n\r\0\x0B\"'"))
+            'dsn' => (env('MONGODB_URI') ?: env('DB_DSN'))
+                ? preg_replace('#(?<!:)/{2,}#', '/', trim((string) (env('MONGODB_URI') ?: env('DB_DSN')), " \t\n\r\0\x0B\"'"))
                 : 'mongodb://127.0.0.1:27017',
-            'database' => trim((string) env('MONGODB_DATABASE', 'lms_gam_rpg'), " \t\n\r\0\x0B/\"'"),
+            'database' => trim((string) env('MONGODB_DATABASE', env('DB_DATABASE', 'skillventura')), " \t\n\r\0\x0B/\"'"),
         ],
 
     ],

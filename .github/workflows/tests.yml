@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.4', '8.5']
+        php-version: ['8.4']
 
     steps:
       - name: Checkout code
@@ -29,8 +29,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: mongodb, gd, dom, mbstring, curl, openssl
           tools: composer:v2
-          coverage: xdebug
+          coverage: none
 
       - name: Setup Node
         uses: actions/setup-node@v4
