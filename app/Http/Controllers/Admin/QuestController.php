@@ -620,7 +620,7 @@ class QuestController extends Controller
      */
     public function arbitrate(ResolveArbitrationRequest $request, string $questId, QuestService $questService)
     {
-        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+        $quest = Quest::findByIdOrSlug($questId);
 
         $ruling = $request->ruling;
         if ($ruling === 'refund') {
@@ -844,7 +844,7 @@ class QuestController extends Controller
      */
     public function reopenBidding(Request $request, string $questId, QuestService $questService)
     {
-        $quest = Quest::where('slug', $questId)->orWhere('_id', $questId)->firstOrFail();
+        $quest = Quest::findByIdOrSlug($questId);
 
         if (in_array($quest->status, ['completed', 'cancelled'])) {
             abort(400, 'Quest yang sudah selesai atau dibatalkan tidak dapat dibuka kembali bidding-nya.');

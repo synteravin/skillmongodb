@@ -21,7 +21,7 @@ import ConfirmModal from '@/components/ui/ConfirmModal';
 import RenderTextContent from '@/components/Module/RenderTextContent';
 import RichEditor from '@/components/Module/RichEditor';
 import FileResourceCard from '@/components/Module/FileResourceCard';
-import ModuleBuilderHeader from '@/components/Module/ModuleBuilderHeader';
+import ModuleBuilderHeader, { QuizInfo } from '@/components/Module/ModuleBuilderHeader';
 
 import {
     DndContext,

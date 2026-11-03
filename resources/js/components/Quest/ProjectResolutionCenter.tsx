@@ -120,7 +120,8 @@ export default function ProjectResolutionCenter({
             request_id: requestId,
             accept: accept,
             response_note: respondExtensionForm.data.response_note,
-        })).post(`/quests/${quest.slug}/respond-extension`, {
+        }));
+        respondExtensionForm.post(`/quests/${quest.slug}/respond-extension`, {
             onSuccess: () => respondExtensionForm.reset(),
         });
     };
@@ -140,7 +141,8 @@ export default function ProjectResolutionCenter({
             request_id: requestId,
             accept: accept,
             response_note: respondCancellationForm.data.response_note,
-        })).post(`/quests/${quest.slug}/respond-cancellation`, {
+        }));
+        respondCancellationForm.post(`/quests/${quest.slug}/respond-cancellation`, {
             onSuccess: () => respondCancellationForm.reset(),
         });
     };

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Character;
+use App\Models\Notification;
 use App\Models\Quest;
 use App\Models\QuestBid;
 use App\Models\QuestMessage;
@@ -21,9 +22,12 @@ class QuestArbitrationTest extends TestCase
         parent::setUp();
         config(['database.default' => 'mongodb']);
         Quest::truncate();
+        QuestBid::truncate();
+        QuestMessage::truncate();
         User::truncate();
         UserStat::truncate();
         QuestTransaction::truncate();
+        Notification::truncate();
     }
 
     private function createStudent(string $name): User
@@ -904,7 +908,7 @@ class QuestArbitrationTest extends TestCase
         $this->assertStringStartsWith('ARB-', $award['award_number']);
         $this->assertEquals('Pemeriksaan repositori membuktikan 7 dari 10 modul telah rampung dan berfungsi.', $award['findings_of_fact']);
         $this->assertEquals('Berdasarkan klausul progres objektif, pekerja berhak menerima kompensasi 70% dari nilai kontrak.', $award['ratio_decidendi']);
-        $this->assertEquals('Dewan Arbitrase Skillmongo', $award['arbiter_name']);
+        $this->assertEquals('Dewan Arbitrase SkillVentura', $award['arbiter_name']);
 
         // Financial order verification (70% of 2,000,000 is 1,400,000. DP was 600,000. Creator pays 800,000 to worker)
         $this->assertEquals(800000, $award['financial_order']['amount']);

@@ -368,6 +368,7 @@ export default function AdminFooterIndex({
     const itemForm = useForm<{
         category: FooterCategory;
         title: string;
+        slug?: string;
         link_type: 'internal_page' | 'external_url';
         external_url: string;
         is_active: boolean;
@@ -389,6 +390,7 @@ export default function AdminFooterIndex({
     }>({
         category: 'program',
         title: '',
+        slug: '',
         link_type: 'internal_page',
         external_url: '',
         is_active: true,

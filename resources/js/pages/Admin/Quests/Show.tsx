@@ -304,7 +304,8 @@ export default function Show({ quest, bids, transactions = [] }: Props) {
         );
     };
 
-    const formatDate = (dateStr: string) => {
+    const formatDate = (dateStr?: string | null) => {
+        if (!dateStr) return '-';
         const d = new Date(dateStr);
         const datePart = d.toLocaleDateString('id-ID', {
             year: 'numeric',

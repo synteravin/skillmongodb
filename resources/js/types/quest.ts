@@ -87,6 +87,8 @@ export interface QuestP2pCompliance {
     transaction_ref_no?: string;
     transferred_at?: string;
     amount?: number;
+    paying_party?: 'creator' | 'worker' | string;
+    payment_deadline?: string;
 }
 
 export interface QuestP2pLedger {
@@ -180,6 +182,7 @@ export interface Quest {
     id?: string;
     slug?: string;
     title: string;
+    category?: string;
     description: string;
     min_budget: number;
     max_budget: number;

@@ -240,11 +240,27 @@ class Quest extends Model
         });
     }
 
-    public function resolveRouteBinding($value, $field = null)
+    public static function findByIdOrSlug(string $value): self
     {
-        return $this->where($field ?? 'slug', $value)
+        if (strlen($value) === 24 && ctype_xdigit($value)) {
+            $model = static::find($value);
+            if ($model) {
+                return $model;
+            }
+        }
+
+        return static::where('slug', $value)
             ->orWhere('_id', $value)
             ->firstOrFail();
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if ($field) {
+            return $this->where($field, $value)->firstOrFail();
+        }
+
+        return static::findByIdOrSlug((string) $value);
     }
 
     public function creator(): BelongsTo

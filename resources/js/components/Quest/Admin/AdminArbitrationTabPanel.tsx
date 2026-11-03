@@ -48,7 +48,7 @@ interface Transaction {
 interface AdminArbitrationTabPanelProps {
     quest: Quest;
     transactions: Transaction[];
-    formatDate: (dateStr: string) => string;
+    formatDate: (dateStr?: string | null) => string;
     formatCurrency: (num: number) => string;
     extendDeadlineForm: any;
     handleExtendDeadline: (e: React.FormEvent) => void;

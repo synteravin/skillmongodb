@@ -41,7 +41,16 @@ export default function Edit({ quest }: EditProps) {
     const initialMinVal = quest.min_budget ?? quest.min_salary ?? 0;
     const initialMaxVal = quest.max_budget ?? quest.max_salary ?? 0;
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, put, processing, errors } = useForm<{
+        title: string;
+        description: string;
+        min_budget: number | string;
+        max_budget: number | string;
+        min_salary: number | string;
+        max_salary: number | string;
+        dp_percentage: number | string;
+        deadline: string;
+    }>({
         title: quest.title || '',
         description: quest.description || '',
         min_budget: initialMinVal ? String(initialMinVal) : '',
