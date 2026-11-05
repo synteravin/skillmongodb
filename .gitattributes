@@ -1,13 +1,10 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Ignore development and testing files in production archives/exports
+# Ignore development and tooling files in production archives/exports
 /.github export-ignore
-/tests export-ignore
 /.editorconfig export-ignore
 /.prettierignore export-ignore
 /.prettierrc export-ignore
 /eslint.config.js export-ignore
-/phpunit.xml export-ignore
 /pint.json export-ignore
-/.env.testing export-ignore
