@@ -23,14 +23,13 @@ Sebelum memulai instalasi, pastikan perangkat lokal Anda telah memenuhi prasyara
 
 ## 2. Persiapan API Keys & Layanan Eksternal
 
-Aplikasi membutuhkan 4 kredensial layanan eksternal untuk dimasukkan ke dalam berkas `.env`:
+Aplikasi membutuhkan 3 kredensial layanan eksternal untuk dimasukkan ke dalam berkas `.env`:
 
 | Layanan | Kredensial / API Key | Keterangan & Cara Mendapatkan |
 | :--- | :--- | :--- |
 | **MongoDB Atlas** | `MONGODB_URI`<br>`MONGODB_DATABASE` | Buat cluster & database `skillventura` di [MongoDB Atlas](https://cloud.mongodb.com). Buat database user (`readWrite`) dan whitelist IP lokal Anda pada menu **Network Access**. |
 | **Object Storage (S3 / R2)** | `AWS_ACCESS_KEY_ID`<br>`AWS_SECRET_ACCESS_KEY`<br>`AWS_BUCKET`<br>`AWS_ENDPOINT` | Kredensial Cloudflare R2 / AWS S3 untuk menyimpan avatar, materi modul, PDF sertifikat, dan tanda tangan digital. |
 | **Google Cloud Console** | `GOOGLE_CLIENT_ID`<br>`GOOGLE_CLIENT_SECRET` | Buat OAuth 2.0 Client ID di [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Tambahkan Redirect URI: `http://localhost:8000/auth/google/callback`. |
-| **Gmail SMTP** | `MAIL_USERNAME`<br>`MAIL_PASSWORD` | Digunakan untuk email reset password. Gunakan akun Gmail dengan **16-digit App Password** (dibuat dari menu *Google Account → Security → 2-Step Verification → App Passwords*). |
 
 ---
 
@@ -71,7 +70,7 @@ php artisan key:generate
 ```
 
 ### Langkah 5: Konfigurasi Berkas `.env`
-Buka berkas `.env` menggunakan teks editor Anda, lalu lengkapi variabel koneksi database MongoDB, Object Storage (S3/R2), Google OAuth, dan SMTP sesuai dengan petunjuk yang telah disediakan di dalam berkas `.env.example`.
+Buka berkas `.env` menggunakan teks editor Anda, lalu lengkapi variabel koneksi database MongoDB, Object Storage (S3/R2), dan Google OAuth sesuai dengan petunjuk yang telah disediakan di dalam berkas `.env.example`.
 
 ### Langkah 6: Hubungkan Storage Symlink & Generate TypeScript Routes
 ```bash
@@ -100,7 +99,7 @@ composer run dev
 ```
 Perintah ini akan menjalankan 3 proses latar belakang secara paralel:
 1. **Laravel HTTP Server** pada `http://localhost:8000`
-2. **Queue Worker** (`php artisan queue:listen --tries=1`) untuk memproses email dan antrean tugas
+2. **Queue Worker** (`php artisan queue:listen --tries=1`) untuk memproses antrean tugas di latar belakang
 3. **Vite Development Server** dengan *Hot Module Replacement* (HMR)
 
 Buka peramban (browser) dan akses: **`http://localhost:8000`**.
