@@ -6,6 +6,7 @@ import {
     Edit2,
     Eye,
     FileText,
+    Filter,
     ImageIcon,
     Info,
     Layers,
@@ -16,6 +17,7 @@ import {
     Plus,
     Share2,
     Shield,
+    ShieldCheck,
     Sparkles,
     Trash2,
     Upload,
@@ -203,9 +205,11 @@ function getYoutubeEmbedUrl(url?: string | null): string | null {
         } else if (url.includes('youtube.com/watch')) {
             videoId = new URL(url).searchParams.get('v') || '';
         } else if (url.includes('youtube.com/embed/')) {
-            videoId = url.split('youtube.com/embed/')[1]?.split(/[?&#]/)[0] || '';
+            videoId =
+                url.split('youtube.com/embed/')[1]?.split(/[?&#]/)[0] || '';
         } else if (url.includes('youtube.com/shorts/')) {
-            videoId = url.split('youtube.com/shorts/')[1]?.split(/[?&#]/)[0] || '';
+            videoId =
+                url.split('youtube.com/shorts/')[1]?.split(/[?&#]/)[0] || '';
         }
         return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
     } catch {
@@ -643,22 +647,22 @@ export default function AdminFooterIndex({
 
     const hasGeneralErrors = Boolean(
         itemForm.errors.category ||
-            itemForm.errors.title ||
-            itemForm.errors.slug ||
-            itemForm.errors.external_url ||
-            itemForm.errors.subtitle ||
-            itemForm.errors.content,
+        itemForm.errors.title ||
+        itemForm.errors.slug ||
+        itemForm.errors.external_url ||
+        itemForm.errors.subtitle ||
+        itemForm.errors.content,
     );
     const hasMediaErrors = Boolean(
         itemForm.errors.image ||
-            itemForm.errors.image_caption ||
-            itemForm.errors.youtube_url,
+        itemForm.errors.image_caption ||
+        itemForm.errors.youtube_url,
     );
     const hasActionErrors = Boolean(
         itemForm.errors.cta_label ||
-            itemForm.errors.cta_url ||
-            itemForm.errors.profile_avatar ||
-            itemForm.errors.profile_name,
+        itemForm.errors.cta_url ||
+        itemForm.errors.profile_avatar ||
+        itemForm.errors.profile_name,
     );
 
     return (
@@ -670,110 +674,135 @@ export default function AdminFooterIndex({
                 style={{ fontFamily: "'Outfit', sans-serif" }}
             >
                 {/* Header Hero Banner */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-[#f5f6ff] p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-[#0d0f17]">
+                <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-white via-indigo-50/20 to-slate-50/60 p-5 shadow-sm sm:p-7 lg:p-8 dark:border-slate-800 dark:bg-gradient-to-br dark:from-[#0d101d] dark:via-[#090b14] dark:to-[#07080f]">
+                    {/* Decorative ambient background glows */}
                     <div
-                        className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-40"
+                        className="pointer-events-none absolute inset-0 z-0 opacity-70 dark:opacity-35"
                         style={{
                             backgroundImage: `
-                                radial-gradient(circle at top right, rgba(124, 92, 255, 0.14), transparent 70%),
-                                radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.10), transparent 60%)
+                                radial-gradient(circle at top right, rgba(124, 92, 255, 0.16), transparent 65%),
+                                radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.12), transparent 55%)
                             `,
                         }}
                     />
+                    <div className="pointer-events-none absolute top-0 right-10 left-10 z-0 h-px bg-gradient-to-r from-transparent via-indigo-500/35 to-transparent" />
 
-                    <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                        <div className="max-w-2xl space-y-2.5">
-                            <span className="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold tracking-[0.2em] text-indigo-500 uppercase dark:text-indigo-400">
+                    <div className="relative z-10 space-y-4">
+                        {/* Context Badges */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-3 py-1 text-[11px] font-semibold text-indigo-600 dark:border-indigo-400/30 dark:bg-indigo-500/15 dark:text-indigo-300">
                                 <PanelBottom className="h-3.5 w-3.5" />
-                                Konfigurasi Platform (Khusus Admin)
+                                Konfigurasi Platform
                             </span>
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-[11px] font-medium text-slate-600 shadow-2xs dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-400">
+                                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                                Khusus Admin
+                            </span>
+                        </div>
 
-                            <h1 className="text-2xl leading-snug font-semibold tracking-tight text-slate-800 md:text-[28px] dark:text-white">
+                        {/* Title & Description */}
+                        <div className="max-w-3xl space-y-2">
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-[32px] dark:text-white">
                                 Manajemen Footer & Halaman Informasi
                             </h1>
-
-                            <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400/80">
-                                Kelola informasi identitas brand, tautan sosial
-                                media, serta menu dan isi halaman footer (
-                                <span className="font-medium text-slate-700 dark:text-slate-200">
-                                    Text, Image, URL Link, & Embed YouTube
-                                </span>
-                                ) sesuai porsi dan fungsi tiap kategori.
+                            <p className="text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-400">
+                                Kelola identitas brand, tautan media sosial,
+                                serta struktur menu navigasi dan konten halaman
+                                informasi footer publik secara terpusat.
                             </p>
                         </div>
 
-                        {/* Quick Stats */}
-                        <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                            <div className="rounded-xl border border-slate-200/80 bg-white/80 px-4 py-3 text-center backdrop-blur dark:border-slate-800 dark:bg-slate-900/70">
-                                <p className="text-xl font-bold text-[#7C5CFF]">
-                                    {stats.active_items}/{stats.total_items}
-                                </p>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                    Menu Aktif
-                                </p>
-                            </div>
-                            <div className="rounded-xl border border-slate-200/80 bg-white/80 px-4 py-3 text-center backdrop-blur dark:border-slate-800 dark:bg-slate-900/70">
-                                <p className="text-xl font-bold text-cyan-500">
-                                    3
-                                </p>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                    Kategori Kolom
-                                </p>
-                            </div>
-                            <div className="rounded-xl border border-slate-200/80 bg-white/80 px-4 py-3 text-center backdrop-blur dark:border-slate-800 dark:bg-slate-900/70">
-                                <p className="text-xl font-bold text-emerald-500">
-                                    {stats.active_socials}
-                                </p>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                    URL Sosmed
-                                </p>
-                            </div>
+                        {/* Format & Feature Capabilities Chips (Friendly UX) */}
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                            <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+                                Mendukung Konten:
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
+                                <FileText className="h-3.5 w-3.5 text-emerald-500" />
+                                Text Artikel
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
+                                <ImageIcon className="h-3.5 w-3.5 text-sky-500" />
+                                Gambar
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
+                                <PlayCircle className="h-3.5 w-3.5 text-rose-500" />
+                                Video YouTube
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
+                                <Link2 className="h-3.5 w-3.5 text-indigo-500" />
+                                URL & Link CTA
+                            </span>
                         </div>
                     </div>
                 </div>
 
                 {/* Main Navigation Tabs */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-3 dark:border-slate-800">
-                    <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
+                    <div className="flex flex-wrap items-center gap-2">
                         <button
                             type="button"
                             onClick={() => setActiveTab('items')}
-                            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                            className={`group inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                                 activeTab === 'items'
-                                    ? 'bg-[#7C5CFF] text-white shadow-sm'
-                                    : 'bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
+                                    ? 'bg-[#7C5CFF] text-white shadow-sm shadow-[#7C5CFF]/25'
+                                    : 'border border-slate-200/90 bg-white text-slate-600 shadow-2xs hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:bg-slate-800/80'
                             }`}
                         >
-                            <FileText className="h-4 w-4" />
-                            <span>
-                                Menu & Halaman Informasi ({stats.total_items})
+                            <FileText
+                                className={`h-4 w-4 ${activeTab === 'items' ? 'text-white' : 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300'}`}
+                            />
+                            <span>Menu & Halaman</span>
+                            <span
+                                className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                                    activeTab === 'items'
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                }`}
+                            >
+                                {stats.total_items}
                             </span>
                         </button>
 
                         <button
                             type="button"
                             onClick={() => setActiveTab('brand')}
-                            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                            className={`group inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                                 activeTab === 'brand'
-                                    ? 'bg-[#7C5CFF] text-white shadow-sm'
-                                    : 'bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
+                                    ? 'bg-[#7C5CFF] text-white shadow-sm shadow-[#7C5CFF]/25'
+                                    : 'border border-slate-200/90 bg-white text-slate-600 shadow-2xs hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:bg-slate-800/80'
                             }`}
                         >
-                            <Sparkles className="h-4 w-4" />
+                            <Sparkles
+                                className={`h-4 w-4 ${activeTab === 'brand' ? 'text-white' : 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300'}`}
+                            />
                             <span>Identitas Brand & Kontak</span>
                         </button>
 
                         <button
                             type="button"
                             onClick={() => setActiveTab('socials')}
-                            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                            className={`group inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                                 activeTab === 'socials'
-                                    ? 'bg-[#7C5CFF] text-white shadow-sm'
-                                    : 'bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
+                                    ? 'bg-[#7C5CFF] text-white shadow-sm shadow-[#7C5CFF]/25'
+                                    : 'border border-slate-200/90 bg-white text-slate-600 shadow-2xs hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:bg-slate-800/80'
                             }`}
                         >
-                            <Share2 className="h-4 w-4" />
+                            <Share2
+                                className={`h-4 w-4 ${activeTab === 'socials' ? 'text-white' : 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300'}`}
+                            />
                             <span>Social Media Links</span>
+                            {stats.active_socials > 0 && (
+                                <span
+                                    className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                                        activeTab === 'socials'
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                    }`}
+                                >
+                                    {stats.active_socials}
+                                </span>
+                            )}
                         </button>
                     </div>
 
@@ -787,7 +816,7 @@ export default function AdminFooterIndex({
                                         : categoryFilter,
                                 )
                             }
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-[#3B28F6] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2a1ce0]"
+                            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#7C5CFF] px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#7C5CFF]/25 transition-all duration-200 hover:bg-[#6846f3] active:scale-[0.98]"
                         >
                             <Plus className="h-4 w-4" />
                             <span>Tambah Menu Footer</span>
@@ -800,23 +829,31 @@ export default function AdminFooterIndex({
                     <div className="space-y-6">
                         {/* Category Filter Pills */}
                         <div className="flex flex-wrap items-center gap-2">
+                            <span className="mr-1 hidden items-center gap-1.5 text-xs font-semibold text-slate-400 sm:inline-flex dark:text-slate-500">
+                                <Filter className="h-3.5 w-3.5" />
+                                Kategori:
+                            </span>
                             {(
                                 [
                                     {
                                         key: 'all',
-                                        label: `Semua Kategori (${stats.total_items})`,
+                                        label: 'Semua Kategori',
+                                        count: stats.total_items,
                                     },
                                     {
                                         key: 'program',
-                                        label: `Program (${stats.program_count})`,
+                                        label: 'Program',
+                                        count: stats.program_count,
                                     },
                                     {
                                         key: 'company',
-                                        label: `Company (${stats.company_count})`,
+                                        label: 'Company',
+                                        count: stats.company_count,
                                     },
                                     {
                                         key: 'support',
-                                        label: `Support (${stats.support_count})`,
+                                        label: 'Support',
+                                        count: stats.support_count,
                                     },
                                 ] as const
                             ).map((tab) => (
@@ -824,13 +861,22 @@ export default function AdminFooterIndex({
                                     key={tab.key}
                                     type="button"
                                     onClick={() => setCategoryFilter(tab.key)}
-                                    className={`cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs font-semibold transition ${
+                                    className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all duration-150 ${
                                         categoryFilter === tab.key
-                                            ? 'border-[#7C5CFF] bg-[#7C5CFF]/15 text-[#7C5CFF] dark:text-indigo-300'
-                                            : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400'
+                                            ? 'border-[#7C5CFF]/50 bg-[#7C5CFF]/15 text-[#7C5CFF] shadow-2xs dark:border-[#7C5CFF]/50 dark:bg-[#7C5CFF]/20 dark:text-indigo-300'
+                                            : 'border-slate-200/90 bg-white text-slate-600 shadow-2xs hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:bg-slate-800'
                                     }`}
                                 >
-                                    {tab.label}
+                                    <span>{tab.label}</span>
+                                    <span
+                                        className={`py-0.2 rounded-full px-1.5 text-[10px] font-bold ${
+                                            categoryFilter === tab.key
+                                                ? 'bg-[#7C5CFF]/25 text-[#7C5CFF] dark:bg-[#7C5CFF]/35 dark:text-indigo-200'
+                                                : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                                        }`}
+                                    >
+                                        {tab.count}
+                                    </span>
                                 </button>
                             ))}
                         </div>
@@ -842,24 +888,32 @@ export default function AdminFooterIndex({
                                 .filter((i) => i.category === catKey)
                                 .sort((a, b) => a.order - b.order);
 
+                            const buttonThemeClass =
+                                catKey === 'program'
+                                    ? 'border-indigo-500/25 bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:border-indigo-500/30 dark:bg-indigo-500/15 dark:text-indigo-300'
+                                    : catKey === 'company'
+                                      ? 'border-cyan-500/25 bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20 dark:border-cyan-500/30 dark:bg-cyan-500/15 dark:text-cyan-400'
+                                      : 'border-amber-500/25 bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 dark:border-amber-500/30 dark:bg-amber-500/15 dark:text-amber-400';
+
                             return (
                                 <div
                                     key={catKey}
-                                    className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-[#0b0e17]"
+                                    className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-[#0b0e17]"
                                 >
-                                    <div className="flex flex-col justify-between gap-3 border-b border-slate-200 bg-slate-50/70 px-6 py-4 sm:flex-row sm:items-center dark:border-slate-800 dark:bg-slate-900/50">
+                                    <div className="flex flex-col justify-between gap-3 border-b border-slate-200/80 bg-slate-50/70 px-6 py-4 sm:flex-row sm:items-center dark:border-slate-800 dark:bg-slate-900/50">
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2.5">
                                                 <span
-                                                    className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-bold uppercase ${catMeta.badgeClass}`}
+                                                    className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-bold tracking-wide uppercase ${catMeta.badgeClass}`}
                                                 >
                                                     Kolom {catMeta.label}
                                                 </span>
-                                                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-slate-200/60 px-2.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                                    <FileText className="h-3 w-3 text-slate-400" />
                                                     {catItems.length} item menu
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                            <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                                                 {catMeta.description}
                                             </p>
                                         </div>
@@ -869,7 +923,7 @@ export default function AdminFooterIndex({
                                             onClick={() =>
                                                 openCreateModal(catKey)
                                             }
-                                            className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-500/20 dark:text-indigo-300"
+                                            className={`inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-2xs transition hover:brightness-105 active:scale-95 ${buttonThemeClass}`}
                                         >
                                             <Plus className="h-3.5 w-3.5" />
                                             <span>
@@ -888,20 +942,20 @@ export default function AdminFooterIndex({
                                             {catItems.map((item, idx) => {
                                                 const hasText = Boolean(
                                                     item.content?.trim() ||
-                                                        item.subtitle?.trim(),
+                                                    item.subtitle?.trim(),
                                                 );
                                                 const hasImage = Boolean(
                                                     item.image_url,
                                                 );
                                                 const hasYoutube = Boolean(
                                                     item.youtube_url &&
-                                                        catKey !== 'support',
+                                                    catKey !== 'support',
                                                 );
                                                 const hasCta = Boolean(
                                                     item.cta_url ||
-                                                        (item.link_type ===
-                                                            'external_url' &&
-                                                            item.external_url),
+                                                    (item.link_type ===
+                                                        'external_url' &&
+                                                        item.external_url),
                                                 );
                                                 const hasProfile = Boolean(
                                                     item.profile_card?.enabled,
@@ -1122,7 +1176,7 @@ export default function AdminFooterIndex({
                     <div className="grid gap-8 lg:grid-cols-12">
                         <form
                             onSubmit={submitBrandSettings}
-                            className="space-y-5 rounded-xl border border-slate-300 bg-white p-6 lg:col-span-7 dark:border-slate-800 dark:bg-[#0b0e17]"
+                            className="space-y-5 rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs lg:col-span-7 dark:border-slate-800 dark:bg-[#0b0e17]"
                         >
                             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                                 Pengaturan Identitas Brand & Kontak Footer
@@ -1386,7 +1440,7 @@ export default function AdminFooterIndex({
                 {activeTab === 'socials' && (
                     <form
                         onSubmit={submitSocialLinks}
-                        className="space-y-6 rounded-xl border border-slate-300 bg-white p-6 dark:border-slate-800 dark:bg-[#0b0e17]"
+                        className="space-y-6 rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-[#0b0e17]"
                     >
                         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                             <div>
@@ -2082,8 +2136,9 @@ export default function AdminFooterIndex({
                                                 <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-amber-600 uppercase dark:text-amber-400">
                                                     <Link2 className="h-4 w-4" />
                                                     <span>
-                                                        Tombol Tautan / Call-To-Action
-                                                        (URL Link)
+                                                        Tombol Tautan /
+                                                        Call-To-Action (URL
+                                                        Link)
                                                     </span>
                                                 </div>
                                                 <p className="text-xs text-slate-500 dark:text-slate-400">

@@ -1,11 +1,34 @@
-export default function VisionMissionSection() {
+import type { VisionMissionPillar } from '@/types/landing-page';
+
+export default function VisionMissionSection({
+    visionMission,
+}: {
+    visionMission?: VisionMissionPillar[];
+} = {}) {
+    const missionText =
+        visionMission?.[0]?.description ||
+        'Menyediakan ekosistem pembelajaran gamifikasi adaptif untuk mencetak talenta digital berdaya saing global.';
+    const visionText =
+        visionMission?.[1]?.description ||
+        'Becoming the leading gamified learning ecosystem.';
+    const valueText =
+        visionMission?.[2]?.description ||
+        'Innovation, accessibility, and community learning.';
+    const goalsText =
+        visionMission?.[3]?.description ||
+        'Empower learners with real-world tech skills.';
+
+    const missionBadge = visionMission?.[0]?.badge || 'Mission';
+    const visionBadge = visionMission?.[1]?.badge || 'Vision';
+    const valueBadge = visionMission?.[2]?.badge || 'Value';
+    const goalsBadge = visionMission?.[3]?.badge || 'Goals';
     return (
         <section className="relative -mt-24 py-12 md:py-20 lg:-mt-34 lg:py-24 2xl:py-32">
             {/* Ambient Tech Glows */}
             <div className="pointer-events-none absolute top-16 -left-16 z-0">
                 <div className="h-[230px] w-[230px] rounded-full bg-blue-800 blur-[75px]" />
             </div>
-            <div className="pointer-events-none absolute bottom-10 -right-14 z-0">
+            <div className="pointer-events-none absolute -right-14 bottom-10 z-0">
                 <div className="h-[220px] w-[220px] rounded-full bg-blue-800 blur-[70px]" />
             </div>
 
@@ -194,7 +217,7 @@ export default function VisionMissionSection() {
                                     className="ml-2 text-sm font-bold md:text-base"
                                     style={{ fontFamily: 'Orbitron' }}
                                 >
-                                    Mission
+                                    {missionBadge}
                                 </p>
                             </div>
 
@@ -203,8 +226,7 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit.
+                                    {missionText}
                                 </p>
                             </div>
                         </div>
@@ -224,7 +246,7 @@ export default function VisionMissionSection() {
                                     className="ml-2 text-sm font-bold md:text-base"
                                     style={{ fontFamily: 'Orbitron' }}
                                 >
-                                    Vision
+                                    {visionBadge}
                                 </p>
                             </div>
 
@@ -233,8 +255,7 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Becoming the leading gamified learning
-                                    ecosystem.
+                                    {visionText}
                                 </p>
                             </div>
                         </div>
@@ -254,7 +275,7 @@ export default function VisionMissionSection() {
                                     className="ml-2 text-sm font-bold md:text-base"
                                     style={{ fontFamily: 'Orbitron' }}
                                 >
-                                    Value
+                                    {valueBadge}
                                 </p>
                             </div>
 
@@ -263,8 +284,7 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Innovation, accessibility, and community
-                                    learning.
+                                    {valueText}
                                 </p>
                             </div>
                         </div>
@@ -284,7 +304,7 @@ export default function VisionMissionSection() {
                                     className="ml-2 text-sm font-bold md:text-base"
                                     style={{ fontFamily: 'Orbitron' }}
                                 >
-                                    Goals
+                                    {goalsBadge}
                                 </p>
                             </div>
 
@@ -293,8 +313,7 @@ export default function VisionMissionSection() {
                                     className="text-xs leading-relaxed font-extrabold text-gray-300 md:text-sm"
                                     style={{ fontFamily: 'Oxanium' }}
                                 >
-                                    Empower learners with real-world tech
-                                    skills.
+                                    {goalsText}
                                 </p>
                             </div>
                         </div>

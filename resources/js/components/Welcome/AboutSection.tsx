@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import type { LandingPageAbout } from '@/types/landing-page';
 
 // Hook untuk mengukur ukuran component secara dinamis
 function useComponentSize() {
@@ -137,10 +138,20 @@ function Card2Background({ width, height, isMd }: CardBackgroundProps) {
     );
 }
 
-export default function AboutSection() {
+export default function AboutSection({
+    about,
+}: { about?: LandingPageAbout } = {}) {
     const [card1Ref, card1Size] = useComponentSize();
     const [card2Ref, card2Size] = useComponentSize();
     const isMd = useMediaQuery('(min-width: 768px)');
+
+    const badgeTitle = about?.badge_title || 'About Section';
+    const card1Text =
+        about?.card_1_text ||
+        'Skill Ventura merupakan platform Learning Management System (LMS) modern yang dirancang untuk membantu pengguna mengembangkan keterampilan melalui pengalaman belajar yang terstruktur, interaktif, dan mudah diakses. Platform ini menyediakan berbagai materi pembelajaran, jalur belajar (career path), simulasi praktik, serta pemantauan progres secara real-time sehingga pengguna dapat belajar sesuai kemampuan dan mencapai tujuan karier secara lebih efektif.';
+    const card2Text =
+        about?.card_2_text ||
+        'Untuk meningkatkan motivasi dan konsistensi belajar, Skill Ventura menggabungkan konsep gamifikasi ke dalam setiap proses pembelajaran. Pengguna dapat memperoleh XP, membuka achievement, meningkatkan level, mengumpulkan badge, serta berkompetisi melalui leaderboard dan berbagai challenge. Pendekatan ini membuat proses belajar terasa lebih menarik, menyenangkan, dan mendorong pengguna untuk terus mengembangkan keterampilan hingga siap menghadapi kebutuhan dunia kerja.';
 
     const card1Measured = card1Size.width > 0 && card1Size.height > 0;
     const card2Measured = card2Size.width > 0 && card2Size.height > 0;
@@ -158,7 +169,10 @@ export default function AboutSection() {
     }`;
 
     return (
-        <section id="about" className="relative py-8 sm:py-16 md:py-24 2xl:py-32">
+        <section
+            id="about"
+            className="relative py-8 sm:py-16 md:py-24 2xl:py-32"
+        >
             {/* Ambient Tech Glows */}
             <div className="pointer-events-none absolute top-16 -right-14 z-0 hidden sm:block">
                 <div className="h-[220px] w-[220px] rounded-full bg-blue-800 blur-[70px]" />
@@ -176,7 +190,7 @@ export default function AboutSection() {
                             <div className="absolute top-0 -left-[70px] h-[80px] w-[90px] -skew-x-[50deg] bg-[#13174D] lg:-left-[95px] lg:h-[100px] lg:w-[120px]" />
                             <div className="absolute inset-[14px_20px] rounded-[50px] border border-cyan-300 lg:inset-[18px_30px] lg:rounded-[60px]" />
                             <span className="font-['Orbitron'] text-[18px] font-semibold tracking-[4px] text-gray-200 lg:text-[24px] lg:tracking-[5px]">
-                                About Section
+                                {badgeTitle}
                             </span>
                         </div>
 
@@ -200,7 +214,7 @@ export default function AboutSection() {
                             </div>
 
                             {/* 🔥 PNG 3 — GAMEPAD MIRING (KANAN BAWAH / OUTER EDGE MOBILE) */}
-                            <div className="absolute -bottom-3 -right-2 rotate-[5deg] sm:-bottom-4 sm:right-2 md:bottom-[40px] md:right-[5px] lg:bottom-[60px]">
+                            <div className="absolute -right-2 -bottom-3 rotate-[5deg] sm:right-2 sm:-bottom-4 md:right-[5px] md:bottom-[40px] lg:bottom-[60px]">
                                 <img
                                     src="/images/gamepad.webp"
                                     alt="gamepad"
@@ -215,7 +229,7 @@ export default function AboutSection() {
                             <div className="col-span-full mb-1 flex justify-center sm:mb-4 md:hidden">
                                 <div className="rounded-full border border-cyan-300/60 bg-white/5 px-5 py-2 backdrop-blur-md">
                                     <span className="font-['Orbitron'] text-sm tracking-[3px] text-cyan-200 sm:text-base">
-                                        About Section
+                                        {badgeTitle}
                                     </span>
                                 </div>
                             </div>
@@ -234,20 +248,7 @@ export default function AboutSection() {
 
                                     <div className="relative z-10">
                                         <p className="text-xs leading-relaxed text-slate-300 md:text-sm lg:text-base">
-                                            Skill Ventura merupakan platform
-                                            Learning Management System (LMS)
-                                            modern yang dirancang untuk membantu
-                                            pengguna mengembangkan keterampilan
-                                            melalui pengalaman belajar yang
-                                            terstruktur, interaktif, dan mudah
-                                            diakses. Platform ini menyediakan
-                                            berbagai materi pembelajaran, jalur
-                                            belajar (career path), simulasi
-                                            praktik, serta pemantauan progres
-                                            secara real-time sehingga pengguna
-                                            dapat belajar sesuai kemampuan dan
-                                            mencapai tujuan karier secara lebih
-                                            efektif.
+                                            {card1Text}
                                         </p>
                                     </div>
                                 </div>
@@ -267,20 +268,7 @@ export default function AboutSection() {
 
                                     <div className="relative z-10">
                                         <p className="text-xs leading-relaxed text-slate-300 md:text-sm lg:text-base">
-                                            Untuk meningkatkan motivasi dan
-                                            konsistensi belajar, Skill Ventura
-                                            menggabungkan konsep gamifikasi ke
-                                            dalam setiap proses pembelajaran.
-                                            Pengguna dapat memperoleh XP,
-                                            membuka achievement, meningkatkan
-                                            level, mengumpulkan badge, serta
-                                            berkompetisi melalui leaderboard dan
-                                            berbagai challenge. Pendekatan ini
-                                            membuat proses belajar terasa lebih
-                                            menarik, menyenangkan, dan mendorong
-                                            pengguna untuk terus mengembangkan
-                                            keterampilan hingga siap menghadapi
-                                            kebutuhan dunia kerja.
+                                            {card2Text}
                                         </p>
                                     </div>
                                 </div>

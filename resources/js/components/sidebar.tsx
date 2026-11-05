@@ -17,6 +17,7 @@ import {
     MessageSquare,
     Briefcase,
     HeartHandshake,
+    LayoutTemplate,
     PanelBottom,
     X,
 } from 'lucide-react';
@@ -132,6 +133,13 @@ const menu: MenuItem[] = [
         section: 'platform',
     },
     {
+        name: 'Kelola Landing Page',
+        icon: LayoutTemplate,
+        href: '/admin/landing-page',
+        roles: ['admin'],
+        section: 'platform',
+    },
+    {
         name: 'Kelola Footer',
         icon: PanelBottom,
         href: '/admin/footer',
@@ -186,9 +194,7 @@ export default function Sidebar({
             return;
         }
         setCanScrollUp(el.scrollTop > 8);
-        setCanScrollDown(
-            el.scrollTop + el.clientHeight < el.scrollHeight - 8,
-        );
+        setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight - 8);
     }, []);
 
     useEffect(() => {
@@ -391,7 +397,7 @@ export default function Sidebar({
                                                         ?.quests > 0 && (
                                                         <>
                                                             {isOpen ? (
-                                                                <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full border border-amber-500/40 bg-amber-500/20 px-1.5 text-[10px] font-bold text-amber-400 animate-pulse">
+                                                                <span className="ml-auto flex h-5 min-w-[20px] animate-pulse items-center justify-center rounded-full border border-amber-500/40 bg-amber-500/20 px-1.5 text-[10px] font-bold text-amber-400">
                                                                     {
                                                                         props
                                                                             .pendingCounts
@@ -399,7 +405,7 @@ export default function Sidebar({
                                                                     }
                                                                 </span>
                                                             ) : (
-                                                                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                                                                <span className="absolute top-2 right-2 h-2 w-2 animate-pulse rounded-full bg-amber-400" />
                                                             )}
                                                         </>
                                                     )}

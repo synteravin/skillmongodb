@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CourseBuilderController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\LandingPageController;
 use App\Http\Controllers\Admin\LevelBadgeController;
 use App\Http\Controllers\Admin\ModuleManagementController;
 use App\Http\Controllers\Admin\QuizController;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Student\SelectPathController;
 use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Student\SubmissionController as StudentSubmission;
 use App\Models\DonationBanner;
+use App\Services\LandingPageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -274,6 +276,18 @@ Route::middleware(['auth', 'role:admin'])
         Route::match(['put', 'post'], '/items/{id}', [FooterController::class, 'updateItem'])->name('items.update');
         Route::post('/items/{id}/toggle', [FooterController::class, 'toggleItem'])->name('items.toggle');
         Route::delete('/items/{id}', [FooterController::class, 'destroyItem'])->name('items.destroy');
+    });
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin/landing-page')
+    ->name('admin.landing-page.')
+    ->group(function () {
+        Route::get('/', [LandingPageController::class, 'index'])->name('index');
+        Route::post('/about', [LandingPageController::class, 'updateAbout'])->name('about.update');
+        Route::post('/vision-mission', [LandingPageController::class, 'updateVisionMission'])->name('vision-mission.update');
+        Route::post('/faqs', [LandingPageController::class, 'updateFaqs'])->name('faqs.update');
+        Route::post('/community', [LandingPageController::class, 'updateCommunity'])->name('community.update');
+        Route::post('/contact', [LandingPageController::class, 'updateContact'])->name('contact.update');
     });
 /*
 |--------------------------------------------------------------------------
@@ -638,6 +652,7 @@ Route::get('/', function () {
     return Inertia::render('welcome', [
         'canRegister' => Features::enabled(Features::registration()),
         'donationBanner' => $donationBannerData,
+        'landingPage' => app(LandingPageService::class)->getSettingsPayload(),
     ]);
 })->name('home');
 

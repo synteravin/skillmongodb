@@ -1,5 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useAppearance } from '@/hooks/use-appearance';
+import type { LandingPageSettingsPayload } from '@/types/landing-page';
 
 // Sections
 import Navbar from '@/components/Welcome/Navbar';
@@ -21,9 +22,11 @@ export interface PublicDonationBanner {
 export default function Welcome({
     auth,
     donationBanner = null,
+    landingPage,
 }: {
     auth: { user: any };
     donationBanner?: PublicDonationBanner | null;
+    landingPage?: LandingPageSettingsPayload;
 }) {
     const { url } = usePage();
     const { resolvedAppearance, updateAppearance } = useAppearance();
@@ -48,16 +51,15 @@ export default function Welcome({
                     darkMode={darkMode}
                     toggleTheme={toggleTheme}
                 />
-                <HeroSection
-                    donationBanner={donationBanner}
-                    auth={auth}
+                <HeroSection donationBanner={donationBanner} auth={auth} />
+                <AboutSection about={landingPage?.about} />
+                <VisionMissionSection
+                    visionMission={landingPage?.vision_mission}
                 />
-                <AboutSection />
-                <VisionMissionSection />
                 <GamifiedMapSection />
-                <FaqSection />
-                <CtaSection />
-                <ContactSection />
+                <FaqSection faqs={landingPage?.faqs} />
+                <CtaSection community={landingPage?.community} />
+                <ContactSection contact={landingPage?.contact} />
                 <Footer />
             </div>
         </>

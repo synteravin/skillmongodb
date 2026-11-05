@@ -1,13 +1,66 @@
 import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { FaqItem } from '@/types/landing-page';
 
-export default function FaqSection() {
+interface Props {
+    faqs?: FaqItem[];
+}
+
+export default function FaqSection({ faqs }: Props = {}) {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
 
     const toggleFaq = (index: number) => {
         setOpenFaq(openFaq === index ? null : index);
     };
+
+    const activeFaqs =
+        faqs && faqs.length > 0
+            ? faqs
+                  .filter((item) => item.is_active)
+                  .map((item) => ({ q: item.question, a: item.answer }))
+            : [
+                  {
+                      q: 'Apa itu SKILL VENTURA dan bagaimana cara kerjanya?',
+                      a: 'SKILL VENTURA adalah platform Learning Management System (LMS) berbasis gamifikasi yang dirancang untuk membantu Anda menguasai keterampilan teknologi modern melalui materi terstruktur, simulasi praktik langsung, quest berbayar, dan sistem leveling interaktif.',
+                  },
+                  {
+                      q: 'Apakah saya membutuhkan pengalaman sebelumnya untuk mulai belajar?',
+                      a: 'Tidak perlu. SKILL VENTURA menyediakan modul pembelajaran mulai dari tingkat pemula (beginner) hingga tingkat lanjut (advanced) dengan panduan langkah demi langkah yang ramah bagi pemula.',
+                  },
+                  {
+                      q: 'Bagaimana cara kerja sistem gamifikasi di SKILL VENTURA?',
+                      a: 'Setiap kali Anda menyelesaikan materi, kuis, atau tugas, Anda akan memperoleh XP, menaikkan level karakter, membuka lencana pencapaian (achievements), serta dapat bersaing di leaderboard komunitas.',
+                  },
+                  {
+                      q: 'Keahlian (skills) apa saja yang dapat saya pelajari?',
+                      a: 'Anda dapat mempelajari berbagai bidang teknologi yang diminati industri saat ini, seperti Web Development, Cyber Security, Cloud Computing, Data Science, Artificial Intelligence, Mobile Development, hingga UI/UX Design.',
+                  },
+                  {
+                      q: 'Apakah tersedia roadmap atau jalur belajar yang terstruktur?',
+                      a: 'Ya, kami menyediakan fitur Skill Tree dan alur belajar karier yang jelas. Anda dapat memilih jalur keahlian yang diinginkan dan mengikuti rangkaian modul yang saling terhubung secara runtut.',
+                  },
+                  {
+                      q: 'Bagaimana misi (quest) dan tantangan membantu mengasah kemampuan saya?',
+                      a: 'Quest disusun berdasarkan studi kasus nyata dari dunia kerja. Dengan menyelesaikannya, Anda tidak hanya memperkuat pemahaman teori, tetapi juga membangun portofolio proyek yang siap dipresentasikan kepada calon perekrut.',
+                  },
+                  {
+                      q: 'Apakah saya mendapatkan XP atau reward setelah menyelesaikan tugas?',
+                      a: 'Tentu saja! Setiap penyelesaian quest dan tantangan akan memberikan reward berupa XP, badge eksklusif, peningkatan tier, serta reward kompensasi pada quest industri tertentu.',
+                  },
+                  {
+                      q: 'Bisakah saya belajar dengan kecepatan dan waktu saya sendiri (self-paced)?',
+                      a: 'Ya, seluruh materi di SKILL VENTURA dapat diakses fleksibel 24/7. Anda bebas mengatur ritme dan waktu belajar sesuai dengan kesibukan dan kenyamanan Anda.',
+                  },
+                  {
+                      q: 'Bagaimana jika saya mengalami kendala atau kesulitan saat belajar?',
+                      a: 'Anda dapat bertanya dan berdiskusi langsung dengan mentor serta sesama rekan pembelajar melalui fitur Forum Diskusi Komunitas, atau menghubungi tim support kami melalui menu kontak.',
+                  },
+                  {
+                      q: 'Bagaimana cara mendaftar dan mulai belajar di SKILL VENTURA?',
+                      a: 'Cukup klik tombol "Start to learn" di halaman utama, buat akun Anda, pilih karakter dan skill tree yang ingin ditekuni, lalu mulailah petualangan belajar Anda!',
+                  },
+              ];
 
     return (
         <section className="relative py-16 md:py-24 2xl:py-32">
@@ -28,48 +81,7 @@ export default function FaqSection() {
 
                 {/* FAQ List */}
                 <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-[#3c418a] dark:bg-[#1D215D]">
-                    {[
-                        {
-                            q: 'Apa itu SKILL VENTURA dan bagaimana cara kerjanya?',
-                            a: 'SKILL VENTURA adalah platform Learning Management System (LMS) berbasis gamifikasi yang dirancang untuk membantu Anda menguasai keterampilan teknologi modern melalui materi terstruktur, simulasi praktik langsung, quest berbayar, dan sistem leveling interaktif.',
-                        },
-                        {
-                            q: 'Apakah saya membutuhkan pengalaman sebelumnya untuk mulai belajar?',
-                            a: 'Tidak perlu. SKILL VENTURA menyediakan modul pembelajaran mulai dari tingkat pemula (beginner) hingga tingkat lanjut (advanced) dengan panduan langkah demi langkah yang ramah bagi pemula.',
-                        },
-                        {
-                            q: 'Bagaimana cara kerja sistem gamifikasi di SKILL VENTURA?',
-                            a: 'Setiap kali Anda menyelesaikan materi, kuis, atau tugas, Anda akan memperoleh XP, menaikkan level karakter, membuka lencana pencapaian (achievements), serta dapat bersaing di leaderboard komunitas.',
-                        },
-                        {
-                            q: 'Keahlian (skills) apa saja yang dapat saya pelajari?',
-                            a: 'Anda dapat mempelajari berbagai bidang teknologi yang diminati industri saat ini, seperti Web Development, Cyber Security, Cloud Computing, Data Science, Artificial Intelligence, Mobile Development, hingga UI/UX Design.',
-                        },
-                        {
-                            q: 'Apakah tersedia roadmap atau jalur belajar yang terstruktur?',
-                            a: 'Ya, kami menyediakan fitur Skill Tree dan alur belajar karier yang jelas. Anda dapat memilih jalur keahlian yang diinginkan dan mengikuti rangkaian modul yang saling terhubung secara runtut.',
-                        },
-                        {
-                            q: 'Bagaimana misi (quest) dan tantangan membantu mengasah kemampuan saya?',
-                            a: 'Quest disusun berdasarkan studi kasus nyata dari dunia kerja. Dengan menyelesaikannya, Anda tidak hanya memperkuat pemahaman teori, tetapi juga membangun portofolio proyek yang siap dipresentasikan kepada calon perekrut.',
-                        },
-                        {
-                            q: 'Apakah saya mendapatkan XP atau reward setelah menyelesaikan tugas?',
-                            a: 'Tentu saja! Setiap penyelesaian quest dan tantangan akan memberikan reward berupa XP, badge eksklusif, peningkatan tier, serta reward kompensasi pada quest industri tertentu.',
-                        },
-                        {
-                            q: 'Bisakah saya belajar dengan kecepatan dan waktu saya sendiri (self-paced)?',
-                            a: 'Ya, seluruh materi di SKILL VENTURA dapat diakses fleksibel 24/7. Anda bebas mengatur ritme dan waktu belajar sesuai dengan kesibukan dan kenyamanan Anda.',
-                        },
-                        {
-                            q: 'Bagaimana jika saya mengalami kendala atau kesulitan saat belajar?',
-                            a: 'Anda dapat bertanya dan berdiskusi langsung dengan mentor serta sesama rekan pembelajar melalui fitur Forum Diskusi Komunitas, atau menghubungi tim support kami melalui menu kontak.',
-                        },
-                        {
-                            q: 'Bagaimana cara mendaftar dan mulai belajar di SKILL VENTURA?',
-                            a: 'Cukup klik tombol "Start to learn" di halaman utama, buat akun Anda, pilih karakter dan skill tree yang ingin ditekuni, lalu mulailah petualangan belajar Anda!',
-                        },
-                    ].map((faq, i) => (
+                    {activeFaqs.map((faq, i) => (
                         <div
                             key={i}
                             className="border-b border-slate-200 last:border-none dark:border-[#3c418a]"
@@ -89,7 +101,7 @@ export default function FaqSection() {
 
                                 {/* Arrow */}
                                 <ChevronRight
-                                    className={`transition-transform duration-300 text-slate-400 dark:text-white ${
+                                    className={`text-slate-400 transition-transform duration-300 dark:text-white ${
                                         openFaq === i
                                             ? 'rotate-90 text-blue-600 dark:text-yellow-400'
                                             : ''
