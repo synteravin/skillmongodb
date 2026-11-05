@@ -30,7 +30,7 @@ Aplikasi membutuhkan 4 kredensial layanan eksternal untuk dimasukkan ke dalam be
 | **MongoDB Atlas** | `MONGODB_URI`<br>`MONGODB_DATABASE` | Buat cluster & database `skillventura` di [MongoDB Atlas](https://cloud.mongodb.com). Buat database user (`readWrite`) dan whitelist IP lokal Anda pada menu **Network Access**. |
 | **Object Storage (S3 / R2)** | `AWS_ACCESS_KEY_ID`<br>`AWS_SECRET_ACCESS_KEY`<br>`AWS_BUCKET`<br>`AWS_ENDPOINT` | Kredensial Cloudflare R2 / AWS S3 untuk menyimpan avatar, materi modul, PDF sertifikat, dan tanda tangan digital. |
 | **Google Cloud Console** | `GOOGLE_CLIENT_ID`<br>`GOOGLE_CLIENT_SECRET` | Buat OAuth 2.0 Client ID di [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Tambahkan Redirect URI: `http://localhost:8000/auth/google/callback`. |
-| **Gmail SMTP** | `MAIL_USERNAME`<br>`MAIL_PASSWORD` | Digunakan untuk email reset password. Gunakan akun Gmail dengan **16-digit App Password** (dibuat dari menu *Google Account $\rightarrow$ Security $\rightarrow$ 2-Step Verification $\rightarrow$ App Passwords*). |
+| **Gmail SMTP** | `MAIL_USERNAME`<br>`MAIL_PASSWORD` | Digunakan untuk email reset password. Gunakan akun Gmail dengan **16-digit App Password** (dibuat dari menu *Google Account → Security → 2-Step Verification → App Passwords*). |
 
 ---
 
@@ -40,8 +40,8 @@ Ikuti urutan langkah instalasi berikut secara berurutan:
 
 ### Langkah 1: Clone Repositori
 ```bash
-git clone <repository-url> skillmongo
-cd skillmongo
+git clone https://github.com/SkillVentura/SkillVentura.git
+cd SkillVentura
 ```
 
 ### Langkah 2: Install Dependensi PHP (Composer)
