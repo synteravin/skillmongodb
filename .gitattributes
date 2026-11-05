@@ -1,2 +1,17 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Ignore development, testing, and AI configuration files in production archives/exports
+/.agents export-ignore
+/AGENTS.md export-ignore
+/GEMINI.md export-ignore
+/boost.json export-ignore
+/.github export-ignore
+/tests export-ignore
+/.editorconfig export-ignore
+/.prettierignore export-ignore
+/.prettierrc export-ignore
+/eslint.config.js export-ignore
+/phpunit.xml export-ignore
+/pint.json export-ignore
+/.env.testing export-ignore
