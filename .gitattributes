@@ -1,11 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Ignore development, testing, and AI configuration files in production archives/exports
-/.agents export-ignore
-/AGENTS.md export-ignore
-/GEMINI.md export-ignore
-/boost.json export-ignore
+# Ignore development and testing files in production archives/exports
 /.github export-ignore
 /tests export-ignore
 /.editorconfig export-ignore

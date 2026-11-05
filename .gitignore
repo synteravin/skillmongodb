@@ -27,3 +27,10 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# AI Agent & Assistant Files
+/.agents
+/.gemini
+/AGENTS.md
+/GEMINI.md
+/boost.json
