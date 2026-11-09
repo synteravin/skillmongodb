@@ -36,3 +36,9 @@ yarn-error.log
 /AGENTS.md
 /GEMINI.md
 /boost.json
+
+# Sensitive Deployment & Maintenance Artifacts
+/Deployment&Maintenance
+*.gz
+*.dump
+
